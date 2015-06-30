@@ -27,17 +27,18 @@ import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 
 @Routable("user/:userId/portfolio/:portfolioId")
-public class TabbedPositionListFragment extends BasePurchaseManagerFragment
+public class TabbedPositionListFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = TabbedPositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = TabbedPositionListFragment.class.getName() + ".userBaseKey";
     private static final String BUNDLE_KEY_IS_FX = TabbedPositionListFragment.class.getName() + "isFX";
     private static final String BUNDLE_KEY_POSITION_TYPE = TabbedPositionListFragment.class.getName() + "position.type";
+    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE = TabbedPositionListFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
     private static final String BUNDLE_KEY_PROVIDER_ID = TabbedPositionListFragment.class + ".providerId";
     private static final boolean DEFAULT_IS_FX = false;
@@ -55,6 +56,7 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
     protected PortfolioDTO portfolioDTO;
     protected UserBaseKey shownUser;
     @Nullable protected UserProfileDTO userProfileDTO;
+    @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     boolean isFX;
 
@@ -113,22 +115,22 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         args.putString(BUNDLE_KEY_POSITION_TYPE, positionType);
     }
 
-    private String getPositionType(@NonNull Bundle args)
+    private static String getPositionType(@NonNull Bundle args)
     {
         return args.getString(BUNDLE_KEY_POSITION_TYPE, TabType.LONG.name());
     }
 
-    private boolean isFX(@NonNull Bundle args)
+    private static boolean isFX(@NonNull Bundle args)
     {
         return args.getBoolean(BUNDLE_KEY_IS_FX, DEFAULT_IS_FX);
     }
 
-    @NonNull private UserBaseKey getShownUser(@NonNull Bundle args)
+    @NonNull private static UserBaseKey getShownUser(@NonNull Bundle args)
     {
         return new UserBaseKey(args.getBundle(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE));
     }
 
-    @Nullable private GetPositionsDTOKey getGetPositionsDTOKey(@NonNull Bundle args)
+    @Nullable private static GetPositionsDTOKey getGetPositionsDTOKey(@NonNull Bundle args)
     {
         return GetPositionsDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE));
     }
@@ -138,7 +140,7 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
 
-    @Nullable private ProviderId getProviderId(@NonNull Bundle args)
+    @Nullable private static ProviderId getProviderId(@NonNull Bundle args)
     {
         Bundle bundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID);
         if (bundle == null)
@@ -166,6 +168,21 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
     @Nullable public static String getLeaderboardPeriodStartString(@NonNull Bundle args)
     {
         return args.getString(LEADERBOARD_PERIOD_START_STRING);
+    }
+
+    public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
+    {
+        args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+    }
+
+    @Nullable public static OwnedPortfolioId getApplicablePortfolioId(@NonNull Bundle args)
+    {
+        Bundle portfolioBundle = args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
+        if (portfolioBundle != null)
+        {
+            return new OwnedPortfolioId(portfolioBundle);
+        }
+        return null;
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -197,12 +214,12 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
             try
             {
                 selectedTabIndex = TabType.valueOf(type).ordinal();
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 selectedTabIndex = 0;
             }
         }
+        this.purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -237,7 +254,10 @@ public class TabbedPositionListFragment extends BasePurchaseManagerFragment
         {
             Bundle args = new Bundle();
 
-            PositionListFragment.putApplicablePortfolioId(args, purchaseApplicableOwnedPortfolioId);
+            if (purchaseApplicableOwnedPortfolioId != null)
+            {
+                PositionListFragment.putApplicablePortfolioId(args, purchaseApplicableOwnedPortfolioId);
+            }
             PositionListFragment.putGetPositionsDTOKey(args, getPositionsDTOKey);
             PositionListFragment.putShownUser(args, shownUser);
             TabType positionType;

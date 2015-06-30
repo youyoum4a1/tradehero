@@ -129,6 +129,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     protected Animation progressAnimation;
     protected AbstractTransactionDialogFragment abstractTransactionDialogFragment;
+    protected boolean poppedPortfolioChanged = false;
 
     public static void putRequisite(@NonNull Bundle args, @NonNull Requisite requisite)
     {
@@ -539,14 +540,18 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     protected void popPortfolioChanged()
     {
-        onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
-                .setTitle(R.string.buy_sell_portfolio_changed_title)
-                .setMessage(R.string.buy_sell_portfolio_changed_message)
-                .setPositiveButton(R.string.ok)
-                .build()
-                .subscribe(
-                        new EmptyAction1<OnDialogClickEvent>(),
-                        new EmptyAction1<Throwable>()));
+        if (!poppedPortfolioChanged)
+        {
+            poppedPortfolioChanged = true;
+            onStopSubscriptions.add(AlertDialogRxUtil.buildDefault(getActivity())
+                    .setTitle(R.string.buy_sell_portfolio_changed_title)
+                    .setMessage(R.string.buy_sell_portfolio_changed_message)
+                    .setPositiveButton(R.string.ok)
+                    .build()
+                    .subscribe(
+                            new EmptyAction1<OnDialogClickEvent>(),
+                            new EmptyAction1<Throwable>()));
+        }
     }
 
     protected abstract void linkWith(@NonNull PortfolioCompactDTOList portfolioCompactDTOs);

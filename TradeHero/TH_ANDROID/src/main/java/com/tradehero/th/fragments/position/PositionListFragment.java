@@ -37,6 +37,8 @@ import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
@@ -56,7 +58,7 @@ import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
 import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
@@ -81,6 +83,7 @@ import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.GetPositionsCacheRx;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
@@ -120,7 +123,7 @@ import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 public class PositionListFragment
-        extends BasePurchaseManagerFragment
+        extends DashboardFragment
         implements WithTutorial
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
@@ -129,6 +132,8 @@ public class PositionListFragment
     public static final String BUNDLE_KEY_POSITION_TYPE = PositionListFragment.class.getName() + ".postion.type";
     public static final String BUNDLE_KEY_SHOW_TITLE = PositionListFragment.class.getName() + ".showTitle";
     public static final String BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO = PositionListFragment.class.getName() + ".trendingFXPortfolio";
+    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+            PositionListFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
     private static final int FLIPPER_INDEX_LOADING = 0;
     private static final int FLIPPER_INDEX_LIST = 1;
@@ -149,6 +154,7 @@ public class PositionListFragment
     @Inject THBillingInteractorRx userInteractorRx;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
+    @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
 
     @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
     @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
@@ -162,6 +168,7 @@ public class PositionListFragment
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected UserBaseKey shownUser;
     private TabbedPositionListFragment.TabType positionType;
+    @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     private PortfolioHeaderView portfolioHeaderView;
 
@@ -227,6 +234,20 @@ public class PositionListFragment
                 TabbedPositionListFragment.TabType.LONG.name()));
     }
 
+    public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
+    {
+        args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+    }
+
+    @Nullable public static OwnedPortfolioId getApplicablePortfolioId(@NonNull Bundle args)
+    {
+        Bundle portfolioBundle = args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
+        if (portfolioBundle != null)
+        {
+            return new OwnedPortfolioId(portfolioBundle);
+        }
+        return null;
+    }
     //</editor-fold>
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -253,6 +274,7 @@ public class PositionListFragment
         }
 
         positionType = getPositionType(args);
+        this.purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
         this.positionItemAdapter = createPositionItemAdapter();
     }
 
@@ -292,11 +314,9 @@ public class PositionListFragment
     {
         Bundle args = new Bundle();
 
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-
-        if (ownedPortfolioId != null)
+        if (purchaseApplicableOwnedPortfolioId != null)
         {
-            SecurityListRxFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            SecurityListRxFragment.putApplicablePortfolioId(args, purchaseApplicableOwnedPortfolioId);
         }
 
         if (portfolioDTO == null || portfolioDTO.providerId == null)
@@ -313,7 +333,7 @@ public class PositionListFragment
             ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(
                     navigator.get(),
                     args,
-                    ownedPortfolioId,
+                    purchaseApplicableOwnedPortfolioId,
                     portfolioDTO,
                     new ProviderId(portfolioDTO.providerId));
         }
@@ -377,18 +397,37 @@ public class PositionListFragment
                         },
                         new TimberOnErrorAction("Failed to collect all")));
 
-        onStopSubscriptions.add(positionItemAdapter.getUserActionObservable()
-                .subscribe(
-                        new Action1<PositionPartialTopView.CloseUserAction>()
+        onStopSubscriptions.add(
+                Observable.combineLatest(
+                        positionItemAdapter.getUserActionObservable(),
+                        portfolioCompactListCache.getOne(currentUserId.toUserBaseKey()),
+                        new Func2<PositionPartialTopView.CloseUserAction, Pair<UserBaseKey, PortfolioCompactDTOList>, PositionPartialTopView.CloseUserAction>()
                         {
-                            @Override public void call(PositionPartialTopView.CloseUserAction userAction)
+                            @Override public PositionPartialTopView.CloseUserAction call(PositionPartialTopView.CloseUserAction userAction,
+                                    Pair<UserBaseKey, PortfolioCompactDTOList> pair)
                             {
                                 handleDialogGoToTrade(true,
                                         userAction.securityCompactDTO,
-                                        userAction.positionDTO);
+                                        userAction.positionDTO,
+                                        PortfolioCompactDTOUtil.getPurchaseApplicablePortfolio(
+                                                pair.second,
+                                                purchaseApplicableOwnedPortfolioId,
+                                                null,
+                                                userAction.securityCompactDTO.getSecurityId())
+                                                .getOwnedPortfolioId());
+
+                                return userAction;
                             }
-                        },
-                        new ToastAndLogOnErrorAction("Failed to listen to user action")));
+                        })
+                        .subscribe(
+                                new Action1<PositionPartialTopView.CloseUserAction>()
+                                {
+                                    @Override public void call(PositionPartialTopView.CloseUserAction userAction)
+                                    {
+                                        // Nothing to do
+                                    }
+                                },
+                                new ToastAndLogOnErrorAction("Failed to listen to user action")));
     }
 
     @Override public void onPause()
@@ -523,10 +562,9 @@ public class PositionListFragment
             // By default tries
             TradeListFragment.putPositionDTOKey(args,
                     ((PositionPartialTopView.DTO) object).positionDTO.getPositionDTOKey());
-            OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-            if (ownedPortfolioId != null)
+            if (purchaseApplicableOwnedPortfolioId != null)
             {
-                TradeListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                TradeListFragment.putApplicablePortfolioId(args, purchaseApplicableOwnedPortfolioId);
             }
             if (navigator != null)
             {
@@ -600,7 +638,6 @@ public class PositionListFragment
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    //@OnItemLongClick(R.id.position_list)
     protected boolean handlePositionItemLongClicked(View view, int position, Object item)
     {
         if (item instanceof PositionPartialTopView.DTO)
@@ -670,18 +707,28 @@ public class PositionListFragment
                                             .setNeutralButton(R.string.cancel)
                                             .setAlertDialogObserver(alertDialogSubject)
                                             .build()
-                                            .doOnNext(
-                                                    new Action1<OnDialogClickEvent>()
+                                            .zipWith(
+                                                    portfolioCompactListCache.getOne(currentUserId.toUserBaseKey()),
+                                                    new Func2<OnDialogClickEvent, Pair<UserBaseKey, PortfolioCompactDTOList>, OnDialogClickEvent>()
                                                     {
-                                                        @Override public void call(OnDialogClickEvent onDialogClickEvent)
+                                                        @Override
+                                                        public OnDialogClickEvent call(OnDialogClickEvent onDialogClickEvent,
+                                                                Pair<UserBaseKey, PortfolioCompactDTOList> pair)
                                                         {
                                                             if (!onDialogClickEvent.isNeutral())
                                                             {
                                                                 handleDialogGoToTrade(
                                                                         onDialogClickEvent.isPositive(),
                                                                         dto.securityCompactDTO,
-                                                                        dto.positionDTO);
+                                                                        dto.positionDTO,
+                                                                        PortfolioCompactDTOUtil.getPurchaseApplicablePortfolio(
+                                                                                pair.second,
+                                                                                purchaseApplicableOwnedPortfolioId,
+                                                                                null, // TODO better
+                                                                                dto.securityCompactDTO.getSecurityId())
+                                                                                .getOwnedPortfolioId());
                                                             }
+                                                            return onDialogClickEvent;
                                                         }
                                                     }),
                                     new Func2<StockActionBarRelativeLayout.UserAction, OnDialogClickEvent, StockActionBarRelativeLayout.UserAction>()
@@ -751,7 +798,8 @@ public class PositionListFragment
 
     public void handleDialogGoToTrade(boolean andClose,
             @NonNull SecurityCompactDTO securityCompactDTO,
-            @NonNull PositionDTO positionDTO)
+            @NonNull PositionDTO positionDTO,
+            @NonNull OwnedPortfolioId applicableOwnedPortfolioId)
     {
         Bundle args = new Bundle();
         if (securityCompactDTO instanceof FxSecurityCompactDTO)
@@ -760,7 +808,7 @@ public class PositionListFragment
                     args,
                     new FXMainFragment.Requisite(
                             securityCompactDTO.getSecurityId(),
-                            positionDTO.getOwnedPortfolioId(),
+                            applicableOwnedPortfolioId,
                             andClose && positionDTO.shares != null ? positionDTO.shares : 0));
         }
         else
@@ -769,7 +817,7 @@ public class PositionListFragment
                     args,
                     new BuySellStockFragment.Requisite(
                             securityCompactDTO.getSecurityId(),
-                            positionDTO.getOwnedPortfolioId(),
+                            applicableOwnedPortfolioId,
                             andClose && positionDTO.shares != null ? positionDTO.shares : 0));
         }
         navigator.get().pushFragment(

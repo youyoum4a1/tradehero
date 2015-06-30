@@ -43,7 +43,7 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
     protected void pushTrendingFragment()
     {
         Bundle args = new Bundle();
-        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+        OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId(getArguments());
         ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(navigator.get(), args, ownedPortfolioId, portfolioDTO, providerId);
     }
 

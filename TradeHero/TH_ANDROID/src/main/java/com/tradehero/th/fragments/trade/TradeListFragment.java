@@ -25,6 +25,7 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertCompactDTO;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOKey;
@@ -42,10 +43,11 @@ import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
 import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -74,15 +76,18 @@ import timber.log.Timber;
         "user/:userId/portfolio/:portfolioId/position/:positionId",
         "user/:userId/portfolio/:portfolioId/position/:positionId/trade/:tradeId"
 })
-public class TradeListFragment extends BasePurchaseManagerFragment
+public class TradeListFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE = TradeListFragment.class.getName() + ".positionDTOKey";
+    private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
+            TradeListFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
     @Inject PositionCacheRx positionCache;
     @Inject TradeListCacheRx tradeListCache;
     @Inject SecurityIdCache securityIdCache;
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
+    @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
@@ -105,6 +110,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     @Nullable protected SecurityCompactDTO securityCompactDTO;
     @Nullable protected WatchlistPositionDTOList watchedList;
     @Nullable protected TradeDTOList tradeDTOs;
+    @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     protected TradeListItemAdapter adapter;
 
@@ -117,6 +123,21 @@ public class TradeListFragment extends BasePurchaseManagerFragment
     private static PositionDTOKey getPositionDTOKey(@NonNull Bundle args)
     {
         return PositionDTOKeyFactory.createFrom(args.getBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE));
+    }
+
+    public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
+    {
+        args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
+    }
+
+    @Nullable public static OwnedPortfolioId getApplicablePortfolioId(@NonNull Bundle args)
+    {
+        Bundle portfolioBundle = args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
+        if (portfolioBundle != null)
+        {
+            return new OwnedPortfolioId(portfolioBundle);
+        }
+        return null;
     }
 
     public TradeListFragment()
@@ -142,6 +163,7 @@ public class TradeListFragment extends BasePurchaseManagerFragment
         {
             positionDTOKey = getPositionDTOKey(getArguments());
         }
+        this.purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -429,10 +451,16 @@ public class TradeListFragment extends BasePurchaseManagerFragment
             Bundle args = new Bundle();
             AbstractBuySellFragment.putRequisite(
                     args,
-                    new AbstractBuySellFragment.Requisite(
+                    purchaseApplicableOwnedPortfolioId != null
+                            ? new AbstractBuySellFragment.Requisite(
                             securityId,
-                            positionDTO.getOwnedPortfolioId(),
-                            0)); // TODO better
+                            purchaseApplicableOwnedPortfolioId,
+                            0)
+                            : new AbstractBuySellFragment.Requisite(
+                                    securityId,
+                                    new Bundle(),
+                                    portfolioCompactListCache,
+                                    currentUserId));
             navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
     }

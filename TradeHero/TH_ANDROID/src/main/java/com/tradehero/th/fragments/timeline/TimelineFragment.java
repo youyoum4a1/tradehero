@@ -494,7 +494,10 @@ abstract public class TimelineFragment extends DashboardFragment
     {
         Bundle args = new Bundle();
 
-        TabbedPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        if (ownedPortfolioId.userId.equals(currentUserId.get()))
+        {
+            TabbedPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
         TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
         TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
 

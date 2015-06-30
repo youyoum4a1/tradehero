@@ -5,11 +5,15 @@ import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.android.internal.util.Predicate;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.models.resource.ResourceUtil;
+import com.tradehero.th.utils.SecurityUtils;
 import timber.log.Timber;
 
 public class PortfolioCompactDTOUtil
@@ -236,4 +240,50 @@ public class PortfolioCompactDTOUtil
         }
         return colorResId;
     }
-}
+
+    @NonNull public static PortfolioCompactDTO getPurchaseApplicablePortfolio(
+            @NonNull PortfolioCompactDTOList portfolioCompactDTOs,
+            @Nullable final OwnedPortfolioId potential,
+            @Nullable final ProviderId providerId,
+            @Nullable SecurityId securityId)
+    {
+        if (potential != null)
+        {
+            PortfolioCompactDTO candidate = portfolioCompactDTOs.findFirstWhere(new Predicate<PortfolioCompactDTO>()
+            {
+                @Override public boolean apply(PortfolioCompactDTO portfolioCompactDTO)
+                {
+                    return portfolioCompactDTO.getOwnedPortfolioId().equals(potential);
+                }
+            });
+            if (candidate != null)
+            {
+                return candidate;
+            }
+        }
+        if (providerId != null)
+        {
+            PortfolioCompactDTO candidate= portfolioCompactDTOs.findFirstWhere(new Predicate<PortfolioCompactDTO>()
+            {
+                @Override public boolean apply(PortfolioCompactDTO portfolioCompactDTO)
+                {
+                    return portfolioCompactDTO.providerId != null && portfolioCompactDTO.providerId.equals(providerId.key);
+                }
+            });
+            if (candidate != null)
+            {
+                return candidate;
+            }
+        }
+        if (securityId != null)
+        {
+            PortfolioCompactDTO candidate = SecurityUtils.isFX(securityId)
+                    ? portfolioCompactDTOs.getDefaultFxPortfolio()
+                    : portfolioCompactDTOs.getDefaultPortfolio();
+            if (candidate != null)
+            {
+                return candidate;
+            }
+        }
+        throw new IllegalArgumentException("Unhandled case " + potential + ", " + providerId + ", " + securityId);
+    }}
