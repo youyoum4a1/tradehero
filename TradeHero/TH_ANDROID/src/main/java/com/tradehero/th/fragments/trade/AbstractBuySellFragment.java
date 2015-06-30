@@ -72,6 +72,7 @@ import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.route.THRouter;
 import dagger.Lazy;
@@ -79,6 +80,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -133,14 +135,16 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         args.putBundle(BUNDLE_KEY_REQUISITE, requisite.getArgs());
     }
 
-    @NonNull private static Requisite getRequisite(@NonNull Bundle args)
+    @NonNull private static Requisite getRequisite(@NonNull Bundle args,
+            @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
+            @NonNull CurrentUserId currentUserId)
     {
         Bundle requisiteBundle = args.getBundle(BUNDLE_KEY_REQUISITE);
         if (requisiteBundle == null)
         {
             throw new NullPointerException("Requisite need to be passed on");
         }
-        return new Requisite(requisiteBundle);
+        return new Requisite(requisiteBundle, portfolioCompactListCache, currentUserId);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -402,7 +406,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     @NonNull protected Requisite createRequisite()
     {
-        return getRequisite(getArguments());
+        return getRequisite(getArguments(), portfolioCompactListCache, currentUserId);
     }
 
     protected long getMillisecondQuoteRefresh()
@@ -924,19 +928,27 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
 
         public Requisite(@NonNull SecurityId securityId,
-                @NonNull Bundle args)
+                @NonNull Bundle args,
+                @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
+                @NonNull CurrentUserId currentUserId)
         {
             this.securityId = securityId;
-            this.applicablePortfolioIdSubject = BehaviorSubject.create(
-                    getApplicablePortfolioId(args.getBundle(KEY_APPLICABLE_PORTFOLIO_ID)));
+            this.applicablePortfolioIdSubject = createApplicablePortfolioIdSubject(args.getBundle(KEY_APPLICABLE_PORTFOLIO_ID),
+                    securityId,
+                    portfolioCompactListCache,
+                    currentUserId);
             this.closeUnits = getCloseUnits(args);
         }
 
-        public Requisite(@NonNull Bundle args)
+        public Requisite(@NonNull Bundle args,
+                @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
+                @NonNull CurrentUserId currentUserId)
         {
             this.securityId = getSecurityId(args.getBundle(KEY_SECURITY_ID));
-            this.applicablePortfolioIdSubject = BehaviorSubject.create(
-                    getApplicablePortfolioId(args.getBundle(KEY_APPLICABLE_PORTFOLIO_ID)));
+            this.applicablePortfolioIdSubject = createApplicablePortfolioIdSubject(args.getBundle(KEY_APPLICABLE_PORTFOLIO_ID),
+                    securityId,
+                    portfolioCompactListCache,
+                    currentUserId);
             this.closeUnits = getCloseUnits(args);
         }
 
@@ -949,13 +961,46 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             throw new NullPointerException("SecurityId cannot be null");
         }
 
-        @NonNull private static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle portfolioArgs)
+        @NonNull private static BehaviorSubject<OwnedPortfolioId> createApplicablePortfolioIdSubject(
+                @Nullable Bundle portfolioArgs,
+                @NonNull final SecurityId securityId,
+                @NonNull PortfolioCompactListCacheRx portfolioCompactListCache,
+                @NonNull CurrentUserId currentUserId)
         {
             if (portfolioArgs != null)
             {
-                return new OwnedPortfolioId(portfolioArgs);
+                return BehaviorSubject.create(new OwnedPortfolioId(portfolioArgs));
             }
-            throw new NullPointerException("ApplicablePortfolioId cannot be null");
+            final BehaviorSubject<OwnedPortfolioId> subject = BehaviorSubject.create();
+            portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
+                    .map(new Func1<Pair<UserBaseKey, PortfolioCompactDTOList>, OwnedPortfolioId>()
+                    {
+                        @Override public OwnedPortfolioId call(Pair<UserBaseKey, PortfolioCompactDTOList> pair)
+                        {
+                            //noinspection ConstantConditions
+                            return (SecurityUtils.isFX(securityId)
+                                    ? pair.second.getDefaultFxPortfolio()
+                                    : pair.second.getDefaultPortfolio())
+                                    .getOwnedPortfolioId();
+                        }
+                    })
+                    .subscribe(
+                            new Action1<OwnedPortfolioId>()
+                            {
+                                @Override public void call(OwnedPortfolioId ownedPortfolioId)
+                                {
+                                    subject.onNext(ownedPortfolioId);
+                                }
+                            },
+                            new TimberOnErrorAction("Failed to get portfolio list"),
+                            new Action0()
+                            {
+                                @Override public void call()
+                                {
+                                    // Intercepting it so that the BehaviorSubject does not end there.
+                                }
+                            });
+            return subject;
         }
 
         private static int getCloseUnits(@NonNull Bundle args)

@@ -36,7 +36,6 @@ import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.LiveFragmentUtil;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
@@ -261,7 +260,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     {
         if (exchange != null && symbol != null)
         {
-            return new Requisite(new SecurityId(exchange, symbol), getArguments());
+            return new Requisite(new SecurityId(exchange, symbol), getArguments(), portfolioCompactListCache, currentUserId);
         }
         return super.createRequisite();
     }

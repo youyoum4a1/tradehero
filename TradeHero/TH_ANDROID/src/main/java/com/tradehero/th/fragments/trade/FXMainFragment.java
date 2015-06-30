@@ -107,7 +107,7 @@ public class FXMainFragment extends AbstractBuySellFragment
     {
         if (exchange != null && symbol != null)
         {
-            return new Requisite(new SecurityId(exchange, symbol), getArguments());
+            return new Requisite(new SecurityId(exchange, symbol), getArguments(), portfolioCompactListCache, currentUserId);
         }
         return super.createRequisite();
     }
