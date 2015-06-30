@@ -45,7 +45,9 @@ import rx.Observable;
     @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
     {
         basicCheck(securityId);
-        return quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getPathSafeSymbol())
+        return quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getSecuritySymbol())
+                .onErrorResumeNext(
+                        quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getPathSafeSymbol()))
                 .flatMap(rawQuoteParser);
     }
     //</editor-fold>
