@@ -14,7 +14,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseFragment
 {
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_sign_up_live_step_3, container, false);
+        return inflater.inflate(R.layout.fragment_sign_up_live_ayondo_step_3, container, false);
     }
 
     @Override public void onNext(@NonNull KYCForm kycForm)

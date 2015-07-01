@@ -45,7 +45,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/employment_regulated_by_authority"
+          android:text="@string/employment_regulated_by_authority_ayondo"
           />
 
   </LinearLayout>
