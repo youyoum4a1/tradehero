@@ -202,6 +202,7 @@ android {
     googleplayLiveNoPushDebug {
       java {
         srcDir 'src/googleplayDebug/java'
+        srcDir 'src/liveDebug/java'
       }
     }
 
@@ -232,6 +233,7 @@ android {
     googleplayLiveAirshipDebug {
       java {
         srcDir 'src/googleplayDebug/java'
+        srcDir 'src/liveDebug/java'
       }
     }
 
@@ -256,6 +258,7 @@ android {
     googleplayLiveNoPushRelease {
       java {
         srcDir 'src/googleplayRelease/java'
+        srcDir 'src/liveRelease/java'
       }
     }
 
@@ -274,6 +277,7 @@ android {
       }
       java {
         srcDir 'src/googleplayRelease/java'
+        srcDir 'src/liveRelease/java'
       }
     }
 
