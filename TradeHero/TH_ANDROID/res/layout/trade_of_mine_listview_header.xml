@@ -134,14 +134,14 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/security_bug"
+                android:id="@+id/security_buy"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginBottom="11dp"
-                android:background="@drawable/button_shape"
                 android:gravity="center"
                 android:text="买入"
-                android:textColor="#ffffff"
+                android:textColor="@drawable/selector_security_opt_textcolor"
+                android:background="@drawable/selector_security_opt"
                 android:textSize="14sp" />
 
             <Button
@@ -149,20 +149,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginBottom="11dp"
-                android:background="@drawable/button_shape"
                 android:gravity="center"
                 android:text="卖出"
-                android:textColor="#ffffff"
+                android:textColor="@drawable/selector_security_opt_textcolor"
+                android:background="@drawable/selector_security_opt"
                 android:textSize="14sp" />
 
             <Button
                 android:id="@+id/security_recall"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:background="@drawable/button_shape"
                 android:gravity="center"
                 android:text="撤单"
-                android:textColor="#ffffff"
+                android:textColor="@drawable/selector_security_opt_textcolor"
+                android:background="@drawable/selector_security_opt"
                 android:textSize="14sp" />
         </LinearLayout>
     </RelativeLayout>

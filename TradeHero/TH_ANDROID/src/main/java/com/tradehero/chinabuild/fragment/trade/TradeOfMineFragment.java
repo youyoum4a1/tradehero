@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -57,8 +58,7 @@ import org.jetbrains.annotations.Nullable;
 /*
     交易－我的交易
  */
-public class TradeOfMineFragment extends DashboardFragment
-{
+public class TradeOfMineFragment extends DashboardFragment implements View.OnClickListener{
     @Nullable protected DTOCacheNew.Listener<GetPositionsDTOKey, GetPositionsDTO> fetchGetPositionsDTOListener;
     private DTOCacheNew.Listener<UserBaseKey, WatchlistPositionDTOList> userWatchlistPositionFetchListener;
     private DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
@@ -76,6 +76,9 @@ public class TradeOfMineFragment extends DashboardFragment
     private TextView returnTV;
     private TextView totalTV;
     private TextView availableTV;
+    private Button buyTV;
+    private Button sellTV;
+    private Button recallTV;
 
     @InjectView(R.id.tradeMyPositionList) PullToRefreshExpandableListView listView;
 
@@ -139,16 +142,14 @@ public class TradeOfMineFragment extends DashboardFragment
 
     private void initRefreshView(LayoutInflater inflater) {
         mRefreshView = (LinearLayout) inflater.inflate(R.layout.trade_of_mine_listview_header, null);
-        mRefreshView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        mRefreshView.setClickable(false);
         roiTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_rateofreturn);
         returnTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_return);
         totalTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_total);
         availableTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_available);
+        buyTV = (Button)mRefreshView.findViewById(R.id.security_buy);
+        sellTV = (Button)mRefreshView.findViewById(R.id.security_sell);
+        recallTV = (Button)mRefreshView.findViewById(R.id.security_recall);
     }
 
     private void initView() {
@@ -227,10 +228,8 @@ public class TradeOfMineFragment extends DashboardFragment
     }
 
     //Download portfolio about my stock
-    protected void fetchSimplePage(boolean force)
-    {
-        if (shownPortfolioId != null)
-        {
+    protected void fetchSimplePage(boolean force) {
+        if (shownPortfolioId != null) {
             detachGetPositionsTask();
             fetchGetPositionsDTOListener = new GetPositionsListener();
             getPositionsCache.get().register(shownPortfolioId, fetchGetPositionsDTOListener);
@@ -239,16 +238,14 @@ public class TradeOfMineFragment extends DashboardFragment
     }
 
     //Need to download first
-    private void fetchPortfolioCompactList(boolean force)
-    {
+    private void fetchPortfolioCompactList(boolean force) {
         detachPortfolioCompactListCache();
         portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
         portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey(), force);
     }
 
     //Download my stock information
-    protected void fetchPortfolio(boolean force)
-    {
+    protected void fetchPortfolio(boolean force) {
         if (shownPortfolioId == null || portfolioFetchListener == null) return;
         detachPortfolioFetchTask();
         portfolioCache.register(shownPortfolioId, portfolioFetchListener);
@@ -281,6 +278,19 @@ public class TradeOfMineFragment extends DashboardFragment
     private void detachPortfolioCompactListCache()
     {
         portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
+    }
+
+    @Override
+    public void onClick(View view) {
+        int viewId = view.getId();
+        switch (viewId){
+            case R.id.security_buy:
+                break;
+            case R.id.security_sell:
+                break;
+            case R.id.security_recall:
+                break;
+        }
     }
 
     protected class GetPositionsListener
