@@ -54,7 +54,7 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         return retrieved;
     }
 
-    private AssetClass getAssetClass()
+    @NonNull private AssetClass getAssetClass()
     {
         if (assetClass == null)
         {
