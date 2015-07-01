@@ -1,17 +1,15 @@
 package com.tradehero.th.api.leaderboard.key;
 
 import com.tradehero.THRobolectricTestRunner;
-
 import com.tradehero.th.BuildConfig;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
-
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

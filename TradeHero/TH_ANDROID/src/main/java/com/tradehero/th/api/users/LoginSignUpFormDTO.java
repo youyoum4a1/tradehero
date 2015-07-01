@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.misc.DeviceType;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.utils.Constants;

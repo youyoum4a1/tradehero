@@ -15,7 +15,6 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedPercentage;
-import javax.inject.Inject;
 
 public class MarginCloseOutStatusTextView extends TextView
 {

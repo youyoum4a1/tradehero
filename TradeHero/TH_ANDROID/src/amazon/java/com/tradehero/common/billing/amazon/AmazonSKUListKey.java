@@ -1,8 +1,8 @@
 package com.tradehero.common.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.ProductType;
 import com.tradehero.common.billing.ProductIdentifierListKey;
-import android.support.annotation.NonNull;
 
 public class AmazonSKUListKey 
         implements ProductIdentifierListKey

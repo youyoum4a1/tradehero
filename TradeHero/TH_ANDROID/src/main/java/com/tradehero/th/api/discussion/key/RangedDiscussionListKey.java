@@ -1,8 +1,8 @@
 package com.tradehero.th.api.discussion.key;
 
 import android.os.Bundle;
-import com.tradehero.th.api.pagination.RangedKey;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.pagination.RangedKey;
 import java.util.Map;
 
 public class RangedDiscussionListKey extends DiscussionListKey implements RangedKey

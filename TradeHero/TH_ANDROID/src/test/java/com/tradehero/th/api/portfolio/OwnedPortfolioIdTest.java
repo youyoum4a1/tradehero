@@ -2,14 +2,12 @@ package com.tradehero.th.api.portfolio;
 
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.utils.THJsonAdapter;
-
 import com.tradehero.th.BuildConfig;
+import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.io.IOException;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;

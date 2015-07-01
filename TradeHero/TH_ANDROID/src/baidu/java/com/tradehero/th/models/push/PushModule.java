@@ -1,7 +1,6 @@
 package com.tradehero.th.models.push;
 
 import android.content.SharedPreferences;
-
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.IntPreference;
@@ -9,11 +8,9 @@ import com.tradehero.th.models.push.baidu.BaiduPushManager;
 import com.tradehero.th.models.push.baidu.BaiduPushModule;
 import com.tradehero.th.persistence.prefs.BaiduPushDeviceIdentifierSentFlag;
 import com.tradehero.th.utils.Constants;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Singleton;
 import timber.log.Timber;
 
 @Module(

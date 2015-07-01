@@ -1,6 +1,5 @@
 package com.tradehero.th;
 
-import com.tradehero.th.billing.amazon.AmazonPurchasingServiceDummy;
 import dagger.Module;
 
 @Module(

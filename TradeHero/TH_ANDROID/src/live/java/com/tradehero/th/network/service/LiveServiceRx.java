@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.models.kyc.StepStatusesDTO;

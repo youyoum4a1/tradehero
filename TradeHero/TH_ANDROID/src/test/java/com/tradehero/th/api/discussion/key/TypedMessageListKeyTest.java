@@ -1,7 +1,6 @@
 package com.tradehero.th.api.discussion.key;
 
 import com.tradehero.THRobolectricTestRunner;
-
 import com.tradehero.th.BuildConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;

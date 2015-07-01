@@ -1,14 +1,14 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTO;
 import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
+import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTO;
 import com.tradehero.th.api.competition.HelpVideoDTOList;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import retrofit.http.Body;
 import retrofit.http.GET;

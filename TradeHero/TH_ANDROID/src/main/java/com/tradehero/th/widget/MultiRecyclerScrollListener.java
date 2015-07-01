@@ -1,7 +1,6 @@
 package com.tradehero.th.widget;
 
 import android.support.v7.widget.RecyclerView;
-import android.widget.AbsListView;
 import com.tradehero.common.utils.CollectionUtils;
 import rx.functions.Action1;
 import timber.log.Timber;

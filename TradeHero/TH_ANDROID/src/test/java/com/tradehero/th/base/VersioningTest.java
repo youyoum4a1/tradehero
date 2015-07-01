@@ -2,15 +2,11 @@ package com.tradehero.th.base;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-
 import com.tradehero.THRobolectricTestRunner;
-
 import com.tradehero.th.BuildConfig;
+import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.inject.Inject;
-
 import org.robolectric.annotation.Config;
 import timber.log.Timber;
 

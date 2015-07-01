@@ -1,8 +1,8 @@
 package com.tradehero.common.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.Receipt;
 import com.tradehero.common.billing.OrderId;
-import android.support.annotation.NonNull;
 
 public class AmazonOrderId implements OrderId
 {

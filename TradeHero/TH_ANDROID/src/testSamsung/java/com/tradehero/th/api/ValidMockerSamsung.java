@@ -1,9 +1,9 @@
 package com.tradehero.th.api;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class ValidMockerSamsung extends ValidMocker
 {

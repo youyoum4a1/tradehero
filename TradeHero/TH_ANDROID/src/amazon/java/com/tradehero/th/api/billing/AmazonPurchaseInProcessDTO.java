@@ -1,10 +1,10 @@
 package com.tradehero.th.api.billing;
 
+import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.amazon.THBaseAmazonPurchase;
-import android.support.annotation.NonNull;
 
 public class AmazonPurchaseInProcessDTO extends AmazonPurchaseReportDTO
 {

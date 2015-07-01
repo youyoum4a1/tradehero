@@ -1,9 +1,9 @@
 package com.tradehero.common.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.Product;
 import com.tradehero.common.billing.ProductDetail;
 import com.tradehero.common.billing.amazon.AmazonSKU;
-import android.support.annotation.NonNull;
 
 abstract public class AmazonProductDetail<AmazonSKUType extends AmazonSKU>
     implements ProductDetail<AmazonSKUType>

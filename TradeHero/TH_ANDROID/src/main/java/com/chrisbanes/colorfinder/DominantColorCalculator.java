@@ -18,10 +18,9 @@ package com.chrisbanes.colorfinder;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
-
+import com.chrisbanes.colorfinder.MedianCutQuantizer.ColorNode;
 import java.util.Arrays;
 import java.util.Comparator;
-import com.chrisbanes.colorfinder.MedianCutQuantizer.ColorNode;
 
 public class DominantColorCalculator {
 

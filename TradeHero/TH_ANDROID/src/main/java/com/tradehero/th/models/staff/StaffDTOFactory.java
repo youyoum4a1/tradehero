@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
 public class StaffDTOFactory
 {

@@ -8,7 +8,6 @@ import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.DashboardActivityExtended;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import javax.inject.Inject;
@@ -20,8 +19,6 @@ import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)

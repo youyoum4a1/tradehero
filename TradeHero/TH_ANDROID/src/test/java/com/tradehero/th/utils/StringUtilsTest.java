@@ -1,14 +1,12 @@
 package com.tradehero.th.utils;
 
 import com.tradehero.THRobolectricTestRunner;
-
 import com.tradehero.th.BuildConfig;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 

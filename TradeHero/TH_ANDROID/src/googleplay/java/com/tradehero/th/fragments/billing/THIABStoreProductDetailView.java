@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.billing.googleplay.THIABProductDetail;
 

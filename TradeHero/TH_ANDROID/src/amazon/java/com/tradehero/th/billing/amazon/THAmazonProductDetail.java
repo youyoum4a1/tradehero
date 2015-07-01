@@ -1,5 +1,7 @@
 package com.tradehero.th.billing.amazon;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.amazon.device.iap.model.Price;
 import com.amazon.device.iap.model.Product;
 import com.tradehero.common.billing.amazon.AmazonProductDetail;
@@ -9,8 +11,6 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THProductDetail;
 import com.tradehero.th.models.number.THSignedMoney;
 import java.math.BigDecimal;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class THAmazonProductDetail extends AmazonProductDetail<AmazonSKU>
     implements THProductDetail<AmazonSKU>

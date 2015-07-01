@@ -19,7 +19,6 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
-import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 

@@ -2,7 +2,6 @@ package com.tradehero.th.api.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.th.api.position.OwnedPositionId;
 

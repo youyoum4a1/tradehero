@@ -6,17 +6,13 @@ import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.api.BaseApiTestClass;
-
 import com.tradehero.th.base.TestTHApp;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.inject.Inject;
-
 import org.robolectric.annotation.Config;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;

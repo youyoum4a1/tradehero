@@ -1,5 +1,7 @@
 package com.tradehero.th.billing.amazon;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.amazon.device.iap.model.ProductType;
 import com.amazon.device.iap.model.Receipt;
 import com.tradehero.common.billing.amazon.AmazonSKU;
@@ -7,8 +9,6 @@ import com.tradehero.th.api.billing.AmazonPurchaseInProcessDTO;
 import com.tradehero.th.api.billing.AmazonPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class THComposedAmazonPurchase implements THAmazonPurchase
 {

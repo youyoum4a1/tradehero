@@ -2,11 +2,11 @@ package com.tradehero.th.fragments.billing;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
-import android.support.annotation.NonNull;
 
 public class THSamsungSKUDetailAdapter
         extends ProductDetailAdapter<

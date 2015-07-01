@@ -9,10 +9,11 @@ import com.tradehero.th.network.service.NotificationServiceWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.mockito.Mockito.mock;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 import org.robolectric.util.ActivityController;
+
+import static org.mockito.Mockito.mock;
 
 @RunWith(THRobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)

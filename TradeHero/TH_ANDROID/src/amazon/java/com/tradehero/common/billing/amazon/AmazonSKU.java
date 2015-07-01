@@ -1,7 +1,7 @@
 package com.tradehero.common.billing.amazon;
 
-import com.tradehero.common.billing.ProductIdentifier;
 import android.support.annotation.NonNull;
+import com.tradehero.common.billing.ProductIdentifier;
 
 public class AmazonSKU implements ProductIdentifier
 {

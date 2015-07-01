@@ -16,14 +16,13 @@
 
 package org.oshkimaadziig.george.androidutils;
 
-import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.SpannedString;
-import android.text.Spannable;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Provides {@link String#format} style functions that work with {@link Spanned} strings and preserve formatting.

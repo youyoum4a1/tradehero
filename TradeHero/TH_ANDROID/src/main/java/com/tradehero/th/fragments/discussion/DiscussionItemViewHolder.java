@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.squareup.picasso.RequestCreator;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import org.ocpsoft.prettytime.PrettyTime;
 

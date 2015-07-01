@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.authentication;
 
 import android.support.annotation.NonNull;
 import android.widget.TextView;
-import com.tradehero.th.R;
 
 public class EmailSignInUtils
 {

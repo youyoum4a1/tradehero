@@ -1,7 +1,7 @@
 package com.tradehero.common.billing.samsung;
 
-import com.tradehero.common.persistence.DTOKey;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTOKey;
 
 public class SamsungItemGroup implements DTOKey
 {

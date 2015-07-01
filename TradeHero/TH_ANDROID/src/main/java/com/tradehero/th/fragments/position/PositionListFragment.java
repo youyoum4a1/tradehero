@@ -528,8 +528,6 @@ public class PositionListFragment
         throw new IllegalArgumentException("Unhandled PortfolioHeaderView.UserAction " + userAction);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    //@OnItemClick(R.id.position_list)
     protected void handlePositionItemClicked(View view, int position, Object object)
     {
         if (view instanceof PositionNothingView)

@@ -11,7 +11,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.squareup.picasso.Picasso;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.social.SocialNetworkEnum;

@@ -2,8 +2,8 @@ package com.tradehero.th.api.portfolio;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.route.RouteProperty;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
+import com.tradehero.route.RouteProperty;
 
 public class PortfolioId extends AbstractIntegerDTOKey
 {

@@ -1,10 +1,8 @@
 package com.tradehero.th.billing.samsung;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import javax.inject.Inject;
 import timber.log.Timber;
 
 public class THSamsungProductDetailTuner

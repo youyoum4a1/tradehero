@@ -1,7 +1,6 @@
 package com.tradehero;
 
 import com.tradehero.th.base.TestTHApp;
-
 import org.robolectric.manifest.AndroidManifest;
 import org.robolectric.res.FsFile;
 

@@ -1,10 +1,10 @@
 package com.tradehero.th.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.Receipt;
 import com.amazon.device.iap.model.UserData;
 import com.tradehero.common.billing.amazon.AmazonPurchaseIncomplete;
 import com.tradehero.common.billing.amazon.AmazonSKU;
-import android.support.annotation.NonNull;
 
 public class THAmazonPurchaseIncomplete
         extends AmazonPurchaseIncomplete<

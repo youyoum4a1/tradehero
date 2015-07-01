@@ -5,7 +5,6 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.base.THApp;
-import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.misc.exception.THException;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,8 +1,8 @@
 package com.tradehero.common.billing.amazon;
 
+import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.Receipt;
 import com.amazon.device.iap.model.UserData;
-import android.support.annotation.NonNull;
 
 abstract public class AmazonPurchaseIncomplete<
         AmazonSKUType extends AmazonSKU,

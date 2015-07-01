@@ -3,14 +3,12 @@ package com.tradehero.th.models.share.preference;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 public class SocialSharePreferenceHelperNew
 {

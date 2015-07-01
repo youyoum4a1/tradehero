@@ -235,13 +235,20 @@ public class MainWatchlistPositionFragment extends DashboardFragment
                         int firstVisibleItem = view.getFirstVisiblePosition();
                         if (firstVisibleItem == 0)
                         {
-                            // TODO https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/54b6827165f8dfea15989512
-                            int offsetY = view.getChildAt(firstVisibleItem).getTop();
-                            if (offsetY > maxOffsetY)
+                            View child = view.getChildAt(firstVisibleItem);
+                            if (child != null)
                             {
-                                maxOffsetY = offsetY;
+                                int offsetY = child.getTop();
+                                if (offsetY > maxOffsetY)
+                                {
+                                    maxOffsetY = offsetY;
+                                }
+                                watchListRefreshableContainer.setEnabled(offsetY == maxOffsetY);
                             }
-                            watchListRefreshableContainer.setEnabled(offsetY == maxOffsetY);
+                            else
+                            {
+                                Timber.e(new NullPointerException(), "Child was null");
+                            }
                         }
                         else
                         {

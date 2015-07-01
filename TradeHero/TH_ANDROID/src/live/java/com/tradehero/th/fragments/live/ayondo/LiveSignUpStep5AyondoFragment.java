@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
 import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.widget.DocumentActionWidget;

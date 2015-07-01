@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.billing.samsung.THSamsungProductDetail;
-import com.tradehero.th.fragments.billing.StoreProductDetailView;
 
 public class THSamsungStoreProductDetailView extends StoreProductDetailView<
         SamsungSKU,

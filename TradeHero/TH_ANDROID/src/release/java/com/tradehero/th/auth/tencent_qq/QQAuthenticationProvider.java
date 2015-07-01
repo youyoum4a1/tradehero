@@ -9,11 +9,12 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.network.service.SocialLinker;
-import static com.tradehero.th.utils.Constants.TENCENT_APP_ID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.functions.Func1;
+
+import static com.tradehero.th.utils.Constants.TENCENT_APP_ID;
 
 @Singleton
 public class QQAuthenticationProvider extends SocialAuthenticationProvider

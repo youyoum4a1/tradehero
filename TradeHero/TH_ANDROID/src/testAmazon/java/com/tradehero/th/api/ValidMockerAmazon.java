@@ -1,9 +1,9 @@
 package com.tradehero.th.api;
 
+import android.support.annotation.NonNull;
 import com.tradehero.th.api.billing.AmazonPurchaseReportDTO;
 import com.tradehero.th.api.billing.PurchaseReportDTO;
 import javax.inject.Inject;
-import android.support.annotation.NonNull;
 
 public class ValidMockerAmazon extends ValidMocker
 {

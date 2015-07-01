@@ -8,10 +8,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
-import android.support.annotation.NonNull;
 import timber.log.Timber;
 
 public class ShortcutUtil

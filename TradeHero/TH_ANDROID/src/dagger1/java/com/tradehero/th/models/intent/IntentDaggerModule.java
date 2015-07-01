@@ -1,7 +1,6 @@
 package com.tradehero.th.models.intent;
 
 import com.tradehero.th.models.intent.competition.ProviderIntentFactory;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.intent.security.SecurityIntentFactory;
 import dagger.Module;
 import dagger.Provides;

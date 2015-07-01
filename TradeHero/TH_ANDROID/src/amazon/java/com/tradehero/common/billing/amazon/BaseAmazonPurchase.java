@@ -1,7 +1,7 @@
 package com.tradehero.common.billing.amazon;
 
-import com.amazon.device.iap.model.PurchaseResponse;
 import android.support.annotation.NonNull;
+import com.amazon.device.iap.model.PurchaseResponse;
 
 abstract public class BaseAmazonPurchase<
         AmazonSKUType extends AmazonSKU,

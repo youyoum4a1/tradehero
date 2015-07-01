@@ -3,33 +3,23 @@ package com.tradehero.th.fragments.leaderboard;
 import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.annotation.NonNull;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.BasePagedListRxFragment;
-import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import timber.log.Timber;
 
 abstract public class BaseLeaderboardPagedListRxFragment<
         PagedDTOKeyType extends PagedDTOKey,

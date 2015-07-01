@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
 import com.tradehero.th.models.kyc.KYCForm;
 

@@ -4,12 +4,10 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.api.security.SecurityId;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;

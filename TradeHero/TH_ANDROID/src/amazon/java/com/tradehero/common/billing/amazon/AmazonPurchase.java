@@ -1,7 +1,7 @@
 package com.tradehero.common.billing.amazon;
 
-import com.tradehero.common.billing.ProductPurchase;
 import android.support.annotation.NonNull;
+import com.tradehero.common.billing.ProductPurchase;
 
 public interface AmazonPurchase<
         AmazonSKUType extends AmazonSKU,

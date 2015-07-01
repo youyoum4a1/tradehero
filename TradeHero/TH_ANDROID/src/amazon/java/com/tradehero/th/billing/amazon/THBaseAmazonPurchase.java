@@ -1,15 +1,15 @@
 package com.tradehero.th.billing.amazon;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.amazon.device.iap.model.ProductType;
 import com.amazon.device.iap.model.PurchaseResponse;
-import com.tradehero.common.billing.amazon.BaseAmazonPurchase;
 import com.tradehero.common.billing.amazon.AmazonSKU;
+import com.tradehero.common.billing.amazon.BaseAmazonPurchase;
 import com.tradehero.th.api.billing.AmazonPurchaseInProcessDTO;
 import com.tradehero.th.api.billing.AmazonPurchaseReportDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseKey;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class THBaseAmazonPurchase
         extends BaseAmazonPurchase<AmazonSKU, THAmazonOrderId>

@@ -1,7 +1,6 @@
 package com.tradehero.th.api.watchlist.key;
 
 import com.tradehero.THRobolectricTestRunner;
-
 import com.tradehero.th.BuildConfig;
 import org.junit.After;
 import org.junit.Before;

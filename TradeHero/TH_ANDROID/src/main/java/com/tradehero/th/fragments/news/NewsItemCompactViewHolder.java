@@ -10,12 +10,10 @@ import butterknife.InjectView;
 import butterknife.Optional;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemKnowledge;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
-import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class NewsItemCompactViewHolder

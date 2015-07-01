@@ -9,7 +9,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;

@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.util.TypedValue;
-import javax.inject.Inject;
 
 public class ResourceUtil
 {

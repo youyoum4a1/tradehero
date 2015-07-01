@@ -1,11 +1,11 @@
 package com.tradehero.th.billing;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.api.alert.AlertPlanDTO;
 import com.tradehero.th.billing.samsung.THSamsungConstants;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 public class BillingSecurityAlertKnowledge extends SecurityAlertKnowledge
 {

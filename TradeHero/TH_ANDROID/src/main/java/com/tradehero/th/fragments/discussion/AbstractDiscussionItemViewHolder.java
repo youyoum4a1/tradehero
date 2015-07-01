@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.res.Resources;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -11,8 +10,6 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.Optional;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.text.ClickableTagProcessor;

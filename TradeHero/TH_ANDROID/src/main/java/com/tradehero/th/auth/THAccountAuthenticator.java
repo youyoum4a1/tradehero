@@ -8,7 +8,6 @@ import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.utils.Constants;
 

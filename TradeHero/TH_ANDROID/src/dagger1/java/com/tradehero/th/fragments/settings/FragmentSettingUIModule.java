@@ -1,13 +1,6 @@
 package com.tradehero.th.fragments.settings;
 
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.auth.AuthenticationProvider;
-import com.tradehero.th.auth.SocialAuth;
 import dagger.Module;
-import dagger.Provides;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 @Module(
         injects = {

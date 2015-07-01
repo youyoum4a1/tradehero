@@ -1,11 +1,10 @@
 package com.tradehero.th.utils;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.style.ImageSpan;
-import android.support.annotation.Nullable;
 import java.util.List;
 
 public class StringUtils
