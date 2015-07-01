@@ -1,11 +1,12 @@
 package com.tradehero.th.activities;
 
-import com.tradehero.th.models.fastfill.FastFillUtil;
-import com.tradehero.th.models.jumio.JumioFastFillUtil;
+import com.tradehero.th.models.fastfill.FastFillModule;
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
+        includes = {
+                FastFillModule.class,
+        },
         injects = {
                 LiveActivityUtil.class,
                 SignUpLiveActivity.class,
@@ -16,8 +17,4 @@ import dagger.Provides;
 )
 public class ActivityGameLiveModule
 {
-    @Provides FastFillUtil providesFastFillUtil(JumioFastFillUtil fastFillUtil)
-    {
-        return fastFillUtil;
-    }
 }
