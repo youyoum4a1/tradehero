@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
@@ -25,8 +25,8 @@ import timber.log.Timber;
 public class PositionView extends LinearLayout
         implements DTOView<PositionView.DTO>
 {
-    @InjectView(R.id.position_partial_top) protected PositionPartialTopView topView;
-    @InjectView(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTO, ExpandableListItem<PositionDTO>>*/ bottomView;
+    @Bind(R.id.position_partial_top) protected PositionPartialTopView topView;
+    @Bind(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTO, ExpandableListItem<PositionDTO>>*/ bottomView;
 
     @Inject Picasso picasso;
     private PositionPartialTopView.ViewHolder topViewHolder;
@@ -54,7 +54,7 @@ public class PositionView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
         topViewHolder = new PositionPartialTopView.ViewHolder(topView, picasso);
     }

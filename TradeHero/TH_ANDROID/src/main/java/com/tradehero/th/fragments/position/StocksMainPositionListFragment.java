@@ -15,7 +15,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -40,8 +40,8 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
     @Inject CurrentUserId currentUserId;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
 
-    @InjectView(R.id.pager) ViewPager tabViewPager;
-    @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @Bind(R.id.pager) ViewPager tabViewPager;
+    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     protected Subscription portfolioIdSubscription;
 
@@ -73,7 +73,7 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         portfolioIdSubscription = AppObservable.bindFragment(
                 this,
                 portfolioCompactListCache.getOne(currentUserId.toUserBaseKey()))

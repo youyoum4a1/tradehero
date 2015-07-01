@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -54,41 +53,41 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     public final static String BUNDLE_KEY_CHART_SIZE_ARRAY_INT = ChartFragment.class.getName() + ".chartSizeArrayInt";
     public final static String BUNDLE_KEY_ARGUMENTS = ChartFragment.class.getName() + ".arguments";
 
-    @InjectView(R.id.chart_imageView) protected ChartImageView chartImage;
+    @Bind(R.id.chart_imageView) protected ChartImageView chartImage;
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
     private ChartDTO chartDTO;
     @Nullable private WarrantDTO warrantDTO;
     private int timeSpanButtonSetVisibility = View.VISIBLE;
 
-    @InjectView(R.id.chart_scroll_view) @Optional NotifyingScrollView scrollView;
+    @Bind(R.id.chart_scroll_view) @Nullable NotifyingScrollView scrollView;
 
-    @InjectView(R.id.close) @Optional protected Button mCloseButton;
+    @Bind(R.id.close) @Nullable protected Button mCloseButton;
 
-    @InjectView(R.id.chart_image_wrapper) @Optional protected BetterViewAnimator chartImageWrapper;
+    @Bind(R.id.chart_image_wrapper) @Nullable protected BetterViewAnimator chartImageWrapper;
 
     // Warrant specific
-    @InjectView(R.id.row_warrant_type) @Optional protected View rowWarrantType;
-    @InjectView(R.id.vwarrant_type) @Optional protected TextView mWarrantType;
-    @InjectView(R.id.row_warrant_code) @Optional protected View rowWarrantCode;
-    @InjectView(R.id.vwarrant_code) @Optional protected TextView mWarrantCode;
-    @InjectView(R.id.row_warrant_expiry) @Optional protected View rowWarrantExpiry;
-    @InjectView(R.id.vwarrant_expiry) @Optional protected TextView mWarrantExpiry;
-    @InjectView(R.id.row_warrant_strike_price) @Optional protected View rowStrikePrice;
-    @InjectView(R.id.vwarrant_strike_price) @Optional protected TextView mStrikePrice;
-    @InjectView(R.id.row_warrant_underlying) @Optional protected View rowUnderlying;
-    @InjectView(R.id.vwarrant_underlying) @Optional protected TextView mUnderlying;
-    @InjectView(R.id.row_warrant_issuer) @Optional protected View rowIssuer;
-    @InjectView(R.id.vwarrant_issuer) @Optional protected TextView mIssuer;
+    @Bind(R.id.row_warrant_type) @Nullable protected View rowWarrantType;
+    @Bind(R.id.vwarrant_type) @Nullable protected TextView mWarrantType;
+    @Bind(R.id.row_warrant_code) @Nullable protected View rowWarrantCode;
+    @Bind(R.id.vwarrant_code) @Nullable protected TextView mWarrantCode;
+    @Bind(R.id.row_warrant_expiry) @Nullable protected View rowWarrantExpiry;
+    @Bind(R.id.vwarrant_expiry) @Nullable protected TextView mWarrantExpiry;
+    @Bind(R.id.row_warrant_strike_price) @Nullable protected View rowStrikePrice;
+    @Bind(R.id.vwarrant_strike_price) @Nullable protected TextView mStrikePrice;
+    @Bind(R.id.row_warrant_underlying) @Nullable protected View rowUnderlying;
+    @Bind(R.id.vwarrant_underlying) @Nullable protected TextView mUnderlying;
+    @Bind(R.id.row_warrant_issuer) @Nullable protected View rowIssuer;
+    @Bind(R.id.vwarrant_issuer) @Nullable protected TextView mIssuer;
 
-    @InjectView(R.id.vprevious_close) @Optional protected TextView mPreviousClose;
-    @InjectView(R.id.vopen) @Optional protected TextView mOpen;
-    @InjectView(R.id.vdays_high) @Optional protected TextView mDaysHigh;
-    @InjectView(R.id.vdays_low) @Optional protected TextView mDaysLow;
-    @InjectView(R.id.vpe_ratio) @Optional protected TextView mPERatio;
-    @InjectView(R.id.veps) @Optional protected TextView mEps;
-    @InjectView(R.id.vvolume) @Optional protected TextView mVolume;
-    @InjectView(R.id.vavg_volume) @Optional protected TextView mAvgVolume;
+    @Bind(R.id.vprevious_close) @Nullable protected TextView mPreviousClose;
+    @Bind(R.id.vopen) @Nullable protected TextView mOpen;
+    @Bind(R.id.vdays_high) @Nullable protected TextView mDaysHigh;
+    @Bind(R.id.vdays_low) @Nullable protected TextView mDaysLow;
+    @Bind(R.id.vpe_ratio) @Nullable protected TextView mPERatio;
+    @Bind(R.id.veps) @Nullable protected TextView mEps;
+    @Bind(R.id.vvolume) @Nullable protected TextView mVolume;
+    @Bind(R.id.vavg_volume) @Nullable protected TextView mAvgVolume;
 
     @Inject SecurityCompactCacheRx securityCompactCacheRx;
     @Inject Picasso picasso;
@@ -109,7 +108,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
 
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         Bundle args = getArguments();
         if (args != null)
@@ -250,7 +249,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             scrollView.setOnScrollChangedListener(null);
         }
         chartImageCallback = null;
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

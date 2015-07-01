@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.th.R;
@@ -26,13 +26,13 @@ abstract public class OneFragmentActivity extends BaseActivity
     OneFragmentActivityModule activityModule;
     @Inject protected THRouter thRouter;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
-    @InjectView(R.id.my_toolbar) protected Toolbar toolbar;
+    @Bind(R.id.my_toolbar) protected Toolbar toolbar;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_one_fragment);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
 

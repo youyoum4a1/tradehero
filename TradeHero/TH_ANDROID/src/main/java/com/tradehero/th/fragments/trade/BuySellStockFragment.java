@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -61,16 +61,16 @@ import rx.functions.Func3;
 })
 public class BuySellStockFragment extends AbstractBuySellFragment
 {
-    @InjectView(R.id.buy_price) protected TextView mBuyPrice;
-    @InjectView(R.id.sell_price) protected TextView mSellPrice;
-    @InjectView(R.id.vprice_as_of) protected TextView mVPriceAsOf;
-    @InjectView(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
-    @InjectView(R.id.stock_details_header) ViewGroup stockDetailHeader;
+    @Bind(R.id.buy_price) protected TextView mBuyPrice;
+    @Bind(R.id.sell_price) protected TextView mSellPrice;
+    @Bind(R.id.vprice_as_of) protected TextView mVPriceAsOf;
+    @Bind(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
+    @Bind(R.id.stock_details_header) ViewGroup stockDetailHeader;
 
-    @InjectView(R.id.chart_frame) protected RelativeLayout mInfoFrame;
-    @InjectView(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
+    @Bind(R.id.chart_frame) protected RelativeLayout mInfoFrame;
+    @Bind(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
 
-    @InjectView(R.id.tv_stock_roi) protected TextView tvStockRoi;
+    @Bind(R.id.tv_stock_roi) protected TextView tvStockRoi;
 
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;

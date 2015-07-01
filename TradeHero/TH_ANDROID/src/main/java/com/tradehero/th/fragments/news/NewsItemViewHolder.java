@@ -3,17 +3,16 @@ package com.tradehero.th.fragments.news;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.text.ClickableTagProcessor;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -39,13 +38,13 @@ import rx.functions.Func1;
 public class NewsItemViewHolder extends
         NewsItemCompactViewHolder
 {
-    @InjectView(R.id.news_detail_wrapper) @Optional protected BetterViewAnimator mNewsContentWrapper;
-    @InjectView(R.id.news_detail_loading) @Optional protected View loadingTextContent;
-    @InjectView(R.id.discussion_content) protected MarkdownTextView textContent;
-    @InjectView(R.id.news_detail_title_placeholder) @Optional ImageView mNewsDetailTitlePlaceholder;
-    @InjectView(R.id.news_detail_reference) @Optional GridView mNewsDetailReference;
-    @InjectView(R.id.news_detail_reference_container) @Optional LinearLayout mNewsDetailReferenceContainer;
-    @InjectView(R.id.news_view_on_web) View openOnWebView;
+    @Bind(R.id.news_detail_wrapper) @Nullable protected BetterViewAnimator mNewsContentWrapper;
+    @Bind(R.id.news_detail_loading) @Nullable protected View loadingTextContent;
+    @Bind(R.id.discussion_content) protected MarkdownTextView textContent;
+    @Bind(R.id.news_detail_title_placeholder) @Nullable ImageView mNewsDetailTitlePlaceholder;
+    @Bind(R.id.news_detail_reference) @Nullable GridView mNewsDetailReference;
+    @Bind(R.id.news_detail_reference_container) @Nullable LinearLayout mNewsDetailReferenceContainer;
+    @Bind(R.id.news_view_on_web) View openOnWebView;
 
     @NonNull protected SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
 
@@ -138,7 +137,7 @@ public class NewsItemViewHolder extends
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.news_start_new_discussion) @Optional
+    @OnClick(R.id.news_start_new_discussion) @Nullable
     protected void handleStartNewDiscussionClicked(View view)
     {
         if (viewDTO != null)
@@ -148,7 +147,7 @@ public class NewsItemViewHolder extends
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @Optional @OnClick(R.id.news_view_on_web)
+    @Nullable @OnClick(R.id.news_view_on_web)
     protected void handleOpenOnWebClicked(View view)
     {
         if (viewDTO != null)
@@ -158,7 +157,7 @@ public class NewsItemViewHolder extends
     }
 
     @SuppressWarnings("unused")
-    @Optional @OnItemClick(R.id.news_detail_reference)
+    @Nullable @OnItemClick(R.id.news_detail_reference)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         if (viewDTO != null)

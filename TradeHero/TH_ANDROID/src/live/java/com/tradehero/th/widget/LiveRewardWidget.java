@@ -11,12 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectViews;
+import butterknife.Bind;
 import com.tradehero.th.R;
 
 public class LiveRewardWidget extends LinearLayout
 {
-    @InjectViews({R.id.live_reward_20,
+    @Bind({R.id.live_reward_20,
             R.id.live_reward_40,
             R.id.live_reward_60,
             R.id.live_reward_80,
@@ -51,7 +51,7 @@ public class LiveRewardWidget extends LinearLayout
         setOrientation(HORIZONTAL);
         setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
         LayoutInflater.from(getContext()).inflate(R.layout.live_reward_steps_merged, this, true);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         if (attrs != null)
         {
             TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.LiveRewardWidget, 0, 0);

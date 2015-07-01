@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -25,13 +25,13 @@ public class ContestContentView extends RelativeLayout
     private ContestPageDTO communityPageDTO;
     @Nullable private ProviderDTO providerDTO;
 
-    @InjectView(R.id.img_provider) ImageView imgActionProvider;
-    @InjectView(R.id.tv_action_name) TextView tvActionName;
-    @InjectView(R.id.tv_action_date) TextView tvActionDate;
-    @InjectView(R.id.tv_action_money) TextView tvActionMoney;
-    @InjectView(R.id.tv_action_duration_type) TextView tvActionDurationType;
-    @InjectView(R.id.tv_action_rank) TextView tvActionRank;
-    @InjectView(R.id.tv_action_roi) TextView tvActionRoi;
+    @Bind(R.id.img_provider) ImageView imgActionProvider;
+    @Bind(R.id.tv_action_name) TextView tvActionName;
+    @Bind(R.id.tv_action_date) TextView tvActionDate;
+    @Bind(R.id.tv_action_money) TextView tvActionMoney;
+    @Bind(R.id.tv_action_duration_type) TextView tvActionDurationType;
+    @Bind(R.id.tv_action_rank) TextView tvActionRank;
+    @Bind(R.id.tv_action_roi) TextView tvActionRoi;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -50,7 +50,7 @@ public class ContestContentView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
         setLayerType(LAYER_TYPE_SOFTWARE, null);
     }

@@ -2,14 +2,13 @@ package com.tradehero.th.fragments.trending.filter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
@@ -17,8 +16,8 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 public class TrendingFilterSpinnerItemView extends LinearLayout
     implements DTOView<ExchangeCompactSpinnerDTO>
 {
-    @InjectView(R.id.trending_filter_spinner_item_label) TextView label;
-    @Optional @Nullable @InjectView(R.id.trending_filter_spinner_item_icon) ImageView icon;
+    @Bind(R.id.trending_filter_spinner_item_label) TextView label;
+    @Nullable @Bind(R.id.trending_filter_spinner_item_icon) ImageView icon;
 
     @Nullable private ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO;
 
@@ -42,7 +41,7 @@ public class TrendingFilterSpinnerItemView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override public void display(ExchangeCompactSpinnerDTO dto)

@@ -6,8 +6,8 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -23,10 +23,10 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
 {
     protected PortfolioCompactDTO portfolioCompactDTO;
 
-    @InjectView(R.id.header_portfolio_total_value) protected TextView totalValueTextView;
-    @InjectView(R.id.header_portfolio_cash_value) @Optional protected TextView cashValueTextView;
-    @InjectView(R.id.roi_value) @Optional protected TextView roiTextView;
-    @InjectView(R.id.last_updated_date) @Optional protected TextView lastUpdatedDate;
+    @Bind(R.id.header_portfolio_total_value) protected TextView totalValueTextView;
+    @Bind(R.id.header_portfolio_cash_value) @Nullable protected TextView cashValueTextView;
+    @Bind(R.id.roi_value) @Nullable protected TextView roiTextView;
+    @Bind(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
 
     //<editor-fold desc="Constructors">
     public CurrentUserPortfolioHeaderView(Context context)
@@ -48,7 +48,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @NonNull @Override public Observable<UserAction> getUserActionObservable()

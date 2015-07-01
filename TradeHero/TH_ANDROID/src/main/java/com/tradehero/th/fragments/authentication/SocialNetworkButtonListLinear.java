@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import rx.Observable;
@@ -40,18 +40,18 @@ public class SocialNetworkButtonListLinear extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 
@@ -61,7 +61,7 @@ public class SocialNetworkButtonListLinear extends LinearLayout
             R.id.btn_twitter_signin,
             R.id.btn_qq_signin,
             R.id.btn_weibo_signin,
-    }) @Optional
+    }) @Nullable
     protected void onSignInButtonClicked(View view)
     {
         socialNetworkEnumSubject.onNext(((AuthenticationImageButton) view).getType());

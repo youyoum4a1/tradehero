@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -23,7 +23,7 @@ import rx.internal.util.SubscriptionList;
 
 public class UpdateCenterDrawerMenuItem extends LinearLayout
 {
-    @InjectView(R.id.unread_count) TextView tvUnreadCount;
+    @Bind(R.id.unread_count) TextView tvUnreadCount;
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
@@ -56,7 +56,7 @@ public class UpdateCenterDrawerMenuItem extends LinearLayout
 
         if (!isInEditMode())
         {
-            ButterKnife.inject(this);
+            ButterKnife.bind(this);
             HierarchyInjector.inject(this);
         }
     }

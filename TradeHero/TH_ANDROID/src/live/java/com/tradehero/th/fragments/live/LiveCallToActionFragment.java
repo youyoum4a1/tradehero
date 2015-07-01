@@ -8,7 +8,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.IdentityPromptActivity;
@@ -29,7 +29,7 @@ public class LiveCallToActionFragment extends DashboardFragment
     @Inject DashboardNavigator navigator;
     @Inject FastFillUtil fastFill;
 
-    @InjectView(R.id.live_button_go_live) View goLiveButton;
+    @Bind(R.id.live_button_go_live) View goLiveButton;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -39,7 +39,7 @@ public class LiveCallToActionFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 ViewObservable.clicks(goLiveButton),
                 fastFill.isAvailable(getActivity()),
@@ -72,7 +72,7 @@ public class LiveCallToActionFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

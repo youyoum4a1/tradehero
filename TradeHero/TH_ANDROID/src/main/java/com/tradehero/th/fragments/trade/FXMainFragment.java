@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -54,8 +54,8 @@ public class FXMainFragment extends AbstractBuySellFragment
     private final static long MILLISECOND_FX_QUOTE_REFRESH = 5000;
     @ColorRes private static final int DEFAULT_BUTTON_TEXT_COLOR = R.color.text_primary_inverse;
 
-    @InjectView(R.id.pager) ViewPager tabViewPager;
-    @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @Bind(R.id.pager) ViewPager tabViewPager;
+    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     @Inject CurrentUserId currentUserId;
 

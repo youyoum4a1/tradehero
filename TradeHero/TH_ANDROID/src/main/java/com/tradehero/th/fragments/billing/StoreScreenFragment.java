@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.tester.BillingTestResult;
@@ -74,7 +74,7 @@ public class StoreScreenFragment extends BaseFragment
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
-    @InjectView(R.id.store_option_list) protected ListView listView;
+    @Bind(R.id.store_option_list) protected ListView listView;
 
     private StoreItemAdapter storeItemAdapter;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
@@ -105,7 +105,7 @@ public class StoreScreenFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         listView.setAdapter(storeItemAdapter);
     }
 
@@ -157,7 +157,7 @@ public class StoreScreenFragment extends BaseFragment
     @Override public void onDestroyView()
     {
         listView.setOnScrollListener(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

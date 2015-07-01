@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
@@ -72,9 +72,9 @@ public class SecurityPositionListFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject FragmentOuterElements fragmentElements;
 
-    @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
-    @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
-    @InjectView(R.id.position_recycler_view) RecyclerView positionListView;
+    @Bind(R.id.list_flipper) ViewAnimator listViewFlipper;
+    @Bind(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
+    @Bind(R.id.position_recycler_view) RecyclerView positionListView;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -160,7 +160,7 @@ public class SecurityPositionListFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         positionListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         positionListView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
@@ -200,7 +200,7 @@ public class SecurityPositionListFragment
     {
         positionListView.clearOnScrollListeners();
         swipeToRefreshLayout.setOnRefreshListener(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

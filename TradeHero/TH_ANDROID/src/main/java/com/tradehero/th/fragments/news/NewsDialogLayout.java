@@ -11,7 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTO;
@@ -28,14 +28,14 @@ public class NewsDialogLayout extends ShareDialogLayout
     public static final int FIRST_MENU_ID = 0;
     public static final int SHARE_MENU_ID = 1;
 
-    @InjectView(R.id.news_action_share_title) protected TextView newsTitleView;
-    @InjectView(R.id.news_action_share_subtitle) protected TextView newsSubTitleView;
+    @Bind(R.id.news_action_share_title) protected TextView newsTitleView;
+    @Bind(R.id.news_action_share_subtitle) protected TextView newsSubTitleView;
 
-    @InjectView(R.id.news_action_back) protected View backView;
-    @InjectView(R.id.news_action_share_switcher) protected ViewSwitcher titleSwitcher;
+    @Bind(R.id.news_action_back) protected View backView;
+    @Bind(R.id.news_action_share_switcher) protected ViewSwitcher titleSwitcher;
 
-    @InjectView(R.id.news_action_list_switcher) protected ViewSwitcher optionsViewSwitcher;
-    @InjectView(R.id.news_action_list_sharing_translation) protected ListView listViewOptions;
+    @Bind(R.id.news_action_list_switcher) protected ViewSwitcher optionsViewSwitcher;
+    @Bind(R.id.news_action_list_sharing_translation) protected ListView listViewOptions;
 
     protected ProgressDialog dialog;
 

@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
@@ -13,8 +13,8 @@ import com.tradehero.th.api.news.CountryLanguagePairDTO;
 public class CountryItemView extends LinearLayout
         implements DTOView<CountryLanguagePairDTO>
 {
-    @InjectView(R.id.country_name) TextView countryName;
-    @InjectView(R.id.language_code) TextView languageCode;
+    @Bind(R.id.country_name) TextView countryName;
+    @Bind(R.id.language_code) TextView languageCode;
 
     public CountryItemView(Context context, AttributeSet attrs)
     {
@@ -24,7 +24,7 @@ public class CountryItemView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override public void display(CountryLanguagePairDTO dto)

@@ -46,7 +46,7 @@ public class LocationRelativeView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(locationViewHolder, this);
+        ButterKnife.bind(locationViewHolder, this);
     }
 
     @Override public void display(@Nullable ListedLocationDTO dto)

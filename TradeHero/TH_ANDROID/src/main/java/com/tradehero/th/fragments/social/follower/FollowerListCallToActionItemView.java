@@ -43,18 +43,18 @@ public class FollowerListCallToActionItemView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

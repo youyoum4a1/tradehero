@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Gallery;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -27,7 +27,7 @@ import rx.functions.Action1;
 public class OnBoardLastFragment extends BaseFragment
 {
     @Inject THRouter thRouter;
-    @InjectView(R.id.favorite_gallery) Gallery favoriteGallery;
+    @Bind(R.id.favorite_gallery) Gallery favoriteGallery;
     Observable<SecurityCompactDTOList> selectedSecuritiesObservable;
 
     private OnBoardFavoriteAdapter favoriteAdapter;
@@ -47,7 +47,7 @@ public class OnBoardLastFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         favoriteGallery.setAdapter(favoriteAdapter);
     }
 
@@ -59,7 +59,7 @@ public class OnBoardLastFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

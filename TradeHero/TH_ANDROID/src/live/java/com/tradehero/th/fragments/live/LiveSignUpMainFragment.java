@@ -10,7 +10,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -23,8 +23,8 @@ public class LiveSignUpMainFragment extends BaseFragment
 {
     @Inject SignUpLivePagerAdapterFactory signUpLivePagerAdapterFactory;
 
-    @InjectView(R.id.android_tabs) protected SlidingTabLayout tabLayout;
-    @InjectView(R.id.pager) protected ViewPager viewPager;
+    @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
+    @Bind(R.id.pager) protected ViewPager viewPager;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -40,7 +40,7 @@ public class LiveSignUpMainFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         tabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         tabLayout.setDistributeEvenly(true);

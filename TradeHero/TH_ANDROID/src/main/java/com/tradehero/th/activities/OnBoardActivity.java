@@ -30,7 +30,7 @@ public class OnBoardActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_on_board);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         activityModule.navigator = new DashboardNavigator(this, R.id.realtabcontent);
 

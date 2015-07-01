@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.th.R;
@@ -22,9 +22,9 @@ public class OnBoardSectorItemView extends OnBoardSelectableViewLinear<SectorDTO
 
     @Inject Picasso picasso;
 
-    @InjectView(android.R.id.icon1) ImageView logoImage;
-    @InjectView(android.R.id.text1) TextView shortNameView;
-    @InjectView(R.id.top_stock_list) TopStockListView topStockListView;
+    @Bind(android.R.id.icon1) ImageView logoImage;
+    @Bind(android.R.id.text1) TextView shortNameView;
+    @Bind(R.id.top_stock_list) TopStockListView topStockListView;
 
     //<editor-fold desc="Constructors">
     public OnBoardSectorItemView(Context context)

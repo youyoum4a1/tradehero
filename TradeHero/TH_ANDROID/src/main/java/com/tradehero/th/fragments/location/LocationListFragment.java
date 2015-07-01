@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
@@ -47,7 +47,7 @@ public class LocationListFragment extends BaseFragment
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject UserProfileCacheRx userProfileCache;
 
-    @InjectView(android.R.id.list) ListView listView;
+    @Bind(android.R.id.list) ListView listView;
 
     @Override public void onAttach(Activity activity)
     {
@@ -61,7 +61,7 @@ public class LocationListFragment extends BaseFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_settings_location_list, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -101,7 +101,7 @@ public class LocationListFragment extends BaseFragment
     {
         listView.setOnScrollListener(null);
         listView.setEmptyView(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

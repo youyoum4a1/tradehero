@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -29,10 +29,10 @@ public class NotificationItemView
         extends LinearLayout
         implements DTOView<NotificationDTO>
 {
-    @InjectView(R.id.discussion_content) TextView notificationContent;
-    @InjectView(R.id.notification_user_picture) ImageView notificationPicture;
-    @InjectView(R.id.discussion_time) TextView notificationTime;
-    @InjectView(R.id.notification_unread_flag) ImageView notificationUnreadFlag;
+    @Bind(R.id.discussion_content) TextView notificationContent;
+    @Bind(R.id.notification_user_picture) ImageView notificationPicture;
+    @Bind(R.id.discussion_time) TextView notificationTime;
+    @Bind(R.id.notification_unread_flag) ImageView notificationUnreadFlag;
 
     @Inject DashboardNavigator navigator;
     @Inject CurrentUserId currentUserId;
@@ -66,7 +66,7 @@ public class NotificationItemView
     {
         super.onFinishInflate();
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
         prettyTime = new PrettyTime();
     }
@@ -74,13 +74,13 @@ public class NotificationItemView
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         resetView();
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

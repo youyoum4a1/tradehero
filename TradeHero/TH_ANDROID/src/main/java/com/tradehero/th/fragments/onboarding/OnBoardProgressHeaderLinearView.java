@@ -3,12 +3,12 @@ package com.tradehero.th.fragments.onboarding;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 
 public class OnBoardProgressHeaderLinearView extends OnBoardHeaderLinearView
 {
-    @InjectView(R.id.progress) View progressView;
+    @Bind(R.id.progress) View progressView;
 
     //<editor-fold desc="Constructors">
     public OnBoardProgressHeaderLinearView(Context context)

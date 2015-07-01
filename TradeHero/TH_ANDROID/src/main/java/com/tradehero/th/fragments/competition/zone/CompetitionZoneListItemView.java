@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.tradehero.th.R;
@@ -16,9 +16,9 @@ import javax.inject.Inject;
 
 public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItemView
 {
-    @InjectView(R.id.icn_competition_zone) protected ImageView zoneIcon;
-    @InjectView(R.id.competition_zone_title) protected TextView title;
-    @InjectView(R.id.competition_zone_description) protected TextView description;
+    @Bind(R.id.icn_competition_zone) protected ImageView zoneIcon;
+    @Bind(R.id.competition_zone_title) protected TextView title;
+    @Bind(R.id.competition_zone_description) protected TextView description;
 
     @Inject protected Picasso picasso;
 
@@ -42,7 +42,7 @@ public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItem
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
     }
 

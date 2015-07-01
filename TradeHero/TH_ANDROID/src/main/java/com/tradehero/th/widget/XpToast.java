@@ -12,7 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -36,9 +36,9 @@ import timber.log.Timber;
 public class XpToast extends RelativeLayout
         implements UserLevelProgressBar.UserLevelProgressBarLevelUpListener, UserLevelProgressBar.UserLevelProgressBarListener
 {
-    @InjectView(R.id.xp_toast_text) TextView xpTextSwitcher; // TODO reinstate it as a Switcher
-    @InjectView(R.id.xp_toast_value) TextView xpValue;
-    @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
+    @Bind(R.id.xp_toast_text) TextView xpTextSwitcher; // TODO reinstate it as a Switcher
+    @Bind(R.id.xp_toast_value) TextView xpValue;
+    @Bind(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
     @Inject LevelDefListCacheRx levelDefListCache;
     @Inject BroadcastUtils broadcastUtils;
@@ -64,7 +64,7 @@ public class XpToast extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         if (!isInEditMode())
         {
             userLevelProgressBar.setPauseDurationWhenLevelUp(getResources().getInteger(R.integer.user_level_pause_on_level_up));

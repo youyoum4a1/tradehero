@@ -10,7 +10,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.th.R;
@@ -27,11 +27,11 @@ public class OnBoardUserItemView extends OnBoardSelectableViewLinear<Leaderboard
 
     @Inject Picasso picasso;
 
-    @InjectView(android.R.id.icon1) ImageView image;
-    @InjectView(android.R.id.text1) TextView shortNameView;
-    @InjectView(android.R.id.text2) TextView descView;
-    @InjectView(R.id.lbmu_roi) TextView lbmuRoi;
-    @InjectView(R.id.user_statistic_view) UserStatisticView userStatisticView;
+    @Bind(android.R.id.icon1) ImageView image;
+    @Bind(android.R.id.text1) TextView shortNameView;
+    @Bind(android.R.id.text2) TextView descView;
+    @Bind(R.id.lbmu_roi) TextView lbmuRoi;
+    @Bind(R.id.user_statistic_view) UserStatisticView userStatisticView;
 
     //<editor-fold desc="Constructors">
     public OnBoardUserItemView(Context context)
@@ -56,7 +56,7 @@ public class OnBoardUserItemView extends OnBoardSelectableViewLinear<Leaderboard
         {
             picasso.cancelRequest(image);
         }
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

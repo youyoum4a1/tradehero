@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
@@ -44,7 +44,7 @@ public class SecurityDiscussionFragment extends AbstractDiscussionFragment
     @Inject DiscussionListCacheRx discussionListCache;
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject DiscussionFragmentUtil discussionFragmentUtil;
-    @InjectView(R.id.security_discussion_add) View buttonAdd;
+    @Bind(R.id.security_discussion_add) View buttonAdd;
     private SecurityId securityId;
     @Inject protected Lazy<DashboardNavigator> navigator;
 

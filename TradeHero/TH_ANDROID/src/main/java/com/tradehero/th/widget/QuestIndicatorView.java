@@ -14,16 +14,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 
 public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestBonusDTO>
 {
-    @InjectView(R.id.quest_logo_indicator) ImageView logo;
-    @InjectView(R.id.quest_top_indicator) TextView topIndicator;
-    @InjectView(R.id.quest_bottom_indicator) TextView botIndicator;
+    @Bind(R.id.quest_logo_indicator) ImageView logo;
+    @Bind(R.id.quest_top_indicator) TextView topIndicator;
+    @Bind(R.id.quest_bottom_indicator) TextView botIndicator;
     private int mCurrentColor = Color.BLACK;
     private int mCurrentLevel;
     @Nullable private QuestBonusDTO mQuestBonusDTO;
@@ -54,7 +54,7 @@ public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestB
     private void init()
     {
         LayoutInflater.from(getContext()).inflate(R.layout.quest_indicator, this, true);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     private void defaultStyle()

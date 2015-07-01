@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
@@ -158,7 +158,7 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
                 R.id.btn_twitter_signin,
                 R.id.btn_qq_signin,
                 R.id.btn_weibo_signin,
-        }) @Optional
+        }) @Nullable
         protected void onSignInButtonClicked(View view)
         {
             socialNetworkEnumPublishSubject.onNext(((AuthenticationImageButton) view).getType());
@@ -172,9 +172,9 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
 
     public static class SocialFriendViewHolder extends TypedViewHolder<LeaderboardItemDisplayDTO>
     {
-        @InjectView(R.id.leaderboard_user_item_network_label) ImageView networkLabel;
-        @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView avatar;
-        @InjectView(R.id.leaderboard_user_item_social_name) TextView socialName;
+        @Bind(R.id.leaderboard_user_item_network_label) ImageView networkLabel;
+        @Bind(R.id.leaderboard_user_item_profile_picture) ImageView avatar;
+        @Bind(R.id.leaderboard_user_item_social_name) TextView socialName;
 
         private final PublishSubject<LeaderboardFriendUserAction> friendUserActionPublishSubject;
         private final Picasso picasso;

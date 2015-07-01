@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -67,8 +67,8 @@ public class OnBoardFragment extends BaseFragment
     @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
 
-    @InjectView(android.R.id.content) ViewPager pager;
-    @InjectView(R.id.page_indicator) PageIndicator pageIndicator;
+    @Bind(android.R.id.content) ViewPager pager;
+    @Bind(R.id.page_indicator) PageIndicator pageIndicator;
 
     private MarketRegion selectedRegion;
     private boolean hadAutoSelectedExchange;
@@ -96,7 +96,7 @@ public class OnBoardFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
     }
 
     @Override public void onStart()
@@ -147,7 +147,7 @@ public class OnBoardFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

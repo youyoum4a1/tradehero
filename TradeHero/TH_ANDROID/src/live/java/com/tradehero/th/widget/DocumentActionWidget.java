@@ -16,15 +16,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 
 public class DocumentActionWidget extends RelativeLayout
 {
 
-    @InjectView(R.id.document_action) Button btnAction;
-    @InjectView(R.id.document_clear) ImageButton btnClear;
-    @InjectView(R.id.document_preview) ImageView imgPreview;
+    @Bind(R.id.document_action) Button btnAction;
+    @Bind(R.id.document_clear) ImageButton btnClear;
+    @Bind(R.id.document_preview) ImageView imgPreview;
 
     public DocumentActionWidget(Context context)
     {
@@ -54,7 +54,7 @@ public class DocumentActionWidget extends RelativeLayout
     {
         setLayoutTransition(new LayoutTransition());
         LayoutInflater.from(getContext()).inflate(R.layout.document_action_layout_merged, this, true);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         if (attrs != null)
         {

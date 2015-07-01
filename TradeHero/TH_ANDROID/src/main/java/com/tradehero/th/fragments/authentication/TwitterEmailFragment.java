@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -19,8 +19,8 @@ import rx.subjects.PublishSubject;
 
 public class TwitterEmailFragment extends Fragment
 {
-    @InjectView(R.id.authentication_twitter_email_txt) EditText twitterEmail;
-    @InjectView(R.id.authentication_twitter_email_button) View twitterConfirm;
+    @Bind(R.id.authentication_twitter_email_txt) EditText twitterEmail;
+    @Bind(R.id.authentication_twitter_email_button) View twitterConfirm;
 
     @NonNull private PublishSubject<String> loginRequestSubject = PublishSubject.create();
 
@@ -32,7 +32,7 @@ public class TwitterEmailFragment extends Fragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         ViewObservable.clicks(twitterConfirm, false)
                 .subscribeOn(AndroidSchedulers.mainThread())

@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
@@ -33,12 +33,12 @@ public class AlertItemView extends RelativeLayout
 {
     @Inject protected Picasso picasso;
 
-    @InjectView(R.id.logo) ImageView stockLogo;
-    @InjectView(R.id.stock_symbol) TextView stockSymbol;
-    @InjectView(R.id.alert_value) TextView alertValue;
-    @InjectView(R.id.company_name) TextView companyName;
-    @InjectView(R.id.alert_description) TextView alertDescription;
-    @InjectView(R.id.alert_status) TextView alertStatus;
+    @Bind(R.id.logo) ImageView stockLogo;
+    @Bind(R.id.stock_symbol) TextView stockSymbol;
+    @Bind(R.id.alert_value) TextView alertValue;
+    @Bind(R.id.company_name) TextView companyName;
+    @Bind(R.id.alert_description) TextView alertDescription;
+    @Bind(R.id.alert_status) TextView alertStatus;
 
     //<editor-fold desc="Constructors">
     public AlertItemView(Context context, AttributeSet attrs)
@@ -51,7 +51,7 @@ public class AlertItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()

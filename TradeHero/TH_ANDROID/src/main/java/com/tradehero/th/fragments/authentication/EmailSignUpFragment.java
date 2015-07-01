@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.fragment.ActivityResultDTO;
 import com.tradehero.metrics.Analytics;
@@ -62,10 +62,10 @@ public class EmailSignUpFragment extends Fragment
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
 
-    @InjectView(R.id.profile_info) ProfileInfoView profileView;
-    @InjectView(R.id.authentication_sign_up_email) EditText emailEditText;
-    @InjectView(R.id.authentication_sign_up_button) View signUpButton;
-    @InjectView(R.id.social_network_button_list) SocialNetworkButtonListLinear socialNetworkButtonList;
+    @Bind(R.id.profile_info) ProfileInfoView profileView;
+    @Bind(R.id.authentication_sign_up_email) EditText emailEditText;
+    @Bind(R.id.authentication_sign_up_button) View signUpButton;
+    @Bind(R.id.social_network_button_list) SocialNetworkButtonListLinear socialNetworkButtonList;
 
     private SubscriptionList onStopSubscriptions;
     @Nullable private ActivityResultDTO receivedActivityResult;
@@ -114,7 +114,7 @@ public class EmailSignUpFragment extends Fragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         signUpButton.setEnabled(false);
 
         DeviceUtil.showKeyboardDelayed(emailEditText);
@@ -196,7 +196,7 @@ public class EmailSignUpFragment extends Fragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

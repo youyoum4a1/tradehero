@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -19,7 +19,7 @@ import rx.subjects.PublishSubject;
 
 public class OnBoardHeaderLinearView extends LinearLayout
 {
-    @InjectView(R.id.btn_retry) protected TextView buttonRetry;
+    @Bind(R.id.btn_retry) protected TextView buttonRetry;
 
     @NonNull protected PublishSubject<Boolean> clickedRetrySubject;
 
@@ -46,18 +46,18 @@ public class OnBoardHeaderLinearView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

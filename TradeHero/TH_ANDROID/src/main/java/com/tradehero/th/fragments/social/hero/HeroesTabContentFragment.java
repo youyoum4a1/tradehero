@@ -15,7 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.HeroDTO;
@@ -51,9 +51,9 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
     @Inject protected HeroListCacheRx heroListCache;
     @Inject protected CurrentUserId currentUserId;
 
-    @InjectView(R.id.swipe_to_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.heros_list) protected ListView heroListView;
-    @InjectView(android.R.id.progress) protected ProgressBar progressBar;
+    @Bind(R.id.swipe_to_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.heros_list) protected ListView heroListView;
+    @Bind(android.R.id.progress) protected ProgressBar progressBar;
 
     private UserBaseKey followerId;
     private HeroListItemAdapter heroListAdapter;
@@ -90,7 +90,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.heroListView.setAdapter(this.heroListAdapter);
@@ -179,7 +179,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
         {
             this.heroListView.setOnScrollListener(null);
         }
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

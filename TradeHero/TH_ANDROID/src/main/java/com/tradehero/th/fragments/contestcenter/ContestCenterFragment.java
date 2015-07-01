@@ -12,7 +12,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -22,8 +22,8 @@ public class ContestCenterFragment extends DashboardFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    @InjectView(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
-    @InjectView(R.id.pager) ViewPager viewPager;
+    @Bind(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
+    @Bind(R.id.pager) ViewPager viewPager;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -36,14 +36,14 @@ public class ContestCenterFragment extends DashboardFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_tabbed, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         initViews();
         return view;
     }
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

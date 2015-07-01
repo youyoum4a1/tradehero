@@ -246,7 +246,7 @@ public abstract class TypedRecyclerAdapter<T>
         public TypedViewHolder(View itemView)
         {
             super(itemView);
-            ButterKnife.inject(this, itemView);
+            ButterKnife.bind(this, itemView);
         }
 
         public abstract void display(T t);

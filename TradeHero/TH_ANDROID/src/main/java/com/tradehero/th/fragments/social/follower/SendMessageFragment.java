@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.tradehero.common.fragment.HasSelectedItem;
@@ -62,12 +62,12 @@ public class SendMessageFragment extends BaseFragment
     @NonNull private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     /** ProgressDialog to show progress when sending message */
 
-    @InjectView(R.id.message_input_edittext) EditText inputText;
-    @InjectView(R.id.message_type) TextView messageTypeView;
-    @InjectView(R.id.follower_count_switcher) BetterViewAnimator followerCountSwitcher;
-    @InjectView(R.id.follower_count_hint) TextView followerCountView;
-    @InjectView(R.id.no_follower_hint) TextView noFollowerView;
-    @InjectView(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
+    @Bind(R.id.message_input_edittext) EditText inputText;
+    @Bind(R.id.message_type) TextView messageTypeView;
+    @Bind(R.id.follower_count_switcher) BetterViewAnimator followerCountSwitcher;
+    @Bind(R.id.follower_count_hint) TextView followerCountView;
+    @Bind(R.id.no_follower_hint) TextView noFollowerView;
+    @Bind(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
@@ -127,7 +127,7 @@ public class SendMessageFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         DeviceUtil.showKeyboardDelayed(inputText);
         displayMessageTypeView();
         mentionTaggedStockHandler.setDiscussionPostContent(inputText);
@@ -150,7 +150,7 @@ public class SendMessageFragment extends BaseFragment
     {
         mentionTaggedStockHandler.setDiscussionPostContent(null);
         DeviceUtil.dismissKeyboard(inputText);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

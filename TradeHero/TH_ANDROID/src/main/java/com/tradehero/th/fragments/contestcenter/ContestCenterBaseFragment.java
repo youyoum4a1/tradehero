@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
@@ -46,8 +46,8 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
 
-    @InjectView(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
-    @InjectView(android.R.id.list) ListView contestListView;
+    @Bind(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
+    @Bind(android.R.id.list) ListView contestListView;
 
     public ContestItemAdapter contestListAdapter;
     @IdRes private int currentDisplayedChildLayoutId;
@@ -66,7 +66,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.contest_center_content_screen, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -96,7 +96,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

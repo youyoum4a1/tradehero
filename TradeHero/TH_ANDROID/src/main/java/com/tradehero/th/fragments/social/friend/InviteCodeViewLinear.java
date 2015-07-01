@@ -7,7 +7,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -26,9 +26,9 @@ public class InviteCodeViewLinear extends LinearLayout
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
 
-    @InjectView(R.id.btn_cancel) View cancelButton;
-    @InjectView(R.id.btn_send_code) View sendCodeButton;
-    @InjectView(R.id.btn_cancel_submit) View cancelSubmitButton;
+    @Bind(R.id.btn_cancel) View cancelButton;
+    @Bind(R.id.btn_send_code) View sendCodeButton;
+    @Bind(R.id.btn_cancel_submit) View cancelSubmitButton;
 
     @Nullable private Subscription userProfileCacheSubscription;
 
@@ -43,7 +43,7 @@ public class InviteCodeViewLinear extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         if (!isInEditMode())
         {
             viewHolder.attachView(this);
@@ -53,7 +53,7 @@ public class InviteCodeViewLinear extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         if (!isInEditMode())
         {
             viewHolder.attachView(this);
@@ -66,7 +66,7 @@ public class InviteCodeViewLinear extends LinearLayout
         userProfileCacheSubscription = null;
         detachUserProfileCache();
         viewHolder.detachView();
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

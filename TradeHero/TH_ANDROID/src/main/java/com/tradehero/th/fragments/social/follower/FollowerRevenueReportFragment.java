@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.tradehero.common.utils.THToast;
@@ -35,8 +35,8 @@ public class FollowerRevenueReportFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject FollowerSummaryCacheRx followerSummaryCache;
 
-    @InjectView(R.id.manage_followers_header) View headerView;
-    @InjectView(R.id.follower_list) AbsListView followerListView;
+    @Bind(R.id.manage_followers_header) View headerView;
+    @Bind(R.id.follower_list) AbsListView followerListView;
     private FollowerManagerViewContainer followerManagerViewContainer;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -56,7 +56,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         if (!view.isInEditMode())
         {
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
             followerManagerViewContainer.onCreateView(view);
             followerManagerViewContainer.display();
             headerView.post(new Runnable()
@@ -98,7 +98,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         headerView.removeCallbacks(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         followerManagerViewContainer.onDestroyView();
         super.onDestroyView();
     }

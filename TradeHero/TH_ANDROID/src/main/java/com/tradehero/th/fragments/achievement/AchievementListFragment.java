@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
@@ -34,10 +34,10 @@ public class AchievementListFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_USER_ID = AchievementListFragment.class.getName() + ".userId";
 
-    @InjectView(R.id.generic_swipe_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.generic_ptr_list) protected ListView listView;
-    @InjectView(android.R.id.progress) protected ProgressBar progressBar;
-    @InjectView(android.R.id.empty) protected View emptyView;
+    @Bind(R.id.generic_swipe_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.generic_ptr_list) protected ListView listView;
+    @Bind(android.R.id.progress) protected ProgressBar progressBar;
+    @Bind(android.R.id.empty) protected View emptyView;
 
     protected DTOAdapterNew<AchievementCategoryDTO> achievementListAdapter;
 
@@ -63,7 +63,7 @@ public class AchievementListFragment extends DashboardFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         displayProgress();
         hideEmpty();
         init();
@@ -156,7 +156,7 @@ public class AchievementListFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         listView.setOnScrollListener(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

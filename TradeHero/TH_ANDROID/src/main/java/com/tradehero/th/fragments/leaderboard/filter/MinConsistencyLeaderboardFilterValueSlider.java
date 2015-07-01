@@ -3,13 +3,13 @@ package com.tradehero.th.fragments.leaderboard.filter;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.models.number.THSignedNumber;
 
 public class MinConsistencyLeaderboardFilterValueSlider extends LeaderboardFilterValueSlider
 {
-    @InjectView(R.id.leaderboard_filter_max) TextView maxValueText;
+    @Bind(R.id.leaderboard_filter_max) TextView maxValueText;
 
     //<editor-fold desc="Constructors">
     public MinConsistencyLeaderboardFilterValueSlider(Context context)

@@ -8,9 +8,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -28,12 +28,12 @@ import rx.subjects.BehaviorSubject;
 
 public class OtherUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
 {
-    @InjectView(R.id.header_portfolio_following_container) RelativeLayout followContainer;
-    @InjectView(R.id.portfolio_header_avatar) ImageView userImageView;
-    @InjectView(R.id.header_portfolio_username) TextView usernameTextView;
-    @InjectView(R.id.header_portfolio_following_image) ImageView followingImageView;
-    @InjectView(R.id.follow_button) TextView followButton;
-    @InjectView(R.id.last_updated_date) @Optional protected TextView lastUpdatedDate;
+    @Bind(R.id.header_portfolio_following_container) RelativeLayout followContainer;
+    @Bind(R.id.portfolio_header_avatar) ImageView userImageView;
+    @Bind(R.id.header_portfolio_username) TextView usernameTextView;
+    @Bind(R.id.header_portfolio_following_image) ImageView followingImageView;
+    @Bind(R.id.follow_button) TextView followButton;
+    @Bind(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
 
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userCache;
@@ -67,20 +67,20 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     {
         super.onFinishInflate();
         HierarchyInjector.inject(this);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         this.userActionBehaviour.onCompleted();
         this.userActionBehaviour = BehaviorSubject.create();
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

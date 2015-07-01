@@ -10,7 +10,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
@@ -48,9 +48,9 @@ abstract public class BasePagedListRxFragment<
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    @InjectView(R.id.search_empty_container) protected View emptyContainer;
-    @InjectView(R.id.listview) protected AbsListView listView;
-    @InjectView(R.id.progress) protected ProgressBar mProgress;
+    @Bind(R.id.search_empty_container) protected View emptyContainer;
+    @Bind(R.id.listview) protected AbsListView listView;
+    @Bind(R.id.progress) protected ProgressBar mProgress;
 
     protected int perPage = DEFAULT_PER_PAGE;
     protected FlagNearEdgeScrollListener nearEndScrollListener;
@@ -91,7 +91,7 @@ abstract public class BasePagedListRxFragment<
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         nearEndScrollListener = createFlagNearEdgeScrollListener();
         listView.setOnScrollListener(createListViewScrollListener());
         listView.setEmptyView(emptyContainer);
@@ -123,7 +123,7 @@ abstract public class BasePagedListRxFragment<
         unsubscribeListCache();
         listView.setOnScrollListener(null);
         nearEndScrollListener = null;
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

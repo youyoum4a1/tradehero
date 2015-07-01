@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -17,9 +17,9 @@ import com.tradehero.th.inject.HierarchyInjector;
 
 public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
 {
-    @InjectView(R.id.video_thumbnail) ImageView thumbnail;
-    @InjectView(R.id.video_title) TextView title;
-    @InjectView(R.id.video_padlock) View padlock;
+    @Bind(R.id.video_thumbnail) ImageView thumbnail;
+    @Bind(R.id.video_title) TextView title;
+    @Bind(R.id.video_padlock) View padlock;
 
     public VideoView(Context context, AttributeSet attrs)
     {
@@ -30,7 +30,7 @@ public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override public void display(@NonNull VideoDTO dto)

@@ -3,12 +3,11 @@ package com.tradehero.th.fragments.timeline;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.tradehero.common.widget.GaugeView;
 import com.tradehero.common.widget.NumericalAnimatedTextView;
 import com.tradehero.th.R;
@@ -21,16 +20,16 @@ import timber.log.Timber;
 public class UserStatisticView extends LinearLayout
     implements DTOView<UserStatisticView.DTO>
 {
-    @InjectView(R.id.leaderboard_dayshold_tv) @Optional NumericalAnimatedTextView daysHoldTv;
-    @InjectView(R.id.leaderboard_position_tv) @Optional NumericalAnimatedTextView positionsCountTv;
-    @InjectView(R.id.leaderboard_tradecount_tv) @Optional NumericalAnimatedTextView tradeCountTv;
+    @Bind(R.id.leaderboard_dayshold_tv) @Nullable NumericalAnimatedTextView daysHoldTv;
+    @Bind(R.id.leaderboard_position_tv) @Nullable NumericalAnimatedTextView positionsCountTv;
+    @Bind(R.id.leaderboard_tradecount_tv) @Nullable NumericalAnimatedTextView tradeCountTv;
 
-    @InjectView(R.id.leaderboard_gauge_performance)
-    @Optional GaugeView performanceGauge;
-    @InjectView(R.id.leaderboard_gauge_tradeconsistency)
-    @Optional GaugeView tradeConsistencyGauge;
-    @InjectView(R.id.leaderboard_gauge_winrate)
-    @Optional GaugeView winRateGauge;
+    @Bind(R.id.leaderboard_gauge_performance)
+    @Nullable GaugeView performanceGauge;
+    @Bind(R.id.leaderboard_gauge_tradeconsistency)
+    @Nullable GaugeView tradeConsistencyGauge;
+    @Bind(R.id.leaderboard_gauge_winrate)
+    @Nullable GaugeView winRateGauge;
 
     //<editor-fold desc="Constructors">
     public UserStatisticView(Context context)
@@ -52,7 +51,7 @@ public class UserStatisticView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override public void display(@Nullable DTO dto)

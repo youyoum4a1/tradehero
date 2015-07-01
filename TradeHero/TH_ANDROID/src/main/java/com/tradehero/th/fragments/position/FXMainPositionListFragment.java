@@ -14,7 +14,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -30,8 +30,8 @@ public class FXMainPositionListFragment extends BasePurchaseManagerFragment
 
     @Inject THRouter thRouter;
     @Inject CurrentUserId currentUserId;
-    @InjectView(R.id.pager) ViewPager tabViewPager;
-    @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @Bind(R.id.pager) ViewPager tabViewPager;
+    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     protected OwnedPortfolioId fxPortfolioId;
 
@@ -80,7 +80,7 @@ public class FXMainPositionListFragment extends BasePurchaseManagerFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         tabViewPager.setAdapter(new TabbedPositionPageAdapter(getChildFragmentManager()));
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));

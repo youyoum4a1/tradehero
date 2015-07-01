@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.google.common.annotations.VisibleForTesting;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -37,10 +37,10 @@ public class UserLevelProgressBar extends RelativeLayout
     private static final String PROPERTY_PROGRESS = "progress";
     private static final String PROPERTY_SECONDARY_PROGRESS = "secondaryProgress";
 
-    @InjectView(R.id.user_level_progress_next) protected ImageView nextLevelLabel;
-    @InjectView(R.id.user_level_progress_current) protected ImageView currentLevelLabel;
+    @Bind(R.id.user_level_progress_next) protected ImageView nextLevelLabel;
+    @Bind(R.id.user_level_progress_current) protected ImageView currentLevelLabel;
 
-    @InjectView(R.id.user_level_main_progress_bar) protected ProgressBar xpProgressBar;
+    @Bind(R.id.user_level_main_progress_bar) protected ProgressBar xpProgressBar;
 
     @Inject Picasso picasso;
     @Inject @ForUserNextLevelBadge Transformation nextLevelBadgeTransformation;
@@ -64,7 +64,7 @@ public class UserLevelProgressBar extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
     }
 

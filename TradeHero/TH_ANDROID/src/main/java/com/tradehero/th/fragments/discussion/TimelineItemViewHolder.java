@@ -2,12 +2,11 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
@@ -29,8 +28,8 @@ import rx.functions.Func1;
 public class TimelineItemViewHolder
         extends AbstractDiscussionItemViewHolder
 {
-    @InjectView(R.id.timeline_vendor_picture) ImageView vendorImage;
-    @InjectView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
+    @Bind(R.id.timeline_vendor_picture) ImageView vendorImage;
+    @Bind(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
     //<editor-fold desc="Constructors">
     public TimelineItemViewHolder()
@@ -85,7 +84,7 @@ public class TimelineItemViewHolder
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @Optional @OnClick(R.id.timeline_vendor_picture)
+    @Nullable @OnClick(R.id.timeline_vendor_picture)
     protected void handleSecurityClicked(View view)
     {
         if (viewDTO != null)

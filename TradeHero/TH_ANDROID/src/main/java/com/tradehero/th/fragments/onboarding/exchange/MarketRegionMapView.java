@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.MarketRegion;
 import com.tradehero.th.models.market.MarketRegionDisplayUtil;
@@ -27,8 +27,8 @@ public class MarketRegionMapView extends FrameLayout
     private static final float ON_CLICK_ALPHA = 1f;
     private static final int HALF_CUBE_APPROXIMATION = 20;
 
-    @InjectView(R.id.back_image) ImageView backImage;
-    @InjectView(R.id.front_image) ImageView frontImage;
+    @Bind(R.id.back_image) ImageView backImage;
+    @Bind(R.id.front_image) ImageView frontImage;
     @NonNull private Map<MarketRegion, MapHitBoxView> feedbackHitBoxes;
     @NonNull private PublishSubject<MarketRegion> marketRegionClickedBehavior;
     @NonNull private PublishSubject<Boolean> switchClickedBehavior;
@@ -57,7 +57,7 @@ public class MarketRegionMapView extends FrameLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         int childCount = getChildCount();
         View child;
         for (int index = 0; index < childCount; index++)

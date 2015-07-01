@@ -4,15 +4,14 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -422,28 +421,28 @@ public class PositionPartialTopView extends LinearLayout
 
     public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
     {
-        @InjectView(R.id.gain_indicator) @Optional ImageView gainIndicator;
-        @InjectView(R.id.stock_logo) ImageView stockLogo;
-        @InjectView(R.id.flags_container) FxFlagContainer flagsContainer;
-        @InjectView(R.id.stock_symbol) @Optional TextView stockSymbol;
-        @InjectView(R.id.company_name) @Optional TextView companyName;
-        @InjectView(R.id.last_price_and_rise) @Optional TextView lastPriceAndRise;
-        @InjectView(R.id.share_count_row) @Optional View shareCountRow;
-        @InjectView(R.id.share_count_header) @Optional TextView shareCountHeader;
-        @InjectView(R.id.share_count_text) @Optional TextView shareCountText;
-        @InjectView(R.id.share_count) @Optional TextView shareCount;
-        @InjectView(R.id.hint_forward) @Optional View forwardCaret;
-        @InjectView(R.id.gain_loss_header) @Optional TextView gainLossHeader;
+        @Bind(R.id.gain_indicator) @Nullable ImageView gainIndicator;
+        @Bind(R.id.stock_logo) ImageView stockLogo;
+        @Bind(R.id.flags_container) FxFlagContainer flagsContainer;
+        @Bind(R.id.stock_symbol) @Nullable TextView stockSymbol;
+        @Bind(R.id.company_name) @Nullable TextView companyName;
+        @Bind(R.id.last_price_and_rise) @Nullable TextView lastPriceAndRise;
+        @Bind(R.id.share_count_row) @Nullable View shareCountRow;
+        @Bind(R.id.share_count_header) @Nullable TextView shareCountHeader;
+        @Bind(R.id.share_count_text) @Nullable TextView shareCountText;
+        @Bind(R.id.share_count) @Nullable TextView shareCount;
+        @Bind(R.id.hint_forward) @Nullable View forwardCaret;
+        @Bind(R.id.gain_loss_header) @Nullable TextView gainLossHeader;
 
-        @InjectView(R.id.gain_loss) @Optional TextView gainLoss;
-        @InjectView(R.id.gain_loss_percent) @Optional TextView gainLossPercent;
-        @InjectView(R.id.total_invested_value) @Optional TextView totalInvested;
-        @InjectView(R.id.position_percentage) @Optional TextView positionPercent;
-        @InjectView(R.id.position_unrealised_pl) @Optional TextView positionUnrealisedPL;
-        @InjectView(R.id.last_amount_container) @Optional View lastAmountContainer;
-        @InjectView(R.id.position_last_amount_header) @Optional TextView positionLastAmountHeader;
-        @InjectView(R.id.position_last_amount) @Optional TextView positionLastAmount;
-        @InjectView(R.id.btn_position_close) @Optional TextView btnClose;
+        @Bind(R.id.gain_loss) @Nullable TextView gainLoss;
+        @Bind(R.id.gain_loss_percent) @Nullable TextView gainLossPercent;
+        @Bind(R.id.total_invested_value) @Nullable TextView totalInvested;
+        @Bind(R.id.position_percentage) @Nullable TextView positionPercent;
+        @Bind(R.id.position_unrealised_pl) @Nullable TextView positionUnrealisedPL;
+        @Bind(R.id.last_amount_container) @Nullable View lastAmountContainer;
+        @Bind(R.id.position_last_amount_header) @Nullable TextView positionLastAmountHeader;
+        @Bind(R.id.position_last_amount) @Nullable TextView positionLastAmount;
+        @Bind(R.id.btn_position_close) @Nullable TextView btnClose;
         @NonNull private final PublishSubject<CloseUserAction> userActionSubject;
 
         private DTO dto;
@@ -473,7 +472,7 @@ public class PositionPartialTopView extends LinearLayout
         }
 
         @SuppressWarnings("unused")
-        @OnClick(R.id.btn_position_close) @Optional
+        @OnClick(R.id.btn_position_close) @Nullable
         protected void handleBtnCloseClicked(View view)
         {
             if (dto != null)

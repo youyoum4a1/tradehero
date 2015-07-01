@@ -7,13 +7,13 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 
 public class LeaderboardFilterValueSlider extends RelativeLayout
 {
-    @InjectView(R.id.leaderboard_filter_value) protected TextView valueText;
-    @InjectView(R.id.leaderboard_filter_value_slider) protected SeekBar valueSlider;
+    @Bind(R.id.leaderboard_filter_value) protected TextView valueText;
+    @Bind(R.id.leaderboard_filter_value_slider) protected SeekBar valueSlider;
 
     protected float minValue = 0;
     protected float maxValue = 100;
@@ -55,7 +55,7 @@ public class LeaderboardFilterValueSlider extends RelativeLayout
 
     protected void initViews()
     {
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()

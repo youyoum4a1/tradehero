@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -19,10 +19,10 @@ import javax.inject.Inject;
 
 public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListItemView
 {
-    @InjectView(R.id.background) ImageView background;
-    @InjectView(R.id.prize_pool_current_prize) TextView currentPrizePool;
-    @InjectView(R.id.prize_pool_next_prize) TextView nextPrizePool;
-    @InjectView(R.id.prize_pool_player_needed) TextView playersNeeded;
+    @Bind(R.id.background) ImageView background;
+    @Bind(R.id.prize_pool_current_prize) TextView currentPrizePool;
+    @Bind(R.id.prize_pool_next_prize) TextView nextPrizePool;
+    @Bind(R.id.prize_pool_player_needed) TextView playersNeeded;
     @Inject Picasso picasso;
 
     //<editor-fold desc="Constructors">
@@ -48,20 +48,20 @@ public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListIte
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         picasso.cancelRequest(background);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

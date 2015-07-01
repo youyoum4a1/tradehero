@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.common.utils.OnlineStateReceiver;
@@ -45,10 +45,10 @@ import timber.log.Timber;
 
 public class SettingsProfileFragment extends BaseFragment
 {
-    @InjectView(R.id.authentication_sign_up_button) protected Button updateButton;
-    @InjectView(R.id.sign_up_form_wrapper) protected NotifyingScrollView scrollView;
-    @InjectView(R.id.profile_info) protected ProfileInfoView profileView;
-    @InjectView(R.id.authentication_sign_up_referral_code) protected EditText referralCodeEditText;
+    @Bind(R.id.authentication_sign_up_button) protected Button updateButton;
+    @Bind(R.id.sign_up_form_wrapper) protected NotifyingScrollView scrollView;
+    @Bind(R.id.profile_info) protected ProfileInfoView profileView;
+    @Bind(R.id.authentication_sign_up_referral_code) protected EditText referralCodeEditText;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
@@ -62,7 +62,7 @@ public class SettingsProfileFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         updateButton.setText(R.string.update);
         referralCodeEditText.setVisibility(View.GONE);
         setHasOptionsMenu(true);
@@ -88,7 +88,7 @@ public class SettingsProfileFragment extends BaseFragment
         scrollView.setOnScrollChangedListener(null);
         updateButton = null;
         referralCodeEditText = null;
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

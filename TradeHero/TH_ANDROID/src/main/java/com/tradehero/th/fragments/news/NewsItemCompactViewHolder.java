@@ -3,11 +3,10 @@ package com.tradehero.th.fragments.news;
 import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.th.R;
@@ -19,8 +18,8 @@ import org.ocpsoft.prettytime.PrettyTime;
 public class NewsItemCompactViewHolder
         extends AbstractDiscussionCompactItemViewHolder
 {
-    @InjectView(R.id.news_title_title) @Optional protected TextView newsTitle;
-    @InjectView(R.id.news_icon) @Optional ImageView newsIcon;
+    @Bind(R.id.news_title_title) @Nullable protected TextView newsTitle;
+    @Bind(R.id.news_icon) @Nullable ImageView newsIcon;
 
     //<editor-fold desc="Constructors">
     public NewsItemCompactViewHolder()

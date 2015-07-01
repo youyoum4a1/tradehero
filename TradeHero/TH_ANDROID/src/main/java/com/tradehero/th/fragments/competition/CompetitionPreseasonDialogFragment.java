@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
@@ -63,11 +63,11 @@ public class CompetitionPreseasonDialogFragment extends BaseShareableDialogFragm
     @Inject ProviderServiceWrapper providerServiceWrapper;
     @Inject Lazy<SocialSharer> socialSharerLazy;
 
-    @InjectView(R.id.preseason_viewflipper) ViewFlipper viewFlipper;
-    @InjectView(R.id.preseason_title_image) ImageView imgTitle;
-    @InjectView(R.id.preseason_prize_image) ImageView imgPrize;
-    @InjectView(R.id.preseason_prize_description) MarkdownTextView textDescription;
-    @InjectView(R.id.preseason_prize_title) TextView textTitle;
+    @Bind(R.id.preseason_viewflipper) ViewFlipper viewFlipper;
+    @Bind(R.id.preseason_title_image) ImageView imgTitle;
+    @Bind(R.id.preseason_prize_image) ImageView imgPrize;
+    @Bind(R.id.preseason_prize_description) MarkdownTextView textDescription;
+    @Bind(R.id.preseason_prize_title) TextView textTitle;
 
     private ProviderId providerId;
     private ProviderDTO providerDTO;

@@ -12,7 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
@@ -32,9 +32,9 @@ import rx.functions.Action1;
 
 public class AchievementListTestingFragment extends BaseFragment
 {
-    @InjectView(R.id.generic_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.generic_ptr_list) protected ListView listView;
-    @InjectView(android.R.id.progress) protected ProgressBar progressBar;
+    @Bind(R.id.generic_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.generic_ptr_list) protected ListView listView;
+    @Bind(android.R.id.progress) protected ProgressBar progressBar;
 
     @Inject AchievementCategoryListCacheRx achievementCategoryListCache;
     @Inject CurrentUserId currentUserId;
@@ -56,7 +56,7 @@ public class AchievementListTestingFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         swipeRefreshLayout.setEnabled(false);
         listView.setAdapter(arrayAdapter);
     }
@@ -69,7 +69,7 @@ public class AchievementListTestingFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

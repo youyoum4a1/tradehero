@@ -15,7 +15,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -27,9 +27,9 @@ import javax.inject.Inject;
 
 public class AboutFragment extends BaseFragment
 {
-    @InjectView(R.id.main_content_wrapper) View mainContentWrapper;
-    @InjectView(R.id.staff_list_holder) LinearLayout staffList;
-    @InjectView(R.id.about_scroll) ScrollView scrollView;
+    @Bind(R.id.main_content_wrapper) View mainContentWrapper;
+    @Bind(R.id.staff_list_holder) LinearLayout staffList;
+    @Bind(R.id.about_scroll) ScrollView scrollView;
 
     @Inject Analytics analytics;
 
@@ -40,7 +40,7 @@ public class AboutFragment extends BaseFragment
     {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_about, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         mainContentWrapper.setPadding(mainContentWrapper.getPaddingLeft(),
                 mainContentWrapper.getPaddingTop(),
                 mainContentWrapper.getPaddingRight(),

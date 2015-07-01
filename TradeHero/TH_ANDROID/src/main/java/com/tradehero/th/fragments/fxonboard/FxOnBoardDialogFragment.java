@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
@@ -50,10 +50,10 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
 {
     private static final String TAG = FxOnBoardDialogFragment.class.getName();
 
-    @InjectView(R.id.view_animator) ViewAnimator viewAnimator;
-    @InjectView(R.id.introduction_videos_grid) GridView videosGrid;
-    @InjectView(android.R.id.empty) View emptyView;
-    @InjectView(R.id.progress) View progressBar;
+    @Bind(R.id.view_animator) ViewAnimator viewAnimator;
+    @Bind(R.id.introduction_videos_grid) GridView videosGrid;
+    @Bind(android.R.id.empty) View emptyView;
+    @Bind(R.id.progress) View progressBar;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
@@ -85,7 +85,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         videosGrid.setAdapter(videoAdapter);
     }
 
@@ -172,7 +172,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

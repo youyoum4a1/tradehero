@@ -2,13 +2,12 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.annotation.ViewVisibilityValue;
@@ -29,11 +28,11 @@ import rx.functions.Func1;
 public class AbstractDiscussionItemViewHolder
         extends AbstractDiscussionCompactItemViewHolder
 {
-    @InjectView(R.id.text_container) @Optional protected View textContainer;
-    @InjectView(R.id.discussion_content) protected MarkdownTextView textContent;
-    @InjectView(R.id.discussion_stub_content) @Optional protected MarkdownTextView stubContent;
-    @InjectView(R.id.discussion_user_picture) @Optional ImageView discussionUserPicture;
-    @InjectView(R.id.user_profile_name) @Optional TextView userProfileName;
+    @Bind(R.id.text_container) @Nullable protected View textContainer;
+    @Bind(R.id.discussion_content) protected MarkdownTextView textContent;
+    @Bind(R.id.discussion_stub_content) @Nullable protected MarkdownTextView stubContent;
+    @Bind(R.id.discussion_user_picture) @Nullable ImageView discussionUserPicture;
+    @Bind(R.id.user_profile_name) @Nullable TextView userProfileName;
     @Inject @ForUserPhoto Transformation discussionUserPictureTransformation;
 
     //<editor-fold desc="Constructors">
@@ -100,7 +99,7 @@ public class AbstractDiscussionItemViewHolder
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @Optional @OnClick({R.id.discussion_user_picture, R.id.user_profile_name})
+    @Nullable @OnClick({R.id.discussion_user_picture, R.id.user_profile_name})
     protected void handleUserClicked(View view)
     {
         if (viewDTO != null)

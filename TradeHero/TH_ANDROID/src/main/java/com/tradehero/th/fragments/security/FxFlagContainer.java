@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.FxCurrency;
@@ -15,8 +15,8 @@ import com.tradehero.th.api.security.key.FxPairSecurityId;
 public class FxFlagContainer extends LinearLayout
     implements DTOView<FxPairSecurityId>
 {
-    @InjectView(R.id.flag_left) protected ImageView flagLeft;
-    @InjectView(R.id.flag_right) protected ImageView flagRight;
+    @Bind(R.id.flag_left) protected ImageView flagLeft;
+    @Bind(R.id.flag_right) protected ImageView flagRight;
 
     @Nullable private FxPairSecurityId fxPairSecurityId;
 
@@ -40,7 +40,7 @@ public class FxFlagContainer extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         display();
     }
 

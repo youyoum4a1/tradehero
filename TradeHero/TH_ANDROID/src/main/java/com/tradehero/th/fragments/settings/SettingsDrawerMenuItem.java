@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import javax.inject.Inject;
 public class SettingsDrawerMenuItem extends LinearLayout
 {
     @Inject UnreadSettingPreferenceHolder unreadSettingPreferenceHolder;
-    @InjectView(R.id.unread_icon) View unreadIcon;
+    @Bind(R.id.unread_icon) View unreadIcon;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -41,7 +41,7 @@ public class SettingsDrawerMenuItem extends LinearLayout
 
         if(!isInEditMode())
         {
-            ButterKnife.inject(this);
+            ButterKnife.bind(this);
             HierarchyInjector.inject(this);
         }
     }

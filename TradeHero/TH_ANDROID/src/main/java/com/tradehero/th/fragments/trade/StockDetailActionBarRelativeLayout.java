@@ -4,14 +4,14 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.security.SecurityCircleProgressBar;
 
 public class StockDetailActionBarRelativeLayout extends StockActionBarRelativeLayout
 {
-    @InjectView(R.id.circle_progressbar) protected SecurityCircleProgressBar circleProgressBar;
-    @InjectView(R.id.action_bar_market_closed_icon) protected View marketCloseIcon;
+    @Bind(R.id.circle_progressbar) protected SecurityCircleProgressBar circleProgressBar;
+    @Bind(R.id.action_bar_market_closed_icon) protected View marketCloseIcon;
 
     //<editor-fold desc="Constructors">
     public StockDetailActionBarRelativeLayout(Context context)

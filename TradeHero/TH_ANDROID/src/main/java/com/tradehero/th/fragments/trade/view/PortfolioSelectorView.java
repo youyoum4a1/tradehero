@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
@@ -19,7 +19,7 @@ import rx.functions.Action1;
 
 public class PortfolioSelectorView extends RelativeLayout
 {
-    @InjectView(R.id.portfolio_selected) TextView selectedPortfolio;
+    @Bind(R.id.portfolio_selected) TextView selectedPortfolio;
     @Nullable private OwnedPortfolioId defaultPortfolioId;
     @Nullable private MenuOwnedPortfolioId defaultMenuPortfolioId;
     @Nullable private MenuOwnedPortfolioId currentMenu;
@@ -37,7 +37,7 @@ public class PortfolioSelectorView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     public void setDefaultPortfolioId(@Nullable OwnedPortfolioId defaultPortfolioId)

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.View;
@@ -13,9 +12,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -42,12 +41,12 @@ public class FollowerListItemView extends RelativeLayout
     private static final int INDEX_VIEW_REVENUE = 0;
     private static final int INDEX_VIEW_FREE = 1;
 
-    @InjectView(R.id.follower_profile_picture) ImageView userIcon;
-    @InjectView(R.id.follower_title) TextView title;
-    @InjectView(R.id.follower_revenue) @Optional TextView revenueInfo;
-    @InjectView(R.id.country_logo) ImageView country;
-    @InjectView(R.id.follower_roi_info) @Optional TextView roiInfo;
-    @InjectView(R.id.revenue_switcher) @Optional ViewSwitcher typeSwitcher;
+    @Bind(R.id.follower_profile_picture) ImageView userIcon;
+    @Bind(R.id.follower_title) TextView title;
+    @Bind(R.id.follower_revenue) @Nullable TextView revenueInfo;
+    @Bind(R.id.country_logo) ImageView country;
+    @Bind(R.id.follower_roi_info) @Nullable TextView roiInfo;
+    @Bind(R.id.revenue_switcher) @Nullable ViewSwitcher typeSwitcher;
 
     @NonNull final PublishSubject<FollowerListItemAdapter.UserAction> userActionSubject;
     @Nullable protected DTO dto;
@@ -77,7 +76,7 @@ public class FollowerListItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
         if (userIcon != null && !isInEditMode())
         {
@@ -90,7 +89,7 @@ public class FollowerListItemView extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -99,7 +98,7 @@ public class FollowerListItemView extends RelativeLayout
         {
             picasso.get().cancelRequest(userIcon);
         }
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

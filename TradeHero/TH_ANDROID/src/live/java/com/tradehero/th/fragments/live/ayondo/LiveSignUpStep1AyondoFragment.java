@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
@@ -19,7 +19,7 @@ import com.tradehero.th.utils.GraphicUtil;
 
 public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseFragment
 {
-    @InjectView(R.id.info_title) Spinner title;
+    @Bind(R.id.info_title) Spinner title;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -29,7 +29,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         ArrayAdapter stringArrayAdapter =
                 new ArrayAdapter<String>(getActivity(),
                         R.layout.sign_up_dropdown_item_selected,

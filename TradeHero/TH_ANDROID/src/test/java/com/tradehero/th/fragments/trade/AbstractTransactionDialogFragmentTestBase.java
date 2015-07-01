@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.trade;
 import android.text.Editable;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.portfolio.PortfolioId;
@@ -44,11 +44,11 @@ public abstract class AbstractTransactionDialogFragmentTestBase
     protected DashboardActivity activity;
     protected AbstractStockTransactionDialogFragment abstractTransactionDialogFragment;
 
-    @Optional @InjectView(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
-    @InjectView(R.id.btn_share_li) protected ToggleButton mBtnShareLn;
-    @Optional @InjectView(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
-    @InjectView(R.id.btn_share_wb) protected ToggleButton mBtnShareWb;
-    @InjectView(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
+    @Nullable @Bind(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
+    @Bind(R.id.btn_share_li) protected ToggleButton mBtnShareLn;
+    @Nullable @Bind(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
+    @Bind(R.id.btn_share_wb) protected ToggleButton mBtnShareWb;
+    @Bind(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
 
     public void setUp() throws InterruptedException
     {
@@ -86,7 +86,7 @@ public abstract class AbstractTransactionDialogFragmentTestBase
         abstractTransactionDialogFragment
                 = AbstractStockTransactionDialogFragment.newInstance(securityId, portfolioId, quoteDTO, isBuy());
         abstractTransactionDialogFragment.show(activity.getFragmentManager(), "Test");
-        ButterKnife.inject(this, abstractTransactionDialogFragment.getView());
+        ButterKnife.bind(this, abstractTransactionDialogFragment.getView());
 
         runBgUiTasks(3);
     }

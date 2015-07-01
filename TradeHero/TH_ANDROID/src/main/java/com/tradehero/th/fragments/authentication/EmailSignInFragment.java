@@ -13,7 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -77,12 +77,12 @@ public class EmailSignInFragment extends Fragment
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
 
-    @InjectView(R.id.authentication_sign_in_email) ValidatedText email;
+    @Bind(R.id.authentication_sign_in_email) ValidatedText email;
     TextValidator emailValidator;
-    @InjectView(R.id.et_pwd_login) ValidatedText password;
+    @Bind(R.id.et_pwd_login) ValidatedText password;
     TextValidator passwordValidator;
-    @InjectView(R.id.btn_login) View loginButton;
-    @InjectView(R.id.social_network_button_list) SocialNetworkButtonListLinear socialNetworkButtonList;
+    @Bind(R.id.btn_login) View loginButton;
+    @Bind(R.id.social_network_button_list) SocialNetworkButtonListLinear socialNetworkButtonList;
     SubscriptionList onStopSubscriptions;
 
     @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
@@ -128,7 +128,7 @@ public class EmailSignInFragment extends Fragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         EmailSignInUtils.populateDefaults(email, password);
         loginButton.setEnabled(BuildConfig.DEBUG);
 
@@ -266,7 +266,7 @@ public class EmailSignInFragment extends Fragment
     {
         email.removeTextChangedListener(emailValidator);
         password.removeTextChangedListener(passwordValidator);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

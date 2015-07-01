@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -25,9 +24,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.activities.ActivityResultRequester;
@@ -77,19 +76,19 @@ public class ProfileInfoView extends LinearLayout
     public static final int REQUEST_CAMERA = 1310;
     private final static int REQUEST_PHOTO_ZOOM = 1311;
 
-    @InjectView(R.id.authentication_sign_up_email) ValidatedText email;
+    @Bind(R.id.authentication_sign_up_email) ValidatedText email;
     TextValidator emailValidator;
-    @InjectView(R.id.authentication_sign_up_password) PasswordValidatedText password;
+    @Bind(R.id.authentication_sign_up_password) PasswordValidatedText password;
     TextValidator passwordValidator;
-    @InjectView(R.id.authentication_sign_up_confirm_password) MatchingPasswordText confirmPassword;
+    @Bind(R.id.authentication_sign_up_confirm_password) MatchingPasswordText confirmPassword;
     PasswordConfirmTextValidator confirmPasswordValidator;
     TextWatcher targetPasswordWatcher;
-    @InjectView(R.id.authentication_sign_up_username) DisplayNameValidatedText displayName;
+    @Bind(R.id.authentication_sign_up_username) DisplayNameValidatedText displayName;
     DisplayNameValidator displayNameValidator;
-    @InjectView(R.id.authentication_sign_up_referral_code) EditText referralCode;
-    @InjectView(R.id.et_firstname) EditText firstName;
-    @InjectView(R.id.et_lastname) EditText lastName;
-    @InjectView(R.id.image_optional) @Optional ImageView profileImage;
+    @Bind(R.id.authentication_sign_up_referral_code) EditText referralCode;
+    @Bind(R.id.et_firstname) EditText firstName;
+    @Bind(R.id.et_lastname) EditText lastName;
+    @Bind(R.id.image_optional) @Nullable ImageView profileImage;
 
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
@@ -116,7 +115,7 @@ public class ProfileInfoView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         emailValidator = email.getValidator();
         passwordValidator = password.getValidator();
         confirmPasswordValidator = confirmPassword.getValidator();
@@ -126,7 +125,7 @@ public class ProfileInfoView extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         displayProfileImage();
 
         email.setOnFocusChangeListener(emailValidator);
@@ -169,7 +168,7 @@ public class ProfileInfoView extends LinearLayout
         email.setOnFocusChangeListener(null);
         subscriptions.unsubscribe();
         subscriptions = new SubscriptionList();
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 
@@ -363,7 +362,7 @@ public class ProfileInfoView extends LinearLayout
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.image_optional) @Optional
+    @OnClick(R.id.image_optional) @Nullable
     protected void showImageFromDialog()
     {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(

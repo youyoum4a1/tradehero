@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -19,8 +19,8 @@ import rx.subjects.PublishSubject;
 
 public class VotePair extends LinearLayout
 {
-    @InjectView(R.id.timeline_action_button_vote_up) VoteView voteUp;
-    @InjectView(R.id.timeline_action_button_vote_down) VoteView voteDown;
+    @Bind(R.id.timeline_action_button_vote_up) VoteView voteUp;
+    @Bind(R.id.timeline_action_button_vote_down) VoteView voteDown;
 
     private AbstractDiscussionCompactDTO discussionDTO;
     private boolean downVote = false;
@@ -63,19 +63,19 @@ public class VotePair extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         updateDownVoteVisibility();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

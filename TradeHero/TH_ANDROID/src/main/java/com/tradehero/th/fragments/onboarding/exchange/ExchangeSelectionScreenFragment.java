@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
@@ -68,9 +68,9 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @Inject UserProfileCacheRx userProfileCache;
 
     MarketRegionSwitcherView mapHeaderSwitcherView;
-    @InjectView(android.R.id.list) ListView exchangeList;
-    @InjectView(android.R.id.button2) View backButton;
-    @InjectView(android.R.id.button1) View nextButton;
+    @Bind(android.R.id.list) ListView exchangeList;
+    @Bind(android.R.id.button2) View backButton;
+    @Bind(android.R.id.button1) View nextButton;
     ArrayAdapter<SelectableExchangeDTO> exchangeAdapter;
     @Nullable MarketRegion initialRegion;
     boolean hadInitialExchangeSelected;
@@ -165,7 +165,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         exchangeList.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.on_board_started_header, null), "title", false);
         exchangeList.addHeaderView(mapHeaderSwitcherView, MAP_ITEM_DTO, true);
         exchangeList.setAdapter(exchangeAdapter);
@@ -181,7 +181,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -31,7 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class SettingsTransactionHistoryFragment extends BaseFragment
 {
-    @InjectView(R.id.transaction_list) ListView transactionListView;
+    @Bind(R.id.transaction_list) ListView transactionListView;
     private SettingsTransactionHistoryAdapter transactionListViewAdapter;
 
     @Inject UserTransactionHistoryListCacheRx userTransactionHistoryListCache;
@@ -62,7 +62,7 @@ public class SettingsTransactionHistoryFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         transactionListView.setAdapter(transactionListViewAdapter);
     }
 

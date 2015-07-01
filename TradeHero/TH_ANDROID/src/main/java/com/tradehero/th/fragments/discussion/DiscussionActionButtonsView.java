@@ -7,9 +7,9 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
@@ -23,10 +23,10 @@ public class DiscussionActionButtonsView extends LinearLayout
     public static final boolean HAS_DOWN_VOTE = true;
     private static final boolean DEFAULT_SHOW_MORE = false;
 
-    @InjectView(R.id.vote_pair) @Optional protected VotePair votePair;
-    @InjectView(R.id.discussion_action_button_comment_count) @Optional CompoundButton commentCount;
-    @InjectView(R.id.discussion_action_button_share) @Optional View shareButton;
-    @InjectView(R.id.discussion_action_button_more) @Optional View moreButton;
+    @Bind(R.id.vote_pair) @Nullable protected VotePair votePair;
+    @Bind(R.id.discussion_action_button_comment_count) @Nullable CompoundButton commentCount;
+    @Bind(R.id.discussion_action_button_share) @Nullable View shareButton;
+    @Bind(R.id.discussion_action_button_more) @Nullable View moreButton;
 
     protected boolean downVote = HAS_DOWN_VOTE;
     private boolean showMore = DEFAULT_SHOW_MORE;
@@ -59,19 +59,19 @@ public class DiscussionActionButtonsView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         display();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 
@@ -153,21 +153,21 @@ public class DiscussionActionButtonsView extends LinearLayout
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.discussion_action_button_comment_count) @Optional
+    @OnClick(R.id.discussion_action_button_comment_count) @Nullable
     protected void handleCommentButtonClicked(View view)
     {
         userActionBehavior.onNext(new CommentUserAction(discussionDTO));
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.discussion_action_button_share) @Optional
+    @OnClick(R.id.discussion_action_button_share) @Nullable
     protected void handleShareButtonClicked(View view)
     {
         userActionBehavior.onNext(new ShareUserAction(discussionDTO));
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.discussion_action_button_more) @Optional
+    @OnClick(R.id.discussion_action_button_more) @Nullable
     protected void handleMoreButtonClicked(View view)
     {
         userActionBehavior.onNext(new MoreUserAction(discussionDTO));

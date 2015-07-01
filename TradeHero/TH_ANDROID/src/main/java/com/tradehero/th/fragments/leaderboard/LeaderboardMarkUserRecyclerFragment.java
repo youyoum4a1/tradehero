@@ -114,7 +114,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.leaderboard_mark_user_recyclerview, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         return view;
     }
 

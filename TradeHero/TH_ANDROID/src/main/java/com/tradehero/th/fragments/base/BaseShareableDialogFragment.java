@@ -2,14 +2,12 @@ package com.tradehero.th.fragments.base;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.InjectViews;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.SocialLinkToggleButton;
 import com.tradehero.th.R;
@@ -47,9 +45,9 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected SocialShareHelper socialShareHelper;
 
-    @InjectView(R.id.btn_share_wechat) public ToggleButton mBtnShareWeChat;
+    @Bind(R.id.btn_share_wechat) public ToggleButton mBtnShareWeChat;
     Subscription weChatLinkingSubscription;
-    @Optional @InjectViews({
+    @Nullable @Bind({
             R.id.btn_share_fb,
             R.id.btn_share_li,
             R.id.btn_share_tw,
@@ -68,7 +66,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         registerWeChatButton();
         registerSocialButtons();
     }
@@ -83,7 +81,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     {
         unsubscribeWeChatButton();
         unsubscribeSocialLinkingButtons();
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

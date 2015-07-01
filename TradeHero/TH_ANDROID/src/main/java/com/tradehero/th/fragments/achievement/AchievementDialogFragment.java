@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
@@ -34,8 +34,8 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 {
     private static final String PROPERTY_DOLLARS_EARNED = "dollarsEarned";
 
-    @InjectView(R.id.achievement_progress_indicator) AchievementProgressIndicator achievementProgressIndicator;
-    @InjectView(R.id.achievement_virtual_dollar_earned) TextView dollarEarned;
+    @Bind(R.id.achievement_progress_indicator) AchievementProgressIndicator achievementProgressIndicator;
+    @Bind(R.id.achievement_virtual_dollar_earned) TextView dollarEarned;
 
     @Inject CurrentUserId currentUserId;
     @Inject AchievementCategoryCacheRx achievementCategoryCache;

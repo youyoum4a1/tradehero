@@ -2,15 +2,14 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -29,15 +28,15 @@ import timber.log.Timber;
 public class SecurityItemView extends RelativeLayout
         implements DTOView<SecurityCompactDTO>
 {
-    @InjectView(R.id.stock_logo) ImageView stockLogo;
-    @InjectView(R.id.ic_market_close) @Optional ImageView marketCloseIcon;
-    @InjectView(R.id.stock_name) TextView stockName;
-    @InjectView(R.id.exchange_symbol) TextView exchangeSymbol;
-    @InjectView(R.id.last_price) TextView lastPrice;
-    @InjectView(R.id.tv_stock_roi) @Optional TextView stockRoi;
-    @InjectView(R.id.country_logo) @Optional ImageView countryLogo;
-    @InjectView(R.id.date) @Optional TextView date;
-    @InjectView(R.id.sec_type) @Optional TextView securityType;
+    @Bind(R.id.stock_logo) ImageView stockLogo;
+    @Bind(R.id.ic_market_close) @Nullable ImageView marketCloseIcon;
+    @Bind(R.id.stock_name) TextView stockName;
+    @Bind(R.id.exchange_symbol) TextView exchangeSymbol;
+    @Bind(R.id.last_price) TextView lastPrice;
+    @Bind(R.id.tv_stock_roi) @Nullable TextView stockRoi;
+    @Bind(R.id.country_logo) @Nullable ImageView countryLogo;
+    @Bind(R.id.date) @Nullable TextView date;
+    @Bind(R.id.sec_type) @Nullable TextView securityType;
 
     protected SecurityCompactDTO securityCompactDTO;
     protected Map<SecurityId, AlertCompactDTO> alerts;
@@ -69,7 +68,7 @@ public class SecurityItemView extends RelativeLayout
     protected void init()
     {
         HierarchyInjector.inject(this);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         stockLogo.setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 

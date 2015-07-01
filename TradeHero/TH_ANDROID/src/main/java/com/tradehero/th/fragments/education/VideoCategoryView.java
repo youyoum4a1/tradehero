@@ -13,7 +13,7 @@ import android.widget.Gallery;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import butterknife.OnItemSelected;
 import com.tradehero.th.R;
@@ -38,10 +38,10 @@ public class VideoCategoryView extends RelativeLayout
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 50; //No pagination for now
 
-    @InjectView(R.id.video_category_name) TextView textName;
-    @InjectView(R.id.video_gallery) Gallery gallery;
-    @InjectView(android.R.id.empty) View emptyView;
-    @InjectView(android.R.id.progress) View progress;
+    @Bind(R.id.video_category_name) TextView textName;
+    @Bind(R.id.video_gallery) Gallery gallery;
+    @Bind(android.R.id.empty) View emptyView;
+    @Bind(android.R.id.progress) View progress;
     @NonNull private final VideoAdapter galleryAdapter;
 
     @Inject PaginatedVideoCacheRx paginatedVideoCache;
@@ -84,7 +84,7 @@ public class VideoCategoryView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         gallery.setAdapter(galleryAdapter);
         adjustFirstItemOfGallery();
     }

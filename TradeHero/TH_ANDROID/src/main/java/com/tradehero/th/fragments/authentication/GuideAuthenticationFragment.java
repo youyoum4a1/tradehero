@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -15,9 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -51,8 +50,8 @@ public class GuideAuthenticationFragment extends Fragment
     @Inject DashboardNavigator navigator;
     @Inject Analytics analytics;
 
-    @InjectView(R.id.guide_page_indicator) PageIndicator guidePageIndicator;
-    @InjectView(R.id.viewpager) ViewPager guidePager;
+    @Bind(R.id.guide_page_indicator) PageIndicator guidePageIndicator;
+    @Bind(R.id.viewpager) ViewPager guidePager;
 
     @NonNull final int[] guideRes = new int[] {
             R.layout.guide_1,
@@ -100,7 +99,8 @@ public class GuideAuthenticationFragment extends Fragment
         deepLink = getDeepLink(getArguments());
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, @Nullable
+    ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_entry_authentication, container, false);
     }
@@ -108,7 +108,7 @@ public class GuideAuthenticationFragment extends Fragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         onViewSubscriptions = new SubscriptionList();
         guidePager.setAdapter(new GuidePagerAdapter());
         guidePageIndicator.setViewPager(guidePager, PAGER_INITIAL_POSITION);
@@ -139,7 +139,7 @@ public class GuideAuthenticationFragment extends Fragment
     {
         guidePageIndicator.setOnPageChangeListener(null);
         onViewSubscriptions.unsubscribe();
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 
@@ -156,7 +156,7 @@ public class GuideAuthenticationFragment extends Fragment
             R.id.btn_qq_signin,
             R.id.btn_twitter_signin,
             R.id.btn_weibo_signin,
-    }) @Optional
+    }) @Nullable
     protected void mainSocialNetworkClicked(View view)
     {
         if (socialNetworkEnumObserver != null)
@@ -266,7 +266,7 @@ public class GuideAuthenticationFragment extends Fragment
         @Override public void destroyItem(ViewGroup container, int position, Object object)
         {
             container.removeView((View) object);
-            ButterKnife.reset(((View) object).getTag(R.id.txt_term_of_service_signin));
+            ButterKnife.unbind(((View) object).getTag(R.id.txt_term_of_service_signin));
         }
     }
 
@@ -274,18 +274,18 @@ public class GuideAuthenticationFragment extends Fragment
     {
         GuideViewHolder(@NonNull View view)
         {
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
 
         @SuppressWarnings({"UnusedParameters", "unused"})
-        @OnClick(R.id.txt_term_of_service_signin) @Optional
+        @OnClick(R.id.txt_term_of_service_signin) @Nullable
         void handleTermsServiceClicked(View view)
         {
             openWebPage(Constants.PRIVACY_TERMS_OF_SERVICE);
         }
 
         @SuppressWarnings({"UnusedParameters", "unused"})
-        @OnClick(R.id.txt_term_of_service_termsofuse) @Optional
+        @OnClick(R.id.txt_term_of_service_termsofuse) @Nullable
         void handlePrivacyClicked(View view)
         {
             openWebPage(Constants.PRIVACY_TERMS_OF_USE);

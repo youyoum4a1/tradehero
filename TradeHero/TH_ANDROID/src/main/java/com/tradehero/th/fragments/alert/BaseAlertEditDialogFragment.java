@@ -43,9 +43,9 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
-        ButterKnife.inject(viewHolder, view);
-        ButterKnife.inject(viewHolder.alertSliderViewHolder, view);
+        ButterKnife.bind(this, view);
+        ButterKnife.bind(viewHolder, view);
+        ButterKnife.bind(viewHolder.alertSliderViewHolder, view);
     }
 
     @Override public void onStart()
@@ -62,7 +62,7 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

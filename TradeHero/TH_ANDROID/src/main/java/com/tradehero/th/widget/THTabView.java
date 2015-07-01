@@ -10,13 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 
 public class THTabView extends LinearLayout
 {
-    @InjectView(android.R.id.icon) ImageView icon;
-    @InjectView(android.R.id.title) TextView titleView;
+    @Bind(android.R.id.icon) ImageView icon;
+    @Bind(android.R.id.title) TextView titleView;
     private String title;
 
     public THTabView(Context context)
@@ -37,7 +37,7 @@ public class THTabView extends LinearLayout
 
     private void init()
     {
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
 

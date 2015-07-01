@@ -43,7 +43,7 @@ public class ContestCompetitionView extends AspectRatioImageView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
         setLayerType(LAYER_TYPE_SOFTWARE, null);
     }

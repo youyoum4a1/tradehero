@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.widget.EditText;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
@@ -80,7 +80,7 @@ public class WatchlistEditFragmentTest
     @Test public void shouldDisplaySecurityInfoCorrectly()
     {
         WatchlistViewHolder holder = new WatchlistViewHolder();
-        ButterKnife.inject(holder, watchlistFragment.getView());
+        ButterKnife.bind(holder, watchlistFragment.getView());
 
         assertThat(holder.securityName.getText()).isEqualTo(SecurityUtils.getDisplayableSecurityName(GOOGLE_SECURITY_ID));
         assertThat(holder.securityDesc.getText()).isEqualTo(GOOGLE_NAME);
@@ -90,7 +90,7 @@ public class WatchlistEditFragmentTest
     @Test public void clickOnDoneButtonShouldGoBackToBuySellScreen()
     {
         WatchlistViewHolder holder = new WatchlistViewHolder();
-        ButterKnife.inject(holder, watchlistFragment.getView());
+        ButterKnife.bind(holder, watchlistFragment.getView());
 
         Robolectric.getBackgroundThreadScheduler().pause();
 
@@ -116,12 +116,12 @@ public class WatchlistEditFragmentTest
 
     public static class WatchlistViewHolder
     {
-        @InjectView(R.id.edit_watchlist_item_security_name) TextView securityName;
-        @InjectView(R.id.edit_watchlist_item_security_desc) TextView securityDesc;
-        @InjectView(R.id.edit_watchlist_item_security_price) EditText securityPrice;
+        @Bind(R.id.edit_watchlist_item_security_name) TextView securityName;
+        @Bind(R.id.edit_watchlist_item_security_desc) TextView securityDesc;
+        @Bind(R.id.edit_watchlist_item_security_price) EditText securityPrice;
 
-        @InjectView(R.id.edit_watchlist_item_done) TextView btnDone;
-        @InjectView(R.id.edit_watchlist_item_delete) TextView btnDelete;
+        @Bind(R.id.edit_watchlist_item_done) TextView btnDone;
+        @Bind(R.id.edit_watchlist_item_delete) TextView btnDelete;
     }
 
     public static class PreviousScreenFragment extends Fragment

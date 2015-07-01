@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertDTO;
@@ -23,14 +23,14 @@ import rx.Observable;
 public class AlertSecurityProfile extends RelativeLayout
         implements DTOView<AlertSecurityProfile.DTO>
 {
-    @InjectView(R.id.security_circle) SecurityCircleProgressBar securityCircleProgressBar;
-    @InjectView(R.id.stock_symbol) TextView stockSymbol;
-    @InjectView(R.id.company_name) TextView companyName;
-    @InjectView(R.id.target_price) TextView targetPrice;
-    @InjectView(R.id.target_price_label) TextView targetPriceLabel;
-    @InjectView(R.id.current_price) TextView currentPrice;
-    @InjectView(R.id.as_of_date) TextView asOfDate;
-    @InjectView(R.id.active_until) TextView activeUntil;
+    @Bind(R.id.security_circle) SecurityCircleProgressBar securityCircleProgressBar;
+    @Bind(R.id.stock_symbol) TextView stockSymbol;
+    @Bind(R.id.company_name) TextView companyName;
+    @Bind(R.id.target_price) TextView targetPrice;
+    @Bind(R.id.target_price_label) TextView targetPriceLabel;
+    @Bind(R.id.current_price) TextView currentPrice;
+    @Bind(R.id.as_of_date) TextView asOfDate;
+    @Bind(R.id.active_until) TextView activeUntil;
 
     //<editor-fold desc="Constructors">
     public AlertSecurityProfile(Context context)
@@ -54,7 +54,7 @@ public class AlertSecurityProfile extends RelativeLayout
         super.onFinishInflate();
         if (!isInEditMode())
         {
-            ButterKnife.inject(this);
+            ButterKnife.bind(this);
         }
     }
 

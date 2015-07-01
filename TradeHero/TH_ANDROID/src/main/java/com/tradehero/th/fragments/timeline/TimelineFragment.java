@@ -13,8 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnItemClickSticky;
+import butterknife.Bind;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.metrics.Analytics;
@@ -111,8 +110,8 @@ abstract public class TimelineFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
 
-    @InjectView(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
-    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
+    @Bind(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
+    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
 
     protected UserBaseKey shownUserBaseKey;
 
@@ -170,9 +169,16 @@ abstract public class TimelineFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         timelineListView.addHeaderView(userProfileView, null, false);
         timelineListView.setAdapter(getAdapter());
+        timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                onMainItemClick(parent, view, position, id);
+            }
+        });
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         registerButtonClicks();
         fetchLevelDefList();
@@ -335,8 +341,9 @@ abstract public class TimelineFragment extends DashboardFragment
     {
         displayablePortfolioFetchAssistant = null;
         this.userProfileView = null;
+        this.timelineListView.setOnItemClickListener(null);
 
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 
@@ -460,8 +467,6 @@ abstract public class TimelineFragment extends DashboardFragment
                         new TimberOnErrorAction("Failed to fetch level definitions")));
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnItemClickSticky(R.id.timeline_list_view)
     protected void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
     {
         Object item = adapterView.getItemAtPosition(i);

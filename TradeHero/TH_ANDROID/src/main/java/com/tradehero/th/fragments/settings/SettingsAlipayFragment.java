@@ -10,7 +10,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
@@ -36,9 +36,9 @@ import rx.functions.Action1;
 
 public class SettingsAlipayFragment extends BaseFragment
 {
-    @InjectView(R.id.settings_alipay_email_text) protected ValidatedText alipayAccountText;
-    @InjectView(R.id.settings_alipay_id_text) protected ValidatedText alipayAccountIDText;
-    @InjectView(R.id.settings_alipay_realname_text) protected ValidatedText alipayAccountRealNameText;
+    @Bind(R.id.settings_alipay_email_text) protected ValidatedText alipayAccountText;
+    @Bind(R.id.settings_alipay_id_text) protected ValidatedText alipayAccountIDText;
+    @Bind(R.id.settings_alipay_realname_text) protected ValidatedText alipayAccountRealNameText;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
@@ -53,7 +53,7 @@ public class SettingsAlipayFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         // HACK: force this email to focus instead of the TabHost stealing focus..
         alipayAccountText.setOnTouchListener(new FocusableOnTouchListener());
@@ -84,7 +84,7 @@ public class SettingsAlipayFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

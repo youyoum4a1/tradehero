@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
@@ -28,7 +28,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
 
     @Inject Analytics analytics;
     @Inject LeaderboardCacheRx leaderboardCache;
-    @InjectView(R.id.leaderboard_filter_slider_container) LeaderboardFilterSliderContainer filterSliderContainer;
+    @Bind(R.id.leaderboard_filter_slider_container) LeaderboardFilterSliderContainer filterSliderContainer;
 
     @NonNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
     @Nullable protected LeaderboardDTO leaderboardDTO;
@@ -61,7 +61,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_leaderboard_filter, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         initViews(view);
         return view;
     }

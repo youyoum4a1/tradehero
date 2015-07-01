@@ -4,16 +4,15 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
@@ -45,11 +44,11 @@ public class PortfolioListItemView extends RelativeLayout
     @Inject @ForUserPhoto Transformation userImageTransformation;
     @Inject DashboardNavigator navigator;
 
-    @InjectView(R.id.follower_profile_picture) @Optional protected ImageView userIcon;
-    @InjectView(R.id.portfolio_title) protected TextView title;
-    @InjectView(R.id.portfolio_description) protected TextView description;
-    @InjectView(R.id.roi_value) @Optional protected TextView roiValue;
-    @InjectView(R.id.portfolio_image) @Optional protected ImageView portfolioImage;
+    @Bind(R.id.follower_profile_picture) @Nullable protected ImageView userIcon;
+    @Bind(R.id.portfolio_title) protected TextView title;
+    @Bind(R.id.portfolio_description) protected TextView description;
+    @Bind(R.id.roi_value) @Nullable protected TextView roiValue;
+    @Bind(R.id.portfolio_image) @Nullable protected ImageView portfolioImage;
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
     @Nullable private Subscription userWatchlistSubscription;
@@ -65,7 +64,7 @@ public class PortfolioListItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
         if (userIcon != null && picasso != null)
         {
@@ -90,7 +89,7 @@ public class PortfolioListItemView extends RelativeLayout
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.follower_profile_picture) @Optional
+    @OnClick(R.id.follower_profile_picture) @Nullable
     protected void handleUserIconClicked()
     {
         if (displayablePortfolioDTO != null && displayablePortfolioDTO.userBaseDTO != null)

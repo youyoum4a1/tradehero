@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
@@ -14,10 +14,10 @@ import com.tradehero.th.models.number.THSignedPercentage;
 
 public class PositionPartialBottomClosedView extends AbstractPartialBottomView
 {
-    @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
-    @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
-    @InjectView(R.id.roi_value) protected TextView roiValue;
-    @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
+    @Bind(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
+    @Bind(R.id.realised_pl_value) protected TextView realisedPLValue;
+    @Bind(R.id.roi_value) protected TextView roiValue;
+    @Bind(R.id.total_invested_value) protected TextView totalInvestedValue;
 
     protected PositionPartialBottomInPeriodViewHolder inPeriodViewHolder;
 

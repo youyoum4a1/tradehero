@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -34,12 +34,12 @@ import rx.subjects.BehaviorSubject;
 public class HeroListItemView extends RelativeLayout
         implements DTOView<HeroListItemView.DTO>
 {
-    @InjectView(R.id.follower_profile_picture) ImageView userIcon;
-    @InjectView(R.id.hero_title) TextView title;
-    @InjectView(R.id.hero_revenue) TextView revenueInfo;
-    @InjectView(R.id.hero_date_info) TextView dateInfo;
-    @InjectView(R.id.ic_status) ImageView statusIcon;
-    @InjectView(R.id.country_logo) ImageView countryLogo;
+    @Bind(R.id.follower_profile_picture) ImageView userIcon;
+    @Bind(R.id.hero_title) TextView title;
+    @Bind(R.id.hero_revenue) TextView revenueInfo;
+    @Bind(R.id.hero_date_info) TextView dateInfo;
+    @Bind(R.id.ic_status) ImageView statusIcon;
+    @Bind(R.id.country_logo) ImageView countryLogo;
 
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
@@ -71,13 +71,13 @@ public class HeroListItemView extends RelativeLayout
     {
         super.onFinishInflate();
         HierarchyInjector.inject(this);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -87,7 +87,7 @@ public class HeroListItemView extends RelativeLayout
             picasso.get().cancelRequest(userIcon);
             userIcon.setImageDrawable(null);
         }
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

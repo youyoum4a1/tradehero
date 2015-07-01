@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -67,11 +67,11 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     protected UserProfileDTO correspondentProfile;
 
     //@InjectView(android.R.id.list) protected ListView discussionList;
-    @InjectView(R.id.discussion_comment_widget) protected PrivatePostCommentView postWidget;
-    @InjectView(R.id.private_message_empty) protected TextView emptyHint;
-    @InjectView(R.id.post_comment_action_submit) protected TextView buttonSend;
-    @InjectView(R.id.post_comment_text) protected EditText messageToSend;
-    @InjectView(R.id.mention_widget) protected MentionActionButtonsView mentionView;
+    @Bind(R.id.discussion_comment_widget) protected PrivatePostCommentView postWidget;
+    @Bind(R.id.private_message_empty) protected TextView emptyHint;
+    @Bind(R.id.post_comment_action_submit) protected TextView buttonSend;
+    @Bind(R.id.post_comment_text) protected EditText messageToSend;
+    @Bind(R.id.mention_widget) protected MentionActionButtonsView mentionView;
 
     @Nullable private Subscription messageHeaderFetchSubscription;
     private MessageHeaderId messageHeaderId;

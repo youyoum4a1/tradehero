@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
@@ -35,7 +35,7 @@ import rx.subjects.PublishSubject;
 public class AdView extends RelativeLayout
         implements DTOView<CompetitionZoneAdvertisementDTO>
 {
-    @InjectView(R.id.banner) ImageView banner;
+    @Bind(R.id.banner) ImageView banner;
     @Inject UserServiceWrapper userServiceWrapper;
     @Nullable protected CompetitionZoneAdvertisementDTO viewDTO;
 
@@ -56,13 +56,13 @@ public class AdView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         picasso.get().cancelRequest(banner);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

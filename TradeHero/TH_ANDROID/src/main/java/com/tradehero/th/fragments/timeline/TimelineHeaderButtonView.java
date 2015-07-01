@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import rx.Observable;
@@ -15,8 +15,8 @@ import rx.subjects.PublishSubject;
 
 public class TimelineHeaderButtonView extends LinearLayout
 {
-    @InjectView(R.id.btn_profile_portfolios) TextView btnPortfolioList;
-    @InjectView(R.id.btn_profile_timeline) TextView btnTimeline;
+    @Bind(R.id.btn_profile_portfolios) TextView btnPortfolioList;
+    @Bind(R.id.btn_profile_timeline) TextView btnTimeline;
 
     @NonNull private final PublishSubject<TimelineFragment.TabType> tabTypeSubject;
 
@@ -43,19 +43,19 @@ public class TimelineHeaderButtonView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         setDividerDrawable(null);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

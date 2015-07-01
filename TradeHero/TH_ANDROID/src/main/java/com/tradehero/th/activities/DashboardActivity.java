@@ -23,7 +23,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TabHost;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
@@ -128,11 +128,11 @@ public class DashboardActivity extends BaseActivity
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private boolean enrollmentScreenIsOpened = false;
 
-    @InjectView(R.id.my_toolbar) Toolbar toolbar;
-    @InjectView(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
-    @InjectView(R.id.drawer_content_container) ViewGroup drawerContents;
-    @InjectView(R.id.left_drawer) ViewGroup leftDrawerContainer;
-    @InjectView(android.R.id.tabhost) DashboardTabHost dashboardTabHost;
+    @Bind(R.id.my_toolbar) Toolbar toolbar;
+    @Bind(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
+    @Bind(R.id.drawer_content_container) ViewGroup drawerContents;
+    @Bind(R.id.left_drawer) ViewGroup leftDrawerContainer;
+    @Bind(android.R.id.tabhost) DashboardTabHost dashboardTabHost;
 
     private Subscription notificationFetchSubscription;
 
@@ -165,7 +165,7 @@ public class DashboardActivity extends BaseActivity
         suggestUpgradeIfNecessary();
         showStartDialogsPlease();
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         activityModule.drawerLayout = drawerLayout;
 
         setSupportActionBar(toolbar);
@@ -562,7 +562,7 @@ public class DashboardActivity extends BaseActivity
 
         localBroadcastManager.unregisterReceiver(onlineStateReceiver);
 
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
 
         lifeActivityUtil.onDestroy();
         super.onDestroy();

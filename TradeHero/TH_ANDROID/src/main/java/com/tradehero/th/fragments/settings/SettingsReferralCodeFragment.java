@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
@@ -53,13 +53,13 @@ public class SettingsReferralCodeFragment extends BaseFragment
     @Inject SystemStatusCache systemStatusCache;
     @Inject SocialShareHelper socialShareHelper;
 
-    @InjectView(R.id.invite_code_claimed_switcher) ViewSwitcher alreadyClaimedSwitcher;
-    @InjectView(R.id.txt_message_2) TextView message2;
-    @InjectView(R.id.txt_message_3) TextView message3;
-    @InjectView(R.id.txt_message_4) TextView message4;
-    @InjectView(R.id.btn_referral_copy) View btnCopy;
-    @InjectView(R.id.btn_referral_share) View btnShare;
-    @InjectView(R.id.settings_referral_code) TextView mReferralCode;
+    @Bind(R.id.invite_code_claimed_switcher) ViewSwitcher alreadyClaimedSwitcher;
+    @Bind(R.id.txt_message_2) TextView message2;
+    @Bind(R.id.txt_message_3) TextView message3;
+    @Bind(R.id.txt_message_4) TextView message4;
+    @Bind(R.id.btn_referral_copy) View btnCopy;
+    @Bind(R.id.btn_referral_share) View btnShare;
+    @Bind(R.id.settings_referral_code) TextView mReferralCode;
 
     private ClipboardManager clipboardManager;
     private UserProfileDTO userProfileDTO;
@@ -78,7 +78,7 @@ public class SettingsReferralCodeFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         message2.setText(Html.fromHtml(getString(MESSAGE_2)));
     }
 
@@ -97,7 +97,7 @@ public class SettingsReferralCodeFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

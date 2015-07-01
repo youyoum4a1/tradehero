@@ -4,17 +4,17 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 
 class LocationViewHolder implements DTOView<ListedLocationDTO>
 {
-    @InjectView(R.id.country_logo) protected ImageView logo;
-    @InjectView(R.id.country_code) protected TextView code;
-    @InjectView(R.id.country_name) protected TextView name;
-    @InjectView(R.id.location_tick_is_current) protected View currentView;
+    @Bind(R.id.country_logo) protected ImageView logo;
+    @Bind(R.id.country_code) protected TextView code;
+    @Bind(R.id.country_name) protected TextView name;
+    @Bind(R.id.location_tick_is_current) protected View currentView;
 
     @Nullable protected ListedLocationDTO listedLocationDTO;
     @Nullable protected Country currentCountry;

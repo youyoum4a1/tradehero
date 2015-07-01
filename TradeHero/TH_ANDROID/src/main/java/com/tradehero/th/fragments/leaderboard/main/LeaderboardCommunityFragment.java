@@ -16,7 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.rx.PairGetSecond;
@@ -66,9 +66,9 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
 
-    @InjectView(R.id.community_screen) BetterViewAnimator communityScreen;
-    @InjectView(R.id.pager) ViewPager tabViewPager;
-    @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @Bind(R.id.community_screen) BetterViewAnimator communityScreen;
+    @Bind(R.id.pager) ViewPager tabViewPager;
+    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     private BaseWebViewFragment webFragment;
     private int currentDisplayedChildLayoutId;
@@ -91,7 +91,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
     }
 
     private void setUpViewPager()
@@ -188,7 +188,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

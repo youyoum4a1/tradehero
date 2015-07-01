@@ -13,7 +13,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -35,8 +35,8 @@ public class DiscoveryMainFragment extends DashboardFragment
 
     @Inject Analytics analytics;
     @Inject THRouter thRouter;
-    @InjectView(R.id.pager) ViewPager tabViewPager;
-    @InjectView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @Bind(R.id.pager) ViewPager tabViewPager;
+    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     @RouteProperty("tabIndex") Integer tabIndex;
     private DiscoveryPagerAdapter discoveryPagerAdapter;
@@ -65,7 +65,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         tabViewPager.setAdapter(discoveryPagerAdapter);
         if (!Constants.RELEASE)
         {
@@ -116,7 +116,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     {
         reportAnalytics();
         tabViewPager.setAdapter(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

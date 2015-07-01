@@ -31,8 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.InjectViews;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.chrisbanes.colorfinder.ColorScheme;
 import com.chrisbanes.colorfinder.ColorUtils;
@@ -97,26 +96,26 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     public static final int SHARE_PANEL_FAILED_INDEX = 2;
     public static final int SHARE_PANEL_SHARING_INDEX = 3;
 
-    @InjectView(R.id.achievement_content_container) ViewGroup contentContainer;
+    @Bind(R.id.achievement_content_container) ViewGroup contentContainer;
 
-    @InjectView(R.id.achievement_header) TextView header;
+    @Bind(R.id.achievement_header) TextView header;
 
-    @InjectView(R.id.achievement_share_flipper) ViewFlipper shareFlipper;
+    @Bind(R.id.achievement_share_flipper) ViewFlipper shareFlipper;
 
-    @InjectView(R.id.achievement_title) TextView title;
-    @InjectView(R.id.achievement_description) TextView description;
-    @InjectView(R.id.achievement_more_description) TextView moreDescription;
-    @InjectView(R.id.achievement_badge) ImageView badge;
+    @Bind(R.id.achievement_title) TextView title;
+    @Bind(R.id.achievement_description) TextView description;
+    @Bind(R.id.achievement_more_description) TextView moreDescription;
+    @Bind(R.id.achievement_badge) ImageView badge;
 
-    @InjectView(R.id.achievement_pulsating) PulsatingRing pulsatingRing;
-    @InjectView(R.id.achievement_starburst) ImageView starBurst;
+    @Bind(R.id.achievement_pulsating) PulsatingRing pulsatingRing;
+    @Bind(R.id.achievement_starburst) ImageView starBurst;
 
-    @InjectView(R.id.user_level_progress_xp_earned) TextView xpEarned;
+    @Bind(R.id.user_level_progress_xp_earned) TextView xpEarned;
 
-    @InjectView(R.id.btn_achievement_share) Button btnShare;
-    @InjectView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
+    @Bind(R.id.btn_achievement_share) Button btnShare;
+    @Bind(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
-    @InjectViews({
+    @Bind({
             R.id.btn_achievement_dismiss,
             R.id.achievement_starburst})
     ImageView[] imagesToColorFilter;
@@ -166,7 +165,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         initView();
     }
 

@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.fragment.HasSelectedItem;
@@ -50,8 +50,8 @@ public class AllRelationsFragment extends BaseFragment
     @Inject UserMessagingRelationshipCacheRx userMessagingRelationshipCache;
     @Inject protected THBillingInteractorRx userInteractorRx;
 
-    @InjectView(R.id.sending_to_header) View sendingToHeader;
-    @InjectView(R.id.relations_list) ListView relationsListView;
+    @Bind(R.id.sending_to_header) View sendingToHeader;
+    @Bind(R.id.relations_list) ListView relationsListView;
 
     private RelationsListItemAdapter relationsListItemAdapter;
 
@@ -75,7 +75,7 @@ public class AllRelationsFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         relationsListView.setAdapter(relationsListItemAdapter);
 
         sendingToHeader.setVisibility(isForReturn() ? View.GONE : View.VISIBLE);
@@ -107,7 +107,7 @@ public class AllRelationsFragment extends BaseFragment
     @Override public void onDestroyView()
     {
         relationsListView.setAdapter(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

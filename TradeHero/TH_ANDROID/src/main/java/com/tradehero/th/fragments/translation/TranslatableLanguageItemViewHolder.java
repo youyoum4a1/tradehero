@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.i18n.LanguageDTO;
@@ -13,22 +13,22 @@ import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 
 public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
 {
-    @InjectView(R.id.translatable_text_code) protected TextView languageCode;
-    @InjectView(R.id.translatable_text_local) protected  TextView languageName;
-    @InjectView(R.id.translatable_text_own_language) protected TextView languageNameOwn;
-    @InjectView(R.id.translatable_tick_is_current) protected View isCurrentView;
+    @Bind(R.id.translatable_text_code) protected TextView languageCode;
+    @Bind(R.id.translatable_text_local) protected  TextView languageName;
+    @Bind(R.id.translatable_text_own_language) protected TextView languageNameOwn;
+    @Bind(R.id.translatable_tick_is_current) protected View isCurrentView;
 
     @Nullable private UserTranslationSettingDTO currentTranslationSetting;
     private LanguageDTO languageDTO;
 
     public void initViews(@NonNull View view)
     {
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
     }
 
     public void resetViews()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     public void setCurrentTranslationSetting(@Nullable UserTranslationSettingDTO currentTranslationSetting)

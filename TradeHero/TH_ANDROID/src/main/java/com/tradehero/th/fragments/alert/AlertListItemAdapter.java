@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ViewDTOSetAdapter;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -114,11 +114,11 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertItemView.DTO, A
 
     public static class TextHolder
     {
-        @InjectView(R.id.title) public TextView text;
+        @Bind(R.id.title) public TextView text;
 
         public TextHolder(View view)
         {
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
     }
 }

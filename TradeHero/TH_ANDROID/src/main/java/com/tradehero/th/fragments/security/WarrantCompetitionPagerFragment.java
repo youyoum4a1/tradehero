@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
@@ -22,8 +22,8 @@ public class WarrantCompetitionPagerFragment extends DashboardFragment
 {
     private static final String BUNDLE_PROVIDER_ID = WarrantCompetitionPagerFragment.class.getName() + ".providerId";
 
-    @InjectView(R.id.android_tabs) SlidingTabLayout slidingTabLayout;
-    @InjectView(R.id.pager) ViewPager pager;
+    @Bind(R.id.android_tabs) SlidingTabLayout slidingTabLayout;
+    @Bind(R.id.pager) ViewPager pager;
     @NonNull private ProviderId providerId;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
@@ -50,7 +50,7 @@ public class WarrantCompetitionPagerFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         pager.setAdapter(new WarrantPagerAdapter(getChildFragmentManager()));
         slidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));

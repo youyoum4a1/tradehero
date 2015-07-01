@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.WrapperRecyclerAdapter;
@@ -64,27 +64,27 @@ public class CompetitionLeaderboardWrapperRecyclerAdapter extends WrapperRecycle
 
     protected static class AdExtraItemViewHolder extends RecyclerView.ViewHolder
     {
-        @InjectView(R.id.banner) ImageView banner;
+        @Bind(R.id.banner) ImageView banner;
 
         public AdExtraItemViewHolder(View itemView)
         {
             super(itemView);
-            ButterKnife.inject(this, itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 
     public static class TimeExtraItemViewHolder extends RecyclerView.ViewHolder
     {
-        @InjectView(R.id.value_day_count) protected TextView dayCountView;
-        @InjectView(R.id.value_hour_count) protected TextView hourCountView;
-        @InjectView(R.id.value_minute_count) protected TextView minuteCountView;
-        @InjectView(R.id.value_second_count) protected TextView secondCountView;
+        @Bind(R.id.value_day_count) protected TextView dayCountView;
+        @Bind(R.id.value_hour_count) protected TextView hourCountView;
+        @Bind(R.id.value_minute_count) protected TextView minuteCountView;
+        @Bind(R.id.value_second_count) protected TextView secondCountView;
 
         //<editor-fold desc="Constructors">
         public TimeExtraItemViewHolder(View itemView)
         {
             super(itemView);
-            ButterKnife.inject(this, itemView);
+            ButterKnife.bind(this, itemView);
         }
         //</editor-fold>
 

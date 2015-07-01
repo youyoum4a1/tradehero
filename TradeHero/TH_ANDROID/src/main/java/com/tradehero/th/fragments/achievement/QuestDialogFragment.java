@@ -7,7 +7,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.QuestBonusDTO;
 import com.tradehero.th.api.achievement.QuestBonusDTOList;
@@ -26,7 +26,7 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
 {
     private static final int NO_OF_QUEST_BEFORE_CURRENT = 2;
 
-    @InjectView(R.id.quest_indicator_group) QuestIndicatorGroupView questIndicatorGroupView;
+    @Bind(R.id.quest_indicator_group) QuestIndicatorGroupView questIndicatorGroupView;
 
     @NonNull private QuestBonusListId questBonusListId = new QuestBonusListId();
 

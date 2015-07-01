@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
@@ -51,8 +51,8 @@ public class StockSelectionScreenFragment extends BaseFragment
 
     @Inject SecurityCompactListCacheRx securityCompactListCache;
 
-    @InjectView(android.R.id.list) GridViewWithHeaderAndFooter stockList;
-    @InjectView(android.R.id.button1) View nextButton;
+    @Bind(android.R.id.list) GridViewWithHeaderAndFooter stockList;
+    @Bind(android.R.id.button1) View nextButton;
     protected OnBoardHeaderLinearView headerView;
     ArrayAdapter<SelectableSecurityDTO> stockAdapter;
     @NonNull final Map<SecurityId, SecurityCompactDTO> knownStocks;
@@ -120,7 +120,7 @@ public class StockSelectionScreenFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         stockList.addHeaderView(headerView, "title", false);
         stockList.setAdapter(stockAdapter);
         displayNextButton();
@@ -134,7 +134,7 @@ public class StockSelectionScreenFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

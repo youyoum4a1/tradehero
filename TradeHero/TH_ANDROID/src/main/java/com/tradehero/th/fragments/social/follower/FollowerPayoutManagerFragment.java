@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -37,11 +37,11 @@ public class FollowerPayoutManagerFragment extends DashboardFragment
     private static final String BUNDLE_KEY_FOLLOWER_ID_BUNDLE =
             FollowerPayoutManagerFragment.class.getName() + ".followerId";
 
-    @InjectView(R.id.follower_profile_picture) ImageView followerPicture;
-    @InjectView(R.id.follower_title) TextView followerName;
-    @InjectView(R.id.follower_revenue) TextView totalRevenue;
-    @InjectView(R.id.follower_payments_list) ListView followerPaymentListView;
-    @InjectView(R.id.error_view) View errorView;
+    @Bind(R.id.follower_profile_picture) ImageView followerPicture;
+    @Bind(R.id.follower_title) TextView followerName;
+    @Bind(R.id.follower_revenue) TextView totalRevenue;
+    @Bind(R.id.follower_payments_list) ListView followerPaymentListView;
+    @Bind(R.id.error_view) View errorView;
 
     private FollowerPaymentListItemAdapter followerPaymentListAdapter;
     private FollowerHeroRelationId followerHeroRelationId;
@@ -80,7 +80,7 @@ public class FollowerPayoutManagerFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         followerPaymentListView.setAdapter(followerPaymentListAdapter);
     }
 
@@ -92,7 +92,7 @@ public class FollowerPayoutManagerFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

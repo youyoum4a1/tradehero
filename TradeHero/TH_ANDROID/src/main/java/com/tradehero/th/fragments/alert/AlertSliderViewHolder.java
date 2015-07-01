@@ -1,7 +1,7 @@
 package com.tradehero.th.fragments.alert;
 
 import android.support.annotation.NonNull;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertDTO;
 import rx.Observable;
@@ -11,8 +11,8 @@ import rx.functions.Func2;
 
 public class AlertSliderViewHolder
 {
-    @InjectView(R.id.alert_slider_target) AlertSliderView alertSliderTarget;
-    @InjectView(R.id.alert_slider_percentage) AlertSliderView alertSliderPercentage;
+    @Bind(R.id.alert_slider_target) AlertSliderView alertSliderTarget;
+    @Bind(R.id.alert_slider_percentage) AlertSliderView alertSliderPercentage;
 
     private Status currentStatus;
 

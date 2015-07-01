@@ -15,7 +15,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.pagination.RangeDTO;
@@ -60,9 +60,9 @@ public class DiscoveryDiscussionFragment extends Fragment
 {
     private static final String DISCOVERY_LIST_LOADER_ID = DiscoveryDiscussionFragment.class.getName() + ".discoveryList";
 
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
-    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.timeline_list_view) ListView mTimelineListView;
+    @Bind(android.R.id.progress) ProgressBar progressBar;
+    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.timeline_list_view) ListView mTimelineListView;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
     @Inject RxLoaderManager rxLoaderManager;
     @Inject CurrentUserId currentUserId;
@@ -220,7 +220,7 @@ public class DiscoveryDiscussionFragment extends Fragment
 
     private void initView(View view)
     {
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         mBottomLoadingView = new ProgressBar(getActivity());
         mBottomLoadingView.setVisibility(View.INVISIBLE);

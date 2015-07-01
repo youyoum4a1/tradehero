@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.THProductDetail;
@@ -16,8 +16,8 @@ public class StoreProductDetailView<
         ProductDetailType extends THProductDetail<ProductIdentifierType>>
         extends ProductDetailView<ProductIdentifierType, ProductDetailType>
 {
-    @InjectView(R.id.ic_deliverable) protected ImageView icDeliverable;
-    @InjectView(R.id.further_description) protected TextView furtherDescription;
+    @Bind(R.id.ic_deliverable) protected ImageView icDeliverable;
+    @Bind(R.id.further_description) protected TextView furtherDescription;
 
     //<editor-fold desc="Constructors">
     public StoreProductDetailView(Context context)

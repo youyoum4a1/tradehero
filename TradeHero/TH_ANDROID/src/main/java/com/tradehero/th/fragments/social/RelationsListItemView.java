@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -33,11 +33,11 @@ import rx.subjects.PublishSubject;
 public class RelationsListItemView extends RelativeLayout
         implements DTOView<AllowableRecipientDTO>
 {
-    @InjectView(R.id.user_name) TextView name;
-    @InjectView(R.id.user_profile_avatar) ImageView avatar;
-    @InjectView(R.id.country_logo) ImageView countryLogo;
-    @InjectView(R.id.user_type) TextView userType;
-    @InjectView(R.id.upgrade_now) TextView upgradeNow;
+    @Bind(R.id.user_name) TextView name;
+    @Bind(R.id.user_profile_avatar) ImageView avatar;
+    @Bind(R.id.country_logo) ImageView countryLogo;
+    @Bind(R.id.user_type) TextView userType;
+    @Bind(R.id.upgrade_now) TextView upgradeNow;
     private AllowableRecipientDTO allowableRecipientDTO;
     @NonNull private PublishSubject<FollowRequest> followRequestedBehavior;
 
@@ -69,19 +69,19 @@ public class RelationsListItemView extends RelativeLayout
     {
         super.onFinishInflate();
         HierarchyInjector.inject(this);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         loadDefaultPicture();
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

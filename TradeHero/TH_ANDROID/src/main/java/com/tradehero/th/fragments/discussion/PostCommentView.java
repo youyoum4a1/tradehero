@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.EditableUtil;
 import com.tradehero.common.utils.THToast;
@@ -50,10 +50,10 @@ public class PostCommentView extends RelativeLayout
     public static final boolean USE_QUICK_STUB_DISCUSSION = true;
     private boolean keypadIsShowing;
 
-    @InjectView(R.id.post_comment_action_submit) TextView commentSubmit;
-    @InjectView(R.id.post_comment_action_processing) View commentActionProcessing;
-    @InjectView(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
-    @InjectView(R.id.post_comment_text) EditText commentText;
+    @Bind(R.id.post_comment_action_submit) TextView commentSubmit;
+    @Bind(R.id.post_comment_action_processing) View commentActionProcessing;
+    @Bind(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
+    @Bind(R.id.post_comment_text) EditText commentText;
 
     @NonNull private SubscriptionList postCommentSubscriptions;
 
@@ -89,7 +89,7 @@ public class PostCommentView extends RelativeLayout
 
         if (!isInEditMode())
         {
-            ButterKnife.inject(this);
+            ButterKnife.bind(this);
             HierarchyInjector.inject(this);
             postCommentSubscriptions = new SubscriptionList();
             keypadIsShowing = false;
@@ -114,7 +114,7 @@ public class PostCommentView extends RelativeLayout
         commentPostedListener = null;
 
         DeviceUtil.dismissKeyboard(commentText);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

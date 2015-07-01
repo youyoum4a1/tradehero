@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnTextChanged;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.utils.EditableUtil;
@@ -53,8 +53,8 @@ import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
 {
-    @InjectView(R.id.discussion_post_content) EditText discussionPostContent;
-    @InjectView(R.id.discussion_new_post_action_buttons) protected DiscussionPostActionButtonsView discussionPostActionButtonsView;
+    @Bind(R.id.discussion_post_content) EditText discussionPostContent;
+    @Bind(R.id.discussion_new_post_action_buttons) protected DiscussionPostActionButtonsView discussionPostActionButtonsView;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCacheRx securityCompactCache;
@@ -79,7 +79,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_discussion_edit_post, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         initView();
         return view;
     }
@@ -156,7 +156,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         unsubscribe(hasSelectedSubscription);
         hasSelectedSubscription = null;
         mentionTaggedStockHandler.setDiscussionPostContent(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

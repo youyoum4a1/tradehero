@@ -4,9 +4,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
@@ -18,13 +18,13 @@ import timber.log.Timber;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
-    @InjectView(R.id.portfolio_title) @Optional protected TextView portfolioTitle;
-    @InjectView(R.id.txt_total_wealth) @Optional protected TextView totalWealth;
-    @InjectView(R.id.txt_additional_cash) @Optional protected TextView additionalCash;
-    @InjectView(R.id.txt_cash_on_hand) @Optional protected TextView cashOnHand;
-    @InjectView(R.id.user_profile_achievement_count) @Optional protected TextView achievementCount;
-    @InjectView(R.id.user_level_progress_bar) @Optional protected UserLevelProgressBar userLevelProgressBar;
-    @InjectView(R.id.user_statistic_view) @Optional protected UserStatisticView userStatisticView;
+    @Bind(R.id.portfolio_title) @Nullable protected TextView portfolioTitle;
+    @Bind(R.id.txt_total_wealth) @Nullable protected TextView totalWealth;
+    @Bind(R.id.txt_additional_cash) @Nullable protected TextView additionalCash;
+    @Bind(R.id.txt_cash_on_hand) @Nullable protected TextView cashOnHand;
+    @Bind(R.id.user_profile_achievement_count) @Nullable protected TextView achievementCount;
+    @Bind(R.id.user_level_progress_bar) @Nullable protected UserLevelProgressBar userLevelProgressBar;
+    @Bind(R.id.user_statistic_view) @Nullable protected UserStatisticView userStatisticView;
 
     //<editor-fold desc="Constructors">
     public UserProfileDetailViewHolder(@NonNull Context context)
@@ -150,7 +150,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
     }
 
     @SuppressWarnings("EmptyMethod")
-    @OnClick(R.id.user_profile_achievement_count_wrapper) @Optional
+    @OnClick(R.id.user_profile_achievement_count_wrapper) @Nullable
     @Override protected void notifyAchievementsClicked()
     {
         super.notifyAchievementsClicked();

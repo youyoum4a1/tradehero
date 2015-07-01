@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
 import com.tradehero.common.utils.THToast;
@@ -58,9 +58,9 @@ public class ProviderVideoListFragment extends DashboardFragment
     @Inject HelpVideoListCacheRx helpVideoListCache;
     @Inject THRouter thRouter;
 
-    @InjectView(android.R.id.empty) View emptyView;
-    @InjectView(R.id.help_videos_list) AbsListView videoListView;
-    @InjectView(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
+    @Bind(android.R.id.empty) View emptyView;
+    @Bind(R.id.help_videos_list) AbsListView videoListView;
+    @Bind(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
 
     @RouteProperty("providerId") protected Integer routedProviderId;
     @RouteProperty("videoId") Integer routedVideoId;
@@ -108,7 +108,7 @@ public class ProviderVideoListFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         helpVideoListScreen.setDisplayedChildByLayoutId(android.R.id.progress);
         videoListView.setAdapter(providerVideoAdapter);
         videoListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
@@ -149,7 +149,7 @@ public class ProviderVideoListFragment extends DashboardFragment
         providerVideoAdapter = null;
         videoListView.setEmptyView(null);
         videoListView.setOnScrollListener(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

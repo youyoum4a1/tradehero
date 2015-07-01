@@ -7,10 +7,10 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
@@ -26,11 +26,11 @@ import rx.subjects.PublishSubject;
 
 public class UserProfileCompactViewHolder
 {
-    @InjectView(R.id.user_profile_avatar) @Optional public ImageView avatar;
-    @InjectView(R.id.user_profile_roi) @Optional public TextView roiSinceInception;
-    @InjectView(R.id.user_profile_followers_count) @Optional public TextView followersCount;
-    @InjectView(R.id.user_profile_heroes_count) @Optional public TextView heroesCount;
-    @InjectView(R.id.user_profile_display_name) @Optional public TextView displayName;
+    @Bind(R.id.user_profile_avatar) @Nullable public ImageView avatar;
+    @Bind(R.id.user_profile_roi) @Nullable public TextView roiSinceInception;
+    @Bind(R.id.user_profile_followers_count) @Nullable public TextView followersCount;
+    @Bind(R.id.user_profile_heroes_count) @Nullable public TextView heroesCount;
+    @Bind(R.id.user_profile_display_name) @Nullable public TextView displayName;
 
     @Inject protected Context context;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;
@@ -118,14 +118,14 @@ public class UserProfileCompactViewHolder
     }
 
     @SuppressWarnings("unused")
-    @OnClick({R.id.user_profile_heroes_count, R.id.user_profile_heroes_count_wrapper}) @Optional
+    @OnClick({R.id.user_profile_heroes_count, R.id.user_profile_heroes_count_wrapper}) @Nullable
     protected void notifyHeroesClicked(View view)
     {
         buttonClickedSubject.onNext(ButtonType.HEROES);
     }
 
     @SuppressWarnings("unused")
-    @OnClick({R.id.user_profile_followers_count, R.id.user_profile_followers_count_wrapper}) @Optional
+    @OnClick({R.id.user_profile_followers_count, R.id.user_profile_followers_count_wrapper}) @Nullable
     protected void notifyFollowersClicked(View view)
     {
         buttonClickedSubject.onNext(ButtonType.FOLLOWERS);
@@ -137,7 +137,7 @@ public class UserProfileCompactViewHolder
     }
 
     @SuppressWarnings("unused")
-    @OnLongClick(R.id.user_profile_avatar) @Optional
+    @OnLongClick(R.id.user_profile_avatar) @Nullable
     protected boolean onAvatarLongClicked(View view)
     {
         if (userProfileDTO != null)

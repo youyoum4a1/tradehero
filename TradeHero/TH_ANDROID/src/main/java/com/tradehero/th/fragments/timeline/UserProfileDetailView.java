@@ -27,7 +27,7 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
         super.onFinishInflate();
         if (!isInEditMode())
         {
-            ButterKnife.inject(userProfileDetailViewHolder, this);
+            ButterKnife.bind(userProfileDetailViewHolder, this);
         }
     }
 
@@ -36,13 +36,13 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
         super.onAttachedToWindow();
         if (!isInEditMode())
         {
-            ButterKnife.inject(userProfileDetailViewHolder, this);
+            ButterKnife.bind(userProfileDetailViewHolder, this);
         }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(userProfileDetailViewHolder);
+        ButterKnife.unbind(userProfileDetailViewHolder);
         super.onDetachedFromWindow();
     }
 

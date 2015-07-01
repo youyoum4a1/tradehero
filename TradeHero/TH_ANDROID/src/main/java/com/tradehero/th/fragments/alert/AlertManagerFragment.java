@@ -14,9 +14,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.OnItemClickSticky;
 import com.tradehero.common.billing.BillingConstants;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
@@ -52,12 +51,12 @@ public class AlertManagerFragment extends BaseFragment
 {
     public static final String BUNDLE_KEY_USER_ID = AlertManagerFragment.class.getName() + ".userId";
 
-    @InjectView(R.id.manage_alerts_header) View planHeader;
-    @InjectView(R.id.manage_alerts_count) TextView alertPlanCount;
-    @InjectView(R.id.icn_manage_alert_count) ImageView alertPlanCountIcon;
-    @InjectView(R.id.progress_animator) BetterViewAnimator progressAnimator;
-    @InjectView(R.id.btn_upgrade_plan) ImageButton btnPlanUpgrade;
-    @InjectView(R.id.alerts_list) StickyListHeadersListView alertListView;
+    @Bind(R.id.manage_alerts_header) View planHeader;
+    @Bind(R.id.manage_alerts_count) TextView alertPlanCount;
+    @Bind(R.id.icn_manage_alert_count) ImageView alertPlanCountIcon;
+    @Bind(R.id.progress_animator) BetterViewAnimator progressAnimator;
+    @Bind(R.id.btn_upgrade_plan) ImageButton btnPlanUpgrade;
+    @Bind(R.id.alerts_list) StickyListHeadersListView alertListView;
     protected BaseListHeaderView footerView;
 
     @Inject CurrentUserId currentUserId;
@@ -92,9 +91,16 @@ public class AlertManagerFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         alertListView.addFooterView(footerView);
         alertListView.setAdapter(alertListItemAdapter);
+        alertListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                onListItemClick(parent, view, position, id);
+            }
+        });
 
         displayAlertCount();
         displayAlertCountIcon();
@@ -121,6 +127,7 @@ public class AlertManagerFragment extends BaseFragment
         if (alertListView != null)
         {
             alertListView.setOnScrollListener(null);
+            alertListView.setOnItemClickListener(null);
         }
         alertListView = null;
 
@@ -129,7 +136,7 @@ public class AlertManagerFragment extends BaseFragment
             footerView.setOnClickListener(null);
         }
         footerView = null;
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 
@@ -292,9 +299,7 @@ public class AlertManagerFragment extends BaseFragment
         }
     }
 
-    @SuppressWarnings({"UnusedParameters", "unused"})
-    @OnItemClickSticky(R.id.alerts_list)
-    protected void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    protected void onListItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         AlertItemView.DTO viewDTO = (AlertItemView.DTO) parent.getItemAtPosition(position);
         if (viewDTO != null)

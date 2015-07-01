@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -62,13 +62,13 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
     @Inject protected PositionListCacheRx positionCompactListCache;
     @Inject protected QuoteServiceWrapper quoteServiceWrapper;
 
-    @InjectView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
-    @InjectView(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
-    @InjectView(R.id.my_charts_view) protected KChartsView mKChartsView;
-    @InjectView(R.id.chart_time_span_button_set) protected TimeSpanButtonSet mTimeSpanButtonSet;
-    @InjectView(R.id.ll_position_status) protected LinearLayout llPositionStatus;
-    @InjectView(R.id.tv_position_units) protected TextView tvPositionUnits;
-    @InjectView(R.id.tv_position_money) protected TextView tvPositionMoney;
+    @Bind(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
+    @Bind(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
+    @Bind(R.id.my_charts_view) protected KChartsView mKChartsView;
+    @Bind(R.id.chart_time_span_button_set) protected TimeSpanButtonSet mTimeSpanButtonSet;
+    @Bind(R.id.ll_position_status) protected LinearLayout llPositionStatus;
+    @Bind(R.id.tv_position_units) protected TextView tvPositionUnits;
+    @Bind(R.id.tv_position_money) protected TextView tvPositionMoney;
 
     @Nullable protected PositionDTOList positionDTOList;
     @Nullable protected PositionDTOCompact positionDTOCompact;
@@ -113,7 +113,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         setRetainInstance(false);
         initTimeSpanButton();
         fetchKChart(FXChartGranularity.min1);

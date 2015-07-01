@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,9 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
@@ -111,13 +110,13 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Inject protected SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
     @Inject protected Lazy<SocialSharer> socialSharerLazy;
 
-    @InjectView(R.id.portfolio_selector_container) protected PortfolioSelectorView selectedPortfolioContainer;
-    @InjectView(R.id.quote_refresh_countdown) protected ProgressBar quoteRefreshProgressBar;
-    @InjectView(R.id.bottom_button) protected ViewGroup buySellBtnContainer;
-    @InjectView(R.id.btn_buy) protected Button buyBtn;
-    @InjectView(R.id.btn_sell) protected Button sellBtn;
-    @InjectView(R.id.market_close_container) @Optional protected View marketClosedContainer;
-    @InjectView(R.id.market_close_hint) @Optional protected TextView marketCloseHint;
+    @Bind(R.id.portfolio_selector_container) protected PortfolioSelectorView selectedPortfolioContainer;
+    @Bind(R.id.quote_refresh_countdown) protected ProgressBar quoteRefreshProgressBar;
+    @Bind(R.id.bottom_button) protected ViewGroup buySellBtnContainer;
+    @Bind(R.id.btn_buy) protected Button buyBtn;
+    @Bind(R.id.btn_sell) protected Button sellBtn;
+    @Bind(R.id.market_close_container) @Nullable protected View marketClosedContainer;
+    @Bind(R.id.market_close_hint) @Nullable protected TextView marketCloseHint;
 
     protected Requisite requisite;
     @Nullable protected QuoteDTO quoteDTO;
@@ -158,7 +157,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         setRetainInstance(true);
 
         buySellBtnContainer.setVisibility(View.GONE);
@@ -395,7 +394,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteRefreshProgressBar.clearAnimation();
         progressAnimation = null;
 
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

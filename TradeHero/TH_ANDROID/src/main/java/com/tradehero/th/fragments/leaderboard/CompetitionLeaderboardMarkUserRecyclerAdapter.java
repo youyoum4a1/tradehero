@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.metrics.Analytics;
@@ -44,7 +44,7 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
 
     public static class CompetitionLbmuItemViewHolder extends LbmuItemViewHolder<LeaderboardItemDisplayDTO>
     {
-        @InjectView(R.id.lbmu_item_prize) ImageView prizeIcon;
+        @Bind(R.id.lbmu_item_prize) ImageView prizeIcon;
 
         public CompetitionLbmuItemViewHolder(View itemView, Picasso picasso, Analytics analytics)
         {
@@ -67,9 +67,9 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
 
     public static class CompetitionLbmuHeaderViewHolder extends LbmuHeaderViewHolder<LeaderboardItemDisplayDTO>
     {
-        @InjectView(R.id.competition_own_ranking_info_text) TextView infoText;
-        @InjectView(R.id.competition_own_ranking_info_container) ViewGroup container;
-        @InjectView(R.id.lbmu_item_prize) ImageView prizeIcon;
+        @Bind(R.id.competition_own_ranking_info_text) TextView infoText;
+        @Bind(R.id.competition_own_ranking_info_container) ViewGroup container;
+        @Bind(R.id.lbmu_item_prize) ImageView prizeIcon;
         private ClickableSpan clickableSpan;
 
         public CompetitionLbmuHeaderViewHolder(View itemView, Picasso picasso, Analytics analytics)

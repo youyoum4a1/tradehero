@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import butterknife.OnTextChanged;
 import com.tradehero.common.utils.THToast;
@@ -62,11 +62,11 @@ import timber.log.Timber;
 public class FriendsInvitationFragment extends BaseFragment
         implements SocialFriendUserView.OnElementClickListener
 {
-    @InjectView(R.id.social_friend_type_list) ListView socialListView;
-    @InjectView(R.id.social_friends_list) ListView friendsListView;
-    @InjectView(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
-    @InjectView(R.id.social_search_friends_none) TextView friendsListEmptyView;
-    @InjectView(R.id.search_social_friends) EditText filterTextView;
+    @Bind(R.id.social_friend_type_list) ListView socialListView;
+    @Bind(R.id.social_friends_list) ListView friendsListView;
+    @Bind(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
+    @Bind(R.id.social_search_friends_none) TextView friendsListEmptyView;
+    @Bind(R.id.search_social_friends) EditText filterTextView;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
@@ -122,7 +122,7 @@ public class FriendsInvitationFragment extends BaseFragment
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         restoreSavedData(savedInstanceState);
     }
 
@@ -152,7 +152,7 @@ public class FriendsInvitationFragment extends BaseFragment
     public void onDestroyView()
     {
         savedState = saveState();
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

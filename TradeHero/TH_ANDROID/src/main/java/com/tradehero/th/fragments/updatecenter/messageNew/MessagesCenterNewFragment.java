@@ -17,7 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
@@ -69,13 +69,13 @@ public class MessagesCenterNewFragment extends BaseFragment
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
 
-    @InjectView(R.id.layout_listview) RelativeLayout layout_listview;
-    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.listview) ListView listView;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
-    @InjectView(android.R.id.empty) TextView emptyView;
-    @InjectView(R.id.error) View errorView;
-    @InjectView(R.id.composeLayout) View composeLayout;
+    @Bind(R.id.layout_listview) RelativeLayout layout_listview;
+    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.listview) ListView listView;
+    @Bind(android.R.id.progress) ProgressBar progressBar;
+    @Bind(android.R.id.empty) TextView emptyView;
+    @Bind(R.id.error) View errorView;
+    @Bind(R.id.composeLayout) View composeLayout;
 
     private boolean hasMorePage = true;
     private MessageListViewAdapter listAdapter;
@@ -122,7 +122,7 @@ public class MessagesCenterNewFragment extends BaseFragment
     private void init(View view)
     {
         HierarchyInjector.inject(this);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         if (listAdapter == null)
         {
             listAdapter = new MessageListViewAdapter(getActivity(), new PrettyTime(), picasso, userPhotoTransformation);

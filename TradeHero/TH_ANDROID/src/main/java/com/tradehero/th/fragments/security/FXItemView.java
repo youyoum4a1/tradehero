@@ -7,7 +7,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -19,10 +19,10 @@ import com.tradehero.th.models.number.THSignedFXRate;
 
 public class FXItemView extends RelativeLayout implements DTOView<SecurityCompactDTO>
 {
-    @InjectView(R.id.fx_pair_name) TextView fxPairName;
-    @InjectView(R.id.flags_container) protected FxFlagContainer flagsContainer;
-    @InjectView(R.id.fx_price_buy) TextView buyPrice;
-    @InjectView(R.id.fx_price_sell) TextView sellPrice;
+    @Bind(R.id.fx_pair_name) TextView fxPairName;
+    @Bind(R.id.flags_container) protected FxFlagContainer flagsContainer;
+    @Bind(R.id.fx_price_buy) TextView buyPrice;
+    @Bind(R.id.fx_price_sell) TextView sellPrice;
 
     protected FxSecurityCompactDTO fxSecurityCompactDTO;
     private int mBlinkDuration;
@@ -55,7 +55,7 @@ public class FXItemView extends RelativeLayout implements DTOView<SecurityCompac
     protected void init()
     {
         HierarchyInjector.inject(this);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         mDefaultTextColor = R.color.text_primary;
         mBlinkDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
     }

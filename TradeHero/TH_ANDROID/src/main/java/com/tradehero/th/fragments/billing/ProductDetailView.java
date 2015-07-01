@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -18,8 +18,8 @@ abstract public class ProductDetailView<
         extends RelativeLayout
         implements DTOView<ProductDetailType>
 {
-    @InjectView(R.id.sku_price) protected TextView skuPrice;
-    @InjectView(R.id.text_deliverable) protected TextView deliverableText;
+    @Bind(R.id.sku_price) protected TextView skuPrice;
+    @Bind(R.id.text_deliverable) protected TextView deliverableText;
 
     //<editor-fold desc="Constructors">
     public ProductDetailView(Context context)
@@ -41,7 +41,7 @@ abstract public class ProductDetailView<
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     public void setEnabled(boolean enabled)

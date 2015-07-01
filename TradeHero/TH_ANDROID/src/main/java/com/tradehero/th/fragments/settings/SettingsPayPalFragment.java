@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
@@ -38,8 +38,8 @@ import timber.log.Timber;
 
 public class SettingsPayPalFragment extends BaseFragment
 {
-    @InjectView(R.id.settings_paypal_email_text) protected ValidatedText paypalEmailText;
-    @InjectView(R.id.settings_paypal_update_button) protected Button submitButton;
+    @Bind(R.id.settings_paypal_email_text) protected ValidatedText paypalEmailText;
+    @Bind(R.id.settings_paypal_update_button) protected Button submitButton;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
@@ -54,7 +54,7 @@ public class SettingsPayPalFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         // HACK: force this email to focus instead of the TabHost stealing focus..
         paypalEmailText.setOnTouchListener(new FocusableOnTouchListener());
     }
@@ -81,7 +81,7 @@ public class SettingsPayPalFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

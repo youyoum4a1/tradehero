@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -18,8 +17,8 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
 import com.fortysevendeg.swipelistview.SwipeListView;
 import com.fortysevendeg.swipelistview.SwipeListViewListener;
@@ -56,9 +55,9 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject Analytics analytics;
 
-    @InjectView(android.R.id.empty) @Optional protected ProgressBar progressBar;
-    @InjectView(R.id.watchlist_swipe_listview) SwipeListView watchlistPositionListView;
-    @InjectView(R.id.swipe_container) SwipeRefreshLayout watchListRefreshableContainer;
+    @Bind(android.R.id.empty) @Nullable protected ProgressBar progressBar;
+    @Bind(R.id.watchlist_swipe_listview) SwipeListView watchlistPositionListView;
+    @Bind(R.id.swipe_container) SwipeRefreshLayout watchListRefreshableContainer;
 
     private WatchlistAdapter watchListAdapter;
     private BroadcastReceiver broadcastReceiver;
@@ -90,7 +89,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
 
         watchlistPositionListView.post(new Runnable()
         {
@@ -182,7 +181,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         watchListRefreshableContainer.setRefreshing(false);
         watchListRefreshableContainer.setOnRefreshListener(null);
 
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

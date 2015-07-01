@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -34,7 +34,7 @@ public class IdentityPromptActivity extends BaseActivity
     @Inject KYCFormPreference kycFormPreference;
     @Inject LiveServiceWrapper liveServiceWrapper;
 
-    @InjectView(R.id.identity_prompt_yes) View yesButton;
+    @Bind(R.id.identity_prompt_yes) View yesButton;
 
     private Subscription fastFillSubscription;
 
@@ -42,7 +42,7 @@ public class IdentityPromptActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity_prompt);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         fastFillSubscription = Observable.combineLatest(
                 getFormToUse(),
                 ViewObservable.clicks(yesButton).flatMap(
@@ -103,7 +103,7 @@ public class IdentityPromptActivity extends BaseActivity
     @Override protected void onDestroy()
     {
         fastFillSubscription.unsubscribe();
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroy();
     }
 

@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.discussion;
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.text.Html;
 import android.text.Spanned;
@@ -11,9 +10,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -53,14 +52,14 @@ public class AbstractDiscussionCompactItemViewHolder
         //</editor-fold>
     }
 
-    @InjectView(R.id.discussion_action_buttons) @Optional public DiscussionActionButtonsView discussionActionButtonsView;
-    @InjectView(R.id.discussion_time) @Optional protected TextView time;
+    @Bind(R.id.discussion_action_buttons) @Nullable public DiscussionActionButtonsView discussionActionButtonsView;
+    @Bind(R.id.discussion_time) @Nullable protected TextView time;
 
-    @InjectView(R.id.private_text_stub_container) @Optional protected View stubTextContainer;
+    @Bind(R.id.private_text_stub_container) @Nullable protected View stubTextContainer;
 
-    @InjectView(R.id.discussion_translate_notice_wrapper) @Optional protected View translateNoticeWrapper;
-    @InjectView(R.id.discussion_translate_notice) @Optional protected TextView translateNotice;
-    @InjectView(R.id.discussion_translate_notice_image) @Optional protected ImageView translateNoticeImage;
+    @Bind(R.id.discussion_translate_notice_wrapper) @Nullable protected View translateNoticeWrapper;
+    @Bind(R.id.discussion_translate_notice) @Nullable protected TextView translateNotice;
+    @Bind(R.id.discussion_translate_notice_image) @Nullable protected ImageView translateNoticeImage;
 
     @Inject protected SocialShareTranslationHelper socialShareHelper;
 
@@ -79,18 +78,18 @@ public class AbstractDiscussionCompactItemViewHolder
     public void onFinishInflate(@NonNull View view)
     {
         HierarchyInjector.inject(view.getContext(), this);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
     }
 
     public void onAttachedToWindow(@NonNull View view)
     {
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
     }
 
     @SuppressLint("MissingSuperCall")
     public void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     @NonNull public Observable<UserDiscussionAction> getUserActionObservable()
@@ -231,7 +230,7 @@ public class AbstractDiscussionCompactItemViewHolder
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick({R.id.discussion_translate_notice_wrapper})
-    @Optional
+    @Nullable
     protected void toggleTranslate()
     {
         if (viewDTO != null)

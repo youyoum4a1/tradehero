@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
 import com.tradehero.th.models.kyc.KYCForm;
@@ -15,9 +15,9 @@ import com.tradehero.th.widget.DocumentActionWidget;
 
 public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseFragment
 {
-    @InjectView(R.id.document_action_identity) DocumentActionWidget documentActionIdentity;
-    @InjectView(R.id.document_action_residence) DocumentActionWidget documentActionResidence;
-    @InjectView(R.id.document_action_signature) DocumentActionWidget documentActionSignature;
+    @Bind(R.id.document_action_identity) DocumentActionWidget documentActionIdentity;
+    @Bind(R.id.document_action_residence) DocumentActionWidget documentActionResidence;
+    @Bind(R.id.document_action_signature) DocumentActionWidget documentActionSignature;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -27,7 +27,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
     }
 
     @Override public void onNext(@NonNull KYCForm kycForm)

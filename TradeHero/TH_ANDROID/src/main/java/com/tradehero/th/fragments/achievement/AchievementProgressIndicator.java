@@ -14,15 +14,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementDefDTO;
 import java.util.List;
 
 public class AchievementProgressIndicator extends LinearLayout
 {
-    @InjectView(R.id.achievement_indicator_image_container) ViewGroup imageContainer;
-    @InjectView(R.id.achievement_indicator_text_container) ViewGroup textContainer;
+    @Bind(R.id.achievement_indicator_image_container) ViewGroup imageContainer;
+    @Bind(R.id.achievement_indicator_text_container) ViewGroup textContainer;
 
     SparseArray<ViewHolder> indicatorLists = new SparseArray<>();
     private int mCurrentLevel;
@@ -50,7 +50,7 @@ public class AchievementProgressIndicator extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         findIndicators();
     }
 

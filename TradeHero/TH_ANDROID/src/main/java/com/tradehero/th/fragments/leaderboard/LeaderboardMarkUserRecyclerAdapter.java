@@ -3,16 +3,15 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
-import butterknife.Optional;
+import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -261,7 +260,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
     public static class LbmuHeaderViewHolder<T extends LeaderboardItemDisplayDTO> extends LbmuItemViewHolder<T>
     {
-        @InjectView(R.id.mark_expand_down) @Optional @Nullable ImageView expandMark;
+        @Bind(R.id.mark_expand_down) @Nullable ImageView expandMark;
 
         public LbmuHeaderViewHolder(View itemView, Picasso picasso, Analytics analytics)
         {
@@ -291,17 +290,17 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         private final Picasso picasso;
         protected final PublishSubject<LeaderboardItemUserAction> userActionSubject;
 
-        @InjectView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
-        @InjectView(R.id.lbmu_roi) protected TextView lbmuRoi;
-        @InjectView(R.id.lbmu_roi_period) protected TextView lbmurRoiPeriod;
-        @InjectView(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
-        @InjectView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
+        @Bind(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
+        @Bind(R.id.lbmu_roi) protected TextView lbmuRoi;
+        @Bind(R.id.lbmu_roi_period) protected TextView lbmurRoiPeriod;
+        @Bind(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
+        @Bind(R.id.leaderboard_user_item_position) TextView lbmuPosition;
 
-        @InjectView(R.id.expanding_layout) ExpandingLayout expandingLayout;
-        @InjectView(R.id.user_statistic_view) @Optional @Nullable UserStatisticView userStatisticView;
-        @InjectView(R.id.leaderboard_user_item_fof) @Optional @Nullable MarkdownTextView lbmuFoF;
-        @InjectView(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
-        @InjectView(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
+        @Bind(R.id.expanding_layout) ExpandingLayout expandingLayout;
+        @Bind(R.id.user_statistic_view) @Nullable UserStatisticView userStatisticView;
+        @Bind(R.id.leaderboard_user_item_fof) @Nullable MarkdownTextView lbmuFoF;
+        @Bind(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
+        @Bind(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
         @Nullable protected LeaderboardMarkedUserItemDisplayDto currentDto;
 
         public LbmuItemViewHolder(View itemView, Picasso picasso, Analytics analytics)

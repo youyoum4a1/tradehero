@@ -16,7 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
@@ -50,9 +50,9 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject protected FollowerSummaryCacheRx followerSummaryCache;
 
-    @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.follower_list) ListView followerList;
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
+    @Bind(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.follower_list) ListView followerList;
+    @Bind(android.R.id.progress) ProgressBar progressBar;
 
     private FollowerListItemAdapter followerListAdapter;
     private UserBaseKey heroId;
@@ -90,7 +90,7 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         swipeRefreshLayout.setOnRefreshListener(this);
         followerList.setAdapter(followerListAdapter);
         followerList.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
@@ -180,7 +180,7 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

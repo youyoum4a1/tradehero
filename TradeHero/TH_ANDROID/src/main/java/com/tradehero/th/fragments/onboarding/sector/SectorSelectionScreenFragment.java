@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
@@ -53,8 +53,8 @@ public class SectorSelectionScreenFragment extends BaseFragment
 
     @Inject SectorListCacheRx sectorListCache;
 
-    @InjectView(android.R.id.list) ListView sectorList;
-    @InjectView(android.R.id.button1) View nextButton;
+    @Bind(android.R.id.list) ListView sectorList;
+    @Bind(android.R.id.button1) View nextButton;
     protected OnBoardHeaderLinearView headerView;
     ArrayAdapter<SelectableSectorDTO> sectorAdapter;
     @NonNull Map<SectorId, SectorDTO> knownSectors;
@@ -129,7 +129,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         sectorList.addHeaderView(headerView, "title", false);
         sectorList.setAdapter(sectorAdapter);
         displayNextButton();
@@ -143,7 +143,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

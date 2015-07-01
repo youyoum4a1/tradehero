@@ -12,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -62,9 +62,9 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
     @Inject DiscussionFragmentUtil discussionFragmentUtil;
     @Inject FragmentOuterElements fragmentElements;
 
-    @InjectView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
-    @InjectView(R.id.list_news_headline) ListView listView;
-    @InjectView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
+    @Bind(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
+    @Bind(R.id.list_news_headline) ListView listView;
+    @Bind(R.id.list_news_headline_progressbar) ProgressBar progressBar;
 
     private NewsHeadlineAdapter adapter;
 
@@ -89,7 +89,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         listView.setAdapter(adapter);
         listView.setOnScrollListener(fragmentElements.getListViewScrollListener());
         fetchSecurityNews();
@@ -102,7 +102,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
         {
             listView.setOnScrollListener(null);
         }
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

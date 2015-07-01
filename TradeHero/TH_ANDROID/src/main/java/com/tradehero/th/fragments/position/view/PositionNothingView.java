@@ -7,7 +7,7 @@ import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 
@@ -46,7 +46,7 @@ public class PositionNothingView extends RelativeLayout
 
     public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
     {
-        @InjectView(R.id.position_nothing_description) protected TextView description;
+        @Bind(R.id.position_nothing_description) protected TextView description;
 
         public ViewHolder(PositionNothingView itemView)
         {

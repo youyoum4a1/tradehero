@@ -33,7 +33,7 @@ public class AbstractPartialBottomView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override public void display(@NonNull DTO dto)

@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
@@ -15,7 +15,7 @@ import com.tradehero.th.fragments.billing.store.StoreItemTitleDTO;
 public class StoreItemHeaderView extends LinearLayout
     implements DTOView<StoreItemDTO>
 {
-    @InjectView(R.id.title) protected TextView title;
+    @Bind(R.id.title) protected TextView title;
 
     //<editor-fold desc="Constructors">
     public StoreItemHeaderView(Context context)
@@ -37,7 +37,7 @@ public class StoreItemHeaderView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override public void display(@NonNull StoreItemDTO dto)

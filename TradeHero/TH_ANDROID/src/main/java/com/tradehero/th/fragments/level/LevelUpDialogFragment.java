@@ -22,7 +22,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.level.LevelDefDTO;
@@ -42,10 +42,10 @@ public class LevelUpDialogFragment extends BaseDialogFragment
 
     private static final float DIM_AMOUNT = 0.8f;
 
-    @InjectView(R.id.user_level_next_badge) ImageView nextBadge;
-    @InjectView(R.id.user_level_current_badge) ImageView currentBadge;
-    @InjectView(R.id.user_level_up_description) TextView levelUpDescription;
-    @InjectView(R.id.user_level_up_main_container) ViewGroup container;
+    @Bind(R.id.user_level_next_badge) ImageView nextBadge;
+    @Bind(R.id.user_level_current_badge) ImageView currentBadge;
+    @Bind(R.id.user_level_up_description) TextView levelUpDescription;
+    @Bind(R.id.user_level_up_main_container) ViewGroup container;
 
     @Inject Picasso picasso;
     @Inject LevelDefCacheRx levelDefCache;
@@ -123,7 +123,7 @@ public class LevelUpDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         display();
         final Handler mHandler = new Handler();
         Animator current = AnimatorInflater.loadAnimator(getActivity(), R.animator.rotate_flip_hide);

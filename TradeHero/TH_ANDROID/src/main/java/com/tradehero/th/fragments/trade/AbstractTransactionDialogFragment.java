@@ -21,7 +21,7 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.android.internal.util.Predicate;
@@ -88,22 +88,22 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     private static final String KEY_REQUISITE = AbstractTransactionDialogFragment.class.getName() + ".requisite";
     private static final double INITIAL_VALUE = 5000;
 
-    @InjectView(R.id.dialog_stock_name) protected TextView mStockNameTextView;
-    @InjectView(R.id.vcash_left) protected TextView mCashShareLeftTextView;
-    @InjectView(R.id.dialog_cash_left) protected TextView mCashShareLeftLabelTextView;
-    @InjectView(R.id.vtrade_value) protected TextView mTradeValueTextView;
-    @InjectView(R.id.dialog_price) protected TextView mStockPriceTextView;
-    @InjectView(R.id.dialog_portfolio) protected TextView mPortfolioTextView;
-    @InjectView(R.id.dialog_profit_and_loss) protected TextView mProfitLossView;
+    @Bind(R.id.dialog_stock_name) protected TextView mStockNameTextView;
+    @Bind(R.id.vcash_left) protected TextView mCashShareLeftTextView;
+    @Bind(R.id.dialog_cash_left) protected TextView mCashShareLeftLabelTextView;
+    @Bind(R.id.vtrade_value) protected TextView mTradeValueTextView;
+    @Bind(R.id.dialog_price) protected TextView mStockPriceTextView;
+    @Bind(R.id.dialog_portfolio) protected TextView mPortfolioTextView;
+    @Bind(R.id.dialog_profit_and_loss) protected TextView mProfitLossView;
 
-    @InjectView(R.id.seek_bar) protected SeekBar mSeekBar;
-    @InjectView(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
+    @Bind(R.id.seek_bar) protected SeekBar mSeekBar;
+    @Bind(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
 
-    @InjectView(R.id.vquantity) protected EditText mQuantityEditText;
-    @InjectView(R.id.comments) protected TextView mCommentsEditText;
+    @Bind(R.id.vquantity) protected EditText mQuantityEditText;
+    @Bind(R.id.comments) protected TextView mCommentsEditText;
 
-    @InjectView(R.id.dialog_btn_add_cash) protected ImageButton mBtnAddCash;
-    @InjectView(R.id.dialog_btn_confirm) protected Button mConfirm;
+    @Bind(R.id.dialog_btn_add_cash) protected ImageButton mBtnAddCash;
+    @Bind(R.id.dialog_btn_confirm) protected Button mConfirm;
 
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
@@ -263,7 +263,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         unsubscribe(buySellSubscription);
         buySellSubscription = null;
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

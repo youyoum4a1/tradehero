@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.squareup.picasso.Picasso;
@@ -51,13 +51,13 @@ public class WatchlistEditFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID_BUNDLE = WatchlistEditFragment.class.getName() + ".securityKeyId";
 
-    @InjectView(R.id.edit_watchlist_item_security_logo) ImageView securityLogo;
-    @InjectView(R.id.edit_watchlist_item_security_name) TextView securityTitle;
-    @InjectView(R.id.edit_watchlist_item_security_desc) TextView securityDesc;
-    @InjectView(R.id.edit_watchlist_item_security_currency) TextView watchCurrency;
-    @InjectView(R.id.edit_watchlist_item_security_price) TextView watchPrice;
-    @InjectView(R.id.edit_watchlist_item_done) TextView doneButton;
-    @InjectView(R.id.edit_watchlist_item_delete) TextView deleteButton;
+    @Bind(R.id.edit_watchlist_item_security_logo) ImageView securityLogo;
+    @Bind(R.id.edit_watchlist_item_security_name) TextView securityTitle;
+    @Bind(R.id.edit_watchlist_item_security_desc) TextView securityDesc;
+    @Bind(R.id.edit_watchlist_item_security_currency) TextView watchCurrency;
+    @Bind(R.id.edit_watchlist_item_security_price) TextView watchPrice;
+    @Bind(R.id.edit_watchlist_item_done) TextView doneButton;
+    @Bind(R.id.edit_watchlist_item_delete) TextView deleteButton;
 
     private SecurityId securityKeyId;
     private WatchlistPositionDTO watchlistPositionDTO;
@@ -93,7 +93,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         securityTitle.setText(SecurityUtils.getDisplayableSecurityName(securityKeyId));
         fetchRequisite();
     }
@@ -107,7 +107,7 @@ public class WatchlistEditFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         picasso.get().cancelRequest(securityLogo);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

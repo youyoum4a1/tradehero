@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -18,21 +18,21 @@ import com.tradehero.th.utils.DateUtils;
 
 public class PositionPartialBottomInPeriodViewHolder implements DTOView<PositionPartialBottomInPeriodViewHolder.DTO>
 {
-    @InjectView(R.id.position_list_bottom_in_period_container) @Optional protected View inPeriodPositionContainer;
-    @InjectView(R.id.position_list_in_period_title) @Optional protected View inPeriodTitle;
-    @InjectView(R.id.position_list_overall_title) @Optional protected View overallTitle;
-    @InjectView(R.id.in_period_pl_value_header) @Optional protected TextView inPeriodPLHeader;
-    @InjectView(R.id.in_period_pl_value) @Optional protected TextView inPeriodPL;
-    @InjectView(R.id.in_period_additional_invested) @Optional protected TextView inPeriodAdditionalInvested;
-    @InjectView(R.id.in_period_start_value) @Optional protected TextView inPeriodValueAtStart;
-    @InjectView(R.id.in_period_start_value_date) @Optional protected TextView inPeriodStartValueDate;
-    @InjectView(R.id.in_period_roi_value) @Optional protected TextView inPeriodRoiValue;
+    @Bind(R.id.position_list_bottom_in_period_container) @Nullable protected View inPeriodPositionContainer;
+    @Bind(R.id.position_list_in_period_title) @Nullable protected View inPeriodTitle;
+    @Bind(R.id.position_list_overall_title) @Nullable protected View overallTitle;
+    @Bind(R.id.in_period_pl_value_header) @Nullable protected TextView inPeriodPLHeader;
+    @Bind(R.id.in_period_pl_value) @Nullable protected TextView inPeriodPL;
+    @Bind(R.id.in_period_additional_invested) @Nullable protected TextView inPeriodAdditionalInvested;
+    @Bind(R.id.in_period_start_value) @Nullable protected TextView inPeriodValueAtStart;
+    @Bind(R.id.in_period_start_value_date) @Nullable protected TextView inPeriodStartValueDate;
+    @Bind(R.id.in_period_roi_value) @Nullable protected TextView inPeriodRoiValue;
 
     //<editor-fold desc="Constructors">
     public PositionPartialBottomInPeriodViewHolder(@NonNull View container)
     {
         super();
-        ButterKnife.inject(this, container);
+        ButterKnife.bind(this, container);
     }
     //</editor-fold>
 

@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -70,8 +70,8 @@ public class FollowerManagerFragment extends DashboardFragment
     @RouteProperty("tabIndex") Integer routedTabIndex;
 
     private UserBaseKey heroId;
-    @InjectView(android.R.id.tabhost) FragmentTabHost mTabHost;
-    @InjectView(R.id.send_message_broadcast) View broadcastView;
+    @Bind(android.R.id.tabhost) FragmentTabHost mTabHost;
+    @Bind(R.id.send_message_broadcast) View broadcastView;
 
     private FollowerSummaryDTO followerSummaryDTO;
 
@@ -186,7 +186,7 @@ public class FollowerManagerFragment extends DashboardFragment
             Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_store_manage_followers_2, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         addTabs();
         return view;
     }
@@ -230,7 +230,7 @@ public class FollowerManagerFragment extends DashboardFragment
     {
         mTabHost.setOnTabChangedListener(null);
         mTabHost = null;
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

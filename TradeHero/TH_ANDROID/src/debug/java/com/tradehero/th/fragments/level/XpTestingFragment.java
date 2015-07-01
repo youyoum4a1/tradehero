@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -22,16 +22,16 @@ import javax.inject.Inject;
 
 public class XpTestingFragment extends BaseFragment
 {
-    @InjectView(R.id.xp_test_reason) EditText xpReason;
-    @InjectView(R.id.xp_test_from) EditText xpFrom;
-    @InjectView(R.id.xp_test_earned) EditText xpEarned;
-    @InjectView(R.id.xp_test_multiplier_1_reason) EditText xpM1Reason;
-    @InjectView(R.id.xp_test_multiplier_1_value) EditText xpM1Value;
-    @InjectView(R.id.xp_test_multiplier_2_reason) EditText xpM2Reason;
-    @InjectView(R.id.xp_test_multiplier_2_value) EditText xpM2Value;
-    @InjectView(R.id.xp_test_multiplier_3_reason) EditText xpM3Reason;
-    @InjectView(R.id.xp_test_multiplier_3_value) EditText xpM3Value;
-    @InjectView(R.id.xp_test_launch) Button launch;
+    @Bind(R.id.xp_test_reason) EditText xpReason;
+    @Bind(R.id.xp_test_from) EditText xpFrom;
+    @Bind(R.id.xp_test_earned) EditText xpEarned;
+    @Bind(R.id.xp_test_multiplier_1_reason) EditText xpM1Reason;
+    @Bind(R.id.xp_test_multiplier_1_value) EditText xpM1Value;
+    @Bind(R.id.xp_test_multiplier_2_reason) EditText xpM2Reason;
+    @Bind(R.id.xp_test_multiplier_2_value) EditText xpM2Value;
+    @Bind(R.id.xp_test_multiplier_3_reason) EditText xpM3Reason;
+    @Bind(R.id.xp_test_multiplier_3_value) EditText xpM3Value;
+    @Bind(R.id.xp_test_launch) Button launch;
 
     @Inject BroadcastUtils broadcastUtils;
 
@@ -43,7 +43,7 @@ public class XpTestingFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
     }
 
     @SuppressWarnings("unused")

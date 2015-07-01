@@ -16,7 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
@@ -93,8 +93,8 @@ public class TradeListFragment extends DashboardFragment
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject Analytics analytics;
 
-    @InjectView(R.id.trade_list) protected ListView tradeListView;
-    @InjectView(R.id.btn_trade_now) protected View buttonTrade;
+    @Bind(R.id.trade_list) protected ListView tradeListView;
+    @Bind(R.id.btn_trade_now) protected View buttonTrade;
     protected StockActionBarRelativeLayout actionBarLayout;
 
     @RouteProperty("userId") Integer routeUserId;
@@ -174,7 +174,7 @@ public class TradeListFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         tradeListView.setAdapter(adapter);
         tradeListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
     }
@@ -251,7 +251,7 @@ public class TradeListFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         tradeListView.setOnScrollListener(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

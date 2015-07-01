@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -28,12 +28,12 @@ import rx.subjects.BehaviorSubject;
 public class FollowDialogView extends LinearLayout
     implements DTOView<UserBaseDTO>
 {
-    @InjectView(R.id.user_profile_avatar) ImageView mUserPhoto;
-    @InjectView(R.id.user_name) TextView mUsername;
-    @InjectView(R.id.title) TextView mUserTitle;
+    @Bind(R.id.user_profile_avatar) ImageView mUserPhoto;
+    @Bind(R.id.user_name) TextView mUsername;
+    @Bind(R.id.title) TextView mUserTitle;
 
-    @InjectView(R.id.free_follow_layout) LinearLayout mFreeFollowArea;
-    @InjectView(R.id.not_follow_layout) LinearLayout mNotFollowArea;
+    @Bind(R.id.free_follow_layout) LinearLayout mFreeFollowArea;
+    @Bind(R.id.not_follow_layout) LinearLayout mNotFollowArea;
 
     @Inject @ForUserPhoto Lazy<Transformation> peopleIconTransformation;
     @Inject Lazy<Picasso> picasso;
@@ -63,19 +63,19 @@ public class FollowDialogView extends LinearLayout
         super.onFinishInflate();
 
         requestSubject = BehaviorSubject.create();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

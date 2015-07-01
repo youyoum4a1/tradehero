@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
@@ -29,12 +29,12 @@ import org.ocpsoft.prettytime.PrettyTime;
 public class TradeListItemView extends LinearLayout
         implements DTOView<TradeListItemView.DTO>
 {
-    @InjectView(R.id.gain_indicator) protected ImageView gainIndicator;
-    @InjectView(R.id.trade_date_label) protected TextView dateTextView;
-    @InjectView(R.id.traded_quantity_verbose) protected TextView tradedQuantityVerbose;
-    @InjectView(R.id.pl_container) protected View plContainer;
-    @InjectView(R.id.pl_value_header) protected TextView plValueHeader;
-    @InjectView(R.id.pl_value) protected TextView plValue;
+    @Bind(R.id.gain_indicator) protected ImageView gainIndicator;
+    @Bind(R.id.trade_date_label) protected TextView dateTextView;
+    @Bind(R.id.traded_quantity_verbose) protected TextView tradedQuantityVerbose;
+    @Bind(R.id.pl_container) protected View plContainer;
+    @Bind(R.id.pl_value_header) protected TextView plValueHeader;
+    @Bind(R.id.pl_value) protected TextView plValue;
 
     @Nullable private DTO tradeItemViewDTO;
 
@@ -59,7 +59,7 @@ public class TradeListItemView extends LinearLayout
     {
         super.onFinishInflate();
         HierarchyInjector.inject(this);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override public void display(@NonNull DTO dto)

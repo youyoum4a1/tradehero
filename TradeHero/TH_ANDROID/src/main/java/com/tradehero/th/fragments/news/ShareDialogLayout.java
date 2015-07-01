@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTO;
@@ -25,9 +25,9 @@ import rx.subjects.BehaviorSubject;
 
 public class ShareDialogLayout extends LinearLayout
 {
-    @InjectView(R.id.news_action_share_title2) protected TextView shareTitleView;
-    @InjectView(R.id.news_action_share_cancel) protected View cancelView;
-    @InjectView(R.id.news_action_list_sharing_items) protected ListView listViewSharingOptions;
+    @Bind(R.id.news_action_share_title2) protected TextView shareTitleView;
+    @Bind(R.id.news_action_share_cancel) protected View cancelView;
+    @Bind(R.id.news_action_list_sharing_items) protected ListView listViewSharingOptions;
 
     @Inject ShareDestinationFactory shareDestinationFactory;
     @Inject @NonNull Comparator<ShareDestination> shareDestinationIndexResComparator;
@@ -48,13 +48,13 @@ public class ShareDialogLayout extends LinearLayout
     protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         if (!isInEditMode())
         {
             listViewSharingOptions.setAdapter(new ShareDestinationSetAdapter(
@@ -67,7 +67,7 @@ public class ShareDialogLayout extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

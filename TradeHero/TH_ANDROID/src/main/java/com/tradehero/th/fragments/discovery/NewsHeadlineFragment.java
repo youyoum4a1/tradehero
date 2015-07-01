@@ -17,7 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
 import com.tradehero.common.utils.THToast;
@@ -77,9 +77,9 @@ public class NewsHeadlineFragment extends Fragment
     @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
     @Inject DiscussionFragmentUtil discussionFragmentUtil;
 
-    @InjectView(android.R.id.progress) ProgressBar progressBar;
-    @InjectView(R.id.discovery_news_list) ListView mNewsListView;
-    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(android.R.id.progress) ProgressBar progressBar;
+    @Bind(R.id.discovery_news_list) ListView mNewsListView;
+    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
 
     private ClipboardManager clipboardManager;
     private Subscription newsSubscription;
@@ -206,7 +206,7 @@ public class NewsHeadlineFragment extends Fragment
 
     protected void initView(View view)
     {
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         int headerHeight = getResources().getDimensionPixelSize(R.dimen.discovery_news_carousel_height);
 
         mBottomLoadingView = new ProgressBar(getActivity());

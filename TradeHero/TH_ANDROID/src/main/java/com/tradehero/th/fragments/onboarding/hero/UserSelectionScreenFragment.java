@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
@@ -59,8 +59,8 @@ public class UserSelectionScreenFragment extends BaseFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LeaderboardUserListCacheRx leaderboardUserListCache;
 
-    @InjectView(android.R.id.list) ListView userList;
-    @InjectView(android.R.id.button1) View nextButton;
+    @Bind(android.R.id.list) ListView userList;
+    @Bind(android.R.id.button1) View nextButton;
     protected OnBoardHeaderLinearView headerView;
     Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable;
     ArrayAdapter<OnBoardUserItemView.DTO> userAdapter;
@@ -123,7 +123,7 @@ public class UserSelectionScreenFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         userList.addHeaderView(headerView, "title", false);
         userList.setAdapter(userAdapter);
         displayNextButton();
@@ -137,7 +137,7 @@ public class UserSelectionScreenFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

@@ -2,7 +2,6 @@ package com.tradehero.th.fragments.discussion;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +10,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
@@ -52,10 +51,10 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
 {
     private static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
-    @InjectView(android.R.id.list) protected ListView discussionList;
-    @InjectView(R.id.post_comment_text) @Optional protected EditText postCommentText;
-    @InjectView(R.id.mention_widget) @Optional protected MentionActionButtonsView mentionActionButtonsView;
-    @InjectView(R.id.discussion_comment_widget) @Optional protected PostCommentView postCommentView;
+    @Bind(android.R.id.list) protected ListView discussionList;
+    @Bind(R.id.post_comment_text) @Nullable protected EditText postCommentText;
+    @Bind(R.id.mention_widget) @Nullable protected MentionActionButtonsView mentionActionButtonsView;
+    @Bind(R.id.discussion_comment_widget) @Nullable protected PostCommentView postCommentView;
     protected TextView discussionStatus;
 
     @Inject protected DiscussionCacheRx discussionCache;
@@ -97,7 +96,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         discussionList.setOnScrollListener(new MultiScrollListener(fragmentElements.getListViewScrollListener(), createListScrollListener()));
 
         onDestroyViewSubscriptions.add(getTopicViewObservable()
@@ -167,7 +166,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
         unsubscribe(hasSelectedSubscription);
         hasSelectedSubscription = null;
         mentionTaggedStockHandler.setDiscussionPostContent(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

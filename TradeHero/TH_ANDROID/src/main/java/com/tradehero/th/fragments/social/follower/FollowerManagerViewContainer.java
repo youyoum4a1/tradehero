@@ -8,7 +8,7 @@ import android.widget.AbsListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
@@ -26,12 +26,12 @@ public class FollowerManagerViewContainer
     public static final int INDEX_VIEW_PROGRESS = 0;
     public static final int INDEX_VIEW_LIST = 1;
 
-    @InjectView(R.id.manage_followers_total_revenue) TextView totalRevenue;
-    @InjectView(R.id.manage_followers_total_amount_paid) TextView totalAmountPaid;
-    @InjectView(R.id.manage_followers_number_followers) TextView followersCount;
-    @InjectView(android.R.id.content) ViewSwitcher contentSwitcher;
+    @Bind(R.id.manage_followers_total_revenue) TextView totalRevenue;
+    @Bind(R.id.manage_followers_total_amount_paid) TextView totalAmountPaid;
+    @Bind(R.id.manage_followers_number_followers) TextView followersCount;
+    @Bind(android.R.id.content) ViewSwitcher contentSwitcher;
     // TODO this view and the one in FollowerRevenueReportFragment point to same thing, should be merged.
-    @InjectView(R.id.follower_list) AbsListView followerListView;
+    @Bind(R.id.follower_list) AbsListView followerListView;
 
     @NonNull private Resources resources;
     private FollowerSummaryDTO followerSummaryDTO;
@@ -46,13 +46,13 @@ public class FollowerManagerViewContainer
 
     public void onCreateView(@NonNull View view)
     {
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         followerListView.setAdapter(adapter);
     }
 
     public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     public void display(@NonNull FollowerSummaryDTO followerSummaryDTO)

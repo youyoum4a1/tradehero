@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.position.PositionDTO;
@@ -106,12 +106,12 @@ public class PositionLockedView extends LinearLayout
     public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
     {
 
-        @InjectView(R.id.position_percentage) protected TextView positionPercent;
-        @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
-        @InjectView(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
-        @InjectView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
-        @InjectView(R.id.realised_pl_value) protected TextView realisedPLValue;
-        @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
+        @Bind(R.id.position_percentage) protected TextView positionPercent;
+        @Bind(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
+        @Bind(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
+        @Bind(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
+        @Bind(R.id.realised_pl_value) protected TextView realisedPLValue;
+        @Bind(R.id.total_invested_value) protected TextView totalInvestedValue;
 
         public ViewHolder(PositionLockedView itemView)
         {

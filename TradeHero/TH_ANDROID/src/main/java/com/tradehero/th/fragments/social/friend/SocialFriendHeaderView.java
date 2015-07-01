@@ -4,12 +4,12 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 
 public class SocialFriendHeaderView extends SocialFriendItemView
 {
-    @InjectView(R.id.social_friend_headline) TextView headLine;
+    @Bind(R.id.social_friend_headline) TextView headLine;
 
     private SocialFriendListItemHeaderDTO socialFriendListItemHeaderDTO;
 
@@ -29,7 +29,7 @@ public class SocialFriendHeaderView extends SocialFriendItemView
     protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override

@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.InjectViews;
+import butterknife.Bind;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -26,7 +26,7 @@ public class MentionActionButtonsView extends LinearLayout
 
     @NonNull private String returnFragmentName;
 
-    @InjectViews({R.id.btn_mention, R.id.btn_security_tag})
+    @Bind({R.id.btn_mention, R.id.btn_security_tag})
     View[] buttons;
 
     //<editor-fold desc="Constructors">
@@ -40,7 +40,7 @@ public class MentionActionButtonsView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
     }
 

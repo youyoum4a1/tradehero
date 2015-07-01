@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -27,8 +27,8 @@ public class InvitedCodeViewHolder
     public static final int VIEW_SUBMITTING = 1;
     public static final int VIEW_SUBMIT_DONE = 2;
 
-    @InjectView(R.id.action_view_switcher) ViewFlipper viewSwitcher;
-    @InjectView(R.id.invite_code) EditText inviteCode;
+    @Bind(R.id.action_view_switcher) ViewFlipper viewSwitcher;
+    @Bind(R.id.invite_code) EditText inviteCode;
 
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final UserServiceWrapper userServiceWrapper;
@@ -48,7 +48,7 @@ public class InvitedCodeViewHolder
 
     public void attachView(View view)
     {
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         displayCurrentInviteCode();
     }
 
@@ -56,7 +56,7 @@ public class InvitedCodeViewHolder
     {
         unsubscribe(updateInviteCodeSubscription);
         updateInviteCodeSubscription = null;
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
     }
 
     private void unsubscribe(@Nullable Subscription subscription)

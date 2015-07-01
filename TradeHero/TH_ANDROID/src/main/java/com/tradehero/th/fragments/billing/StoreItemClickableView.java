@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.fragments.billing.store.StoreItemClickableDTO;
@@ -17,8 +17,8 @@ import timber.log.Timber;
 public class StoreItemClickableView extends RelativeLayout
     implements DTOView<StoreItemDTO>
 {
-    @InjectView(R.id.title) protected TextView title;
-    @InjectView(R.id.icon) protected ImageView icon;
+    @Bind(R.id.title) protected TextView title;
+    @Bind(R.id.icon) protected ImageView icon;
 
     //<editor-fold desc="Constructors">
     public StoreItemClickableView(Context context)
@@ -40,7 +40,7 @@ public class StoreItemClickableView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override public void display(@NonNull StoreItemDTO dto)

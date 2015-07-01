@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
@@ -22,10 +22,10 @@ public class ProviderVideoListItemView extends RelativeLayout
 {
     @Inject Picasso picasso;
 
-    @InjectView(R.id.help_video_thumbnail) protected ImageView thumbnail;
-    @InjectView(R.id.help_video_title) protected TextView title;
-    @InjectView(R.id.help_video_description) protected TextView description;
-    @InjectView(R.id.help_video_url) protected TextView url;
+    @Bind(R.id.help_video_thumbnail) protected ImageView thumbnail;
+    @Bind(R.id.help_video_title) protected TextView title;
+    @Bind(R.id.help_video_description) protected TextView description;
+    @Bind(R.id.help_video_url) protected TextView url;
 
     //<editor-fold desc="Constructors">
     public ProviderVideoListItemView(Context context, AttributeSet attrs)
@@ -38,7 +38,7 @@ public class ProviderVideoListItemView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         thumbnail.setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 

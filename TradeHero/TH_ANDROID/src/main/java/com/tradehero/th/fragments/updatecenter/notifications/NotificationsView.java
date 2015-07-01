@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -38,10 +38,10 @@ import rx.internal.util.SubscriptionList;
 
 public class NotificationsView extends BetterViewAnimator
 {
-    @InjectView(android.R.id.empty) View emptyView;
-    @InjectView(R.id.notification_pull_to_refresh_list) AbsListView notificationList;
-    @InjectView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.readAllLayout) View readAllLayout;
+    @Bind(android.R.id.empty) View emptyView;
+    @Bind(R.id.notification_pull_to_refresh_list) AbsListView notificationList;
+    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+    @Bind(R.id.readAllLayout) View readAllLayout;
 
     @Inject Lazy<NotificationListCacheRx> notificationListCache;
     @Inject NotificationServiceWrapper notificationServiceWrapper;
@@ -81,7 +81,7 @@ public class NotificationsView extends BetterViewAnimator
     {
         super.onFinishInflate();
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
 
         notificationListAdapter = createNotificationListAdapter();
@@ -136,7 +136,7 @@ public class NotificationsView extends BetterViewAnimator
         swipeRefreshLayout.setOnRefreshListener(null);
         notificationList.setOnItemClickListener(null);
 
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

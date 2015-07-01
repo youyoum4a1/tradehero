@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.position.PositionStatus;
@@ -77,8 +77,8 @@ public class PositionSectionHeaderItemView extends RelativeLayout
 
     public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
     {
-        @InjectView(R.id.header_text) protected TextView headerText;
-        @InjectView(R.id.header_time_base) protected TextView timeBaseText;
+        @Bind(R.id.header_text) protected TextView headerText;
+        @Bind(R.id.header_time_base) protected TextView timeBaseText;
 
         public ViewHolder(PositionSectionHeaderItemView itemView)
         {

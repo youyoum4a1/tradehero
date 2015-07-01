@@ -5,14 +5,14 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.models.staff.StaffDTO;
 
 public class StaffTitleView extends LinearLayout
 {
-    @InjectView(R.id.staff_name) TextView staffNameTextView;
-    @InjectView(R.id.staff_title) TextView staffTitleTextView;
+    @Bind(R.id.staff_name) TextView staffNameTextView;
+    @Bind(R.id.staff_title) TextView staffTitleTextView;
 
     //<editor-fold desc="Constructors">
     public StaffTitleView(Context context)
@@ -35,7 +35,7 @@ public class StaffTitleView extends LinearLayout
     {
         super.onFinishInflate();
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     public void setStaffDTO(StaffDTO staffDTO)

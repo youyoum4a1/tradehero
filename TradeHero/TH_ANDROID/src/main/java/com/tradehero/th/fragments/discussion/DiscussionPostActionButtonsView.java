@@ -7,7 +7,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnCheckedChanged;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.th.R;
@@ -27,14 +27,14 @@ import rx.functions.Action1;
 
 public class DiscussionPostActionButtonsView extends LinearLayout
 {
-    @InjectView(R.id.btn_share_fb) ToggleButton facebookShareButton;
-    @InjectView(R.id.btn_share_tw) ToggleButton twitterShareButton;
-    @InjectView(R.id.btn_share_li) ToggleButton linkedInShareButton;
-    @InjectView(R.id.btn_share_wb) ToggleButton weiboShareButton;
-    @InjectView(R.id.btn_share_wechat) ToggleButton weChatShareButton;
-    @InjectView(R.id.btn_location) ToggleButton locationShareButton;
-    @InjectView(R.id.switch_share_public) ToggleButton isPublic;
-    @InjectView(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
+    @Bind(R.id.btn_share_fb) ToggleButton facebookShareButton;
+    @Bind(R.id.btn_share_tw) ToggleButton twitterShareButton;
+    @Bind(R.id.btn_share_li) ToggleButton linkedInShareButton;
+    @Bind(R.id.btn_share_wb) ToggleButton weiboShareButton;
+    @Bind(R.id.btn_share_wechat) ToggleButton weChatShareButton;
+    @Bind(R.id.btn_location) ToggleButton locationShareButton;
+    @Bind(R.id.switch_share_public) ToggleButton isPublic;
+    @Bind(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
@@ -51,7 +51,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
         initSocialBtnStatus();
     }
@@ -92,12 +92,12 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

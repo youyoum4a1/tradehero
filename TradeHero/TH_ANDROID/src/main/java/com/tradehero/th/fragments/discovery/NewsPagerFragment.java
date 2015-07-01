@@ -10,13 +10,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemSelected;
 import com.tradehero.th.R;
 
 public final class NewsPagerFragment extends Fragment
 {
-    @InjectView(R.id.spinner_news) Spinner newsSpinner;
+    @Bind(R.id.spinner_news) Spinner newsSpinner;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -26,13 +26,13 @@ public final class NewsPagerFragment extends Fragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         newsSpinner.setAdapter(new NewsSpinnerAdapter(getActivity(), NewsType.values()));
     }
 
     @Override public void onDestroyView()
     {
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

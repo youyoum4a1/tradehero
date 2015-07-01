@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -25,11 +25,11 @@ import timber.log.Timber;
 
 public class SocialFriendUserView extends SocialFriendItemView
 {
-    @InjectView(R.id.social_item_logo) ImageView friendLogo;
-    @InjectView(R.id.social_item_title) TextView friendTitle;
-    @InjectView(R.id.social_item_action_btn) TextView actionBtn;
-    @InjectView(R.id.social_friend_item_ll) LinearLayout socialFriendItem;
-    @InjectView(R.id.social_item_action_cb) CheckBox actionCb;
+    @Bind(R.id.social_item_logo) ImageView friendLogo;
+    @Bind(R.id.social_item_title) TextView friendTitle;
+    @Bind(R.id.social_item_action_btn) TextView actionBtn;
+    @Bind(R.id.social_friend_item_ll) LinearLayout socialFriendItem;
+    @Bind(R.id.social_item_action_cb) CheckBox actionCb;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
@@ -54,20 +54,20 @@ public class SocialFriendUserView extends SocialFriendItemView
     protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         HierarchyInjector.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         picasso.cancelRequest(friendLogo);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

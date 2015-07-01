@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnItemClick;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tradehero.common.utils.THToast;
@@ -41,8 +41,8 @@ public class TranslatableLanguageListFragment extends BaseFragment
     private UserTranslationSettingDTO currentSettings;
     private TranslatableLanguageItemAdapter itemAdapter;
     private Subscription tokenFetchSubscription;
-    @InjectView(android.R.id.list) ListView listView;
-    @InjectView(android.R.id.empty) View emptyView;
+    @Bind(android.R.id.list) ListView listView;
+    @Bind(android.R.id.empty) View emptyView;
 
     @Override public void onAttach(Activity activity)
     {
@@ -53,7 +53,7 @@ public class TranslatableLanguageListFragment extends BaseFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_translatable_language_list, container, false);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -74,7 +74,7 @@ public class TranslatableLanguageListFragment extends BaseFragment
     {
         unsubscribe(tokenFetchSubscription);
         listView.setEmptyView(null);
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

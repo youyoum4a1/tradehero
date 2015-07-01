@@ -11,7 +11,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.urbanairship.UAirship;
@@ -24,10 +24,10 @@ import timber.log.Timber;
 
 public class ManualPushActionView extends ScrollView
 {
-    @InjectView(R.id.channel_id) TextView channelIdView;
-    @InjectView(R.id.situation_spinner) Spinner situationSpinner;
-    @InjectView(R.id.arguments) EditText argumentView;
-    @InjectView(R.id.action_name) EditText actionNameView;
+    @Bind(R.id.channel_id) TextView channelIdView;
+    @Bind(R.id.situation_spinner) Spinner situationSpinner;
+    @Bind(R.id.arguments) EditText argumentView;
+    @Bind(R.id.action_name) EditText actionNameView;
 
     ArrayAdapter<SituationDTO> situationAdapter;
     private BehaviorSubject<Pair<String, ActionArguments>> actionArgumentObservable;
@@ -55,7 +55,7 @@ public class ManualPushActionView extends ScrollView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
         situationAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, SituationDTO.getAll());
         situationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         situationSpinner.setAdapter(situationAdapter);
@@ -74,7 +74,7 @@ public class ManualPushActionView extends ScrollView
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -92,7 +92,7 @@ public class ManualPushActionView extends ScrollView
             Timber.e(e, "Failed to pass on action value");
             actionArgumentObservable.onError(e);
         }
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }
 

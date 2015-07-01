@@ -20,7 +20,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.tradehero.common.billing.purchase.PurchaseResult;
@@ -156,11 +156,11 @@ public class PositionListFragment
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
 
-    @InjectView(R.id.list_flipper) ViewAnimator listViewFlipper;
-    @InjectView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
-    @InjectView(R.id.position_recycler_view) RecyclerView positionRecyclerView;
-    @InjectView(R.id.btn_help) ImageView btnHelp;
-    @InjectView(R.id.position_list_header_stub) ViewStub headerStub;
+    @Bind(R.id.list_flipper) ViewAnimator listViewFlipper;
+    @Bind(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
+    @Bind(R.id.position_recycler_view) RecyclerView positionRecyclerView;
+    @Bind(R.id.btn_help) ImageView btnHelp;
+    @Bind(R.id.position_list_header_stub) ViewStub headerStub;
 
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
@@ -290,7 +290,7 @@ public class PositionListFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.inject(this, view);
+        ButterKnife.bind(this, view);
         btnHelp.setOnClickListener(new View.OnClickListener()
         {
             @Override public void onClick(View v)
@@ -457,7 +457,7 @@ public class PositionListFragment
         removeGlobalLayoutListener();
         portfolioHeaderView = null;
         inflatedView = null;
-        ButterKnife.reset(this);
+        ButterKnife.unbind(this);
         super.onDestroyView();
     }
 

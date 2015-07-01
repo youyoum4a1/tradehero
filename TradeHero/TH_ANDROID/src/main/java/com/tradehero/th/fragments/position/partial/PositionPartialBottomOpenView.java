@@ -5,8 +5,8 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.InjectView;
-import butterknife.Optional;
+import butterknife.Bind;
+import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
 import com.tradehero.th.api.position.PositionDTO;
@@ -16,13 +16,13 @@ import com.tradehero.th.models.number.THSignedPercentage;
 
 public class PositionPartialBottomOpenView extends AbstractPartialBottomView
 {
-    @InjectView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
-    @InjectView(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
-    @InjectView(R.id.unrealised_pl_percent) @Optional protected TextView unrealisedPLPercent;
-    @InjectView(R.id.realised_pl_value_header) @Optional protected TextView realisedPLValueHeader;
-    @InjectView(R.id.realised_pl_value) @Optional protected TextView realisedPLValue;
-    @InjectView(R.id.total_invested_value) protected TextView totalInvestedValue;
-    @InjectView(R.id.average_price_value) protected TextView averagePriceValue;
+    @Bind(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
+    @Bind(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
+    @Bind(R.id.unrealised_pl_percent) @Nullable protected TextView unrealisedPLPercent;
+    @Bind(R.id.realised_pl_value_header) @Nullable protected TextView realisedPLValueHeader;
+    @Bind(R.id.realised_pl_value) @Nullable protected TextView realisedPLValue;
+    @Bind(R.id.total_invested_value) protected TextView totalInvestedValue;
+    @Bind(R.id.average_price_value) protected TextView averagePriceValue;
 
     protected PositionPartialBottomInPeriodViewHolder inPeriodViewHolder;
 
