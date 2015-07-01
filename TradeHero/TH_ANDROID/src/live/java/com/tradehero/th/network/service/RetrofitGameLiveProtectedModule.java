@@ -7,6 +7,9 @@ import javax.inject.Singleton;
 import retrofit.RestAdapter;
 
 @Module(
+        includes = {
+                RetrofitLiveProtectedBuildTypeModule.class,
+        },
         complete = false,
         library = true
 )
