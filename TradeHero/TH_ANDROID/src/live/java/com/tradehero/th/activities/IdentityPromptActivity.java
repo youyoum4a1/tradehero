@@ -4,17 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-import butterknife.ButterKnife;
+import android.widget.TextView;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.live.LiveBrokerSituationDTO;
-import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.models.fastfill.FastFillExceptionUtil;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.kyc.KYCForm;
+import com.tradehero.th.models.kyc.KYCFormUtil;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.KYCFormPreference;
 import javax.inject.Inject;
@@ -35,34 +35,47 @@ public class IdentityPromptActivity extends BaseActivity
     @Inject LiveServiceWrapper liveServiceWrapper;
 
     @Bind(R.id.identity_prompt_yes) View yesButton;
+    @Bind(R.id.live_powered_by) TextView livePoweredBy;
 
     private Subscription fastFillSubscription;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_identity_prompt);
-        ButterKnife.bind(this);
-        fastFillSubscription = Observable.combineLatest(
-                getFormToUse(),
-                ViewObservable.clicks(yesButton).flatMap(
-                        new Func1<OnClickEvent, Observable<ScannedDocument>>()
-                        {
-                            @Override public Observable<ScannedDocument> call(@NonNull OnClickEvent onClickEvent)
-                            {
-                                Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable()
-                                        .cache(1);
-                                fastFillUtil.fastFill(IdentityPromptActivity.this);
-                                return documentObservable;
-                            }
-                        }),
-                new Func2<KYCForm, ScannedDocument, KYCForm>()
+        fastFillSubscription = getFormToUse()
+                .doOnNext(new Action1<KYCForm>()
                 {
-                    @Override public KYCForm call(@NonNull KYCForm formToUse, @NonNull ScannedDocument scannedDocument)
+                    @Override public void call(KYCForm kycForm)
                     {
-                        formToUse.pickFrom(scannedDocument);
-                        kycFormPreference.set(formToUse);
-                        return formToUse;
+                        setContentView(KYCFormUtil.getCallToActionLayout(kycForm));
+                        ButterKnife.bind(IdentityPromptActivity.this);
+                        livePoweredBy.setText(kycForm.getBrokerName());
+                    }
+                })
+                .flatMap(new Func1<KYCForm, Observable<KYCForm>>()
+                {
+                    @Override public Observable<KYCForm> call(final KYCForm formToUse)
+                    {
+                        return ViewObservable.clicks(yesButton).flatMap(
+                                new Func1<OnClickEvent, Observable<ScannedDocument>>()
+                                {
+                                    @Override public Observable<ScannedDocument> call(@NonNull OnClickEvent onClickEvent)
+                                    {
+                                        Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable()
+                                                .cache(1);
+                                        fastFillUtil.fastFill(IdentityPromptActivity.this);
+                                        return documentObservable;
+                                    }
+                                })
+                                .map(new Func1<ScannedDocument, KYCForm>()
+                                {
+                                    @Override public KYCForm call(ScannedDocument scannedDocument)
+                                    {
+                                        formToUse.pickFrom(scannedDocument);
+                                        kycFormPreference.set(formToUse);
+                                        return formToUse;
+                                    }
+                                });
                     }
                 })
                 .retry(new Func2<Integer, Throwable, Boolean>()
@@ -123,29 +136,7 @@ public class IdentityPromptActivity extends BaseActivity
 
     @NonNull protected Observable<KYCForm> getFormToUse()
     {
-        return liveServiceWrapper.getLiveTradingSituation()
-                .map(new Func1<LiveTradingSituationDTO, KYCForm>()
-                {
-                    @Override public KYCForm call(LiveTradingSituationDTO liveTradingSituation)
-                    {
-                        for (LiveBrokerSituationDTO situation : liveTradingSituation.brokerSituations)
-                        {
-                            if (situation.kycForm != null)
-                            {
-                                return situation.kycForm;
-                            }
-                        }
-                        throw new IllegalArgumentException("There is no available kycForm");
-                    }
-                })
-                .map(new Func1<KYCForm, KYCForm>()
-                {
-                    @Override public KYCForm call(@NonNull KYCForm defaultForm)
-                    {
-                        KYCForm savedForm = kycFormPreference.get();
-                        return savedForm.getClass().equals(defaultForm.getClass()) ? savedForm : defaultForm;
-                    }
-                });
+        return liveServiceWrapper.getFormToUse(this).share();
     }
 
     protected void goToSignUp()
