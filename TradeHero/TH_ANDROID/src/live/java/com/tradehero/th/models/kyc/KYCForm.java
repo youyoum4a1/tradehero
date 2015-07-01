@@ -1,8 +1,10 @@
 package com.tradehero.th.models.kyc;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
 import java.util.List;
@@ -16,7 +18,13 @@ import java.util.List;
         @JsonSubTypes.Type(value = KYCAyondoForm.class, name = KYCAyondoForm.KEY_AYONDO_TYPE),
 }) public interface KYCForm
 {
+    @StringRes int getBrokerName();
+
+    @NonNull Country getCountry();
+
     void pickFrom(@NonNull ScannedDocument scannedDocument);
+
+    void pickFrom(@NonNull KYCForm other);
 
     void setStepStatuses(@NonNull List<StepStatus> stepStatuses);
 }

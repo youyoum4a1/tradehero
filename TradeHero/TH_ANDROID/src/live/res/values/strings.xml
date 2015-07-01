@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+  <string name="broker_name_none">No Broker</string>
   <string name="switch_to_live">Switch to Live</string>
   <string name="virtual">Virtual</string>
   <string name="live">Live</string>
   <string name="go_live_span">Go %1$s !</string>
-  <string name="live_call_to_action_string">You are only 5 steps away from your own TradeHero LIVE account!\nGo LIVE now and get US$ 100.00 to start.</string>
   <string name="tradehero_live">TradeHero LIVE</string>
-  <string name="live_5_steps_away">You are 5 steps away to open an account!</string>
+  <string name="live_5_steps_away">You are 5 steps away from a live account!</string>
+
   <string name="live_identity_prompt">Do you have your Proof of Identity with you?</string>
+  <string name="live_identity_prompt_au">Do you have your Australian Passport with you?</string>
+  <string name="live_identity_prompt_sg">Do you have your NRIC/Passport/Driver\'s License with you?</string>
+
   <string name="live_identity_prompt_hint">This will help you to auto-fill some information</string>
   <string name="yes">Yes</string>
   <string name="no">No</string>
@@ -19,10 +24,6 @@
   <string name="trading_experience">Trading Experience</string>
   <string name="postal_address">Postal Address</string>
   <string name="required_document">Required Documents</string>
-  <string name="employment_regulated_by_authority">Employer is regulated by a financial authority.</string>
-  <string name="experience_financial_sector">Worked in the finance sector for at least one year in a professional position that requires trading knowledge.</string>
-  <string name="experience_financial_seminars">Previously attended training seminars or gained knowledge of Ayondo\'s products.</string>
-  <string name="experience_financial_qualifications">Have other relevant qualifications that you consider would assist your understanding of our services.</string>
   <string name="experience_bonds">Shares and Bonds</string>
   <string name="experience_otc_derivatives">OTC Derivatives</string>
   <string name="experience_exchange_traded_derivatives">Exchange Traded Derivatives</string>
@@ -39,4 +40,5 @@
   <string name="live_title_mr">Mr.</string>
   <string name="live_title_ms">Ms.</string>
   <string name="live_title_mrs">Mrs.</string>
+
 </resources>

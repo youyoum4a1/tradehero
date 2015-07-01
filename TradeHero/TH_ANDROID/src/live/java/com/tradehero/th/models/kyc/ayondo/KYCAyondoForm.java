@@ -2,9 +2,12 @@ package com.tradehero.th.models.kyc.ayondo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
+import com.tradehero.th.R;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.models.kyc.StepStatus;
@@ -15,6 +18,7 @@ public class KYCAyondoForm implements KYCForm
 {
     public static final String KEY_AYONDO_TYPE = "Ayondo";
 
+    @NonNull private Country country;
     @Nullable private String firstName;
     @Nullable private String lastName;
     @Nullable private String email;
@@ -28,6 +32,11 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private CountryCode nationality;
 
     private List<StepStatus> stepStatuses;
+
+    @Override @StringRes public int getBrokerName()
+    {
+        return R.string.broker_name_ayondo;
+    }
 
     @Override public void pickFrom(@NonNull ScannedDocument scannedDocument)
     {
@@ -50,6 +59,24 @@ public class KYCAyondoForm implements KYCForm
         }
     }
 
+    @Override public void pickFrom(@NonNull KYCForm other)
+    {
+        this.country = other.getCountry();
+        if (other instanceof KYCAyondoForm)
+        {
+            KYCAyondoForm ayondoForm = (KYCAyondoForm) other;
+            this.firstName = ayondoForm.getFirstName() != null ? ayondoForm.getFirstName() : this.firstName;
+            this.lastName = ayondoForm.getLastName() != null ? ayondoForm.getLastName() : this.lastName;
+            this.email = ayondoForm.getEmail() != null ? ayondoForm.getEmail() : this.email;
+            this.verifiedEmail = ayondoForm.getVerifiedEmail() != null ? ayondoForm.getVerifiedEmail() : this.verifiedEmail;
+            this.mobileNumberCountryCode = ayondoForm.getMobileNumberCountryCode() != null ? ayondoForm.getMobileNumberCountryCode() : this.mobileNumberCountryCode;
+            this.mobileNumber = ayondoForm.getMobileNumber() != null ? ayondoForm.getMobileNumber() : this.mobileNumber;
+            this.verifiedMobileNumberCountryCode = ayondoForm.getVerifiedMobileNumberCountryCode() != null ? ayondoForm.getVerifiedMobileNumberCountryCode() : this.verifiedMobileNumberCountryCode;
+            this.verifiedMobileNumber = ayondoForm.getVerifiedMobileNumber() != null ? ayondoForm.getVerifiedMobileNumber() : this.verifiedMobileNumber;
+            this.nationality = ayondoForm.getNationality() != null ? ayondoForm.getNationality() : this.nationality;
+        }
+    }
+
     @Override public void setStepStatuses(@NonNull List<StepStatus> stepStatuses)
     {
         this.stepStatuses = stepStatuses;
@@ -59,6 +86,16 @@ public class KYCAyondoForm implements KYCForm
     public List<StepStatus> getStepStatuses()
     {
         return Collections.unmodifiableList(stepStatuses);
+    }
+
+    @NonNull @Override public Country getCountry()
+    {
+        return country;
+    }
+
+    public void setCountry(@NonNull Country country)
+    {
+        this.country = country;
     }
 
     @Nullable public String getFirstName()

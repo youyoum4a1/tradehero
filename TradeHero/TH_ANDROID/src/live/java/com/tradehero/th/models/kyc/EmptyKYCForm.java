@@ -1,6 +1,9 @@
 package com.tradehero.th.models.kyc;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
+import com.tradehero.th.R;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import java.util.List;
 
@@ -8,7 +11,21 @@ public class EmptyKYCForm implements KYCForm
 {
     public static final String KEY_EMPTY_TYPE = "EMPTY";
 
+    @Override @StringRes public int getBrokerName()
+    {
+        return R.string.broker_name_none;
+    }
+
+    @NonNull @Override public Country getCountry()
+    {
+        return Country.SG;
+    }
+
     @Override public void pickFrom(@NonNull ScannedDocument scannedDocument)
+    {
+    }
+
+    @Override public void pickFrom(@NonNull KYCForm other)
     {
     }
 

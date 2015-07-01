@@ -38,7 +38,7 @@
         android:layout_marginTop="@dimen/margin_small"
         android:maxWidth="300dp"
         android:gravity="center"
-        android:text="@string/live_call_to_action_string"
+        tools:text="@string/live_call_to_action_string_ayondo"
         />
 
     <com.tradehero.th.widget.GoLiveWidget
@@ -80,7 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:textColor="@color/tradehero_red"
-        tools:text="AYONDO"
+        tools:text="@string/broker_name_ayondo"
         />
 
   </LinearLayout>
