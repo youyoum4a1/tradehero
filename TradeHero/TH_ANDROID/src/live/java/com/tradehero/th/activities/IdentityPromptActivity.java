@@ -65,21 +65,16 @@ public class IdentityPromptActivity extends BaseActivity
                         return formToUse;
                     }
                 })
-                .retryWhen(new Func1<Observable<? extends Throwable>, Observable<?>>()
+                .retry(new Func2<Integer, Throwable, Boolean>()
                 {
-                    @Override public Observable<?> call(Observable<? extends Throwable> observable)
+                    @Override public Boolean call(Integer integer, Throwable throwable)
                     {
-                        return observable.flatMap(new Func1<Throwable, Observable<?>>()
+                        boolean willRetry = FastFillExceptionUtil.canRetry(throwable);
+                        if (willRetry)
                         {
-                            @Override public Observable<?> call(Throwable throwable)
-                            {
-                                if (FastFillExceptionUtil.canRetry(throwable))
-                                {
-                                    return Observable.just(1);
-                                }
-                                return Observable.empty();
-                            }
-                        });
+                            Timber.e(throwable, "Error when FastFill, retrying");
+                        }
+                        return willRetry;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
