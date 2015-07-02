@@ -9,6 +9,7 @@
       app:showAsAction="always"
       android:title="@string/watchlist_add_new_title"
       android:icon="@drawable/ic_action_action_search"
+      android:orderInCategory="99"
       />
 
 </menu>
