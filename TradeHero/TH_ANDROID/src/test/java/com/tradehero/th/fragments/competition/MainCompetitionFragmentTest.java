@@ -15,7 +15,6 @@ import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellListKey;
-import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -210,9 +209,6 @@ public class MainCompetitionFragmentTest
         // but I would like to test it anyway
         ProviderDTO providerDTO = providerCache.getCachedValue(providerId);
         providerDTO.wizardUrl = null;
-        // for enabling wizard cell
-        providerDTO.specificKnowledge = new ProviderSpecificKnowledgeDTO();
-        providerDTO.specificKnowledge.hasWizard = true;
         providerCache.onNext(providerId, providerDTO);
 
         String expectedWizardPage = providerUtil.getWizardPage(providerId);

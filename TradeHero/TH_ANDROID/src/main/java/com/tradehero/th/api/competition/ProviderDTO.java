@@ -3,7 +3,6 @@ package com.tradehero.th.api.competition;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.competition.specific.ProviderSpecificKnowledgeDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.utils.SecurityUtils;
@@ -64,9 +63,6 @@ public class ProviderDTO implements DTO
     public String totalPrize;
     @Nullable public Boolean vip;
 
-    // These 2 fields are populated exclusively on the client
-    @JsonIgnore @Nullable @Deprecated public ProviderSpecificKnowledgeDTO specificKnowledge;
-
     /**
      * Creates the id that identifies this DTO.ActionBarSherlockRobolectric.java
      * @return
@@ -80,10 +76,6 @@ public class ProviderDTO implements DTO
     @JsonIgnore
     public boolean hasWizard()
     {
-        if (specificKnowledge != null && specificKnowledge.hasWizard != null)
-        {
-            return specificKnowledge.hasWizard;
-        }
         return wizardUrl != null && wizardUrl.length() > 0;
     }
 
@@ -218,7 +210,6 @@ public class ProviderDTO implements DTO
                 ", durationType='" + durationType + '\'' +
                 ", totalPrize='" + totalPrize + '\'' +
                 ", vip=" + vip +
-                ", specificKnowledge=" + specificKnowledge +
                 '}';
     }
 }

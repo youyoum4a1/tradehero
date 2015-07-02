@@ -13,9 +13,6 @@ import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.log.RetrofitErrorHandlerLogger;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.ObjectMapperWrapper;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTODeserialiser;
-import com.tradehero.th.api.competition.ProviderDTOJacksonModule;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTODeserialiser;
 import com.tradehero.th.api.position.PositionDTOJacksonModule;
@@ -66,11 +63,6 @@ public class RetrofitModule
         return deserialiser;
     }
 
-    @Provides JsonDeserializer<ProviderDTO> providesProviderDTODeserialiser(ProviderDTODeserialiser deserialiser)
-    {
-        return deserialiser;
-    }
-
     @Provides JsonDeserializer<UserFriendsDTO> providersUserFriendsDTODeserialiser(UserFriendsDTODeserialiser deserialiser)
     {
         return deserialiser;
@@ -87,12 +79,10 @@ public class RetrofitModule
     @Provides @Singleton @ForApp ObjectMapper provideObjectMapper(
             ObjectMapperWrapper objectMapper,
             UserFriendsDTOJacksonModule userFriendsDTOModule,
-            PositionDTOJacksonModule positionDTOModule,
-            ProviderDTOJacksonModule providerDTOModule)
+            PositionDTOJacksonModule positionDTOModule)
     {
         objectMapper.registerModule(userFriendsDTOModule);
         objectMapper.registerModule(positionDTOModule);
-        objectMapper.registerModule(providerDTOModule);
 
         // TODO confirm this is correct here
         objectMapper.setVisibilityChecker(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
