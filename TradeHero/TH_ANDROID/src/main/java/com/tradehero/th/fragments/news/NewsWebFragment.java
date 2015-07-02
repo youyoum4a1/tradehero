@@ -408,7 +408,7 @@ public class NewsWebFragment extends WebViewFragment
         {
             return Html.fromHtml(String.format(getActivity().getString(R.string.watchlist_last_price_format),
                     dto.currencyDisplay,
-                    PRICE_FORMAT.format(dto.lastPrice)));
+                    dto.lastPrice != null ? PRICE_FORMAT.format(dto.lastPrice) : getString(R.string.na)));
         }
     }
 }

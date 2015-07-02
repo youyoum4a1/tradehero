@@ -19,8 +19,8 @@ import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ViewAnimator;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.tradehero.common.billing.purchase.PurchaseResult;
@@ -942,13 +942,17 @@ public class PositionListFragment
         {
             @SuppressLint("NewApi") @Override public void onGlobalLayout()
             {
-                if (SDKUtils.isJellyBeanOrHigher())
+                ViewTreeObserver observer = inflatedView.getViewTreeObserver();
+                if (observer != null)
                 {
-                    inflatedView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
-                else
-                {
-                    inflatedView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    if (SDKUtils.isJellyBeanOrHigher())
+                    {
+                        observer.removeOnGlobalLayoutListener(this);
+                    }
+                    else
+                    {
+                        observer.removeGlobalOnLayoutListener(this);
+                    }
                 }
                 int headerHeight = inflatedView.getMeasuredHeight();
                 Timber.d("Header Height %d", headerHeight);

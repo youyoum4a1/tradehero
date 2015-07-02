@@ -258,7 +258,11 @@ public class OnBoardFragment extends BaseFragment
 
         @Override public void destroyItem(ViewGroup container, int position, Object object)
         {
-            fragmentSubscriptions[position].unsubscribe();
+            Subscription toForget = fragmentSubscriptions[position];
+            if (toForget != null)
+            {
+                toForget.unsubscribe();
+            }
             super.destroyItem(container, position, object);
         }
     }

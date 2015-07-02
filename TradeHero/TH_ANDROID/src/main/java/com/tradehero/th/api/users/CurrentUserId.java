@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
 
 @Singleton public class CurrentUserId extends IntPreference
@@ -43,7 +44,7 @@ import rx.subjects.BehaviorSubject;
             Account[] accounts = accountManager.getAccountsByType(Constants.Auth.PARAM_ACCOUNT_TYPE);
             if (accounts != null)
             {
-                for (Account account: accounts)
+                for (Account account : accounts)
                 {
                     accountManager.removeAccount(account, null, null);
                 }
@@ -61,13 +62,23 @@ import rx.subjects.BehaviorSubject;
 
     @NonNull public Observable<Integer> getKeyObservable()
     {
-        return keyObservable.asObservable()
-                .doOnNext(new Action1<Integer>()
-                {
-                    @Override public void call(Integer userId)
-                    {
-                        ActivityBuildTypeUtil.setUpCrashReports(new UserBaseKey(userId));
-                    }
-                });
+        return keyObservable
+                .filter(
+                        new Func1<Integer, Boolean>()
+                        {
+                            @Override public Boolean call(Integer userId)
+                            {
+                                return userId > 0;
+                            }
+                        })
+                .distinctUntilChanged()
+                .doOnNext(
+                        new Action1<Integer>()
+                        {
+                            @Override public void call(Integer userId)
+                            {
+                                ActivityBuildTypeUtil.setUpCrashReports(new UserBaseKey(userId));
+                            }
+                        });
     }
 }

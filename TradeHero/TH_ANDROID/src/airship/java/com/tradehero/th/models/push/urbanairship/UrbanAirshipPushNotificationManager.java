@@ -91,15 +91,8 @@ import timber.log.Timber;
                         Timber.d("UrbanAirship Initialisation %d milliseconds", (System.nanoTime() - before) / 1000000);
                         savedPushDeviceIdentifier.set(channelId);
 
+                        // Wait for the user to be set properly
                         return currentUserId.getKeyObservable()
-                                // Wait for the user to be set properly
-                                .filter(new Func1<Integer, Boolean>()
-                                {
-                                    @Override public Boolean call(Integer userId)
-                                    {
-                                        return userId > 0;
-                                    }
-                                })
                                 // Making sure we got the UserProfile before we submit the device.
                                 // This is a defense mechanism to improve starting speed.
                                 .flatMap(new Func1<Integer, Observable<Integer>>()

@@ -260,14 +260,6 @@ public class DashboardActivity extends BaseActivity
         }
 
         onDestroySubscriptions.add(currentUserId.getKeyObservable()
-                .filter(new Func1<Integer, Boolean>()
-                {
-                    @Override public Boolean call(Integer userId)
-                    {
-                        return userId > 0;
-                    }
-                })
-                .distinctUntilChanged()
                 .flatMap(new Func1<Integer, Observable<UserProfileDTO>>()
                 {
                     @Override public Observable<UserProfileDTO> call(Integer userId)
