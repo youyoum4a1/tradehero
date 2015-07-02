@@ -67,7 +67,7 @@
           <EditText
               style="@style/TH.Body"
               android:layout_width="0dp"
-          android:layout_height="wrap_content"
+              android:layout_height="wrap_content"
               android:layout_weight="0.8"
               android:hint="@string/email"
               android:inputType="textEmailAddress"
@@ -95,7 +95,7 @@
           <Spinner
               style="@style/TH.Spinner"
               android:layout_width="0dp"
-          android:layout_height="wrap_content"
+              android:layout_height="wrap_content"
               android:layout_weight="0.15"
               android:minHeight="@dimen/clickable_element_min_dimen"
               />
@@ -122,10 +122,36 @@
               />
       </LinearLayout>
 
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="left"
+          style="@style/TH.Caption"
+          android:text="@string/nationality"
+          />
+
       <Spinner
+          android:id="@+id/info_nationality"
           style="@style/TH.Spinner"
           android:layout_width="match_parent"
-          android:layout_height="@dimen/clickable_element_min_dimen"
+          android:layout_height="wrap_content"
+          android:background="?attr/selectableItemBackground"
+          />
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="left"
+          style="@style/TH.Caption"
+          android:text="@string/residency"
+          />
+
+      <Spinner
+          android:id="@+id/info_residency"
+          style="@style/TH.Spinner"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="?attr/selectableItemBackground"
           />
 
       <EditText
