@@ -5,16 +5,17 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
-import android.support.annotation.Nullable;
+import com.android.internal.util.Predicate;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -28,6 +29,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -241,8 +243,16 @@ public class StockActionBarRelativeLayout extends RelativeLayout
     {
         if (dto != null && dto.watchedList != null)
         {
-            //noinspection ConstantConditions
-            userActionSubject.onNext(new WatchlistUserAction(dto.securityId, dto.mappedAlerts.containsKey(dto.securityId)));
+            userActionSubject.onNext(new WatchlistUserAction(
+                    dto.securityId,
+                    dto.watchedList.findFirstWhere(new Predicate<WatchlistPositionDTO>()
+                    {
+                        @Override public boolean apply(WatchlistPositionDTO watchlistPositionDTO)
+                        {
+                            return watchlistPositionDTO.securityDTO != null
+                                    && watchlistPositionDTO.securityDTO.getSecurityId().equals(dto.securityId);
+                        }
+                    }) == null));
         }
     }
 

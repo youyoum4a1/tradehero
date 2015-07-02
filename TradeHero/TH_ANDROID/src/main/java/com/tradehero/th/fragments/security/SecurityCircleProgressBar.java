@@ -71,7 +71,7 @@ public class SecurityCircleProgressBar extends CircleProgressBar
                                 setProgress((int) (durationMilliSeconds * interpolatedTime));
                             }
                         };
-                        progressAnimation.setAnimationListener(new Animation.AnimationListener()
+                        Animation.AnimationListener listener = new Animation.AnimationListener()
                         {
                             @Override public void onAnimationStart(Animation animation)
                             {
@@ -87,7 +87,15 @@ public class SecurityCircleProgressBar extends CircleProgressBar
                             @Override public void onAnimationRepeat(Animation animation)
                             {
                             }
-                        });
+                        };
+                        progressAnimation.setAnimationListener(listener);
+                        subscriber.add(Subscriptions.create(new Action0()
+                        {
+                            @Override public void call()
+                            {
+                                progressAnimation.setAnimationListener(null);
+                            }
+                        }));
                         progressAnimation.setDuration(durationMilliSeconds);
                         setMaxProgress((int) durationMilliSeconds);
                         setProgress((int) durationMilliSeconds);
