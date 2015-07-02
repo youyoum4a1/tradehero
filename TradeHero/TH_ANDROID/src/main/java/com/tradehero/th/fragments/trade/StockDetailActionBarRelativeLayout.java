@@ -35,7 +35,10 @@ public class StockDetailActionBarRelativeLayout extends StockActionBarRelativeLa
         super.display(dto);
         if (dto.securityCompactDTO != null)
         {
-            circleProgressBar.display(dto.securityCompactDTO);
+            if (circleProgressBar != null)
+            {
+                circleProgressBar.display(dto.securityCompactDTO);
+            }
             if (marketCloseIcon != null)
             {
                 boolean marketIsOpen = dto.securityCompactDTO.marketOpen == null || dto.securityCompactDTO.marketOpen;

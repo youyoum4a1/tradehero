@@ -255,7 +255,7 @@ public class NewsHeadlineFragment extends Fragment
                                 newsAdapter.notifyDataSetChanged();
                             }
                         },
-                        new TimberOnErrorAction("Gotcha")));
+                        new TimberOnErrorAction("Gotcha newsSubject in NewsHeadline passed error")));
         subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         activateNewsItemListView();

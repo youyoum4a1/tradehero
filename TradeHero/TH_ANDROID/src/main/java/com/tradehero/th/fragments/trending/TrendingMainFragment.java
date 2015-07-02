@@ -233,11 +233,11 @@ public class TrendingMainFragment extends DashboardFragment
         }
         if (tabViewPager == null)
         {
-            Timber.e(new NullPointerException("Gotcha"), "TabViewPager is null");
+            Timber.e(new NullPointerException("Gotcha TabViewPager is null"), "TabViewPager is null");
         }
         if (lastType == null)
         {
-            Timber.e(new NullPointerException("Gotcha"), "lastType is null");
+            Timber.e(new NullPointerException("Gotcha lastType is null"), "lastType is null");
         }
         tabViewPager.setAdapter(lastType.equals(TrendingTabType.STOCK) ? tradingStockPagerAdapter : tradingFXPagerAdapter);
         if (!Constants.RELEASE)

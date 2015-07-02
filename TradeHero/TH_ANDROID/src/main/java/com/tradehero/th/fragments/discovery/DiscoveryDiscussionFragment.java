@@ -257,7 +257,7 @@ public class DiscoveryDiscussionFragment extends Fragment
                                 discoveryDiscussionAdapter.notifyDataSetChanged();
                             }
                         },
-                        new TimberOnErrorAction("Gotcha")));
+                        new TimberOnErrorAction("Gotcha timelineSubject in DiscoveryDiscussion gave error")));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
         Observable<RangeDTO> timelineRefreshRangeObservable = createPaginationObservable();
