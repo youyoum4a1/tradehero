@@ -4,18 +4,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.squareup.picasso.Picasso;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.live.IdentityPromptInfoDTO;
+import com.tradehero.th.api.live.IdentityPromptInfoKey;
 import com.tradehero.th.models.fastfill.FastFillExceptionUtil;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.kyc.KYCForm;
-import com.tradehero.th.models.kyc.KYCFormUtil;
 import com.tradehero.th.network.service.LiveServiceWrapper;
+import com.tradehero.th.persistence.live.IdentityPromptInfoCache;
 import com.tradehero.th.persistence.prefs.KYCFormPreference;
 import javax.inject.Inject;
 import rx.Observable;
@@ -32,24 +37,47 @@ public class IdentityPromptActivity extends BaseActivity
 {
     @Inject FastFillUtil fastFillUtil;
     @Inject KYCFormPreference kycFormPreference;
+    @Inject IdentityPromptInfoCache identityPromptInfoCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
+    @Inject Picasso picasso;
 
     @Bind(R.id.identity_prompt_yes) View yesButton;
     @Bind(R.id.live_powered_by) TextView livePoweredBy;
+    @Bind(R.id.identity_prompt_image) ImageView imgPrompt;
+    @Bind(R.id.identity_prompt_text) TextView txtPrompt;
 
     private Subscription fastFillSubscription;
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_identity_prompt);
+        ButterKnife.bind(IdentityPromptActivity.this);
         fastFillSubscription = getFormToUse()
                 .doOnNext(new Action1<KYCForm>()
                 {
                     @Override public void call(KYCForm kycForm)
                     {
-                        setContentView(KYCFormUtil.getCallToActionLayout(kycForm));
-                        ButterKnife.bind(IdentityPromptActivity.this);
                         livePoweredBy.setText(kycForm.getBrokerName());
+                    }
+                })
+                .flatMap(new Func1<KYCForm, Observable<KYCForm>>()
+                {
+                    @Override public Observable<KYCForm> call(final KYCForm kycForm)
+                    {
+                        return identityPromptInfoCache.get(new IdentityPromptInfoKey(kycForm.getCountry()))
+                                .take(1)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .map(new PairGetSecond<IdentityPromptInfoKey, IdentityPromptInfoDTO>())
+                                .map(new Func1<IdentityPromptInfoDTO, KYCForm>()
+                                {
+                                    @Override public KYCForm call(IdentityPromptInfoDTO identityPromptInfoDTO)
+                                    {
+                                        picasso.load(identityPromptInfoDTO.image).placeholder(R.drawable.image_identity_proof).into(imgPrompt);
+                                        txtPrompt.setText(identityPromptInfoDTO.prompt);
+                                        return kycForm;
+                                    }
+                                });
                     }
                 })
                 .flatMap(new Func1<KYCForm, Observable<KYCForm>>()

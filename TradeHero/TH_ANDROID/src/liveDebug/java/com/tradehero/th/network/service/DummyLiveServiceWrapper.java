@@ -2,6 +2,8 @@ package com.tradehero.th.network.service;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.live.IdentityPromptInfoDTO;
+import com.tradehero.th.api.live.IdentityPromptInfoKey;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
@@ -34,6 +36,23 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
         form.setCountry(Country.SG);
         LiveBrokerSituationDTO fakeSituation = new LiveBrokerSituationDTO(ayondo, form);
         return Observable.just(new LiveTradingSituationDTO(Collections.singletonList(fakeSituation)));
+    }
+
+    @NonNull @Override public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(IdentityPromptInfoKey identityPromptInfoKey)
+    {
+        IdentityPromptInfoDTO infoDTO = new IdentityPromptInfoDTO();
+        if (identityPromptInfoKey.country.equals(Country.AU))
+        {
+            infoDTO.image = "https://www.passports.gov.au/Web/P-series-image.jpg";
+            infoDTO.prompt = "Do you have out Australian Passport with you?";
+        }
+        else if (identityPromptInfoKey.country.equals(Country.SG))
+        {
+            infoDTO.image =
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Singaporean_passport_biom_cover.jpg/220px-Singaporean_passport_biom_cover.jpg";
+            infoDTO.prompt = "Do you have your Singapore Passport with you?";
+        }
+        return Observable.just(infoDTO);
     }
 
     @NonNull @Override public Observable<KYCForm> getFormToUse(@NonNull final Activity activity)

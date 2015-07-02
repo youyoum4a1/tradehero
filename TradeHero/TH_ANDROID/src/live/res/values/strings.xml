@@ -36,6 +36,8 @@
   <string name="address_less_than_1_year">Less than 1 year at this address?</string>
   <string name="tap_to_upload">Tap to upload</string>
   <string name="tap_to_sign">Tap to sign</string>
+  <string name="enter_manually">Enter manually.</string>
+  <string name="scan_it">Let\'s scan it!</string>
 
   <string name="live_title_mr">Mr.</string>
   <string name="live_title_ms">Ms.</string>
