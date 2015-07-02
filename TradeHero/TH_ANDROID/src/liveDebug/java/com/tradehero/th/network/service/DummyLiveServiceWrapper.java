@@ -46,14 +46,14 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
         IdentityPromptInfoDTO infoDTO = new IdentityPromptInfoDTO();
         if (identityPromptInfoKey.country.equals(Country.AU))
         {
-            infoDTO.image = "https://www.passports.gov.au/Web/P-series-image.jpg";
-            infoDTO.prompt = "Do you have out Australian Passport with you?";
+            infoDTO.image = "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-au.png";
+            infoDTO.prompt = "Do you have your Passport with you?";
         }
         else if (identityPromptInfoKey.country.equals(Country.SG))
         {
             infoDTO.image =
-                    "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Singaporean_passport_biom_cover.jpg/220px-Singaporean_passport_biom_cover.jpg";
-            infoDTO.prompt = "Do you have your Singapore Passport with you?";
+                    "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-sg.png";
+            infoDTO.prompt = "Do you have your Passport/ Singapore NRIC/ Driver's License with you?";
         }
         return Observable.just(infoDTO);
     }

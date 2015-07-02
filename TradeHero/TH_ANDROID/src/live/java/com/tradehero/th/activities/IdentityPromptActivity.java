@@ -43,6 +43,7 @@ public class IdentityPromptActivity extends BaseActivity
 
     @Bind(R.id.identity_prompt_yes) View yesButton;
     @Bind(R.id.live_powered_by) TextView livePoweredBy;
+    @Bind(R.id.identity_prompt_country) TextView txtCountry;
     @Bind(R.id.identity_prompt_image) ImageView imgPrompt;
     @Bind(R.id.identity_prompt_text) TextView txtPrompt;
 
@@ -58,6 +59,7 @@ public class IdentityPromptActivity extends BaseActivity
                 {
                     @Override public void call(KYCForm kycForm)
                     {
+                        txtCountry.setText(kycForm.getCountry().locationName);
                         livePoweredBy.setText(kycForm.getBrokerName());
                     }
                 })

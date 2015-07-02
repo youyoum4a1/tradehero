@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.live.LiveCountryDTO;
@@ -24,6 +25,8 @@ import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
 import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.persistence.live.LiveCountryDTOListCache;
 import com.tradehero.th.utils.GraphicUtil;
+import java.util.Collections;
+import java.util.Comparator;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -82,12 +85,26 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseFragment
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .take(1)
-                .subscribe(new Action1<Pair<LiveCountryListId, LiveCountryDTOList>>()
+                .map(new PairGetSecond<LiveCountryListId, LiveCountryDTOList>())
+                .doOnNext(new Action1<LiveCountryDTOList>()
                 {
-                    @Override public void call(Pair<LiveCountryListId, LiveCountryDTOList> liveCountryListIdLiveCountryDTOListPair)
+                    @Override public void call(LiveCountryDTOList liveCountryDTOs)
                     {
-                        residencyAdapter.addAll(liveCountryListIdLiveCountryDTOListPair.second);
-                        nationalityAdapter.addAll(liveCountryListIdLiveCountryDTOListPair.second);
+                        Collections.sort(liveCountryDTOs, new Comparator<LiveCountryDTO>()
+                        {
+                            @Override public int compare(LiveCountryDTO lhs, LiveCountryDTO rhs)
+                            {
+                                return getString(lhs.country.locationName).compareToIgnoreCase(getString(rhs.country.locationName));
+                            }
+                        });
+                    }
+                })
+                .subscribe(new Action1<LiveCountryDTOList>()
+                {
+                    @Override public void call(LiveCountryDTOList liveCountryDTOs)
+                    {
+                        residencyAdapter.addAll(liveCountryDTOs);
+                        nationalityAdapter.addAll(liveCountryDTOs);
                     }
                 }));
     }
