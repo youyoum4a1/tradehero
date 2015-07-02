@@ -29,6 +29,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.AssetClass;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.key.SecurityListType;
@@ -620,12 +621,24 @@ public class TrendingStockFragment extends TrendingBaseFragment
         analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
         Bundle args = new Bundle();
-        BuySellStockFragment.putRequisite(
-                args,
-                new AbstractBuySellFragment.Requisite(
-                        securityCompactDTO.getSecurityId(),
-                        getApplicablePortfolioId(),
-                        0)); // TODO better
+        OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        final AbstractBuySellFragment.Requisite requisite;
+        if (applicablePortfolioId != null)
+        {
+            requisite = new AbstractBuySellFragment.Requisite(
+                    securityCompactDTO.getSecurityId(),
+                    applicablePortfolioId,
+                    0);
+        }
+        else
+        {
+            requisite = new AbstractBuySellFragment.Requisite(
+                    securityCompactDTO.getSecurityId(),
+                    new Bundle(),
+                    portfolioCompactListCache,
+                    currentUserId);
+        }
+        BuySellStockFragment.putRequisite(args, requisite);
 
         navigator.get().pushFragment(BuySellStockFragment.class, args);
     }
