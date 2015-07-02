@@ -48,6 +48,7 @@ import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -143,7 +144,11 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                 {
                     @Override public Observable<Boolean> call(@NonNull QuoteDTO quoteDTO)
                     {
-                        return actionBarLayout.circleProgressBar.start(getMillisecondQuoteRefresh());
+                        if (actionBarLayout.circleProgressBar != null)
+                        {
+                            return actionBarLayout.circleProgressBar.start(getMillisecondQuoteRefresh());
+                        }
+                        return Observable.just(true).delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
                     }
                 })
                 .subscribe(
@@ -374,21 +379,33 @@ public class BuySellStockFragment extends AbstractBuySellFragment
 
     @NonNull @Override protected Observable<Boolean> getSupportSell()
     {
-        return Observable.combineLatest(
-                getPortfolioCompactObservable(),
-                getQuoteObservable(),
-                getCloseablePositionObservable(),
-                new Func3<PortfolioCompactDTO, QuoteDTO, PositionDTO, Boolean>()
+        return getPortfolioCompactObservable()
+                .flatMap(new Func1<PortfolioCompactDTO, Observable<Boolean>>()
                 {
-                    @Override public Boolean call(@NonNull PortfolioCompactDTO portfolioCompactDTO,
-                            @NonNull QuoteDTO quoteDTO,
-                            @Nullable PositionDTO closeablePositionDTO)
+                    @Override public Observable<Boolean> call(final PortfolioCompactDTO portfolioCompactDTO)
                     {
-                        Integer max = getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePositionDTO);
-                        return max != null && max > 0;
+                        return Observable.combineLatest(
+                                getQuoteObservable(),
+                                getCloseablePositionObservable()
+                                        .filter(new Func1<PositionDTO, Boolean>()
+                                        {
+                                            @Override public Boolean call(PositionDTO positionDTO)
+                                            {
+                                                return positionDTO.portfolioId == portfolioCompactDTO.id;
+                                            }
+                                        }),
+                                new Func2<QuoteDTO, PositionDTO, Boolean>()
+                                {
+                                    @Override public Boolean call(
+                                            @NonNull QuoteDTO quoteDTO,
+                                            @Nullable PositionDTO closeablePositionDTO)
+                                    {
+                                        Integer max = getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePositionDTO);
+                                        return max != null && max > 0;
+                                    }
+                                });
                     }
-                }
-        );
+                });
     }
 
     protected void handleAddToWatchlistRequested(@NonNull StockActionBarRelativeLayout.WatchlistUserAction userAction)
