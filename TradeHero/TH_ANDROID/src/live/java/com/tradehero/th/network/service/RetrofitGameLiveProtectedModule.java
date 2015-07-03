@@ -3,7 +3,6 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.network.ForLive;
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 import retrofit.RestAdapter;
 
 @Module(
@@ -16,7 +15,7 @@ import retrofit.RestAdapter;
 public class RetrofitGameLiveProtectedModule
 {
     //<editor-fold desc="API Services">
-    @Provides @Singleton LiveServiceRx provideLiveServiceRx (@ForLive RestAdapter adapter)
+    @Provides LiveServiceRx provideLiveServiceRx (@ForLive RestAdapter adapter)
     {
         return adapter.create(LiveServiceRx .class);
     }
