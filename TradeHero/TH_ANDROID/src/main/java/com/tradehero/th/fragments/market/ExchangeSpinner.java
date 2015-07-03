@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
+import com.tradehero.th.api.market.ExchangeIntegerId;
 
 public class ExchangeSpinner extends Spinner
 {
@@ -32,14 +33,14 @@ public class ExchangeSpinner extends Spinner
         }
     }
 
-    public void setSelectionById(int id)
+    public void setSelectionById(ExchangeIntegerId id)
     {
         SpinnerAdapter adapter = getAdapter();
         int index = 0;
         while (index < adapter.getCount())
         {
             ExchangeCompactDTO item = (ExchangeCompactDTO) adapter.getItem(index);
-            if (item.id == id)
+            if (item.getExchangeIntegerId().equals(id))
             {
                 setSelection(index);
             }

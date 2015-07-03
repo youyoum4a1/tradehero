@@ -174,7 +174,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         {
             mExchangeSelection = (ExchangeSpinner) actionView.findViewById(R.id.exchange_selection_menu);
             mExchangeSelection.setAdapter(exchangeAdapter);
-            mExchangeSelection.setSelectionById(preferredExchangeMarket.get());
+            mExchangeSelection.setSelectionById(new ExchangeIntegerId(preferredExchangeMarket.get()));
             mExchangeSelection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
             {
                 @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
@@ -249,7 +249,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
         if (exchangeCompactSpinnerDTOs != null && mExchangeSelection != null)
         {
-            mExchangeSelection.setSelectionById(trendingFilterTypeDTO.exchange.id);
+            mExchangeSelection.setSelectionById(trendingFilterTypeDTO.exchange.getExchangeIntegerId());
         }
     }
 
