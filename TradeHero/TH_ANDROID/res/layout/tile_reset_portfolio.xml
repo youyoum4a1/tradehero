@@ -3,45 +3,30 @@
 <RelativeLayout
     android:id="@+id/extra_tile_background"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_item_height"
-    android:layout_gravity="center"
+    style="@style/TH.TrendingTileContainer"
     android:background="@drawable/tile_reset_portfolio_bg"
-    android:gravity="center"
-    android:orientation="vertical"
     >
 
   <ImageView
       android:id="@+id/extra_tile_image"
-      android:layout_width="177dp"
-      android:layout_height="@dimen/grid_item_height"
-      android:layout_centerInParent="true"
-      android:contentDescription="@null"
-      android:scaleType="fitCenter"
+      style="@style/TH.TrendingTileImage"
       android:src="@drawable/icon_reset_portfolio"
       />
 
   <TextView
       android:id="@+id/extra_tile_text"
-      style="@style/TH.Body2"
+      style="@style/TH.TrendingTileBottomText"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:layout_marginBottom="@dimen/margin_xsmall"
-      android:shadowColor="@color/text_primary"
-      android:shadowDx="1"
-      android:shadowDy="1"
-      android:gravity="center"
       android:text="@string/tile_reset_portfolio"
       />
 
     <TextView
         android:id="@+id/extra_tile_text_top"
-        style="@style/TH.Body1.Inverse"
+        style="@style/Th.TrendingTileTopText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/extra_tile_text"
-        android:gravity="center"
         android:text="@string/tile_reset_portfolio_top"
         />
 

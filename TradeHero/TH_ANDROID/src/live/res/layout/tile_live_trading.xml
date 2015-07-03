@@ -3,45 +3,30 @@
 <RelativeLayout
     android:id="@+id/extra_tile_background"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_item_height"
-    android:layout_gravity="center"
     android:background="@drawable/tile_live_trading_bg"
-    android:gravity="center"
-    android:orientation="vertical"
+    style="@style/TH.TrendingTileContainer"
     >
 
   <ImageView
       android:id="@+id/extra_tile_image"
-      android:layout_width="177dp"
-      android:layout_height="@dimen/grid_item_height"
-      android:layout_centerInParent="true"
-      android:contentDescription="@null"
-      android:scaleType="fitCenter"
       android:src="@drawable/icon_trending_live"
+      style="@style/TH.TrendingTileImage"
       />
 
   <TextView
       android:id="@+id/extra_tile_text"
-      style="@style/TH.Body2"
+      style="@style/TH.TrendingTileBottomText"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:layout_marginBottom="@dimen/margin_xsmall"
-      android:shadowColor="@color/text_primary"
-      android:shadowDx="1"
-      android:shadowDy="1"
-      android:gravity="center"
       android:text="@string/tile_live_trading"
       />
 
   <TextView
       android:id="@+id/extra_tile_text_top"
-      style="@style/TH.Body1.Inverse"
+      style="@style/Th.TrendingTileTopText"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_above="@id/extra_tile_text"
-      android:gravity="center"
       android:text="@string/tile_live_trading_top"
       />
 

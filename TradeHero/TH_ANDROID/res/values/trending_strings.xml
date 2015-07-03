@@ -27,8 +27,10 @@
   <string name="trending_filter_exchange_all">All</string>
   <string name="trending_filter_exchange_drop_down">%2$s - %1$s</string>
 
-  <string name="tile_earn_credit_text">Refer friends and earn TradeHero dollars!</string>
-  <string name="tile_extra_cash_text">Buy more virtual cash</string>
+  <string name="tile_earn_credit_text">Invite friends now!</string>
+  <string name="tile_earn_credit_text_top">More fun with friends</string>
+  <string name="tile_extra_cash_text">Buy more TH$ now!</string>
+  <string name="tile_extra_cash_top">Out of funds?</string>
   <string name="tile_reset_portfolio">Reset your portfolio now!</string>
   <string name="tile_reset_portfolio_top">Need a fresh start?</string>
 

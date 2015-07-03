@@ -617,4 +617,34 @@
     <item name="android:src">@drawable/icn_competition_prize</item>
   </style>
 
+  <style name="TH.TrendingTileImage">
+    <item name="android:layout_width">177dp</item>
+    <item name="android:layout_height">@dimen/grid_item_height</item>
+    <item name="android:layout_centerHorizontal">true</item>
+    <item name="android:contentDescription">@null</item>
+    <item name="android:scaleType">centerCrop</item>
+  </style>
+
+  <style name="TH.TrendingTileBottomText"
+      parent="TH.Body2">
+    <item name="android:layout_alignParentBottom">true</item>
+    <item name="android:layout_marginBottom">@dimen/margin_xsmall</item>
+    <item name="android:shadowColor">@color/text_primary</item>
+    <item name="android:shadowDx">1</item>
+    <item name="android:shadowDy">1</item>
+    <item name="android:gravity">center</item>
+  </style>
+
+  <style name="Th.TrendingTileTopText"
+      parent="TH.Body1.Inverse">
+    <item name="android:gravity">center</item>
+  </style>
+
+  <style name="TH.TrendingTileContainer">
+    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_height">@dimen/grid_item_height</item>
+    <item name="android:layout_gravity">center</item>
+    <item name="android:gravity">center</item>
+  </style>
+
 </resources>
