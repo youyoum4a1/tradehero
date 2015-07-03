@@ -1,7 +1,7 @@
 package com.tradehero.th.models.fastfill;
 
-import com.tradehero.th.models.jumio.DebugJumioFastFillUtil;
-import com.tradehero.th.models.jumio.JumioFastFillUtil;
+import com.tradehero.th.models.fastfill.jumio.DebugJumioFastFillUtil;
+import com.tradehero.th.models.fastfill.jumio.JumioFastFillUtil;
 import dagger.Module;
 import dagger.Provides;
 

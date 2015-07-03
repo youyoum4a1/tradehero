@@ -1,4 +1,4 @@
-package com.tradehero.th.models.jumio;
+package com.tradehero.th.models.fastfill.jumio;
 
 import android.app.Activity;
 import android.content.Intent;
