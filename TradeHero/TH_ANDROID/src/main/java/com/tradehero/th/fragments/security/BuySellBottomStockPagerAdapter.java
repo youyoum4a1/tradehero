@@ -1,12 +1,14 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
+import android.view.ViewGroup;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityId;
@@ -29,6 +31,8 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
     @NonNull private final SecurityId securityId;
     @NonNull private final UserBaseKey shownUser;
 
+    @NonNull private final Fragment[] fragments;
+
     //<editor-fold desc="Constructors">
     public BuySellBottomStockPagerAdapter(
             @NonNull Context context,
@@ -42,6 +46,7 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
         this.applicablePortfolioId = applicablePortfolioId;
         this.securityId = securityId;
         this.shownUser = shownUser;
+        fragments = new Fragment[getCount()];
     }
     //</editor-fold>
 
@@ -81,8 +86,8 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
             case FRAGMENT_ID_CHART:
                 fragment = new ChartFragment();
                 ChartFragment.putSecurityId(args, securityId);
-                args.putInt(ChartFragment.BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, View.VISIBLE);
-                args.putLong(ChartFragment.BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, getDefaultChartTimeSpan().duration);
+                ChartFragment.putButtonSetVisibility(args, View.VISIBLE);
+                ChartFragment.putChartTimeSpan(args, getDefaultChartTimeSpan());
                 break;
             case FRAGMENT_ID_DISCUSS:
                 fragment = new SecurityDiscussionFragment();
@@ -106,8 +111,26 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
                 throw new UnsupportedOperationException("Not implemented");
         }
 
+        fragments[position] = fragment;
         fragment.setArguments(args);
         fragment.setRetainInstance(false);
         return fragment;
+    }
+
+    @Override public void destroyItem(ViewGroup container, int position, Object object)
+    {
+        fragments[position] = null;
+        super.destroyItem(container, position, object);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        for (Fragment fragment : fragments)
+        {
+            if (fragment != null)
+            {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
+        }
     }
 }

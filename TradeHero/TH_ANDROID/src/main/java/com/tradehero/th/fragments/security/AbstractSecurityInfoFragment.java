@@ -26,7 +26,12 @@ abstract public class AbstractSecurityInfoFragment
 
     @NonNull private static SecurityId getSecurityId(@NonNull Bundle args)
     {
-        return new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
+        Bundle securityArgs = args.getBundle(BUNDLE_KEY_SECURITY_ID);
+        if (securityArgs != null)
+        {
+            return new SecurityId(securityArgs);
+        }
+        throw new IllegalArgumentException("SecurityId cannot be null");
     }
     //</editor-fold>
 

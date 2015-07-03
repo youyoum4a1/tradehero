@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -239,6 +240,12 @@ public class BuySellStockFragment extends AbstractBuySellFragment
         bottomViewPagerAdapter = null;
         defaultPortfolio = null;
         super.onDestroyView();
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        bottomViewPagerAdapter.onActivityResult(requestCode, resultCode, data);
     }
 
     @NonNull @Override protected Observable<PortfolioCompactDTO> getDefaultPortfolio()

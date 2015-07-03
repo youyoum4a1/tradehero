@@ -1,18 +1,19 @@
 package com.tradehero.th.fragments.security;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
-import android.support.annotation.Nullable;
+import butterknife.ButterKnife;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -48,17 +49,17 @@ import timber.log.Timber;
 
 public class ChartFragment extends AbstractSecurityInfoFragment
 {
-    public final static String BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY = ChartFragment.class.getName() + ".timeSpanButtonSetVisibility";
-    public final static String BUNDLE_KEY_TIME_SPAN_SECONDS_LONG = ChartFragment.class.getName() + ".timeSpanSecondsLong";
-    public final static String BUNDLE_KEY_CHART_SIZE_ARRAY_INT = ChartFragment.class.getName() + ".chartSizeArrayInt";
-    public final static String BUNDLE_KEY_ARGUMENTS = ChartFragment.class.getName() + ".arguments";
+    private final static String BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY = ChartFragment.class.getName() + ".timeSpanButtonSetVisibility";
+    private final static String BUNDLE_KEY_TIME_SPAN_SECONDS_LONG = ChartFragment.class.getName() + ".timeSpanSecondsLong";
+    private final static String BUNDLE_KEY_CHART_SIZE_ARRAY_INT = ChartFragment.class.getName() + ".chartSizeArrayInt";
+    private final static int STOCK_ACTIVITY_REQUEST_CODE = 102;
 
     @Bind(R.id.chart_imageView) protected ChartImageView chartImage;
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
     private ChartDTO chartDTO;
     @Nullable private WarrantDTO warrantDTO;
-    private int timeSpanButtonSetVisibility = View.VISIBLE;
+    @ViewVisibilityValue private int timeSpanButtonSetVisibility = View.VISIBLE;
 
     @Bind(R.id.chart_scroll_view) @Nullable NotifyingScrollView scrollView;
 
@@ -97,6 +98,57 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     private Runnable chooseChartImageSizeTask;
     private Callback chartImageCallback;
 
+    //<editor-fold desc="Arguments passing">
+    public static void putChartTimeSpan(@NonNull Bundle args, @NonNull ChartTimeSpan chartTimeSpan)
+    {
+        args.putLong(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, chartTimeSpan.duration);
+    }
+
+    @Nullable private static ChartTimeSpan getChartTimeSpan(@NonNull Bundle args)
+    {
+        if (args.containsKey(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG))
+        {
+            return new ChartTimeSpan(args.getLong(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG));
+        }
+        return null;
+    }
+
+    public static void putButtonSetVisibility(@NonNull Bundle args, @ViewVisibilityValue int visibility)
+    {
+        args.putInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, visibility);
+    }
+
+    @ViewVisibilityValue private static int getButtonSetVisibility(@NonNull Bundle args, @ViewVisibilityValue int defaultValue)
+    {
+        int visibility = args.getInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, defaultValue);
+        switch (visibility)
+        {
+            case View.VISIBLE:
+                return View.VISIBLE;
+            case View.INVISIBLE:
+                return View.INVISIBLE;
+            case View.GONE:
+                return View.GONE;
+        }
+        throw new IllegalArgumentException("Visibility " + visibility + " is not a valid value");
+    }
+
+    public static void putChartSize(@NonNull Bundle args, @NonNull ChartSize chartSize)
+    {
+        args.putIntArray(BUNDLE_KEY_CHART_SIZE_ARRAY_INT, chartSize.getSizeArray());
+    }
+
+    @Nullable private static ChartSize getChartSize(@NonNull Bundle args)
+    {
+        int[] intArray = args.getIntArray(BUNDLE_KEY_CHART_SIZE_ARRAY_INT);
+        if (intArray != null)
+        {
+            new ChartSize(intArray);
+        }
+        return null;
+    }
+    //</editor-fold>
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -113,14 +165,16 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         Bundle args = getArguments();
         if (args != null)
         {
-            timeSpanButtonSetVisibility = args.getInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
-            if (args.containsKey(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG))
+            timeSpanButtonSetVisibility = getButtonSetVisibility(args, timeSpanButtonSetVisibility);
+            ChartTimeSpan timeSpan = getChartTimeSpan(args);
+            if (timeSpan != null)
             {
-                chartDTO.setChartTimeSpan(new ChartTimeSpan(args.getLong(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG)));
+                chartDTO.setChartTimeSpan(timeSpan);
             }
-            if (args.containsKey(BUNDLE_KEY_CHART_SIZE_ARRAY_INT))
+            ChartSize chartSize = getChartSize(args);
+            if (chartSize != null)
             {
-                chartDTO.setChartSize(new ChartSize(args.getIntArray(BUNDLE_KEY_CHART_SIZE_ARRAY_INT)));
+                chartDTO.setChartSize(chartSize);
             }
         }
 
@@ -129,14 +183,16 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         // Override with saved value if any
         if (savedInstanceState != null)
         {
-            timeSpanButtonSetVisibility = savedInstanceState.getInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
-            if (savedInstanceState.containsKey(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG))
+            timeSpanButtonSetVisibility = getButtonSetVisibility(savedInstanceState, timeSpanButtonSetVisibility);
+            ChartTimeSpan timeSpan = getChartTimeSpan(savedInstanceState);
+            if (timeSpan != null)
             {
-                chartDTO.setChartTimeSpan(new ChartTimeSpan(savedInstanceState.getLong(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG)));
+                chartDTO.setChartTimeSpan(timeSpan);
             }
-            if (savedInstanceState.containsKey(BUNDLE_KEY_CHART_SIZE_ARRAY_INT))
+            ChartSize chartSize = getChartSize(savedInstanceState);
+            if (chartSize != null)
             {
-                chartDTO.setChartSize(new ChartSize(savedInstanceState.getIntArray(BUNDLE_KEY_CHART_SIZE_ARRAY_INT)));
+                chartDTO.setChartSize(chartSize);
             }
         }
 
@@ -163,7 +219,6 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         {
             timeSpanButtonSetTemp.addAllChildButtons();
             timeSpanButtonSetTemp.setListener(this.timeSpanButtonSetListener);
-            timeSpanButtonSetTemp.setActive(chartDTO.getChartTimeSpan());
         }
         this.timeSpanButtonSet = timeSpanButtonSetTemp;
 
@@ -173,6 +228,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             {
                 @Override public void onClick(View v)
                 {
+                    Bundle args = new Bundle();
+                    putChartTimeSpan(args, chartDTO.getChartTimeSpan());
+                    Intent result = new Intent();
+                    result.putExtras(args);
+                    ChartFragment.this.getActivity().setResult(Activity.RESULT_OK, result);
                     ChartFragment.this.getActivity().finish();
                 }
             });
@@ -196,7 +256,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             }
         };
 
-        if(scrollView != null)
+        if (scrollView != null)
         {
             scrollView.setOnScrollChangedListener(fragmentElements.getScrollViewListener());
         }
@@ -213,9 +273,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putLong(BUNDLE_KEY_TIME_SPAN_SECONDS_LONG, chartDTO.getChartTimeSpan().duration);
-        outState.putIntArray(BUNDLE_KEY_CHART_SIZE_ARRAY_INT, chartDTO.getChartSize().getSizeArray());
-        outState.putInt(BUNDLE_KEY_TIME_SPAN_BUTTON_SET_VISIBILITY, timeSpanButtonSetVisibility);
+        putChartTimeSpan(outState, chartDTO.getChartTimeSpan());
+        putChartSize(outState, chartDTO.getChartSize());
+        putButtonSetVisibility(outState, timeSpanButtonSetVisibility);
     }
 
     @Override public void onDestroyView()
@@ -244,7 +304,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             mCloseButton.setOnClickListener(null);
             mCloseButton = null;
         }
-        if(scrollView != null)
+        if (scrollView != null)
         {
             scrollView.setOnScrollChangedListener(null);
         }
@@ -313,6 +373,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     {
         chartDTO.setChartTimeSpan(timeSpan);
         displayChartImage();
+        displayTimeSpanButtonSet();
     }
 
     public void linkWith(@Nullable WarrantDTO warrantDTO)
@@ -333,6 +394,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         if (!isDetached() && buttonSet != null)
         {
             buttonSet.setVisibility(timeSpanButtonSetVisibility);
+            buttonSet.setActive(chartDTO.getChartTimeSpan());
         }
     }
 
@@ -399,12 +461,29 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                 //Intent intent = new Intent(BuySellFragment.EVENT_CHART_IMAGE_CLICKED);
                 //LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(intent);
                 Intent intent = new Intent(ChartFragment.this.getActivity().getApplicationContext(), StockChartActivity.class);
-                Bundle args = new Bundle();
-                args.putBundle(BUNDLE_KEY_ARGUMENTS, ChartFragment.this.getArguments());
-                intent.putExtras(args);
-                ChartFragment.this.getActivity().startActivity(intent);
+                StockChartActivity.putSecurityId(intent, securityId);
+                StockChartActivity.putChartTimeSpan(intent, chartDTO.getChartTimeSpan());
+                StockChartActivity.putButtonSetVisibility(intent, timeSpanButtonSetVisibility);
+                ChartFragment.this.getActivity().startActivityForResult(intent, STOCK_ACTIVITY_REQUEST_CODE);
             }
         };
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == STOCK_ACTIVITY_REQUEST_CODE && data != null)
+        {
+            Bundle extras = data.getExtras();
+            if (extras != null)
+            {
+                ChartTimeSpan timeSpan = getChartTimeSpan(extras);
+                if (timeSpan != null)
+                {
+                    linkWith(timeSpan);
+                }
+            }
+        }
     }
 
     public void displayWarrantRows()

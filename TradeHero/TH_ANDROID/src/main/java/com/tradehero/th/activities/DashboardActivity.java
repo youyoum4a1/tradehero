@@ -640,6 +640,11 @@ public class DashboardActivity extends BaseActivity
         {
             thRouter.open(routeParams.deepLink, routeParams.extras, this);
         }
+        Fragment currentFragment = activityModule.navigator.getCurrentFragment();
+        if (currentFragment != null)
+        {
+            currentFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     protected void updateNetworkStatus()
