@@ -9,6 +9,9 @@
   <string name="tradehero_live">TradeHero LIVE</string>
   <string name="live_5_steps_away">You are 5 steps away from a live account!</string>
 
+  <string name="tile_live_trading_top">Open a LIVE account</string>
+  <string name="tile_live_trading">Get free US$100</string>
+
   <string name="live_identity_prompt">Do you have your Proof of Identity with you?</string>
   <string name="live_identity_prompt_au">Do you have your Australian Passport with you?</string>
   <string name="live_identity_prompt_sg">Do you have your NRIC/Passport/Driver\'s License with you?</string>

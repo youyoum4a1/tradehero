@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.trending.TileType;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.widget.LiveSwitcher;
@@ -122,6 +123,19 @@ public class LiveActivityUtil
 
     public void switchLive(boolean isLive)
     {
-        isTradingLivePublishSubject.onNext(new LiveSwitcherEvent(false, isLive));
+        switchLive(isLive, false);
+    }
+
+    private void switchLive(boolean isLive, boolean fromUser)
+    {
+        isTradingLivePublishSubject.onNext(new LiveSwitcherEvent(fromUser, isLive));
+    }
+
+    public void onTrendingTileClicked(TileType tileType)
+    {
+        if (tileType.equals(TileType.LiveToggle))
+        {
+            switchLive(true, true);
+        }
     }
 }

@@ -24,4 +24,8 @@ public class LiveActivityUtil
     public void switchLive(boolean isLive)
     {
     }
+
+    public void onTrendingTileClicked(TileType tileType){
+
+    }
 }

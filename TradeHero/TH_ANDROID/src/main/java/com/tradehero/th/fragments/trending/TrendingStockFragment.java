@@ -17,6 +17,7 @@ import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.LiveActivityUtil;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -91,6 +92,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @Inject ProviderUtil providerUtil;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
+    @Inject LiveActivityUtil liveActivityUtil;
 
     private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
 
@@ -529,6 +531,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 handleProviderTileOnClick((ProviderTileView) view);
                 break;
         }
+        liveActivityUtil.onTrendingTileClicked(item);
     }
 
     private void handleProviderTileOnClick(ProviderTileView view)
