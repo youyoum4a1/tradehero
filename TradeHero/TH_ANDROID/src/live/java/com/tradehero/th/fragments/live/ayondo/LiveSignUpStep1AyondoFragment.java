@@ -5,16 +5,19 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
@@ -23,7 +26,11 @@ import com.tradehero.th.api.live.LiveCountryDTOList;
 import com.tradehero.th.api.live.LiveCountryListId;
 import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
 import com.tradehero.th.models.kyc.KYCForm;
+import com.tradehero.th.models.sms.SMSRequestFactory;
+import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
+import com.tradehero.th.models.sms.SMSServiceWrapper;
 import com.tradehero.th.persistence.live.LiveCountryDTOListCache;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.GraphicUtil;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,14 +38,18 @@ import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseFragment
 {
     @Bind(R.id.info_title) Spinner title;
-    @Bind(R.id.info_residency) Spinner spinnerResidency;
+    @Bind(R.id.phone_number) EditText phoneNumber;
+    @Bind(R.id.btn_verify_phone) View buttonVerifyPhone;
     @Bind(R.id.info_nationality) Spinner spinnerNationality;
+    @Bind(R.id.info_residency) Spinner spinnerResidency;
 
     @Inject LiveCountryDTOListCache liveCountryDTOListCache;
+    @Inject SMSServiceWrapper smsServiceWrapper;
 
     private CountrySpinnerAdapter nationalityAdapter;
     private CountrySpinnerAdapter residencyAdapter;
@@ -109,6 +120,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseFragment
                 }));
     }
 
+    @Override public void onDestroyView()
+    {
+        ButterKnife.unbind(this);
+        super.onDestroyView();
+    }
+
     @Override public void onNext(@NonNull KYCForm kycForm)
     {
         // TODO
@@ -166,5 +183,36 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseFragment
                 ButterKnife.bind(this, itemView);
             }
         }
+    }
+
+    @SuppressWarnings("unused")
+    @OnTextChanged(value = R.id.phone_number, callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
+    protected void afterPhoneChanged(Editable s)
+    {
+        String newNumber = s.toString();
+        buttonVerifyPhone.setEnabled(!newNumber.equals("" + getKYCForm().getVerifiedMobileNumber()));
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(R.id.btn_verify_phone)
+    protected void onVerifyPhoneClicked(View view)
+    {
+        onDestroyViewSubscriptions.add(
+                smsServiceWrapper.sendMessage(SMSRequestFactory.create(phoneNumber.getText().toString(), "Hello World"))
+                        .subscribe(
+                                new Action1<SMSSentConfirmationDTO>()
+                                {
+                                    @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
+                                    {
+                                        Timber.d(smsSentConfirmationDTO.toString());
+                                    }
+                                },
+                                new ToastAndLogOnErrorAction(getString(R.string.sms_verification_send_fail), "Failed to send SMS")
+                                {
+                                    @Override public void call(Throwable throwable)
+                                    {
+                                        super.call(throwable);
+                                    }
+                                }));
     }
 }

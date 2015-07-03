@@ -1,19 +1,18 @@
 package com.tradehero.th.fragments.live;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.kyc.KYCForm;
+import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
+import com.tradehero.th.persistence.prefs.KYCFormPreference;
+import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 {
+    @Inject KYCFormPreference kycFormPreference;
+
     @NonNull private final BehaviorSubject<KYCForm> kycFormSubject;
 
     public LiveSignUpStepBaseFragment()
@@ -21,9 +20,9 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         this.kycFormSubject = BehaviorSubject.create();
     }
 
-    @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @NonNull protected KYCAyondoForm getKYCForm()
     {
-        return inflater.inflate(R.layout.fragment_live_action_screen, container, false);
+        return (KYCAyondoForm) kycFormPreference.get();
     }
 
     abstract public void onNext(@NonNull KYCForm kycForm);
