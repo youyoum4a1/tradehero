@@ -29,6 +29,7 @@
 
   <string name="tile_earn_credit_text">Refer friends and earn TradeHero dollars!</string>
   <string name="tile_extra_cash_text">Buy more virtual cash</string>
-  <string name="tile_reset_portfolio">Reset your portfolio</string>
+  <string name="tile_reset_portfolio">Reset your portfolio now!</string>
+  <string name="tile_reset_portfolio_top">Need a fresh start?</string>
 
 </resources>
