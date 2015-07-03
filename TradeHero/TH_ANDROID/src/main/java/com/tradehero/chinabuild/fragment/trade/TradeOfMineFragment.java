@@ -1,5 +1,6 @@
 package com.tradehero.chinabuild.fragment.trade;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.adapters.CNPersonTradePositionListAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -148,8 +150,11 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         totalTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_total);
         availableTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_available);
         buyTV = (Button)mRefreshView.findViewById(R.id.security_buy);
+        buyTV.setOnClickListener(this);
         sellTV = (Button)mRefreshView.findViewById(R.id.security_sell);
+        sellTV.setOnClickListener(this);
         recallTV = (Button)mRefreshView.findViewById(R.id.security_recall);
+        recallTV.setOnClickListener(this);
     }
 
     private void initView() {
@@ -285,10 +290,13 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         int viewId = view.getId();
         switch (viewId){
             case R.id.security_buy:
+                enterSecurityOptBuy();
                 break;
             case R.id.security_sell:
+                enterSecurityOptSell();
                 break;
             case R.id.security_recall:
+                enterSecurityOptRecall();
                 break;
         }
     }
@@ -527,4 +535,30 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         }
     }
 
+    private void enterSecurityOptBuy(){
+        Bundle bundle = new Bundle();
+        bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+        Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+    }
+
+    private void enterSecurityOptSell(){
+        Bundle bundle = new Bundle();
+        bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_SELL);
+        Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+    }
+
+    private void enterSecurityOptRecall(){
+        Bundle bundle = new Bundle();
+        bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_RECALL);
+        Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+    }
 }

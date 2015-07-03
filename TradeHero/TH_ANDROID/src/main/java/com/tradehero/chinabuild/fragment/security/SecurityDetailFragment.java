@@ -118,7 +118,7 @@ import retrofit.client.Response;
 import timber.log.Timber;
 
 /**
- * Created by huhaiping on 14-9-1.
+ * 股票交易界面
  */
 public class SecurityDetailFragment extends BasePurchaseManagerFragment
         implements View.OnClickListener
@@ -440,12 +440,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void setBuySaleButtonVisable(boolean isCanSale) {
+    private void setBuySaleButtonVisable() {
         try {
             llBuySaleButtons.setVisibility(View.VISIBLE);
-            llSecurityBuy.setVisibility(View.VISIBLE);
-            llSecuritySale.setVisibility(isCanSale ? View.VISIBLE : View.GONE);
-            if (isCanSale || isBuyOrSaleValid(true, false)) {
+            if (isBuyOrSaleValid()) {
                 betterViewAnimator.setDisplayedChildByLayoutId(R.id.ic_info_buy_sale_btns);
             }
         } catch (Exception e) {
@@ -826,9 +824,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        if (this.mSellQuantity != null) {
-            setBuySaleButtonVisable(mSellQuantity > 0);//可以卖出
-        }
+        setBuySaleButtonVisable();
     }
 
     protected void setInitialBuyQuantityIfCan()
@@ -1466,37 +1462,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     }
 
-    public void linkWith(ChartTimeSpan timeSpan)
-    {
+    private void linkWith(ChartTimeSpan timeSpan) {
         chartDTO.setChartTimeSpan(timeSpan);
         displayChartImage();
     }
 
-    public boolean isBuyOrSaleValid(boolean isBuy, boolean display)
-    {
+    private boolean isBuyOrSaleValid() {
         if (quoteDTO == null) return false;
-        if (!display) {
-            return true;
-        }
-
-        if (quoteDTO.ask == null && quoteDTO.bid == null)
-        {//ask bid 都没有返回 则说明停牌
-            showBuyOrSaleError(ERROR_NO_ASK_BID);
-            return false;
-        }
-        else if (quoteDTO.bid == null && (!isBuy))
-        {//跌停
-            showBuyOrSaleError(ERROR_NO_BID);
-            return false;
-        }
-        else if (quoteDTO.ask == null && (isBuy))
-        {//涨停
-            showBuyOrSaleError(ERROR_NO_ASK);
-            return false;
-        }
-
-        if (isFromCompetition && portfolioCompactDTO == null)
-        {
+        if (isFromCompetition && portfolioCompactDTO == null) {
             showBuyOrSaleError(ERROR_NO_COMPETITION_PROTFOLIO);
             return false;
         }
@@ -1504,29 +1477,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         return true;
     }
 
-    public void showBuyOrSaleError(int type)
-    {
-        if (type == ERROR_NO_ASK_BID)
-        {
-            THToast.show("你所购买的股票已停牌");
-        }
-        else if (type == ERROR_NO_BID)
-        {
-            THToast.show("你所购买的股票已跌停");
-        }
-        else if (type == ERROR_NO_ASK)
-        {
-            THToast.show("你所购买的股票已涨停");
-        }
-        else if (type == ERROR_NO_COMPETITION_PROTFOLIO)
-        {
+    public void showBuyOrSaleError(int type) {
+        if (type == ERROR_NO_COMPETITION_PROTFOLIO) {
             THToast.show("请先报名参加比赛");
         }
     }
 
     public void enterBuySale(boolean isBuy) {
-
-        if (isBuyOrSaleValid(isBuy, true)) {
+        if (isBuyOrSaleValid()) {
             Bundle bundle = new Bundle();
             if (portfolioCompactDTO!=null&& portfolioCompactDTO.getPortfolioId()!=null) {
                 bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());

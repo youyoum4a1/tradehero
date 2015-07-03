@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/tradehero_blue">
+
+        <ImageButton
+            android:id="@+id/button_security_opt_back"
+            android:layout_width="@dimen/tab_main_indicator_height"
+            android:layout_height="@dimen/tab_main_indicator_height"
+            android:layout_centerVertical="true"
+            android:background="@drawable/icon_return_xml"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></LinearLayout>
+        <ImageButton
+            android:id="@+id/button_security_opt_search"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/margin_medium"
+            android:background="@drawable/search"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

@@ -1,6 +1,7 @@
 package com.tradehero.th.api.portfolio;
 
 import android.content.Context;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.quote.QuoteDTO;
 import javax.inject.Inject;
@@ -33,9 +34,8 @@ public class PortfolioCompactDTOUtil
         double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
         Double askUsd = quoteDTO.getAskUSD();
         double cashUsd = portfolioCompactDTO.getCashBalanceUsd();
-        if (askUsd == null || askUsd == 0)
-        {
-            return null;
+        if (askUsd == null || askUsd == 0) {
+            return 0;
         }
         return (int) Math.floor((cashUsd - (includeTransactionCostUsd ? txnCostUsd : 0)) / askUsd);
     }

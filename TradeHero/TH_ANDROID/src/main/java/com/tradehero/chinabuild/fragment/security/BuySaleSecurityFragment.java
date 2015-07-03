@@ -4,8 +4,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,13 +20,11 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.ShareSellDialogFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -72,8 +70,6 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
@@ -83,7 +79,6 @@ import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 /**
  * Created by huhaiping on 14-9-2.
@@ -101,8 +96,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
     public static final String KEY_POSITION_COMPACT_DTO = BuySaleSecurityFragment.class.getName() + ".position_compact_dto";
     public static final String KEY_PRE_CLOSE = BuySaleSecurityFragment.class.getName() + ".preclose";
 
-    public final static long MILLISEC_QUOTE_REFRESH = 10000;
-    public final static long MILLISEC_QUOTE_COUNTDOWN_PRECISION = 50;
     protected DTOCacheNew.Listener<SecurityId, SecurityPositionDetailDTO> securityPositionDetailListener;
 
     protected int competitionID = 0;
@@ -324,12 +317,13 @@ public class BuySaleSecurityFragment extends DashboardFragment
         };
     }
 
-    private int getTradeQuantityFrom(@NotNull String string)
-    {
+    private int getTradeQuantityFrom(String string) {
+        if(TextUtils.isEmpty(string)){
+            return 0;
+        }
         int val = 0;
-        try
-        {
-            val = Integer.parseInt(string.trim());
+        try {
+            val = Integer.valueOf(string.trim());
             if (val > getMaxValue(isBuy))
             {
                 val = getMaxValue(isBuy);
@@ -870,10 +864,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
         @Override public void failure(RetrofitError retrofitError)
         {
             onFinish();
-            if (retrofitError != null)
-            {
-                Timber.e(retrofitError, "Reporting the error to Crashlytics %s", retrofitError.getBody());
-            }
             THException thException = new THException(retrofitError);
             THToast.show(thException);
         }
@@ -919,9 +909,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
         {
             return null;
         }
-        if (portfolioId == null)
-        {
-            Timber.e("No portfolioId to apply to", new IllegalStateException());
+        if (portfolioId == null){
             return null;
         }
 
@@ -1013,7 +1001,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
     private void linkWith(SecurityPositionDetailDTO detailDTO, boolean andDisplay)
     {
-        Timber.d("");
         this.securityPositionDetailDTO = detailDTO;
 
         if (securityPositionDetailDTO != null)
@@ -1060,7 +1047,6 @@ public class BuySaleSecurityFragment extends DashboardFragment
 
         @Override public void onErrorThrown(@NotNull SecurityId key, @NotNull Throwable error)
         {
-            Timber.e("Error fetching the security position detail %s", key, error);
         }
     }
 
@@ -1195,13 +1181,11 @@ public class BuySaleSecurityFragment extends DashboardFragment
                     if (dto == null) {
                         return;
                     }
-                    Log.e("test", "Refresh - " + dto);
                     updateQuoteInfo(dto);
                 }
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Timber.e(error, "Error to get quoteDTO.");
                 }
             };
         }

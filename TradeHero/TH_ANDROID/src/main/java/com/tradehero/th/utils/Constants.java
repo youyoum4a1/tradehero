@@ -43,5 +43,5 @@ public class Constants {
     public final static int NOTIFICATION_ID = 90001;
 
     //Manager Account
-    public final static boolean isManager = false;
+    public final static boolean isManager = true;
 }
