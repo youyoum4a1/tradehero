@@ -4,6 +4,10 @@ import android.view.View;
 
 public class LiveFragmentUtil
 {
+    public LiveFragmentUtil(Fragment f, View view)
+    {
+    }
+
     public static void setDarkBackgroundColor(boolean isLive, View... views)
     {
     }
@@ -13,6 +17,18 @@ public class LiveFragmentUtil
     }
 
     public static void setSelectableBackground(boolean isLive, View... views)
+    {
+    }
+
+    public void setCallToAction(boolean isLive)
+    {
+    }
+
+    public void onDestroy()
+    {
+    }
+
+    public void onDestroyView()
     {
     }
 }

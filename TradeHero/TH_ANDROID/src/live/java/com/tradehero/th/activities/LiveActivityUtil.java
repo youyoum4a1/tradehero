@@ -6,9 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.live.LiveCallToActionFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.widget.LiveSwitcher;
@@ -25,7 +23,6 @@ public class LiveActivityUtil
     private CompositeSubscription onDestroyOptionsMenuSubscriptions;
 
     @Inject @IsLiveTrading BooleanPreference isLiveTrading;
-    @Inject DashboardNavigator navigator;
     private PublishSubject<LiveSwitcherEvent> isTradingLivePublishSubject;
 
     public LiveActivityUtil(DashboardActivity dashboardActivity)
@@ -109,10 +106,6 @@ public class LiveActivityUtil
             dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
                     .setBackgroundResource(
                             event.isLive ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
-        }
-        if (event.isFromUser && event.isLive && !(navigator.getCurrentFragment() instanceof LiveCallToActionFragment))
-        {
-            navigator.pushFragment(LiveCallToActionFragment.class);
         }
     }
 

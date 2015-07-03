@@ -85,6 +85,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Nullable private OwnedPortfolioId fxPortfolioId;
     public static boolean fxDialogShowed = false;
     private boolean needsConfigureSpinner = false;
+    private LiveFragmentUtil liveFragmentUtil;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -184,6 +185,7 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        liveFragmentUtil = new LiveFragmentUtil(this, view);
         pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
             @Override public void onPageScrolled(int i, float v, int i2)
@@ -277,6 +279,7 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onLiveTradingChanged(isLive);
         LiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
+        liveFragmentUtil.setCallToAction(isLive);
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -294,6 +297,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         ButterKnife.unbind(this);
+        liveFragmentUtil.onDestroyView();
         super.onDestroyView();
     }
 
@@ -301,6 +305,7 @@ public class TrendingMainFragment extends DashboardFragment
     {
         this.tradingStockPagerAdapter = null;
         this.tradingFXPagerAdapter = null;
+        liveFragmentUtil.onDestroy();
         super.onDestroy();
     }
 
