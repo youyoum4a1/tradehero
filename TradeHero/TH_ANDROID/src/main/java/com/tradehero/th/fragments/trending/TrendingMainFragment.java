@@ -522,6 +522,7 @@ public class TrendingMainFragment extends DashboardFragment
 
     protected void handleRouting()
     {
+        BaseActivity activity = (BaseActivity) getActivity();
         if (selectedStockPageIndex != null)
         {
             if (lastType.equals(TrendingTabType.STOCK))
@@ -533,10 +534,10 @@ public class TrendingMainFragment extends DashboardFragment
                     selectedStockPageIndex = null;
                 }
             }
-            else if (actionBarOwnerMixin != null)
+            else if (actionBarOwnerMixin != null && activity != null)
             {
                 lastType = TrendingTabType.STOCK;
-                actionBarOwnerMixin.setSpinnerSelection(TrendingTabType.STOCK.ordinal());
+                actionBarOwnerMixin.setSpinnerSelection(activity, R.id.action_bar_spinner, TrendingTabType.STOCK.ordinal());
             }
         }
         else if (selectedFxPageIndex != null)
@@ -550,10 +551,10 @@ public class TrendingMainFragment extends DashboardFragment
                     selectedFxPageIndex = null;
                 }
             }
-            else if (actionBarOwnerMixin != null)
+            else if (actionBarOwnerMixin != null && activity != null)
             {
                 lastType = TrendingTabType.FX;
-                actionBarOwnerMixin.setSpinnerSelection(TrendingTabType.FX.ordinal());
+                actionBarOwnerMixin.setSpinnerSelection(activity, R.id.action_bar_spinner, TrendingTabType.FX.ordinal());
             }
         }
         else if (lastType.equals(TrendingTabType.STOCK))

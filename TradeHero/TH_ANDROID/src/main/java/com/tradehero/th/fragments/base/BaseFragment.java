@@ -321,7 +321,11 @@ public class BaseFragment extends Fragment
      */
     protected void showToolbarSpinner()
     {
-        actionBarOwnerMixin.showToolbarSpinner();
+        BaseActivity activity = (BaseActivity) getActivity();
+        if (activity != null)
+        {
+            actionBarOwnerMixin.showToolbarSpinner(activity, R.id.action_bar_spinner);
+        }
     }
 
     /**
@@ -329,7 +333,11 @@ public class BaseFragment extends Fragment
      */
     protected void hideToolbarSpinner()
     {
-        actionBarOwnerMixin.hideToolbarSpinner();
+        BaseActivity activity = (BaseActivity) getActivity();
+        if (activity != null)
+        {
+            actionBarOwnerMixin.hideToolbarSpinner(activity, R.id.action_bar_spinner);
+        }
     }
 
     class ToolbarSpinnerAdapter extends ArrayAdapter<String>

@@ -33,13 +33,12 @@ public class ActionBarOwnerMixin
     private final Fragment fragment;
     private final ActionBar actionBar;
 
-    private Spinner toolbarSpinner;
-
     @NonNull public static ActionBarOwnerMixin of(@NonNull Fragment fragment)
     {
         return new ActionBarOwnerMixin(fragment);
     }
 
+    //<editor-fold desc="Arguments Passing">
     public static void putKeyTouchHome(@NonNull Bundle args, boolean touchHome)
     {
         args.putBoolean(BUNDLE_KEY_TOUCH_HOME, touchHome);
@@ -89,6 +88,7 @@ public class ActionBarOwnerMixin
             args.putString(BUNDLE_KEY_TITLE, title);
         }
     }
+    //</editor-fold>
 
     private ActionBarOwnerMixin(@NonNull Fragment fragment)
     {
@@ -204,7 +204,7 @@ public class ActionBarOwnerMixin
             return;
         }
 
-        toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
+        Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
         if (toolbarSpinner == null)
         {
             return;
@@ -219,16 +219,33 @@ public class ActionBarOwnerMixin
         toolbarSpinner.setVisibility(View.VISIBLE);
     }
 
-    public void setSpinnerSelection(int index)
+    public void setSpinnerSelection(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId, int index)
     {
-        if (toolbarSpinner != null)
+        Toolbar toolbar = activity.getToolbar();
+        if (toolbar == null)
         {
-            toolbarSpinner.setSelection(index);
+            return;
         }
+
+        Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
+
+        if (toolbarSpinner == null)
+        {
+            return;
+        }
+        toolbarSpinner.setSelection(index);
     }
 
-    public void hideToolbarSpinner()
+    public void hideToolbarSpinner(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId)
     {
+        Toolbar toolbar = activity.getToolbar();
+        if (toolbar == null)
+        {
+            return;
+        }
+
+        Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
+
         if (toolbarSpinner == null)
         {
             return;
@@ -236,8 +253,16 @@ public class ActionBarOwnerMixin
         toolbarSpinner.setVisibility(View.GONE);
     }
 
-    public void showToolbarSpinner()
+    public void showToolbarSpinner(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId)
     {
+        Toolbar toolbar = activity.getToolbar();
+        if (toolbar == null)
+        {
+            return;
+        }
+
+        Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
+
         if (toolbarSpinner == null)
         {
             return;
