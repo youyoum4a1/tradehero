@@ -71,12 +71,13 @@ public class LiveServiceWrapper
                         if (savedForm.getClass().equals(defaultForm.getClass()))
                         {
                             savedForm.pickFrom(defaultForm);
-                            return savedForm;
                         }
                         else
                         {
-                            return defaultForm;
+                            savedForm = defaultForm;
                         }
+                        kycFormPreference.set(savedForm);
+                        return savedForm;
                     }
                 });
     }
