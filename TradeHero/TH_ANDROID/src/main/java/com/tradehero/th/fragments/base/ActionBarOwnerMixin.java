@@ -17,8 +17,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.ViewAnimator;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.BaseActivity;
+import timber.log.Timber;
 
 public class ActionBarOwnerMixin
 {
@@ -183,6 +185,48 @@ public class ActionBarOwnerMixin
         {
             actionBar.setTitle(title);
         }
+    }
+
+    public void addAnimatorView(
+            @NonNull BaseActivity activity,
+            @IdRes int animatorId,
+            @NonNull View view,
+            int index)
+    {
+        Toolbar toolbar = activity.getToolbar();
+        if (toolbar == null)
+        {
+            return;
+        }
+
+        ViewAnimator animator = (ViewAnimator) toolbar.findViewById(animatorId);
+        if (animator == null)
+        {
+            Timber.e(new NullPointerException(), "There was no animator");
+            return;
+        }
+        animator.addView(view, index);
+        animator.setVisibility(View.VISIBLE);
+    }
+
+    public void removeView(
+            @NonNull BaseActivity activity,
+            @IdRes int animatorId,
+            int index)
+    {
+        Toolbar toolbar = activity.getToolbar();
+        if (toolbar == null)
+        {
+            return;
+        }
+
+        ViewAnimator animator = (ViewAnimator) toolbar.findViewById(animatorId);
+        if (animator == null)
+        {
+            Timber.e(new NullPointerException(), "There was no animator");
+            return;
+        }
+        animator.removeViewAt(index);
     }
 
     /**

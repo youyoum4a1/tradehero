@@ -23,6 +23,15 @@
         android:minHeight="?attr/actionBarSize"
         >
 
+      <ViewAnimator
+          android:id="@+id/toolbar_animator"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+          >
+
+      </ViewAnimator>
+
       <Spinner
           android:id="@+id/action_bar_spinner"
           android:layout_width="wrap_content"
