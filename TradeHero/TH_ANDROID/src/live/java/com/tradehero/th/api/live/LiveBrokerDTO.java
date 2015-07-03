@@ -6,7 +6,7 @@ import com.tradehero.common.persistence.DTO;
 
 public class LiveBrokerDTO implements DTO
 {
-    @NonNull  public final LiveBrokerId id;
+    @NonNull public final LiveBrokerId id;
     @NonNull public final String name;
 
     public LiveBrokerDTO(
