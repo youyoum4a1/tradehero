@@ -277,9 +277,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private int percent;
     private String securityHead;
 
-    public static final int ERROR_NO_ASK_BID = 0;
-    public static final int ERROR_NO_ASK = 1;
-    public static final int ERROR_NO_BID = 2;
     public static final int ERROR_NO_COMPETITION_PROTFOLIO = 3;
 
     boolean isFromCompetition = false;

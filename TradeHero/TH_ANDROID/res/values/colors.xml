@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="number_green">#1A930A</color>
-    <color name="number_red">#E2494B</color>
-    <color name="number_up">@color/number_red</color>
-    <color name="number_down">@color/number_green</color>
+    <color name="number_up">#de2f31</color>
+    <color name="number_down">#1a930a</color>
+    <color name="number_normal">#f9b7b7</color>
     <color name="red">#D42621</color>
     <color name="actionbar_gradient2">#929CBA</color>
     <color name="textbox_border_color_light">#555555</color>
-    <color name="black">@android:color/black</color>
+    <color name="black">#000000</color>
     <color name="black2">#999999</color>
     <color name="light_grey">#D0D0D0</color>
     <color name="lighter_grey">#E6E6E6</color>

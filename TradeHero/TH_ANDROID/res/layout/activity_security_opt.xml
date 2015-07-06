@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/relativelayout_security_opt_toolbar"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@color/tradehero_blue">
@@ -17,7 +18,28 @@
             android:background="@drawable/icon_return_xml"/>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"></LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerInParent="true">
+            <TextView
+                android:id="@+id/textview_mock"
+                android:background="@drawable/security_opt_c"
+                android:layout_width="53dp"
+                android:text="模拟"
+                android:gravity="center"
+                android:textColor="@color/color_blue"
+                android:textSize="14sp"
+                android:layout_height="26dp" />
+            <TextView
+                android:id="@+id/textview_actual"
+                android:background="@drawable/security_opt_d"
+                android:layout_width="53dp"
+                android:text="实盘"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:layout_height="26dp" />
+        </LinearLayout>
         <ImageButton
             android:id="@+id/button_security_opt_search"
             android:layout_width="wrap_content"
@@ -29,6 +51,7 @@
     </RelativeLayout>
 
     <FrameLayout
+        android:id="@+id/framelayout_mock_actual"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>
