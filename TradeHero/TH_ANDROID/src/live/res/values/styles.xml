@@ -29,4 +29,22 @@
     <item name="android:maxWidth">480dp</item>
   </style>
 
+  <style name="TH.Button.Link"
+      parent="TH.Button">
+    <item name="android:textColor">@color/tradehero_blue</item>
+  </style>
+
+  <style name="TH.Button.Small.Link"
+      parent="TH.Button.Small">
+    <item name="android:textColor">@color/tradehero_blue</item>
+  </style>
+
+  <style name="TH.LiveIdentityPromptImage">
+    <item name="android:layout_width">@dimen/size_15</item>
+    <item name="android:layout_height">@dimen/size_15</item>
+    <item name="android:layout_marginBottom">@dimen/margin_small</item>
+    <item name="android:layout_marginTop">@dimen/margin_small</item>
+    <item name="android:scaleType">fitCenter</item>
+  </style>
+
 </resources>

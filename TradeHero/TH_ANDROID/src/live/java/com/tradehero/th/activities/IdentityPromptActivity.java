@@ -41,11 +41,10 @@ public class IdentityPromptActivity extends BaseActivity
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
 
-    @Bind(R.id.identity_prompt_yes) View yesButton;
+    @Bind(R.id.identity_prompt_passport) View yesButton;
     @Bind(R.id.live_powered_by) TextView livePoweredBy;
-    @Bind(R.id.identity_prompt_country) TextView txtCountry;
-    @Bind(R.id.identity_prompt_image) ImageView imgPrompt;
-    @Bind(R.id.identity_prompt_text) TextView txtPrompt;
+    @Bind(R.id.identity_prompt_image_specific) ImageView imgPrompt;
+    @Bind(R.id.identity_prompt_specific) TextView txtPrompt;
 
     private Subscription fastFillSubscription;
 
@@ -59,7 +58,6 @@ public class IdentityPromptActivity extends BaseActivity
                 {
                     @Override public void call(KYCForm kycForm)
                     {
-                        txtCountry.setText(kycForm.getCountry().locationName);
                         livePoweredBy.setText(kycForm.getBrokerName());
                     }
                 })
@@ -86,17 +84,18 @@ public class IdentityPromptActivity extends BaseActivity
                 {
                     @Override public Observable<KYCForm> call(final KYCForm formToUse)
                     {
-                        return ViewObservable.clicks(yesButton).flatMap(
-                                new Func1<OnClickEvent, Observable<ScannedDocument>>()
-                                {
-                                    @Override public Observable<ScannedDocument> call(@NonNull OnClickEvent onClickEvent)
-                                    {
-                                        Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable()
-                                                .cache(1);
-                                        fastFillUtil.fastFill(IdentityPromptActivity.this);
-                                        return documentObservable;
-                                    }
-                                })
+                        return Observable.merge(ViewObservable.clicks(yesButton), ViewObservable.clicks(txtPrompt))
+                                .flatMap(
+                                        new Func1<OnClickEvent, Observable<ScannedDocument>>()
+                                        {
+                                            @Override public Observable<ScannedDocument> call(@NonNull OnClickEvent onClickEvent)
+                                            {
+                                                Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable()
+                                                        .cache(1);
+                                                fastFillUtil.fastFill(IdentityPromptActivity.this);
+                                                return documentObservable;
+                                            }
+                                        })
                                 .map(new Func1<ScannedDocument, KYCForm>()
                                 {
                                     @Override public KYCForm call(ScannedDocument scannedDocument)

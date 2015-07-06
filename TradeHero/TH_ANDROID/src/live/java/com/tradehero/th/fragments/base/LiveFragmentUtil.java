@@ -9,20 +9,34 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.IdentityPromptActivity;
+import com.tradehero.th.activities.SignUpLiveActivity;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.live.LiveCallToActionFragment;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.persistence.prefs.ShowCallToActionFragmentPreference;
+import com.tradehero.th.widget.GoLiveWidget;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.Subscription;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
 import rx.functions.Action1;
+import rx.functions.Func2;
 
 public class LiveFragmentUtil
 {
     @Bind(R.id.live_fragment_container) FrameLayout liveFragmentContainer;
     @Bind(R.id.pager) ViewPager pager;
-    Fragment fragment;
+    @Bind(R.id.live_button_go_live) GoLiveWidget liveWidget;
     @Nullable private LiveCallToActionFragment callToActionFragment;
+    Fragment fragment;
+
     @Inject @ShowCallToActionFragmentPreference BooleanPreference showCallToActionFragment;
+    @Inject DashboardNavigator navigator;
+    @Inject FastFillUtil fastFill;
+
     private Subscription laterClickedSubscription;
 
     public LiveFragmentUtil(Fragment f, View view)
@@ -30,6 +44,27 @@ public class LiveFragmentUtil
         fragment = f;
         ButterKnife.bind(this, view);
         HierarchyInjector.inject(f.getActivity(), this);
+
+        Observable.combineLatest(
+                ViewObservable.clicks(liveWidget),
+                fastFill.isAvailable(f.getActivity()),
+                new Func2<OnClickEvent, Boolean, Boolean>()
+                {
+                    @Override public Boolean call(OnClickEvent onClickEvent, Boolean fastFillAvailable)
+                    {
+                        return fastFillAvailable;
+                    }
+                })
+                .subscribe(new Action1<Boolean>()
+                {
+                    @Override public void call(Boolean fastFillAvailable)
+                    {
+                        navigator.launchActivity(fastFillAvailable
+                                ? IdentityPromptActivity.class
+                                : SignUpLiveActivity.class);
+                    }
+                });
+
     }
 
     public static void setDarkBackgroundColor(boolean isLive, View... views)
@@ -123,12 +158,12 @@ public class LiveFragmentUtil
 
     private void showCallToActionBubbleVisible()
     {
-
+        liveWidget.setVisibility(View.VISIBLE);
     }
 
     private void showCallToActionBubbleGone()
     {
-
+        liveWidget.setVisibility(View.GONE);
     }
 
     public void onDestroy()

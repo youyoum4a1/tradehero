@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_material_light"
+    android:fillViewport="true"
     >
 
   <LinearLayout
@@ -15,7 +16,7 @@
       >
 
     <ImageView
-        android:layout_width="@dimen/size_25"
+        android:layout_width="240dp"
         android:layout_height="@dimen/size_6"
         android:layout_gravity="center_horizontal"
         android:scaleType="fitCenter"
@@ -32,7 +33,7 @@
 
     <TextView
         android:id="@+id/live_description"
-        style="@style/TH.Body"
+        style="@style/TH.Subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -49,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/margin_xsmall"
-        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_large"
         android:background="@drawable/basic_green_selector"
         />
 

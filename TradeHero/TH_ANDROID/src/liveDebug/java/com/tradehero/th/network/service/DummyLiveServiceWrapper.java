@@ -53,7 +53,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
         {
             infoDTO.image =
                     "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-sg.png";
-            infoDTO.prompt = "Do you have your Passport/ Singapore NRIC/ Driver's License with you?";
+            infoDTO.prompt = "Singapore NRIC/ Driver's License";
         }
         return Observable.just(infoDTO);
     }

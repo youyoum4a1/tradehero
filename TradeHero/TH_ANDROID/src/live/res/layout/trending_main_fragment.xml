@@ -34,9 +34,19 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:paddingTop="@dimen/clickable_element_min_dimen"
-      android:visibility="visible"
+      android:visibility="gone"
       android:clickable="true"
       />
 
+    <com.tradehero.th.widget.GoLiveWidget
+        android:id="@id/live_button_go_live"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="@dimen/size_10"
+        style="@style/TH.Title.Inverse"
+        android:background="@drawable/basic_green_selector"
+        android:visibility="gone"
+        />
 
 </FrameLayout>
