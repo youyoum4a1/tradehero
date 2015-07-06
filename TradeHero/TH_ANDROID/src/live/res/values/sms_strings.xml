@@ -3,4 +3,13 @@
 
   <string name="sms_verification_send_fail">Failed to send a verification SMS</string>
 
+  <string name="sms_verification_button_twilio_queued">Queued</string>
+  <string name="sms_verification_button_twilio_sending">Sending</string>
+  <string name="sms_verification_button_twilio_sent">Sent</string>
+  <string name="sms_verification_button_twilio_receiving">Receiving</string>
+  <string name="sms_verification_button_twilio_received">Received</string>
+  <string name="sms_verification_button_twilio_delivered">Delivered</string>
+  <string name="sms_verification_button_twilio_undelivered">Undelivered</string>
+  <string name="sms_verification_button_twilio_failed">Failed</string>
+
 </resources>

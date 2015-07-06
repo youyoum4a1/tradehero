@@ -2,6 +2,8 @@ package com.tradehero.th.models.sms.twilio;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tradehero.th.R;
+import com.tradehero.th.models.sms.SMSId;
 import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
 import java.util.Date;
 
@@ -66,6 +68,11 @@ public class TwilioSMSSentConfirmationDTO implements SMSSentConfirmationDTO
         this.uri = uri;
     }
 
+    @NonNull @Override public SMSId getSMSId()
+    {
+        return sid;
+    }
+
     @NonNull @Override public String getTo()
     {
         return to;
@@ -74,5 +81,19 @@ public class TwilioSMSSentConfirmationDTO implements SMSSentConfirmationDTO
     @NonNull @Override public String getMessageBody()
     {
         return body;
+    }
+
+    @Override public int getStatusStringRes()
+    {
+        if (status == null)
+        {
+            return R.string.na;
+        }
+        return status.textId;
+    }
+
+    @Override public boolean isFinalStatus()
+    {
+        return status != null && status.finalStatus;
     }
 }
