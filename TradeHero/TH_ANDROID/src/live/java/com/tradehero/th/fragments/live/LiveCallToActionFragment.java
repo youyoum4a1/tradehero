@@ -12,7 +12,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.IdentityPromptActivity;
-import com.tradehero.th.activities.LiveActivityUtil;
 import com.tradehero.th.activities.SignUpLiveActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -28,17 +27,19 @@ import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.functions.Action1;
 import rx.functions.Func3;
+import rx.subjects.PublishSubject;
 
 public class LiveCallToActionFragment extends DashboardFragment
 {
     @Inject DashboardNavigator navigator;
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject FastFillUtil fastFill;
-    @Inject LiveActivityUtil liveActivityUtil;
 
     @Bind(R.id.live_button_go_live) View goLiveButton;
     @Bind(R.id.live_description) TextView liveDescription;
     @Bind(R.id.live_powered_by) TextView livePoweredBy;
+
+    PublishSubject<View> laterClickedSubject = PublishSubject.create();
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -93,10 +94,15 @@ public class LiveCallToActionFragment extends DashboardFragment
         return liveServiceWrapper.getFormToUse(getActivity()).share();
     }
 
+    public Observable<View> getOnLaterClickedSubscribtion()
+    {
+        return laterClickedSubject.asObservable();
+    }
+
     @SuppressWarnings("unused")
     @OnClick(R.id.live_button_later)
     public void onLaterButtonClicked(View v)
     {
-        liveActivityUtil.switchLive(false);
+        laterClickedSubject.onNext(v);
     }
 }

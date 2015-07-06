@@ -7,8 +7,14 @@ import android.view.View;
 import android.widget.FrameLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.live.LiveCallToActionFragment;
+import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.persistence.prefs.ShowCallToActionFragmentPreference;
+import javax.inject.Inject;
+import rx.Subscription;
+import rx.functions.Action1;
 
 public class LiveFragmentUtil
 {
@@ -16,11 +22,14 @@ public class LiveFragmentUtil
     @Bind(R.id.pager) ViewPager pager;
     Fragment fragment;
     @Nullable private LiveCallToActionFragment callToActionFragment;
+    @Inject @ShowCallToActionFragmentPreference BooleanPreference showCallToActionFragment;
+    private Subscription laterClickedSubscription;
 
     public LiveFragmentUtil(Fragment f, View view)
     {
         fragment = f;
         ButterKnife.bind(this, view);
+        HierarchyInjector.inject(f.getActivity(), this);
     }
 
     public static void setDarkBackgroundColor(boolean isLive, View... views)
@@ -51,15 +60,29 @@ public class LiveFragmentUtil
     {
         if (isLive)
         {
-            setCallToActionVisible();
+            if (showCallToActionFragment.get())
+            {
+                setCallToActionFragmentVisible();
+            }
+            else
+            {
+                showCallToActionBubbleVisible();
+            }
         }
         else
         {
-            setCallToActionGone();
+            if (showCallToActionFragment.get())
+            {
+                setCallToActionFragmentGone();
+            }
+            else
+            {
+                showCallToActionBubbleGone();
+            }
         }
     }
 
-    private void setCallToActionVisible()
+    private void setCallToActionFragmentVisible()
     {
         liveFragmentContainer.setVisibility(View.VISIBLE);
         if (callToActionFragment == null)
@@ -68,6 +91,14 @@ public class LiveFragmentUtil
             callToActionFragment.setArguments(fragment.getArguments());
         }
 
+        laterClickedSubscription = callToActionFragment.getOnLaterClickedSubscribtion().subscribe(new Action1<View>()
+        {
+            @Override public void call(View view)
+            {
+                setCallToActionFragmentGone();
+            }
+        });
+
         if (!callToActionFragment.isAdded())
         {
             fragment.getChildFragmentManager().beginTransaction().replace(R.id.live_fragment_container, callToActionFragment).commit();
@@ -75,14 +106,29 @@ public class LiveFragmentUtil
         }
     }
 
-    private void setCallToActionGone()
+    private void setCallToActionFragmentGone()
     {
         if (callToActionFragment != null && callToActionFragment.isAdded())
         {
             fragment.getChildFragmentManager().beginTransaction().remove(callToActionFragment).commit();
         }
+        if (laterClickedSubscription != null)
+        {
+            laterClickedSubscription.unsubscribe();
+        }
         liveFragmentContainer.setVisibility(View.GONE);
         pager.setVisibility(View.VISIBLE);
+        showCallToActionFragment.set(false); //Only display fragment once, the next one should be a bubble
+    }
+
+    private void showCallToActionBubbleVisible()
+    {
+
+    }
+
+    private void showCallToActionBubbleGone()
+    {
+
     }
 
     public void onDestroy()

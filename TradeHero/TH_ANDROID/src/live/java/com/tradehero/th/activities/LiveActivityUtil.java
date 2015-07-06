@@ -70,7 +70,7 @@ public class LiveActivityUtil
                 {
                     @Override public void call(LiveSwitcherEvent event)
                     {
-                        liveSwitcher.setIsLive(event.isLive, event.isFromUser);
+                        liveSwitcher.setIsLive(event.isLive, false);
                         onLiveTradingChanged(event);
                     }
                 }));
