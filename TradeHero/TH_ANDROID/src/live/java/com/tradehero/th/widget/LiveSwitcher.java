@@ -7,7 +7,9 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.ViewSwitcher;
 import com.tradehero.th.R;
+import java.util.concurrent.TimeUnit;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.subjects.PublishSubject;
 
 public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
@@ -69,6 +71,6 @@ public class LiveSwitcher extends ViewSwitcher implements View.OnClickListener
 
     public Observable<LiveSwitcherEvent> getSwitchObservable()
     {
-        return mSwitchSubject.distinctUntilChanged();
+        return mSwitchSubject.delay(300, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).distinctUntilChanged();
     }
 }
