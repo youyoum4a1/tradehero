@@ -161,6 +161,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             long newNumber = Long.parseLong(onTextChangeEvent.text().toString());
                             populateVerifyMobile(kycForm, newNumber);
+                            kycForm.setMobileNumber(newNumber);
+                            onNext(kycForm);
                         } catch (NumberFormatException e)
                         {
                             Timber.e(e, "Failed to parse to number %s", onTextChangeEvent.text().toString());
@@ -227,11 +229,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onNext(@NonNull KYCForm kycForm)
     {
         super.onNext(kycForm);
-        if (kycForm instanceof KYCAyondoForm)
-        {
-            populate((KYCAyondoForm) kycForm);
-        }
-        else
+        if (!(kycForm instanceof KYCAyondoForm))
         {
             Timber.e(new IllegalArgumentException(), "Should not submit a KYC of type: %s", kycForm);
         }
@@ -374,16 +372,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         onStopSubscriptions.add(
                 Observable.combineLatest(
                         verifyDialogSubject,
-                        getKycAyondoFormObservable()
-                                .map(new Func1<KYCAyondoForm, KYCAyondoForm>()
-                                {
-                                    @Override public KYCAyondoForm call(KYCAyondoForm kycForm)
-                                    {
-                                        kycForm.setMobileNumber(phoneNumberInt);
-                                        onNext(kycForm);
-                                        return kycForm;
-                                    }
-                                }),
+                        getKycAyondoFormObservable(),
                         updateVerifyView(smsSentConfirmationDTOObservable, phoneNumberText, expectedCode, verifyCodeDigitView)
                                 .compose(new Observable.Transformer<SMSSentConfirmationDTO, VerifyCodeDigitView.UserAction>()
                                 {
