@@ -74,31 +74,32 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
     {
         return super.getFormToUse(activity)
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<KYCForm, Observable<KYCForm>>()
-                {
-                    @Override public Observable<KYCForm> call(final KYCForm kycForm)
-                    {
-                        return AlertDialogRxUtil.build(activity)
-                                .setTitle("Fake country")
-                                .setPositiveButton("SG")
-                                .setNegativeButton("AU")
-                                .build()
-                                .map(new Func1<OnDialogClickEvent, KYCForm>()
-                                {
-                                    @Override public KYCForm call(OnDialogClickEvent clickEvent)
-                                    {
-                                        if (clickEvent.isPositive())
-                                        {
-                                            ((KYCAyondoForm) kycForm).setCountry(Country.SG);
-                                        }
-                                        else if (clickEvent.isNegative())
-                                        {
-                                            ((KYCAyondoForm) kycForm).setCountry(Country.AU);
-                                        }
-                                        return kycForm;
-                                    }
-                                });
-                    }
-                });
+                //.flatMap(new Func1<KYCForm, Observable<KYCForm>>()
+                //{
+                //    @Override public Observable<KYCForm> call(final KYCForm kycForm)
+                //    {
+                //        return AlertDialogRxUtil.build(activity)
+                //                .setTitle("Fake country")
+                //                .setPositiveButton("SG")
+                //                .setNegativeButton("AU")
+                //                .build()
+                //                .map(new Func1<OnDialogClickEvent, KYCForm>()
+                //                {
+                //                    @Override public KYCForm call(OnDialogClickEvent clickEvent)
+                //                    {
+                //                        if (clickEvent.isPositive())
+                //                        {
+                //                            ((KYCAyondoForm) kycForm).setCountry(Country.SG);
+                //                        }
+                //                        else if (clickEvent.isNegative())
+                //                        {
+                //                            ((KYCAyondoForm) kycForm).setCountry(Country.AU);
+                //                        }
+                //                        return kycForm;
+                //                    }
+                //                });
+                //    }
+                //})
+                ;
     }
 }
