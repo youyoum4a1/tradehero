@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<selector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:exitFadeDuration="@android:integer/config_mediumAnimTime">
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@android:integer/config_mediumAnimTime">
 
-  <item android:state_pressed="true"
-      android:drawable="@drawable/guide_screen_yijian_active"/>
+    <item android:drawable="@drawable/guide_screen_yijian_active" android:state_pressed="true" />
 
-  <item android:state_enabled="false"
-      android:drawable="@drawable/disable_button_bg"/>
+    <item android:drawable="@drawable/disable_button_bg" android:state_enabled="false" />
 
-  <item android:drawable="@drawable/guide_screen_yijian"/>
+    <item android:drawable="@drawable/guide_screen_yijian" />
 </selector>

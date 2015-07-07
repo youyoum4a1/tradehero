@@ -56,6 +56,7 @@
     <color name="main_tab_text_color_default">#949494</color>
 
     <color name="separate_line_color">#d3d2d6</color>
+    <color name="separate_line_gray">#e4e4e4</color>
 
     <color name="bg_fragment">#FFFFFF</color>
     <color name="color_gray">#bfbfbf</color>
