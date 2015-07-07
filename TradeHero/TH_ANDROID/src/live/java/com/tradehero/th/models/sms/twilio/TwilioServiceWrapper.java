@@ -6,7 +6,9 @@ import com.tradehero.th.models.sms.SMSRequest;
 import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
 import com.tradehero.th.models.sms.SMSServiceWrapper;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class TwilioServiceWrapper implements SMSServiceWrapper
 {
@@ -23,7 +25,8 @@ public class TwilioServiceWrapper implements SMSServiceWrapper
         return twilioServiceRx.sendMessage(
                 request.getFromNumberOrName(),
                 request.getToNumber(),
-                request.getMessageBody());
+                request.getMessageBody())
+                .onErrorResumeNext(getThrowableReprocessor());
     }
 
     @NonNull @Override public Observable<SMSSentConfirmationDTO> sendMessage(@NonNull SMSRequest request)
@@ -35,11 +38,25 @@ public class TwilioServiceWrapper implements SMSServiceWrapper
     @NonNull public Observable<TwilioSMSSentConfirmationDTO> getMessageStatus(
             @NonNull TwilioSMSId sid)
     {
-        return twilioServiceRx.getMessageStatus(sid.id);
+        return twilioServiceRx.getMessageStatus(sid.id)
+                .onErrorResumeNext(getThrowableReprocessor());
     }
 
     @NonNull @Override public Observable<SMSSentConfirmationDTO> getMessageStatus(@NonNull SMSId id)
     {
         return getMessageStatus((TwilioSMSId) id).cast(SMSSentConfirmationDTO.class);
+    }
+
+    @NonNull private static Func1<Throwable, Observable<? extends TwilioSMSSentConfirmationDTO>> getThrowableReprocessor()
+    {
+        return new Func1<Throwable, Observable<? extends TwilioSMSSentConfirmationDTO>>()
+        {
+            @Override public Observable<? extends TwilioSMSSentConfirmationDTO> call(Throwable throwable)
+            {
+                return throwable instanceof RetrofitError
+                        ? Observable.<TwilioSMSSentConfirmationDTO>error(new TwilioRetrofitException((RetrofitError) throwable))
+                        : Observable.<TwilioSMSSentConfirmationDTO>error(throwable);
+            }
+        };
     }
 }
