@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import com.tradehero.th.UIModule;
+import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseFragmentOuterElements;
 import com.tradehero.th.fragments.base.FragmentOuterElements;
 import dagger.Module;
@@ -17,5 +18,10 @@ import dagger.Provides;
     @Provides FragmentOuterElements provideFragmentElements()
     {
         return new BaseFragmentOuterElements();
+    }
+
+    @Provides DashboardNavigator provideNavigator()
+    {
+        return null;
     }
 }

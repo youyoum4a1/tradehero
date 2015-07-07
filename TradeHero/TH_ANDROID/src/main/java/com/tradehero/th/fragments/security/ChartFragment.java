@@ -3,9 +3,12 @@ package com.tradehero.th.fragments.security;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.android.internal.util.Predicate;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -26,11 +30,21 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
+import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TillExchangeOpenDuration;
 import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
+import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
+import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.AlertDialogBuySellRxUtil;
@@ -42,21 +56,28 @@ import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
+import dagger.Lazy;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -67,6 +88,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     private final static String BUNDLE_KEY_TIME_SPAN_SECONDS_LONG = ChartFragment.class.getName() + ".timeSpanSecondsLong";
     private final static String BUNDLE_KEY_CHART_SIZE_ARRAY_INT = ChartFragment.class.getName() + ".chartSizeArrayInt";
     private final static int STOCK_ACTIVITY_REQUEST_CODE = 102;
+
+    @ColorRes private static final int COLOR_RES_UNWATCHED = R.color.darker_grey;
+    @ColorRes private static final int COLOR_RES_WATCHED = R.color.watchlist_button_color;
+
+    private static final float ALPHA_INACTIVE = 0.5f;
+    private static final float ALPHA_ACTIVE = 1f;
 
     @Bind(R.id.chart_imageView) protected ChartImageView chartImage;
     private TimeSpanButtonSet timeSpanButtonSet;
@@ -81,11 +108,13 @@ public class ChartFragment extends AbstractSecurityInfoFragment
 
     @Bind(R.id.chart_image_wrapper) @Nullable protected BetterViewAnimator chartImageWrapper;
 
-    //Quote
+    //Stock info
     @Bind(R.id.buy_price) @Nullable TextView buyPrice;
     @Bind(R.id.sell_price) @Nullable TextView sellPrice;
     @Bind(R.id.tv_stock_roi) @Nullable TextView stockRoi;
     @Bind(R.id.market_close_hint) @Nullable protected TextView marketCloseHint;
+    @Bind(R.id.btn_watched) @Nullable protected ImageView btnWatched;
+    @Bind(R.id.btn_alerted) @Nullable protected View btnAlerted;
 
     // Warrant specific
     @Bind(R.id.row_warrant_type) @Nullable protected View rowWarrantType;
@@ -115,9 +144,17 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Inject ChartDTOFactory chartDTOFactory;
     @Inject Analytics analytics;
     @Inject FragmentOuterElements fragmentElements;
+    @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
+    @Inject AlertCompactListCacheRx alertCompactListCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject Lazy<DashboardNavigator> navigator;
+
     private Runnable chooseChartImageSizeTask;
     private Callback chartImageCallback;
     private Subscription quoteSubscription;
+
+    @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
+    @Nullable protected WatchlistPositionDTOList watchedList;
 
     //<editor-fold desc="Arguments passing">
     public static void putChartTimeSpan(@NonNull Bundle args, @NonNull ChartTimeSpan chartTimeSpan)
@@ -290,7 +327,130 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         super.onViewCreated(view, savedInstanceState);
         if (!(getParentFragment() instanceof AbstractBuySellFragment))
         {
+            //Chart Fragment in layout-land mode.
             fetchSecurity();
+        }
+        else
+        {
+            onDestroyViewSubscriptions.add(Observable.combineLatest(createAlertsObservable(), createWatchlistObservable(),
+                    new Func2<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList, Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList>>()
+                    {
+                        @Override
+                        public Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList> call(
+                                Map<SecurityId, AlertCompactDTO> securityIdAlertCompactDTOMap,
+                                WatchlistPositionDTOList watchlistPositionDTOs)
+                        {
+                            return Pair.create(securityIdAlertCompactDTOMap, watchlistPositionDTOs);
+                        }
+                    })
+                    .subscribe(new Action1<Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList>>()
+                    {
+                        @Override public void call(Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList> pair)
+                        {
+                            stockIsWatched(pair.second);
+                            stockIsOnAlert(pair.first);
+                        }
+                    }));
+        }
+    }
+
+    @NonNull protected Observable<Map<SecurityId, AlertCompactDTO>> createAlertsObservable()
+    {
+        return alertCompactListCache.getOneSecurityMappedAlerts(currentUserId.toUserBaseKey())
+                .map(new Func1<Map<SecurityId, AlertCompactDTO>, Map<SecurityId, AlertCompactDTO>>()
+                {
+                    @Override public Map<SecurityId, AlertCompactDTO> call(Map<SecurityId, AlertCompactDTO> map)
+                    {
+                        mappedAlerts = map;
+                        return map;
+                    }
+                })
+                .share();
+    }
+
+    @NonNull protected Observable<WatchlistPositionDTOList> createWatchlistObservable()
+    {
+        return userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
+                .map(new Func1<android.util.Pair<UserBaseKey, WatchlistPositionDTOList>, WatchlistPositionDTOList>()
+                {
+                    @Override
+                    public WatchlistPositionDTOList call(@NonNull android.util.Pair<UserBaseKey, WatchlistPositionDTOList> pair)
+                    {
+                        watchedList = pair.second;
+                        return pair.second;
+                    }
+                })
+                .share();
+    }
+
+    private void stockIsWatched(WatchlistPositionDTOList watchedList)
+    {
+        this.watchedList = watchedList;
+        if (btnWatched != null)
+        {
+            boolean watched = watchedList.contains(securityId);
+            Drawable drawable = DrawableCompat.wrap(btnWatched.getDrawable());
+            DrawableCompat.setTint(
+                    drawable,
+                    getResources().getColor(watched
+                            ? COLOR_RES_WATCHED
+                            : COLOR_RES_UNWATCHED));
+            btnWatched.setImageDrawable(drawable);
+            btnWatched.setAlpha(watched ? ALPHA_ACTIVE : ALPHA_INACTIVE);
+        }
+    }
+
+    private void stockIsOnAlert(Map<SecurityId, AlertCompactDTO> mappedAlerts)
+    {
+        this.mappedAlerts = mappedAlerts;
+        if (btnAlerted != null)
+        {
+            float alpha;
+            AlertCompactDTO compactDTO = mappedAlerts.get(securityId);
+            if ((compactDTO != null) && compactDTO.active)
+            {
+                alpha = ALPHA_ACTIVE;
+            }
+            else
+            {
+                alpha = ALPHA_INACTIVE;
+            }
+            btnAlerted.setAlpha(alpha);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @Nullable @OnClick(R.id.btn_watched)
+    protected void onButtonWatchedClicked(View view)
+    {
+        if (watchedList != null)
+        {
+            handleAddToWatchlistRequested(securityId, watchedList.findFirstWhere(new Predicate<WatchlistPositionDTO>()
+            {
+                @Override public boolean apply(WatchlistPositionDTO watchlistPositionDTO)
+                {
+                    return watchlistPositionDTO.securityDTO != null
+                            && watchlistPositionDTO.securityDTO.getSecurityId().equals(securityId);
+                }
+            }) == null);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @Nullable @OnClick(R.id.btn_alerted)
+    protected void onButtonAlertedClicked(View view)
+    {
+        if (mappedAlerts != null)
+        {
+            AlertCompactDTO alert = mappedAlerts.get(securityId);
+            if (alert == null)
+            {
+                handleAddAlertRequested(securityId);
+            }
+            else
+            {
+                handleUpdateAlertRequested(alert);
+            }
         }
     }
 
@@ -427,7 +587,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         }
     }
 
-    @OnClick(R.id.market_close_hint)
+    @Nullable @OnClick(R.id.market_close_hint)
     protected void notifyMarketClosed()
     {
         onStopSubscriptions.add(AlertDialogBuySellRxUtil.popMarketClosed(getActivity(), securityId)
@@ -441,6 +601,38 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         putChartTimeSpan(outState, chartDTO.getChartTimeSpan());
         putChartSize(outState, chartDTO.getChartSize());
         putButtonSetVisibility(outState, timeSpanButtonSetVisibility);
+    }
+
+    protected void handleAddToWatchlistRequested(@NonNull SecurityId securityId, boolean isAdd)
+    {
+        Bundle args = new Bundle();
+        WatchlistEditFragment.putSecurityId(args, securityId);
+        if (isAdd)
+        {
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+            ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
+        }
+        else
+        {
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+            ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
+        }
+        if (navigator != null)
+        {
+            navigator.get().pushFragment(WatchlistEditFragment.class, args);
+        }
+    }
+
+    protected void handleUpdateAlertRequested(@NonNull AlertCompactDTO alertCompactDTO)
+    {
+        AlertEditDialogFragment.newInstance(alertCompactDTO.getAlertId(currentUserId.toUserBaseKey()))
+                .show(getFragmentManager(), AlertEditDialogFragment.class.getName());
+    }
+
+    protected void handleAddAlertRequested(@NonNull SecurityId securityId)
+    {
+        AlertCreateDialogFragment.newInstance(securityId)
+                .show(getFragmentManager(), BaseAlertEditDialogFragment.class.getName());
     }
 
     @Override public void onDestroyView()
@@ -473,6 +665,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         {
             scrollView.setOnScrollChangedListener(null);
         }
+        watchedList = null;
+        mappedAlerts = null;
         chartImageCallback = null;
         ButterKnife.unbind(this);
         super.onDestroyView();

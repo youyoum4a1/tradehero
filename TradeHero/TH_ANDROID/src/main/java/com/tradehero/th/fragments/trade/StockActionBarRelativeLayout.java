@@ -53,8 +53,8 @@ public class StockActionBarRelativeLayout extends RelativeLayout
     @Bind(R.id.flags_container) @Nullable FxFlagContainer flagsContainer;
     @Bind(R.id.tv_stock_title) protected TextView stockTitle;
     @Bind(R.id.tv_stock_sub_title) protected TextView stockSubTitle;
-    @Bind(R.id.btn_watched) protected ImageView btnWatched;
-    @Bind(R.id.btn_alerted) protected View btnAlerted;
+    @Bind(R.id.btn_watched) @Nullable protected ImageView btnWatched;
+    @Bind(R.id.btn_alerted) @Nullable protected View btnAlerted;
 
     @Nullable protected Requisite dto;
     @NonNull protected final PublishSubject<UserAction> userActionSubject;
@@ -238,7 +238,7 @@ public class StockActionBarRelativeLayout extends RelativeLayout
     }
 
     @SuppressWarnings("unused")
-    @OnClick(R.id.btn_watched)
+    @Nullable @OnClick(R.id.btn_watched)
     protected void onButtonWatchedClicked(View view)
     {
         if (dto != null && dto.watchedList != null)
@@ -257,7 +257,7 @@ public class StockActionBarRelativeLayout extends RelativeLayout
     }
 
     @SuppressWarnings("unused")
-    @OnClick(R.id.btn_alerted)
+    @Nullable @OnClick(R.id.btn_alerted)
     protected void onButtonAlertedClicked(View view)
     {
         if (dto != null && dto.mappedAlerts != null)

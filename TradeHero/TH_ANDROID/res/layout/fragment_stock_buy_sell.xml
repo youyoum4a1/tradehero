@@ -31,8 +31,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/market_close_hint"
-            android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/size_14"
+            android:layout_marginStart="@dimen/size_14"
             android:background="@drawable/basic_transparent_selector"
             android:visibility="gone"
             >
