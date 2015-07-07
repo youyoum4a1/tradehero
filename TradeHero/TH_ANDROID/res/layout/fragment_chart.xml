@@ -162,7 +162,7 @@
               android:layout_height="match_parent"
               android:baselineAligned="false"
               android:orientation="horizontal"
-              android:paddingBottom="@dimen/buy_sell_button_container_height"
+              android:paddingBottom="@dimen/size_10"
               android:paddingLeft="@dimen/chart_horizontal_padding"
               android:paddingRight="@dimen/chart_horizontal_padding"
               >

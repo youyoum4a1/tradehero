@@ -18,31 +18,6 @@ public class DebugJumioFastFillUtil extends JumioFastFillUtil
 
     @NonNull @Override public Observable<Boolean> isAvailable(@NonNull final Activity activity)
     {
-        return super.isAvailable(activity)
-                .flatMap(new Func1<Boolean, Observable<Boolean>>()
-                {
-                    @Override public Observable<Boolean> call(final Boolean fastFillAvailable)
-                    {
-                        if (!fastFillAvailable)
-                        {
-                            return AlertDialogRxUtil.build(activity)
-                                    .setTitle("Jumio FastFill is not available. Fake it?")
-                                    .setPositiveButton("Yes")
-                                    .setNegativeButton("No")
-                                    .build()
-                                    .map(new Func1<OnDialogClickEvent, Boolean>()
-                                    {
-                                        @Override public Boolean call(OnDialogClickEvent clickEvent)
-                                        {
-                                            return clickEvent.isPositive() || fastFillAvailable;
-                                        }
-                                    });
-                        }
-                        else
-                        {
-                            return Observable.just(true);
-                        }
-                    }
-                });
+        return Observable.just(true);
     }
 }

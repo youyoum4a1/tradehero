@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:background="@color/transparent"
     android:orientation="vertical"
     tools:context=".activities.DashboardActivity"
@@ -22,20 +21,20 @@
         android:id="@+id/stock_details_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
         android:animateLayoutChanges="true"
+        android:background="?attr/colorPrimary"
         >
 
         <com.tradehero.th.fragments.trade.view.PortfolioSelectorView
             android:id="@+id/portfolio_selector_container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        android:layout_height="wrap_content"
             android:layout_below="@id/market_close_hint"
             android:layout_marginLeft="@dimen/size_14"
             android:layout_marginStart="@dimen/size_14"
             android:background="@drawable/basic_transparent_selector"
             android:visibility="gone"
-            >
+        >
             <!--TODO use dropdown/spinner view-->
 
             <TextView
@@ -84,8 +83,8 @@
         android:id="@+id/chart_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         >
-
 
     <com.android.common.SlidingTabLayout
         android:id="@+id/tabs"
@@ -103,6 +102,16 @@
         />
 
         <include layout="@layout/buy_sell_buttons" />
+
+        <include
+            layout="@layout/live_call_to_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/size_10"
+            tools:visibility="visible"
+            />
 
   </RelativeLayout>
 

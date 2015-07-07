@@ -27,7 +27,7 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.base.LiveFragmentUtil;
+import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
@@ -60,6 +60,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
 
     protected StockDetailActionBarRelativeLayout actionBarLayout;
+    private BaseLiveFragmentUtil baseLiveFragmentUtil;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -72,6 +73,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
         super.onViewCreated(view, savedInstanceState);
         mSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+        baseLiveFragmentUtil = new BaseLiveFragmentUtil(this, view);
     }
 
     @Override public void onStart()
@@ -140,9 +142,10 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
-        LiveFragmentUtil.setDarkBackgroundColor(isLive, mSlidingTabLayout);
-        LiveFragmentUtil.setBackgroundColor(isLive, stockDetailHeader);
-        LiveFragmentUtil.setSelectableBackground(isLive, buyBtn, sellBtn);
+        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, mSlidingTabLayout);
+        BaseLiveFragmentUtil.setBackgroundColor(isLive, stockDetailHeader);
+        BaseLiveFragmentUtil.setSelectableBackground(isLive, buyBtn, sellBtn);
+        baseLiveFragmentUtil.setCallToAction(isLive);
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -155,6 +158,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     {
         bottomViewPagerAdapter = null;
         defaultPortfolio = null;
+        baseLiveFragmentUtil.onDestroyView();
         super.onDestroyView();
     }
 

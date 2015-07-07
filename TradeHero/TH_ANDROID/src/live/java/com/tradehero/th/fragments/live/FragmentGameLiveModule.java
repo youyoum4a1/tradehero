@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.live;
 
-import com.tradehero.th.fragments.base.LiveFragmentUtil;
+import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
+import com.tradehero.th.fragments.base.TrendingLiveFragmentUtil;
 import com.tradehero.th.fragments.live.ayondo.FragmentAyondoModule;
 import dagger.Module;
 
@@ -11,7 +12,8 @@ import dagger.Module;
         injects = {
                 LiveCallToActionFragment.class,
                 LiveSignUpMainFragment.class,
-                LiveFragmentUtil.class
+                TrendingLiveFragmentUtil.class,
+                BaseLiveFragmentUtil.class
         },
         library = true,
         complete = false

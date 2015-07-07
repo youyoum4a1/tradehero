@@ -31,9 +31,10 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.base.LiveFragmentUtil;
+import com.tradehero.th.fragments.base.TrendingLiveFragmentUtil;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.position.FXMainPositionListFragment;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -85,7 +86,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Nullable private OwnedPortfolioId fxPortfolioId;
     public static boolean fxDialogShowed = false;
     private boolean needsConfigureSpinner = false;
-    private LiveFragmentUtil liveFragmentUtil;
+    private TrendingLiveFragmentUtil trendingLiveFragmentUtil;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -185,7 +186,7 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        liveFragmentUtil = new LiveFragmentUtil(this, view);
+        trendingLiveFragmentUtil = new TrendingLiveFragmentUtil(this, view);
         pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
             @Override public void onPageScrolled(int i, float v, int i2)
@@ -278,8 +279,8 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
-        LiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
-        liveFragmentUtil.setCallToAction(isLive);
+        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
+        trendingLiveFragmentUtil.setCallToAction(isLive);
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -297,7 +298,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         ButterKnife.unbind(this);
-        liveFragmentUtil.onDestroyView();
+        trendingLiveFragmentUtil.onDestroyView();
         super.onDestroyView();
     }
 
@@ -305,7 +306,6 @@ public class TrendingMainFragment extends DashboardFragment
     {
         this.tradingStockPagerAdapter = null;
         this.tradingFXPagerAdapter = null;
-        liveFragmentUtil.onDestroy();
         super.onDestroy();
     }
 
