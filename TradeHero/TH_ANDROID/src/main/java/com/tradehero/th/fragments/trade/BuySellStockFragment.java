@@ -28,6 +28,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.TillExchangeOpenDuration;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
@@ -63,16 +64,11 @@ import rx.functions.Func3;
 })
 public class BuySellStockFragment extends AbstractBuySellFragment
 {
-    @Bind(R.id.buy_price) protected TextView mBuyPrice;
-    @Bind(R.id.sell_price) protected TextView mSellPrice;
-    @Bind(R.id.vprice_as_of) protected TextView mVPriceAsOf;
     @Bind(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
     @Bind(R.id.stock_details_header) ViewGroup stockDetailHeader;
 
     @Bind(R.id.chart_frame) protected RelativeLayout mInfoFrame;
     @Bind(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
-
-    @Bind(R.id.tv_stock_roi) protected TextView tvStockRoi;
 
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
@@ -105,27 +101,6 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     {
         super.onStart();
         analytics.fireEvent(new ChartTimeEvent(requisite.securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
-
-        onStopSubscriptions.add(Observable.combineLatest(
-                getSecurityObservable().observeOn(AndroidSchedulers.mainThread()),
-                getQuoteObservable().observeOn(AndroidSchedulers.mainThread()),
-                new Func2<SecurityCompactDTO, QuoteDTO, Boolean>()
-                {
-                    @Override public Boolean call(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
-                    {
-                        displayAsOf(securityCompactDTO, quoteDTO);
-                        return true;
-                    }
-                })
-                .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean aBoolean)
-                            {
-                                // Nothing to do
-                            }
-                        },
-                        new TimberOnErrorAction("Failed to update AsOf")));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -140,7 +115,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                 (StockDetailActionBarRelativeLayout) LayoutInflater.from(actionBar.getThemedContext())
                         .inflate(R.layout.stock_detail_custom_actionbar, null);
         this.actionBarLayout = actionBarLayout;
-        onDestroyOptionsMenuSubscriptions.add(getQuoteObservable().observeOn(AndroidSchedulers.mainThread())
+        onDestroyOptionsMenuSubscriptions.add(quoteObservable.observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<QuoteDTO, Observable<Boolean>>()
                 {
                     @Override public Observable<Boolean> call(@NonNull QuoteDTO quoteDTO)
@@ -189,7 +164,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                         new ToastAndLogOnErrorAction("Failed to handle action bar")));
 
         onDestroyOptionsMenuSubscriptions.add(Observable.combineLatest(
-                getSecurityObservable().startWith(securityCompactDTO).observeOn(AndroidSchedulers.mainThread()),
+                securityObservable.startWith(securityCompactDTO).observeOn(AndroidSchedulers.mainThread()),
                 getWatchlistObservable().startWith(watchedList).observeOn(AndroidSchedulers.mainThread()),
                 getAlertsObservable().startWith(mappedAlerts).observeOn(AndroidSchedulers.mainThread()),
                 new Func3<SecurityCompactDTO, WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>, Boolean>()
@@ -321,69 +296,6 @@ public class BuySellStockFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
-    {
-        if (mBuyPrice != null)
-        {
-            String display = securityCompactDTO.currencyDisplay;
-            String bPrice;
-            String sPrice;
-            THSignedNumber bthSignedNumber;
-            THSignedNumber sthSignedNumber;
-            if (quoteDTO.ask == null)
-            {
-                bPrice = getString(R.string.buy_sell_ask_price_not_available);
-            }
-            else
-            {
-                bthSignedNumber = THSignedNumber.builder(quoteDTO.ask)
-                        .withOutSign()
-                        .build();
-                bPrice = bthSignedNumber.toString();
-            }
-
-            if (quoteDTO.bid == null)
-            {
-                sPrice = getString(R.string.buy_sell_bid_price_not_available);
-            }
-            else
-            {
-                sthSignedNumber = THSignedNumber.builder(quoteDTO.bid)
-                        .withOutSign()
-                        .build();
-                sPrice = sthSignedNumber.toString();
-            }
-            String buyPriceText = getString(R.string.buy_sell_button_buy, display, bPrice);
-            String sellPriceText = getString(R.string.buy_sell_button_sell, display, sPrice);
-            mBuyPrice.setText(buyPriceText);
-            mSellPrice.setText(sellPriceText);
-        }
-
-        displayStockRoi();
-    }
-
-    public void displayAsOf(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
-    {
-        if (mVPriceAsOf != null)
-        {
-            String text;
-            if (quoteDTO.asOfUtc != null)
-            {
-                text = DateUtils.getFormattedDate(getResources(), quoteDTO.asOfUtc);
-            }
-            else if (securityCompactDTO.lastPriceDateAndTimeUtc != null)
-            {
-                text = DateUtils.getFormattedDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc);
-            }
-            else
-            {
-                text = "";
-            }
-            mVPriceAsOf.setText(
-                    getResources().getString(R.string.buy_sell_price_as_of) + " " + text);
-        }
-    }
-
     @NonNull @Override protected Observable<Boolean> getSupportSell()
     {
         return getPortfolioCompactObservable()
@@ -392,7 +304,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                     @Override public Observable<Boolean> call(final PortfolioCompactDTO portfolioCompactDTO)
                     {
                         return Observable.combineLatest(
-                                getQuoteObservable(),
+                                quoteObservable,
                                 getCloseablePositionObservable()
                                         .filter(new Func1<PositionDTO, Boolean>()
                                         {
@@ -413,6 +325,11 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                                 });
                     }
                 });
+    }
+
+    @Override public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
+    {
+        //Nothing to do, no longer displaying price here.
     }
 
     protected void handleAddToWatchlistRequested(@NonNull StockActionBarRelativeLayout.WatchlistUserAction userAction)
@@ -463,30 +380,5 @@ public class BuySellStockFragment extends AbstractBuySellFragment
         }
         analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, requisite.securityId));
         super.handleBuySellButtonsClicked(view);
-    }
-
-    private void displayStockRoi()
-    {
-        if (tvStockRoi != null)
-        {
-            if (securityCompactDTO != null && securityCompactDTO.risePercent != null)
-            {
-                double roi = securityCompactDTO.risePercent;
-                THSignedPercentage
-                        .builder(roi * 100)
-                        .withSign()
-                        .relevantDigitCount(3)
-                        .withDefaultColor()
-                        .defaultColorForBackground()
-                        .signTypePlusMinusAlways()
-                        .build()
-                        .into(tvStockRoi);
-            }
-            else
-            {
-                //tvStockRoi.setText(R.string.na);
-                tvStockRoi.setVisibility(View.GONE);
-            }
-        }
     }
 }

@@ -17,6 +17,7 @@ abstract public class AbstractSecurityInfoFragment
     protected SecurityId securityId;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
     protected SubscriptionList onDestroyViewSubscriptions;
+    protected SubscriptionList onStopSubscriptions;
 
     //<editor-fold desc="Arguments Passing">
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
@@ -45,6 +46,18 @@ abstract public class AbstractSecurityInfoFragment
     {
         super.onViewCreated(view, savedInstanceState);
         onDestroyViewSubscriptions = new SubscriptionList();
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        onStopSubscriptions = new SubscriptionList();
+    }
+
+    @Override public void onStop()
+    {
+        onStopSubscriptions.unsubscribe();
+        super.onStop();
     }
 
     @Override public void onDestroyView()

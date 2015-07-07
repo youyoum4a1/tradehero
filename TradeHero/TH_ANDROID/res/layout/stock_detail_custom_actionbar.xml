@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlStockHeader"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/margin_xsmall"
-    android:paddingBottom="@dimen/margin_xsmall"
+    android:layout_height="?attr/actionBarSize"
     tools:background="@color/tradehero_blue">
 
   <FrameLayout

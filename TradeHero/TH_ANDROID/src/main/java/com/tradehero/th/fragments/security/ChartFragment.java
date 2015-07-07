@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -24,10 +26,14 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.TillExchangeOpenDuration;
 import com.tradehero.th.api.security.compact.WarrantDTO;
 import com.tradehero.th.fragments.base.FragmentOuterElements;
+import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
+import com.tradehero.th.fragments.trade.AlertDialogBuySellRxUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.chart.ChartDTO;
 import com.tradehero.th.models.chart.ChartDTOFactory;
@@ -35,16 +41,24 @@ import com.tradehero.th.models.chart.ChartSize;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class ChartFragment extends AbstractSecurityInfoFragment
@@ -66,6 +80,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Bind(R.id.close) @Nullable protected Button mCloseButton;
 
     @Bind(R.id.chart_image_wrapper) @Nullable protected BetterViewAnimator chartImageWrapper;
+
+    //Quote
+    @Bind(R.id.buy_price) @Nullable TextView buyPrice;
+    @Bind(R.id.sell_price) @Nullable TextView sellPrice;
+    @Bind(R.id.tv_stock_roi) @Nullable TextView stockRoi;
+    @Bind(R.id.market_close_hint) @Nullable protected TextView marketCloseHint;
 
     // Warrant specific
     @Bind(R.id.row_warrant_type) @Nullable protected View rowWarrantType;
@@ -97,6 +117,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Inject FragmentOuterElements fragmentElements;
     private Runnable chooseChartImageSizeTask;
     private Callback chartImageCallback;
+    private Subscription quoteSubscription;
 
     //<editor-fold desc="Arguments passing">
     public static void putChartTimeSpan(@NonNull Bundle args, @NonNull ChartTimeSpan chartTimeSpan)
@@ -267,7 +288,151 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        fetchSecurity();
+        if (!(getParentFragment() instanceof AbstractBuySellFragment))
+        {
+            fetchSecurity();
+        }
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        if (getParentFragment() instanceof AbstractBuySellFragment)
+        {
+            quoteSubscription = Observable.combineLatest(((AbstractBuySellFragment) getParentFragment()).quoteObservable,
+                    ((AbstractBuySellFragment) getParentFragment()).securityObservable.observeOn(AndroidSchedulers.mainThread())
+                            .doOnNext(new Action1<SecurityCompactDTO>()
+                            {
+                                @Override public void call(SecurityCompactDTO securityCompactDTO)
+                                {
+                                    linkWith(securityCompactDTO);
+                                }
+                            }), new Func2<QuoteDTO, SecurityCompactDTO, Pair<SecurityCompactDTO, QuoteDTO>>()
+                    {
+                        @Override public Pair<SecurityCompactDTO, QuoteDTO> call(QuoteDTO quoteDTO, SecurityCompactDTO securityCompactDTO)
+                        {
+                            return Pair.create(securityCompactDTO, quoteDTO);
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Pair<SecurityCompactDTO, QuoteDTO>>()
+                    {
+                        @Override public void call(Pair<SecurityCompactDTO, QuoteDTO> securityCompactDTOQuoteDTOPair)
+                        {
+                            displayBuySellPrice(securityCompactDTOQuoteDTOPair.first, securityCompactDTOQuoteDTOPair.second);
+                        }
+                    });
+        }
+    }
+
+    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
+    {
+        if (buyPrice != null && sellPrice != null)
+        {
+            String display = securityCompactDTO.currencyDisplay;
+            String bPrice;
+            String sPrice;
+            THSignedNumber bthSignedNumber;
+            THSignedNumber sthSignedNumber;
+            if (quoteDTO.ask == null)
+            {
+                bPrice = getString(R.string.buy_sell_ask_price_not_available);
+            }
+            else
+            {
+                bthSignedNumber = THSignedNumber.builder(quoteDTO.ask)
+                        .withOutSign()
+                        .build();
+                bPrice = bthSignedNumber.toString();
+            }
+
+            if (quoteDTO.bid == null)
+            {
+                sPrice = getString(R.string.buy_sell_bid_price_not_available);
+            }
+            else
+            {
+                sthSignedNumber = THSignedNumber.builder(quoteDTO.bid)
+                        .withOutSign()
+                        .build();
+                sPrice = sthSignedNumber.toString();
+            }
+            String buyPriceText = getString(R.string.buy_sell_button_buy, display, bPrice);
+            String sellPriceText = getString(R.string.buy_sell_button_sell, display, sPrice);
+            buyPrice.setText(buyPriceText);
+            sellPrice.setText(sellPriceText);
+        }
+
+        displayStockRoi(securityCompactDTO);
+    }
+
+    private void displayStockRoi(SecurityCompactDTO securityCompactDTO)
+    {
+        if (stockRoi != null)
+        {
+            if (securityCompactDTO != null && securityCompactDTO.risePercent != null)
+            {
+                double roi = securityCompactDTO.risePercent;
+                THSignedPercentage
+                        .builder(roi * 100)
+                        .withSign()
+                        .relevantDigitCount(3)
+                        .withDefaultColor()
+                        .defaultColorForBackground()
+                        .signTypePlusMinusAlways()
+                        .build()
+                        .into(stockRoi);
+            }
+            else
+            {
+                //tvStockRoi.setText(R.string.na);
+                stockRoi.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void displayMarketClosedHint(SecurityCompactDTO securityCompactDTO)
+    {
+        if (marketCloseHint != null)
+        {
+            boolean marketIsOpen = securityCompactDTO.marketOpen == null
+                    || securityCompactDTO.marketOpen;
+            marketCloseHint.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
+            if (!marketIsOpen)
+            {
+                marketCloseHint.setText(getMarketCloseHint(securityCompactDTO));
+            }
+        }
+    }
+
+    @NonNull private String getMarketCloseHint(@NonNull SecurityCompactDTO securityCompactDTO)
+    {
+        TillExchangeOpenDuration duration = securityCompactDTO.getTillExchangeOpen();
+        if (duration == null)
+        {
+            return "";
+        }
+        return getString(R.string.market_close_hint) + " " +
+                DateUtils.getDurationText(getResources(), duration.days, duration.hours, duration.minutes);
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        if (quoteSubscription != null)
+        {
+            quoteSubscription.unsubscribe();
+            quoteSubscription = null;
+        }
+    }
+
+    @OnClick(R.id.market_close_hint)
+    protected void notifyMarketClosed()
+    {
+        onStopSubscriptions.add(AlertDialogBuySellRxUtil.popMarketClosed(getActivity(), securityId)
+                .subscribe(new EmptyAction1<OnDialogClickEvent>(),
+                        new EmptyAction1<Throwable>()));
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -357,6 +522,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             }
             linkWith((value instanceof WarrantDTO) ? (WarrantDTO) value : null);
         }
+        displayMarketClosedHint(value);
         displayChartImage();
         displayTimeSpanButtonSet();
         displayPreviousClose();

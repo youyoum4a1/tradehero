@@ -115,8 +115,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Bind(R.id.bottom_button) protected ViewGroup buySellBtnContainer;
     @Bind(R.id.btn_buy) protected Button buyBtn;
     @Bind(R.id.btn_sell) protected Button sellBtn;
-    @Bind(R.id.market_close_container) @Nullable protected View marketClosedContainer;
-    @Bind(R.id.market_close_hint) @Nullable protected TextView marketCloseHint;
 
     protected Requisite requisite;
     @Nullable protected QuoteDTO quoteDTO;
@@ -129,6 +127,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     protected Animation progressAnimation;
     protected AbstractTransactionDialogFragment abstractTransactionDialogFragment;
     protected boolean poppedPortfolioChanged = false;
+    public Observable<QuoteDTO> quoteObservable;
+    public Observable<SecurityCompactDTO> securityObservable;
 
     public static void putRequisite(@NonNull Bundle args, @NonNull Requisite requisite)
     {
@@ -181,8 +181,9 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onStart()
     {
         super.onStart();
-
-        onStopSubscriptions.add(getQuoteObservable()
+        quoteObservable = createQuoteObservable();
+        securityObservable = createSecurityObservable();
+        onStopSubscriptions.add(quoteObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<QuoteDTO>()
@@ -194,7 +195,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                         },
                         new ToastOnErrorAction()));
 
-        onStopSubscriptions.add(getSecurityObservable()
+        onStopSubscriptions.add(securityObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<SecurityCompactDTO>()
@@ -207,8 +208,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                         new EmptyAction1<Throwable>()));
 
         onStopSubscriptions.add(Observable.combineLatest(
-                getSecurityObservable().observeOn(AndroidSchedulers.mainThread()),
-                getQuoteObservable().observeOn(AndroidSchedulers.mainThread()),
+                securityObservable.observeOn(AndroidSchedulers.mainThread()),
+                quoteObservable.observeOn(AndroidSchedulers.mainThread()),
                 new Func2<SecurityCompactDTO, QuoteDTO, Boolean>()
                 {
                     @Override public Boolean call(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
@@ -317,8 +318,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         if (closeUnits != 0)
         {
             onStopSubscriptions.add(Observable.zip(
-                    getQuoteObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
-                    getSecurityObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
+                    quoteObservable.take(1).observeOn(AndroidSchedulers.mainThread()),
+                    securityObservable.take(1).observeOn(AndroidSchedulers.mainThread()),
                     getBuySellReady().take(1).observeOn(AndroidSchedulers.mainThread()),
                     new Func3<QuoteDTO, SecurityCompactDTO, Boolean, Boolean>()
                     {
@@ -414,14 +415,15 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         return MILLISECOND_QUOTE_REFRESH;
     }
 
-    @NonNull protected Observable<SecurityCompactDTO> getSecurityObservable()
+    @NonNull protected Observable<SecurityCompactDTO> createSecurityObservable()
     {
         return securityCompactCache.get(requisite.securityId)
                 .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
-                .share();
+                .share()
+                .cache(1);
     }
 
-    @NonNull protected Observable<QuoteDTO> getQuoteObservable()
+    @NonNull protected Observable<QuoteDTO> createQuoteObservable()
     {
         return quoteServiceWrapper.getQuoteRx(requisite.securityId)
                 .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
@@ -431,7 +433,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                         return observable.delay(AbstractBuySellFragment.this.getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
                     }
                 })
-                .share();
+                .share()
+                .cache(1);
     }
 
     @NonNull protected Observable<PortfolioCompactDTOList> getPortfolioCompactListObservable()
@@ -562,7 +565,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @NonNull public Observable<Boolean> getBuySellReady()
     {
         return Observable.combineLatest(
-                getQuoteObservable().observeOn(AndroidSchedulers.mainThread()),
+                quoteObservable.observeOn(AndroidSchedulers.mainThread()),
                 getCloseablePositionObservable().observeOn(AndroidSchedulers.mainThread()),
                 getApplicablePortfolioIdsObservable().observeOn(AndroidSchedulers.mainThread()),
                 new Func3<QuoteDTO, PositionDTO, OwnedPortfolioIdList, Boolean>()
@@ -607,27 +610,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     public void displayStockName(@NonNull SecurityCompactDTO securityCompactDTO)
     {
-        if (marketClosedContainer != null)
-        {
-            boolean marketIsOpen = securityCompactDTO.marketOpen == null
-                    || securityCompactDTO.marketOpen;
-            marketClosedContainer.setVisibility(marketIsOpen ? View.GONE : View.VISIBLE);
-            if (!marketIsOpen)
-            {
-                marketCloseHint.setText(getMarketCloseHint(securityCompactDTO));
-            }
-        }
-    }
-
-    @NonNull public String getMarketCloseHint(@NonNull SecurityCompactDTO securityCompactDTO)
-    {
-        TillExchangeOpenDuration duration = securityCompactDTO.getTillExchangeOpen();
-        if (duration == null)
-        {
-            return "";
-        }
-        return getString(R.string.market_close_hint) + " " +
-                DateUtils.getDurationText(getResources(), duration.days, duration.hours, duration.minutes);
+        //Nothing to do.
     }
 
     abstract public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO);
@@ -669,8 +652,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.market_closed_icon)
     protected void notifyMarketClosed()
     {
         onStopSubscriptions.add(AlertDialogBuySellRxUtil.popMarketClosed(getActivity(), requisite.securityId)
