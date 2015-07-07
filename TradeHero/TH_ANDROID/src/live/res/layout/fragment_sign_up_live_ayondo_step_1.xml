@@ -107,7 +107,7 @@
           android:layout_height="wrap_content"
           android:layout_weight="0.65"
           android:hint="@string/mobile_number"
-          android:inputType="phone"
+          android:inputType="number"
           android:minHeight="@dimen/clickable_element_min_dimen"
           />
 

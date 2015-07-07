@@ -32,4 +32,9 @@ public class EmptyKYCForm implements KYCForm
     @Override public void setStepStatuses(@NonNull List<StepStatus> stepStatuses)
     {
     }
+
+    @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
+    {
+        return true;
+    }
 }

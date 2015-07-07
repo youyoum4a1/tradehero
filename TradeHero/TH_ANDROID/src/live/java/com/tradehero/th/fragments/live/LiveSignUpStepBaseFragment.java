@@ -1,9 +1,10 @@
 package com.tradehero.th.fragments.live;
 
+import android.app.Activity;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.kyc.KYCForm;
-import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.persistence.prefs.KYCFormPreference;
 import javax.inject.Inject;
 import rx.Observable;
@@ -20,12 +21,21 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         this.kycFormSubject = BehaviorSubject.create();
     }
 
-    @NonNull protected KYCAyondoForm getKYCForm()
+    @Override public void onAttach(Activity activity)
     {
-        return (KYCAyondoForm) kycFormPreference.get();
+        super.onAttach(activity);
+        kycFormSubject.onNext(kycFormPreference.get());
     }
 
-    abstract public void onNext(@NonNull KYCForm kycForm);
+    @CallSuper public void onNext(@NonNull KYCForm kycForm)
+    {
+        KYCForm previous = kycFormPreference.get();
+        kycFormPreference.set(kycForm);
+        if (!previous.hasSameFields(kycForm))
+        {
+            kycFormSubject.onNext(kycForm);
+        }
+    }
 
     @NonNull public Observable<KYCForm> getKycFormObservable()
     {

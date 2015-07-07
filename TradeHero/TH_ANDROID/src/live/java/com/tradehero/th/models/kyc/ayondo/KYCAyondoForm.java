@@ -25,10 +25,10 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private String verifiedEmail;
     @JsonProperty("mobileCC")
     @Nullable private Integer mobileNumberCountryCode;
-    @Nullable private Integer mobileNumber;
+    @Nullable private Long mobileNumber;
     @JsonProperty("verifiedMobileCC")
     @Nullable private Integer verifiedMobileNumberCountryCode;
-    @Nullable private Integer verifiedMobileNumber;
+    @Nullable private Long verifiedMobileNumber;
     @Nullable private CountryCode nationality;
 
     private List<StepStatus> stepStatuses;
@@ -69,10 +69,14 @@ public class KYCAyondoForm implements KYCForm
             this.lastName = ayondoForm.getLastName() != null ? ayondoForm.getLastName() : this.lastName;
             this.email = ayondoForm.getEmail() != null ? ayondoForm.getEmail() : this.email;
             this.verifiedEmail = ayondoForm.getVerifiedEmail() != null ? ayondoForm.getVerifiedEmail() : this.verifiedEmail;
-            this.mobileNumberCountryCode = ayondoForm.getMobileNumberCountryCode() != null ? ayondoForm.getMobileNumberCountryCode() : this.mobileNumberCountryCode;
+            this.mobileNumberCountryCode =
+                    ayondoForm.getMobileNumberCountryCode() != null ? ayondoForm.getMobileNumberCountryCode() : this.mobileNumberCountryCode;
             this.mobileNumber = ayondoForm.getMobileNumber() != null ? ayondoForm.getMobileNumber() : this.mobileNumber;
-            this.verifiedMobileNumberCountryCode = ayondoForm.getVerifiedMobileNumberCountryCode() != null ? ayondoForm.getVerifiedMobileNumberCountryCode() : this.verifiedMobileNumberCountryCode;
-            this.verifiedMobileNumber = ayondoForm.getVerifiedMobileNumber() != null ? ayondoForm.getVerifiedMobileNumber() : this.verifiedMobileNumber;
+            this.verifiedMobileNumberCountryCode =
+                    ayondoForm.getVerifiedMobileNumberCountryCode() != null ? ayondoForm.getVerifiedMobileNumberCountryCode()
+                            : this.verifiedMobileNumberCountryCode;
+            this.verifiedMobileNumber =
+                    ayondoForm.getVerifiedMobileNumber() != null ? ayondoForm.getVerifiedMobileNumber() : this.verifiedMobileNumber;
             this.nationality = ayondoForm.getNationality() != null ? ayondoForm.getNationality() : this.nationality;
         }
     }
@@ -148,12 +152,12 @@ public class KYCAyondoForm implements KYCForm
         this.mobileNumberCountryCode = mobileNumberCountryCode;
     }
 
-    @Nullable public Integer getMobileNumber()
+    @Nullable public Long getMobileNumber()
     {
         return mobileNumber;
     }
 
-    public void setMobileNumber(@Nullable Integer mobileNumber)
+    public void setMobileNumber(@Nullable Long mobileNumber)
     {
         this.mobileNumber = mobileNumber;
     }
@@ -168,12 +172,12 @@ public class KYCAyondoForm implements KYCForm
         this.verifiedMobileNumberCountryCode = verifiedMobileNumberCountryCode;
     }
 
-    @Nullable public Integer getVerifiedMobileNumber()
+    @Nullable public Long getVerifiedMobileNumber()
     {
         return verifiedMobileNumber;
     }
 
-    public void setVerifiedMobileNumber(@Nullable Integer verifiedMobileNumber)
+    public void setVerifiedMobileNumber(@Nullable Long verifiedMobileNumber)
     {
         this.verifiedMobileNumber = verifiedMobileNumber;
     }
@@ -186,5 +190,37 @@ public class KYCAyondoForm implements KYCForm
     public void setNationality(@Nullable CountryCode nationality)
     {
         this.nationality = nationality;
+    }
+
+    @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
+    {
+        boolean same;
+        if (kycForm instanceof KYCAyondoForm)
+        {
+            KYCAyondoForm ayondoForm = (KYCAyondoForm) kycForm;
+            same = country.equals(ayondoForm.country);
+            same &= firstName == null ? ayondoForm.firstName == null : firstName.equals(ayondoForm.firstName);
+            same &= lastName == null ? ayondoForm.lastName == null : lastName.equals(ayondoForm.lastName);
+            same &= email == null ? ayondoForm.email == null : email.equals(ayondoForm.email);
+            same &= verifiedEmail == null ? ayondoForm.verifiedEmail == null : verifiedEmail.equals(ayondoForm.verifiedEmail);
+            same &= mobileNumberCountryCode == null ? ayondoForm.mobileNumberCountryCode == null : mobileNumberCountryCode.equals(ayondoForm.mobileNumberCountryCode);
+            same &= mobileNumber == null ? ayondoForm.mobileNumber == null : mobileNumber.equals(ayondoForm.mobileNumber);
+            same &= verifiedMobileNumberCountryCode == null ? ayondoForm.verifiedMobileNumberCountryCode == null : verifiedMobileNumberCountryCode.equals(ayondoForm.verifiedMobileNumberCountryCode);
+            same &= verifiedMobileNumber == null ? ayondoForm.verifiedMobileNumber == null : verifiedMobileNumber.equals(ayondoForm.verifiedMobileNumber);
+            same &= nationality == null ? ayondoForm.nationality == null : nationality.equals(ayondoForm.nationality);
+            same &= stepStatuses == null ? ayondoForm.stepStatuses == null : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
+            if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
+            {
+                for (int index = 0; index < stepStatuses.size(); index++)
+                {
+                    same &= stepStatuses.get(index).equals(ayondoForm.stepStatuses.get(index));
+                }
+            }
+        }
+        else
+        {
+            same = false;
+        }
+        return same;
     }
 }

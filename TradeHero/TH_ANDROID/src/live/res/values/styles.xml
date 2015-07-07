@@ -47,4 +47,12 @@
     <item name="android:scaleType">fitCenter</item>
   </style>
 
+  <style name="TH.Headline.Verify">
+    <item name="android:textSize">48sp</item>
+    <item name="android:padding">@dimen/size_2</item>
+    <item name="android:inputType">number</item>
+    <item name="android:maxLength">1</item>
+    <item name="android:selectAllOnFocus">true</item>
+  </style>
+
 </resources>
