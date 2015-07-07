@@ -27,6 +27,6 @@ public class LiveCountryDTOListCache extends BaseFetchDTOCacheRx<LiveCountryList
 
     @NonNull @Override protected Observable<LiveCountryDTOList> fetch(@NonNull LiveCountryListId key)
     {
-        return liveServiceWrapper.getLiveCountryList(key);
+        return liveServiceWrapper.getLiveCountryList();
     }
 }

@@ -41,9 +41,9 @@ public class LiveServiceWrapper
         return liveServiceRx.applyLiveBroker(brokerId.key, kycForm);
     }
 
-    @NonNull public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(IdentityPromptInfoKey identityPromptInfoKey)
+    @NonNull public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(@NonNull IdentityPromptInfoKey identityPromptInfoKey)
     {
-        return liveServiceRx.getIdentityPromptInfo();
+        return liveServiceRx.getIdentityPromptInfo(identityPromptInfoKey.country.name());
     }
 
     @NonNull public Observable<KYCForm> getFormToUse(@NonNull Activity activity)
@@ -82,7 +82,7 @@ public class LiveServiceWrapper
                 });
     }
 
-    public Observable<LiveCountryDTOList> getLiveCountryList(LiveCountryListId key)
+    @NonNull public Observable<LiveCountryDTOList> getLiveCountryList()
     {
         return liveServiceRx.getLiveCountryList();
     }

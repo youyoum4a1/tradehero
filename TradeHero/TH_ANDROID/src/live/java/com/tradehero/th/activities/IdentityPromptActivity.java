@@ -54,19 +54,12 @@ public class IdentityPromptActivity extends BaseActivity
         setContentView(R.layout.activity_identity_prompt);
         ButterKnife.bind(IdentityPromptActivity.this);
         fastFillSubscription = getFormToUse()
-                .doOnNext(new Action1<KYCForm>()
-                {
-                    @Override public void call(KYCForm kycForm)
-                    {
-                        livePoweredBy.setText(kycForm.getBrokerName());
-                    }
-                })
                 .flatMap(new Func1<KYCForm, Observable<KYCForm>>()
                 {
                     @Override public Observable<KYCForm> call(final KYCForm kycForm)
                     {
-                        return identityPromptInfoCache.get(new IdentityPromptInfoKey(kycForm.getCountry()))
-                                .take(1)
+                        livePoweredBy.setText(kycForm.getBrokerName());
+                        return identityPromptInfoCache.getOne(new IdentityPromptInfoKey(kycForm.getCountry()))
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .map(new PairGetSecond<IdentityPromptInfoKey, IdentityPromptInfoDTO>())
                                 .map(new Func1<IdentityPromptInfoDTO, KYCForm>()

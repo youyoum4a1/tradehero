@@ -13,15 +13,14 @@ import rx.Observable;
 
 public interface LiveServiceRx
 {
-    @GET("/liveTradingSituation")
-    Observable<LiveTradingSituationDTO> getLiveTradingSituation();
+    @GET("/liveTradingSituation") Observable<LiveTradingSituationDTO> getLiveTradingSituation();
 
-    @POST("/applyBroker/{brokerId}")
-    Observable<StepStatusesDTO> applyLiveBroker(
+    @POST("/applyBroker/{brokerId}") Observable<StepStatusesDTO> applyLiveBroker(
             @Path("brokerId") int brokerId,
             @Body KYCForm kycForm);
 
-    @GET("/identityPromptInfo") Observable<IdentityPromptInfoDTO> getIdentityPromptInfo();
+    @GET("/identityPromptInfo/{countryCode}") Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(
+            @Path("countryCode") String countryCode);
 
     @GET("/liveCountries") Observable<LiveCountryDTOList> getLiveCountryList();
 }
