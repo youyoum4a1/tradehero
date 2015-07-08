@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -16,7 +17,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
         android:gravity="center_horizontal"
         android:text="@string/basic_information"
         />
@@ -58,38 +58,18 @@
           />
     </LinearLayout>
 
-    <LinearLayout
+    <EditText
+        style="@style/TH.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:hint="@string/email"
+        android:inputType="textEmailAddress"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        />
 
-      <EditText
-          style="@style/TH.Body"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="0.8"
-          android:hint="@string/email"
-          android:inputType="textEmailAddress"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          />
-
-      <Button
-          style="@style/TH.Button.Accented"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="0.2"
-          android:background="?attr/selectableItemBackground"
-          android:enabled="false"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/verify"
-          />
-    </LinearLayout>
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
         >
 
@@ -101,35 +81,40 @@
           android:minHeight="@dimen/clickable_element_min_dimen"
           />
 
-      <EditText
-          android:id="@+id/number_right"
-          style="@style/TH.Body"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="1"
-          android:hint="@string/mobile_number"
-          android:inputType="number"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          />
-
       <Button
           android:id="@+id/btn_verify_phone"
-          style="@style/TH.Button.Accented"
+          style="@style/TH.Button.Inverse"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:background="?attr/selectableItemBackground"
+          android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
+          android:background="@drawable/basic_green_selector"
           android:enabled="false"
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:text="@string/verify"
+          tools:enabled="true"
           />
 
-    </LinearLayout>
+      <EditText
+          android:id="@+id/number_right"
+          style="@style/TH.Body"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:layout_toLeftOf="@id/btn_verify_phone"
+          android:layout_toRightOf="@id/country_code_spinner"
+          android:hint="@string/mobile_number"
+          android:inputType="number|phone"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          />
+
+    </RelativeLayout>
 
     <TextView
+        style="@style/TH.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        style="@style/TH.Caption"
         android:text="@string/nationality"
         />
 
@@ -142,10 +127,10 @@
         />
 
     <TextView
+        style="@style/TH.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        style="@style/TH.Caption"
         android:text="@string/residency"
         />
 
@@ -158,13 +143,26 @@
         />
 
     <EditText
+        style="@style/TH.Body"
         android:layout_width="match_parent"
         android:layout_height="@dimen/clickable_element_min_dimen"
-        style="@style/TH.Body"
         android:clickable="true"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:hint="@string/date_of_birth"
+        />
+
+    <Button
+        android:id="@+id/btn_next"
+        style="@style/TH.Button.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:background="@drawable/basic_green_selector"
+        android:enabled="false"
+        android:text="@string/next"
+        tools:enabled="true"
         />
 
   </LinearLayout>
