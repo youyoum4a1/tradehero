@@ -13,4 +13,14 @@ public class LiveCountryDTO implements DTO
         super();
         this.country = country;
     }
+
+    @Override public int hashCode()
+    {
+        return country.hashCode();
+    }
+
+    @Override public boolean equals(Object o)
+    {
+        return o instanceof LiveCountryDTO && ((LiveCountryDTO) o).country.equals(country);
+    }
 }

@@ -252,7 +252,7 @@ public enum Country
     @StringRes public final int locationName;
 
     //<editor-fold desc="Constructors">
-    private Country(@DrawableRes int logoId, @StringRes int locationName)
+    Country(@DrawableRes int logoId, @StringRes int locationName)
     {
         this.logoId = logoId;
         this.locationName = locationName;

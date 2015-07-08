@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="left|start"
+    android:gravity="start"
     android:orientation="horizontal"
     android:padding="@dimen/margin_small"
     >
@@ -14,9 +15,10 @@
       android:layout_width="@dimen/small_image_w_h"
       android:layout_height="@dimen/small_image_w_h"
       android:layout_marginRight="@dimen/margin_small"
+      android:layout_marginEnd="@dimen/margin_small"
       android:contentDescription="@null"
       android:scaleType="centerInside"
-      tools:src="@drawable/square_us"
+      tools:src="@drawable/square_sg"
       />
 
   <TextView
@@ -27,7 +29,8 @@
       android:layout_gravity="center"
       android:maxLines="1"
       android:drawableRight="@drawable/spinner_dropdown_arrow_red"
-      tools:text="US NYSE - NYSE"
+      android:drawableEnd="@drawable/spinner_dropdown_arrow_red"
+      tools:text="Singapore"
       />
 
 </LinearLayout>
