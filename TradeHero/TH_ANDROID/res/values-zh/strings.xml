@@ -216,4 +216,10 @@
     <string name="error_fetch_exchange_list_info">获取交易所列表时发生了点错误</string>
 
     <string name="error_fetch_message_thread_header">获取消息信息失败</string>
+    <string name="delegration_stock_name">委托股票</string>
+    <string name="operation">操作</string>
+    <string name="price">价格</string>
+    <string name="numbers">数量</string>
+    <string name="delegration_time">委托时间</string>
+    <string name="delegration">撤单</string>
 </resources>

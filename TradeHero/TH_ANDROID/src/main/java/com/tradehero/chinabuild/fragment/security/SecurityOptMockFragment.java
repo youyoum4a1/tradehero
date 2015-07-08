@@ -9,15 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
 
 import java.util.ArrayList;
 
-/**
- * Created by palmer on 15/7/6.
- */
 public class SecurityOptMockFragment extends Fragment implements View.OnClickListener {
 
     private SubFragmentPagerAdapter subFragmentPagerAdapter;
@@ -45,9 +41,7 @@ public class SecurityOptMockFragment extends Fragment implements View.OnClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initBundle();
-
         blue_color = getResources().getColor(R.color.color_blue);
         black_color = getResources().getColor(R.color.black);
 
@@ -78,7 +72,7 @@ public class SecurityOptMockFragment extends Fragment implements View.OnClickLis
         recallBtn.setOnClickListener(this);
         queryBtn.setOnClickListener(this);
 
-        viewPager = (SecurityDetailSubViewPager)view.findViewById(R.id.securityoptmocksubviewpager);
+        viewPager = (SecurityDetailSubViewPager) view.findViewById(R.id.securityoptmocksubviewpager);
     }
 
 
@@ -121,9 +115,9 @@ public class SecurityOptMockFragment extends Fragment implements View.OnClickLis
         }
     }
 
-    private void initSubViewPager(){
+    private void initSubViewPager() {
         initSubFragments();
-        if(subFragmentPagerAdapter==null){
+        if (subFragmentPagerAdapter == null) {
             subFragmentPagerAdapter = new SubFragmentPagerAdapter(fragmentManager);
         }
         viewPager.setAdapter(subFragmentPagerAdapter);
@@ -153,11 +147,11 @@ public class SecurityOptMockFragment extends Fragment implements View.OnClickLis
             subFragments.clear();
             SecurityOptMockSubBuyFragment securityOptMockSubBuyFragment = new SecurityOptMockSubBuyFragment();
             SecurityOptMockSubSellFragment securityOptMockSubSellFragment = new SecurityOptMockSubSellFragment();
-            SecurityOptMockSubRecallFragment securityOptMockSubRecallFragment = new SecurityOptMockSubRecallFragment();
+            SecurityOptMockSubDelegationFragment securityOptMockSubDelegationFragment = new SecurityOptMockSubDelegationFragment();
             SecurityOptMockSubQueryFragment securityOptMockSubQueryFragment = new SecurityOptMockSubQueryFragment();
             subFragments.add(securityOptMockSubBuyFragment);
             subFragments.add(securityOptMockSubSellFragment);
-            subFragments.add(securityOptMockSubRecallFragment);
+            subFragments.add(securityOptMockSubDelegationFragment);
             subFragments.add(securityOptMockSubQueryFragment);
         }
     }

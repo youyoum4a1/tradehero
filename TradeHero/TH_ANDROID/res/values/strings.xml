@@ -585,5 +585,11 @@
     <!--Security Opt -->
 
     <string name="error_fetch_message_thread_header">Failed to fetch the message thread info</string>
+    <string name="delegration_stock_name">stock</string>
+    <string name="operation">operation</string>
+    <string name="price">price</string>
+    <string name="numbers">numbers</string>
+    <string name="delegration_time">time</string>
+    <string name="delegration">Delegration</string>
 
 </resources>
