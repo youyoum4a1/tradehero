@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.cache.NoticeNewsCache;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryUtils;
@@ -46,13 +45,10 @@ import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.tradehero.th.widget.MarkdownTextView;
-
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import dagger.Lazy;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -572,7 +568,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityId.getDisplayName());
-        if (getNavigator() != null)
+        if (context instanceof DashboardNavigatorActivity && getNavigator() != null)
         {
             getNavigator().pushFragment(SecurityDetailFragment.class, bundle);
         }
