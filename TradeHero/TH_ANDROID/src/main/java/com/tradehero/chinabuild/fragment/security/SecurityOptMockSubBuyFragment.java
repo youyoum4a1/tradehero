@@ -1,12 +1,15 @@
 package com.tradehero.chinabuild.fragment.security;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.tradehero.th.R;
 
@@ -19,6 +22,17 @@ public class SecurityOptMockSubBuyFragment extends Fragment{
 
     private Button buySellBtn;
     private ListView positionsLV;
+
+    //Dialog
+    private Dialog buyConfirmDialog;
+    private TextView dlgStockNameTV;
+    private TextView dlgStockCodeTV;
+    private TextView dlgStockPriceTV;
+    private TextView dlgStockAmountTV;
+    private TextView dlgStockTotalTV;
+    private TextView dlgConfirmTV;
+    private TextView dlgCancelTV;
+
 
     private SecurityOptMockPositionAdapter securityOptMockPositionAdapter;
 
@@ -40,10 +54,42 @@ public class SecurityOptMockSubBuyFragment extends Fragment{
     private void initViews(View view) {
         buySellBtn = (Button) view.findViewById(R.id.button_security_opt_buy_sell);
         buySellBtn.setText(R.string.security_opt_buy);
+        buySellBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showBuyConfirmDialog();
+            }
+        });
         positionsLV = (ListView) view.findViewById(R.id.listview_security_opt_positions);
         if(securityOptMockPositionAdapter==null){
             securityOptMockPositionAdapter = new SecurityOptMockPositionAdapter(getActivity());
         }
         positionsLV.setAdapter(securityOptMockPositionAdapter);
+    }
+
+    private void showBuyConfirmDialog(){
+        if(getActivity() == null){
+            return;
+        }
+        if(buyConfirmDialog == null){
+            buyConfirmDialog = new Dialog(getActivity());
+            buyConfirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            buyConfirmDialog.setCanceledOnTouchOutside(false);
+            buyConfirmDialog.setCancelable(true);
+            buyConfirmDialog.setContentView(R.layout.dialog_security_opt_sell);
+
+
+            dlgCancelTV = (TextView)buyConfirmDialog.findViewById(R.id.dialog_cancel);
+            dlgCancelTV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(buyConfirmDialog!=null){
+                        buyConfirmDialog.dismiss();
+                    }
+                }
+            });
+
+        }
+        buyConfirmDialog.show();
     }
 }

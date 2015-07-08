@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tradehero.th.R;
+import com.tradehero.th.activities.SecurityOptActivity;
 
 import java.util.ArrayList;
 
@@ -39,11 +40,14 @@ public class SecurityOptMockFragment extends Fragment implements View.OnClickLis
     private int blue_color;
     private int black_color;
 
-
+    private String type = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initBundle();
+
         blue_color = getResources().getColor(R.color.color_blue);
         black_color = getResources().getColor(R.color.black);
 
@@ -220,6 +224,27 @@ public class SecurityOptMockFragment extends Fragment implements View.OnClickLis
             sellFocus.setVisibility(View.GONE);
             recallFocus.setVisibility(View.GONE);
             queryFocus.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void initBundle(){
+        Bundle bundle = getArguments();
+        type = bundle.getString(SecurityOptActivity.BUNDLE_FROM_TYPE);
+        if(type ==null || type.equals("")){
+            index = 0;
+        } else {
+            if(type.equals(SecurityOptActivity.TYPE_BUY)){
+                index = 0;
+            }
+            if(type.equals(SecurityOptActivity.TYPE_SELL)){
+                index = 1;
+            }
+            if(type.equals(SecurityOptActivity.TYPE_RECALL)){
+                index = 2;
+            }
+            if(type.equals(SecurityOptActivity.TYPE_SEARCH)){
+                index = 3;
+            }
         }
     }
 }

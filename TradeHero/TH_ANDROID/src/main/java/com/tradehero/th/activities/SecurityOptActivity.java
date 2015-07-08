@@ -47,6 +47,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         SecurityOptMockFragment securityOptMockFragment = new SecurityOptMockFragment();
+        securityOptMockFragment.setArguments(getIntent().getExtras());
         fragmentManager.beginTransaction().replace(R.id.framelayout_mock_actual, securityOptMockFragment).commit();
     }
 
@@ -111,6 +112,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         SecurityOptMockFragment securityOptMockFragment = new SecurityOptMockFragment();
+        securityOptMockFragment.setArguments(getIntent().getExtras());
         fragmentManager.beginTransaction().replace(R.id.framelayout_mock_actual, securityOptMockFragment).commit();
     }
 
