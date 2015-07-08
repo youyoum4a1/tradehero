@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.live.ayondo;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -12,18 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
+import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.live.LiveCountryDTO;
 import com.tradehero.th.api.live.LiveCountryDTOList;
 import com.tradehero.th.api.live.LiveCountryListId;
+import com.tradehero.th.api.market.Country;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
 import com.tradehero.th.fragments.live.VerifyCodeDigitView;
 import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
@@ -33,13 +38,19 @@ import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
 import com.tradehero.th.models.sms.SMSServiceWrapper;
 import com.tradehero.th.models.sms.empty.EmptySMSSentConfirmationDTO;
 import com.tradehero.th.persistence.live.LiveCountryDTOListCache;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
+import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
+import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.GraphicUtil;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -52,9 +63,8 @@ import rx.android.widget.WidgetObservable;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.functions.Func3;
-import rx.schedulers.Schedulers;
+import rx.functions.Func4;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -62,17 +72,25 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 {
     private static final long DEFAULT_POLL_INTERVAL_MILLISEC = 1000;
     private static final String KEY_EXPECTED_CODE = LiveSignUpStep1AyondoFragment.class.getName() + ".expectedCode";
+    @LayoutRes private static final int LAYOUT_COUNTRY = R.layout.spinner_live_country_dropdown_item;
+    @LayoutRes private static final int LAYOUT_COUNTRY_SELECTED_FLAG = R.layout.spinner_live_country_dropdown_item_selected;
+    @LayoutRes private static final int LAYOUT_PHONE_COUNTRY = R.layout.spinner_live_phone_country_dropdown_item;
+    @LayoutRes private static final int LAYOUT_PHONE_SELECTED_FLAG = R.layout.spinner_live_phone_country_dropdown_item_selected;
 
     @Bind(R.id.info_title) Spinner title;
-    @Bind(R.id.phone_number) EditText phoneNumber;
+    @Bind(R.id.country_code_spinner) Spinner phoneCountryCodeSpinner;
+    @Bind(R.id.number_right) EditText phoneNumber;
     @Bind(R.id.btn_verify_phone) TextView buttonVerifyPhone;
     @Bind(R.id.info_nationality) Spinner spinnerNationality;
     @Bind(R.id.info_residency) Spinner spinnerResidency;
 
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveCountryDTOListCache liveCountryDTOListCache;
     @Inject SMSServiceWrapper smsServiceWrapper;
 
     private Random randomiser;
+    private CountrySpinnerAdapter phoneCountryCodeAdapter;
     private CountrySpinnerAdapter nationalityAdapter;
     private CountrySpinnerAdapter residencyAdapter;
     @Nullable private String expectedCode;
@@ -116,56 +134,83 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         stringArrayAdapter.setDropDownViewResource(R.layout.sign_up_dropdown_item);
         title.setAdapter(stringArrayAdapter);
 
-        nationalityAdapter = new CountrySpinnerAdapter(getActivity());
+        phoneCountryCodeAdapter = new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
+        phoneCountryCodeSpinner.setAdapter(phoneCountryCodeAdapter);
+
+        nationalityAdapter = new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
         spinnerNationality.setAdapter(nationalityAdapter);
 
-        residencyAdapter = new CountrySpinnerAdapter(getActivity());
+        residencyAdapter = new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
         spinnerResidency.setAdapter(residencyAdapter);
 
         // Maybe move this until we get the KYCForm, and use the KYCForm to fetch the list of country of residence.
-        onDestroyViewSubscriptions.add(liveCountryDTOListCache.get(new LiveCountryListId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .take(1)
-                .map(new PairGetSecond<LiveCountryListId, LiveCountryDTOList>())
-                .doOnNext(new Action1<LiveCountryDTOList>()
-                {
-                    @Override public void call(LiveCountryDTOList liveCountryDTOs)
-                    {
-                        Collections.sort(liveCountryDTOs, new Comparator<LiveCountryDTO>()
+        onDestroyViewSubscriptions.add(Observable.combineLatest(
+                getKycAyondoFormObservable()
+                        .observeOn(AndroidSchedulers.mainThread()),
+                userProfileCache.getOne(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+                        .observeOn(AndroidSchedulers.mainThread()),
+                liveCountryDTOListCache.getOne(new LiveCountryListId())
+                        .map(new PairGetSecond<LiveCountryListId, LiveCountryDTOList>())
+                        .map(new Func1<LiveCountryDTOList, List<CountrySpinnerAdapter.CountryViewHolder.DTO>>()
                         {
-                            @Override public int compare(LiveCountryDTO lhs, LiveCountryDTO rhs)
+                            @Override public List<CountrySpinnerAdapter.CountryViewHolder.DTO> call(LiveCountryDTOList liveCountryDTOs)
                             {
-                                return getString(lhs.country.locationName).compareToIgnoreCase(getString(rhs.country.locationName));
+                                Collections.sort(liveCountryDTOs, new Comparator<LiveCountryDTO>()
+                                {
+                                    @Override public int compare(LiveCountryDTO lhs, LiveCountryDTO rhs)
+                                    {
+                                        return getString(lhs.country.locationName).compareToIgnoreCase(getString(rhs.country.locationName));
+                                    }
+                                });
+                                return CountrySpinnerAdapter.createDTOs(liveCountryDTOs);
                             }
-                        });
-                    }
-                })
-                .subscribe(new Action1<LiveCountryDTOList>()
+                        })
+                        .observeOn(AndroidSchedulers.mainThread()),
+                new Func3<KYCAyondoForm, UserProfileDTO, List<CountrySpinnerAdapter.CountryViewHolder.DTO>, Object>()
                 {
-                    @Override public void call(LiveCountryDTOList liveCountryDTOs)
+                    @Override public Object call(KYCAyondoForm kycForm, UserProfileDTO currentUserProfile,
+                            List<CountrySpinnerAdapter.CountryViewHolder.DTO> liveCountryDTOs)
                     {
+                        phoneCountryCodeAdapter.addAll(liveCountryDTOs);
                         residencyAdapter.addAll(liveCountryDTOs);
                         nationalityAdapter.addAll(liveCountryDTOs);
+
+                        populateMobileCountryCode(kycForm, currentUserProfile, liveCountryDTOs);
+                        return null;
+                    }
+                })
+                .subscribe(new Action1<Object>()
+                {
+                    @Override public void call(Object liveCountryDTOs)
+                    {
                     }
                 }));
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
+                userProfileCache.getOne(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
                 getKycAyondoFormObservable(),
+                AdapterViewObservable.selects(phoneCountryCodeSpinner),
                 WidgetObservable.text(phoneNumber),
-                new Func2<KYCAyondoForm, OnTextChangeEvent, Boolean>()
+                new Func4<UserProfileDTO, KYCAyondoForm, OnSelectedEvent, OnTextChangeEvent, Boolean>()
                 {
-                    @Override public Boolean call(KYCAyondoForm kycForm, OnTextChangeEvent onTextChangeEvent)
+                    @Override public Boolean call(UserProfileDTO currentUserProfile, KYCAyondoForm kycForm, OnSelectedEvent countryEvent,
+                            OnTextChangeEvent onTextChangeEvent)
                     {
-                        try
+                        if (onTextChangeEvent.text().length() > 0 && countryEvent instanceof OnItemSelectedEvent)
                         {
-                            long newNumber = Long.parseLong(onTextChangeEvent.text().toString());
-                            populateVerifyMobile(kycForm, newNumber);
-                            kycForm.setMobileNumber(newNumber);
-                            onNext(kycForm);
-                        } catch (NumberFormatException e)
-                        {
-                            Timber.e(e, "Failed to parse to number %s", onTextChangeEvent.text().toString());
+                            try
+                            {
+                                int newCountryCode = ((CountrySpinnerAdapter.CountryViewHolder.DTO) countryEvent.parent.getItemAtPosition(
+                                        ((OnItemSelectedEvent) countryEvent).position)).phoneCountryCode;
+                                long newNumber = Long.parseLong(onTextChangeEvent.text().toString());
+                                populateVerifyMobile(kycForm, newCountryCode, newNumber);
+                                kycForm.setMobileNumber(newNumber);
+                                onNext(kycForm);
+                            } catch (NumberFormatException e)
+                            {
+                                Timber.e(e, "Failed to parse to number %s", onTextChangeEvent.text().toString());
+                            }
                         }
                         return true;
                     }
@@ -191,11 +236,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         super.onStart();
         if (this.expectedCode != null && this.confirmationSubject != null)
         {
-            final Integer phoneNumberInt = Integer.parseInt(phoneNumber.getText().toString());
-            final String phoneNumberText = "+65" + phoneNumberInt;
+            final int phoneCountryCode = ((CountrySpinnerAdapter.CountryViewHolder.DTO) phoneCountryCodeSpinner.getSelectedItem()).phoneCountryCode;
+            final long phoneNumberInt = Long.parseLong(phoneNumber.getText().toString());
+            final String phoneNumberText = "+" + phoneCountryCode + phoneNumberInt;
             final VerifyCodeDigitView verifyCodeDigitView =
                     (VerifyCodeDigitView) LayoutInflater.from(getActivity()).inflate(R.layout.verify_phone_number, null);
             offerToEnterCode(
+                    phoneCountryCode,
                     phoneNumberInt,
                     phoneNumberText,
                     this.expectedCode,
@@ -215,6 +262,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Override public void onDestroyView()
     {
+        phoneCountryCodeAdapter = null;
+        residencyAdapter = null;
+        nationalityAdapter = null;
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
@@ -249,76 +299,79 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 });
     }
 
-    public static class CountrySpinnerAdapter extends ArrayAdapter<LiveCountryDTO>
-    {
-
-        private static final int LAYOUT_ID = R.layout.spinner_live_country_dropdown_item;
-        private static final int LAYOUT_SELECTED_ID = R.layout.spinner_live_country_dropdown_item_selected;
-
-        public CountrySpinnerAdapter(Context context)
-        {
-            super(context, 0);
-        }
-
-        @Override public View getView(int position, View convertView, ViewGroup parent)
-        {
-            return getViewWithLayout(LAYOUT_SELECTED_ID, position, convertView, parent);
-        }
-
-        @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
-        {
-            return getViewWithLayout(LAYOUT_ID, position, convertView, parent);
-        }
-
-        @NonNull protected View getViewWithLayout(@LayoutRes int layoutResId, int position, View convertView, ViewGroup parent)
-        {
-            CountryViewHolder viewHolder;
-            if (convertView == null)
-            {
-                convertView = LayoutInflater.from(parent.getContext()).inflate(layoutResId, parent, false);
-                viewHolder = new CountryViewHolder(convertView);
-                convertView.setTag(viewHolder);
-            }
-            else
-            {
-                viewHolder = (CountryViewHolder) convertView.getTag();
-            }
-
-            LiveCountryDTO dto = getItem(position);
-
-            viewHolder.imgCountry.setImageResource(dto.country.logoId);
-            viewHolder.txtCountry.setText(dto.country.locationName);
-            return convertView;
-        }
-
-        public class CountryViewHolder
-        {
-            @Bind(R.id.live_country_icon) ImageView imgCountry;
-            @Bind(R.id.live_country_label) TextView txtCountry;
-
-            public CountryViewHolder(View itemView)
-            {
-                ButterKnife.bind(this, itemView);
-            }
-        }
-    }
-
     protected void populate(@NonNull KYCAyondoForm kycForm)
     {
         Long mobileNumber = kycForm.getMobileNumber();
         if (phoneNumber != null && mobileNumber != null)
         {
-            phoneNumber.setText(String.format("%d", mobileNumber));
+            String formatted = String.format("%d", mobileNumber);
+            if (!formatted.equals(phoneNumber.getText().toString()))
+            {
+                phoneNumber.setText(formatted);
+            }
         }
     }
 
-    protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, long typedNumber)
+    protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, int countryCode, long typedNumber)
     {
         if (buttonVerifyPhone != null)
         {
-            boolean verified = Long.valueOf(typedNumber).equals(kycForm.getVerifiedMobileNumber());
+            boolean verified = Integer.valueOf(countryCode).equals(kycForm.getVerifiedMobileNumberCountryCode())
+                    && Long.valueOf(typedNumber).equals(kycForm.getVerifiedMobileNumber());
             buttonVerifyPhone.setText(verified ? R.string.verified : R.string.verify);
             buttonVerifyPhone.setEnabled(!verified);
+        }
+    }
+
+    protected void populateMobileCountryCode(
+            @NonNull final KYCAyondoForm kycForm,
+            @NonNull UserProfileDTO currentUserProfile,
+            @NonNull List<CountrySpinnerAdapter.CountryViewHolder.DTO> liveCountryDTOs)
+    {
+        Integer savedMobileNumberCountryCode = kycForm.getMobileNumberCountryCode();
+        List<CountrySpinnerAdapter.CountryViewHolder.DTO> candidates;
+        if (savedMobileNumberCountryCode != null)
+        {
+            candidates = CountrySpinnerAdapter.getFilterByPhoneCountryCode(liveCountryDTOs, savedMobileNumberCountryCode);
+        }
+        else
+        {
+            candidates = new ArrayList<>();
+        }
+
+        CountrySpinnerAdapter.CountryViewHolder.DTO fromKyc = CollectionUtils.first(liveCountryDTOs,
+                new Predicate<CountrySpinnerAdapter.CountryViewHolder.DTO>()
+                {
+                    @Override public boolean apply(CountrySpinnerAdapter.CountryViewHolder.DTO dto)
+                    {
+                        return dto.liveCountryDTO.country.equals(kycForm.getCountry());
+                    }
+                });
+        if (fromKyc != null)
+        {
+            candidates.add(fromKyc);
+        }
+        Country userCountry = currentUserProfile.getCountry();
+        if (userCountry != null)
+        {
+            candidates.addAll(CountrySpinnerAdapter.getFilterByCountry(liveCountryDTOs, Collections.singletonList(userCountry)));
+        }
+
+        Integer phoneCountryIndex = null;
+        int candidatePhoneCountryIndex;
+        for (CountrySpinnerAdapter.CountryViewHolder.DTO candidate : candidates)
+        {
+            candidatePhoneCountryIndex = liveCountryDTOs.indexOf(candidate);
+            if (candidatePhoneCountryIndex >= 0)
+            {
+                phoneCountryIndex = candidatePhoneCountryIndex;
+                break;
+            }
+        }
+
+        if (phoneCountryIndex != null)
+        {
+            phoneCountryCodeSpinner.setSelection(phoneCountryIndex);
         }
     }
 
@@ -328,8 +381,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         buttonVerifyPhone.setEnabled(false);
 
-        final Long phoneNumberInt = Long.parseLong(phoneNumber.getText().toString());
-        final String phoneNumberText = "+65" + phoneNumberInt;
+        final int phoneCountryCode = ((CountrySpinnerAdapter.CountryViewHolder.DTO) phoneCountryCodeSpinner.getSelectedItem()).phoneCountryCode;
+        final long phoneNumberInt = Long.parseLong(phoneNumber.getText().toString());
+        final String phoneNumberText = "+" + phoneCountryCode + phoneNumberInt;
         String expectedCode = String.format("%04d", Math.abs(randomiser.nextInt() % 10000));
         this.expectedCode = expectedCode;
         final VerifyCodeDigitView verifyCodeDigitView =
@@ -351,6 +405,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new TimberOnErrorAction("Failed to get confirmation from sms"));
 
         offerToEnterCode(
+                phoneCountryCode,
                 phoneNumberInt,
                 phoneNumberText,
                 expectedCode,
@@ -359,6 +414,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
 
     protected void offerToEnterCode(
+            final int phoneCountryCode,
             final long phoneNumberInt,
             @NonNull final String phoneNumberText,
             @NonNull final String expectedCode,
@@ -421,6 +477,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     {
                                         LiveSignUpStep1AyondoFragment.this.expectedCode = null;
                                         LiveSignUpStep1AyondoFragment.this.confirmationSubject = null;
+                                        kycForm.setVerifiedMobileNumberCountryCode(phoneCountryCode);
                                         kycForm.setVerifiedMobileNumber(phoneNumberInt);
                                         alertDialog.dismiss();
                                         onNext(kycForm);

@@ -177,13 +177,10 @@
 
     <ImageView
         android:id="@android:id/closeButton"
-        android:layout_width="@dimen/clickable_element_min_dimen"
-        android:layout_height="@dimen/clickable_element_min_dimen"
-        android:src="@drawable/icn_popup_close"
+        style="@style/TH.Btn_Popup_Close"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_margin="@dimen/margin_small"
         />
 
   </RelativeLayout>

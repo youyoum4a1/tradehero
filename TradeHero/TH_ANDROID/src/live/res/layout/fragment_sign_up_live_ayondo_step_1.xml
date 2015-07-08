@@ -93,19 +93,19 @@
         >
 
       <Spinner
+          android:id="@+id/country_code_spinner"
           style="@style/TH.Spinner"
-          android:layout_width="0dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="0.15"
           android:minHeight="@dimen/clickable_element_min_dimen"
           />
 
       <EditText
-          android:id="@+id/phone_number"
+          android:id="@+id/number_right"
           style="@style/TH.Body"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
-          android:layout_weight="0.65"
+          android:layout_weight="1"
           android:hint="@string/mobile_number"
           android:inputType="number"
           android:minHeight="@dimen/clickable_element_min_dimen"
@@ -114,9 +114,8 @@
       <Button
           android:id="@+id/btn_verify_phone"
           style="@style/TH.Button.Accented"
-          android:layout_width="0dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="0.2"
           android:background="?attr/selectableItemBackground"
           android:enabled="false"
           android:minHeight="@dimen/clickable_element_min_dimen"
