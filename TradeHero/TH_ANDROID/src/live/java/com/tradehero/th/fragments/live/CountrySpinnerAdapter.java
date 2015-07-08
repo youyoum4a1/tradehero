@@ -47,9 +47,9 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.Co
         View v = getViewWithLayout(this.viewRes, position, convertView, parent);
         if (!SDKUtils.isLollipopOrHigher())
         {
-            if (v.getTag() != null)
+            if (v.getTag(VIEW_HOLDER_TAG_ID) != null)
             {
-                CountryViewHolder viewHolder = (CountryViewHolder) v.getTag();
+                CountryViewHolder viewHolder = (CountryViewHolder) v.getTag(VIEW_HOLDER_TAG_ID);
                 TextView tv = viewHolder.txtCountry == null ? (viewHolder.txtCountryCode != null ? viewHolder.txtCountryCode : null)
                         : viewHolder.txtCountry;
                 if (tv != null)

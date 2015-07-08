@@ -648,7 +648,7 @@
   </style>
 
   <style name="TH.Button.LiveForm"
-      parent="TH.Button.Inverse">
+      parent="TH.Button.Inverse.Small">
     <item name="android:background">@drawable/basic_green_selector</item>
     <item name="android:enabled">false</item>
   </style>

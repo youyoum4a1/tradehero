@@ -50,6 +50,7 @@
   </style>
 
   <style name="TH.Button.Small" parent="TH.Button">
+    <item name="android:minWidth">@dimen/size_10</item>
     <item name="android:textSize">@dimen/text_caption</item>
   </style>
 
