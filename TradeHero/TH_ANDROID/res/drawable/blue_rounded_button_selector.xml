@@ -2,7 +2,8 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android" android:exitFadeDuration="@android:integer/config_mediumAnimTime">
 
-  <item android:state_enabled="false">
+  <item android:state_window_focused="true"
+      android:state_enabled="false">
     <shape android:shape="rectangle">
       <solid android:color="@color/grey"/>
       <corners android:radius="@dimen/buy_sell_button_radius"/>
