@@ -647,4 +647,10 @@
     <item name="android:gravity">center</item>
   </style>
 
+  <style name="TH.Button.LiveForm"
+      parent="TH.Button.Inverse">
+    <item name="android:background">@drawable/basic_green_selector</item>
+    <item name="android:enabled">false</item>
+  </style>
+
 </resources>

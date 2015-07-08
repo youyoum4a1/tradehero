@@ -17,7 +17,6 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginBottom="@dimen/margin_small"
-          android:layout_marginTop="@dimen/margin_small"
           android:gravity="center_horizontal"
           android:text="@string/postal_address"
           />
@@ -102,6 +101,8 @@
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:text="@string/address_less_than_1_year"
           />
+
+      <include layout="@layout/live_form_control" />
 
   </LinearLayout>
 

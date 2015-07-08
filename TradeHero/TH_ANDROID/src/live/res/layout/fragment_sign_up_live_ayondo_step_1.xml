@@ -83,16 +83,13 @@
 
       <Button
           android:id="@+id/btn_verify_phone"
-          style="@style/TH.Button.Inverse"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          style="@style/TH.Button.LiveForm"
+          tools:enabled="true"
           android:layout_alignParentRight="true"
           android:layout_centerVertical="true"
-          android:background="@drawable/basic_green_selector"
-          android:enabled="false"
-          android:minHeight="@dimen/clickable_element_min_dimen"
           android:text="@string/verify"
-          tools:enabled="true"
           />
 
       <EditText
@@ -152,18 +149,16 @@
         android:hint="@string/date_of_birth"
         />
 
-    <Button
-        android:id="@+id/btn_next"
-        style="@style/TH.Button.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:background="@drawable/basic_green_selector"
-        android:enabled="false"
-        android:text="@string/next"
-        tools:enabled="true"
-        />
+      <Button
+          android:id="@+id/btn_next"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          style="@style/TH.Button.LiveForm"
+          android:layout_marginTop="@dimen/margin_medium"
+          tools:enabled="true"
+          android:text="@string/next"
+          android:layout_gravity="right"
+          />
 
   </LinearLayout>
 

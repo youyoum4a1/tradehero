@@ -325,5 +325,11 @@
   <string name="history_tab_wait_message">Please wait for loading portfolio</string>
   <string name="nationality">Nationality</string>
   <string name="residency">Residency</string>
+  <string name="annual_income">Annual Income</string>
+  <string name="net_worth">Net Worth</string>
+  <string name="percent_for_investment">% of Net Worth for Investment</string>
+  <string name="employment_status">Employment Status</string>
+  <string name="previous">Previous</string>
+  <string name="create">Create</string>
 
 </resources>
