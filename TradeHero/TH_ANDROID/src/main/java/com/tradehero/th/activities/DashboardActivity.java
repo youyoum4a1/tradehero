@@ -166,6 +166,10 @@ public class DashboardActivity extends BaseActivity
         showStartDialogsPlease();
 
         ButterKnife.bind(this);
+
+        lifeActivityUtil = new LiveActivityUtil(this);
+        activityModule.liveActivityUtil = lifeActivityUtil;
+
         activityModule.drawerLayout = drawerLayout;
 
         setSupportActionBar(toolbar);
@@ -192,15 +196,19 @@ public class DashboardActivity extends BaseActivity
         initBroadcastReceivers();
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
-        lifeActivityUtil = new LiveActivityUtil(this);
 
-        activityModule.liveActivityUtil = lifeActivityUtil;
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
         lifeActivityUtil.onCreateOptionsMenu(menu);
         return true;
+    }
+
+    @Override public void supportInvalidateOptionsMenu()
+    {
+        super.supportInvalidateOptionsMenu();
+        lifeActivityUtil.supportInvalidateOptionsMenu();
     }
 
     private void setupNavigator()

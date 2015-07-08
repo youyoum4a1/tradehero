@@ -25,6 +25,10 @@ public class LiveActivityUtil
     {
     }
 
+    public void supportInvalidateOptionsMenu()
+    {
+    }
+
     public void onTrendingTileClicked(TileType tileType){
 
     }

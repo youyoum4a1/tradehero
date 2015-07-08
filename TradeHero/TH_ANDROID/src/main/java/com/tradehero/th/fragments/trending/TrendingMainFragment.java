@@ -273,7 +273,7 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public boolean shouldShowLiveTradingToggle()
     {
-        return true;
+        return lastType.equals(TrendingTabType.STOCK);
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)

@@ -13,6 +13,7 @@ import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.widget.LiveSwitcher;
 import com.tradehero.th.widget.LiveSwitcherEvent;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subjects.PublishSubject;
@@ -47,33 +48,34 @@ public class LiveActivityUtil
         MenuItem item = menu.findItem(R.id.switch_live);
         final LiveSwitcher liveSwitcher = (LiveSwitcher) item.getActionView();
 
-        onDestroyOptionsMenuSubscriptions.add(liveSwitcher.getSwitchObservable().subscribe(isTradingLivePublishSubject));
-        onDestroyOptionsMenuSubscriptions.add(isTradingLivePublishSubject
-                .distinctUntilChanged(
-                        new Func1<LiveSwitcherEvent, Boolean>()
+        onDestroyOptionsMenuSubscriptions.add(
+                Observable.merge(liveSwitcher.getSwitchObservable(),
+                        isTradingLivePublishSubject)
+                        .startWith(new LiveSwitcherEvent(false, isLiveTrading.get()))
+                        .doOnNext(new Action1<LiveSwitcherEvent>()
                         {
-                            @Override public Boolean call(LiveSwitcherEvent event)
+                            @Override public void call(LiveSwitcherEvent event)
                             {
-                                return event.isLive;
+                                //Every-time a change happened.
+                                isLiveTrading.set(event.isLive);
                             }
                         })
-                .startWith(new LiveSwitcherEvent(false, isLiveTrading.get()))
-                .doOnNext(new Action1<LiveSwitcherEvent>()
-                {
-                    @Override public void call(LiveSwitcherEvent event)
-                    {
-                        //Every-time a change happened.
-                        isLiveTrading.set(event.isLive);
-                    }
-                })
-                .subscribe(new Action1<LiveSwitcherEvent>()
-                {
-                    @Override public void call(LiveSwitcherEvent event)
-                    {
-                        liveSwitcher.setIsLive(event.isLive, false);
-                        onLiveTradingChanged(event);
-                    }
-                }));
+                        .distinctUntilChanged(
+                                new Func1<LiveSwitcherEvent, Boolean>()
+                                {
+                                    @Override public Boolean call(LiveSwitcherEvent event)
+                                    {
+                                        return event.isLive;
+                                    }
+                                })
+                        .subscribe(new Action1<LiveSwitcherEvent>()
+                        {
+                            @Override public void call(LiveSwitcherEvent event)
+                            {
+                                liveSwitcher.setIsLive(event.isLive, false);
+                                onLiveTradingChanged(event);
+                            }
+                        }));
 
         for (Fragment f : dashboardActivity.getSupportFragmentManager().getFragments())
         {
@@ -82,6 +84,12 @@ public class LiveActivityUtil
                 item.setVisible(true);
                 break;
             }
+        }
+
+        if (!item.isVisible() && isLiveTrading.get())
+        {
+            //There's no fragment that can handle live trading, disable it.
+            switchLive(false);
         }
     }
 
@@ -107,6 +115,15 @@ public class LiveActivityUtil
             dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
                     .setBackgroundResource(
                             event.isLive ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
+        }
+    }
+
+    public void supportInvalidateOptionsMenu()
+    {
+        if (onDestroyOptionsMenuSubscriptions != null)
+        {
+            onDestroyOptionsMenuSubscriptions.unsubscribe();
+            onDestroyOptionsMenuSubscriptions.clear();
         }
     }
 
