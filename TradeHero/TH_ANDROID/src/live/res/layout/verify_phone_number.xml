@@ -32,7 +32,9 @@
       <ImageView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:src="@drawable/ic_logo_live"
+          android:src="@drawable/ic_logo_thlive"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginStart="@dimen/margin_small"
           />
 
     </LinearLayout>
