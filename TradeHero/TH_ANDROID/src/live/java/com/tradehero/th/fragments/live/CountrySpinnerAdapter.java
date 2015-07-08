@@ -15,11 +15,13 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.live.LiveCountryDTO;
 import com.tradehero.th.api.live.LiveCountryDTOUtil;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.utils.GraphicUtil;
 import java.util.ArrayList;
 import java.util.List;
 import timber.log.Timber;
@@ -42,7 +44,22 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.Co
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
     {
-        return getViewWithLayout(viewRes, position, convertView, parent);
+        View v = getViewWithLayout(this.viewRes, position, convertView, parent);
+        if (!SDKUtils.isLollipopOrHigher())
+        {
+            if (v.getTag() != null)
+            {
+                CountryViewHolder viewHolder = (CountryViewHolder) v.getTag();
+                TextView tv = viewHolder.txtCountry == null ? (viewHolder.txtCountryCode != null ? viewHolder.txtCountryCode : null)
+                        : viewHolder.txtCountry;
+                if (tv != null)
+                {
+                    tv.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                            GraphicUtil.createStateListDrawableRes(getContext(), R.drawable.abc_spinner_mtrl_am_alpha), null);
+                }
+            }
+        }
+        return v;
     }
 
     @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
