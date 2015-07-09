@@ -200,8 +200,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             KYCAyondoFormOptionsDTO options,
                             UserProfileDTO currentUserProfile)
                     {
-                        Comparator<CountrySpinnerAdapter.CountryViewHolder.DTO> dtoComparator = new CountrySpinnerAdapter.DTOCountryNameComparator(getActivity());
-                        List<CountrySpinnerAdapter.CountryViewHolder.DTO> allowedMobilePhoneCountryDTOs = CountrySpinnerAdapter.createDTOs(
+                        Comparator<CountrySpinnerAdapter.DTO> dtoComparator = new CountrySpinnerAdapter.DTOCountryNameComparator(getActivity());
+                        List<CountrySpinnerAdapter.DTO> allowedMobilePhoneCountryDTOs = CountrySpinnerAdapter.createDTOs(
                                 options.allowedMobilePhoneCountries, null);
                         Collections.sort(allowedMobilePhoneCountryDTOs, dtoComparator);
                         phoneCountryCodeAdapter.setNotifyOnChange(false);
@@ -210,7 +210,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         phoneCountryCodeAdapter.setNotifyOnChange(true);
                         phoneCountryCodeAdapter.notifyDataSetChanged();
 
-                        List<CountrySpinnerAdapter.CountryViewHolder.DTO> allowedResidencyCountryDTOs = CountrySpinnerAdapter.createDTOs(
+                        List<CountrySpinnerAdapter.DTO> allowedResidencyCountryDTOs = CountrySpinnerAdapter.createDTOs(
                                 options.allowedResidencyCountries, null);
                         Collections.sort(allowedResidencyCountryDTOs, dtoComparator);
                         residencyAdapter.setNotifyOnChange(false);
@@ -219,7 +219,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         residencyAdapter.setNotifyOnChange(true);
                         residencyAdapter.notifyDataSetChanged();
 
-                        List<CountrySpinnerAdapter.CountryViewHolder.DTO> allowedNationalityCountryDTOs = CountrySpinnerAdapter.createDTOs(
+                        List<CountrySpinnerAdapter.DTO> allowedNationalityCountryDTOs = CountrySpinnerAdapter.createDTOs(
                                 options.allowedNationalityCountries, null);
                         Collections.sort(allowedNationalityCountryDTOs, dtoComparator);
                         nationalityAdapter.setNotifyOnChange(false);
@@ -256,7 +256,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             try
                             {
-                                int newCountryCode = ((CountrySpinnerAdapter.CountryViewHolder.DTO) countryEvent.parent.getItemAtPosition(
+                                int newCountryCode = ((CountrySpinnerAdapter.DTO) countryEvent.parent.getItemAtPosition(
                                         ((OnItemSelectedEvent) countryEvent).position)).phoneCountryCode;
                                 long newNumber = Long.parseLong(onTextChangeEvent.text().toString());
                                 //noinspection ConstantConditions
@@ -290,7 +290,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     @Override public Boolean call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent nationalityEvent)
                     {
                         CountryCode newNationality =
-                                CountryCode.getByCode(((CountrySpinnerAdapter.CountryViewHolder.DTO) nationalityEvent.parent.getItemAtPosition(
+                                CountryCode.getByCode(((CountrySpinnerAdapter.DTO) nationalityEvent.parent.getItemAtPosition(
                                         ((OnItemSelectedEvent) nationalityEvent).position)).country.name());
                         //noinspection ConstantConditions
                         ((KYCAyondoForm) situationDTO.kycForm).setNationality(newNationality);
@@ -315,7 +315,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     @Override public Boolean call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent residencyEvent)
                     {
                         CountryCode newResidency =
-                                CountryCode.getByCode(((CountrySpinnerAdapter.CountryViewHolder.DTO) residencyEvent.parent.getItemAtPosition(
+                                CountryCode.getByCode(((CountrySpinnerAdapter.DTO) residencyEvent.parent.getItemAtPosition(
                                         ((OnItemSelectedEvent) residencyEvent).position)).country.name());
                         //noinspection ConstantConditions
                         ((KYCAyondoForm) situationDTO.kycForm).setResidency(newResidency);
@@ -343,7 +343,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         super.onStart();
         if (this.expectedCode != null && this.confirmationSubject != null)
         {
-            final int phoneCountryCode = ((CountrySpinnerAdapter.CountryViewHolder.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
+            final int phoneCountryCode = ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
             final long phoneNumberInt = Long.parseLong(phoneNumber.getText().toString());
             final String phoneNumberText = "+" + phoneCountryCode + phoneNumberInt;
             final VerifyCodeDigitView verifyCodeDigitView =
@@ -446,10 +446,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     protected void populateMobileCountryCode(
             @NonNull final KYCAyondoForm kycForm,
             @NonNull UserProfileDTO currentUserProfile,
-            @NonNull List<CountrySpinnerAdapter.CountryViewHolder.DTO> liveCountryDTOs)
+            @NonNull List<CountrySpinnerAdapter.DTO> liveCountryDTOs)
     {
         Integer savedMobileNumberCountryCode = kycForm.getMobileNumberCountryCode();
-        final List<CountrySpinnerAdapter.CountryViewHolder.DTO> candidates;
+        final List<CountrySpinnerAdapter.DTO> candidates;
         if (savedMobileNumberCountryCode != null)
         {
             candidates = CountrySpinnerAdapter.getFilterByPhoneCountryCode(liveCountryDTOs, savedMobileNumberCountryCode);
@@ -467,10 +467,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     protected void populateNationality(
             @NonNull final KYCAyondoForm kycForm,
             @NonNull UserProfileDTO currentUserProfile,
-            @NonNull List<CountrySpinnerAdapter.CountryViewHolder.DTO> liveCountryDTOs)
+            @NonNull List<CountrySpinnerAdapter.DTO> liveCountryDTOs)
     {
         CountryCode savedNationality = kycForm.getNationality();
-        List<CountrySpinnerAdapter.CountryViewHolder.DTO> candidates;
+        List<CountrySpinnerAdapter.DTO> candidates;
         if (savedNationality != null)
         {
             try
@@ -495,10 +495,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     protected void populateResidency(
             @NonNull final KYCAyondoForm kycForm,
             @NonNull UserProfileDTO currentUserProfile,
-            @NonNull List<CountrySpinnerAdapter.CountryViewHolder.DTO> liveCountryDTOs)
+            @NonNull List<CountrySpinnerAdapter.DTO> liveCountryDTOs)
     {
         CountryCode savedResidency = kycForm.getResidency();
-        List<CountrySpinnerAdapter.CountryViewHolder.DTO> candidates;
+        List<CountrySpinnerAdapter.DTO> candidates;
         if (savedResidency != null)
         {
             try
@@ -520,12 +520,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         setSpinnerOnFirst(spinnerResidency, candidates, liveCountryDTOs);
     }
 
-    @NonNull protected List<CountrySpinnerAdapter.CountryViewHolder.DTO> getFilteredByCountries(
-            @NonNull List<CountrySpinnerAdapter.CountryViewHolder.DTO> liveCountryDTOs,
+    @NonNull protected List<CountrySpinnerAdapter.DTO> getFilteredByCountries(
+            @NonNull List<CountrySpinnerAdapter.DTO> liveCountryDTOs,
             @NonNull final KYCAyondoForm kycForm,
             @NonNull UserProfileDTO currentUserProfile)
     {
-        List<CountrySpinnerAdapter.CountryViewHolder.DTO> defaultOnes = new ArrayList<>();
+        List<CountrySpinnerAdapter.DTO> defaultOnes = new ArrayList<>();
         defaultOnes.addAll(CountrySpinnerAdapter.getFilterByCountry(liveCountryDTOs, Collections.singletonList(kycForm.getCountry())));
         Country userCountry = currentUserProfile.getCountry();
         if (userCountry != null)
@@ -537,12 +537,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     protected void setSpinnerOnFirst(
             @NonNull Spinner spinner,
-            @NonNull List<CountrySpinnerAdapter.CountryViewHolder.DTO> candidates,
-            @NonNull List<CountrySpinnerAdapter.CountryViewHolder.DTO> liveCountryDTOs)
+            @NonNull List<CountrySpinnerAdapter.DTO> candidates,
+            @NonNull List<CountrySpinnerAdapter.DTO> liveCountryDTOs)
     {
         Integer countryIndex = null;
         int candidatePhoneCountryIndex;
-        for (CountrySpinnerAdapter.CountryViewHolder.DTO candidate : candidates)
+        for (CountrySpinnerAdapter.DTO candidate : candidates)
         {
             candidatePhoneCountryIndex = liveCountryDTOs.indexOf(candidate);
             if (candidatePhoneCountryIndex >= 0)
@@ -564,7 +564,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         buttonVerifyPhone.setEnabled(false);
 
-        final int phoneCountryCode = ((CountrySpinnerAdapter.CountryViewHolder.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
+        final int phoneCountryCode = ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
         final long phoneNumberInt = Long.parseLong(phoneNumber.getText().toString());
         final String phoneNumberText = "+" + phoneCountryCode + phoneNumberInt;
         String expectedCode = String.format("%04d", Math.abs(randomiser.nextInt() % 10000));

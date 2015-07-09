@@ -26,7 +26,7 @@ import java.util.Comparator;
 import java.util.List;
 import timber.log.Timber;
 
-public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.CountryViewHolder.DTO>
+public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.DTO>
 {
     public static final int VIEW_HOLDER_TAG_ID = R.id.live_country_icon;
     @LayoutRes private final int viewRes;
@@ -85,18 +85,18 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.Co
         return convertView;
     }
 
-    @NonNull public static List<CountryViewHolder.DTO> createDTOs(@NonNull List<? extends Country> countries, @Nullable Country typeQualifier)
+    @NonNull public static List<DTO> createDTOs(@NonNull List<? extends Country> countries, @Nullable Country typeQualifier)
     {
-        List<CountryViewHolder.DTO> created = new ArrayList<>();
+        List<DTO> created = new ArrayList<>();
         for (Country countryDTO : countries)
         {
-            created.add(new CountryViewHolder.DTO(countryDTO));
+            created.add(new DTO(countryDTO));
         }
         return created;
     }
 
-    @NonNull public static List<CountryViewHolder.DTO> getFilterByPhoneCountryCode(
-            @NonNull List<? extends CountryViewHolder.DTO> liveCountryDTOs,
+    @NonNull public static List<DTO> getFilterByPhoneCountryCode(
+            @NonNull List<? extends DTO> liveCountryDTOs,
             int phoneCountryCode)
     {
         List<String> regions = PhoneNumberUtil.getInstance().getRegionCodesForCountryCode(phoneCountryCode);
@@ -114,13 +114,13 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.Co
         return getFilterByCountry(liveCountryDTOs, countries);
     }
 
-    @NonNull public static List<CountryViewHolder.DTO> getFilterByCountry(
-            @NonNull List<? extends CountryViewHolder.DTO> liveCountryDTOs,
+    @NonNull public static List<DTO> getFilterByCountry(
+            @NonNull List<? extends DTO> liveCountryDTOs,
             @NonNull List<Country> countries)
     {
-        List<CountryViewHolder.DTO> filtered = new ArrayList<>();
+        List<DTO> filtered = new ArrayList<>();
 
-        for (CountryViewHolder.DTO candidate : liveCountryDTOs)
+        for (DTO candidate : liveCountryDTOs)
         {
             if (countries.contains(candidate.country))
             {
@@ -131,7 +131,7 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.Co
         return filtered;
     }
 
-    public static class CountryViewHolder implements DTOView<CountryViewHolder.DTO>
+    public static class CountryViewHolder implements DTOView<DTO>
     {
         @Bind(R.id.live_country_icon) @Nullable ImageView imgCountry;
         @Bind(R.id.live_country_label) @Nullable TextView txtCountry;
@@ -157,27 +157,27 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.Co
                 txtCountryCode.setText(dto.phoneCountryCodeText);
             }
         }
+    }
 
-        public static class DTO
+    public static class DTO
+    {
+        @NonNull public final Country country;
+        @DrawableRes public final int logoId;
+        @StringRes public final int locationName;
+        public final int phoneCountryCode;
+        @NonNull public final String phoneCountryCodeText;
+
+        public DTO(@NonNull Country country)
         {
-            @NonNull public final Country country;
-            @DrawableRes public final int logoId;
-            @StringRes public final int locationName;
-            public final int phoneCountryCode;
-            @NonNull public final String phoneCountryCodeText;
-
-            public DTO(@NonNull Country country)
-            {
-                this.country = country;
-                this.logoId = country.logoId;
-                this.locationName = country.locationName;
-                this.phoneCountryCode = LiveCountryDTOUtil.getPhoneCodePlusLeadingDigits(country);
-                this.phoneCountryCodeText = "+" + phoneCountryCode;
-            }
+            this.country = country;
+            this.logoId = country.logoId;
+            this.locationName = country.locationName;
+            this.phoneCountryCode = LiveCountryDTOUtil.getPhoneCodePlusLeadingDigits(country);
+            this.phoneCountryCodeText = "+" + phoneCountryCode;
         }
     }
 
-    public static class DTOCountryNameComparator implements Comparator<CountryViewHolder.DTO>
+    public static class DTOCountryNameComparator implements Comparator<DTO>
     {
         @NonNull private final Context context;
 
@@ -186,7 +186,7 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.Co
             this.context = context;
         }
 
-        @Override public int compare(@NonNull CountryViewHolder.DTO lhs, @NonNull CountryViewHolder.DTO rhs)
+        @Override public int compare(@NonNull DTO lhs, @NonNull DTO rhs)
         {
             return context.getString(lhs.country.locationName).compareTo(context.getString(rhs.country.locationName));
         }
