@@ -44,7 +44,7 @@
   <color name="orange">@android:color/holo_orange_light</color>
 
   <!--Buttons-->
-  <color name="light_green_normal">#a0dc50</color>
+  <color name="light_green_normal">#6AC31F</color>
   <color name="light_green_pressed">#54A700</color>
   <color name="light_green_focused">#ffc7ff8b</color>
 
