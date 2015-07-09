@@ -2,6 +2,7 @@ package com.tradehero.th.models.sms.twilio;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.tradehero.th.models.sms.SMSId;
 
 public class TwilioSMSId implements SMSId
@@ -21,5 +22,10 @@ public class TwilioSMSId implements SMSId
     @Override public boolean equals(Object o)
     {
         return o instanceof TwilioSMSId && ((TwilioSMSId) o).id.equals(id);
+    }
+
+    @JsonValue @NonNull String getId()
+    {
+        return id;
     }
 }
