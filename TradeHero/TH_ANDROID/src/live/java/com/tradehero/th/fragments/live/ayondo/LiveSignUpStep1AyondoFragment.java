@@ -230,6 +230,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedMobilePhoneCountryDTOs);
                         populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
                         populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
+                        Integer countryCode = ((KYCAyondoForm) situation.kycForm).getMobileNumberCountryCode();
+                        Long phoneNumber = ((KYCAyondoForm) situation.kycForm).getMobileNumber();
+                        if (countryCode != null && phoneNumber != null)
+                        {
+                            populateVerifyMobile((KYCAyondoForm) situation.kycForm, countryCode, phoneNumber);
+                        }
                         return null;
                     }
                 })
