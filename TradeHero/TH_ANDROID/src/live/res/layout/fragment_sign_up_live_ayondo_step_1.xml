@@ -38,6 +38,7 @@
           />
 
       <EditText
+          android:id="@+id/et_firstname"
           style="@style/TH.Body"
           android:layout_width="0dp"
           android:layout_height="wrap_content"
@@ -48,6 +49,7 @@
           />
 
       <EditText
+          android:id="@+id/et_lastname"
           style="@style/TH.Body"
           android:layout_width="0dp"
           android:layout_height="wrap_content"

@@ -30,6 +30,7 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Integer verifiedMobileNumberCountryCode;
     @Nullable private Long verifiedMobileNumber;
     @Nullable private CountryCode nationality;
+    @Nullable private CountryCode residency;
 
     private List<StepStatus> stepStatuses;
 
@@ -78,6 +79,7 @@ public class KYCAyondoForm implements KYCForm
             this.verifiedMobileNumber =
                     ayondoForm.getVerifiedMobileNumber() != null ? ayondoForm.getVerifiedMobileNumber() : this.verifiedMobileNumber;
             this.nationality = ayondoForm.getNationality() != null ? ayondoForm.getNationality() : this.nationality;
+            this.residency = ayondoForm.getResidency() != null ? ayondoForm.getResidency() : this.residency;
         }
     }
 
@@ -192,6 +194,16 @@ public class KYCAyondoForm implements KYCForm
         this.nationality = nationality;
     }
 
+    @Nullable public CountryCode getResidency()
+    {
+        return residency;
+    }
+
+    public void setResidency(@Nullable CountryCode residency)
+    {
+        this.residency = residency;
+    }
+
     @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
     {
         boolean same;
@@ -208,6 +220,7 @@ public class KYCAyondoForm implements KYCForm
             same &= verifiedMobileNumberCountryCode == null ? ayondoForm.verifiedMobileNumberCountryCode == null : verifiedMobileNumberCountryCode.equals(ayondoForm.verifiedMobileNumberCountryCode);
             same &= verifiedMobileNumber == null ? ayondoForm.verifiedMobileNumber == null : verifiedMobileNumber.equals(ayondoForm.verifiedMobileNumber);
             same &= nationality == null ? ayondoForm.nationality == null : nationality.equals(ayondoForm.nationality);
+            same &= residency == null ? ayondoForm.residency == null : residency.equals(ayondoForm.residency);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
             {
