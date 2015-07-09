@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import android.app.Activity;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.live.IdentityPromptInfoDTO;
 import com.tradehero.th.api.live.IdentityPromptInfoKey;
@@ -11,7 +10,7 @@ import com.tradehero.th.api.live.LiveCountryDTOList;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.models.kyc.StepStatusesDTO;
-import com.tradehero.th.persistence.prefs.KYCFormPreference;
+import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
@@ -19,14 +18,14 @@ import rx.functions.Func1;
 public class LiveServiceWrapper
 {
     @NonNull private final LiveServiceRx liveServiceRx;
-    @NonNull private final KYCFormPreference kycFormPreference;
+    @NonNull private final LiveBrokerSituationPreference liveBrokerSituationPreference;
 
     @Inject public LiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
-            @NonNull KYCFormPreference kycFormPreference)
+            @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference)
     {
         this.liveServiceRx = liveServiceRx;
-        this.kycFormPreference = kycFormPreference;
+        this.liveBrokerSituationPreference = liveBrokerSituationPreference;
     }
 
     @NonNull public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
@@ -46,38 +45,40 @@ public class LiveServiceWrapper
         return liveServiceRx.getIdentityPromptInfo(identityPromptInfoKey.country.name());
     }
 
-    @NonNull public Observable<KYCForm> getFormToUse(@NonNull Activity activity)
+    @NonNull public Observable<LiveBrokerSituationDTO> getBrokerSituation()
     {
         return getLiveTradingSituation()
-                .map(new Func1<LiveTradingSituationDTO, KYCForm>()
+                .map(new Func1<LiveTradingSituationDTO, LiveBrokerSituationDTO>()
                 {
-                    @Override public KYCForm call(LiveTradingSituationDTO liveTradingSituation)
+                    @Override public LiveBrokerSituationDTO call(LiveTradingSituationDTO liveTradingSituation)
                     {
                         for (LiveBrokerSituationDTO situation : liveTradingSituation.brokerSituations)
                         {
                             if (situation.kycForm != null)
                             {
-                                return situation.kycForm;
+                                return situation;
                             }
                         }
-                        throw new IllegalArgumentException("There is no available kycForm");
+                        throw new IllegalArgumentException("There is no available live broker situation");
                     }
                 })
-                .map(new Func1<KYCForm, KYCForm>()
+                .map(new Func1<LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
                 {
-                    @Override public KYCForm call(@NonNull KYCForm defaultForm)
+                    @Override public LiveBrokerSituationDTO call(@NonNull LiveBrokerSituationDTO defaultSituation)
                     {
-                        KYCForm savedForm = kycFormPreference.get();
-                        if (savedForm.getClass().equals(defaultForm.getClass()))
+                        LiveBrokerSituationDTO savedSituation = liveBrokerSituationPreference.get();
+                        //noinspection ConstantConditions
+                        if (savedSituation.kycForm != null
+                                && savedSituation.kycForm.getClass().equals(defaultSituation.kycForm.getClass()))
                         {
-                            savedForm.pickFrom(defaultForm);
+                            savedSituation.kycForm.pickFrom(defaultSituation.kycForm);
                         }
                         else
                         {
-                            savedForm = defaultForm;
+                            savedSituation = defaultSituation;
                         }
-                        kycFormPreference.set(savedForm);
-                        return savedForm;
+                        liveBrokerSituationPreference.set(savedSituation);
+                        return savedSituation;
                     }
                 });
     }
@@ -87,7 +88,7 @@ public class LiveServiceWrapper
         return liveServiceRx.getLiveCountryList();
     }
 
-    public Observable<KYCFormOptionsDTO> getKYCFormOptions(LiveBrokerId liveBrokerId)
+    @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull LiveBrokerId liveBrokerId)
     {
         return liveServiceRx.getKYCFormOptions(liveBrokerId.key);
     }

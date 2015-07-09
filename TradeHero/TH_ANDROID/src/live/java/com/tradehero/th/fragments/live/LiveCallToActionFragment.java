@@ -13,10 +13,10 @@ import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.IdentityPromptActivity;
 import com.tradehero.th.activities.SignUpLiveActivity;
+import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.fastfill.FastFillUtil;
-import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.models.kyc.KYCFormUtil;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.rx.TimberOnErrorAction;
@@ -51,21 +51,22 @@ public class LiveCallToActionFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getFormToUse()
+                getBrokerSituationToUse()
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnNext(new Action1<KYCForm>()
+                        .doOnNext(new Action1<LiveBrokerSituationDTO>()
                         {
-                            @Override public void call(KYCForm kycForm)
+                            @Override public void call(LiveBrokerSituationDTO situation)
                             {
-                                liveDescription.setText(KYCFormUtil.getCallToActionText(kycForm));
-                                livePoweredBy.setText(kycForm.getBrokerName());
+                                //noinspection ConstantConditions
+                                liveDescription.setText(KYCFormUtil.getCallToActionText(situation.kycForm));
+                                livePoweredBy.setText(situation.kycForm.getBrokerName());
                             }
                         }),
                 ViewObservable.clicks(goLiveButton),
                 fastFill.isAvailable(getActivity()),
-                new Func3<KYCForm, OnClickEvent, Boolean, Boolean>()
+                new Func3<LiveBrokerSituationDTO, OnClickEvent, Boolean, Boolean>()
                 {
-                    @Override public Boolean call(KYCForm kycForm, OnClickEvent onClickEvent, Boolean fastFillAvailable)
+                    @Override public Boolean call(LiveBrokerSituationDTO situationDTO, OnClickEvent onClickEvent, Boolean fastFillAvailable)
                     {
                         return fastFillAvailable;
                     }
@@ -89,9 +90,9 @@ public class LiveCallToActionFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @NonNull protected Observable<KYCForm> getFormToUse()
+    @NonNull protected Observable<LiveBrokerSituationDTO> getBrokerSituationToUse()
     {
-        return liveServiceWrapper.getFormToUse(getActivity()).share();
+        return liveServiceWrapper.getBrokerSituation().share();
     }
 
     public Observable<View> getOnLaterClickedSubscribtion()

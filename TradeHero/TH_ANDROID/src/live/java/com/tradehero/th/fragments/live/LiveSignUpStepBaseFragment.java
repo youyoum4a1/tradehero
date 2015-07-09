@@ -3,42 +3,42 @@ package com.tradehero.th.fragments.live;
 import android.app.Activity;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.models.kyc.KYCForm;
-import com.tradehero.th.persistence.prefs.KYCFormPreference;
+import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 {
-    @Inject KYCFormPreference kycFormPreference;
+    @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
 
-    @NonNull private final BehaviorSubject<KYCForm> kycFormSubject;
+    @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;
 
     public LiveSignUpStepBaseFragment()
     {
-        this.kycFormSubject = BehaviorSubject.create();
+        this.brokerSituationSubject = BehaviorSubject.create();
     }
 
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        kycFormSubject.onNext(kycFormPreference.get());
+        brokerSituationSubject.onNext(liveBrokerSituationPreference.get());
     }
 
-    @CallSuper public void onNext(@NonNull KYCForm kycForm)
+    @CallSuper public void onNext(@NonNull LiveBrokerSituationDTO situationDTO)
     {
-        KYCForm previous = kycFormPreference.get();
-        kycFormPreference.set(kycForm);
-        if (!previous.hasSameFields(kycForm))
+        LiveBrokerSituationDTO previous = liveBrokerSituationPreference.get();
+        liveBrokerSituationPreference.set(situationDTO);
+        if (!previous.hasSameFields(situationDTO))
         {
-            kycFormSubject.onNext(kycForm);
+            brokerSituationSubject.onNext(situationDTO);
         }
     }
 
-    @NonNull public Observable<KYCForm> getKycFormObservable()
+    @NonNull public Observable<LiveBrokerSituationDTO> getBrokerSituationObservable()
     {
-        return kycFormSubject.asObservable();
+        return brokerSituationSubject.asObservable();
     }
 }

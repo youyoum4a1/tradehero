@@ -20,6 +20,7 @@ import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
+import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveCountryDTO;
 import com.tradehero.th.api.live.LiveCountryDTOList;
 import com.tradehero.th.api.live.LiveCountryListId;
@@ -29,7 +30,6 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
 import com.tradehero.th.fragments.live.VerifyCodeDigitView;
-import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.models.sms.SMSId;
 import com.tradehero.th.models.sms.SMSRequestFactory;
@@ -137,14 +137,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         title.setAdapter(stringArrayAdapter);
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getKycAyondoFormObservable().observeOn(AndroidSchedulers.mainThread()),
+                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
                 WidgetObservable.text(firstName),
-                new Func2<KYCAyondoForm, OnTextChangeEvent, Boolean>()
+                new Func2<LiveBrokerSituationDTO, OnTextChangeEvent, Boolean>()
                 {
-                    @Override public Boolean call(KYCAyondoForm kycForm, OnTextChangeEvent firstNameEvent)
+                    @Override public Boolean call(LiveBrokerSituationDTO situation, OnTextChangeEvent firstNameEvent)
                     {
-                        kycForm.setFirstName(firstNameEvent.text().toString());
-                        onNext(kycForm);
+                        //noinspection ConstantConditions
+                        ((KYCAyondoForm) situation.kycForm).setFirstName(firstNameEvent.text().toString());
+                        onNext(situation);
                         return null;
                     }
                 })
@@ -158,14 +159,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new TimberOnErrorAction("Failed to listen to first name")));
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getKycAyondoFormObservable().observeOn(AndroidSchedulers.mainThread()),
+                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
                 WidgetObservable.text(lastName),
-                new Func2<KYCAyondoForm, OnTextChangeEvent, Boolean>()
+                new Func2<LiveBrokerSituationDTO, OnTextChangeEvent, Boolean>()
                 {
-                    @Override public Boolean call(KYCAyondoForm kycForm, OnTextChangeEvent lastNameEvent)
+                    @Override public Boolean call(LiveBrokerSituationDTO situation, OnTextChangeEvent lastNameEvent)
                     {
-                        kycForm.setLastName(lastNameEvent.text().toString());
-                        onNext(kycForm);
+                        //noinspection ConstantConditions
+                        ((KYCAyondoForm) situation.kycForm).setLastName(lastNameEvent.text().toString());
+                        onNext(situation);
                         return null;
                     }
                 })
@@ -189,7 +191,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         // Maybe move this until we get the KYCForm, and use the KYCForm to fetch the list of country of residence.
         onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getKycAyondoFormObservable()
+                getBrokerSituationObservable()
                         .observeOn(AndroidSchedulers.mainThread()),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
@@ -211,9 +213,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread()),
-                new Func3<KYCAyondoForm, UserProfileDTO, List<CountrySpinnerAdapter.CountryViewHolder.DTO>, Object>()
+                new Func3<LiveBrokerSituationDTO, UserProfileDTO, List<CountrySpinnerAdapter.CountryViewHolder.DTO>, Object>()
                 {
-                    @Override public Object call(KYCAyondoForm kycForm, UserProfileDTO currentUserProfile,
+                    @Override public Object call(LiveBrokerSituationDTO situation, UserProfileDTO currentUserProfile,
                             List<CountrySpinnerAdapter.CountryViewHolder.DTO> liveCountryDTOs)
                     {
                         phoneCountryCodeAdapter.setNotifyOnChange(false);
@@ -234,9 +236,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         nationalityAdapter.setNotifyOnChange(true);
                         nationalityAdapter.notifyDataSetChanged();
 
-                        populateMobileCountryCode(kycForm, currentUserProfile, liveCountryDTOs);
-                        populateNationality(kycForm, currentUserProfile, liveCountryDTOs);
-                        populateResidency(kycForm, currentUserProfile, liveCountryDTOs);
+                        //noinspection ConstantConditions
+                        populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, liveCountryDTOs);
+                        populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, liveCountryDTOs);
+                        populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, liveCountryDTOs);
                         return null;
                     }
                 })
@@ -249,12 +252,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 userProfileCache.getOne(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
-                getKycAyondoFormObservable(),
+                getBrokerSituationObservable(),
                 AdapterViewObservable.selects(spinnerPhoneCountryCode),
                 WidgetObservable.text(phoneNumber),
-                new Func4<UserProfileDTO, KYCAyondoForm, OnSelectedEvent, OnTextChangeEvent, Boolean>()
+                new Func4<UserProfileDTO, LiveBrokerSituationDTO, OnSelectedEvent, OnTextChangeEvent, Boolean>()
                 {
-                    @Override public Boolean call(UserProfileDTO currentUserProfile, KYCAyondoForm kycForm, OnSelectedEvent countryEvent,
+                    @Override public Boolean call(UserProfileDTO currentUserProfile, LiveBrokerSituationDTO situation, OnSelectedEvent countryEvent,
                             OnTextChangeEvent onTextChangeEvent)
                     {
                         if (onTextChangeEvent.text().length() > 0 && countryEvent instanceof OnItemSelectedEvent)
@@ -264,10 +267,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 int newCountryCode = ((CountrySpinnerAdapter.CountryViewHolder.DTO) countryEvent.parent.getItemAtPosition(
                                         ((OnItemSelectedEvent) countryEvent).position)).phoneCountryCode;
                                 long newNumber = Long.parseLong(onTextChangeEvent.text().toString());
-                                populateVerifyMobile(kycForm, newCountryCode, newNumber);
-                                kycForm.setMobileNumberCountryCode(newCountryCode);
-                                kycForm.setMobileNumber(newNumber);
-                                onNext(kycForm);
+                                //noinspection ConstantConditions
+                                populateVerifyMobile((KYCAyondoForm) situation.kycForm, newCountryCode, newNumber);
+                                ((KYCAyondoForm) situation.kycForm).setMobileNumberCountryCode(newCountryCode);
+                                ((KYCAyondoForm) situation.kycForm).setMobileNumber(newNumber);
+                                onNext(situation);
                             } catch (NumberFormatException e)
                             {
                                 Timber.e(e, "Failed to parse to number %s", onTextChangeEvent.text().toString());
@@ -287,17 +291,18 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new ToastAndLogOnErrorAction("Failed to listen to phone number")));
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getKycAyondoFormObservable().observeOn(AndroidSchedulers.mainThread()),
+                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
                 AdapterViewObservable.selects(spinnerNationality),
-                new Func2<KYCAyondoForm, OnSelectedEvent, Boolean>()
+                new Func2<LiveBrokerSituationDTO, OnSelectedEvent, Boolean>()
                 {
-                    @Override public Boolean call(KYCAyondoForm kycForm, OnSelectedEvent nationalityEvent)
+                    @Override public Boolean call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent nationalityEvent)
                     {
                         CountryCode newNationality =
                                 CountryCode.getByCode(((CountrySpinnerAdapter.CountryViewHolder.DTO) nationalityEvent.parent.getItemAtPosition(
                                         ((OnItemSelectedEvent) nationalityEvent).position)).liveCountryDTO.country.name());
-                        kycForm.setNationality(newNationality);
-                        onNext(kycForm);
+                        //noinspection ConstantConditions
+                        ((KYCAyondoForm) situationDTO.kycForm).setNationality(newNationality);
+                        onNext(situationDTO);
                         return true;
                     }
                 })
@@ -311,17 +316,18 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new TimberOnErrorAction("Failed to listen to nationality")));
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getKycAyondoFormObservable().observeOn(AndroidSchedulers.mainThread()),
+                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
                 AdapterViewObservable.selects(spinnerResidency),
-                new Func2<KYCAyondoForm, OnSelectedEvent, Boolean>()
+                new Func2<LiveBrokerSituationDTO, OnSelectedEvent, Boolean>()
                 {
-                    @Override public Boolean call(KYCAyondoForm kycForm, OnSelectedEvent residencyEvent)
+                    @Override public Boolean call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent residencyEvent)
                     {
                         CountryCode newResidency =
                                 CountryCode.getByCode(((CountrySpinnerAdapter.CountryViewHolder.DTO) residencyEvent.parent.getItemAtPosition(
                                         ((OnItemSelectedEvent) residencyEvent).position)).liveCountryDTO.country.name());
-                        kycForm.setResidency(newResidency);
-                        onNext(kycForm);
+                        //noinspection ConstantConditions
+                        ((KYCAyondoForm) situationDTO.kycForm).setResidency(newResidency);
+                        onNext(situationDTO);
                         return true;
                     }
                 })
@@ -385,25 +391,25 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         super.onDestroy();
     }
 
-    @Override public void onNext(@NonNull KYCForm kycForm)
+    @Override public void onNext(@NonNull LiveBrokerSituationDTO situationDTO)
     {
-        super.onNext(kycForm);
-        if (!(kycForm instanceof KYCAyondoForm))
+        super.onNext(situationDTO);
+        if (!(situationDTO.kycForm instanceof KYCAyondoForm))
         {
-            Timber.e(new IllegalArgumentException(), "Should not submit a KYC of type: %s", kycForm);
+            Timber.e(new IllegalArgumentException(), "Should not submit a situation.KYC of type: %s", situationDTO.kycForm);
         }
         // TODO
     }
 
-    @NonNull @Override public Observable<KYCAyondoForm> createKycAyondoFormObservable()
+    @NonNull @Override public Observable<LiveBrokerSituationDTO> getBrokerSituationObservable()
     {
-        return super.createKycAyondoFormObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<KYCAyondoForm>()
+        return super.getBrokerSituationObservable()
+                .doOnNext(new Action1<LiveBrokerSituationDTO>()
                 {
-                    @Override public void call(KYCAyondoForm kycAyondoForm)
+                    @Override public void call(LiveBrokerSituationDTO situationDTO)
                     {
-                        populate(kycAyondoForm);
+                        //noinspection ConstantConditions
+                        populate((KYCAyondoForm) situationDTO.kycForm);
                     }
                 })
                 .share();
@@ -613,7 +619,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         onStopSubscriptions.add(
                 Observable.combineLatest(
                         verifyDialogSubject,
-                        getKycAyondoFormObservable(),
+                        getBrokerSituationObservable(),
                         updateVerifyView(smsSentConfirmationDTOObservable, phoneNumberText, expectedCode, verifyCodeDigitView)
                                 .compose(new Observable.Transformer<SMSSentConfirmationDTO, VerifyCodeDigitView.UserAction>()
                                 {
@@ -633,10 +639,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         return userActionObservable;
                                     }
                                 }),
-                        new Func3<AlertDialog, KYCAyondoForm, VerifyCodeDigitView.UserAction, VerifyCodeDigitView.UserAction>()
+                        new Func3<AlertDialog, LiveBrokerSituationDTO, VerifyCodeDigitView.UserAction, VerifyCodeDigitView.UserAction>()
                         {
                             @Override
-                            public VerifyCodeDigitView.UserAction call(AlertDialog alertDialog, KYCAyondoForm kycForm,
+                            public VerifyCodeDigitView.UserAction call(AlertDialog alertDialog, LiveBrokerSituationDTO situation,
                                     VerifyCodeDigitView.UserAction userAction)
                             {
                                 if (userAction instanceof VerifyCodeDigitView.UserActionResend)
@@ -662,10 +668,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     {
                                         LiveSignUpStep1AyondoFragment.this.expectedCode = null;
                                         LiveSignUpStep1AyondoFragment.this.confirmationSubject = null;
-                                        kycForm.setVerifiedMobileNumberCountryCode(phoneCountryCode);
-                                        kycForm.setVerifiedMobileNumber(phoneNumberInt);
+                                        //noinspection ConstantConditions
+                                        ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumberCountryCode(phoneCountryCode);
+                                        ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumber(phoneNumberInt);
                                         alertDialog.dismiss();
-                                        onNext(kycForm);
+                                        onNext(situation);
                                     }
                                     else
                                     {

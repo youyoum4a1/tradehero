@@ -5,25 +5,25 @@ import android.support.annotation.NonNull;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.AbstractPreference;
-import com.tradehero.th.models.kyc.KYCForm;
+import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import java.io.IOException;
 import timber.log.Timber;
 
-public class KYCFormPreference extends AbstractPreference<KYCForm>
+public class LiveBrokerSituationPreference extends AbstractPreference<LiveBrokerSituationDTO>
 {
     @NonNull private final ObjectMapper objectMapper;
 
-    public KYCFormPreference(
+    public LiveBrokerSituationPreference(
             @NonNull ObjectMapper objectMapper,
             @NonNull SharedPreferences preference,
             @NonNull String key,
-            @NonNull KYCForm defaultValue)
+            @NonNull LiveBrokerSituationDTO defaultValue)
     {
         super(preference, key, defaultValue);
         this.objectMapper = objectMapper;
     }
 
-    @NonNull @Override public synchronized KYCForm get()
+    @NonNull @Override public synchronized LiveBrokerSituationDTO get()
     {
         String saved;
         try
@@ -31,28 +31,28 @@ public class KYCFormPreference extends AbstractPreference<KYCForm>
             saved = preference.getString(key, objectMapper.writeValueAsString(defaultValue));
         } catch (JsonProcessingException e)
         {
-            Timber.e(e, "Failed to serialise default KYCForm");
+            Timber.e(e, "Failed to serialise default LiveBrokerSituationDTO");
             return defaultValue;
         }
         try
         {
-            return objectMapper.readValue(saved, KYCForm.class);
+            return objectMapper.readValue(saved, LiveBrokerSituationDTO.class);
         } catch (IOException e)
         {
-            Timber.e(e, "Failed to deserialise KYCForm %s", saved);
+            Timber.e(e, "Failed to deserialise LiveBrokerSituationDTO %s", saved);
             return defaultValue;
         }
     }
 
-    @Override public synchronized void set(@NonNull KYCForm value)
+    @Override public synchronized void set(@NonNull LiveBrokerSituationDTO value)
     {
         try
         {
             preference.edit().putString(key, objectMapper.writeValueAsString(value)).apply();
         } catch (JsonProcessingException e)
         {
-            Timber.e("Failed to serialise KYCForm %s", value);
-            throw new IllegalArgumentException("Failed to serialise KYCForm");
+            Timber.e("Failed to serialise LiveBrokerSituationDTO %s", value);
+            throw new IllegalArgumentException("Failed to serialise LiveBrokerSituationDTO");
         }
     }
 }

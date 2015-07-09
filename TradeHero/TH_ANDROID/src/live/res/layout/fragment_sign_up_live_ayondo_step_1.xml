@@ -81,6 +81,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
           android:layout_centerVertical="true"
           android:minHeight="@dimen/clickable_element_min_dimen"
           />
@@ -92,6 +93,7 @@
           style="@style/TH.Button.LiveForm"
           tools:enabled="true"
           android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
           android:layout_centerVertical="true"
           android:text="@string/verify"
           />
@@ -103,7 +105,9 @@
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
           android:layout_toLeftOf="@id/btn_verify_phone"
+          android:layout_toStartOf="@id/btn_verify_phone"
           android:layout_toRightOf="@id/country_code_spinner"
+          android:layout_toEndOf="@id/country_code_spinner"
           android:hint="@string/mobile_number"
           android:inputType="number|phone"
           android:minHeight="@dimen/clickable_element_min_dimen"
@@ -115,7 +119,7 @@
         style="@style/TH.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
+        android:layout_gravity="left|start"
         android:text="@string/nationality"
         />
 
@@ -131,7 +135,7 @@
         style="@style/TH.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="left"
+        android:layout_gravity="left|start"
         android:text="@string/residency"
         />
 
@@ -161,7 +165,7 @@
           android:layout_marginTop="@dimen/margin_medium"
           tools:enabled="true"
           android:text="@string/next"
-          android:layout_gravity="right"
+          android:layout_gravity="right|end"
           />
 
   </LinearLayout>

@@ -11,7 +11,7 @@ import com.tradehero.th.api.live.LiveCountryDTOList;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
-import com.tradehero.th.persistence.prefs.KYCFormPreference;
+import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import java.util.Collections;
 import javax.inject.Inject;
 import rx.Observable;
@@ -20,9 +20,9 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
 {
     @Inject public DummyLiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
-            @NonNull KYCFormPreference kycFormPreference)
+            @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference)
     {
-        super(liveServiceRx, kycFormPreference);
+        super(liveServiceRx, liveBrokerSituationPreference);
     }
 
     @NonNull @Override public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
@@ -67,37 +67,4 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
         }
         return Observable.just(liveCountryDTOs);
     }
-
-    //@NonNull @Override public Observable<KYCForm> getFormToUse(@NonNull final Activity activity)
-    //{
-    //    return super.getFormToUse(activity)
-    //            .observeOn(AndroidSchedulers.mainThread())
-    //            .flatMap(new Func1<KYCForm, Observable<KYCForm>>()
-    //            {
-    //                @Override public Observable<KYCForm> call(final KYCForm kycForm)
-    //                {
-    //                    return AlertDialogRxUtil.build(activity)
-    //                            .setTitle("Fake country")
-    //                            .setPositiveButton("SG")
-    //                            .setNegativeButton("AU")
-    //                            .build()
-    //                            .map(new Func1<OnDialogClickEvent, KYCForm>()
-    //                            {
-    //                                @Override public KYCForm call(OnDialogClickEvent clickEvent)
-    //                                {
-    //                                    if (clickEvent.isPositive())
-    //                                    {
-    //                                        ((KYCAyondoForm) kycForm).setCountry(Country.SG);
-    //                                    }
-    //                                    else if (clickEvent.isNegative())
-    //                                    {
-    //                                        ((KYCAyondoForm) kycForm).setCountry(Country.AU);
-    //                                    }
-    //                                    return kycForm;
-    //                                }
-    //                            });
-    //                }
-    //            })
-    //            ;
-    //}
 }

@@ -1,16 +1,14 @@
 package com.tradehero.th.fragments.live.ayondo;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
-import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.widget.DocumentActionWidget;
 
 public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseFragment
@@ -28,10 +26,5 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-    }
-
-    @Override public void onNext(@NonNull KYCForm kycForm)
-    {
-        // TODO
     }
 }
