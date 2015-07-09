@@ -16,4 +16,10 @@ public class LiveBrokerDTO implements DTO
         this.id = id;
         this.name = name;
     }
+
+    public boolean hasSameFields(@NonNull LiveBrokerDTO other)
+    {
+        return id.equals(other.id)
+                && name.equals(other.name);
+    }
 }

@@ -18,4 +18,10 @@ public class LiveBrokerSituationDTO implements DTO
         this.broker = broker;
         this.kycForm = kycForm;
     }
+
+    public boolean hasSameFields(@NonNull LiveBrokerSituationDTO other)
+    {
+        return broker.hasSameFields(other.broker)
+                && (kycForm == null ? other.kycForm == null : (other.kycForm != null && kycForm.hasSameFields(other.kycForm)));
+    }
 }
