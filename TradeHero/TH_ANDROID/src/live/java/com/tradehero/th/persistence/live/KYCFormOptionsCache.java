@@ -12,12 +12,12 @@ import javax.inject.Singleton;
 import rx.Observable;
 
 @Singleton @UserCache
-public class KYCdFormOptionsCache extends BaseFetchDTOCacheRx<LiveBrokerId, KYCFormOptionsDTO>
+public class KYCFormOptionsCache extends BaseFetchDTOCacheRx<LiveBrokerId, KYCFormOptionsDTO>
 {
     private static final int DEFAULT_CACHE_SIZE = 5;
     @NonNull private final LiveServiceWrapper liveServiceWrapper;
 
-    @Inject public KYCdFormOptionsCache(@NonNull DTOCacheUtilRx dtoCacheUtilRx, @NonNull LiveServiceWrapper liveServiceWrapper)
+    @Inject public KYCFormOptionsCache(@NonNull DTOCacheUtilRx dtoCacheUtilRx, @NonNull LiveServiceWrapper liveServiceWrapper)
     {
         super(DEFAULT_CACHE_SIZE, dtoCacheUtilRx);
         this.liveServiceWrapper = liveServiceWrapper;

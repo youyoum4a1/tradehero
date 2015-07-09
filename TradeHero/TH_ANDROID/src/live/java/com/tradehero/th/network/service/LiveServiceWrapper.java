@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.live.IdentityPromptInfoDTO;
 import com.tradehero.th.api.live.IdentityPromptInfoKey;
+import com.tradehero.th.api.live.KYCFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveCountryDTOList;
-import com.tradehero.th.api.live.LiveCountryListId;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.models.kyc.StepStatusesDTO;
@@ -85,5 +85,10 @@ public class LiveServiceWrapper
     @NonNull public Observable<LiveCountryDTOList> getLiveCountryList()
     {
         return liveServiceRx.getLiveCountryList();
+    }
+
+    public Observable<KYCFormOptionsDTO> getKYCFormOptions(LiveBrokerId liveBrokerId)
+    {
+        return liveServiceRx.getKYCFormOptions(liveBrokerId.key);
     }
 }
