@@ -3,15 +3,15 @@ package com.tradehero.th.api.live;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.live.ayondo.KYCdAyondoFormOptionsDTO;
+import com.tradehero.th.api.live.ayondo.KYCAyondoFormOptionsDTO;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "optionType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = KYCdAyondoFormOptionsDTO.class, name = KYCdAyondoFormOptionsDTO.KEY_AYONDO_TYPE),
+        @JsonSubTypes.Type(value = KYCAyondoFormOptionsDTO.class, name = KYCAyondoFormOptionsDTO.KEY_AYONDO_TYPE),
 })
-public interface KYCdFormOptionsDTO extends DTO
+public interface KYCFormOptionsDTO extends DTO
 {
 }

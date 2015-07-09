@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.live.KYCdFormOptionsDTO;
+import com.tradehero.th.api.live.KYCFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import javax.inject.Inject;
@@ -12,7 +12,7 @@ import javax.inject.Singleton;
 import rx.Observable;
 
 @Singleton @UserCache
-public class KYCFormOptionsCache extends BaseFetchDTOCacheRx<LiveBrokerId, KYCdFormOptionsDTO>
+public class KYCFormOptionsCache extends BaseFetchDTOCacheRx<LiveBrokerId, KYCFormOptionsDTO>
 {
     private static final int DEFAULT_CACHE_SIZE = 5;
     @NonNull private final LiveServiceWrapper liveServiceWrapper;
@@ -23,7 +23,7 @@ public class KYCFormOptionsCache extends BaseFetchDTOCacheRx<LiveBrokerId, KYCdF
         this.liveServiceWrapper = liveServiceWrapper;
     }
 
-    @NonNull @Override protected Observable<KYCdFormOptionsDTO> fetch(@NonNull LiveBrokerId key)
+    @NonNull @Override protected Observable<KYCFormOptionsDTO> fetch(@NonNull LiveBrokerId key)
     {
         return liveServiceWrapper.getKYCFormOptions(key);
     }
