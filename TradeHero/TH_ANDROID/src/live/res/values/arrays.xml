@@ -4,7 +4,6 @@
   <string-array name="live_title_array">
     <item>@string/live_title_mr</item>
     <item>@string/live_title_ms</item>
-    <item>@string/live_title_mrs</item>
   </string-array>
 
 </resources>

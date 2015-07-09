@@ -19,7 +19,7 @@
   <string name="live_identity_prompt_hint">This will help you to auto-fill some information</string>
   <string name="yes">Yes</string>
   <string name="no">No</string>
-  <string name="basic_information">Basic Information</string>
+  <string name="basic_information">Basic Info</string>
   <string name="verify">Verify</string>
   <string name="verified">Verified</string>
   <string name="mobile_number">Mobile Number</string>
@@ -46,7 +46,6 @@
 
   <string name="live_title_mr">Mr.</string>
   <string name="live_title_ms">Ms.</string>
-  <string name="live_title_mrs">Mrs.</string>
 
   <string name="singapore_phone_code">+65</string>
 
