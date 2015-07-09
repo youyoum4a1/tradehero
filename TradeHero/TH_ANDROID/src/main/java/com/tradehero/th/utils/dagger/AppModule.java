@@ -5,6 +5,8 @@ import android.content.Context;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
 import com.tradehero.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.MainTabFragmentDiscovery;
+import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubBuyFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubSellFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.StockLearningMainFragment;
 import com.tradehero.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.chinabuild.MainTabFragmentTrade;
@@ -313,6 +315,11 @@ import dagger.Provides;
 
                         SignInFragment.class,
                         EmailSignUpFragment.class,
+
+                        //Security Opt
+                        SecurityOptMockSubSellFragment.class,
+                        SecurityOptMockSubBuyFragment.class
+                        //Security Opt
 
                         //China Build End
                 },

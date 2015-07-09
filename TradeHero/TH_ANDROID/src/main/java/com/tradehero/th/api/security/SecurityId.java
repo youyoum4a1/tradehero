@@ -12,7 +12,6 @@ public class SecurityId implements Comparable, DTOKey, DTO
     private final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
 
     String exchange;
-
     String securitySymbol;
 
     //<editor-fold desc="Constructors">

@@ -25,6 +25,9 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     public final static String TYPE_SEARCH = "TYPE_SEARCH";
     public final static String TYPE_RECALL = "TYPE_RECALL";
 
+
+    public final static String KEY_SECURITY_ID = "KEY_SECURITY_ID";
+
     private ImageButton searchBtn;
     private ImageButton backButton;
     private TextView mockTV;

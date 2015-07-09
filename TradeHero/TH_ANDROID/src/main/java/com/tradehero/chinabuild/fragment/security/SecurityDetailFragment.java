@@ -44,6 +44,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -115,7 +116,6 @@ import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-import timber.log.Timber;
 
 /**
  * 股票交易界面
@@ -1187,7 +1187,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                 if (securityDTO == null) {
                     return;
                 }
-                Timber.e("Refresh - " + securityCompactDTO);
                 securityCompactDTO = securityDTO;
                 updateSecurityInfoByCompactDTO();
                 if (quoteDTO != null) {
@@ -1200,7 +1199,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
             @Override
             public void failure(RetrofitError error) {
-                Timber.e(error, "Failed to refreshROWQuoteInfo.");
             }
         };
 
@@ -1308,7 +1306,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                         quoteServiceWrapper.getQuote(securityId, quoteCallback);
                         quoteErrors ++;
                     }
-                    Timber.e(error, "Error to get quote.");
                 }
             };
         }
@@ -1340,7 +1337,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
                 @Override
                 public void failure(RetrofitError error) {
-                    Timber.e(error, "Error to get quoteDetail.");
                 }
             };
         }
@@ -1348,16 +1344,12 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         //time list
         if (timeListCallback == null) {
-            timeListCallback = new Callback<List<QuoteTick>>()
-            {
-                @Override public void success(List<QuoteTick> quoteTicks, Response response)
-                {
+            timeListCallback = new Callback<List<QuoteTick>>(){
+                @Override public void success(List<QuoteTick> quoteTicks, Response response){
                     timeListView.setTimesList(quoteTicks);
                 }
 
-                @Override public void failure(RetrofitError error)
-                {
-                    Timber.e(error, "Error to get getQuoteTicks.");
+                @Override public void failure(RetrofitError error){
                 }
             };
         }
@@ -1488,6 +1480,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             } else {
                 return;
             }
+            if (isBuy) {
+                enterSecurityOptBuy();
+            } else {
+                enterSecurityOptSell();
+            }
             bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
             bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
             bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
@@ -1495,7 +1492,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
             bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
             bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO, positionDTOCompactList);
             bundle.putDouble(BuySaleSecurityFragment.KEY_PRE_CLOSE, preClose == null? 0 : preClose);
-            pushFragment(BuySaleSecurityFragment.class, bundle);
+            //pushFragment(BuySaleSecurityFragment.class, bundle);
+
         }
     }
 
@@ -2235,5 +2233,28 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         popWin.setFocusable(true);
         popWin.update();
         popWin.showAsDropDown(parent, -30, 0);
+    }
+
+    private void enterSecurityOptBuy(){
+        if(securityId == null){
+            return;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+        bundle.putBundle(SecurityOptActivity.KEY_SECURITY_ID, securityId.getArgs());
+        Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+    }
+
+    private void enterSecurityOptSell(){
+        Bundle bundle = new Bundle();
+        bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_SELL);
+        bundle.putBundle(SecurityOptActivity.KEY_SECURITY_ID, securityId.getArgs());
+        Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+        getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
     }
 }

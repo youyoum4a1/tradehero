@@ -186,7 +186,7 @@
                     android:id="@+id/textview_sell_price_a"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:text="- -"
                     android:textColor="@color/number_up"
                     android:textSize="12sp" />
@@ -195,7 +195,7 @@
                     android:id="@+id/textview_sell_amount_a"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:gravity="right"
                     android:text="- -"
                     android:textColor="#000000"
@@ -219,7 +219,7 @@
                     android:id="@+id/textview_sell_price_b"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:text="- -"
                     android:textColor="@color/number_up"
                     android:textSize="12sp" />
@@ -252,7 +252,7 @@
                     android:id="@+id/textview_sell_price_c"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:text="- -"
                     android:textColor="@color/number_up"
                     android:textSize="12sp" />
@@ -285,7 +285,7 @@
                     android:id="@+id/textview_sell_price_d"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:text="- -"
                     android:textColor="@color/number_up"
                     android:textSize="12sp" />
@@ -318,7 +318,7 @@
                     android:id="@+id/textview_sell_price_e"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:text="- -"
                     android:textColor="@color/number_up"
                     android:textSize="12sp" />
@@ -354,7 +354,7 @@
                     android:id="@+id/textview_buy_price_a"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:text="- -"
                     android:textColor="@color/number_up"
                     android:textSize="12sp" />
@@ -387,7 +387,7 @@
                     android:id="@+id/textview_buy_price_b"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:text="- -"
                     android:textColor="@color/number_up"
                     android:textSize="12sp" />
@@ -420,7 +420,7 @@
                     android:id="@+id/textview_buy_price_c"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:text="- -"
                     android:textColor="@color/number_up"
                     android:textSize="12sp" />
@@ -429,7 +429,7 @@
                     android:id="@+id/textview_buy_amount_c"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:gravity="right"
                     android:text="- -"
                     android:textColor="#000000"
@@ -453,7 +453,7 @@
                     android:id="@+id/textview_buy_price_d"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:text="- -"
                     android:textColor="@color/number_up"
                     android:textSize="12sp" />
@@ -485,7 +485,7 @@
                     android:id="@+id/textview_buy_price_e"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:text="- -"
                     android:textColor="@color/number_up"
                     android:textSize="12sp" />
