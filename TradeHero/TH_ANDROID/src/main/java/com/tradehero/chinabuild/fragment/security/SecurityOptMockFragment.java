@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
-
 import java.util.ArrayList;
 
 public class SecurityOptMockFragment extends Fragment implements View.OnClickListener {

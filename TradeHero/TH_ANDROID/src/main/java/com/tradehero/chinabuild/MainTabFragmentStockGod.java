@@ -12,13 +12,12 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.chinabuild.fragment.leaderboard.StockGodListBaseFragment;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-
 import javax.inject.Inject;
 
 public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPager.OnPageChangeListener

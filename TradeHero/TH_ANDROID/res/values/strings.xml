@@ -591,5 +591,11 @@
     <string name="numbers">numbers</string>
     <string name="delegration_time">time</string>
     <string name="delegration">Delegration</string>
+    <string name="real_is_researching_title1">real trade is researching</string>
+    <string name="real_is_researching_title2">go for newbees</string>
+    <string name="real_is_researching_title3">hurry up</string>
+    <string name="trade_record">trade record</string>
+    <string name="delegation_record">delegation record</string>
+    <string name="click_show_more">click show more</string>
 
 </resources>

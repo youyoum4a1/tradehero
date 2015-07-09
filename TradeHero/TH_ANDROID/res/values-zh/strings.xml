@@ -222,4 +222,10 @@
     <string name="numbers">数量</string>
     <string name="delegration_time">委托时间</string>
     <string name="delegration">撤单</string>
+    <string name="real_is_researching_title1">实盘交易功能正在开发中</string>
+    <string name="real_is_researching_title2">可以去看看大牛都在买啥</string>
+    <string name="real_is_researching_title3">赶紧看看</string>
+    <string name="trade_record">成交记录</string>
+    <string name="delegation_record">委托记录</string>
+    <string name="click_show_more">点击查看更多</string>
 </resources>
