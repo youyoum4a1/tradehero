@@ -21,9 +21,7 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
-import com.tradehero.th.api.live.LiveCountryDTO;
-import com.tradehero.th.api.live.LiveCountryDTOList;
-import com.tradehero.th.api.live.LiveCountryListId;
+import com.tradehero.th.api.live.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -36,7 +34,6 @@ import com.tradehero.th.models.sms.SMSRequestFactory;
 import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
 import com.tradehero.th.models.sms.SMSServiceWrapper;
 import com.tradehero.th.models.sms.empty.EmptySMSSentConfirmationDTO;
-import com.tradehero.th.persistence.live.LiveCountryDTOListCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
@@ -88,7 +85,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject LiveCountryDTOListCache liveCountryDTOListCache;
     @Inject SMSServiceWrapper smsServiceWrapper;
 
     private Random randomiser;
@@ -193,59 +189,55 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 getBrokerSituationObservable()
                         .observeOn(AndroidSchedulers.mainThread()),
+                getKYCAyondoFormOptionsObservable()
+                        .observeOn(AndroidSchedulers.mainThread()),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                         .observeOn(AndroidSchedulers.mainThread()),
-                liveCountryDTOListCache.getOne(new LiveCountryListId())
-                        .map(new PairGetSecond<LiveCountryListId, LiveCountryDTOList>())
-                        .map(new Func1<LiveCountryDTOList, List<CountrySpinnerAdapter.CountryViewHolder.DTO>>()
-                        {
-                            @Override public List<CountrySpinnerAdapter.CountryViewHolder.DTO> call(LiveCountryDTOList liveCountryDTOs)
-                            {
-                                Collections.sort(liveCountryDTOs, new Comparator<LiveCountryDTO>()
-                                {
-                                    @Override public int compare(LiveCountryDTO lhs, LiveCountryDTO rhs)
-                                    {
-                                        return getString(lhs.country.locationName).compareToIgnoreCase(getString(rhs.country.locationName));
-                                    }
-                                });
-                                return CountrySpinnerAdapter.createDTOs(liveCountryDTOs);
-                            }
-                        })
-                        .observeOn(AndroidSchedulers.mainThread()),
-                new Func3<LiveBrokerSituationDTO, UserProfileDTO, List<CountrySpinnerAdapter.CountryViewHolder.DTO>, Object>()
+                new Func3<LiveBrokerSituationDTO, KYCAyondoFormOptionsDTO, UserProfileDTO, Object>()
                 {
-                    @Override public Object call(LiveBrokerSituationDTO situation, UserProfileDTO currentUserProfile,
-                            List<CountrySpinnerAdapter.CountryViewHolder.DTO> liveCountryDTOs)
+                    @Override public Object call(LiveBrokerSituationDTO situation,
+                            KYCAyondoFormOptionsDTO options,
+                            UserProfileDTO currentUserProfile)
                     {
+                        Comparator<CountrySpinnerAdapter.CountryViewHolder.DTO> dtoComparator = new CountrySpinnerAdapter.DTOCountryNameComparator(getActivity());
+                        List<CountrySpinnerAdapter.CountryViewHolder.DTO> allowedMobilePhoneCountryDTOs = CountrySpinnerAdapter.createDTOs(
+                                options.allowedMobilePhoneCountries, null);
+                        Collections.sort(allowedMobilePhoneCountryDTOs, dtoComparator);
                         phoneCountryCodeAdapter.setNotifyOnChange(false);
                         phoneCountryCodeAdapter.clear();
-                        phoneCountryCodeAdapter.addAll(liveCountryDTOs);
+                        phoneCountryCodeAdapter.addAll(allowedMobilePhoneCountryDTOs);
                         phoneCountryCodeAdapter.setNotifyOnChange(true);
                         phoneCountryCodeAdapter.notifyDataSetChanged();
 
+                        List<CountrySpinnerAdapter.CountryViewHolder.DTO> allowedResidencyCountryDTOs = CountrySpinnerAdapter.createDTOs(
+                                options.allowedResidencyCountries, null);
+                        Collections.sort(allowedResidencyCountryDTOs, dtoComparator);
                         residencyAdapter.setNotifyOnChange(false);
                         residencyAdapter.clear();
-                        residencyAdapter.addAll(liveCountryDTOs);
+                        residencyAdapter.addAll(allowedResidencyCountryDTOs);
                         residencyAdapter.setNotifyOnChange(true);
                         residencyAdapter.notifyDataSetChanged();
 
+                        List<CountrySpinnerAdapter.CountryViewHolder.DTO> allowedNationalityCountryDTOs = CountrySpinnerAdapter.createDTOs(
+                                options.allowedNationalityCountries, null);
+                        Collections.sort(allowedNationalityCountryDTOs, dtoComparator);
                         nationalityAdapter.setNotifyOnChange(false);
                         nationalityAdapter.clear();
-                        nationalityAdapter.addAll(liveCountryDTOs);
+                        nationalityAdapter.addAll(allowedNationalityCountryDTOs);
                         nationalityAdapter.setNotifyOnChange(true);
                         nationalityAdapter.notifyDataSetChanged();
 
                         //noinspection ConstantConditions
-                        populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, liveCountryDTOs);
-                        populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, liveCountryDTOs);
-                        populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, liveCountryDTOs);
+                        populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, allowedMobilePhoneCountryDTOs);
+                        populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, allowedNationalityCountryDTOs);
+                        populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, allowedResidencyCountryDTOs);
                         return null;
                     }
                 })
                 .subscribe(new Action1<Object>()
                 {
-                    @Override public void call(Object liveCountryDTOs)
+                    @Override public void call(Object o)
                     {
                     }
                 }));
@@ -299,7 +291,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         CountryCode newNationality =
                                 CountryCode.getByCode(((CountrySpinnerAdapter.CountryViewHolder.DTO) nationalityEvent.parent.getItemAtPosition(
-                                        ((OnItemSelectedEvent) nationalityEvent).position)).liveCountryDTO.country.name());
+                                        ((OnItemSelectedEvent) nationalityEvent).position)).country.name());
                         //noinspection ConstantConditions
                         ((KYCAyondoForm) situationDTO.kycForm).setNationality(newNationality);
                         onNext(situationDTO);
@@ -324,7 +316,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         CountryCode newResidency =
                                 CountryCode.getByCode(((CountrySpinnerAdapter.CountryViewHolder.DTO) residencyEvent.parent.getItemAtPosition(
-                                        ((OnItemSelectedEvent) residencyEvent).position)).liveCountryDTO.country.name());
+                                        ((OnItemSelectedEvent) residencyEvent).position)).country.name());
                         //noinspection ConstantConditions
                         ((KYCAyondoForm) situationDTO.kycForm).setResidency(newResidency);
                         onNext(situationDTO);

@@ -6,7 +6,6 @@ import com.tradehero.th.api.live.IdentityPromptInfoKey;
 import com.tradehero.th.api.live.KYCFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
-import com.tradehero.th.api.live.LiveCountryDTOList;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.models.kyc.StepStatusesDTO;
@@ -81,11 +80,6 @@ public class LiveServiceWrapper
                         return savedSituation;
                     }
                 });
-    }
-
-    @NonNull public Observable<LiveCountryDTOList> getLiveCountryList()
-    {
-        return liveServiceRx.getLiveCountryList();
     }
 
     @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull LiveBrokerId liveBrokerId)

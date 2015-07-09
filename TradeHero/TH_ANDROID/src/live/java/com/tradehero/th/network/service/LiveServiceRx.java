@@ -2,7 +2,6 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.live.IdentityPromptInfoDTO;
 import com.tradehero.th.api.live.KYCFormOptionsDTO;
-import com.tradehero.th.api.live.LiveCountryDTOList;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.models.kyc.KYCForm;
 import com.tradehero.th.models.kyc.StepStatusesDTO;
@@ -22,8 +21,6 @@ public interface LiveServiceRx
 
     @GET("/identityPromptInfo/{countryCode}") Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(
             @Path("countryCode") String countryCode);
-
-    @GET("/liveCountries") Observable<LiveCountryDTOList> getLiveCountryList();
 
     @GET("/kycFormOptions/{liveBrokerId}") Observable<KYCFormOptionsDTO> getKYCFormOptions(@Path("liveBrokerId") int key);
 }

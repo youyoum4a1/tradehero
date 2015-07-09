@@ -7,8 +7,6 @@ import com.tradehero.th.api.live.KYCFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
-import com.tradehero.th.api.live.LiveCountryDTO;
-import com.tradehero.th.api.live.LiveCountryDTOList;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.api.live.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.market.Country;
@@ -59,18 +57,6 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
             infoDTOObservable = Observable.error(new IllegalArgumentException("Unhandled country " + identityPromptInfoKey.country));
         }
         return infoDTOObservable;
-    }
-
-    @Override @NonNull public Observable<LiveCountryDTOList> getLiveCountryList()
-    {
-        LiveCountryDTOList liveCountryDTOs = new LiveCountryDTOList();
-        Country[] values = Country.values();
-        for (int i = 1; i < values.length; i++)
-        {
-            Country country = values[i];
-            liveCountryDTOs.add(new LiveCountryDTO(country));
-        }
-        return Observable.just(liveCountryDTOs);
     }
 
     @NonNull @Override public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull LiveBrokerId liveBrokerId)
