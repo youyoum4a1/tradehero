@@ -16,8 +16,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Func1;
 
 public class DummyLiveServiceWrapper extends LiveServiceWrapper
 {
@@ -30,45 +32,72 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
 
     @NonNull @Override public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
     {
-        LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "Ayondo");
-        KYCAyondoForm form = new KYCAyondoForm();
-        form.setCountry(Country.SG);
-        LiveBrokerSituationDTO fakeSituation = new LiveBrokerSituationDTO(ayondo, form);
-        return Observable.just(new LiveTradingSituationDTO(Collections.singletonList(fakeSituation)));
+        return super.getLiveTradingSituation()
+                .timeout(1, TimeUnit.SECONDS)
+                .onErrorResumeNext(
+                        new Func1<Throwable, Observable<? extends LiveTradingSituationDTO>>()
+                        {
+                            @Override public Observable<? extends LiveTradingSituationDTO> call(Throwable throwable)
+                            {
+                                LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "Ayondo");
+                                KYCAyondoForm form = new KYCAyondoForm();
+                                form.setCountry(Country.SG);
+                                LiveBrokerSituationDTO fakeSituation = new LiveBrokerSituationDTO(ayondo, form);
+                                return Observable.just(new LiveTradingSituationDTO(Collections.singletonList(fakeSituation)));
+                            }
+                        });
     }
 
-    @NonNull @Override public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(@NonNull IdentityPromptInfoKey identityPromptInfoKey)
+    @NonNull @Override public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(@NonNull final IdentityPromptInfoKey identityPromptInfoKey)
     {
-        final Observable<IdentityPromptInfoDTO> infoDTOObservable;
-        if (identityPromptInfoKey.country.equals(Country.AU))
-        {
-            infoDTOObservable = Observable.just(new IdentityPromptInfoDTO(
-                    "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-au.png",
-                    "Do you have your Passport with you?"));
-        }
-        else if (identityPromptInfoKey.country.equals(Country.SG))
-        {
-            infoDTOObservable = Observable.just(new IdentityPromptInfoDTO(
-                    "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-sg.png",
-                    "Singapore NRIC/ Driver's License"));
-        }
-        else
-        {
-            infoDTOObservable = Observable.error(new IllegalArgumentException("Unhandled country " + identityPromptInfoKey.country));
-        }
-        return infoDTOObservable;
+        return super.getIdentityPromptInfo(identityPromptInfoKey)
+                .timeout(1, TimeUnit.SECONDS)
+                .onErrorResumeNext(
+                        new Func1<Throwable, Observable<? extends IdentityPromptInfoDTO>>()
+                        {
+                            @Override public Observable<? extends IdentityPromptInfoDTO> call(Throwable throwable)
+                            {
+                                final Observable<IdentityPromptInfoDTO> infoDTOObservable;
+                                if (identityPromptInfoKey.country.equals(Country.AU))
+                                {
+                                    infoDTOObservable = Observable.just(new IdentityPromptInfoDTO(
+                                            "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-au.png",
+                                            "Do you have your Passport with you?"));
+                                }
+                                else if (identityPromptInfoKey.country.equals(Country.SG))
+                                {
+                                    infoDTOObservable = Observable.just(new IdentityPromptInfoDTO(
+                                            "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-sg.png",
+                                            "Singapore NRIC/ Driver's License"));
+                                }
+                                else
+                                {
+                                    infoDTOObservable = Observable.error(new IllegalArgumentException("Unhandled country " + identityPromptInfoKey.country));
+                                }
+                                return infoDTOObservable;
+                            }
+                        });
     }
 
     @NonNull @Override public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull LiveBrokerId liveBrokerId)
     {
-        List<Country> nationalities = new ArrayList<>(Arrays.asList(Country.values()));
-        nationalities.remove(Country.NONE);
-        nationalities.removeAll(getNoBusinessNationalities());
-        KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(
-                Arrays.asList(Country.SG, Country.AU, Country.GB),
-                nationalities,
-                Arrays.asList(Country.SG, Country.AU, Country.GB));
-        return Observable.just(options);
+        return super.getKYCFormOptions(liveBrokerId)
+                .timeout(1, TimeUnit.SECONDS)
+                .onErrorResumeNext(
+                        new Func1<Throwable, Observable<? extends KYCFormOptionsDTO>>()
+                        {
+                            @Override public Observable<? extends KYCFormOptionsDTO> call(Throwable throwable)
+                            {
+                                List<Country> nationalities = new ArrayList<>(Arrays.asList(Country.values()));
+                                nationalities.remove(Country.NONE);
+                                nationalities.removeAll(getNoBusinessNationalities());
+                                KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(
+                                        Arrays.asList(Country.SG, Country.AU, Country.GB),
+                                        nationalities,
+                                        Arrays.asList(Country.SG, Country.AU, Country.GB));
+                                return Observable.just(options);
+                            }
+                        });
     }
 
     @NonNull public List<Country> getNoBusinessNationalities()
