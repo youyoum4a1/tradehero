@@ -12,38 +12,47 @@
       android:orientation="vertical"
       >
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/size_6"
-        android:layout_gravity="center_horizontal"
-        android:background="?attr/colorPrimary"
-        android:scaleType="centerInside"
-        android:src="@drawable/ic_logo_thlive"
-        />
-
-    <TextView
-        style="@style/TH.Body2"
+      <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/grey"
-        android:gravity="center_horizontal"
-        android:paddingBottom="@dimen/margin_xsmall"
-        android:paddingLeft="@dimen/size_10"
-        android:paddingRight="@dimen/size_10"
-        android:paddingTop="@dimen/margin_xsmall"
-        android:text="@string/live_5_steps_away"
-        />
+          >
 
-    <ImageView
-        android:layout_width="@dimen/big_image_w_h"
-        android:layout_height="@dimen/big_image_w_h"
-        android:layout_gravity="right"
-        android:layout_marginRight="@dimen/margin_xsmall"
-        android:layout_marginTop="-48dp"
-        android:src="@drawable/ic_free100"
-        />
+          <ImageView
+              android:id="@+id/dummy_action_bar"
+              android:layout_width="match_parent"
+              android:layout_height="?attr/actionBarSize"
+              android:layout_gravity="center_horizontal"
+              android:background="?attr/colorPrimary"
+              android:scaleType="centerInside"
+              android:src="@drawable/ic_logo_thlive"
+              />
 
-    <TextView
+          <TextView
+              style="@style/TH.Body2"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/grey"
+              android:gravity="center_horizontal"
+              android:paddingBottom="@dimen/margin_xsmall"
+              android:paddingLeft="@dimen/size_10"
+              android:paddingRight="@dimen/size_10"
+              android:paddingTop="@dimen/margin_xsmall"
+              android:layout_below="@id/dummy_action_bar"
+              android:text="@string/live_5_steps_away"
+              />
+
+          <ImageView
+              android:layout_width="@dimen/big_image_w_h"
+              android:layout_height="@dimen/big_image_w_h"
+              android:layout_gravity="right"
+              android:layout_marginRight="@dimen/margin_xsmall"
+              android:layout_marginTop="@dimen/margin_small"
+              android:layout_alignParentRight="true"
+              android:src="@drawable/ic_free100"
+              />
+      </RelativeLayout>
+
+      <TextView
         android:id="@+id/identity_prompt_text"
         style="@style/TH.Headline"
         android:layout_width="wrap_content"
@@ -66,9 +75,9 @@
 
       <ImageView
           android:id="@+id/identity_prompt_image_specific"
-          android:src="@drawable/image_identity_proof"
-          android:layout_marginRight="@dimen/margin_medium"
           style="@style/TH.LiveIdentityPromptImage"
+          android:layout_marginRight="@dimen/margin_medium"
+          android:src="@drawable/image_identity_proof"
           />
 
       <ImageView
