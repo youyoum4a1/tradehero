@@ -45,7 +45,6 @@ import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.GraphicUtil;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +61,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.functions.Func4;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
@@ -190,48 +190,46 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 getBrokerSituationObservable()
                         .observeOn(AndroidSchedulers.mainThread()),
                 getKYCAyondoFormOptionsObservable()
+                        .observeOn(Schedulers.computation())
+                        .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
+                        {
+                            @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
+                            {
+                                return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO);
+                            }
+                        })
                         .observeOn(AndroidSchedulers.mainThread()),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                         .observeOn(AndroidSchedulers.mainThread()),
-                new Func3<LiveBrokerSituationDTO, KYCAyondoFormOptionsDTO, UserProfileDTO, Object>()
+                new Func3<LiveBrokerSituationDTO, CountryDTOForSpinner, UserProfileDTO, Object>()
                 {
                     @Override public Object call(LiveBrokerSituationDTO situation,
-                            KYCAyondoFormOptionsDTO options,
+                            CountryDTOForSpinner options,
                             UserProfileDTO currentUserProfile)
                     {
-                        Comparator<CountrySpinnerAdapter.DTO> dtoComparator = new CountrySpinnerAdapter.DTOCountryNameComparator(getActivity());
-                        List<CountrySpinnerAdapter.DTO> allowedMobilePhoneCountryDTOs = CountrySpinnerAdapter.createDTOs(
-                                options.allowedMobilePhoneCountries, null);
-                        Collections.sort(allowedMobilePhoneCountryDTOs, dtoComparator);
                         phoneCountryCodeAdapter.setNotifyOnChange(false);
                         phoneCountryCodeAdapter.clear();
-                        phoneCountryCodeAdapter.addAll(allowedMobilePhoneCountryDTOs);
+                        phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
                         phoneCountryCodeAdapter.setNotifyOnChange(true);
                         phoneCountryCodeAdapter.notifyDataSetChanged();
 
-                        List<CountrySpinnerAdapter.DTO> allowedResidencyCountryDTOs = CountrySpinnerAdapter.createDTOs(
-                                options.allowedResidencyCountries, null);
-                        Collections.sort(allowedResidencyCountryDTOs, dtoComparator);
                         residencyAdapter.setNotifyOnChange(false);
                         residencyAdapter.clear();
-                        residencyAdapter.addAll(allowedResidencyCountryDTOs);
+                        residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
                         residencyAdapter.setNotifyOnChange(true);
                         residencyAdapter.notifyDataSetChanged();
 
-                        List<CountrySpinnerAdapter.DTO> allowedNationalityCountryDTOs = CountrySpinnerAdapter.createDTOs(
-                                options.allowedNationalityCountries, null);
-                        Collections.sort(allowedNationalityCountryDTOs, dtoComparator);
                         nationalityAdapter.setNotifyOnChange(false);
                         nationalityAdapter.clear();
-                        nationalityAdapter.addAll(allowedNationalityCountryDTOs);
+                        nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
                         nationalityAdapter.setNotifyOnChange(true);
                         nationalityAdapter.notifyDataSetChanged();
 
                         //noinspection ConstantConditions
-                        populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, allowedMobilePhoneCountryDTOs);
-                        populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, allowedNationalityCountryDTOs);
-                        populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, allowedResidencyCountryDTOs);
+                        populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedMobilePhoneCountryDTOs);
+                        populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
+                        populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
                         return null;
                     }
                 })
