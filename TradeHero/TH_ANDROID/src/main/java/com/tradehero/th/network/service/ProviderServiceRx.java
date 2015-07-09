@@ -32,7 +32,7 @@ public interface ProviderServiceRx
     //<editor-fold desc="Get Provider Portfolio">
     @GET("/providers/{providerId}/portfolio")
     Observable<PortfolioDTO> getPortfolio(
-            @Path("providerID") int providerId);
+            @Path("providerId") int providerId);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Securities">
