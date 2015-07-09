@@ -192,4 +192,14 @@
   <attr name="slidingTabBackground"
       format="color" />
 
+  <declare-styleable name="OffOnViewSwitcher">
+    <attr name="offLayout"
+        format="reference" />
+    <attr name="onLayout"
+        format="reference" />
+    <attr name="offText"
+        format="string" />
+    <attr name="onText"
+        format="string" />
+  </declare-styleable>
 </resources>

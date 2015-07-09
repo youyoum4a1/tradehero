@@ -10,8 +10,8 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trending.TileType;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
-import com.tradehero.th.widget.LiveSwitcher;
-import com.tradehero.th.widget.LiveSwitcherEvent;
+import com.tradehero.th.widget.OffOnViewSwitcher;
+import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action1;
@@ -25,7 +25,7 @@ public class LiveActivityUtil
     private CompositeSubscription onDestroyOptionsMenuSubscriptions;
 
     @Inject @IsLiveTrading BooleanPreference isLiveTrading;
-    private PublishSubject<LiveSwitcherEvent> isTradingLivePublishSubject;
+    private PublishSubject<OffOnViewSwitcherEvent> isTradingLivePublishSubject;
 
     public LiveActivityUtil(DashboardActivity dashboardActivity)
     {
@@ -46,33 +46,33 @@ public class LiveActivityUtil
 
         dashboardActivity.getMenuInflater().inflate(R.menu.live_switch_menu, menu);
         MenuItem item = menu.findItem(R.id.switch_live);
-        final LiveSwitcher liveSwitcher = (LiveSwitcher) item.getActionView();
+        final OffOnViewSwitcher liveSwitcher = (OffOnViewSwitcher) item.getActionView();
 
         onDestroyOptionsMenuSubscriptions.add(
                 Observable.merge(liveSwitcher.getSwitchObservable(),
                         isTradingLivePublishSubject)
-                        .startWith(new LiveSwitcherEvent(false, isLiveTrading.get()))
-                        .doOnNext(new Action1<LiveSwitcherEvent>()
+                        .startWith(new OffOnViewSwitcherEvent(false, isLiveTrading.get()))
+                        .doOnNext(new Action1<OffOnViewSwitcherEvent>()
                         {
-                            @Override public void call(LiveSwitcherEvent event)
+                            @Override public void call(OffOnViewSwitcherEvent event)
                             {
                                 //Every-time a change happened.
-                                isLiveTrading.set(event.isLive);
+                                isLiveTrading.set(event.isOn);
                             }
                         })
                         .distinctUntilChanged(
-                                new Func1<LiveSwitcherEvent, Boolean>()
+                                new Func1<OffOnViewSwitcherEvent, Boolean>()
                                 {
-                                    @Override public Boolean call(LiveSwitcherEvent event)
+                                    @Override public Boolean call(OffOnViewSwitcherEvent event)
                                     {
-                                        return event.isLive;
+                                        return event.isOn;
                                     }
                                 })
-                        .subscribe(new Action1<LiveSwitcherEvent>()
+                        .subscribe(new Action1<OffOnViewSwitcherEvent>()
                         {
-                            @Override public void call(LiveSwitcherEvent event)
+                            @Override public void call(OffOnViewSwitcherEvent event)
                             {
-                                liveSwitcher.setIsLive(event.isLive, false);
+                                liveSwitcher.setIsOn(event.isOn, false);
                                 onLiveTradingChanged(event);
                             }
                         }));
@@ -93,28 +93,28 @@ public class LiveActivityUtil
         }
     }
 
-    private void onLiveTradingChanged(LiveSwitcherEvent event)
+    private void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
         for (Fragment f : dashboardActivity.getSupportFragmentManager().getFragments())
         {
             if (f instanceof DashboardFragment && f.isVisible())
             {
-                ((DashboardFragment) f).onLiveTradingChanged(event.isLive);
+                ((DashboardFragment) f).onLiveTradingChanged(event.isOn);
             }
         }
 
         dashboardActivity.getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(dashboardActivity.getResources().getColor(event.isLive ? R.color.tradehero_red : R.color.tradehero_blue)));
+                new ColorDrawable(dashboardActivity.getResources().getColor(event.isOn ? R.color.tradehero_red : R.color.tradehero_blue)));
 
         //Specific to this activity?
         dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
-                dashboardActivity.getResources().getColor(event.isLive ? R.color.tradehero_red_status_bar : R.color.tradehero_blue_status_bar));
+                dashboardActivity.getResources().getColor(event.isOn ? R.color.tradehero_red_status_bar : R.color.tradehero_blue_status_bar));
 
         for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
         {
             dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
                     .setBackgroundResource(
-                            event.isLive ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
+                            event.isOn ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
         }
     }
 
@@ -145,7 +145,7 @@ public class LiveActivityUtil
 
     private void switchLive(boolean isLive, boolean fromUser)
     {
-        isTradingLivePublishSubject.onNext(new LiveSwitcherEvent(fromUser, isLive));
+        isTradingLivePublishSubject.onNext(new OffOnViewSwitcherEvent(fromUser, isLive));
     }
 
     public void onTrendingTileClicked(TileType tileType)
