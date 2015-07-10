@@ -54,6 +54,7 @@ public class IdentityPromptActivity extends BaseActivity
         setContentView(R.layout.activity_identity_prompt);
         ButterKnife.bind(IdentityPromptActivity.this);
         fastFillSubscription = getBrokerSituation()
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
                 {
                     @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
@@ -61,8 +62,8 @@ public class IdentityPromptActivity extends BaseActivity
                         //noinspection ConstantConditions
                         livePoweredBy.setText(situation.kycForm.getBrokerName());
                         return identityPromptInfoCache.getOne(new IdentityPromptInfoKey(situation.kycForm.getCountry()))
-                                .observeOn(AndroidSchedulers.mainThread())
                                 .map(new PairGetSecond<IdentityPromptInfoKey, IdentityPromptInfoDTO>())
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .map(new Func1<IdentityPromptInfoDTO, LiveBrokerSituationDTO>()
                                 {
                                     @Override public LiveBrokerSituationDTO call(IdentityPromptInfoDTO identityPromptInfoDTO)
