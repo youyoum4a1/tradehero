@@ -2242,6 +2242,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         Bundle bundle = new Bundle();
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
         bundle.putBundle(SecurityOptActivity.KEY_SECURITY_ID, securityId.getArgs());
+        bundle.putString(BUNDLE_KEY_SECURITY_NAME, securityName);
         Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -2252,6 +2253,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         Bundle bundle = new Bundle();
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_SELL);
         bundle.putBundle(SecurityOptActivity.KEY_SECURITY_ID, securityId.getArgs());
+        bundle.putString(BUNDLE_KEY_SECURITY_NAME, securityName);
         Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);

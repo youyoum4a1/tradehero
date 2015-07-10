@@ -19,8 +19,8 @@
 
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/edittext_security_code"
+            <TextView
+                android:id="@+id/textview_security_code"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:layout_marginTop="18dp"
@@ -28,6 +28,8 @@
                 android:textColor="#000000"
                 android:paddingRight="5dp"
                 android:paddingLeft="5dp"
+                android:gravity="center"
+                android:singleLine="true"
                 android:textSize="13sp" />
 
             <RelativeLayout
@@ -52,8 +54,11 @@
                     android:id="@+id/edittext_security_price"
                     android:layout_width="match_parent"
                     android:layout_height="32dp"
-                    android:layout_marginLeft="45dp"
-                    android:layout_marginRight="45dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:paddingLeft="5dp"
+                    android:singleLine="true"
+                    android:paddingRight="5dp"
                     android:background="@drawable/security_opt_gray_button"
                     android:inputType="numberDecimal"
                     android:textColor="#000000"
@@ -339,7 +344,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="11dp"
+                android:layout_marginBottom="6dp"
                 android:layout_marginTop="6dp"
                 android:orientation="horizontal">
 
@@ -363,7 +368,7 @@
                     android:id="@+id/textview_buy_amount_a"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:gravity="right"
                     android:text="- -"
                     android:textColor="#000000"
@@ -396,7 +401,7 @@
                     android:id="@+id/textview_buy_amount_b"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginLeft="10dp"
                     android:gravity="right"
                     android:text="- -"
                     android:textColor="#000000"

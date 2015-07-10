@@ -6,18 +6,23 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
+import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 
@@ -34,10 +39,14 @@ import retrofit.client.Response;
  *
  * Created by palmer on 15/7/6.
  */
-public class SecurityOptMockSubBuyFragment extends Fragment{
+public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnClickListener{
 
     private Button buySellBtn;
     private ListView positionsLV;
+    private TextView securityCodeTV;
+    private EditText priceET;
+    private TextView addOneTV;
+    private TextView reduceOneTV;
 
     //Dialog
     private Dialog buyConfirmDialog;
@@ -50,6 +59,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment{
     private TextView dlgCancelTV;
 
     private SecurityId securityId;
+    private String securityName = "";
     @Inject QuoteServiceWrapper quoteServiceWrapper;
 
     private SecurityOptMockPositionAdapter securityOptMockPositionAdapter;
@@ -89,6 +99,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment{
         color_up = getResources().getColor(R.color.number_up);
         color_down = getResources().getColor(R.color.number_down);
         getSecurityId();
+        securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME);
     }
 
     @Override
@@ -136,6 +147,24 @@ public class SecurityOptMockSubBuyFragment extends Fragment{
             securityOptMockPositionAdapter = new SecurityOptMockPositionAdapter(getActivity());
         }
         positionsLV.setAdapter(securityOptMockPositionAdapter);
+        securityCodeTV = (TextView)view.findViewById(R.id.textview_security_code);
+        securityCodeTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(securityId == null){
+                    gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
+                    getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+                }
+            }
+        });
+        if(securityId!=null){
+            securityCodeTV.setText(securityId.getSecuritySymbol() + " " + securityName);
+        }
+        priceET = (EditText)view.findViewById(R.id.edittext_security_price);
+        addOneTV = (TextView)view.findViewById(R.id.textview_security_opt_add);
+        reduceOneTV = (TextView)view.findViewById(R.id.textview_security_opt_minus);
+        addOneTV.setOnClickListener(this);
+        reduceOneTV.setOnClickListener(this);
     }
 
     private void showBuyConfirmDialog(){
@@ -254,7 +283,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment{
         if (quoteDetail.sv5 != null) {
             sell5Amount.setText(convertAmountDoubleToString(quoteDetail.sv5));
         }
-
+        if(quoteDetail.sp1!=null && TextUtils.isEmpty(priceET.getText())){
+            priceET.setText(String.valueOf(quoteDetail.sp1));
+        }
     }
 
     protected SecurityId getSecurityId() {
@@ -275,6 +306,19 @@ public class SecurityOptMockSubBuyFragment extends Fragment{
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        int viewId = view.getId();
+        switch (viewId){
+            case R.id.textview_security_opt_minus:
+                reduceOne();
+                break;
+            case R.id.textview_security_opt_add:
+                addOne();
+                break;
+        }
+    }
+
     public class RefreshBUYSELLCallback implements Callback<QuoteDetail> {
 
         @Override
@@ -289,7 +333,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment{
         }
 
         private void onFinish() {
-            if (isNeedRefresh) {
+            if (isNeedToRefresh()) {
                 if(securityId == null){
                     return;
                 }
@@ -313,4 +357,48 @@ public class SecurityOptMockSubBuyFragment extends Fragment{
             textView.setTextColor(color_down);
         }
     }
+
+    private boolean isNeedToRefresh(){
+        if(!isNeedRefresh) {
+            return  false;
+        }
+        if(securityId == null) {
+            return false;
+        }
+        if(securityId.getExchange() == null || securityId.getExchange().equals("")){
+            return false;
+        }
+        if(securityId.getExchange().equalsIgnoreCase("SHA") || securityId.getExchange().equalsIgnoreCase("SHE")){
+            return true;
+        }
+        return false;
+    }
+
+    private void gotoDashboard(String strFragment,Bundle bundle) {
+        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,strFragment);
+        ActivityHelper.launchDashboard(getActivity(), bundle);
+    }
+
+    private void addOne(){
+        if(priceET.getText() == null){
+            return;
+        }
+        String valueStr = priceET.getText().toString();
+        double value = Double.valueOf(valueStr) + 0.01;
+        priceET.setText(String.valueOf(value));
+    }
+
+    private void reduceOne(){
+        if(priceET.getText() == null){
+            return;
+        }
+        String valueStr = priceET.getText().toString();
+        double value = Double.valueOf(valueStr);
+        if(value<=0.01){
+            return;
+        }
+        value = value - 0.01;
+        priceET.setText(String.valueOf(value));
+    }
+    
 }
