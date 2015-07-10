@@ -8,7 +8,7 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
-import com.tradehero.th.models.kyc.EmptyKYCForm;
+import com.tradehero.th.api.kyc.EmptyKYCForm;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

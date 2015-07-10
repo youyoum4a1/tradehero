@@ -18,7 +18,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.live.LiveCountryDTOUtil;
+import com.tradehero.th.api.live.CountryUtil;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.utils.GraphicUtil;
 import java.util.ArrayList;
@@ -172,7 +172,7 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.DT
             this.country = country;
             this.logoId = country.logoId;
             this.locationName = country.locationName;
-            this.phoneCountryCode = LiveCountryDTOUtil.getPhoneCodePlusLeadingDigits(country);
+            this.phoneCountryCode = CountryUtil.getPhoneCodePlusLeadingDigits(country);
             this.phoneCountryCodeText = "+" + phoneCountryCode;
         }
     }

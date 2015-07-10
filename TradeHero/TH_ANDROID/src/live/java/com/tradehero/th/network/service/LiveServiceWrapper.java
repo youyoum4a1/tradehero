@@ -1,13 +1,13 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.live.KYCFormOptionsDTO;
-import com.tradehero.th.api.live.KYCFormOptionsId;
+import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
+import com.tradehero.th.api.kyc.KYCFormOptionsId;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
-import com.tradehero.th.models.kyc.KYCForm;
-import com.tradehero.th.models.kyc.StepStatusesDTO;
+import com.tradehero.th.api.kyc.KYCForm;
+import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import javax.inject.Inject;
 import rx.Observable;

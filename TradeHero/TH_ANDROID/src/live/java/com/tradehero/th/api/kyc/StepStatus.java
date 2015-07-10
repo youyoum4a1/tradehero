@@ -1,4 +1,4 @@
-package com.tradehero.th.models.kyc;
+package com.tradehero.th.api.kyc;
 
 public enum StepStatus
 {

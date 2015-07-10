@@ -2,7 +2,7 @@ package com.tradehero.th.fragments.live.ayondo;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.live.ayondo.KYCAyondoFormOptionsDTO;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
 import java.util.Collections;
 import java.util.Comparator;

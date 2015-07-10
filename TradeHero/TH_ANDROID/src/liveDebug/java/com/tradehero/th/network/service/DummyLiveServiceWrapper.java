@@ -1,16 +1,16 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.live.IdentityPromptInfoDTO;
-import com.tradehero.th.api.live.KYCFormOptionsDTO;
-import com.tradehero.th.api.live.KYCFormOptionsId;
+import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
+import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
+import com.tradehero.th.api.kyc.KYCFormOptionsId;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
-import com.tradehero.th.api.live.ayondo.KYCAyondoFormOptionsDTO;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.market.Country;
-import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import java.util.ArrayList;
 import java.util.Arrays;

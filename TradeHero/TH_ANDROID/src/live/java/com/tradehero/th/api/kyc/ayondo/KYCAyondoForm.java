@@ -1,4 +1,4 @@
-package com.tradehero.th.models.kyc.ayondo;
+package com.tradehero.th.api.kyc.ayondo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,8 +9,8 @@ import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.ScannedDocument;
-import com.tradehero.th.models.kyc.KYCForm;
-import com.tradehero.th.models.kyc.StepStatus;
+import com.tradehero.th.api.kyc.KYCForm;
+import com.tradehero.th.api.kyc.StepStatus;
 import java.util.Collections;
 import java.util.List;
 

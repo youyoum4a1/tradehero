@@ -1,4 +1,4 @@
-package com.tradehero.th.models.kyc;
+package com.tradehero.th.api.kyc;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.ScannedDocument;
-import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import java.util.List;
 
 @JsonTypeInfo(

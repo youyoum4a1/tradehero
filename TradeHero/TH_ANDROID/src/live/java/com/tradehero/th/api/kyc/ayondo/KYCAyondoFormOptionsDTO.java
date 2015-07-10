@@ -1,10 +1,10 @@
-package com.tradehero.th.api.live.ayondo;
+package com.tradehero.th.api.kyc.ayondo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.api.live.IdentityPromptInfoDTO;
-import com.tradehero.th.api.live.KYCFormOptionsDTO;
+import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
+import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.market.Country;
 import java.util.Arrays;
 import java.util.Collections;

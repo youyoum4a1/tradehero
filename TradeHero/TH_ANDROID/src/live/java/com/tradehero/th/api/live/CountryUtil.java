@@ -7,7 +7,7 @@ import com.google.i18n.phonenumbers.Phonemetadata;
 import com.tradehero.th.api.market.Country;
 import timber.log.Timber;
 
-public class LiveCountryDTOUtil
+public class CountryUtil
 {
     public static int getPhoneCodePlusLeadingDigits(@NonNull Country country)
     {

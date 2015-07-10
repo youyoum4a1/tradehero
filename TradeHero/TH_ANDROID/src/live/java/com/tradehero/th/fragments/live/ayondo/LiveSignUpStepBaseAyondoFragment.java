@@ -2,11 +2,11 @@ package com.tradehero.th.fragments.live.ayondo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.live.KYCFormOptionsDTO;
+import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
-import com.tradehero.th.api.live.ayondo.KYCAyondoFormOptionsDTO;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
-import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import rx.Observable;
 import rx.functions.Func1;
 

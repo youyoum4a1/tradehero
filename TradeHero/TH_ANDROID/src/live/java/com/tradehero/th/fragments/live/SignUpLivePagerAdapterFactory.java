@@ -7,7 +7,7 @@ import android.support.v4.view.PagerAdapter;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.fragments.live.ayondo.SignUpLiveAyondoPagerAdapter;
-import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import javax.inject.Inject;
 import rx.Observable;

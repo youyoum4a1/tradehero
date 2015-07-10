@@ -1,4 +1,4 @@
-package com.tradehero.th.api.live;
+package com.tradehero.th.api.kyc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;

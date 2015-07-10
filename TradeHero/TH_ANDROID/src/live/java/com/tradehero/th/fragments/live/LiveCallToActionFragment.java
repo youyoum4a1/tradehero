@@ -17,7 +17,7 @@ import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.fastfill.FastFillUtil;
-import com.tradehero.th.models.kyc.KYCFormUtil;
+import com.tradehero.th.api.kyc.KYCFormUtil;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import javax.inject.Inject;
