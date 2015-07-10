@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
@@ -23,11 +22,9 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private String lastName;
     @Nullable private String email;
     @Nullable private String verifiedEmail;
-    @JsonProperty("mobileCC")
-    @Nullable private Integer mobileNumberCountryCode;
+    @Nullable private Integer mobileNumberDialingPrefix;
     @Nullable private String mobileNumber;
-    @JsonProperty("verifiedMobileCC")
-    @Nullable private Integer verifiedMobileNumberCountryCode;
+    @Nullable private Integer verifiedMobileNumberDialingPrefix;
     @Nullable private String verifiedMobileNumber;
     @Nullable private CountryCode nationality;
     @Nullable private CountryCode residency;
@@ -70,12 +67,12 @@ public class KYCAyondoForm implements KYCForm
             this.lastName = ayondoForm.getLastName() != null ? ayondoForm.getLastName() : this.lastName;
             this.email = ayondoForm.getEmail() != null ? ayondoForm.getEmail() : this.email;
             this.verifiedEmail = ayondoForm.getVerifiedEmail() != null ? ayondoForm.getVerifiedEmail() : this.verifiedEmail;
-            this.mobileNumberCountryCode =
-                    ayondoForm.getMobileNumberCountryCode() != null ? ayondoForm.getMobileNumberCountryCode() : this.mobileNumberCountryCode;
+            this.mobileNumberDialingPrefix =
+                    ayondoForm.getMobileNumberDialingPrefix() != null ? ayondoForm.getMobileNumberDialingPrefix() : this.mobileNumberDialingPrefix;
             this.mobileNumber = ayondoForm.getMobileNumber() != null ? ayondoForm.getMobileNumber() : this.mobileNumber;
-            this.verifiedMobileNumberCountryCode =
-                    ayondoForm.getVerifiedMobileNumberCountryCode() != null ? ayondoForm.getVerifiedMobileNumberCountryCode()
-                            : this.verifiedMobileNumberCountryCode;
+            this.verifiedMobileNumberDialingPrefix =
+                    ayondoForm.getVerifiedMobileNumberDialingPrefix() != null ? ayondoForm.getVerifiedMobileNumberDialingPrefix()
+                            : this.verifiedMobileNumberDialingPrefix;
             this.verifiedMobileNumber =
                     ayondoForm.getVerifiedMobileNumber() != null ? ayondoForm.getVerifiedMobileNumber() : this.verifiedMobileNumber;
             this.nationality = ayondoForm.getNationality() != null ? ayondoForm.getNationality() : this.nationality;
@@ -144,14 +141,14 @@ public class KYCAyondoForm implements KYCForm
         this.verifiedEmail = verifiedEmail;
     }
 
-    @Nullable public Integer getMobileNumberCountryCode()
+    @Nullable public Integer getMobileNumberDialingPrefix()
     {
-        return mobileNumberCountryCode;
+        return mobileNumberDialingPrefix;
     }
 
-    public void setMobileNumberCountryCode(@Nullable Integer mobileNumberCountryCode)
+    public void setMobileNumberDialingPrefix(@Nullable Integer mobileNumberDialingPrefix)
     {
-        this.mobileNumberCountryCode = mobileNumberCountryCode;
+        this.mobileNumberDialingPrefix = mobileNumberDialingPrefix;
     }
 
     @Nullable public String getMobileNumber()
@@ -164,14 +161,14 @@ public class KYCAyondoForm implements KYCForm
         this.mobileNumber = mobileNumber;
     }
 
-    @Nullable public Integer getVerifiedMobileNumberCountryCode()
+    @Nullable public Integer getVerifiedMobileNumberDialingPrefix()
     {
-        return verifiedMobileNumberCountryCode;
+        return verifiedMobileNumberDialingPrefix;
     }
 
-    public void setVerifiedMobileNumberCountryCode(@Nullable Integer verifiedMobileNumberCountryCode)
+    public void setVerifiedMobileNumberDialingPrefix(@Nullable Integer verifiedMobileNumberDialingPrefix)
     {
-        this.verifiedMobileNumberCountryCode = verifiedMobileNumberCountryCode;
+        this.verifiedMobileNumberDialingPrefix = verifiedMobileNumberDialingPrefix;
     }
 
     @Nullable public String getVerifiedMobileNumber()
@@ -215,9 +212,11 @@ public class KYCAyondoForm implements KYCForm
             same &= lastName == null ? ayondoForm.lastName == null : lastName.equals(ayondoForm.lastName);
             same &= email == null ? ayondoForm.email == null : email.equals(ayondoForm.email);
             same &= verifiedEmail == null ? ayondoForm.verifiedEmail == null : verifiedEmail.equals(ayondoForm.verifiedEmail);
-            same &= mobileNumberCountryCode == null ? ayondoForm.mobileNumberCountryCode == null : mobileNumberCountryCode.equals(ayondoForm.mobileNumberCountryCode);
+            same &= mobileNumberDialingPrefix == null ? ayondoForm.mobileNumberDialingPrefix
+                    == null : mobileNumberDialingPrefix.equals(ayondoForm.mobileNumberDialingPrefix);
             same &= mobileNumber == null ? ayondoForm.mobileNumber == null : mobileNumber.equals(ayondoForm.mobileNumber);
-            same &= verifiedMobileNumberCountryCode == null ? ayondoForm.verifiedMobileNumberCountryCode == null : verifiedMobileNumberCountryCode.equals(ayondoForm.verifiedMobileNumberCountryCode);
+            same &= verifiedMobileNumberDialingPrefix == null ? ayondoForm.verifiedMobileNumberDialingPrefix == null : verifiedMobileNumberDialingPrefix
+                    .equals(ayondoForm.verifiedMobileNumberDialingPrefix);
             same &= verifiedMobileNumber == null ? ayondoForm.verifiedMobileNumber == null : verifiedMobileNumber.equals(ayondoForm.verifiedMobileNumber);
             same &= nationality == null ? ayondoForm.nationality == null : nationality.equals(ayondoForm.nationality);
             same &= residency == null ? ayondoForm.residency == null : residency.equals(ayondoForm.residency);

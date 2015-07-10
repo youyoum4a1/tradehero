@@ -280,11 +280,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedMobilePhoneCountryDTOs);
                         populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
                         populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
-                        Integer countryCode = ((KYCAyondoForm) situation.kycForm).getMobileNumberCountryCode();
+                        Integer dialingPrefix = ((KYCAyondoForm) situation.kycForm).getMobileNumberDialingPrefix();
                         String phoneNumber = ((KYCAyondoForm) situation.kycForm).getMobileNumber();
-                        if (countryCode != null && phoneNumber != null)
+                        if (dialingPrefix != null && phoneNumber != null)
                         {
-                            populateVerifyMobile((KYCAyondoForm) situation.kycForm, countryCode, phoneNumber);
+                            populateVerifyMobile((KYCAyondoForm) situation.kycForm, dialingPrefix, phoneNumber);
                         }
                         return null;
                     }
@@ -315,7 +315,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 String newNumber = onTextChangeEvent.text().toString();
                                 //noinspection ConstantConditions
                                 populateVerifyMobile((KYCAyondoForm) situation.kycForm, newCountryCode, newNumber);
-                                ((KYCAyondoForm) situation.kycForm).setMobileNumberCountryCode(newCountryCode);
+                                ((KYCAyondoForm) situation.kycForm).setMobileNumberDialingPrefix(newCountryCode);
                                 ((KYCAyondoForm) situation.kycForm).setMobileNumber(newNumber);
                                 onNext(situation);
                             } catch (NumberFormatException e)
@@ -494,7 +494,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         if (buttonVerifyPhone != null)
         {
-            boolean verified = Integer.valueOf(countryCode).equals(kycForm.getVerifiedMobileNumberCountryCode())
+            boolean verified = Integer.valueOf(countryCode).equals(kycForm.getVerifiedMobileNumberDialingPrefix())
                     && typedNumber.equals(kycForm.getVerifiedMobileNumber());
             buttonVerifyPhone.setText(verified ? R.string.verified : R.string.verify);
             buttonVerifyPhone.setEnabled(!verified);
@@ -506,11 +506,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull UserProfileDTO currentUserProfile,
             @NonNull List<CountrySpinnerAdapter.DTO> liveCountryDTOs)
     {
-        Integer savedMobileNumberCountryCode = kycForm.getMobileNumberCountryCode();
+        Integer savedMobileNumberDialingPrefix = kycForm.getMobileNumberDialingPrefix();
         final List<CountrySpinnerAdapter.DTO> candidates;
-        if (savedMobileNumberCountryCode != null)
+        if (savedMobileNumberDialingPrefix != null)
         {
-            candidates = CountrySpinnerAdapter.getFilterByPhoneCountryCode(liveCountryDTOs, savedMobileNumberCountryCode);
+            candidates = CountrySpinnerAdapter.getFilterByPhoneCountryCode(liveCountryDTOs, savedMobileNumberDialingPrefix);
         }
         else
         {
@@ -719,7 +719,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         LiveSignUpStep1AyondoFragment.this.expectedCode = null;
                                         LiveSignUpStep1AyondoFragment.this.confirmationSubject = null;
                                         //noinspection ConstantConditions
-                                        ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumberCountryCode(phoneCountryCode);
+                                        ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumberDialingPrefix(phoneCountryCode);
                                         ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumber(phoneNumberInt);
                                         alertDialog.dismiss();
                                         onNext(situation);
