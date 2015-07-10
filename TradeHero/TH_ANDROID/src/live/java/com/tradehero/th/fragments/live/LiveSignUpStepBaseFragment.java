@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.live;
 import android.app.Activity;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.live.KYCFormOptionsDTO;
 import com.tradehero.th.api.live.KYCFormOptionsId;
@@ -21,6 +22,8 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @Inject protected KYCFormOptionsCache kycFormOptionsCache;
 
     @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;
+    @Nullable private Observable<LiveBrokerSituationDTO> brokerSituationObservable;
+    @Nullable private Observable<KYCFormOptionsDTO> kycOptionsObservable;
 
     public LiveSignUpStepBaseFragment()
     {
@@ -45,10 +48,32 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 
     @NonNull public Observable<LiveBrokerSituationDTO> getBrokerSituationObservable()
     {
+        Observable<LiveBrokerSituationDTO> copy = brokerSituationObservable;
+        if (copy == null)
+        {
+            copy = createBrokerSituationObservable().share();
+            brokerSituationObservable = copy;
+        }
+        return copy;
+    }
+
+    @NonNull public Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
+    {
         return brokerSituationSubject.asObservable();
     }
 
     @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptionsObservable()
+    {
+        Observable<KYCFormOptionsDTO> copy = kycOptionsObservable;
+        if (copy == null)
+        {
+            copy = createKYCFormOptionsObservable().share();
+            kycOptionsObservable = copy;
+        }
+        return copy;
+    }
+
+    @NonNull public Observable<KYCFormOptionsDTO> createKYCFormOptionsObservable()
     {
         return getBrokerSituationObservable()
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<KYCFormOptionsDTO>>()

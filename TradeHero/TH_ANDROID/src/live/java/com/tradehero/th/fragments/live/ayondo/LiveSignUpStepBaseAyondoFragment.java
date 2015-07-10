@@ -11,17 +11,16 @@ import rx.functions.Func1;
 
 abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBaseFragment
 {
-    @NonNull public Observable<LiveBrokerSituationDTO> getBrokerSituationObservable()
+    @NonNull public Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
-        return super.getBrokerSituationObservable()
+        return super.createBrokerSituationObservable()
                 .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
                 {
                     @Override public Boolean call(LiveBrokerSituationDTO situationDTO)
                     {
                         return situationDTO.kycForm instanceof KYCAyondoForm;
                     }
-                })
-                .share();
+                });
     }
 
     @NonNull public Observable<KYCAyondoFormOptionsDTO> getKYCAyondoFormOptionsObservable()

@@ -42,7 +42,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                         {
                             @Override public Observable<? extends LiveTradingSituationDTO> call(Throwable throwable)
                             {
-                                LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "Ayondo");
+                                LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "ayondo Market");
                                 KYCAyondoForm form = new KYCAyondoForm();
                                 form.setCountry(Country.SG);
                                 LiveBrokerSituationDTO fakeSituation = new LiveBrokerSituationDTO(ayondo, form);
@@ -68,10 +68,10 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                         Arrays.asList(Country.SG, Country.AU, Country.GB),
                                         nationalities,
                                         Arrays.asList(Country.SG, Country.AU, Country.GB),
-                                        Arrays.asList("Less than $15,000", "$15,000 - $40,000", "$40,001 - $70,000", "$70,001 - $100,000",
-                                                "more than $100,000"),
-                                        Arrays.asList("Less than $15,000", "$15,000 - $40,000", "$40,001 - $70,000", "$70,001 - $100,000",
-                                                "$100,001 - $500,000", "more than $500,000"),
+                                        Arrays.asList("Less than US$ 15,000", "US$ 15,000 - US$ 40,000", "US$ 40,001 - US$ 70,000", "US$ 70,001 - US$ 100,000",
+                                                "more than US$ 100,000"),
+                                        Arrays.asList("Less than US$ 15,000", "US$ 15,000 - US$ 40,000", "US$ 40,001 - US$ 70,000", "US$ 70,001 - US$ 100,000",
+                                                "US$ 100,001 - US$ 500,000", "more than US$ 500,000"),
                                         Arrays.asList("Less than 25 %", "25 - 50 %", "51 - 75 %", "more than 75%"),
                                         Arrays.asList("Employed", "Self-Employed", "Unemployed", "Retired", "Student"));
                                 return Observable.just(options);

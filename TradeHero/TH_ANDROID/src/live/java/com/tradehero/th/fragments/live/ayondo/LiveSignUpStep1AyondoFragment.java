@@ -450,9 +450,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         // TODO
     }
 
-    @NonNull @Override public Observable<LiveBrokerSituationDTO> getBrokerSituationObservable()
+    @NonNull @Override public Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
-        return super.getBrokerSituationObservable()
+        return super.createBrokerSituationObservable()
                 .doOnNext(new Action1<LiveBrokerSituationDTO>()
                 {
                     @Override public void call(LiveBrokerSituationDTO situationDTO)
@@ -460,8 +460,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         //noinspection ConstantConditions
                         populate((KYCAyondoForm) situationDTO.kycForm);
                     }
-                })
-                .share();
+                });
     }
 
     protected void populate(@NonNull KYCAyondoForm kycForm)
