@@ -14,8 +14,8 @@ public class SecurityOptPositionDTO implements DTO{
     public String name;
     public String exchange;
     public String symbol;
-    public int shares;
-    public int sellableShares;
+    public int shares = 0;
+    public int sellableShares = 0;
     public double averagePriceRefCcy;
     public String currencyDisplay;
     public double fxRate;

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,6 +47,10 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private EditText priceET;
     private TextView addOneTV;
     private TextView reduceOneTV;
+    private LinearLayout availableLayout;
+    private LinearLayout sharesLayout;
+    private TextView availableSellTV;
+    private TextView totalSellTV;
 
     //Dialog
     private Dialog sellConfirmDialog;
@@ -62,6 +67,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private String securityName;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     private QuoteDetail quoteDetail;
+    SecurityOptPositionsList securityOptPositionDTOs;
     private int portfolioId = -1;
 
     //Buy Sell Layout
@@ -87,8 +93,13 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private TextView buy1Price;
     private TextView buy1Amount;
 
+    private RefreshBuySellHandler handler;
+
     private int color_up;
     private int color_down;
+
+    private int totalSells;
+    private int availableSells;
 
 
     private SecurityOptMockPositionAdapter securityOptMockPositionAdapter;
@@ -117,14 +128,30 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
 
         if (!TextUtils.isEmpty(securitySymbol) && !TextUtils.isEmpty(securityExchange)) {
             quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
+            handler = new RefreshBuySellHandler();
+            handler.sendEmptyMessageAtTime(-1, 5000);
         }
         if(portfolioId == -1) {
+            retrieveMainPositions();
         }
         return view;
     }
 
+    @Override
+    public void onDestroyView(){
+        super.onDestroyView();
+        handler = null;
+    }
+
+
     private void initViews(View view) {
         initSellBuyViews(view);
+        availableLayout = (LinearLayout)view.findViewById(R.id.layout_available_money);
+        sharesLayout = (LinearLayout)view.findViewById(R.id.layout_shares);
+        sharesLayout.setVisibility(View.VISIBLE);
+        availableLayout.setVisibility(View.GONE);
+        availableSellTV = (TextView)view.findViewById(R.id.textview_available_sells);
+        totalSellTV = (TextView)view.findViewById(R.id.textview_all_sells);
         buySellBtn = (Button) view.findViewById(R.id.button_security_opt_buy_sell);
         buySellBtn.setText(R.string.security_opt_sell);
         buySellBtn.setOnClickListener(new View.OnClickListener() {
@@ -203,11 +230,9 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
 
         private void onFinish() {
             if (isNeedToRefresh()) {
-                if(TextUtils.isEmpty(securitySymbol) || TextUtils.isEmpty(securityExchange)){
-                    return;
+                if(handler!= null) {
+                    handler.sendEmptyMessageAtTime(-1, 5000);
                 }
-                RefreshBuySellHandler handler = new RefreshBuySellHandler();
-                handler.sendEmptyMessageAtTime(-1, 5000);
             }
         }
     }
@@ -241,6 +266,31 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         buy4Amount = (TextView) view.findViewById(R.id.textview_buy_amount_d);
         buy5Price = (TextView) view.findViewById(R.id.textview_buy_price_e);
         buy5Amount = (TextView) view.findViewById(R.id.textview_buy_amount_e);
+    }
+
+    private void clearAllSellBuy(){
+        buy1Price.setText("- -");
+        buy1Amount.setText("- -");
+        buy2Price.setText("- -");
+        buy2Amount.setText("- -");
+        buy3Price.setText("- -");
+        buy3Amount.setText("- -");
+        buy4Price.setText("- -");
+        buy4Amount.setText("- -");
+        buy5Price.setText("- -");
+        buy5Amount.setText("- -");
+
+        sell1Price.setText("- -");
+        sell1Amount.setText("- -");
+        sell2Price.setText("- -");
+        sell2Amount.setText("- -");
+        sell3Price.setText("- -");
+        sell3Amount.setText("- -");
+        sell4Price.setText("- -");
+        sell4Amount.setText("- -");
+        sell5Price.setText("- -");
+        sell5Amount.setText("- -");
+
     }
 
     private void setSellBuyData(QuoteDetail quoteDetail) {
@@ -338,7 +388,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     }
 
     private boolean isNeedToRefresh(){
-        if(TextUtils.isEmpty(securityExchange)){
+        if(TextUtils.isEmpty(securityExchange) || TextUtils.isEmpty(securitySymbol)){
             return false;
         }
         if(securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")){
@@ -405,5 +455,45 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         }
         DecimalFormat df =new DecimalFormat("#.0");
         priceET.setText(df.format(value));
+    }
+
+    private void retrieveMainPositions(){
+        quoteServiceWrapper.retrieveMainPositions(new RetrievePositionsCallback());
+    }
+
+    class RetrievePositionsCallback implements Callback<SecurityOptPositionsList> {
+
+        @Override
+        public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
+            SecurityOptMockSubSellFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
+            securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
+            displaySells(securityOptPositionDTOs);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+
+        }
+    }
+
+    private void displaySells(SecurityOptPositionsList securityOptPositionDTOs){
+        if(securityOptPositionDTOs == null){
+            totalSellTV.setText("0");
+            availableSellTV.setText("0");
+            return;
+        }
+        if(TextUtils.isEmpty(securitySymbol) || TextUtils.isEmpty(securityExchange)){
+            totalSellTV.setText("0");
+            availableSellTV.setText("0");
+            return;
+        }
+        for(SecurityOptPositionDTO securityOptPositionDTO : securityOptPositionDTOs){
+            if(securityOptPositionDTO.symbol.equals(securitySymbol) && securityOptPositionDTO.exchange.equals(securityExchange)){
+                totalSellTV.setText(String.valueOf(securityOptPositionDTO.shares));
+                totalSells = securityOptPositionDTO.shares;
+                availableSellTV.setText(String.valueOf(securityOptPositionDTO.sellableShares));
+                availableSells = securityOptPositionDTO.sellableShares;
+            }
+        }
     }
 }

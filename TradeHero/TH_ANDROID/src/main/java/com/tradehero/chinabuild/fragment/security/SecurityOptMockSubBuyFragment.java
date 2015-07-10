@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,6 +47,8 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     private EditText priceET;
     private TextView addOneTV;
     private TextView reduceOneTV;
+    private LinearLayout availableLayout;
+    private LinearLayout sharesLayout;
 
     //Dialog
     private Dialog buyConfirmDialog;
@@ -64,6 +67,8 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     private String securityExchange = "";
     private String securitySymbol = "";
     private int portfolioId = -1;
+
+    private RefreshBuySellHandler handler;
 
     private SecurityOptMockPositionAdapter securityOptMockPositionAdapter;
 
@@ -114,9 +119,10 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.security_opt_sub_buysell, container, false);
         initViews(view);
-        initSellBuyViews(view);
         if (!TextUtils.isEmpty(securitySymbol) && !TextUtils.isEmpty(securityExchange)) {
             quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
+            handler = new RefreshBuySellHandler();
+            handler.sendEmptyMessageAtTime(-1, 5000);
         }
         if(portfolioId == -1) {
             retrieveMainPositions();
@@ -124,8 +130,19 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         return view;
     }
 
+    @Override
+    public void onDestroyView(){
+        super.onDestroyView();
+        handler = null;
+    }
+
 
     private void initViews(View view) {
+        initSellBuyViews(view);
+        availableLayout = (LinearLayout)view.findViewById(R.id.layout_available_money);
+        sharesLayout = (LinearLayout)view.findViewById(R.id.layout_shares);
+        sharesLayout.setVisibility(View.GONE);
+        availableLayout.setVisibility(View.VISIBLE);
         buySellBtn = (Button) view.findViewById(R.id.button_security_opt_buy_sell);
         buySellBtn.setText(R.string.security_opt_buy);
         buySellBtn.setOnClickListener(new View.OnClickListener() {
@@ -327,11 +344,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
 
         private void onFinish() {
             if (isNeedToRefresh()) {
-                if(TextUtils.isEmpty(securitySymbol) || TextUtils.isEmpty(securityExchange)){
-                    return;
+                if(handler!= null) {
+                    handler.sendEmptyMessageAtTime(-1, 5000);
                 }
-                RefreshBuySellHandler handler = new RefreshBuySellHandler();
-                handler.sendEmptyMessageAtTime(-1, 5000);
             }
         }
     }
@@ -352,7 +367,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     }
 
     private boolean isNeedToRefresh(){
-        if(TextUtils.isEmpty(securityExchange)){
+        if(TextUtils.isEmpty(securityExchange) || TextUtils.isEmpty(securitySymbol)){
             return false;
         }
         if(securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")){

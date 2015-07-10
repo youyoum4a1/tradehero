@@ -105,10 +105,45 @@
                 android:orientation="horizontal"
                 android:id="@+id/layout_shares">
                 <LinearLayout
-                    android:layout_width="0d"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:orientation="horizontal"></LinearLayout>
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#6b6b6b"
+                        android:text="持有:"
+                        android:textSize="13sp"/>
+                    <TextView
+                        android:id="@+id/textview_all_sells"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#6b6b6b"
+                        android:layout_marginLeft="2dp"
+                        android:text="0"
+                        android:textSize="13sp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#6b6b6b"
+                        android:text="可卖:"
+                        android:textSize="13sp"/>
+                    <TextView
+                        android:id="@+id/textview_available_sells"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#6b6b6b"
+                        android:layout_marginLeft="2dp"
+                        android:text="0"
+                        android:textSize="13sp"/>
+                </LinearLayout>
             </LinearLayout>
 
             <EditText
