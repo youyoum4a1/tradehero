@@ -15,13 +15,18 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
+import com.tradehero.th.api.kyc.KYCFormUtil;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.fastfill.FastFillExceptionUtil;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.live.KYCFormOptionsCache;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -38,6 +43,8 @@ public class IdentityPromptActivity extends BaseActivity
     @Inject FastFillUtil fastFillUtil;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject KYCFormOptionsCache kycFormOptionsCache;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
 
@@ -155,20 +162,33 @@ public class IdentityPromptActivity extends BaseActivity
 
     @SuppressWarnings("unused")
     @OnClick(R.id.identity_prompt_no)
-    public void onNoClicked()
+    public void onNoClicked(View view)
     {
-        startActivity(new Intent(this, SignUpLiveActivity.class));
-        finish();
+        goToSignUp();
     }
 
     @NonNull protected Observable<LiveBrokerSituationDTO> getBrokerSituation()
     {
-        return liveServiceWrapper.getBrokerSituation()
-                .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
+        return Observable.combineLatest(
+                liveServiceWrapper.getBrokerSituation()
+                        .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
+                        {
+                            @Override public Boolean call(LiveBrokerSituationDTO situationDTO)
+                            {
+                                return situationDTO.kycForm != null;
+                            }
+                        }),
+                userProfileCache.getOne(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
+                new Func2<LiveBrokerSituationDTO, UserProfileDTO, LiveBrokerSituationDTO>()
                 {
-                    @Override public Boolean call(LiveBrokerSituationDTO situationDTO)
+                    @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, UserProfileDTO currentUserProfile)
                     {
-                        return situationDTO.kycForm != null;
+                        if (KYCFormUtil.fillInBlanks(situationDTO.kycForm, currentUserProfile))
+                        {
+                            liveBrokerSituationPreference.set(situationDTO);
+                        }
+                        return situationDTO;
                     }
                 })
                 .share();
