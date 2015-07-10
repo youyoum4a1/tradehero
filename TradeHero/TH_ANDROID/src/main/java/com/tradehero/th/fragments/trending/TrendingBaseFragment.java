@@ -53,4 +53,9 @@ abstract public class TrendingBaseFragment extends SecurityListRxFragment
             SecuritySearchFragment.putApplicablePortfolioId(args, applicablePortfolioId);
         }
     }
+
+    public boolean shouldShowExchangeSpinner()
+    {
+        return false;
+    }
 }

@@ -166,32 +166,38 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.exchange_menu, menu);
+        //super.onCreateOptionsMenu(menu, inflater);
+        //We don't call super here because we don't want to touch the "home icon" and title portion of the actionbar, as it will somehow remove the custom view.
         inflater.inflate(R.menu.search_menu, menu);
 
-        exchangeMenu = menu.findItem(R.id.btn_exchange);
-        View actionView = exchangeMenu.getActionView();
-        if (actionView != null)
-        {
-            mExchangeSelection = (ExchangeSpinner) actionView.findViewById(R.id.exchange_selection_menu);
-            mExchangeSelection.setAdapter(exchangeAdapter);
-            mExchangeSelection.setSelectionById(new ExchangeIntegerId(preferredExchangeMarket.get()));
-            mExchangeSelection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-            {
-                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-                {
-                    if (itemViewAdapter != null) // HACK because of the disconnect between destroy and destroyOptionsMenu
-                    {
-                        onExchangeSelected(parent, view, position, id);
-                    }
-                }
+        //inflater.inflate(R.menu.exchange_menu, menu);
+        //exchangeMenu = menu.findItem(R.id.btn_exchange);
+        //View actionView = exchangeMenu.getActionView();
+        //if (actionView != null)
+        //{
+        //    mExchangeSelection = (ExchangeSpinner) actionView.findViewById(R.id.exchange_selection_menu);
+        //    mExchangeSelection.setAdapter(exchangeAdapter);
+        //    mExchangeSelection.setSelectionById(new ExchangeIntegerId(preferredExchangeMarket.get()));
+        //    mExchangeSelection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        //    {
+        //        @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+        //        {
+        //            if (itemViewAdapter != null) // HACK because of the disconnect between destroy and destroyOptionsMenu
+        //            {
+        //                onExchangeSelected(parent, view, position, id);
+        //            }
+        //        }
+        //
+        //        @Override public void onNothingSelected(AdapterView<?> parent)
+        //        {
+        //        }
+        //    });
+        //}
+    }
 
-                @Override public void onNothingSelected(AdapterView<?> parent)
-                {
-                }
-            });
-        }
+    @Override public boolean shouldShowExchangeSpinner()
+    {
+        return true;
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

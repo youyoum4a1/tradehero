@@ -108,7 +108,6 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
     @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle("");
     }
 
     @Override public void onDestroyView()
@@ -140,6 +139,7 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
             TabType positionType;
             positionType = STOCK_TYPES[position];
             PositionListFragment.putPositionType(args, positionType);
+            PositionListFragment.setHasOptionMenu(args, getHasOptionMenu(getArguments()));
             args.putBoolean(PositionListFragment.BUNDLE_KEY_SHOW_TITLE, false);
             return Fragment.instantiate(getActivity(), PositionListFragment.class.getName(), args);
         }

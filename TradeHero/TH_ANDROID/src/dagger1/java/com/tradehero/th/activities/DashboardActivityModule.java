@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.widget.AbsListView;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
@@ -69,6 +70,7 @@ import javax.inject.Singleton;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle drawerToggle;
     DashboardTabHost dashboardTabHost;
+    Toolbar toolbar;
     int tabHostHeight;
     Analytics analytics;
     LiveActivityUtil liveActivityUtil;
@@ -179,5 +181,10 @@ import javax.inject.Singleton;
     @Provides LiveActivityUtil provideLiveActivityUtil()
     {
         return liveActivityUtil;
+    }
+
+    @Provides Toolbar provideToolbar()
+    {
+        return toolbar;
     }
 }

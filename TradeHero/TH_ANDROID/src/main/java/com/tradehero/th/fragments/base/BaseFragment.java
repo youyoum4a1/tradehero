@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.base;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -14,12 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.BaseActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -150,7 +143,6 @@ public class BaseFragment extends Fragment
         super.onDestroy();
     }
 
-    @CallSuper
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         onDestroyOptionsMenuSubscriptions = new SubscriptionList();
@@ -168,16 +160,6 @@ public class BaseFragment extends Fragment
         {
             hideSupportActionBar();
         }
-
-        /*
-        P2: There is a unnecessary menu button on Me page
-        https://www.pivotaltracker.com/n/projects/559137/stories/91165728
-        if (this instanceof WithTutorial)
-        {
-            menu.removeGroup(MENU_GROUP_HELP);
-            MenuItem item = menu.add(MENU_GROUP_HELP, getMenuHelpID(), Menu.NONE, R.string.help);
-            item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        }*/
 
         actionBarOwnerMixin.onCreateOptionsMenu(menu, inflater);
 
@@ -291,78 +273,6 @@ public class BaseFragment extends Fragment
         if (subscription != null && !subscription.isUnsubscribed())
         {
             subscription.unsubscribe();
-        }
-    }
-
-    protected void configureDefaultSpinner(
-            @NonNull BaseActivity activity,
-            String[] data,
-            AdapterView.OnItemSelectedListener listener,
-            int selectedPosition)
-    {
-        ArrayAdapter adapter = new ToolbarSpinnerAdapter(
-                activity,
-                R.layout.action_bar_spinner,
-                R.id.spinner_text,
-                data);
-        configureSpinner(activity, R.id.action_bar_spinner, adapter, listener, selectedPosition);
-    }
-
-    /**
-     * Configure Spinner in the ActionBar, nothing happens if the action bar does not have a spinner.
-     */
-    protected void configureSpinner(@NonNull BaseActivity activity, int toolbarSpinnerResId, ArrayAdapter adapter, AdapterView.OnItemSelectedListener listener, int selectedPosition)
-    {
-        actionBarOwnerMixin.configureSpinner(activity, toolbarSpinnerResId, adapter, listener, selectedPosition);
-    }
-
-    /**
-     * This method only set Visibility to visible.
-     */
-    protected void showToolbarSpinner()
-    {
-        BaseActivity activity = (BaseActivity) getActivity();
-        if (activity != null)
-        {
-            actionBarOwnerMixin.showToolbarSpinner(activity, R.id.action_bar_spinner);
-        }
-    }
-
-    /**
-     * Set the spinner's visibility to GONE. Nothing happens if the action bar does not contain a spinner.
-     */
-    protected void hideToolbarSpinner()
-    {
-        BaseActivity activity = (BaseActivity) getActivity();
-        if (activity != null)
-        {
-            actionBarOwnerMixin.hideToolbarSpinner(activity, R.id.action_bar_spinner);
-        }
-    }
-
-    class ToolbarSpinnerAdapter extends ArrayAdapter<String>
-    {
-        int textViewResourceId;
-
-        public ToolbarSpinnerAdapter(Context context, int resource, int textViewResourceId, String[] objects)
-        {
-            super(context, resource, textViewResourceId, objects);
-            this.textViewResourceId = textViewResourceId;
-        }
-
-        @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
-        {
-            Activity activity = getActivity();
-            if (convertView == null && activity != null)
-            {
-                convertView = activity.getLayoutInflater().inflate(R.layout.action_bar_spinner_dropdown, parent, false);
-            }
-            if (convertView != null)
-            {
-                TextView textView = (TextView) convertView.findViewById(textViewResourceId);
-                textView.setText(getItem(position));
-            }
-            return convertView;
         }
     }
 

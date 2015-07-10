@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.base;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -81,6 +82,11 @@ public class ActionBarOwnerMixin
             return DEFAULT_SHOW_HOME_AS_UP;
         }
         return args.getBoolean(BUNDLE_KEY_SHOW_HOME_AS_UP, DEFAULT_SHOW_HOME_AS_UP);
+    }
+
+    public ActionBar getActionBar()
+    {
+        return actionBar;
     }
 
     public static void putActionBarTitle(Bundle args, String title)
@@ -229,88 +235,95 @@ public class ActionBarOwnerMixin
         animator.removeViewAt(index);
     }
 
-    /**
-     * Set the spinner adapter and OnItemSelectedListener of the Spinner.
-     *
-     * @param toolbarSpinnerResId resource id of the spinner.
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public void configureSpinner(
-            @NonNull BaseActivity activity,
-            @IdRes int toolbarSpinnerResId,
-            ArrayAdapter adapter,
-            AdapterView.OnItemSelectedListener listener,
-            int selectedPosition)
+    ///**
+    // * Set the spinner adapter and OnItemSelectedListener of the Spinner.
+    // *
+    // * @param toolbarSpinnerResId resource id of the spinner.
+    // */
+    //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    //public void configureSpinner(
+    //        @NonNull BaseActivity activity,
+    //        @IdRes int toolbarSpinnerResId,
+    //        ArrayAdapter adapter,
+    //        AdapterView.OnItemSelectedListener listener,
+    //        int selectedPosition)
+    //{
+    //    Toolbar toolbar = activity.getToolbar();
+    //    if (toolbar == null)
+    //    {
+    //        return;
+    //    }
+    //
+    //    Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
+    //    if (toolbarSpinner == null)
+    //    {
+    //        return;
+    //    }
+    //
+    //    toolbarSpinner.setAdapter(adapter);
+    //    if ((selectedPosition >= 0) && (selectedPosition < adapter.getCount()))
+    //    {
+    //        toolbarSpinner.setSelection(selectedPosition);
+    //    }
+    //    toolbarSpinner.setOnItemSelectedListener(listener);
+    //    toolbarSpinner.setVisibility(View.VISIBLE);
+    //}
+    //
+    //public void setSpinnerSelection(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId, int index)
+    //{
+    //    Toolbar toolbar = activity.getToolbar();
+    //    if (toolbar == null)
+    //    {
+    //        return;
+    //    }
+    //
+    //    Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
+    //
+    //    if (toolbarSpinner == null)
+    //    {
+    //        return;
+    //    }
+    //    toolbarSpinner.setSelection(index);
+    //}
+    //
+    //public void hideToolbarSpinner(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId)
+    //{
+    //    Toolbar toolbar = activity.getToolbar();
+    //    if (toolbar == null)
+    //    {
+    //        return;
+    //    }
+    //
+    //    Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
+    //
+    //    if (toolbarSpinner == null)
+    //    {
+    //        return;
+    //    }
+    //    toolbarSpinner.setVisibility(View.GONE);
+    //}
+    //
+    //public void showToolbarSpinner(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId)
+    //{
+    //    Toolbar toolbar = activity.getToolbar();
+    //    if (toolbar == null)
+    //    {
+    //        return;
+    //    }
+    //
+    //    Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
+    //
+    //    if (toolbarSpinner == null)
+    //    {
+    //        return;
+    //    }
+    //    toolbarSpinner.setVisibility(View.VISIBLE);
+    //}
+
+    public void setCustomView(View view)
     {
-        Toolbar toolbar = activity.getToolbar();
-        if (toolbar == null)
-        {
-            return;
-        }
-
-        Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
-        if (toolbarSpinner == null)
-        {
-            return;
-        }
-
-        toolbarSpinner.setAdapter(adapter);
-        if ((selectedPosition >= 0) && (selectedPosition < adapter.getCount()))
-        {
-            toolbarSpinner.setSelection(selectedPosition);
-        }
-        toolbarSpinner.setOnItemSelectedListener(listener);
-        toolbarSpinner.setVisibility(View.VISIBLE);
-    }
-
-    public void setSpinnerSelection(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId, int index)
-    {
-        Toolbar toolbar = activity.getToolbar();
-        if (toolbar == null)
-        {
-            return;
-        }
-
-        Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
-
-        if (toolbarSpinner == null)
-        {
-            return;
-        }
-        toolbarSpinner.setSelection(index);
-    }
-
-    public void hideToolbarSpinner(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId)
-    {
-        Toolbar toolbar = activity.getToolbar();
-        if (toolbar == null)
-        {
-            return;
-        }
-
-        Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
-
-        if (toolbarSpinner == null)
-        {
-            return;
-        }
-        toolbarSpinner.setVisibility(View.GONE);
-    }
-
-    public void showToolbarSpinner(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId)
-    {
-        Toolbar toolbar = activity.getToolbar();
-        if (toolbar == null)
-        {
-            return;
-        }
-
-        Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
-
-        if (toolbarSpinner == null)
-        {
-            return;
-        }
-        toolbarSpinner.setVisibility(View.VISIBLE);
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setCustomView(view);
     }
 }

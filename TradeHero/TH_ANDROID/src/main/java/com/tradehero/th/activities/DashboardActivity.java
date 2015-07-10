@@ -172,6 +172,7 @@ public class DashboardActivity extends BaseActivity
 
         activityModule.drawerLayout = drawerLayout;
 
+        activityModule.toolbar = toolbar;
         setSupportActionBar(toolbar);
 
         setupDrawerLayout();

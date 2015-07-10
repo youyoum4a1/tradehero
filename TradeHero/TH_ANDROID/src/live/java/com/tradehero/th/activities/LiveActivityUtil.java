@@ -26,6 +26,7 @@ public class LiveActivityUtil
 
     @Inject @IsLiveTrading BooleanPreference isLiveTrading;
     private PublishSubject<OffOnViewSwitcherEvent> isTradingLivePublishSubject;
+    private OffOnViewSwitcher liveSwitcher;
 
     public LiveActivityUtil(DashboardActivity dashboardActivity)
     {
@@ -46,12 +47,19 @@ public class LiveActivityUtil
 
         dashboardActivity.getMenuInflater().inflate(R.menu.live_switch_menu, menu);
         MenuItem item = menu.findItem(R.id.switch_live);
-        final OffOnViewSwitcher liveSwitcher = (OffOnViewSwitcher) item.getActionView();
+        liveSwitcher = (OffOnViewSwitcher) item.getActionView();
 
         onDestroyOptionsMenuSubscriptions.add(
                 Observable.merge(liveSwitcher.getSwitchObservable(),
-                        isTradingLivePublishSubject)
-                        .startWith(new OffOnViewSwitcherEvent(false, isLiveTrading.get()))
+                        isTradingLivePublishSubject
+                                .startWith(new OffOnViewSwitcherEvent(false, isLiveTrading.get()))
+                                .doOnNext(new Action1<OffOnViewSwitcherEvent>()
+                                {
+                                    @Override public void call(OffOnViewSwitcherEvent event)
+                                    {
+                                        liveSwitcher.setIsOn(event.isOn, false);
+                                    }
+                                }))
                         .doOnNext(new Action1<OffOnViewSwitcherEvent>()
                         {
                             @Override public void call(OffOnViewSwitcherEvent event)
@@ -72,10 +80,10 @@ public class LiveActivityUtil
                         {
                             @Override public void call(OffOnViewSwitcherEvent event)
                             {
-                                liveSwitcher.setIsOn(event.isOn, false);
                                 onLiveTradingChanged(event);
                             }
                         }));
+        //liveSwitcher.setIsOn(isLiveTrading.get(), false);
 
         for (Fragment f : dashboardActivity.getSupportFragmentManager().getFragments())
         {
@@ -125,6 +133,7 @@ public class LiveActivityUtil
             onDestroyOptionsMenuSubscriptions.unsubscribe();
             onDestroyOptionsMenuSubscriptions.clear();
         }
+        liveSwitcher = null;
     }
 
     public void onDestroy()
@@ -134,6 +143,7 @@ public class LiveActivityUtil
             onDestroyOptionsMenuSubscriptions.unsubscribe();
             onDestroyOptionsMenuSubscriptions.clear();
         }
+        liveSwitcher = null;
         this.isTradingLivePublishSubject = null;
         this.dashboardActivity = null;
     }

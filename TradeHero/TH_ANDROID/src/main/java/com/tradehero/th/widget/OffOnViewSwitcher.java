@@ -72,11 +72,11 @@ public class OffOnViewSwitcher extends ViewSwitcher implements View.OnClickListe
     public void setIsOn(boolean isOn, boolean isFromUser)
     {
         boolean changed = this.mIsOn ^ isOn;
+        this.mIsOn = isOn;
+        setupAnimationToBeUsed(true);
+        setDisplayedChild(mIsOn ? 1 : 0);
         if (changed)
         {
-            this.mIsOn = isOn;
-            setupAnimationToBeUsed(true);
-            setDisplayedChild(mIsOn ? 1 : 0);
             mSwitchSubject.onNext(new OffOnViewSwitcherEvent(isFromUser, mIsOn));
         }
     }

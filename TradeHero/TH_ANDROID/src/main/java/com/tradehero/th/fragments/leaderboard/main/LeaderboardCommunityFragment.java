@@ -162,7 +162,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         super.onResume();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Community));
-        showToolbarSpinner();
         if (leaderboardDefDTOs == null)
         {
             fetchLeaderboardDefList();
@@ -180,9 +179,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         unsubscribe(leaderboardDefListFetchSubscription);
         leaderboardDefListFetchSubscription = null;
         currentDisplayedChildLayoutId = communityScreen.getDisplayedChildLayoutId();
-
-        hideToolbarSpinner();
-
         super.onStop();
     }
 
@@ -210,43 +206,43 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private void setUpToolbarSpinner()
     {
-        BaseActivity activity = (BaseActivity) getActivity();
-        if (activity != null && needsConfigureSpinner)
-        {
-            AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener()
-            {
-                @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-                {
-                    LeaderboardType type;
-                    if (position == 0)
-                    {
-                        type = LeaderboardType.STOCKS;
-                    }
-                    else
-                    {
-                        type = LeaderboardType.FX;
-                    }
-                    Timber.e("onItemSelected: " + parent.getItemAtPosition(position));
-                    if (type != leaderboardType)
-                    {
-                        leaderboardType = type;
-                        setUpViewPager();
-                    }
-                }
-
-                @Override public void onNothingSelected(AdapterView<?> parent)
-                {
-                    //do nothing
-                }
-            };
-            configureDefaultSpinner(
-                    activity,
-                    new String[] {
-                            getString(R.string.leaderboard_type_stocks),
-                            getString(R.string.leaderboard_type_fx)},
-                    listener, leaderboardType.ordinal());
-            needsConfigureSpinner = false;
-        }
+        //BaseActivity activity = (BaseActivity) getActivity();
+        //if (activity != null && needsConfigureSpinner)
+        //{
+        //    AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener()
+        //    {
+        //        @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+        //        {
+        //            LeaderboardType type;
+        //            if (position == 0)
+        //            {
+        //                type = LeaderboardType.STOCKS;
+        //            }
+        //            else
+        //            {
+        //                type = LeaderboardType.FX;
+        //            }
+        //            Timber.e("onItemSelected: " + parent.getItemAtPosition(position));
+        //            if (type != leaderboardType)
+        //            {
+        //                leaderboardType = type;
+        //                setUpViewPager();
+        //            }
+        //        }
+        //
+        //        @Override public void onNothingSelected(AdapterView<?> parent)
+        //        {
+        //            //do nothing
+        //        }
+        //    };
+        //    configureDefaultSpinner(
+        //            activity,
+        //            new String[] {
+        //                    getString(R.string.leaderboard_type_stocks),
+        //                    getString(R.string.leaderboard_type_fx)},
+        //            listener, leaderboardType.ordinal());
+        //    needsConfigureSpinner = false;
+        //}
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

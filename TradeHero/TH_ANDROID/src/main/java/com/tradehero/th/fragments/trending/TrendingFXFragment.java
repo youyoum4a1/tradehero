@@ -64,9 +64,8 @@ public class TrendingFXFragment extends TrendingBaseFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        //inflater.inflate(R.menu.search_menu, menu); // Put back when Fx is searchable
-
         super.onCreateOptionsMenu(menu, inflater);
+        //inflater.inflate(R.menu.search_menu, menu); // Put back when Fx is searchable
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -31,11 +32,13 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.base.TrendingLiveFragmentUtil;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
+import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.position.FXMainPositionListFragment;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
@@ -43,6 +46,8 @@ import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.OffOnViewSwitcher;
+import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -71,6 +76,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject THRouter thRouter;
+    @Inject Toolbar toolbar;
     @RouteProperty("stockPageIndex") Integer selectedStockPageIndex;
     @RouteProperty("fxPageIndex") Integer selectedFxPageIndex;
     @RouteProperty("exchangeId") Integer routedExchangeId;
@@ -85,8 +91,8 @@ public class TrendingMainFragment extends DashboardFragment
     private Observable<UserProfileDTO> userProfileObservable;
     @Nullable private OwnedPortfolioId fxPortfolioId;
     public static boolean fxDialogShowed = false;
-    private boolean needsConfigureSpinner = false;
     private TrendingLiveFragmentUtil trendingLiveFragmentUtil;
+    private OffOnViewSwitcher stockFxSwitcher;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -132,7 +138,6 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onAttach(activity);
         initUserProfileObservable();
-        configureDefaultSpinner();
     }
 
     private void initUserProfileObservable()
@@ -257,7 +262,6 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        showToolbarSpinner();
         thRouter.inject(this, getArguments());
         handleRouting();
     }
@@ -266,9 +270,9 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle("");
-        needsConfigureSpinner = true;
-        configureDefaultSpinner();
+        inflateCustomToolbarView();
         handleRouting();
+        //Loop through children
     }
 
     @Override public boolean shouldShowLiveTradingToggle()
@@ -285,13 +289,12 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        needsConfigureSpinner = false;
+        stockFxSwitcher = null;
         super.onDestroyOptionsMenu();
     }
 
     @Override public void onPause()
     {
-        hideToolbarSpinner();
         super.onPause();
     }
 
@@ -315,116 +318,110 @@ public class TrendingMainFragment extends DashboardFragment
         super.onDetach();
     }
 
-    private void configureDefaultSpinner()
+    private void inflateCustomToolbarView()
     {
-        BaseActivity activity = (BaseActivity) getActivity();
-        if (activity != null && needsConfigureSpinner)
-        {
-            AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener()
-            {
-                @Override public void onItemSelected(AdapterView<?> parent, View view, final int position, long id)
+        View view = LayoutInflater.from(actionBarOwnerMixin.getActionBar().getThemedContext())
+                .inflate(R.layout.trending_custom_actionbar, toolbar, false);
+        stockFxSwitcher = (OffOnViewSwitcher) view.findViewById(R.id.switch_stock_fx);
+        onDestroySubscriptions.add(stockFxSwitcher.getSwitchObservable()
+                .subscribe(new Action1<OffOnViewSwitcherEvent>()
                 {
-                    final TrendingTabType oldType = lastType;
-
-                    final ProgressDialog progressDialog;
-                    if (!fetchedFXPortfolio && userProfileCache.getCachedValue(currentUserId.toUserBaseKey()) == null)
+                    @Override public void call(final OffOnViewSwitcherEvent offOnViewSwitcherEvent)
                     {
-                        progressDialog =
-                                ProgressDialog.show(getActivity(), getString(R.string.loading_loading), getString(R.string.alert_dialog_please_wait));
-                        progressDialog.setCanceledOnTouchOutside(true);
-                    }
-                    else
-                    {
-                        progressDialog = null;
-                    }
-                    Action0 dismissProgress = new DismissDialogAction0(progressDialog);
-                    // We want to identify whether to:
-                    // - wait for enough info
-                    // - pop for FX enroll
-                    // - just change the tab
+                        final TrendingTabType oldType = lastType;
 
-                    if (userProfileObservable == null)
-                    {
-                        initUserProfileObservable();
-                    }
-                    onDestroyOptionsMenuSubscriptions.add(AppObservable.bindFragment(
-                            TrendingMainFragment.this,
-                            userProfileObservable)
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnUnsubscribe(dismissProgress)
-                            .finallyDo(dismissProgress)
-                            .subscribe(new Subscriber<UserProfileDTO>()
-                            {
-                                @Override public void onCompleted()
+                        final ProgressDialog progressDialog;
+                        if (!fetchedFXPortfolio && userProfileCache.getCachedValue(currentUserId.toUserBaseKey()) == null)
+                        {
+                            progressDialog =
+                                    ProgressDialog.show(getActivity(), getString(R.string.loading_loading),
+                                            getString(R.string.alert_dialog_please_wait));
+                            progressDialog.setCanceledOnTouchOutside(true);
+                        }
+                        else
+                        {
+                            progressDialog = null;
+                        }
+                        Action0 dismissProgress = new DismissDialogAction0(progressDialog);
+
+                        // We want to identify whether to:
+                        // - wait for enough info
+                        // - pop for FX enroll
+                        // - just change the tab
+
+                        if (userProfileObservable == null)
+                        {
+                            initUserProfileObservable();
+                        }
+                        onDestroyOptionsMenuSubscriptions.add(AppObservable.bindFragment(
+                                TrendingMainFragment.this,
+                                userProfileObservable)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnUnsubscribe(dismissProgress)
+                                .finallyDo(dismissProgress)
+                                .subscribe(new Subscriber<UserProfileDTO>()
                                 {
-
-                                }
-
-                                @Override public void onError(Throwable e)
-                                {
-                                    THToast.show(getString(R.string.error_fetch_your_user_profile));
-                                }
-
-                                @Override public void onNext(UserProfileDTO userProfileDTO)
-                                {
-                                    if (position == 1 && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
+                                    @Override public void onCompleted()
                                     {
-                                        if (fxDialogShowed)
+
+                                    }
+
+                                    @Override public void onError(Throwable e)
+                                    {
+                                        THToast.show(getString(R.string.error_fetch_your_user_profile));
+                                    }
+
+                                    @Override public void onNext(UserProfileDTO userProfileDTO)
+                                    {
+                                        if (offOnViewSwitcherEvent.isOn && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
                                         {
-                                            return;
-                                        }
-                                        else
-                                        {
-                                            fxDialogShowed = true;
-                                        }
-                                        final FxOnBoardDialogFragment onBoardDialogFragment =
-                                                FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
-                                        onBoardDialogFragment.getUserActionTypeObservable()
-                                                .observeOn(AndroidSchedulers.mainThread())
-                                                .subscribe(
-                                                        new Action1<FxOnBoardDialogFragment.UserAction>()
-                                                        {
-                                                            @Override public void call(FxOnBoardDialogFragment.UserAction action)
+                                            if (fxDialogShowed)
+                                            {
+                                                return;
+                                            }
+                                            else
+                                            {
+                                                fxDialogShowed = true;
+                                            }
+                                            final FxOnBoardDialogFragment onBoardDialogFragment =
+                                                    FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+                                            onBoardDialogFragment.getUserActionTypeObservable()
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(
+                                                            new Action1<FxOnBoardDialogFragment.UserAction>()
                                                             {
-                                                                handleUserEnrolledFX(action);
-                                                            }
-                                                        },
-                                                        new TimberOnErrorAction("")
-                                                );
-                                    }
-                                    else
-                                    {
-                                        if (position == 0)
-                                        {
-                                            lastType = TrendingTabType.STOCK;
+                                                                @Override public void call(FxOnBoardDialogFragment.UserAction action)
+                                                                {
+                                                                    handleUserEnrolledFX(action);
+                                                                }
+                                                            },
+                                                            new TimberOnErrorAction("")
+                                                    );
                                         }
                                         else
                                         {
-                                            lastType = TrendingTabType.FX;
-                                        }
-                                        if (!oldType.equals(lastType))
-                                        {
-                                            clearChildFragmentManager();
-                                            initViews();
+                                            if (!offOnViewSwitcherEvent.isOn)
+                                            {
+                                                lastType = TrendingTabType.STOCK;
+                                            }
+                                            else
+                                            {
+                                                lastType = TrendingTabType.FX;
+                                            }
+                                            if (!oldType.equals(lastType))
+                                            {
+                                                clearChildFragmentManager();
+                                                initViews();
+                                                getActivity().supportInvalidateOptionsMenu();
+                                            }
                                         }
                                     }
-                                }
-                            }));
-                }
+                                }));
+                    }
+                }));
 
-                @Override public void onNothingSelected(AdapterView<?> parent)
-                {
-                    //do nothing
-                }
-            };
-            configureDefaultSpinner(
-                    activity,
-                    new String[] {
-                            getString(R.string.stocks),
-                            getString(R.string.fx)},
-                    listener, lastType.ordinal());
-            needsConfigureSpinner = false;
-        }
+        actionBarOwnerMixin.setCustomView(view);
+        stockFxSwitcher.setIsOn(lastType.equals(TrendingTabType.FX), false);
     }
 
     private class TradingStockPagerAdapter extends FragmentPagerAdapter
@@ -444,6 +441,14 @@ public class TrendingMainFragment extends DashboardFragment
             TrendingStockTabType tabType = TrendingStockTabType.values()[position];
             Class fragmentClass = tabType.fragmentClass;
             TrendingStockFragment.putTabType(args, tabType);
+            if (fragmentClass.equals(TrendingStockFragment.class))
+            {
+                TrendingStockFragment.setHasOptionMenu(args, true);
+            }
+            else
+            {
+                BaseFragment.setHasOptionMenu(args, false);
+            }
             Fragment created = Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
             registeredFragments.put(position, created);
             return created;
@@ -482,6 +487,7 @@ public class TrendingMainFragment extends DashboardFragment
             {
                 FXMainPositionListFragment.putMainFXPortfolioId(args, fxPortfolioId);
             }
+            TrendingFXFragment.setHasOptionMenu(args, false);
             return Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
         }
 
@@ -542,7 +548,7 @@ public class TrendingMainFragment extends DashboardFragment
             else if (actionBarOwnerMixin != null && activity != null)
             {
                 lastType = TrendingTabType.STOCK;
-                actionBarOwnerMixin.setSpinnerSelection(activity, R.id.action_bar_spinner, TrendingTabType.STOCK.ordinal());
+                stockFxSwitcher.setIsOn(false, false);
             }
         }
         else if (selectedFxPageIndex != null)
@@ -559,7 +565,7 @@ public class TrendingMainFragment extends DashboardFragment
             else if (actionBarOwnerMixin != null && activity != null)
             {
                 lastType = TrendingTabType.FX;
-                actionBarOwnerMixin.setSpinnerSelection(activity, R.id.action_bar_spinner, TrendingTabType.FX.ordinal());
+                stockFxSwitcher.setIsOn(true, false);
             }
         }
         else if (lastType.equals(TrendingTabType.STOCK))
