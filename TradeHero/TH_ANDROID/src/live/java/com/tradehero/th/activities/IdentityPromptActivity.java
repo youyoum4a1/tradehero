@@ -61,7 +61,7 @@ public class IdentityPromptActivity extends BaseActivity
                     {
                         //noinspection ConstantConditions
                         livePoweredBy.setText(situation.kycForm.getBrokerName());
-                        return identityPromptInfoCache.getOne(new IdentityPromptInfoKey(situation.kycForm.getCountry()))
+                        return identityPromptInfoCache.getOne(new IdentityPromptInfoKey(situation.broker.id))
                                 .map(new PairGetSecond<IdentityPromptInfoKey, IdentityPromptInfoDTO>())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .map(new Func1<IdentityPromptInfoDTO, LiveBrokerSituationDTO>()

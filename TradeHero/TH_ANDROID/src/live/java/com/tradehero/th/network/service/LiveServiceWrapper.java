@@ -41,7 +41,7 @@ public class LiveServiceWrapper
 
     @NonNull public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(@NonNull IdentityPromptInfoKey identityPromptInfoKey)
     {
-        return liveServiceRx.getIdentityPromptInfo(identityPromptInfoKey.country.name());
+        return liveServiceRx.getIdentityPromptInfo(identityPromptInfoKey.brokerId.key);
     }
 
     @NonNull public Observable<LiveBrokerSituationDTO> getBrokerSituation()

@@ -15,12 +15,13 @@ public interface LiveServiceRx
 {
     @GET("/liveTradingSituation") Observable<LiveTradingSituationDTO> getLiveTradingSituation();
 
-    @POST("/applyBroker/{brokerId}") Observable<StepStatusesDTO> applyLiveBroker(
-            @Path("brokerId") int brokerId,
+    @POST("/applyBroker/{liveBrokerId}") Observable<StepStatusesDTO> applyLiveBroker(
+            @Path("liveBrokerId") int brokerId,
             @Body KYCForm kycForm);
 
-    @GET("/identityPromptInfo/{countryCode}") Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(
-            @Path("countryCode") String countryCode);
+    @GET("/identityPromptInfo/{liveBrokerId}") Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(
+            @Path("liveBrokerId") int brokerId);
 
-    @GET("/kycFormOptions/{liveBrokerId}") Observable<KYCFormOptionsDTO> getKYCFormOptions(@Path("liveBrokerId") int key);
+    @GET("/kycFormOptions/{liveBrokerId}") Observable<KYCFormOptionsDTO> getKYCFormOptions(
+            @Path("liveBrokerId") int brokerId);
 }

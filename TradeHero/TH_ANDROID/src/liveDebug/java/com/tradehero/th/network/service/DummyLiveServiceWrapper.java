@@ -23,6 +23,8 @@ import rx.functions.Func1;
 
 public class DummyLiveServiceWrapper extends LiveServiceWrapper
 {
+    private final Country pretendInCountry = Country.SG;
+
     @Inject public DummyLiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
             @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference)
@@ -58,13 +60,13 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                             @Override public Observable<? extends IdentityPromptInfoDTO> call(Throwable throwable)
                             {
                                 final Observable<IdentityPromptInfoDTO> infoDTOObservable;
-                                if (identityPromptInfoKey.country.equals(Country.AU))
+                                if (pretendInCountry.equals(Country.AU))
                                 {
                                     infoDTOObservable = Observable.just(new IdentityPromptInfoDTO(
                                             "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-au.png",
                                             "Do you have your Passport with you?"));
                                 }
-                                else if (identityPromptInfoKey.country.equals(Country.SG))
+                                else if (pretendInCountry.equals(Country.SG))
                                 {
                                     infoDTOObservable = Observable.just(new IdentityPromptInfoDTO(
                                             "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-sg.png",
@@ -72,7 +74,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                 }
                                 else
                                 {
-                                    infoDTOObservable = Observable.error(new IllegalArgumentException("Unhandled country " + identityPromptInfoKey.country));
+                                    infoDTOObservable = Observable.error(new IllegalArgumentException("Unhandled pretend country " + pretendInCountry));
                                 }
                                 return infoDTOObservable;
                             }

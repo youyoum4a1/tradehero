@@ -2,15 +2,14 @@ package com.tradehero.th.api.live;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.market.Country;
 
 public class IdentityPromptInfoKey implements DTOKey
 {
-    @NonNull public final Country country;
+    @NonNull public final LiveBrokerId brokerId;
 
-    public IdentityPromptInfoKey(@NonNull Country country)
+    public IdentityPromptInfoKey(@NonNull LiveBrokerId brokerId)
     {
-        this.country = country;
+        this.brokerId = brokerId;
     }
 
     @Override public boolean equals(Object o)
@@ -20,11 +19,11 @@ public class IdentityPromptInfoKey implements DTOKey
 
         IdentityPromptInfoKey that = (IdentityPromptInfoKey) o;
 
-        return country.equals(that.country);
+        return brokerId.equals(that.brokerId);
     }
 
     @Override public int hashCode()
     {
-        return country.hashCode();
+        return brokerId.hashCode();
     }
 }
