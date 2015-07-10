@@ -60,7 +60,7 @@
           />
     </LinearLayout>
 
-    <EditText
+    <com.tradehero.th.widget.validation.ValidatedText
         android:id="@+id/sign_up_email"
         style="@style/TH.Body"
         android:layout_width="match_parent"
@@ -68,6 +68,16 @@
         android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:minHeight="@dimen/clickable_element_min_dimen"
+
+        android:drawableRight="@drawable/accounts_glyph_transparent_default"
+        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
+        app:invalidDrawableRight="@drawable/warning_red"
+        app:validDrawableRight="@drawable/tick_green"
+
+        app:minTextLength="1"
+        app:validatePattern="@string/regex_email_validator"
+        app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
+        app:delayValidationByMilliSec="1500"
         />
 
     <RelativeLayout

@@ -19,6 +19,7 @@ import butterknife.OnClick;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.ayondo.KYCAyondoFormOptionsDTO;
@@ -43,6 +44,9 @@ import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.GraphicUtil;
+import com.tradehero.th.widget.validation.TextValidator;
+import com.tradehero.th.widget.validation.ValidatedText;
+import com.tradehero.th.widget.validation.ValidationMessage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -77,7 +81,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.et_firstname) TextView firstName;
     @Bind(R.id.et_lastname) TextView lastName;
-    @Bind(R.id.sign_up_email) TextView email;
+    @Bind(R.id.sign_up_email) ValidatedText email;
+    TextValidator emailValidator;
     @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
     @Bind(R.id.number_right) EditText phoneNumber;
     @Bind(R.id.btn_verify_phone) TextView buttonVerifyPhone;
@@ -176,6 +181,28 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         },
                         new TimberOnErrorAction("Failed to listen to last name")));
+
+        emailValidator = email.getValidator();
+        email.setOnFocusChangeListener(emailValidator);
+        email.addTextChangedListener(emailValidator);
+        onDestroyViewSubscriptions.add(emailValidator.getValidationMessageObservable()
+                .subscribe(
+                        new Action1<ValidationMessage>()
+                        {
+                            @Nullable private String previousMessage;
+
+                            @Override public void call(ValidationMessage validationMessage)
+                            {
+                                email.setStatus(validationMessage.getValidStatus());
+                                String message = validationMessage.getMessage();
+                                if (message != null && !TextUtils.isEmpty(message) && !message.equals(previousMessage))
+                                {
+                                    THToast.show(validationMessage.getMessage());
+                                }
+                                previousMessage = message;
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to listen to email validation")));
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
@@ -396,6 +423,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Override public void onDestroyView()
     {
+        email.removeTextChangedListener(emailValidator);
+        email.setOnFocusChangeListener(null);
+        emailValidator = null;
         phoneCountryCodeAdapter = null;
         residencyAdapter = null;
         nationalityAdapter = null;
