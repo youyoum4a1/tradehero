@@ -83,7 +83,6 @@ public class LiveActivityUtil
                                 onLiveTradingChanged(event);
                             }
                         }));
-        //liveSwitcher.setIsOn(isLiveTrading.get(), false);
 
         for (Fragment f : dashboardActivity.getSupportFragmentManager().getFragments())
         {
