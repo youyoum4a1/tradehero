@@ -34,10 +34,6 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("employmentStatusIncomeOptions") @NonNull List<String> employmentStatusIncomeOptions)
     {
         this.identityPromptInfo = identityPromptInfo;
-        this.annualIncomeOptions = annualIncomeOptions;
-        this.netWorthOptions = netWorthOptions;
-        this.percentNetWorthOptions = percentNetWorthOptions;
-        this.employmentStatusIncomeOptions = employmentStatusIncomeOptions;
         if (allowedMobilePhoneCountries == null)
         {
             this.allowedMobilePhoneCountries = Collections.unmodifiableList(Arrays.asList(Country.values()));
@@ -62,6 +58,10 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         {
             this.allowedResidencyCountries = Collections.unmodifiableList(allowedResidencyCountries);
         }
+        this.annualIncomeOptions = Collections.unmodifiableList(annualIncomeOptions);
+        this.netWorthOptions = Collections.unmodifiableList(netWorthOptions);
+        this.percentNetWorthOptions = Collections.unmodifiableList(percentNetWorthOptions);
+        this.employmentStatusIncomeOptions = Collections.unmodifiableList(employmentStatusIncomeOptions);
     }
 
     @NonNull @Override public IdentityPromptInfoDTO getIdentityPromptInfo()

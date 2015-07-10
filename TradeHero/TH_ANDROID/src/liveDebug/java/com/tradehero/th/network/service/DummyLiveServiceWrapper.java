@@ -12,7 +12,6 @@ import com.tradehero.th.api.live.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -61,7 +60,6 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                             @Override public Observable<? extends KYCFormOptionsDTO> call(Throwable throwable)
                             {
                                 List<Country> nationalities = new ArrayList<>(Arrays.asList(Country.values()));
-                                nationalities.remove(Country.NONE);
                                 nationalities.removeAll(createNoBusinessNationalities());
                                 KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(
                                         createIdentityPromptInfo(),
@@ -104,6 +102,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
     @NonNull public List<Country> createNoBusinessNationalities()
     {
         return Collections.unmodifiableList(Arrays.asList(
+                Country.NONE,
                 Country.IR,
                 Country.KP,
                 Country.CU,

@@ -2,8 +2,8 @@ package com.tradehero.th.widget;
 
 public class OffOnViewSwitcherEvent
 {
-    public boolean isFromUser;
-    public boolean isOn;
+    public final boolean isFromUser;
+    public final boolean isOn;
 
     public OffOnViewSwitcherEvent(boolean isFromUser, boolean isOn)
     {

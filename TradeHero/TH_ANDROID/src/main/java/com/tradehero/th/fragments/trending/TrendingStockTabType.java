@@ -22,9 +22,10 @@ public enum TrendingStockTabType
     public final boolean showExchangeSelection;
 
     //<editor-fold desc="Constructors">
-    private TrendingStockTabType(
+    TrendingStockTabType(
             @StringRes int titleStringResId,
-            @NonNull Class<? extends DashboardFragment> fragmentClass, boolean showExchangeSelection)
+            @NonNull Class<? extends DashboardFragment> fragmentClass,
+            boolean showExchangeSelection)
     {
         this.titleStringResId = titleStringResId;
         this.fragmentClass = fragmentClass;

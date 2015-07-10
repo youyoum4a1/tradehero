@@ -57,7 +57,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         return copy;
     }
 
-    @NonNull public Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
+    @NonNull protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
         return brokerSituationSubject.asObservable();
     }
@@ -73,7 +73,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         return copy;
     }
 
-    @NonNull public Observable<KYCFormOptionsDTO> createKYCFormOptionsObservable()
+    @NonNull protected Observable<KYCFormOptionsDTO> createKYCFormOptionsObservable()
     {
         return getBrokerSituationObservable()
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<KYCFormOptionsDTO>>()

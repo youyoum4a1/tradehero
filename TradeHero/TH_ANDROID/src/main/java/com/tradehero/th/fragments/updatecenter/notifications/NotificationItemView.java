@@ -130,17 +130,26 @@ public class NotificationItemView
 
     private void resetView()
     {
-        notificationContent.setText(null);
-        notificationTime.setText(null);
+        if (notificationContent != null)
+        {
+            notificationContent.setText(null);
+        }
+        if (notificationTime != null)
+        {
+            notificationTime.setText(null);
+        }
 
         resetNotificationProfilePicture();
     }
 
     private void resetNotificationProfilePicture()
     {
-        picasso.cancelRequest(notificationPicture);
-        picasso.load(R.drawable.superman_facebook)
-                .transform(userPhotoTransformation)
-                .into(notificationPicture);
+        if (notificationPicture != null)
+        {
+            picasso.cancelRequest(notificationPicture);
+            picasso.load(R.drawable.superman_facebook)
+                    .transform(userPhotoTransformation)
+                    .into(notificationPicture);
+        }
     }
 }

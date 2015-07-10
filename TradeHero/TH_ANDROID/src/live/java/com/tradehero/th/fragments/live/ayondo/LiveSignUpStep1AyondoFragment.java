@@ -450,7 +450,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         // TODO
     }
 
-    @NonNull @Override public Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
+    @NonNull @Override protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
         return super.createBrokerSituationObservable()
                 .doOnNext(new Action1<LiveBrokerSituationDTO>()

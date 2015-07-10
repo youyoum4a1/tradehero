@@ -3,6 +3,7 @@ package com.tradehero.th.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -17,7 +18,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
-public class OffOnViewSwitcher extends ViewSwitcher implements View.OnClickListener
+public class OffOnViewSwitcher extends ViewSwitcher
+        implements View.OnClickListener
 {
     private static final int ANIM_DELAY = 300;
 
@@ -39,7 +41,6 @@ public class OffOnViewSwitcher extends ViewSwitcher implements View.OnClickListe
     {
         setAnimateFirstView(false);
         mSwitchSubject = PublishSubject.create();
-        setOnClickListener(this);
 
         TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.OffOnViewSwitcher, 0, 0);
 
@@ -62,6 +63,18 @@ public class OffOnViewSwitcher extends ViewSwitcher implements View.OnClickListe
         addView(onView);
 
         a.recycle();
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        setOnClickListener(this);
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        setOnClickListener(null);
+        super.onDetachedFromWindow();
     }
 
     @Override public void onClick(View v)
@@ -87,15 +100,16 @@ public class OffOnViewSwitcher extends ViewSwitcher implements View.OnClickListe
         setOutAnimation(animate ? AnimationUtils.loadAnimation(getContext(), mIsOn ? R.anim.push_up_out : R.anim.push_down_out) : null);
     }
 
-    public Observable<OffOnViewSwitcherEvent> getSwitchObservable()
+    @NonNull public Observable<OffOnViewSwitcherEvent> getSwitchObservable()
     {
-        return mSwitchSubject.delay(ANIM_DELAY, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread()).distinctUntilChanged(
-                new Func1<OffOnViewSwitcherEvent, Boolean>()
-                {
-                    @Override public Boolean call(OffOnViewSwitcherEvent offOnViewSwitcherEvent)
-                    {
-                        return offOnViewSwitcherEvent.isOn;
-                    }
-                });
+        return mSwitchSubject.delay(ANIM_DELAY, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .distinctUntilChanged(
+                        new Func1<OffOnViewSwitcherEvent, Boolean>()
+                        {
+                            @Override public Boolean call(OffOnViewSwitcherEvent offOnViewSwitcherEvent)
+                            {
+                                return offOnViewSwitcherEvent.isOn;
+                            }
+                        });
     }
 }
