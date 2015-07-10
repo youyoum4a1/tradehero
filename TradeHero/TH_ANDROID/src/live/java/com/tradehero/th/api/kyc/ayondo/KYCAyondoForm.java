@@ -25,10 +25,10 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private String verifiedEmail;
     @JsonProperty("mobileCC")
     @Nullable private Integer mobileNumberCountryCode;
-    @Nullable private Long mobileNumber;
+    @Nullable private String mobileNumber;
     @JsonProperty("verifiedMobileCC")
     @Nullable private Integer verifiedMobileNumberCountryCode;
-    @Nullable private Long verifiedMobileNumber;
+    @Nullable private String verifiedMobileNumber;
     @Nullable private CountryCode nationality;
     @Nullable private CountryCode residency;
 
@@ -154,12 +154,12 @@ public class KYCAyondoForm implements KYCForm
         this.mobileNumberCountryCode = mobileNumberCountryCode;
     }
 
-    @Nullable public Long getMobileNumber()
+    @Nullable public String getMobileNumber()
     {
         return mobileNumber;
     }
 
-    public void setMobileNumber(@Nullable Long mobileNumber)
+    public void setMobileNumber(@Nullable String mobileNumber)
     {
         this.mobileNumber = mobileNumber;
     }
@@ -174,12 +174,12 @@ public class KYCAyondoForm implements KYCForm
         this.verifiedMobileNumberCountryCode = verifiedMobileNumberCountryCode;
     }
 
-    @Nullable public Long getVerifiedMobileNumber()
+    @Nullable public String getVerifiedMobileNumber()
     {
         return verifiedMobileNumber;
     }
 
-    public void setVerifiedMobileNumber(@Nullable Long verifiedMobileNumber)
+    public void setVerifiedMobileNumber(@Nullable String verifiedMobileNumber)
     {
         this.verifiedMobileNumber = verifiedMobileNumber;
     }

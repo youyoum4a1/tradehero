@@ -281,7 +281,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
                         populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
                         Integer countryCode = ((KYCAyondoForm) situation.kycForm).getMobileNumberCountryCode();
-                        Long phoneNumber = ((KYCAyondoForm) situation.kycForm).getMobileNumber();
+                        String phoneNumber = ((KYCAyondoForm) situation.kycForm).getMobileNumber();
                         if (countryCode != null && phoneNumber != null)
                         {
                             populateVerifyMobile((KYCAyondoForm) situation.kycForm, countryCode, phoneNumber);
@@ -312,7 +312,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             {
                                 int newCountryCode = ((CountrySpinnerAdapter.DTO) countryEvent.parent.getItemAtPosition(
                                         ((OnItemSelectedEvent) countryEvent).position)).phoneCountryCode;
-                                long newNumber = Long.parseLong(onTextChangeEvent.text().toString());
+                                String newNumber = onTextChangeEvent.text().toString();
                                 //noinspection ConstantConditions
                                 populateVerifyMobile((KYCAyondoForm) situation.kycForm, newCountryCode, newNumber);
                                 ((KYCAyondoForm) situation.kycForm).setMobileNumberCountryCode(newCountryCode);
@@ -398,7 +398,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (this.expectedCode != null && this.confirmationSubject != null)
         {
             final int phoneCountryCode = ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
-            final long phoneNumberInt = Long.parseLong(phoneNumber.getText().toString());
+            final String phoneNumberInt = phoneNumber.getText().toString();
             final String phoneNumberText = "+" + phoneCountryCode + phoneNumberInt;
             final VerifyCodeDigitView verifyCodeDigitView =
                     (VerifyCodeDigitView) LayoutInflater.from(getActivity()).inflate(R.layout.verify_phone_number, null);
@@ -483,23 +483,19 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             email.setText(emailText);
         }
 
-        Long mobileNumber = kycForm.getMobileNumber();
-        if (phoneNumber != null && mobileNumber != null)
+        String mobileNumberText = kycForm.getMobileNumber();
+        if (phoneNumber != null && mobileNumberText != null && !mobileNumberText.equals(phoneNumber.getText().toString()))
         {
-            String formatted = String.format("%d", mobileNumber);
-            if (!formatted.equals(phoneNumber.getText().toString()))
-            {
-                phoneNumber.setText(formatted);
-            }
+            phoneNumber.setText(mobileNumberText);
         }
     }
 
-    protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, int countryCode, long typedNumber)
+    protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, int countryCode, @NonNull String typedNumber)
     {
         if (buttonVerifyPhone != null)
         {
             boolean verified = Integer.valueOf(countryCode).equals(kycForm.getVerifiedMobileNumberCountryCode())
-                    && Long.valueOf(typedNumber).equals(kycForm.getVerifiedMobileNumber());
+                    && typedNumber.equals(kycForm.getVerifiedMobileNumber());
             buttonVerifyPhone.setText(verified ? R.string.verified : R.string.verify);
             buttonVerifyPhone.setEnabled(!verified);
         }
@@ -627,7 +623,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         buttonVerifyPhone.setEnabled(false);
 
         final int phoneCountryCode = ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
-        final long phoneNumberInt = Long.parseLong(phoneNumber.getText().toString());
+        final String phoneNumberInt = phoneNumber.getText().toString();
         final String phoneNumberText = "+" + phoneCountryCode + phoneNumberInt;
         String expectedCode = String.format("%04d", Math.abs(randomiser.nextInt() % 10000));
         this.expectedCode = expectedCode;
@@ -660,7 +656,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     protected void offerToEnterCode(
             final int phoneCountryCode,
-            final long phoneNumberInt,
+            final String phoneNumberInt,
             @NonNull final String phoneNumberText,
             @NonNull final String expectedCode,
             @NonNull final VerifyCodeDigitView verifyCodeDigitView,
