@@ -77,6 +77,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.et_firstname) TextView firstName;
     @Bind(R.id.et_lastname) TextView lastName;
+    @Bind(R.id.sign_up_email) TextView email;
     @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
     @Bind(R.id.number_right) EditText phoneNumber;
     @Bind(R.id.btn_verify_phone) TextView buttonVerifyPhone;
@@ -175,6 +176,28 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         },
                         new TimberOnErrorAction("Failed to listen to last name")));
+
+        onDestroyViewSubscriptions.add(Observable.combineLatest(
+                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
+                WidgetObservable.text(email),
+                new Func2<LiveBrokerSituationDTO, OnTextChangeEvent, Boolean>()
+                {
+                    @Override public Boolean call(LiveBrokerSituationDTO situation, OnTextChangeEvent emailEvent)
+                    {
+                        //noinspection ConstantConditions
+                        ((KYCAyondoForm) situation.kycForm).setEmail(emailEvent.text().toString());
+                        onNext(situation);
+                        return null;
+                    }
+                })
+                .subscribe(
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean aBoolean)
+                            {
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to listen to email")));
 
         phoneCountryCodeAdapter = new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
         spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
@@ -423,6 +446,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (lastName != null && lastNameText != null && !lastNameText.equals(lastName.getText().toString()))
         {
             lastName.setText(lastNameText);
+        }
+
+        String emailText = kycForm.getEmail();
+        if (email != null && emailText != null && !emailText.equals(email.getText().toString()))
+        {
+            email.setText(emailText);
         }
 
         Long mobileNumber = kycForm.getMobileNumber();

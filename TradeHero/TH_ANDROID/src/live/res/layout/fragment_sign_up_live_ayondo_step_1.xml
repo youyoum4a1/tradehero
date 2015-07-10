@@ -61,6 +61,7 @@
     </LinearLayout>
 
     <EditText
+        android:id="@+id/sign_up_email"
         style="@style/TH.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
