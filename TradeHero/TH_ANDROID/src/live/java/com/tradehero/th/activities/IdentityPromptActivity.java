@@ -13,14 +13,14 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.live.IdentityPromptInfoDTO;
-import com.tradehero.th.api.live.IdentityPromptInfoKey;
+import com.tradehero.th.api.live.KYCFormOptionsDTO;
+import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.models.fastfill.FastFillExceptionUtil;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.network.service.LiveServiceWrapper;
-import com.tradehero.th.persistence.live.IdentityPromptInfoCache;
+import com.tradehero.th.persistence.live.KYCFormOptionsCache;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import javax.inject.Inject;
 import rx.Observable;
@@ -37,7 +37,7 @@ public class IdentityPromptActivity extends BaseActivity
 {
     @Inject FastFillUtil fastFillUtil;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
-    @Inject IdentityPromptInfoCache identityPromptInfoCache;
+    @Inject KYCFormOptionsCache kycFormOptionsCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
 
@@ -61,15 +61,15 @@ public class IdentityPromptActivity extends BaseActivity
                     {
                         //noinspection ConstantConditions
                         livePoweredBy.setText(situation.kycForm.getBrokerName());
-                        return identityPromptInfoCache.getOne(new IdentityPromptInfoKey(situation.broker.id))
-                                .map(new PairGetSecond<IdentityPromptInfoKey, IdentityPromptInfoDTO>())
+                        return kycFormOptionsCache.getOne(situation.broker.id)
+                                .map(new PairGetSecond<LiveBrokerId, KYCFormOptionsDTO>())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .map(new Func1<IdentityPromptInfoDTO, LiveBrokerSituationDTO>()
+                                .map(new Func1<KYCFormOptionsDTO, LiveBrokerSituationDTO>()
                                 {
-                                    @Override public LiveBrokerSituationDTO call(IdentityPromptInfoDTO identityPromptInfoDTO)
+                                    @Override public LiveBrokerSituationDTO call(KYCFormOptionsDTO kycFormOptions)
                                     {
-                                        picasso.load(identityPromptInfoDTO.image).placeholder(R.drawable.image_identity_proof).into(imgPrompt);
-                                        txtPrompt.setText(identityPromptInfoDTO.prompt);
+                                        picasso.load(kycFormOptions.getIdentityPromptInfo().image).placeholder(R.drawable.image_identity_proof).into(imgPrompt);
+                                        txtPrompt.setText(kycFormOptions.getIdentityPromptInfo().prompt);
                                         return situation;
                                     }
                                 });

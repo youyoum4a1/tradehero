@@ -2,7 +2,6 @@ package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.live.IdentityPromptInfoDTO;
-import com.tradehero.th.api.live.IdentityPromptInfoKey;
 import com.tradehero.th.api.live.KYCFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
@@ -50,37 +49,6 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                         });
     }
 
-    @NonNull @Override public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(@NonNull final IdentityPromptInfoKey identityPromptInfoKey)
-    {
-        return super.getIdentityPromptInfo(identityPromptInfoKey)
-                .timeout(1, TimeUnit.SECONDS)
-                .onErrorResumeNext(
-                        new Func1<Throwable, Observable<? extends IdentityPromptInfoDTO>>()
-                        {
-                            @Override public Observable<? extends IdentityPromptInfoDTO> call(Throwable throwable)
-                            {
-                                final Observable<IdentityPromptInfoDTO> infoDTOObservable;
-                                if (pretendInCountry.equals(Country.AU))
-                                {
-                                    infoDTOObservable = Observable.just(new IdentityPromptInfoDTO(
-                                            "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-au.png",
-                                            "Do you have your Passport with you?"));
-                                }
-                                else if (pretendInCountry.equals(Country.SG))
-                                {
-                                    infoDTOObservable = Observable.just(new IdentityPromptInfoDTO(
-                                            "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-sg.png",
-                                            "Singapore NRIC/ Driver's License"));
-                                }
-                                else
-                                {
-                                    infoDTOObservable = Observable.error(new IllegalArgumentException("Unhandled pretend country " + pretendInCountry));
-                                }
-                                return infoDTOObservable;
-                            }
-                        });
-    }
-
     @NonNull @Override public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull LiveBrokerId liveBrokerId)
     {
         return super.getKYCFormOptions(liveBrokerId)
@@ -92,8 +60,9 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                             {
                                 List<Country> nationalities = new ArrayList<>(Arrays.asList(Country.values()));
                                 nationalities.remove(Country.NONE);
-                                nationalities.removeAll(getNoBusinessNationalities());
+                                nationalities.removeAll(createNoBusinessNationalities());
                                 KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(
+                                        createIdentityPromptInfo(),
                                         Arrays.asList(Country.SG, Country.AU, Country.GB),
                                         nationalities,
                                         Arrays.asList(Country.SG, Country.AU, Country.GB));
@@ -102,7 +71,29 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                         });
     }
 
-    @NonNull public List<Country> getNoBusinessNationalities()
+    @NonNull private IdentityPromptInfoDTO createIdentityPromptInfo()
+    {
+        IdentityPromptInfoDTO identityPromptInfo;
+        if (pretendInCountry.equals(Country.AU))
+        {
+            identityPromptInfo = new IdentityPromptInfoDTO(
+                    "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-au.png",
+                    "Do you have your Passport with you?");
+        }
+        else if (pretendInCountry.equals(Country.SG))
+        {
+            identityPromptInfo = new IdentityPromptInfoDTO(
+                    "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-sg.png",
+                    "Singapore NRIC/ Driver's License");
+        }
+        else
+        {
+            throw new IllegalArgumentException("Unhandled pretend country " + pretendInCountry);
+        }
+        return identityPromptInfo;
+    }
+
+    @NonNull public List<Country> createNoBusinessNationalities()
     {
         return Collections.unmodifiableList(Arrays.asList(
                 Country.IR,

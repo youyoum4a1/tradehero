@@ -1,8 +1,6 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.live.IdentityPromptInfoDTO;
-import com.tradehero.th.api.live.IdentityPromptInfoKey;
 import com.tradehero.th.api.live.KYCFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
@@ -37,11 +35,6 @@ public class LiveServiceWrapper
             @NonNull KYCForm kycForm)
     {
         return liveServiceRx.applyLiveBroker(brokerId.key, kycForm);
-    }
-
-    @NonNull public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(@NonNull IdentityPromptInfoKey identityPromptInfoKey)
-    {
-        return liveServiceRx.getIdentityPromptInfo(identityPromptInfoKey.brokerId.key);
     }
 
     @NonNull public Observable<LiveBrokerSituationDTO> getBrokerSituation()

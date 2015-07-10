@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.th.api.live.IdentityPromptInfoDTO;
 import com.tradehero.th.api.live.KYCFormOptionsDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.models.kyc.KYCForm;
@@ -18,9 +17,6 @@ public interface LiveServiceRx
     @POST("/applyBroker/{liveBrokerId}") Observable<StepStatusesDTO> applyLiveBroker(
             @Path("liveBrokerId") int brokerId,
             @Body KYCForm kycForm);
-
-    @GET("/identityPromptInfo/{liveBrokerId}") Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(
-            @Path("liveBrokerId") int brokerId);
 
     @GET("/kycFormOptions/{liveBrokerId}") Observable<KYCFormOptionsDTO> getKYCFormOptions(
             @Path("liveBrokerId") int brokerId);
