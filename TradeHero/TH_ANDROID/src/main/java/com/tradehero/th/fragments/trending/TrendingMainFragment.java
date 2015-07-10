@@ -245,19 +245,7 @@ public class TrendingMainFragment extends DashboardFragment
             }
         });
 
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
-                this,
-                userProfileObservable)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<UserProfileDTO>()
-                        {
-                            @Override public void call(UserProfileDTO userProfileDTO)
-                            {
-                                initViews();
-                            }
-                        },
-                        new EmptyAction1<Throwable>()));
+        initViews();
         analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
     }
 
@@ -461,6 +449,19 @@ public class TrendingMainFragment extends DashboardFragment
     private void setupExchangeSpinner(View view)
     {
         exchangeSpinner = (ExchangeSpinner) view.findViewById(R.id.exchange_selection_menu);
+        if (lastType == TrendingTabType.FX)
+        {
+            exchangeSpinner.setVisibility(View.GONE);
+            return;
+        }
+        else if (!TrendingStockTabType.values()[tabViewPager.getCurrentItem()].showExchangeSelection)
+        {
+            exchangeSpinner.setVisibility(View.GONE);
+            return;
+        }
+
+        exchangeSpinner.setVisibility(View.VISIBLE);
+
         exchangeAdapter = new TrendingFilterSpinnerIconAdapter(
                 getActivity(),
                 R.layout.trending_filter_spinner_item_short);
@@ -516,7 +517,7 @@ public class TrendingMainFragment extends DashboardFragment
                             {
                                 exchangeAdapter.addAll(list);
                                 exchangeAdapter.notifyDataSetChanged();
-                                handlePageRouting();
+                                handleExchangeRouting();
                             }
                         },
                         new ToastAndLogOnErrorAction(
@@ -609,7 +610,11 @@ public class TrendingMainFragment extends DashboardFragment
         {
             throw new RuntimeException("Unhandled TrendingTabType." + lastType);
         }
+        clearRoutingParam();
+    }
 
+    private void handleExchangeRouting()
+    {
         if (routedExchangeId != null
                 && lastType.equals(TrendingTabType.STOCK))
         {
@@ -620,7 +625,6 @@ public class TrendingMainFragment extends DashboardFragment
         {
             exchangeSpinner.setSelectionById(new ExchangeIntegerId(preferredExchangeMarket.get()));
         }
-        clearRoutingParam();
     }
 
     private void clearRoutingParam()
