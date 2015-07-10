@@ -51,7 +51,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         Observable<LiveBrokerSituationDTO> copy = brokerSituationObservable;
         if (copy == null)
         {
-            copy = createBrokerSituationObservable().share();
+            copy = createBrokerSituationObservable().share().cache(1);
             brokerSituationObservable = copy;
         }
         return copy;
@@ -67,7 +67,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         Observable<KYCFormOptionsDTO> copy = kycOptionsObservable;
         if (copy == null)
         {
-            copy = createKYCFormOptionsObservable().share();
+            copy = createKYCFormOptionsObservable().share().cache(1);
             kycOptionsObservable = copy;
         }
         return copy;
