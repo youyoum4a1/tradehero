@@ -33,6 +33,7 @@
           android:id="@+id/info_annual_income"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
+          android:paddingLeft="@dimen/margin_small"
           style="@style/TH.Spinner"
           />
 
@@ -48,6 +49,7 @@
           android:id="@+id/info_net_worth"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
+          android:paddingLeft="@dimen/margin_small"
           style="@style/TH.Spinner"
           />
 
@@ -63,6 +65,7 @@
           android:id="@+id/info_percent_for_investment"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
+          android:paddingLeft="@dimen/margin_small"
           style="@style/TH.Spinner"
           />
 
@@ -78,6 +81,7 @@
           android:id="@+id/info_employment_status"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
+          android:paddingLeft="@dimen/margin_small"
           style="@style/TH.Spinner"
           />
 
