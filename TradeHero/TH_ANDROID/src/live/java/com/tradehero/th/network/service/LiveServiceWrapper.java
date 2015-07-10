@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.live.KYCFormOptionsDTO;
+import com.tradehero.th.api.live.KYCFormOptionsId;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
@@ -75,8 +76,8 @@ public class LiveServiceWrapper
                 });
     }
 
-    @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull LiveBrokerId liveBrokerId)
+    @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)
     {
-        return liveServiceRx.getKYCFormOptions(liveBrokerId.key);
+        return liveServiceRx.getKYCFormOptions(optionsId.brokerId.key);
     }
 }

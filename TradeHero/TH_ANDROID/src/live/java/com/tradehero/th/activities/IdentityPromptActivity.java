@@ -14,6 +14,7 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.live.KYCFormOptionsDTO;
+import com.tradehero.th.api.live.KYCFormOptionsId;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.models.fastfill.FastFillExceptionUtil;
@@ -61,14 +62,16 @@ public class IdentityPromptActivity extends BaseActivity
                     {
                         //noinspection ConstantConditions
                         livePoweredBy.setText(situation.kycForm.getBrokerName());
-                        return kycFormOptionsCache.getOne(situation.broker.id)
-                                .map(new PairGetSecond<LiveBrokerId, KYCFormOptionsDTO>())
+                        return kycFormOptionsCache.getOne(new KYCFormOptionsId(situation.broker.id))
+                                .map(new PairGetSecond<KYCFormOptionsId, KYCFormOptionsDTO>())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .map(new Func1<KYCFormOptionsDTO, LiveBrokerSituationDTO>()
                                 {
                                     @Override public LiveBrokerSituationDTO call(KYCFormOptionsDTO kycFormOptions)
                                     {
-                                        picasso.load(kycFormOptions.getIdentityPromptInfo().image).placeholder(R.drawable.image_identity_proof).into(imgPrompt);
+                                        picasso.load(kycFormOptions.getIdentityPromptInfo().image)
+                                                .placeholder(R.drawable.image_identity_proof)
+                                                .into(imgPrompt);
                                         txtPrompt.setText(kycFormOptions.getIdentityPromptInfo().prompt);
                                         return situation;
                                     }

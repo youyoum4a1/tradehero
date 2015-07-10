@@ -5,7 +5,7 @@ import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.api.live.KYCFormOptionsDTO;
-import com.tradehero.th.api.live.LiveBrokerId;
+import com.tradehero.th.api.live.KYCFormOptionsId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.persistence.live.KYCFormOptionsCache;
@@ -55,8 +55,8 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                 {
                     @Override public Observable<KYCFormOptionsDTO> call(LiveBrokerSituationDTO situationDTO)
                     {
-                        return kycFormOptionsCache.getOne(situationDTO.broker.id)
-                                .map(new PairGetSecond<LiveBrokerId, KYCFormOptionsDTO>());
+                        return kycFormOptionsCache.getOne(new KYCFormOptionsId(situationDTO.broker.id))
+                                .map(new PairGetSecond<KYCFormOptionsId, KYCFormOptionsDTO>());
                     }
                 });
     }

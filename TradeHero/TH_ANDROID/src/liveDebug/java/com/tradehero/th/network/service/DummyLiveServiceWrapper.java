@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.live.IdentityPromptInfoDTO;
 import com.tradehero.th.api.live.KYCFormOptionsDTO;
+import com.tradehero.th.api.live.KYCFormOptionsId;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
@@ -49,9 +50,9 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                         });
     }
 
-    @NonNull @Override public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull LiveBrokerId liveBrokerId)
+    @NonNull @Override public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)
     {
-        return super.getKYCFormOptions(liveBrokerId)
+        return super.getKYCFormOptions(optionsId)
                 .timeout(1, TimeUnit.SECONDS)
                 .onErrorResumeNext(
                         new Func1<Throwable, Observable<? extends KYCFormOptionsDTO>>()
