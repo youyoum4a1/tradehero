@@ -58,12 +58,11 @@
   </LinearLayout>
 
   <ImageView
-      android:layout_width="@dimen/small_image_w_h"
-      android:layout_height="@dimen/small_image_w_h"
       android:id="@+id/close"
+      style="@style/TH.Btn_Popup_Close.Inverse"
       android:layout_alignParentTop="true"
       android:layout_alignParentRight="true"
-      android:src="@drawable/icn_popup_close"
+      android:layout_alignParentEnd="true"
       />
 
 

@@ -506,13 +506,17 @@
   </style>
 
   <style name="TH.Btn_Popup_Close">
-    <item name="android:src">@drawable/ic_btn_popup_close</item>
+    <item name="android:src">@drawable/ic_btn_popup_close_blue</item>
     <item name="android:minWidth">@dimen/clickable_element_min_dimen</item>
     <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
     <item name="android:layout_width">@dimen/clickable_element_min_dimen</item>
     <item name="android:layout_height">@dimen/clickable_element_min_dimen</item>
     <item name="android:scaleType">centerInside</item>
     <item name="android:background">@drawable/basic_transparent_selector</item>
+  </style>
+
+  <style name="TH.Btn_Popup_Close.Inverse">
+    <item name="android:src">@drawable/ic_btn_popup_close_white</item>
   </style>
 
   <style name="TH.RatingBarSmall"

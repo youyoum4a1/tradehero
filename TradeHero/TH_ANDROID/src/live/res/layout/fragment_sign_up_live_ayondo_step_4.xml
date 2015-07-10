@@ -39,11 +39,9 @@
               />
 
           <ImageButton
-              android:layout_width="@dimen/clickable_element_min_dimen"
-              android:layout_height="@dimen/clickable_element_min_dimen"
+              style="@style/TH.Btn_Popup_Close.Inverse"
               android:layout_alignParentEnd="true"
               android:layout_alignParentRight="true"
-              android:src="@drawable/icn_popup_close"
               android:background="?attr/selectableItemBackgroundBorderless"
               />
 

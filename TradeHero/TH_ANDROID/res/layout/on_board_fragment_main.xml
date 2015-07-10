@@ -28,10 +28,9 @@
 
   <ImageView
       android:id="@android:id/closeButton"
-      style="@style/TH.Btn_Popup_Close"
+      style="@style/TH.Btn_Popup_Close.Inverse"
       android:layout_alignParentRight="true"
       android:layout_alignParentEnd="true"
-      android:src="@drawable/icn_popup_close"
       android:background="@drawable/basic_transparent_selector"
       />
 

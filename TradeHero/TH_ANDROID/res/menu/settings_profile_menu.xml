@@ -7,7 +7,7 @@
   <item
       app:showAsAction="always"
       android:id="@+id/close"
-      android:icon="@drawable/icn_popup_close"
+      android:icon="@drawable/ic_btn_popup_close_white"
       android:title="@string/close"/>
 
 </menu>
