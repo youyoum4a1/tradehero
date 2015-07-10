@@ -174,11 +174,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
         inflater.inflate(R.menu.search_menu, menu);
     }
 
-    @Override public boolean shouldShowExchangeSpinner()
-    {
-        return true;
-    }
-
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())
@@ -212,7 +207,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
         this.trendingFilterTypeDTO = trendingFilterTypeDTO;
         if (hasChanged)
         {
-            //TODO move this: preferredExchangeMarket.set(trendingFilterTypeDTO.exchange.getExchangeIntegerId());
             scheduleRequestData();
         }
         else

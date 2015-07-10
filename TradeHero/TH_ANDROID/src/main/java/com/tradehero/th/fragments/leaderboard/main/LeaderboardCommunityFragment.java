@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,7 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
@@ -24,7 +24,6 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.BaseActivity;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
@@ -46,6 +45,8 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.widget.OffOnViewSwitcher;
+import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -65,6 +66,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject @THPreference(PreferenceModule.PREF_ON_BOARDING_EXCHANGE) StringPreference onBoardExchangePref;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
+    @Inject Toolbar toolbar;
 
     @Bind(R.id.community_screen) BetterViewAnimator communityScreen;
     @Bind(R.id.pager) ViewPager tabViewPager;
@@ -73,7 +75,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     private BaseWebViewFragment webFragment;
     private int currentDisplayedChildLayoutId;
     private LeaderboardDefDTOList leaderboardDefDTOs;
-    private boolean needsConfigureSpinner = false;
 
     /* The following 2 static fields are used to save the status of ActionBar and Tabs, so that users can still
     * return to the same page from other fragments.
@@ -82,6 +83,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     private static int lastTabPosition = 0;
 
     @Nullable protected Subscription leaderboardDefListFetchSubscription;
+    private OffOnViewSwitcher stockFxSwitcher;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -191,6 +193,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onDestroy()
     {
         detachWebFragment();
+        toolbar = null;
         super.onDestroy();
     }
 
@@ -199,50 +202,38 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.social_search_menu, menu);
-        setActionBarTitle("");
-        needsConfigureSpinner = true;
-        setUpToolbarSpinner();
+        setUpCustomToolbarView();
     }
 
-    private void setUpToolbarSpinner()
+    private void setUpCustomToolbarView()
     {
-        //BaseActivity activity = (BaseActivity) getActivity();
-        //if (activity != null && needsConfigureSpinner)
-        //{
-        //    AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener()
-        //    {
-        //        @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-        //        {
-        //            LeaderboardType type;
-        //            if (position == 0)
-        //            {
-        //                type = LeaderboardType.STOCKS;
-        //            }
-        //            else
-        //            {
-        //                type = LeaderboardType.FX;
-        //            }
-        //            Timber.e("onItemSelected: " + parent.getItemAtPosition(position));
-        //            if (type != leaderboardType)
-        //            {
-        //                leaderboardType = type;
-        //                setUpViewPager();
-        //            }
-        //        }
-        //
-        //        @Override public void onNothingSelected(AdapterView<?> parent)
-        //        {
-        //            //do nothing
-        //        }
-        //    };
-        //    configureDefaultSpinner(
-        //            activity,
-        //            new String[] {
-        //                    getString(R.string.leaderboard_type_stocks),
-        //                    getString(R.string.leaderboard_type_fx)},
-        //            listener, leaderboardType.ordinal());
-        //    needsConfigureSpinner = false;
-        //}
+        View view = LayoutInflater.from(actionBarOwnerMixin.getActionBar().getThemedContext())
+                .inflate(R.layout.leaderboard_custom_actionbar, toolbar, false);
+        setActionBarTitle("");
+        stockFxSwitcher = (OffOnViewSwitcher) view.findViewById(R.id.switch_stock_fx);
+        onDestroyOptionsMenuSubscriptions.add(stockFxSwitcher.getSwitchObservable()
+                .subscribe(new Action1<OffOnViewSwitcherEvent>()
+                {
+                    @Override public void call(OffOnViewSwitcherEvent event)
+                    {
+                        LeaderboardType type;
+                        if (!event.isOn)
+                        {
+                            type = LeaderboardType.STOCKS;
+                        }
+                        else
+                        {
+                            type = LeaderboardType.FX;
+                        }
+                        if (type != leaderboardType)
+                        {
+                            leaderboardType = type;
+                            setUpViewPager();
+                        }
+                    }
+                }));
+        stockFxSwitcher.setIsOn(leaderboardType.equals(LeaderboardType.FX), false);
+        actionBarOwnerMixin.setCustomView(view);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
@@ -259,7 +250,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        needsConfigureSpinner = false;
+        stockFxSwitcher = null;
         super.onDestroyOptionsMenu();
     }
     //</editor-fold>
