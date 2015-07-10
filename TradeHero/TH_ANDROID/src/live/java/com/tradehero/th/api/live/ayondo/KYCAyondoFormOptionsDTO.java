@@ -18,14 +18,26 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final List<Country> allowedMobilePhoneCountries;
     @NonNull public final List<Country> allowedNationalityCountries;
     @NonNull public final List<Country> allowedResidencyCountries;
+    @NonNull public final List<String> annualIncomeOptions;
+    @NonNull public final List<String> netWorthOptions;
+    @NonNull public final List<String> percentNetWorthOptions;
+    @NonNull public final List<String> employmentStatusIncomeOptions;
 
     public KYCAyondoFormOptionsDTO(
             @JsonProperty("identityPromptInfo") @NonNull IdentityPromptInfoDTO identityPromptInfo,
             @JsonProperty("allowedMobilePhoneCountries") @Nullable List<Country> allowedMobilePhoneCountries,
             @JsonProperty("allowedNationalityCountries") @Nullable List<Country> allowedNationalityCountries,
-            @JsonProperty("allowedResidencyCountries") @Nullable List<Country> allowedResidencyCountries)
+            @JsonProperty("allowedResidencyCountries") @Nullable List<Country> allowedResidencyCountries,
+            @JsonProperty("annualIncomeOptions") @NonNull List<String> annualIncomeOptions,
+            @JsonProperty("netWorthOptions") @NonNull List<String> netWorthOptions,
+            @JsonProperty("percentNetWorthOptions") @NonNull List<String> percentNetWorthOptions,
+            @JsonProperty("employmentStatusIncomeOptions") @NonNull List<String> employmentStatusIncomeOptions)
     {
         this.identityPromptInfo = identityPromptInfo;
+        this.annualIncomeOptions = annualIncomeOptions;
+        this.netWorthOptions = netWorthOptions;
+        this.percentNetWorthOptions = percentNetWorthOptions;
+        this.employmentStatusIncomeOptions = employmentStatusIncomeOptions;
         if (allowedMobilePhoneCountries == null)
         {
             this.allowedMobilePhoneCountries = Collections.unmodifiableList(Arrays.asList(Country.values()));

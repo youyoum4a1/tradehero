@@ -12,6 +12,7 @@ import com.tradehero.th.api.live.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,7 +67,13 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                         createIdentityPromptInfo(),
                                         Arrays.asList(Country.SG, Country.AU, Country.GB),
                                         nationalities,
-                                        Arrays.asList(Country.SG, Country.AU, Country.GB));
+                                        Arrays.asList(Country.SG, Country.AU, Country.GB),
+                                        Arrays.asList("Less than $15,000", "$15,000 - $40,000", "$40,001 - $70,000", "$70,001 - $100,000",
+                                                "more than $100,000"),
+                                        Arrays.asList("Less than $15,000", "$15,000 - $40,000", "$40,001 - $70,000", "$70,001 - $100,000",
+                                                "$100,001 - $500,000", "more than $500,000"),
+                                        Arrays.asList("Less than 25 %", "25 - 50 %", "51 - 75 %", "more than 75%"),
+                                        Arrays.asList("Employed", "Self-Employed", "Unemployed", "Retired", "Student"));
                                 return Observable.just(options);
                             }
                         });
