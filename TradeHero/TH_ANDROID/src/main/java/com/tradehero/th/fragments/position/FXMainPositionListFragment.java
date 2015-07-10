@@ -115,7 +115,6 @@ public class FXMainPositionListFragment extends BasePurchaseManagerFragment
             PositionListFragment.putPositionType(args, positionType);
             args.putBoolean(PositionListFragment.BUNDLE_KEY_SHOW_TITLE, false);
             args.putBoolean(PositionListFragment.BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO, true);
-            PositionListFragment.setHasOptionMenu(args, getHasOptionMenu(getArguments()));
 
             return Fragment.instantiate(getActivity(), PositionListFragment.class.getName(), args);
         }

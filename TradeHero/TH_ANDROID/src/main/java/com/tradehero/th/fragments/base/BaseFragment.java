@@ -152,16 +152,24 @@ public class BaseFragment extends Fragment
             return;
         }
 
-        if (isOptionMenuVisible)
+        if (getParentFragment() == null)
         {
-            showSupportActionBar();
-        }
-        else
-        {
-            hideSupportActionBar();
-        }
+            /**
+             * If the fragment is being hosted by another fragment,
+             * we don't need to setup the home/drawer menu button.
+             * We let the parent fragment to handle the menu, such that there is no conflict
+             */
+            if (isOptionMenuVisible)
+            {
+                showSupportActionBar();
+            }
+            else
+            {
+                hideSupportActionBar();
+            }
 
-        actionBarOwnerMixin.onCreateOptionsMenu(menu, inflater);
+            actionBarOwnerMixin.onCreateOptionsMenu(menu, inflater);
+        }
 
         super.onCreateOptionsMenu(menu, inflater);
     }

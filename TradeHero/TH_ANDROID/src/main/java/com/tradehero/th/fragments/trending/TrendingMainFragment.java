@@ -18,33 +18,49 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.BaseActivity;
+import com.tradehero.th.adapters.DTOAdapterNew;
+import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
+import com.tradehero.th.api.market.ExchangeCompactDTOList;
+import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeIntegerId;
+import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.base.TrendingLiveFragmentUtil;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.position.FXMainPositionListFragment;
+import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
+import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
+import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
+import com.tradehero.th.persistence.market.ExchangeMarketPreference;
+import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.OffOnViewSwitcher;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
@@ -58,6 +74,7 @@ import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 @Routable({
@@ -77,6 +94,10 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject THRouter thRouter;
     @Inject Toolbar toolbar;
+    @Inject Analytics analytics;
+    @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
+    @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
+
     @RouteProperty("stockPageIndex") Integer selectedStockPageIndex;
     @RouteProperty("fxPageIndex") Integer selectedFxPageIndex;
     @RouteProperty("exchangeId") Integer routedExchangeId;
@@ -93,6 +114,10 @@ public class TrendingMainFragment extends DashboardFragment
     public static boolean fxDialogShowed = false;
     private TrendingLiveFragmentUtil trendingLiveFragmentUtil;
     private OffOnViewSwitcher stockFxSwitcher;
+    private ExchangeSpinner exchangeSpinner;
+    private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
+    private BehaviorSubject<ExchangeCompactSpinnerDTO> exchangeSpinnerDTOSubject;
+    private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -180,6 +205,8 @@ public class TrendingMainFragment extends DashboardFragment
                 Timber.e(e, "Unhandled assetClass for user " + currentUserId.get());
             }
         }
+
+        exchangeSpinnerDTOSubject = BehaviorSubject.create();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -231,6 +258,7 @@ public class TrendingMainFragment extends DashboardFragment
                             }
                         },
                         new EmptyAction1<Throwable>()));
+        analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
     }
 
     private void initViews()
@@ -256,23 +284,12 @@ public class TrendingMainFragment extends DashboardFragment
         pagerSlidingTabStrip.setDistributeEvenly(!lastType.equals(TrendingTabType.STOCK));
         pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabStrip.setViewPager(tabViewPager);
-        handleRouting();
     }
 
     @Override public void onResume()
     {
         super.onResume();
         thRouter.inject(this, getArguments());
-        handleRouting();
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle("");
-        inflateCustomToolbarView();
-        handleRouting();
-        //Loop through children
     }
 
     @Override public boolean shouldShowLiveTradingToggle()
@@ -289,7 +306,6 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        stockFxSwitcher = null;
         super.onDestroyOptionsMenu();
     }
 
@@ -309,6 +325,10 @@ public class TrendingMainFragment extends DashboardFragment
     {
         this.tradingStockPagerAdapter = null;
         this.tradingFXPagerAdapter = null;
+        this.exchangeAdapter = null;
+        this.exchangeSpinnerDTOSubject = null;
+        this.stockFxSwitcher = null;
+        this.exchangeSpinner = null;
         super.onDestroy();
     }
 
@@ -318,12 +338,27 @@ public class TrendingMainFragment extends DashboardFragment
         super.onDetach();
     }
 
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflateCustomToolbarView();
+        handlePageRouting();
+    }
+
     private void inflateCustomToolbarView()
     {
         View view = LayoutInflater.from(actionBarOwnerMixin.getActionBar().getThemedContext())
                 .inflate(R.layout.trending_custom_actionbar, toolbar, false);
+        setActionBarTitle("");
+        setupStockFxSwitcher(view);
+        setupExchangeSpinner(view);
+        actionBarOwnerMixin.setCustomView(view);
+    }
+
+    private void setupStockFxSwitcher(View view)
+    {
         stockFxSwitcher = (OffOnViewSwitcher) view.findViewById(R.id.switch_stock_fx);
-        onDestroySubscriptions.add(stockFxSwitcher.getSwitchObservable()
+        onDestroyOptionsMenuSubscriptions.add(stockFxSwitcher.getSwitchObservable()
                 .subscribe(new Action1<OffOnViewSwitcherEvent>()
                 {
                     @Override public void call(final OffOnViewSwitcherEvent offOnViewSwitcherEvent)
@@ -420,86 +455,80 @@ public class TrendingMainFragment extends DashboardFragment
                     }
                 }));
 
-        actionBarOwnerMixin.setCustomView(view);
         stockFxSwitcher.setIsOn(lastType.equals(TrendingTabType.FX), false);
     }
 
-    private class TradingStockPagerAdapter extends FragmentPagerAdapter
+    private void setupExchangeSpinner(View view)
     {
-        @NonNull final SparseArray<Fragment> registeredFragments;
+        exchangeSpinner = (ExchangeSpinner) view.findViewById(R.id.exchange_selection_menu);
+        exchangeAdapter = new TrendingFilterSpinnerIconAdapter(
+                getActivity(),
+                R.layout.trending_filter_spinner_item_short);
+        exchangeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
+        exchangeSpinner.setAdapter(exchangeAdapter);
 
-        public TradingStockPagerAdapter(FragmentManager fragmentManager)
+        exchangeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
-            super(fragmentManager);
-            registeredFragments = new SparseArray<>();
-        }
-
-        @Override public Fragment getItem(int position)
-        {
-            Bundle args = new Bundle();
-            ActionBarOwnerMixin.putKeyShowHomeAsUp(args, false);
-            TrendingStockTabType tabType = TrendingStockTabType.values()[position];
-            Class fragmentClass = tabType.fragmentClass;
-            TrendingStockFragment.putTabType(args, tabType);
-            if (fragmentClass.equals(TrendingStockFragment.class))
+            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
             {
-                TrendingStockFragment.setHasOptionMenu(args, true);
+                onExchangeSelected(parent, view, position, id);
             }
-            else
+
+            @Override public void onNothingSelected(AdapterView<?> parent)
             {
-                BaseFragment.setHasOptionMenu(args, false);
             }
-            Fragment created = Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
-            registeredFragments.put(position, created);
-            return created;
-        }
+        });
 
-        @Override public CharSequence getPageTitle(int position)
-        {
-            return getString(TrendingStockTabType.values()[position].titleStringResId);
-        }
-
-        @Override public int getCount()
-        {
-            return TrendingStockTabType.values().length;
-        }
-
-        @Override public void destroyItem(ViewGroup container, int position, Object object)
-        {
-            registeredFragments.remove(position);
-            super.destroyItem(container, position, object);
-        }
+        ExchangeListType key = new ExchangeListType();
+        onDestroyOptionsMenuSubscriptions.add(AppObservable.bindFragment(
+                this,
+                exchangeCompactListCache.getOne(key)
+                        .map(new PairGetSecond<ExchangeListType, ExchangeCompactDTOList>()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<ExchangeCompactDTOList, ExchangeCompactSpinnerDTOList>()
+                {
+                    @Override public ExchangeCompactSpinnerDTOList call(ExchangeCompactDTOList exchangeDTOs)
+                    {
+                        ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
+                                getResources(),
+                                ExchangeCompactDTOUtil.filterAndOrderForTrending(
+                                        exchangeDTOs,
+                                        new ExchangeCompactDTODescriptionNameComparator<>()));
+                        // Adding the "All" choice
+                        spinnerList.add(0, new ExchangeCompactSpinnerDTO(getResources()));
+                        return spinnerList;
+                    }
+                })
+                .startWith(exchangeCompactSpinnerDTOList != null ? Observable.just(exchangeCompactSpinnerDTOList)
+                        : Observable.<ExchangeCompactSpinnerDTOList>empty())
+                .distinctUntilChanged()
+                .doOnNext(new Action1<ExchangeCompactSpinnerDTOList>()
+                {
+                    @Override public void call(ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs)
+                    {
+                        exchangeCompactSpinnerDTOList = exchangeCompactSpinnerDTOs;
+                    }
+                })
+                .subscribe(
+                        new Action1<ExchangeCompactSpinnerDTOList>()
+                        {
+                            @Override public void call(ExchangeCompactSpinnerDTOList list)
+                            {
+                                exchangeAdapter.addAll(list);
+                                exchangeAdapter.notifyDataSetChanged();
+                                handlePageRouting();
+                            }
+                        },
+                        new ToastAndLogOnErrorAction(
+                                getString(R.string.error_fetch_exchange_list_info),
+                                "Error fetching the list of exchanges")));
     }
 
-    private class TradingFXPagerAdapter extends FragmentPagerAdapter
+    protected void onExchangeSelected(AdapterView<?> parent, View view, int position, long id)
     {
-        public TradingFXPagerAdapter(FragmentManager fragmentManager)
-        {
-            super(fragmentManager);
-        }
-
-        @Override public Fragment getItem(int position)
-        {
-            Bundle args = new Bundle();
-            ActionBarOwnerMixin.putKeyShowHomeAsUp(args, false);
-            Class fragmentClass = TrendingFXTabType.values()[position].fragmentClass;
-            if (fragmentClass.equals((Class) FXMainPositionListFragment.class))
-            {
-                FXMainPositionListFragment.putMainFXPortfolioId(args, fxPortfolioId);
-            }
-            TrendingFXFragment.setHasOptionMenu(args, false);
-            return Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
-        }
-
-        @Override public CharSequence getPageTitle(int position)
-        {
-            return getString(TrendingFXTabType.values()[position].titleStringResId);
-        }
-
-        @Override public int getCount()
-        {
-            return TrendingFXTabType.values().length;
-        }
+        ExchangeCompactSpinnerDTO dto = (ExchangeCompactSpinnerDTO) parent.getItemAtPosition(position);
+        preferredExchangeMarket.set(dto.getExchangeIntegerId());
+        exchangeSpinnerDTOSubject.onNext(dto);
     }
 
     protected void handleUserEnrolledFX(@NonNull FxOnBoardDialogFragment.UserAction userAction)
@@ -531,7 +560,7 @@ public class TrendingMainFragment extends DashboardFragment
         }
     }
 
-    protected void handleRouting()
+    protected void handlePageRouting()
     {
         BaseActivity activity = (BaseActivity) getActivity();
         if (selectedStockPageIndex != null)
@@ -582,16 +611,29 @@ public class TrendingMainFragment extends DashboardFragment
         }
 
         if (routedExchangeId != null
-                && tabViewPager != null
                 && lastType.equals(TrendingTabType.STOCK))
         {
-            Fragment currentFragment = tradingStockPagerAdapter.registeredFragments.get(tabViewPager.getCurrentItem());
-            if (currentFragment instanceof TrendingStockFragment)
-            {
-                ((TrendingStockFragment) currentFragment).setExchangeByCode(routedExchangeId);
-                routedExchangeId = null;
-            }
+            exchangeSpinner.setSelectionById(new ExchangeIntegerId(routedExchangeId));
+            routedExchangeId = null;
         }
+        else if (lastType.equals(TrendingTabType.STOCK))
+        {
+            exchangeSpinner.setSelectionById(new ExchangeIntegerId(preferredExchangeMarket.get()));
+        }
+        clearRoutingParam();
+    }
+
+    private void clearRoutingParam()
+    {
+        //TODO to static
+        getArguments().remove("stockPageIndex");
+        getArguments().remove("fxPageIndex");
+        getArguments().remove("exchangeId");
+    }
+
+    public Observable<ExchangeCompactSpinnerDTO> getExchangeSelectionObservable()
+    {
+        return exchangeSpinnerDTOSubject.asObservable();
     }
 
     public static void setLastType(@NonNull AssetClass assetClass)
@@ -605,6 +647,75 @@ public class TrendingMainFragment extends DashboardFragment
         {
             lastType = TrendingTabType.FX;
             lastFXTab = TrendingFXTabType.getDefault();
+        }
+    }
+
+    private class TradingStockPagerAdapter extends FragmentPagerAdapter
+    {
+        @NonNull final SparseArray<Fragment> registeredFragments;
+
+        public TradingStockPagerAdapter(FragmentManager fragmentManager)
+        {
+            super(fragmentManager);
+            registeredFragments = new SparseArray<>();
+        }
+
+        @Override public Fragment getItem(int position)
+        {
+            Bundle args = new Bundle();
+            ActionBarOwnerMixin.putKeyShowHomeAsUp(args, false);
+            TrendingStockTabType tabType = TrendingStockTabType.values()[position];
+            Class fragmentClass = tabType.fragmentClass;
+            TrendingStockFragment.putTabType(args, tabType);
+            Fragment created = Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
+            registeredFragments.put(position, created);
+            return created;
+        }
+
+        @Override public CharSequence getPageTitle(int position)
+        {
+            return getString(TrendingStockTabType.values()[position].titleStringResId);
+        }
+
+        @Override public int getCount()
+        {
+            return TrendingStockTabType.values().length;
+        }
+
+        @Override public void destroyItem(ViewGroup container, int position, Object object)
+        {
+            registeredFragments.remove(position);
+            super.destroyItem(container, position, object);
+        }
+    }
+
+    private class TradingFXPagerAdapter extends FragmentPagerAdapter
+    {
+        public TradingFXPagerAdapter(FragmentManager fragmentManager)
+        {
+            super(fragmentManager);
+        }
+
+        @Override public Fragment getItem(int position)
+        {
+            Bundle args = new Bundle();
+            ActionBarOwnerMixin.putKeyShowHomeAsUp(args, false);
+            Class fragmentClass = TrendingFXTabType.values()[position].fragmentClass;
+            if (fragmentClass.equals((Class) FXMainPositionListFragment.class))
+            {
+                FXMainPositionListFragment.putMainFXPortfolioId(args, fxPortfolioId);
+            }
+            return Fragment.instantiate(getActivity(), fragmentClass.getName(), args);
+        }
+
+        @Override public CharSequence getPageTitle(int position)
+        {
+            return getString(TrendingFXTabType.values()[position].titleStringResId);
+        }
+
+        @Override public int getCount()
+        {
+            return TrendingFXTabType.values().length;
         }
     }
 }

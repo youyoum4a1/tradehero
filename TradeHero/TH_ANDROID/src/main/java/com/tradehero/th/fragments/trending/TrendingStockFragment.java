@@ -18,17 +18,12 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.LiveActivityUtil;
-import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
-import com.tradehero.th.api.market.ExchangeCompactDTOList;
-import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -41,24 +36,18 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
-import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
-import com.tradehero.th.persistence.market.ExchangeMarketPreference;
-import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.ToastAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
@@ -66,17 +55,18 @@ import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ProfileEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
 import java.util.Collections;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 public class TrendingStockFragment extends TrendingBaseFragment
@@ -85,42 +75,19 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private static final String KEY_EXCHANGE_ID = TrendingMainFragment.class.getName() + ".exchangeId";
     private static final String KEY_TAB_TYPE_ID = TrendingMainFragment.class.getName() + ".tabTypeId";
 
-    @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
     @Inject ProviderListCacheRx providerListCache;
     @Inject Analytics analytics;
-    @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
     @Inject ProviderUtil providerUtil;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject LiveActivityUtil liveActivityUtil;
 
-    private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
-
-    private UserProfileDTO userProfileDTO;
     private ProviderDTOList providerDTOs;
-    private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs;
-    @Nullable private ExchangeIntegerId exchangeIdFromArguments;
-    @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
-    private Integer routedExchangeById;
 
     private ExtraTileAdapterNew wrapperAdapter;
+    @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
     @Inject protected THBillingInteractorRx userInteractorRx;
-    private MenuItem exchangeMenu;
-    private ExchangeSpinner mExchangeSelection;
-
-    public static void putExchangeId(@NonNull Bundle args, @NonNull ExchangeIntegerId exchangeId)
-    {
-        args.putBundle(KEY_EXCHANGE_ID, exchangeId.getArgs());
-    }
-
-    @Nullable private static ExchangeIntegerId getExchangeId(@NonNull Bundle args)
-    {
-        if (!args.containsKey(KEY_EXCHANGE_ID))
-        {
-            return null;
-        }
-        return new ExchangeIntegerId(args.getBundle(KEY_EXCHANGE_ID));
-    }
+    private Subscription exchangeSubscription;
 
     public static void putTabType(@NonNull Bundle args, @NonNull TrendingStockTabType tabType)
     {
@@ -135,15 +102,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        exchangeIdFromArguments = getExchangeId(getArguments());
         getArguments().remove(KEY_EXCHANGE_ID);
         trendingFilterTypeDTO = TrendingFilterTypeDTOFactory.create(getTabType(getArguments()), getResources());
         wrapperAdapter = createSecurityItemViewAdapter();
-
-        exchangeAdapter = new TrendingFilterSpinnerIconAdapter(
-                getActivity(),
-                R.layout.trending_filter_spinner_item_short);
-        exchangeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -156,43 +117,61 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         this.listView.setAdapter(wrapperAdapter);
-        analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
-        fetchExchangeList();
         fetchUserProfile();
         fetchProviderList();
         fetchWatchlist();
         fetchAlertCompactList();
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        if (getParentFragment() != null && getParentFragment() instanceof TrendingMainFragment)
+        {
+            exchangeSubscription =
+                    ((TrendingMainFragment) getParentFragment()).getExchangeSelectionObservable()
+                            .distinctUntilChanged()
+                            .map(new Func1<ExchangeCompactSpinnerDTO, TrendingFilterTypeDTO>()
+                            {
+                                @Override public TrendingFilterTypeDTO call(ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO)
+                                {
+                                    return trendingFilterTypeDTO.getByExchange(exchangeCompactSpinnerDTO);
+                                }
+                            })
+                            .doOnNext(new Action1<TrendingFilterTypeDTO>()
+                            {
+                                @Override public void call(TrendingFilterTypeDTO trendingFilterTypeDTO)
+                                {
+                                    analytics.fireEvent(new TrendingFilterEvent(trendingFilterTypeDTO));
+                                    if (Constants.RELEASE)
+                                    {
+                                        analytics.localytics().setProfileAttribute(new ProfileEvent(
+                                                AnalyticsConstants.InterestedExchange,
+                                                Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
+                                    }
+                                }
+                            })
+                            .subscribe(new Action1<TrendingFilterTypeDTO>()
+                            {
+                                @Override public void call(TrendingFilterTypeDTO trendingFilterTypeDTO)
+                                {
+                                    fetchListByFilter(trendingFilterTypeDTO);
+                                }
+                            });
+        }
+    }
+
+    @Override public void onPause()
+    {
+        exchangeSubscription.unsubscribe();
+        exchangeSubscription = null;
+        super.onPause();
+    }
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        //super.onCreateOptionsMenu(menu, inflater);
-        //We don't call super here because we don't want to touch the "home icon" and title portion of the actionbar, as it will somehow remove the custom view.
+        super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.search_menu, menu);
-
-        //inflater.inflate(R.menu.exchange_menu, menu);
-        //exchangeMenu = menu.findItem(R.id.btn_exchange);
-        //View actionView = exchangeMenu.getActionView();
-        //if (actionView != null)
-        //{
-        //    mExchangeSelection = (ExchangeSpinner) actionView.findViewById(R.id.exchange_selection_menu);
-        //    mExchangeSelection.setAdapter(exchangeAdapter);
-        //    mExchangeSelection.setSelectionById(new ExchangeIntegerId(preferredExchangeMarket.get()));
-        //    mExchangeSelection.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        //    {
-        //        @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-        //        {
-        //            if (itemViewAdapter != null) // HACK because of the disconnect between destroy and destroyOptionsMenu
-        //            {
-        //                onExchangeSelected(parent, view, position, id);
-        //            }
-        //        }
-        //
-        //        @Override public void onNothingSelected(AdapterView<?> parent)
-        //        {
-        //        }
-        //    });
-        //}
     }
 
     @Override public boolean shouldShowExchangeSpinner()
@@ -211,18 +190,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
         return super.onOptionsItemSelected(item);
     }
 
-    @Override public void onDestroyOptionsMenu()
-    {
-        if (mExchangeSelection != null)
-        {
-            mExchangeSelection.setOnItemSelectedListener(null);
-        }
-        super.onDestroyOptionsMenu();
-    }
-
     @Override public void onDestroy()
     {
-        exchangeAdapter = null;
         wrapperAdapter = null;
         super.onDestroy();
     }
@@ -243,7 +212,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
         this.trendingFilterTypeDTO = trendingFilterTypeDTO;
         if (hasChanged)
         {
-            preferredExchangeMarket.set(trendingFilterTypeDTO.exchange.getExchangeIntegerId());
+            //TODO move this: preferredExchangeMarket.set(trendingFilterTypeDTO.exchange.getExchangeIntegerId());
             scheduleRequestData();
         }
         else
@@ -255,57 +224,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
             }
             requestDtos();
         }
-        if (exchangeCompactSpinnerDTOs != null && mExchangeSelection != null)
-        {
-            mExchangeSelection.setSelectionById(trendingFilterTypeDTO.exchange.getExchangeIntegerId());
-        }
-    }
-
-    private void fetchExchangeList()
-    {
-        ExchangeListType key = new ExchangeListType();
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
-                this,
-                exchangeCompactListCache.getOne(key)
-                        .map(new PairGetSecond<ExchangeListType, ExchangeCompactDTOList>()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<ExchangeCompactDTOList>()
-                        {
-                            @Override public void call(ExchangeCompactDTOList list)
-                            {
-                                linkWith(list);
-                            }
-                        },
-                        new ToastAndLogOnErrorAction(
-                                getString(R.string.error_fetch_exchange_list_info),
-                                "Error fetching the list of exchanges")));
-    }
-
-    private void linkWith(@NonNull ExchangeCompactDTOList exchangeDTOs)
-    {
-        ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
-                getResources(),
-                ExchangeCompactDTOUtil.filterAndOrderForTrending(
-                        exchangeDTOs,
-                        new ExchangeCompactDTODescriptionNameComparator<>()));
-        // Adding the "All" choice
-        spinnerList.add(0, new ExchangeCompactSpinnerDTO(getResources()));
-        linkWith(spinnerList);
-    }
-
-    private void linkWith(@NonNull ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs)
-    {
-        this.exchangeCompactSpinnerDTOs = exchangeCompactSpinnerDTOs;
-        exchangeAdapter.clear();
-        exchangeAdapter.addAll(exchangeCompactSpinnerDTOs);
-        exchangeAdapter.notifyDataSetChanged();
-    }
-
-    protected void setExchangeByCode(@NonNull Integer exchangeById)
-    {
-        this.routedExchangeById = exchangeById;
-        setUpFilterSelectorView();
     }
 
     private void fetchUserProfile()
@@ -329,9 +247,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void linkWith(UserProfileDTO userProfileDTO)
     {
-        this.userProfileDTO = userProfileDTO;
         wrapperAdapter.setSurveyEnabled(userProfileDTO.activeSurveyImageURL != null);
-        setUpFilterSelectorView();
     }
 
     private void fetchProviderList()
@@ -392,29 +308,29 @@ public class TrendingStockFragment extends TrendingBaseFragment
     public void fetchAlertCompactList()
     {
         onDestroyViewSubscriptions.add(AppObservable.bindFragment(
-                this,
-                alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Map<SecurityId, AlertCompactDTO>>()
-                {
-                    @Override public void onCompleted()
-                    {
-                    }
-
-                    @Override public void onError(Throwable e)
-                    {
-                        Timber.e(e, "There was an error getting the alert ids");
-                    }
-
-                    @Override public void onNext(Map<SecurityId, AlertCompactDTO> securityIdAlertIdMap)
-                    {
-                        if (itemViewAdapter != null)
+                        this,
+                        alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<Map<SecurityId, AlertCompactDTO>>()
                         {
-                            ((SecurityPagedViewDTOAdapter) itemViewAdapter).setAlertList(securityIdAlertIdMap);
-                            ((SecurityPagedViewDTOAdapter) itemViewAdapter).notifyDataSetChanged();
-                        }
-                    }
-                })
+                            @Override public void onCompleted()
+                            {
+                            }
+
+                            @Override public void onError(Throwable e)
+                            {
+                                Timber.e(e, "There was an error getting the alert ids");
+                            }
+
+                            @Override public void onNext(Map<SecurityId, AlertCompactDTO> securityIdAlertIdMap)
+                            {
+                                if (itemViewAdapter != null)
+                                {
+                                    ((SecurityPagedViewDTOAdapter) itemViewAdapter).setAlertList(securityIdAlertIdMap);
+                                    ((SecurityPagedViewDTOAdapter) itemViewAdapter).notifyDataSetChanged();
+                                }
+                            }
+                        })
         );
     }
 
@@ -437,62 +353,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         wrapperAdapter.clearExtraTiles();
         super.startAnew();
-    }
-
-    private void setUpFilterSelectorView()
-    {
-        if (exchangeCompactSpinnerDTOs != null)
-        {
-            final ExchangeIntegerId preferredExchangeId;
-            if (routedExchangeById != null)
-            {
-                preferredExchangeId = new ExchangeIntegerId(routedExchangeById);
-                routedExchangeById = null;
-            }
-            else if (exchangeIdFromArguments != null)
-            {
-                preferredExchangeId = exchangeIdFromArguments;
-                exchangeIdFromArguments = null;
-            }
-            else
-            {
-                if (userProfileDTO != null)
-                {
-                    preferredExchangeMarket.setDefaultIfUnset(exchangeCompactSpinnerDTOs, userProfileDTO);
-                }
-                preferredExchangeId = preferredExchangeMarket.getExchangeIntegerId();
-            }
-            ExchangeCompactSpinnerDTO initial = exchangeCompactSpinnerDTOs.findFirstWhere(
-                    new Predicate<ExchangeCompactSpinnerDTO>()
-                    {
-                        @Override public boolean apply(ExchangeCompactSpinnerDTO exchange)
-                        {
-                            return exchange.getExchangeIntegerId().equals(preferredExchangeId);
-                        }
-                    });
-            if (initial != null)
-            {
-                fetchListByFilter(trendingFilterTypeDTO.getByExchange(initial));
-            }
-        }
-    }
-
-    protected void onExchangeSelected(AdapterView<?> parent, View view, int position, long id)
-    {
-        TrendingFilterTypeDTO newFilterTypeDTO = trendingFilterTypeDTO.getByExchange((ExchangeCompactSpinnerDTO) parent.getItemAtPosition(position));
-        fetchListByFilter(newFilterTypeDTO);
-        reportAnalytics();
-    }
-
-    private void reportAnalytics()
-    {
-        analytics.fireEvent(new TrendingFilterEvent(trendingFilterTypeDTO));
-        if (Constants.RELEASE)
-        {
-            analytics.localytics().setProfileAttribute(new ProfileEvent(
-                    AnalyticsConstants.InterestedExchange,
-                    Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
-        }
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
