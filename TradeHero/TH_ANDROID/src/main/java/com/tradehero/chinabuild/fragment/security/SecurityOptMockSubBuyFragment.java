@@ -21,7 +21,6 @@ import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -58,13 +57,15 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     private TextView dlgConfirmTV;
     private TextView dlgCancelTV;
 
-    private SecurityId securityId;
     private String securityName = "";
     @Inject QuoteServiceWrapper quoteServiceWrapper;
+    private QuoteDetail quoteDetail;
+    SecurityOptPositionsList securityOptPositionDTOs;
+    private String securityExchange = "";
+    private String securitySymbol = "";
+    private int portfolioId = -1;
 
     private SecurityOptMockPositionAdapter securityOptMockPositionAdapter;
-
-    private boolean isNeedRefresh = true;
 
     //Buy Sell Layout
     private TextView sell5Price;
@@ -98,8 +99,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         securityOptMockPositionAdapter = new SecurityOptMockPositionAdapter(getActivity());
         color_up = getResources().getColor(R.color.number_up);
         color_down = getResources().getColor(R.color.number_down);
-        getSecurityId();
-        securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME);
+        securitySymbol = getArguments().getString(SecurityOptActivity.KEY_SECURITY_SYMBOL, "");
+        securityExchange = getArguments().getString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, "");
+        securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, "");
     }
 
     @Override
@@ -113,23 +115,13 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         View view = inflater.inflate(R.layout.security_opt_sub_buysell, container, false);
         initViews(view);
         initSellBuyViews(view);
-        return view;
-    }
-
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        isNeedRefresh = true;
-        if (securityId != null) {
-            quoteServiceWrapper.getQuoteDetails(securityId, new RefreshBUYSELLCallback());
+        if (!TextUtils.isEmpty(securitySymbol) && !TextUtils.isEmpty(securityExchange)) {
+            quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
         }
-    }
-
-    @Override
-    public void onPause(){
-        super.onPause();
-        isNeedRefresh = false;
+        if(portfolioId == -1) {
+            retrieveMainPositions();
+        }
+        return view;
     }
 
 
@@ -151,14 +143,15 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         securityCodeTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(securityId == null){
+                if(getActivity()!=null && TextUtils.isEmpty(securitySymbol)){
+                    getActivity().finish();
                     gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
                     getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
                 }
             }
         });
-        if(securityId!=null){
-            securityCodeTV.setText(securityId.getSecuritySymbol() + " " + securityName);
+        if(!TextUtils.isEmpty(securitySymbol)){
+            securityCodeTV.setText(securitySymbol + " " + securityName);
         }
         priceET = (EditText)view.findViewById(R.id.edittext_security_price);
         addOneTV = (TextView)view.findViewById(R.id.textview_security_opt_add);
@@ -283,16 +276,13 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if (quoteDetail.sv5 != null) {
             sell5Amount.setText(convertAmountDoubleToString(quoteDetail.sv5));
         }
-        if(quoteDetail.sp1!=null && TextUtils.isEmpty(priceET.getText())){
-            priceET.setText(String.valueOf(quoteDetail.sp1));
+        if(priceET.getText() == null || TextUtils.isEmpty(priceET.getText().toString())){
+            if(quoteDetail.sp1!=null) {
+                priceET.setText(String.valueOf(quoteDetail.sp1));
+            } else if (quoteDetail.bp1 != null){
+                priceET.setText(String.valueOf(quoteDetail.bp1));
+            }
         }
-    }
-
-    protected SecurityId getSecurityId() {
-        if (this.securityId == null && getArguments().containsKey(SecurityOptActivity.KEY_SECURITY_ID)) {
-            this.securityId = new SecurityId(getArguments().getBundle(SecurityOptActivity.KEY_SECURITY_ID));
-        }
-        return securityId;
     }
 
     private String convertAmountDoubleToString(Integer value){
@@ -319,11 +309,14 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         }
     }
 
-    public class RefreshBUYSELLCallback implements Callback<QuoteDetail> {
+    class RefreshBUYSELLCallback implements Callback<QuoteDetail> {
 
         @Override
         public void success(QuoteDetail quoteDetail, Response response) {
-            setSellBuyData(quoteDetail);
+            SecurityOptMockSubBuyFragment.this.quoteDetail = quoteDetail;
+            if(securitySymbol.equals(quoteDetail.symb)){
+                setSellBuyData(quoteDetail);
+            }
             onFinish();
         }
 
@@ -334,7 +327,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
 
         private void onFinish() {
             if (isNeedToRefresh()) {
-                if(securityId == null){
+                if(TextUtils.isEmpty(securitySymbol) || TextUtils.isEmpty(securityExchange)){
                     return;
                 }
                 RefreshBuySellHandler handler = new RefreshBuySellHandler();
@@ -343,9 +336,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         }
     }
 
-    public class RefreshBuySellHandler extends Handler {
+    class RefreshBuySellHandler extends Handler {
         public void handleMessage(Message msg) {
-            quoteServiceWrapper.getQuoteDetails(securityId, new RefreshBUYSELLCallback());
+            quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
         }
     }
 
@@ -359,16 +352,10 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     }
 
     private boolean isNeedToRefresh(){
-        if(!isNeedRefresh) {
-            return  false;
-        }
-        if(securityId == null) {
+        if(TextUtils.isEmpty(securityExchange)){
             return false;
         }
-        if(securityId.getExchange() == null || securityId.getExchange().equals("")){
-            return false;
-        }
-        if(securityId.getExchange().equalsIgnoreCase("SHA") || securityId.getExchange().equalsIgnoreCase("SHE")){
+        if(securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")){
             return true;
         }
         return false;
@@ -384,8 +371,18 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             return;
         }
         String valueStr = priceET.getText().toString();
+        if(TextUtils.isEmpty(valueStr)){
+            return;
+        }
         double value = Double.valueOf(valueStr) + 0.01;
-        priceET.setText(String.valueOf(value));
+        if(quoteDetail==null){
+            return;
+        }
+        if((quoteDetail.prec * 1.1) < value){
+            return;
+        }
+        DecimalFormat df =new DecimalFormat("#.0");
+        priceET.setText(df.format(value));
     }
 
     private void reduceOne(){
@@ -393,12 +390,40 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             return;
         }
         String valueStr = priceET.getText().toString();
+        if(TextUtils.isEmpty(valueStr)){
+            return;
+        }
         double value = Double.valueOf(valueStr);
         if(value<=0.01){
             return;
         }
         value = value - 0.01;
-        priceET.setText(String.valueOf(value));
+        if(quoteDetail==null){
+            return;
+        }
+        if((quoteDetail.prec * 0.9) > value){
+            return;
+        }
+        DecimalFormat df =new DecimalFormat("#.0");
+        priceET.setText(df.format(value));
+    }
+
+    private void retrieveMainPositions(){
+        quoteServiceWrapper.retrieveMainPositions(new RetrievePositionsCallback());
+    }
+
+    class RetrievePositionsCallback implements Callback<SecurityOptPositionsList> {
+
+        @Override
+        public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
+            SecurityOptMockSubBuyFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
+            securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+
+        }
     }
     
 }

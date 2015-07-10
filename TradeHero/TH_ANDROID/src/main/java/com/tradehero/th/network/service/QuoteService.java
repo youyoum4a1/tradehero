@@ -6,6 +6,7 @@ import com.tradehero.chinabuild.data.QuoteTick;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
 import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.data.SecurityUserOptDTO;
+import com.tradehero.chinabuild.fragment.security.SecurityOptPositionsList;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 
 import java.util.List;
@@ -96,4 +97,7 @@ interface QuoteService
                            @Query("page") Integer page,
                            @Query("perPage") Integer perPage,
                            Callback<List<SecurityUserPositionDTO>> callback);
+
+    @GET("/cn/v2/positions/open")
+    void retrieveMainPositions(Callback<SecurityOptPositionsList> callback);
 }

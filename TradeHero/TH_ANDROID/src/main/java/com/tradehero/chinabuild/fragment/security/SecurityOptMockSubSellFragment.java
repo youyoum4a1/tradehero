@@ -21,7 +21,6 @@ import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -58,11 +57,12 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private TextView dlgConfirmTV;
     private TextView dlgCancelTV;
 
-    private SecurityId securityId;
+    private String securityExchange = "";
+    private String securitySymbol = "";
     private String securityName;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
-
-    private boolean isNeedRefresh = true;
+    private QuoteDetail quoteDetail;
+    private int portfolioId = -1;
 
     //Buy Sell Layout
     private TextView sell5Price;
@@ -99,8 +99,9 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         securityOptMockPositionAdapter = new SecurityOptMockPositionAdapter(getActivity());
         color_up = getResources().getColor(R.color.number_up);
         color_down = getResources().getColor(R.color.number_down);
-        getSecurityId();
-        securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME);
+        securitySymbol = getArguments().getString(SecurityOptActivity.KEY_SECURITY_SYMBOL, "");
+        securityExchange = getArguments().getString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, "");
+        securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, "");
     }
 
     @Override
@@ -113,22 +114,13 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.security_opt_sub_buysell, container, false);
         initViews(view);
-        return view;
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        isNeedRefresh = true;
-        if (securityId != null) {
-            quoteServiceWrapper.getQuoteDetails(securityId, new RefreshBUYSELLCallback());
+        if (!TextUtils.isEmpty(securitySymbol) && !TextUtils.isEmpty(securityExchange)) {
+            quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        isNeedRefresh = false;
+        if(portfolioId == -1) {
+        }
+        return view;
     }
 
     private void initViews(View view) {
@@ -150,14 +142,15 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         securityCodeTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(securityId == null){
+                if(getActivity()!=null && TextUtils.isEmpty(securitySymbol)){
+                    getActivity().finish();
                     gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
                     getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
                 }
             }
         });
-        if(securityId!=null){
-            securityCodeTV.setText(securityId.getSecuritySymbol() + " " + securityName);
+        if(!TextUtils.isEmpty(securitySymbol)){
+            securityCodeTV.setText(securitySymbol + " " + securityName);
         }
         priceET = (EditText)view.findViewById(R.id.edittext_security_price);
         addOneTV = (TextView)view.findViewById(R.id.textview_security_opt_add);
@@ -196,7 +189,8 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
 
         @Override
         public void success(QuoteDetail quoteDetail, Response response) {
-            if(securityId.getSecuritySymbol().equals(quoteDetail.symb)){
+            SecurityOptMockSubSellFragment.this.quoteDetail = quoteDetail;
+            if(securitySymbol.equals(quoteDetail.symb)){
                 setSellBuyData(quoteDetail);
             }
             onFinish();
@@ -209,7 +203,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
 
         private void onFinish() {
             if (isNeedToRefresh()) {
-                if(securityId == null){
+                if(TextUtils.isEmpty(securitySymbol) || TextUtils.isEmpty(securityExchange)){
                     return;
                 }
                 RefreshBuySellHandler handler = new RefreshBuySellHandler();
@@ -220,7 +214,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
 
     public class RefreshBuySellHandler extends Handler {
         public void handleMessage(Message msg) {
-            quoteServiceWrapper.getQuoteDetails(securityId, new RefreshBUYSELLCallback());
+            quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
         }
     }
 
@@ -314,16 +308,13 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         if (quoteDetail.sv5 != null) {
             sell5Amount.setText(convertAmountDoubleToString(quoteDetail.sv5));
         }
-        if(quoteDetail.bp1!=null && TextUtils.isEmpty(priceET.getText())){
-            priceET.setText(String.valueOf(quoteDetail.bp1));
+        if(TextUtils.isEmpty(priceET.getText())){
+            if(quoteDetail.bp1!=null) {
+                priceET.setText(String.valueOf(quoteDetail.bp1));
+            } else if (quoteDetail.sp1 != null){
+                priceET.setText(String.valueOf(quoteDetail.sp1));
+            }
         }
-    }
-
-    protected SecurityId getSecurityId() {
-        if (this.securityId == null && getArguments().containsKey(SecurityOptActivity.KEY_SECURITY_ID)) {
-            this.securityId = new SecurityId(getArguments().getBundle(SecurityOptActivity.KEY_SECURITY_ID));
-        }
-        return securityId;
     }
 
     private String convertAmountDoubleToString(Integer value){
@@ -347,16 +338,10 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     }
 
     private boolean isNeedToRefresh(){
-        if(!isNeedRefresh) {
-            return  false;
-        }
-        if(securityId == null) {
+        if(TextUtils.isEmpty(securityExchange)){
             return false;
         }
-        if(securityId.getExchange() == null || securityId.getExchange().equals("")){
-            return false;
-        }
-        if(securityId.getExchange().equalsIgnoreCase("SHA") || securityId.getExchange().equalsIgnoreCase("SHE")){
+        if(securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")){
             return true;
         }
         return false;
@@ -385,8 +370,18 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             return;
         }
         String valueStr = priceET.getText().toString();
+        if(TextUtils.isEmpty(valueStr)){
+            return;
+        }
         double value = Double.valueOf(valueStr) + 0.01;
-        priceET.setText(String.valueOf(value));
+        if(quoteDetail==null){
+            return;
+        }
+        if((quoteDetail.prec * 1.1) < value){
+            return;
+        }
+        DecimalFormat df =new DecimalFormat("#.0");
+        priceET.setText(df.format(value));
     }
 
     private void reduceOne(){
@@ -394,11 +389,21 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             return;
         }
         String valueStr = priceET.getText().toString();
+        if(TextUtils.isEmpty(valueStr)){
+            return;
+        }
         double value = Double.valueOf(valueStr);
         if(value<=0.01){
             return;
         }
         value = value - 0.01;
-        priceET.setText(String.valueOf(value));
+        if(quoteDetail==null){
+            return;
+        }
+        if((quoteDetail.prec * 0.9) > value){
+            return;
+        }
+        DecimalFormat df =new DecimalFormat("#.0");
+        priceET.setText(df.format(value));
     }
 }

@@ -8,6 +8,7 @@ import com.tradehero.chinabuild.data.QuoteTick;
 import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
 import com.tradehero.chinabuild.data.SignedQuote;
+import com.tradehero.chinabuild.fragment.security.SecurityOptPositionsList;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.quote.QuoteDTO;
@@ -107,6 +108,14 @@ public class QuoteServiceWrapper {
 
     public void getQuoteDetails(final SecurityId securityId, final Callback<QuoteDetail> callback) {
         quoteService.getQuoteDetails(securityId.getExchange(), securityId.getSecuritySymbol(), callback);
+    }
+
+    public void getQuoteDetails(final String securityExchange, final String securitySymbol, final Callback<QuoteDetail> callback) {
+        quoteService.getQuoteDetails(securityExchange, securitySymbol, callback);
+    }
+
+    public void retrieveMainPositions(Callback<SecurityOptPositionsList> callback){
+        quoteService.retrieveMainPositions(callback);
     }
 
     public void getQuoteTicks(final SecurityId securityId, final int quoteTicksDelay, final Callback<List<QuoteTick>> callback) {
