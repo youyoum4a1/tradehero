@@ -13,19 +13,32 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
+import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
+import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
+import com.tradehero.th.persistence.portfolio.PortfolioCache;
+import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.utils.DaggerUtils;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 
@@ -50,6 +63,13 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     private TextView reduceOneTV;
     private LinearLayout availableLayout;
     private LinearLayout sharesLayout;
+    private TextView availableCashTV;
+
+    private EditText decisionET;
+    private ImageView oneFourIV;
+    private ImageView oneThirdIV;
+    private ImageView halfIV;
+    private ImageView allIV;
 
     //Dialog
     private Dialog buyConfirmDialog;
@@ -62,13 +82,19 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     private TextView dlgCancelTV;
 
     private String securityName = "";
-    @Inject
-    QuoteServiceWrapper quoteServiceWrapper;
+    @Inject QuoteServiceWrapper quoteServiceWrapper;
     private QuoteDetail quoteDetail;
     SecurityOptPositionsList securityOptPositionDTOs;
     private String securityExchange = "";
     private String securitySymbol = "";
     private int portfolioId = -1;
+    @Inject protected PortfolioCompactListCache portfolioCompactListCache;
+    @Inject CurrentUserId currentUserId;
+    private DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList> portfolioCompactListFetchListener;
+    private OwnedPortfolioId shownPortfolioId;
+    private PortfolioDTO shownPortfolioDTO;
+
+    private double cashAvailable;
 
     private RefreshPositionsHandler refreshPositionsHandler = new RefreshPositionsHandler();
     private RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
@@ -103,6 +129,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
 
     private boolean isRefresh = true;
 
+    @Inject PortfolioCache portfolioCache;
+    private WatchlistPositionFragmentPortfolioCacheListener portfolioFetchListener;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,6 +141,8 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         securitySymbol = getArguments().getString(SecurityOptActivity.KEY_SECURITY_SYMBOL, "");
         securityExchange = getArguments().getString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, "");
         securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, "");
+        portfolioFetchListener = new WatchlistPositionFragmentPortfolioCacheListener();
+        portfolioCompactListFetchListener = new BasePurchaseManagementPortfolioCompactListFetchListener();
     }
 
     @Override
@@ -131,6 +162,8 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if (portfolioId == -1) {
             retrieveMainPositions();
         }
+        //Retrieve user portfolio
+        retrieveUserInformation();
         return view;
     }
 
@@ -138,6 +171,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     public void onDestroyView() {
         super.onDestroyView();
         isRefresh = false;
+        portfolioFetchListener = null;
     }
 
 
@@ -147,6 +181,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         sharesLayout = (LinearLayout) view.findViewById(R.id.layout_shares);
         sharesLayout.setVisibility(View.GONE);
         availableLayout.setVisibility(View.VISIBLE);
+        availableCashTV = (TextView)view.findViewById(R.id.textview_available_cash);
         buySellBtn = (Button) view.findViewById(R.id.button_security_opt_buy_sell);
         buySellBtn.setText(R.string.security_opt_buy);
         buySellBtn.setOnClickListener(new View.OnClickListener() {
@@ -179,6 +214,15 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         reduceOneTV = (TextView) view.findViewById(R.id.textview_security_opt_minus);
         addOneTV.setOnClickListener(this);
         reduceOneTV.setOnClickListener(this);
+        decisionET = (EditText) view.findViewById(R.id.edittext_security_decision);
+        oneFourIV = (ImageView) view.findViewById(R.id.security_opt_one_fourth);
+        oneThirdIV = (ImageView) view.findViewById(R.id.security_opt_one_third);
+        halfIV = (ImageView) view.findViewById(R.id.security_opt_half);
+        allIV = (ImageView) view.findViewById(R.id.security_opt_all);
+        oneFourIV.setOnClickListener(this);
+        oneThirdIV.setOnClickListener(this);
+        halfIV.setOnClickListener(this);
+        allIV.setOnClickListener(this);
     }
 
     private void showBuyConfirmDialog() {
@@ -200,6 +244,14 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                     if (buyConfirmDialog != null) {
                         buyConfirmDialog.dismiss();
                     }
+                }
+            });
+            dlgConfirmTV = (TextView)buyConfirmDialog.findViewById(R.id.dialog_confirm);
+            dlgConfirmTV.setText("确认买入");
+            dlgConfirmTV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
                 }
             });
 
@@ -403,7 +455,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if ((quoteDetail.prec * 1.1) < value) {
             return;
         }
-        DecimalFormat df = new DecimalFormat("#.0");
+        DecimalFormat df = new DecimalFormat("#.00");
         priceET.setText(df.format(value));
     }
 
@@ -426,7 +478,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if ((quoteDetail.prec * 0.9) > value) {
             return;
         }
-        DecimalFormat df = new DecimalFormat("#.0");
+        DecimalFormat df = new DecimalFormat("#.00");
         priceET.setText(df.format(value));
     }
 
@@ -464,6 +516,61 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             if (portfolioId == -1) {
                 retrieveMainPositions();
             }
+        }
+    }
+
+    class WatchlistPositionFragmentPortfolioCacheListener implements DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> {
+        @Override public void onDTOReceived(@NotNull OwnedPortfolioId key, @NotNull PortfolioDTO value) {
+            shownPortfolioDTO = value;
+            displayAvailableBalance();
+        }
+
+        @Override public void onErrorThrown(@NotNull OwnedPortfolioId key, @NotNull Throwable error) { }
+    }
+
+    class BasePurchaseManagementPortfolioCompactListFetchListener implements DTOCacheNew.Listener<UserBaseKey, PortfolioCompactDTOList>  {
+        @Override public void onDTOReceived(@NotNull UserBaseKey key, @NotNull PortfolioCompactDTOList value) {
+            prepareApplicableOwnedPortolioId(value.getDefaultPortfolio());
+        }
+
+        @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error) { }
+    }
+
+    //Need to download first
+    private void fetchMainPortfolioCompactList(boolean force) {
+        portfolioCompactListCache.unregister(portfolioCompactListFetchListener);
+        portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
+        portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey(), force);
+    }
+
+    private void retrieveUserInformation(){
+        if(portfolioId == -1){
+            //Main Portfolio
+            fetchMainPortfolioCompactList(true);
+        }
+    }
+
+    private void retreiveUserPortfolio(boolean isForce){
+        portfolioCache.unregister(portfolioFetchListener);
+        portfolioCache.register(shownPortfolioId, portfolioFetchListener);
+        portfolioCache.getOrFetchAsync(shownPortfolioId, isForce);
+    }
+
+    private void prepareApplicableOwnedPortolioId(@Nullable PortfolioCompactDTO defaultIfNotInArgs) {
+        if (defaultIfNotInArgs != null) {
+            shownPortfolioId = defaultIfNotInArgs.getOwnedPortfolioId();
+        }
+        if (shownPortfolioId != null) {
+            retreiveUserPortfolio(true);
+        }
+    }
+
+    private void displayAvailableBalance(){
+        if(shownPortfolioDTO == null) {
+            return;
+        }
+        if(availableCashTV!=null) {
+            availableCashTV.setText(String.valueOf(shownPortfolioDTO.cashBalance));
         }
     }
 }

@@ -92,7 +92,7 @@
                     android:textSize="13sp" />
 
                 <TextView
-                    android:id="@+id/textview_total_property"
+                    android:id="@+id/textview_available_cash"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="- -"

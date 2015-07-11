@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -52,6 +53,12 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private LinearLayout sharesLayout;
     private TextView availableSellTV;
     private TextView totalSellTV;
+
+    private EditText decisionET;
+    private ImageView oneFourIV;
+    private ImageView oneThirdIV;
+    private ImageView halfIV;
+    private ImageView allIV;
 
     //Dialog
     private Dialog sellConfirmDialog;
@@ -185,6 +192,16 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         reduceOneTV = (TextView)view.findViewById(R.id.textview_security_opt_minus);
         addOneTV.setOnClickListener(this);
         reduceOneTV.setOnClickListener(this);
+
+        decisionET = (EditText) view.findViewById(R.id.edittext_security_decision);
+        oneFourIV = (ImageView) view.findViewById(R.id.security_opt_one_fourth);
+        oneThirdIV = (ImageView) view.findViewById(R.id.security_opt_one_third);
+        halfIV = (ImageView) view.findViewById(R.id.security_opt_half);
+        allIV = (ImageView) view.findViewById(R.id.security_opt_all);
+        oneFourIV.setOnClickListener(this);
+        oneThirdIV.setOnClickListener(this);
+        halfIV.setOnClickListener(this);
+        allIV.setOnClickListener(this);
     }
 
     private void showSellConfirmDialog() {
@@ -434,7 +451,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         if((quoteDetail.prec * 1.1) < value){
             return;
         }
-        DecimalFormat df =new DecimalFormat("#.0");
+        DecimalFormat df =new DecimalFormat("#.00");
         priceET.setText(df.format(value));
     }
 
@@ -457,7 +474,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         if((quoteDetail.prec * 0.9) > value){
             return;
         }
-        DecimalFormat df =new DecimalFormat("#.0");
+        DecimalFormat df =new DecimalFormat("#.00");
         priceET.setText(df.format(value));
     }
 
