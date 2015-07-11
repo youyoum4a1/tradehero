@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -36,10 +37,10 @@ import retrofit.client.Response;
 
 /**
  * Buy Page
- *
+ * <p/>
  * Created by palmer on 15/7/6.
  */
-public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnClickListener{
+public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnClickListener {
 
     private Button buySellBtn;
     private ListView positionsLV;
@@ -61,14 +62,16 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     private TextView dlgCancelTV;
 
     private String securityName = "";
-    @Inject QuoteServiceWrapper quoteServiceWrapper;
+    @Inject
+    QuoteServiceWrapper quoteServiceWrapper;
     private QuoteDetail quoteDetail;
     SecurityOptPositionsList securityOptPositionDTOs;
     private String securityExchange = "";
     private String securitySymbol = "";
     private int portfolioId = -1;
 
-    private RefreshBuySellHandler handler;
+    private RefreshPositionsHandler refreshPositionsHandler = new RefreshPositionsHandler();
+    private RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
 
     private SecurityOptMockPositionAdapter securityOptMockPositionAdapter;
 
@@ -98,6 +101,8 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     private int color_up;
     private int color_down;
 
+    private boolean isRefresh = true;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,28 +124,27 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.security_opt_sub_buysell, container, false);
         initViews(view);
+        isRefresh = true;
         if (!TextUtils.isEmpty(securitySymbol) && !TextUtils.isEmpty(securityExchange)) {
             quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
-            handler = new RefreshBuySellHandler();
-            handler.sendEmptyMessageAtTime(-1, 5000);
         }
-        if(portfolioId == -1) {
+        if (portfolioId == -1) {
             retrieveMainPositions();
         }
         return view;
     }
 
     @Override
-    public void onDestroyView(){
+    public void onDestroyView() {
         super.onDestroyView();
-        handler = null;
+        isRefresh = false;
     }
 
 
     private void initViews(View view) {
         initSellBuyViews(view);
-        availableLayout = (LinearLayout)view.findViewById(R.id.layout_available_money);
-        sharesLayout = (LinearLayout)view.findViewById(R.id.layout_shares);
+        availableLayout = (LinearLayout) view.findViewById(R.id.layout_available_money);
+        sharesLayout = (LinearLayout) view.findViewById(R.id.layout_shares);
         sharesLayout.setVisibility(View.GONE);
         availableLayout.setVisibility(View.VISIBLE);
         buySellBtn = (Button) view.findViewById(R.id.button_security_opt_buy_sell);
@@ -152,36 +156,36 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             }
         });
         positionsLV = (ListView) view.findViewById(R.id.listview_security_opt_positions);
-        if(securityOptMockPositionAdapter==null){
+        if (securityOptMockPositionAdapter == null) {
             securityOptMockPositionAdapter = new SecurityOptMockPositionAdapter(getActivity());
         }
         positionsLV.setAdapter(securityOptMockPositionAdapter);
-        securityCodeTV = (TextView)view.findViewById(R.id.textview_security_code);
+        securityCodeTV = (TextView) view.findViewById(R.id.textview_security_code);
         securityCodeTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(getActivity()!=null && TextUtils.isEmpty(securitySymbol)){
+                if (getActivity() != null && TextUtils.isEmpty(securitySymbol)) {
                     getActivity().finish();
                     gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
                     getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
                 }
             }
         });
-        if(!TextUtils.isEmpty(securitySymbol)){
+        if (!TextUtils.isEmpty(securitySymbol)) {
             securityCodeTV.setText(securitySymbol + " " + securityName);
         }
-        priceET = (EditText)view.findViewById(R.id.edittext_security_price);
-        addOneTV = (TextView)view.findViewById(R.id.textview_security_opt_add);
-        reduceOneTV = (TextView)view.findViewById(R.id.textview_security_opt_minus);
+        priceET = (EditText) view.findViewById(R.id.edittext_security_price);
+        addOneTV = (TextView) view.findViewById(R.id.textview_security_opt_add);
+        reduceOneTV = (TextView) view.findViewById(R.id.textview_security_opt_minus);
         addOneTV.setOnClickListener(this);
         reduceOneTV.setOnClickListener(this);
     }
 
-    private void showBuyConfirmDialog(){
-        if(getActivity() == null){
+    private void showBuyConfirmDialog() {
+        if (getActivity() == null) {
             return;
         }
-        if(buyConfirmDialog == null){
+        if (buyConfirmDialog == null) {
             buyConfirmDialog = new Dialog(getActivity());
             buyConfirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             buyConfirmDialog.setCanceledOnTouchOutside(false);
@@ -189,11 +193,11 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             buyConfirmDialog.setContentView(R.layout.dialog_security_opt_sell);
 
 
-            dlgCancelTV = (TextView)buyConfirmDialog.findViewById(R.id.dialog_cancel);
+            dlgCancelTV = (TextView) buyConfirmDialog.findViewById(R.id.dialog_cancel);
             dlgCancelTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(buyConfirmDialog!=null){
+                    if (buyConfirmDialog != null) {
                         buyConfirmDialog.dismiss();
                     }
                 }
@@ -293,22 +297,22 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if (quoteDetail.sv5 != null) {
             sell5Amount.setText(convertAmountDoubleToString(quoteDetail.sv5));
         }
-        if(priceET.getText() == null || TextUtils.isEmpty(priceET.getText().toString())){
-            if(quoteDetail.sp1!=null) {
+        if (priceET.getText() == null || TextUtils.isEmpty(priceET.getText().toString())) {
+            if (quoteDetail.sp1 != null) {
                 priceET.setText(String.valueOf(quoteDetail.sp1));
-            } else if (quoteDetail.bp1 != null){
+            } else if (quoteDetail.bp1 != null) {
                 priceET.setText(String.valueOf(quoteDetail.bp1));
             }
         }
     }
 
-    private String convertAmountDoubleToString(Integer value){
-        int valueNew = value/100;
-        if(valueNew > 10000){
-            double valueNewD = (double)valueNew/10000.0;
-            DecimalFormat df =new DecimalFormat("#.0");
+    private String convertAmountDoubleToString(Integer value) {
+        int valueNew = value / 100;
+        if (valueNew > 10000) {
+            double valueNewD = (double) valueNew / 10000.0;
+            DecimalFormat df = new DecimalFormat("#.0");
             return df.format(valueNewD) + "万";
-        } else{
+        } else {
             return String.valueOf(valueNew);
         }
     }
@@ -316,7 +320,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
-        switch (viewId){
+        switch (viewId) {
             case R.id.textview_security_opt_minus:
                 reduceOne();
                 break;
@@ -331,7 +335,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         @Override
         public void success(QuoteDetail quoteDetail, Response response) {
             SecurityOptMockSubBuyFragment.this.quoteDetail = quoteDetail;
-            if(securitySymbol.equals(quoteDetail.symb)){
+            if (securitySymbol.equals(quoteDetail.symb)) {
                 setSellBuyData(quoteDetail);
             }
             onFinish();
@@ -344,8 +348,11 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
 
         private void onFinish() {
             if (isNeedToRefresh()) {
-                if(handler!= null) {
-                    handler.sendEmptyMessageAtTime(-1, 5000);
+                if(isRefresh) {
+                    THLog.d("Refresh Buy Sell Buy");
+                    refreshBuySellHandler.sendEmptyMessageDelayed(-1, 5000);
+                } else {
+                    THLog.d("No Refresh Buy Sell Buy");
                 }
             }
         }
@@ -357,73 +364,73 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         }
     }
 
-    private void setStockPrice(double open, double data, TextView textView){
+    private void setStockPrice(double open, double data, TextView textView) {
         textView.setText(String.valueOf(data));
-        if(data >= open){
+        if (data >= open) {
             textView.setTextColor(color_up);
         } else {
             textView.setTextColor(color_down);
         }
     }
 
-    private boolean isNeedToRefresh(){
-        if(TextUtils.isEmpty(securityExchange) || TextUtils.isEmpty(securitySymbol)){
+    private boolean isNeedToRefresh() {
+        if (TextUtils.isEmpty(securityExchange) || TextUtils.isEmpty(securitySymbol)) {
             return false;
         }
-        if(securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")){
+        if (securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")) {
             return true;
         }
         return false;
     }
 
-    private void gotoDashboard(String strFragment,Bundle bundle) {
-        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,strFragment);
+    private void gotoDashboard(String strFragment, Bundle bundle) {
+        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, strFragment);
         ActivityHelper.launchDashboard(getActivity(), bundle);
     }
 
-    private void addOne(){
-        if(priceET.getText() == null){
+    private void addOne() {
+        if (priceET.getText() == null) {
             return;
         }
         String valueStr = priceET.getText().toString();
-        if(TextUtils.isEmpty(valueStr)){
+        if (TextUtils.isEmpty(valueStr)) {
             return;
         }
         double value = Double.valueOf(valueStr) + 0.01;
-        if(quoteDetail==null){
+        if (quoteDetail == null) {
             return;
         }
-        if((quoteDetail.prec * 1.1) < value){
+        if ((quoteDetail.prec * 1.1) < value) {
             return;
         }
-        DecimalFormat df =new DecimalFormat("#.0");
+        DecimalFormat df = new DecimalFormat("#.0");
         priceET.setText(df.format(value));
     }
 
-    private void reduceOne(){
-        if(priceET.getText() == null){
+    private void reduceOne() {
+        if (priceET.getText() == null) {
             return;
         }
         String valueStr = priceET.getText().toString();
-        if(TextUtils.isEmpty(valueStr)){
+        if (TextUtils.isEmpty(valueStr)) {
             return;
         }
         double value = Double.valueOf(valueStr);
-        if(value<=0.01){
+        if (value <= 0.01) {
             return;
         }
         value = value - 0.01;
-        if(quoteDetail==null){
+        if (quoteDetail == null) {
             return;
         }
-        if((quoteDetail.prec * 0.9) > value){
+        if ((quoteDetail.prec * 0.9) > value) {
             return;
         }
-        DecimalFormat df =new DecimalFormat("#.0");
+        DecimalFormat df = new DecimalFormat("#.0");
         priceET.setText(df.format(value));
     }
 
-    private void retrieveMainPositions(){
+    private void retrieveMainPositions() {
         quoteServiceWrapper.retrieveMainPositions(new RetrievePositionsCallback());
     }
 
@@ -433,12 +440,30 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
             SecurityOptMockSubBuyFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
             securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
+
+            onFinish();
         }
 
         @Override
         public void failure(RetrofitError error) {
+            onFinish();
+        }
 
+        private void onFinish() {
+            if(isRefresh){
+                THLog.d("Refresh Positions Buy");
+                refreshPositionsHandler.sendEmptyMessageDelayed(-1, 60000);
+            } else {
+                THLog.d("No Refresh Positions Buy");
+            }
         }
     }
-    
+
+    class RefreshPositionsHandler extends Handler {
+        public void handleMessage(Message msg) {
+            if (portfolioId == -1) {
+                retrieveMainPositions();
+            }
+        }
+    }
 }

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -70,6 +71,9 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     SecurityOptPositionsList securityOptPositionDTOs;
     private int portfolioId = -1;
 
+    private RefreshPositionsHandler refreshPositionsHandler = new RefreshPositionsHandler();
+    private RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
+
     //Buy Sell Layout
     private TextView sell5Price;
     private TextView sell5Amount;
@@ -93,14 +97,13 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private TextView buy1Price;
     private TextView buy1Amount;
 
-    private RefreshBuySellHandler handler;
-
     private int color_up;
     private int color_down;
 
     private int totalSells;
     private int availableSells;
 
+    private boolean isRefresh = true;
 
     private SecurityOptMockPositionAdapter securityOptMockPositionAdapter;
 
@@ -125,11 +128,9 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.security_opt_sub_buysell, container, false);
         initViews(view);
-
+        isRefresh = true;
         if (!TextUtils.isEmpty(securitySymbol) && !TextUtils.isEmpty(securityExchange)) {
             quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
-            handler = new RefreshBuySellHandler();
-            handler.sendEmptyMessageAtTime(-1, 5000);
         }
         if(portfolioId == -1) {
             retrieveMainPositions();
@@ -140,7 +141,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     @Override
     public void onDestroyView(){
         super.onDestroyView();
-        handler = null;
+        isRefresh = false;
     }
 
 
@@ -230,8 +231,11 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
 
         private void onFinish() {
             if (isNeedToRefresh()) {
-                if(handler!= null) {
-                    handler.sendEmptyMessageAtTime(-1, 5000);
+                if(isRefresh){
+                    THLog.d("Refresh Buy Sell Sell");
+                    refreshBuySellHandler.sendEmptyMessageDelayed(-1, 5000);
+                } else {
+                    THLog.d("No Refresh Buy Sell Sell");
                 }
             }
         }
@@ -468,11 +472,30 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             SecurityOptMockSubSellFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
             securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
             displaySells(securityOptPositionDTOs);
+
+            onFinish();
         }
 
         @Override
         public void failure(RetrofitError error) {
+            onFinish();
+        }
 
+        private void onFinish() {
+            if(isRefresh) {
+                THLog.d("Refresh Positions Sell");
+                refreshPositionsHandler.sendEmptyMessageDelayed(-1, 60000);
+            } else {
+                THLog.d("No Refresh Positions Sell");
+            }
+        }
+    }
+
+    class RefreshPositionsHandler extends Handler {
+        public void handleMessage(Message msg) {
+            if (portfolioId == -1) {
+                retrieveMainPositions();
+            }
         }
     }
 
