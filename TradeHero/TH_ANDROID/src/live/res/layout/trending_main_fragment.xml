@@ -35,6 +35,7 @@
       android:layout_height="match_parent"
       android:clickable="true"
       android:paddingTop="@dimen/clickable_element_min_dimen"
+      android:paddingBottom="@dimen/dashboard_tabhost_height"
       android:visibility="gone"
       />
 
