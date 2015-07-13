@@ -407,7 +407,7 @@ public class TrendingMainFragment extends DashboardFragment
                                                 fxDialogShowed = true;
                                             }
                                             final FxOnBoardDialogFragment onBoardDialogFragment =
-                                                    FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+                                                    FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getSupportFragmentManager());
                                             onBoardDialogFragment.getUserActionTypeObservable()
                                                     .observeOn(AndroidSchedulers.mainThread())
                                                     .subscribe(

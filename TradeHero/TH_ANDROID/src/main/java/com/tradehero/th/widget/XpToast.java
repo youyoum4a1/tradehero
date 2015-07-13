@@ -265,7 +265,7 @@ public class XpToast extends RelativeLayout
             LevelUpDialogFragment levelUpDialogFragment = LevelUpDialogFragment.newInstance(fromLevel.getId(), toLevel.getId());
             try
             {
-                levelUpDialogFragment.show(((DashboardActivity) context).getFragmentManager(), LevelUpDialogFragment.class.getName());
+                levelUpDialogFragment.show(((DashboardActivity) context).getSupportFragmentManager(), LevelUpDialogFragment.class.getName());
             }
             catch (java.lang.IllegalStateException e)
             {

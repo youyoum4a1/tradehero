@@ -637,7 +637,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     public void handleSendLoveClick()
     {
-        AskForReviewDialogFragment.showReviewDialog(getActivity().getFragmentManager());
+        AskForReviewDialogFragment.showReviewDialog(getActivity().getSupportFragmentManager());
     }
 
     public void handleSendFeedbackClick()

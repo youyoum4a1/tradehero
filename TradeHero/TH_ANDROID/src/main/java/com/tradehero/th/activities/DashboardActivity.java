@@ -485,7 +485,7 @@ public class DashboardActivity extends BaseActivity
                 {
                     @Override public void call(Intent intent)
                     {
-                        AskForReviewSuggestedDialogFragment.showReviewDialog(DashboardActivity.this.getFragmentManager());
+                        AskForReviewSuggestedDialogFragment.showReviewDialog(DashboardActivity.this.getSupportFragmentManager());
                     }
                 }, new EmptyAction1<Throwable>()));
     }
@@ -598,7 +598,7 @@ public class DashboardActivity extends BaseActivity
                                 if (!isFxShown.get() && userProfileDTO != null && userProfileDTO.fxPortfolio == null)
                                 {
                                     isFxShown.set(true);
-                                    FxOnBoardDialogFragment.showOnBoardDialog(DashboardActivity.this.getFragmentManager());
+                                    FxOnBoardDialogFragment.showOnBoardDialog(DashboardActivity.this.getSupportFragmentManager());
                                     return;
                                 }
 

@@ -919,7 +919,7 @@ public class PositionListFragment
             }
             else if (mShowAskForInviteDialogPreference.isItTime())
             {
-                AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
+                AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
             }
         }
     }

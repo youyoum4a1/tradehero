@@ -565,7 +565,7 @@ public class MainCompetitionFragment extends DashboardFragment
         else if (competitionZoneDTO instanceof CompetitionZonePreSeasonDTO)
         {
             CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance(providerId);
-            dialog.show(getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
+            dialog.show(getActivity().getSupportFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
         }
         // TODO others?
     }

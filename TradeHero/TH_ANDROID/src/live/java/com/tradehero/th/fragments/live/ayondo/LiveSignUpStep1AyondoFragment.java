@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.live.ayondo;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -29,6 +31,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
+import com.tradehero.th.fragments.live.DatePickerDialogFragment;
 import com.tradehero.th.fragments.live.VerifyCodeDigitView;
 import com.tradehero.th.models.sms.SMSId;
 import com.tradehero.th.models.sms.SMSRequestFactory;
@@ -43,11 +46,13 @@ import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
+import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.validation.TextValidator;
 import com.tradehero.th.widget.validation.ValidatedText;
 import com.tradehero.th.widget.validation.ValidationMessage;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -77,6 +82,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @LayoutRes private static final int LAYOUT_COUNTRY_SELECTED_FLAG = R.layout.spinner_live_country_dropdown_item_selected;
     @LayoutRes private static final int LAYOUT_PHONE_COUNTRY = R.layout.spinner_live_phone_country_dropdown_item;
     @LayoutRes private static final int LAYOUT_PHONE_SELECTED_FLAG = R.layout.spinner_live_phone_country_dropdown_item_selected;
+    private static final int REQUEST_PICK_DATE = 2805;
 
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.et_firstname) TextView firstName;
@@ -85,6 +91,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     TextValidator emailValidator;
     @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
     @Bind(R.id.number_right) EditText phoneNumber;
+    @Bind(R.id.info_dob) TextView dob;
     @Bind(R.id.btn_verify_phone) TextView buttonVerifyPhone;
     @Bind(R.id.info_nationality) Spinner spinnerNationality;
     @Bind(R.id.info_residency) Spinner spinnerResidency;
@@ -868,5 +875,28 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                            },
                         new ToastAndLogOnErrorAction("Failed to listen to VerifyView")));
         return verifyView.getUserActionObservable();
+    }
+
+    @OnClick(R.id.info_dob)
+    public void showDatePickerDialog()
+    {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR) - 21;
+        c.set(Calendar.YEAR, year);
+
+        DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance(c);
+        dpf.setTargetFragment(this, REQUEST_PICK_DATE);
+        dpf.show(getChildFragmentManager(), "tag");
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PICK_DATE && resultCode == Activity.RESULT_OK)
+        {
+            Bundle b = data.getBundleExtra(DatePickerDialogFragment.INTENT_KEY_DATE_BUNDLE);
+            Calendar c = DatePickerDialogFragment.getCalendar(b);
+            dob.setText(DateUtils.getDisplayableDate(getResources(), c.getTime(), R.string.data_format_dd_mmm_yyyy));
+        }
     }
 }

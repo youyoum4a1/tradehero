@@ -13,7 +13,8 @@ import dagger.Module;
                 LiveCallToActionFragment.class,
                 LiveSignUpMainFragment.class,
                 TrendingLiveFragmentUtil.class,
-                BaseLiveFragmentUtil.class
+                BaseLiveFragmentUtil.class,
+                DatePickerDialogFragment.class
         },
         library = true,
         complete = false

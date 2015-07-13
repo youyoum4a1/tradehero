@@ -732,7 +732,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                     quoteDTO,
                                     closeUnits == null ? null : Math.abs(closeUnits)));
                 }
-                abstractTransactionDialogFragment.show(getActivity().getFragmentManager(), AbstractTransactionDialogFragment.class.getName());
+                abstractTransactionDialogFragment.show(getActivity().getSupportFragmentManager(), AbstractTransactionDialogFragment.class.getName());
                 listenToBuySellDialog();
             }
             else
@@ -812,7 +812,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             }
             else if (mShowAskForInviteDialogPreference.isItTime())
             {
-                AskForInviteDialogFragment.showInviteDialog(getActivity().getFragmentManager());
+                AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
             }
         }
     }

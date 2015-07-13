@@ -114,7 +114,7 @@ public class MeTimelineFragment extends TimelineFragment
     {
         if (onBoardDialogFragment == null)
         {
-            onBoardDialogFragment = FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getFragmentManager());
+            onBoardDialogFragment = FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getSupportFragmentManager());
             onBoardDialogFragment.getDismissedObservable()
                     .subscribe(
                             new Action1<DialogInterface>()

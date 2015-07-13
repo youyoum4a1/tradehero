@@ -3,6 +3,7 @@ package com.tradehero.th.models.level;
 import android.app.Application;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import com.tradehero.common.rx.LifecycleEventWithActivity;
 import com.tradehero.common.rx.LifecycleObservableUtil;
 import com.tradehero.th.R;
@@ -112,7 +113,8 @@ public class UserXPAchievementHandler
                                             {
                                                 @Override public void onNext(AbstractAchievementDialogFragment fragment)
                                                 {
-                                                    fragment.show(activityEvent.activity.getFragmentManager(), AbstractAchievementDialogFragment.TAG);
+                                                    fragment.show(((FragmentActivity) activityEvent.activity).getSupportFragmentManager(),
+                                                            AbstractAchievementDialogFragment.TAG);
                                                 }
 
                                                 @Override public void onCompleted()

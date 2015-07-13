@@ -143,7 +143,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
                 FragmentActivity activity = (FragmentActivity) currentActivity.get();
-                AskForReviewDialogFragment.showReviewDialog(activity.getFragmentManager());
+                AskForReviewDialogFragment.showReviewDialog(activity.getSupportFragmentManager());
                 return true;
             }
         });
@@ -154,7 +154,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
             @Override public boolean onPreferenceClick(Preference preference)
             {
                 FragmentActivity activity = (FragmentActivity) currentActivity.get();
-                AskForInviteDialogFragment.showInviteDialog(activity.getFragmentManager());
+                AskForInviteDialogFragment.showInviteDialog(activity.getSupportFragmentManager());
                 return true;
             }
         });
@@ -174,7 +174,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                FxOnBoardDialogFragment.showOnBoardDialog(AdminSettingsFragment.this.getActivity().getFragmentManager());
+                FxOnBoardDialogFragment.showOnBoardDialog(AdminSettingsFragment.this.getActivity().getSupportFragmentManager());
                 return true;
             }
         });
@@ -246,7 +246,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
             {
 
                 CompetitionPreseasonDialogFragment dialog = CompetitionPreseasonDialogFragment.newInstance(new ProviderId(24));
-                dialog.show(AdminSettingsFragment.this.getActivity().getFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
+                dialog.show(AdminSettingsFragment.this.getActivity().getSupportFragmentManager(), CompetitionPreseasonDialogFragment.TAG);
                 return true;
             }
         });

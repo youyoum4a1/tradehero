@@ -158,13 +158,17 @@
         android:background="?attr/selectableItemBackground"
         />
 
-    <EditText
+    <TextView
+        android:id="@+id/info_dob"
         style="@style/TH.Body"
         android:layout_width="match_parent"
         android:layout_height="@dimen/clickable_element_min_dimen"
+        android:gravity="left|center_vertical"
         android:clickable="true"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        android:background="?attr/editTextBackground"
+        android:textColor="?attr/editTextColor"
         android:hint="@string/date_of_birth"
         />
 
