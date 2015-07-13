@@ -1,15 +1,12 @@
 package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
-
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
 import com.tradehero.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.MainTabFragmentDiscovery;
-import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubBuyFragment;
-import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubSellFragment;
-import com.tradehero.chinabuild.fragment.stocklearning.StockLearningMainFragment;
 import com.tradehero.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.chinabuild.MainTabFragmentTrade;
+import com.tradehero.chinabuild.SettingMineFragment;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
@@ -63,6 +60,10 @@ import com.tradehero.chinabuild.fragment.security.SecurityDetailSubNewsFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailSubOptFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailSubPositionFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDiscussOrNewsFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubBuyFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubDelegationFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubQueryFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubSellFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityUserOptFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityUserPositionFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.AnswerQuestionFragment;
@@ -71,6 +72,7 @@ import com.tradehero.chinabuild.fragment.stocklearning.OneQuestionFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.PublicClassFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.QuestionsFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.StockLearningHistoryFragment;
+import com.tradehero.chinabuild.fragment.stocklearning.StockLearningMainFragment;
 import com.tradehero.chinabuild.fragment.trade.TradeOfChinaConceptFragment;
 import com.tradehero.chinabuild.fragment.trade.TradeOfHotHoldFragment;
 import com.tradehero.chinabuild.fragment.trade.TradeOfMineFragment;
@@ -78,7 +80,6 @@ import com.tradehero.chinabuild.fragment.trade.TradeOfRisePercentFragment;
 import com.tradehero.chinabuild.fragment.trade.TradeOfTypeBaseFragment;
 import com.tradehero.chinabuild.fragment.userCenter.MyMainPage;
 import com.tradehero.chinabuild.fragment.userCenter.MyMainSubPage;
-import com.tradehero.chinabuild.SettingMineFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserFansListFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
@@ -135,13 +136,10 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.widget.MarkdownTextView;
 import com.tradehero.th.widget.TradeHeroProgressBar;
-
-import java.util.Locale;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import java.util.Locale;
+import javax.inject.Singleton;
 
 @Module(
         includes = {
@@ -248,6 +246,8 @@ import dagger.Provides;
                         SecurityDetailSubNewsFragment.class,
                         SecurityDetailSubOptFragment.class,
                         SecurityDetailSubPositionFragment.class,
+                        SecurityOptMockSubQueryFragment.class,
+                        SecurityOptMockSubDelegationFragment.class,
 
                         TimeLineDetailDialogLayout.class,
                         TimeLineCommentDialogLayout.class,

@@ -27,12 +27,12 @@ import com.tradehero.chinabuild.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.MainTabFragmentDiscovery;
 import com.tradehero.chinabuild.MainTabFragmentStockGod;
 import com.tradehero.chinabuild.MainTabFragmentTrade;
+import com.tradehero.chinabuild.SettingMineFragment;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
-import com.tradehero.chinabuild.SettingMineFragment;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -310,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
+        THToast.show("requestCode="+requestCode+"resultCode"+resultCode);
     }
 
     @Override

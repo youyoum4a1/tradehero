@@ -1,16 +1,14 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.position.OwnedPositionId;
-import com.tradehero.th.api.trade.OwnedTradeId;
-import com.tradehero.th.api.trade.TradeDTO;
+import com.tradehero.th.api.trade.ClosedTradeDTOList;
 import com.tradehero.th.api.trade.TradeDTOList;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.trade.DTOProcessorTradeListReceived;
-import com.tradehero.th.models.trade.DTOProcessorTradeReceived;
-import org.jetbrains.annotations.NotNull;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
+import retrofit.Callback;
 
 @Singleton public class TradeServiceWrapper
 {
@@ -59,4 +57,18 @@ import javax.inject.Singleton;
                         ownedPositionId.positionId));
     }
 
+    public void getTrades(Callback<ClosedTradeDTOList> callback)
+    {
+        tradeService.getClosedTrade(callback);
+    }
+
+    public void getDelegation(Callback<ClosedTradeDTOList> callback)
+    {
+        tradeService.getDelegation(callback);
+    }
+
+    public void getPendingDelegation(Callback<ClosedTradeDTOList> callback)
+    {
+        tradeService.getPendingDelegation(callback);
+    }
 }

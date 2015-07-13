@@ -228,4 +228,6 @@
     <string name="trade_record">成交记录</string>
     <string name="delegation_record">委托记录</string>
     <string name="click_show_more">点击查看更多</string>
+    <string name="is_buy">买入</string>
+    <string name="is_sell">卖出</string>
 </resources>

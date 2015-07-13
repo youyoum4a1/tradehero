@@ -597,5 +597,7 @@
     <string name="trade_record">trade record</string>
     <string name="delegation_record">delegation record</string>
     <string name="click_show_more">click show more</string>
+    <string name="is_buy">buy</string>
+    <string name="is_sell">sell</string>
 
 </resources>
