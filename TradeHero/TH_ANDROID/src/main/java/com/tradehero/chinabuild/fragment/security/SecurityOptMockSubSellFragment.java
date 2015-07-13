@@ -232,7 +232,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             dlgConfirmTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    
+
                 }
             });
 

@@ -18,6 +18,7 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
+import retrofit.client.Response;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -281,7 +282,7 @@ import java.util.Map;
     }
     //</editor-fold>
 
-    public void order(int portfolioId, String exchange, String symbol, double quantity, double price, Callback callback){
+    public void order(int portfolioId, String exchange, String symbol, int quantity, double price, Callback<Response> callback){
         SecurityOrderDTO securityOrderDTO = new SecurityOrderDTO();
         securityOrderDTO.portfolioId = portfolioId;
         securityOrderDTO.exchange = exchange;

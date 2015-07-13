@@ -7,6 +7,7 @@ import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import java.util.Map;
 import retrofit.Callback;
+import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -96,5 +97,5 @@ interface SecurityServiceAsync
 
     @POST("/cn/v2/orders")void order(
             @Body()SecurityOrderDTO securityOrderDTO,
-            Callback<Object> callback);
+            Callback<Response> callback);
 }

@@ -29,6 +29,7 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
@@ -267,18 +268,19 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                     if(TextUtils.isEmpty(priceET.getText().toString())){
                         return;
                     }
-                    double quantity = Double.valueOf(decisionET.getText().toString());
+                    int quantity = Integer.valueOf(decisionET.getText().toString());
                     double price = Double.valueOf(priceET.getText().toString());
                     if(isSHASHE()){
-                        securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback() {
+                        securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback<Response>() {
                             @Override
-                            public void success(Object value, Response response) {
+                            public void success(Response value, Response response) {
                                 THToast.show("交易成功");
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
-                                THToast.show("交易失败");
+                                THException thException = new THException(error);
+                                THToast.show(thException.toString());
                             }
                         });
                     } else {
@@ -464,7 +466,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if(price == 0){
             return;
         }
-        int amount = (int)((cashNeed * quoteDTO.toUSDRate)/(percent * price));
+        int amount = (int)((cashNeed )/(percent * price * quoteDTO.toUSDRate));
         decisionET.setText(String.valueOf(amount));
         switch (percent){
             case 1:

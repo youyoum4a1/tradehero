@@ -8,6 +8,6 @@ public class SecurityOrderDTO {
     public int portfolioId;
     public String exchange;
     public String symbol;
-    public double quantity;
+    public int quantity;
     public double price;
 }
