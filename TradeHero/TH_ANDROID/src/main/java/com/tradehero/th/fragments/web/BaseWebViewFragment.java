@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.web;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -17,6 +18,7 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.network.NetworkConstants;
+import com.tradehero.th.utils.Constants;
 import java.util.Map;
 import timber.log.Timber;
 
@@ -45,11 +47,16 @@ public class BaseWebViewFragment extends BaseFragment
         return null;
     }
 
+    @SuppressLint("NewApi")
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(getLayoutResId(), container, false);
         setHasOptionsMenu(true);
         webView = (WebView) view.findViewById(R.id.webview);
+        if (SDKUtils.isKitKatOrHigher() && !Constants.RELEASE)
+        {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
         initViews(view);
         return view;
     }
@@ -82,7 +89,7 @@ public class BaseWebViewFragment extends BaseFragment
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
 
-        if(SDKUtils.isKitKatOrHigher())
+        if (SDKUtils.isKitKatOrHigher())
         {
             webView.setLayerType(View.LAYER_TYPE_NONE, null);
         }
