@@ -78,6 +78,7 @@
           style="@style/TH.LiveIdentityPromptImage"
           android:layout_marginRight="@dimen/margin_medium"
           android:src="@drawable/image_identity_proof"
+          android:visibility="gone"
           />
 
       <ImageView
@@ -98,6 +99,7 @@
           android:background="@drawable/basic_green_selector"
           android:minHeight="@dimen/clickable_element_min_dimen"
           tools:text="NRIC / Driver's License"
+          android:visibility="gone"
           />
 
       <Button

@@ -79,6 +79,8 @@ public class IdentityPromptActivity extends BaseActivity
                                                 .placeholder(R.drawable.image_identity_proof)
                                                 .into(imgPrompt);
                                         txtPrompt.setText(kycFormOptions.getIdentityPromptInfo().prompt);
+                                        imgPrompt.setVisibility(View.VISIBLE);
+                                        txtPrompt.setVisibility(View.VISIBLE);
                                         return situation;
                                     }
                                 });
