@@ -24,9 +24,4 @@ public class SecurityOptPositionDTO implements DTO{
     public double marketValueRefCcy;
     public double sumInvestedAmountRefCcy;
     public double roi;
-
-    @Override
-    public String toString(){
-        return "name " + name + " symbol " +  symbol + " shares " + shares;
-    }
 }

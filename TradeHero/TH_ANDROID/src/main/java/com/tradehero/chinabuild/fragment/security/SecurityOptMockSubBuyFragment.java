@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -197,7 +198,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         securityCodeTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (getActivity() != null && TextUtils.isEmpty(securitySymbol)) {
+                if(getActivity()!=null) {
                     getActivity().finish();
                     gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
                     getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
@@ -272,12 +273,12 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                         securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback() {
                             @Override
                             public void success(Object value, Response response) {
-                                buyConfirmDialog.dismiss();
+                                THToast.show("交易成功");
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
-                                buyConfirmDialog.dismiss();
+                                THToast.show("交易失败");
                             }
                         });
                     } else {
@@ -463,7 +464,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if(price == 0){
             return;
         }
-        int amount = (int)((cashNeed * quoteDTO.toUSDRate)/price);
+        int amount = (int)((cashNeed * quoteDTO.toUSDRate)/(percent * price));
         decisionET.setText(String.valueOf(amount));
         switch (percent){
             case 1:

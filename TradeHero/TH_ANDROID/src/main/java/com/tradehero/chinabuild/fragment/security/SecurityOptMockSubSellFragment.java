@@ -177,7 +177,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         securityCodeTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(getActivity()!=null && TextUtils.isEmpty(securitySymbol)){
+                if(getActivity()!=null){
                     getActivity().finish();
                     gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
                     getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
@@ -227,6 +227,12 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                     if (sellConfirmDialog != null) {
                         sellConfirmDialog.dismiss();
                     }
+                }
+            });
+            dlgConfirmTV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    
                 }
             });
 

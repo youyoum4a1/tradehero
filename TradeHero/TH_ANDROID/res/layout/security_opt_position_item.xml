@@ -25,7 +25,7 @@
                 android:text="- -"/>
             <TextView
                 android:layout_marginTop="6dp"
-                android:id="@+id/stock_total"
+                android:id="@+id/stock_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#1789d5"

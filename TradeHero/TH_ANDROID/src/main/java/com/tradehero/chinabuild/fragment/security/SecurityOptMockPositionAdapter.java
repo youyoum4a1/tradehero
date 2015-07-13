@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -59,7 +60,7 @@ public class SecurityOptMockPositionAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.security_opt_position_item, null);
             holder = new Holder();
             holder.stockName = (TextView)convertView.findViewById(R.id.stock_name);
-            holder.total = (TextView)convertView.findViewById(R.id.stock_total);
+            holder.code = (TextView)convertView.findViewById(R.id.stock_code);
             holder.benefit = (TextView)convertView.findViewById(R.id.stock_benefit);
             holder.percentageBenefit = (TextView)convertView.findViewById(R.id.stock_benefit_percent);
             holder.base = (TextView)convertView.findViewById(R.id.stock_base_a);
@@ -75,12 +76,28 @@ public class SecurityOptMockPositionAdapter extends BaseAdapter{
         holder.stockName.setText(securityOptPositionDTO.name);
         holder.totalAccount.setText(String.valueOf(securityOptPositionDTO.shares));
         holder.availableAccount.setText(String.valueOf(securityOptPositionDTO.sellableShares));
+        holder.code.setText(securityOptPositionDTO.symbol);
+        int benefit = (int)(securityOptPositionDTO.unrealizedPLRefCcy);
+        double percentage = securityOptPositionDTO.unrealizedPLRefCcy / (securityOptPositionDTO.averagePriceRefCcy * securityOptPositionDTO.shares);
+        DecimalFormat df = new DecimalFormat("#.00");
+        holder.benefit.setText(securityOptPositionDTO.currencyDisplay + String.valueOf(benefit));
+        holder.percentageBenefit.setText(df.format(percentage * 100) + "%");
+        if(securityOptPositionDTO.unrealizedPLRefCcy >= 0){
+            holder.benefit.setTextColor(color_up);
+            holder.percentageBenefit.setTextColor(color_up);
+        } else {
+            holder.benefit.setTextColor(color_down);
+            holder.percentageBenefit.setTextColor(color_down);
+        }
+        int base = (int)(securityOptPositionDTO.averagePriceRefCcy * securityOptPositionDTO.shares);
+        holder.base.setText(securityOptPositionDTO.currencyDisplay + String.valueOf(base));
+        holder.basePrice.setText(securityOptPositionDTO.currencyDisplay + df.format(securityOptPositionDTO.averagePriceRefCcy));
         return convertView;
     }
 
     class Holder {
         public TextView stockName;
-        public TextView total;
+        public TextView code;
         public TextView benefit;
         public TextView percentageBenefit;
         public TextView base;
