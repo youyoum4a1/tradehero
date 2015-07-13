@@ -1,5 +1,6 @@
 package com.tradehero.chinabuild.fragment.security;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,11 +10,43 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.trade.ClosedTradeDTOList;
+import com.tradehero.th.network.service.TradeServiceWrapper;
+import com.tradehero.th.utils.DaggerUtils;
+import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 public class SecurityOptMockSubDelegationFragment extends Fragment implements View.OnClickListener{
     private RelativeLayout mDelegrationButton;
     private ListView mListView;
     private SecurityOptMockDelegationAdapter mListViewAdapter;
+    @Inject
+    TradeServiceWrapper mTradeServiceWrapper;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        DaggerUtils.inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mTradeServiceWrapper.getPendingDelegation(new Callback<ClosedTradeDTOList>() {
+            @Override
+            public void success(ClosedTradeDTOList list, Response response2) {
+                Timber.d("lyl getPendingDelegation size=" + list.size());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
