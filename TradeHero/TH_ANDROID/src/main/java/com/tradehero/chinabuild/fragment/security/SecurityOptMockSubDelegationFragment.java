@@ -39,6 +39,8 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
             @Override
             public void success(ClosedTradeDTOList list, Response response2) {
                 Timber.d("lyl getPendingDelegation size=" + list.size());
+                mListViewAdapter.setItems(list);
+                mListViewAdapter.notifyDataSetChanged();
             }
 
             @Override
