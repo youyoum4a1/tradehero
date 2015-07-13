@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,6 +30,17 @@ public class DateUtils
         }
 
         String pattern = resources.getString(patternResId);
+        return getDisplayableDate(d, pattern);
+    }
+
+    public static String getDisplayableDate(@NonNull Date d, @NonNull String pattern)
+    {
+        initFormatter(pattern);
+        return sdf.format(d);
+    }
+
+    protected static void initFormatter(@NonNull String pattern)
+    {
         if (sdf == null)
         {
             sdf = new SimpleDateFormat(pattern);
@@ -38,7 +50,6 @@ public class DateUtils
         {
             sdf.applyPattern(pattern);
         }
-        return sdf.format(d);
     }
 
     public static String getDisplayableDate(@NonNull Resources resources, @Nullable Date dStart, @Nullable Date dEnd)
@@ -127,5 +138,23 @@ public class DateUtils
         sb.append(String.valueOf(minutes)).append(" ").append(resources.getString(id)).append(" ");
 
         return sb.toString();
+    }
+
+    public static @Nullable Date parseString(String stringToParse, String pattern)
+    {
+        initFormatter(pattern);
+        try
+        {
+            return sdf.parse(stringToParse);
+        } catch (ParseException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static @Nullable Date parseString(Resources resources, String stringToParse, @StringRes int patternResId)
+    {
+        return parseString(stringToParse, resources.getString(patternResId));
     }
 }

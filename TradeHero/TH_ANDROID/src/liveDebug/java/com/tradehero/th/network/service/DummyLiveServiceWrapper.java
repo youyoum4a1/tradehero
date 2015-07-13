@@ -82,7 +82,8 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                                 PercentNetWorthForInvestmentRange.MORETHAN75P),
                                         Arrays.asList(EmploymentStatus.EMPLOYED, EmploymentStatus.SELFEMPLOYED,
                                                 EmploymentStatus.UNEMPLOYED, EmploymentStatus.RETIRED,
-                                                EmploymentStatus.STUDENT));
+                                                EmploymentStatus.STUDENT),
+                                        21);
                                 return Observable.just(options);
                             }
                         });

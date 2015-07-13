@@ -71,6 +71,7 @@
   <string name="employment_status_retired">Retired</string>
   <string name="employment_status_student">Student</string>
 
-  <string name="error_date_earlier">You have to be at least 21 years old.</string>
+  <string name="error_date_earlier">You have to be at least %1$d years old.</string>
+  <string name="info_date_format">dd MMM yyyy</string>
 
 </resources>

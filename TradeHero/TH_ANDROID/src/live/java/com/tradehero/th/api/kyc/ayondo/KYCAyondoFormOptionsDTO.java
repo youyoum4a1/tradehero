@@ -26,6 +26,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final List<NetWorthRange> netWorthOptions;
     @NonNull public final List<PercentNetWorthForInvestmentRange> percentNetWorthOptions;
     @NonNull public final List<EmploymentStatus> employmentStatusOptions;
+    @NonNull public final int minAge;
 
     public KYCAyondoFormOptionsDTO(
             @JsonProperty("identityPromptInfo") @NonNull IdentityPromptInfoDTO identityPromptInfo,
@@ -35,7 +36,8 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("annualIncomeOptions") @NonNull List<AnnualIncomeRange> annualIncomeOptions,
             @JsonProperty("netWorthOptions") @NonNull List<NetWorthRange> netWorthOptions,
             @JsonProperty("percentNetWorthOptions") @NonNull List<PercentNetWorthForInvestmentRange> percentNetWorthOptions,
-            @JsonProperty("employmentStatusOptions") @NonNull List<EmploymentStatus> employmentStatusOptions)
+            @JsonProperty("employmentStatusOptions") @NonNull List<EmploymentStatus> employmentStatusOptions,
+            @JsonProperty("minAge") int minAge)
     {
         this.identityPromptInfo = identityPromptInfo;
         if (allowedMobilePhoneCountries == null)
@@ -66,6 +68,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         this.netWorthOptions = Collections.unmodifiableList(netWorthOptions);
         this.percentNetWorthOptions = Collections.unmodifiableList(percentNetWorthOptions);
         this.employmentStatusOptions = Collections.unmodifiableList(employmentStatusOptions);
+        this.minAge = minAge;
     }
 
     @NonNull @Override public IdentityPromptInfoDTO getIdentityPromptInfo()

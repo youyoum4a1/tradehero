@@ -54,6 +54,7 @@ import com.tradehero.th.widget.validation.ValidationMessage;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +63,8 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action0;
@@ -393,6 +396,65 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction("Failed to listen to nationality")));
 
+        onDestroyViewSubscriptions.add(ViewObservable.clicks(dob)
+                .flatMap(new Func1<OnClickEvent, Observable<KYCAyondoFormOptionsDTO>>()
+                {
+                    @Override public Observable<KYCAyondoFormOptionsDTO> call(OnClickEvent onClickEvent)
+                    {
+                        return getKYCAyondoFormOptionsObservable().distinctUntilChanged().take(1);
+                    }
+                })
+                .map(new Func1<KYCAyondoFormOptionsDTO, Calendar>()
+                {
+                    @Override public Calendar call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
+                    {
+                        Calendar c = Calendar.getInstance();
+                        int year = c.get(Calendar.YEAR) - kycAyondoFormOptionsDTO.minAge;
+                        c.set(Calendar.YEAR, year);
+                        return c;
+                    }
+                })
+                .subscribe(new Action1<Calendar>()
+                {
+                    @Override public void call(Calendar calendar)
+                    {
+                        Calendar selected = null;
+                        if (!TextUtils.isEmpty(dob.getText()))
+                        {
+                            Date d = DateUtils.parseString(getResources(), dob.getText().toString(), R.string.info_date_format);
+                            if (d != null)
+                            {
+                                selected = Calendar.getInstance();
+                                selected.setTime(d);
+                            }
+                        }
+                        DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance(calendar, selected);
+                        dpf.setTargetFragment(LiveSignUpStep1AyondoFragment.this, REQUEST_PICK_DATE);
+                        dpf.show(getChildFragmentManager(), dpf.getClass().getName());
+                    }
+                }, new TimberOnErrorAction("Failed to listen to DOB clicks")));
+
+        onDestroyViewSubscriptions.add(Observable.combineLatest(
+                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
+                WidgetObservable.text(dob),
+                new Func2<LiveBrokerSituationDTO, OnTextChangeEvent, Boolean>()
+                {
+                    @Override public Boolean call(LiveBrokerSituationDTO situation, OnTextChangeEvent dobEvent)
+                    {
+                        ((KYCAyondoForm) situation.kycForm).setDateOfBirth(dobEvent.text().toString());
+                        onNext(situation);
+                        return null;
+                    }
+                })
+                .subscribe(
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean aBoolean)
+                            {
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to listen to last name")));
+
         if (savedInstanceState != null)
         {
             this.expectedCode = savedInstanceState.getString(KEY_EXPECTED_CODE, this.expectedCode);
@@ -495,6 +557,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             phoneNumber.setText(mobileNumberText);
         }
+
+        String dobText = kycForm.getDob();
+        if (dob != null && dobText != null && !dobText.equals(dob.getText().toString()))
+        {
+            dob.setText(dobText);
+        }
     }
 
     protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, int countryCode, @NonNull String typedNumber)
@@ -525,7 +593,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
-        candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
         setSpinnerOnFirst(spinnerPhoneCountryCode, candidates, liveCountryDTOs);
     }
 
@@ -553,7 +620,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
-        candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
         setSpinnerOnFirst(spinnerNationality, candidates, liveCountryDTOs);
     }
 
@@ -580,7 +646,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             candidates = new ArrayList<>();
         }
 
-        candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
         candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
         setSpinnerOnFirst(spinnerResidency, candidates, liveCountryDTOs);
     }
@@ -877,26 +942,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return verifyView.getUserActionObservable();
     }
 
-    @OnClick(R.id.info_dob)
-    public void showDatePickerDialog()
-    {
-        Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR) - 21;
-        c.set(Calendar.YEAR, year);
-
-        DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance(c);
-        dpf.setTargetFragment(this, REQUEST_PICK_DATE);
-        dpf.show(getChildFragmentManager(), "tag");
-    }
-
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_PICK_DATE && resultCode == Activity.RESULT_OK)
         {
-            Bundle b = data.getBundleExtra(DatePickerDialogFragment.INTENT_KEY_DATE_BUNDLE);
+            Bundle b =
+                    data.getBundleExtra(DatePickerDialogFragment.INTENT_KEY_DATE_BUNDLE).getBundle(DatePickerDialogFragment.BUNDLE_KEY_SELECTED_DATE);
             Calendar c = DatePickerDialogFragment.getCalendar(b);
-            dob.setText(DateUtils.getDisplayableDate(getResources(), c.getTime(), R.string.data_format_dd_mmm_yyyy));
+            dob.setText(DateUtils.getDisplayableDate(getResources(), c.getTime(), R.string.info_date_format));
         }
     }
 }

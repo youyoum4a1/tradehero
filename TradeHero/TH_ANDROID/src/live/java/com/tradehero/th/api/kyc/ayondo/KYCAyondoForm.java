@@ -10,12 +10,15 @@ import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.StepStatus;
+import com.tradehero.th.utils.DateUtils;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class KYCAyondoForm implements KYCForm
 {
     public static final String KEY_AYONDO_TYPE = "Ayondo";
+    public static final String DATE_FORMAT_AYONDO = "dd-MM-yyyy";
 
     @NonNull private Country country;
     @Nullable private String firstName;
@@ -28,6 +31,7 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private String verifiedMobileNumber;
     @Nullable private CountryCode nationality;
     @Nullable private CountryCode residency;
+    @Nullable private String dob;
 
     private List<StepStatus> stepStatuses;
 
@@ -54,6 +58,12 @@ public class KYCAyondoForm implements KYCForm
         if (issuingCountry != null)
         {
             this.nationality = issuingCountry;
+        }
+
+        Date dob = scannedDocument.getDob();
+        if (dob != null)
+        {
+            this.dob = DateUtils.getDisplayableDate(dob, KYCAyondoForm.DATE_FORMAT_AYONDO);
         }
     }
 
@@ -215,12 +225,16 @@ public class KYCAyondoForm implements KYCForm
             same &= mobileNumberDialingPrefix == null ? ayondoForm.mobileNumberDialingPrefix
                     == null : mobileNumberDialingPrefix.equals(ayondoForm.mobileNumberDialingPrefix);
             same &= mobileNumber == null ? ayondoForm.mobileNumber == null : mobileNumber.equals(ayondoForm.mobileNumber);
-            same &= verifiedMobileNumberDialingPrefix == null ? ayondoForm.verifiedMobileNumberDialingPrefix == null : verifiedMobileNumberDialingPrefix
-                    .equals(ayondoForm.verifiedMobileNumberDialingPrefix);
-            same &= verifiedMobileNumber == null ? ayondoForm.verifiedMobileNumber == null : verifiedMobileNumber.equals(ayondoForm.verifiedMobileNumber);
+            same &= verifiedMobileNumberDialingPrefix == null ? ayondoForm.verifiedMobileNumberDialingPrefix == null
+                    : verifiedMobileNumberDialingPrefix
+                            .equals(ayondoForm.verifiedMobileNumberDialingPrefix);
+            same &= verifiedMobileNumber == null ? ayondoForm.verifiedMobileNumber == null : verifiedMobileNumber.equals(
+                    ayondoForm.verifiedMobileNumber);
             same &= nationality == null ? ayondoForm.nationality == null : nationality.equals(ayondoForm.nationality);
             same &= residency == null ? ayondoForm.residency == null : residency.equals(ayondoForm.residency);
-            same &= stepStatuses == null ? ayondoForm.stepStatuses == null : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
+            same &= dob == null ? ayondoForm.dob == null : dob.equals(ayondoForm.dob);
+            same &= stepStatuses == null ? ayondoForm.stepStatuses == null
+                    : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
             {
                 for (int index = 0; index < stepStatuses.size(); index++)
@@ -234,5 +248,15 @@ public class KYCAyondoForm implements KYCForm
             same = false;
         }
         return same;
+    }
+
+    public String getDob()
+    {
+        return dob;
+    }
+
+    public void setDateOfBirth(String dob)
+    {
+        this.dob = dob;
     }
 }
