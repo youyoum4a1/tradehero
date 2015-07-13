@@ -2243,6 +2243,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
         bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, securityId.getExchange());
         bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, securityId.getSecuritySymbol());
+        bundle.putBundle(SecurityOptActivity.KEY_QUOTE_DTO, quoteDTO.getArgs());
         bundle.putString(BUNDLE_KEY_SECURITY_NAME, securityName);
         Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
         intent.putExtras(bundle);
@@ -2255,6 +2256,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_SELL);
         bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, securityId.getExchange());
         bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, securityId.getSecuritySymbol());
+        bundle.putBundle(SecurityOptActivity.KEY_QUOTE_DTO, quoteDTO.getArgs());
         bundle.putString(BUNDLE_KEY_SECURITY_NAME, securityName);
         Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
         intent.putExtras(bundle);

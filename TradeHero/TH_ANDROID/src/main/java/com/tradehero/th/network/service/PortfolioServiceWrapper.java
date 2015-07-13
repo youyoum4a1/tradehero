@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.squareup.okhttp.Call;
 import com.tradehero.th.api.portfolio.*;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.models.DTOProcessor;
@@ -10,6 +11,8 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import dagger.Lazy;
+import retrofit.Callback;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,4 +78,8 @@ import javax.inject.Singleton;
     {
         return portfolioService.getPortfolioCompact(key.competitionId);
     }
+
+   public void getMainPortfolio(int userId, Callback<PortfolioDTO> callback){
+       portfolioService.getMainPortfolio(userId, callback);
+   }
 }

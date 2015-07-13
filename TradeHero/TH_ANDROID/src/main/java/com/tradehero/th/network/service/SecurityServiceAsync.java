@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.SecurityOrderDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -91,4 +92,9 @@ interface SecurityServiceAsync
             @Body() TransactionFormDTO transactionFormDTO,
             Callback<SecurityPositionDetailDTO> callback);
     //</editor-fold>
+
+
+    @POST("/cn/v2/orders")void order(
+            @Body()SecurityOrderDTO securityOrderDTO,
+            Callback<Object> callback);
 }

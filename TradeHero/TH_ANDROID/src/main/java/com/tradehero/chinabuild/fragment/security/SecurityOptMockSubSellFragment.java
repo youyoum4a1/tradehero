@@ -107,8 +107,8 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private int color_up;
     private int color_down;
 
-    private int totalSells;
-    private int availableSells;
+    private int totalSells = 0;
+    private int availableSells = 0;
 
     private boolean isRefresh = true;
 
@@ -214,7 +214,11 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             sellConfirmDialog.setCanceledOnTouchOutside(false);
             sellConfirmDialog.setCancelable(true);
             sellConfirmDialog.setContentView(R.layout.dialog_security_opt_sell);
-
+            dlgStockNameTV = (TextView)sellConfirmDialog.findViewById(R.id.dialog_security_name);
+            dlgStockCodeTV = (TextView)sellConfirmDialog.findViewById(R.id.dialog_security_code);
+            dlgStockPriceTV = (TextView)sellConfirmDialog.findViewById(R.id.dialog_security_price);
+            dlgStockAmountTV = (TextView)sellConfirmDialog.findViewById(R.id.dialog_security_amount);
+            dlgStockTotalTV = (TextView)sellConfirmDialog.findViewById(R.id.dialog_security_total);
 
             dlgCancelTV = (TextView) sellConfirmDialog.findViewById(R.id.dialog_cancel);
             dlgCancelTV.setOnClickListener(new View.OnClickListener() {
@@ -227,6 +231,27 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             });
 
         }
+        if(TextUtils.isEmpty(securityName) || TextUtils.isEmpty(securitySymbol)){
+            return;
+        }
+        if(priceET.getText()==null){
+            return;
+        }
+        if(TextUtils.isEmpty(priceET.getText().toString())){
+            return;
+        }
+        if(decisionET.getText()==null){
+            return;
+        }
+        if(TextUtils.isEmpty(decisionET.getText().toString())){
+            return;
+        }
+        dlgStockNameTV.setText(securityName);
+        dlgStockCodeTV.setText(securitySymbol);
+        dlgStockPriceTV.setText(priceET.getText());
+        dlgStockAmountTV.setText(decisionET.getText());
+        int price = (int)(Double.valueOf(priceET.getText().toString()) * Integer.valueOf(decisionET.getText().toString()));
+        dlgStockTotalTV.setText(String.valueOf(price));
         sellConfirmDialog.show();
     }
 
@@ -432,6 +457,52 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                 break;
             case R.id.textview_security_opt_add:
                 addOne();
+                break;
+            case R.id.security_opt_one_fourth:
+                setSellAmount(4);
+                break;
+            case R.id.security_opt_one_third:
+                setSellAmount(3);
+                break;
+            case R.id.security_opt_half:
+                setSellAmount(2);
+                break;
+            case R.id.security_opt_all:
+                setSellAmount(1);
+                break;
+        }
+    }
+
+    private void setSellAmount(int percent){
+        if(availableSells <= 0){
+            return;
+        }
+
+        decisionET.setText(String.valueOf(availableSells/percent));
+        switch (percent){
+            case 1:
+                allIV.setBackgroundResource(R.drawable.all);
+                halfIV.setBackgroundResource(R.drawable.half_normal);
+                oneThirdIV.setBackgroundResource(R.drawable.one_third_normal);
+                oneFourIV.setBackgroundResource(R.drawable.one_fourth_normal);
+                break;
+            case 2:
+                allIV.setBackgroundResource(R.drawable.all_normal);
+                halfIV.setBackgroundResource(R.drawable.half);
+                oneThirdIV.setBackgroundResource(R.drawable.one_third_normal);
+                oneFourIV.setBackgroundResource(R.drawable.one_fourth_normal);
+                break;
+            case 3:
+                allIV.setBackgroundResource(R.drawable.all_normal);
+                halfIV.setBackgroundResource(R.drawable.half_normal);
+                oneThirdIV.setBackgroundResource(R.drawable.one_third);
+                oneFourIV.setBackgroundResource(R.drawable.one_fourth_normal);
+                break;
+            case 4:
+                allIV.setBackgroundResource(R.drawable.all_normal);
+                halfIV.setBackgroundResource(R.drawable.half_normal);
+                oneThirdIV.setBackgroundResource(R.drawable.one_third_normal);
+                oneFourIV.setBackgroundResource(R.drawable.one_fourth);
                 break;
         }
     }

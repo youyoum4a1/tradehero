@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.SecurityOrderDTO;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.*;
@@ -279,4 +280,14 @@ import java.util.Map;
         return sell(securityId, transactionFormDTO, callback);
     }
     //</editor-fold>
+
+    public void order(int portfolioId, String exchange, String symbol, double quantity, double price, Callback callback){
+        SecurityOrderDTO securityOrderDTO = new SecurityOrderDTO();
+        securityOrderDTO.portfolioId = portfolioId;
+        securityOrderDTO.exchange = exchange;
+        securityOrderDTO.symbol = symbol;
+        securityOrderDTO.quantity = quantity;
+        securityOrderDTO.price = price;
+        securityServiceAsync.order(securityOrderDTO, callback);
+    }
 }

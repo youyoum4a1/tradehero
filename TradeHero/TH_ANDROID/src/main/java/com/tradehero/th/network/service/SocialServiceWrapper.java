@@ -47,5 +47,7 @@ import javax.inject.Singleton;
         socialServiceAsync.disconnect(userBaseKey.key, socialNetworkFormDTO, middleCallback);
         return middleCallback;
     }
+
+
     //</editor-fold>
 }

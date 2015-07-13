@@ -2,6 +2,8 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+
+import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -23,6 +25,11 @@ public interface PortfolioService
     //</editor-fold>
 
 
+    @GET("/users/{userId}/portfolio")
+    void getMainPortfolio(
+            @Path("userId") int userId,
+            Callback<PortfolioDTO> callback);
+    //</editor-fold>
 
     //GET https://tradehero.mobi/api/usercompetitions/293/portfolio HTTP/1.1
     //getPortfolioCompact
