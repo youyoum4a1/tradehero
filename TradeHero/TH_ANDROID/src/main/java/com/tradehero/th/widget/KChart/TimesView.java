@@ -347,9 +347,6 @@ public class TimesView extends TimesBase
             if (initialWeightedIndex == 0 && fenshiData.price != null) {
                 initialWeightedIndex = fenshiData.price;
             }
-            if (lowerHigh == 0 && fenshiData.volume != null) {
-                lowerHigh = fenshiData.volume;
-            }
             price = fenshiData.price;
             avgPrice = fenshiData.avgPrice;
             if (i == 0) {
@@ -359,6 +356,9 @@ public class TimesView extends TimesBase
             } else {
                 continue;
             }
+//            if (lowerHigh == 0 && fenshiData.volume != null) {
+//                lowerHigh = fenshiData.volume;
+//            }
 
             if (initialWeightedIndex == 0 || volume == null) {
                 continue;
@@ -370,6 +370,7 @@ public class TimesView extends TimesBase
                     : Math.abs(price - initialWeightedIndex));
             lowerHigh = lowerHigh > volume ? lowerHigh : volume;
         }
+//        Timber.d("lyl lowerHigh="+lowerHigh);
         postInvalidate();
     }
 }
