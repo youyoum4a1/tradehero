@@ -14,25 +14,25 @@ import java.util.Map;
 
 public enum AnnualIncomeRange
 {
-    LESS15KUSD(R.string.annual_income_less_than_15_k_usd, "a"),
-    FROM15KUSDTO40KUSD(R.string.annual_income_from_15_k_to_40_k_usd, "b"),
-    FROM40KUSDTO70KUSD(R.string.annual_income_from_40_k_to_70_k_usd, "c"),
-    FROM70KUSDTO100KUSD(R.string.annual_income_from_70_k_to_100_k_usd, "d"),
-    MORETHAN100KUSD(R.string.annual_income_more_than_100_k_usd, "e"),;
+    LESS15KUSD(R.string.annual_income_less_than_15_k_usd, 1),
+    FROM15KUSDTO40KUSD(R.string.annual_income_from_15_k_to_40_k_usd, 2),
+    FROM40KUSDTO70KUSD(R.string.annual_income_from_40_k_to_70_k_usd, 3),
+    FROM70KUSDTO100KUSD(R.string.annual_income_from_70_k_to_100_k_usd, 4),
+    MORETHAN100KUSD(R.string.annual_income_more_than_100_k_usd, 5),;
 
-    public static final Map<String, AnnualIncomeRange> filedAnnualIncomeRanges;
+    public static final Map<Integer, AnnualIncomeRange> filedAnnualIncomeRanges;
 
     @StringRes public final int dropDownText;
-    @NonNull private final String fromServer;
+    private final int fromServer;
 
-    AnnualIncomeRange(@StringRes int dropDownText, @NonNull String fromServer)
+    AnnualIncomeRange(@StringRes int dropDownText, int fromServer)
     {
         this.dropDownText = dropDownText;
         this.fromServer = fromServer;
     }
 
     @SuppressWarnings("unused")
-    @JsonCreator @NonNull static AnnualIncomeRange getAnnualIncomeRange(@NonNull String fromServer)
+    @JsonCreator @NonNull static AnnualIncomeRange getAnnualIncomeRange(int fromServer)
     {
         AnnualIncomeRange candidate = filedAnnualIncomeRanges.get(fromServer);
         if (candidate == null)
@@ -44,7 +44,7 @@ public enum AnnualIncomeRange
 
     static
     {
-        Map<String, AnnualIncomeRange> map = new HashMap<>();
+        Map<Integer, AnnualIncomeRange> map = new HashMap<>();
         for (AnnualIncomeRange candidate : values())
         {
             if (map.get(candidate.fromServer) != null)

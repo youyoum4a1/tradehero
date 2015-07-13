@@ -14,26 +14,26 @@ import java.util.Map;
 
 public enum NetWorthRange
 {
-    LESS15KUSD(R.string.net_worth_less_than_15_k_usd, "a"),
-    FROM15KUSDTO40KUSD(R.string.net_worth_from_15_k_to_40_k_usd, "b"),
-    FROM40KUSDTO70KUSD(R.string.net_worth_from_40_k_to_70_k_usd, "c"),
-    FROM70KUSDTO100KUSD(R.string.net_worth_from_70_k_to_100_k_usd, "d"),
-    FROM100KUSDTO500KUSD(R.string.net_worth_from_100_k_to_500_k_usd, "e"),
-    MORETHAN500KUSD(R.string.net_worth_more_than_500_k_usd, "f"),;
+    LESS15KUSD(R.string.net_worth_less_than_15_k_usd, 1),
+    FROM15KUSDTO40KUSD(R.string.net_worth_from_15_k_to_40_k_usd, 2),
+    FROM40KUSDTO70KUSD(R.string.net_worth_from_40_k_to_70_k_usd, 3),
+    FROM70KUSDTO100KUSD(R.string.net_worth_from_70_k_to_100_k_usd, 4),
+    FROM100KUSDTO500KUSD(R.string.net_worth_from_100_k_to_500_k_usd, 5),
+    MORETHAN500KUSD(R.string.net_worth_more_than_500_k_usd, 6),;
 
-    public static final Map<String, NetWorthRange> filedNetWorthRanges;
+    public static final Map<Integer, NetWorthRange> filedNetWorthRanges;
 
     @StringRes public final int dropDownText;
-    @NonNull private final String fromServer;
+    private final int fromServer;
 
-    NetWorthRange(@StringRes int dropDownText, @NonNull String fromServer)
+    NetWorthRange(@StringRes int dropDownText, int fromServer)
     {
         this.dropDownText = dropDownText;
         this.fromServer = fromServer;
     }
 
     @SuppressWarnings("unused")
-    @JsonCreator @NonNull static NetWorthRange getNetWorthRange(@NonNull String fromServer)
+    @JsonCreator @NonNull static NetWorthRange getNetWorthRange(int fromServer)
     {
         NetWorthRange candidate = filedNetWorthRanges.get(fromServer);
         if (candidate == null)
@@ -45,7 +45,7 @@ public enum NetWorthRange
 
     static
     {
-        Map<String, NetWorthRange> map = new HashMap<>();
+        Map<Integer, NetWorthRange> map = new HashMap<>();
         for (NetWorthRange candidate : values())
         {
             if (map.get(candidate.fromServer) != null)

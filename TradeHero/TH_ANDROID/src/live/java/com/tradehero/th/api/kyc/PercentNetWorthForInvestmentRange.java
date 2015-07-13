@@ -14,24 +14,24 @@ import java.util.Map;
 
 public enum PercentNetWorthForInvestmentRange
 {
-    LESSTHAN25P(R.string.percent_net_worth_invest_less_than_25_p, "a"),
-    FROM25PTO50P(R.string.percent_net_worth_invest_from_25_p_to_50_p, "b"),
-    FROM51PTO75P(R.string.percent_net_worth_invest_from_51_p_to_75_p, "c"),
-    MORETHAN75P(R.string.percent_net_worth_invest_from_more_than_75p, "d"),;
+    LESSTHAN25P(R.string.percent_net_worth_invest_less_than_25_p, 1),
+    FROM25PTO50P(R.string.percent_net_worth_invest_from_25_p_to_50_p, 2),
+    FROM51PTO75P(R.string.percent_net_worth_invest_from_51_p_to_75_p, 3),
+    MORETHAN75P(R.string.percent_net_worth_invest_from_more_than_75p, 4),;
 
-    public static final Map<String, PercentNetWorthForInvestmentRange> filedPercentNetWorthRanges;
+    public static final Map<Integer, PercentNetWorthForInvestmentRange> filedPercentNetWorthRanges;
 
     @StringRes public final int dropDownText;
-    @NonNull private final String fromServer;
+    private final int fromServer;
 
-    PercentNetWorthForInvestmentRange(@StringRes int dropDownText, @NonNull String fromServer)
+    PercentNetWorthForInvestmentRange(@StringRes int dropDownText, int fromServer)
     {
         this.dropDownText = dropDownText;
         this.fromServer = fromServer;
     }
 
     @SuppressWarnings("unused")
-    @JsonCreator @NonNull static PercentNetWorthForInvestmentRange getPercentNetWorthRange(@NonNull String fromServer)
+    @JsonCreator @NonNull static PercentNetWorthForInvestmentRange getPercentNetWorthRange(int fromServer)
     {
         PercentNetWorthForInvestmentRange candidate = filedPercentNetWorthRanges.get(fromServer);
         if (candidate == null)
@@ -43,7 +43,7 @@ public enum PercentNetWorthForInvestmentRange
 
     static
     {
-        Map<String, PercentNetWorthForInvestmentRange> map = new HashMap<>();
+        Map<Integer, PercentNetWorthForInvestmentRange> map = new HashMap<>();
         for (PercentNetWorthForInvestmentRange candidate : values())
         {
             if (map.get(candidate.fromServer) != null)

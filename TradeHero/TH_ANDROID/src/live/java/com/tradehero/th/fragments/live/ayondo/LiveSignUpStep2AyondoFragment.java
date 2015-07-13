@@ -59,7 +59,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 percentageInvestment.setAdapter(percentageInvestmentAdapter);
 
                                 LollipopArrayAdapter employmentStatusAdapter =
-                                        new LollipopArrayAdapter(getActivity(), EmploymentStatus.createTexts(getResources(), kycFormOptionsDTO.employmentStatusIncomeOptions));
+                                        new LollipopArrayAdapter(getActivity(), EmploymentStatus.createTexts(getResources(), kycFormOptionsDTO.employmentStatusOptions));
                                 employmentStatus.setAdapter(employmentStatusAdapter);
 
                                 return null;

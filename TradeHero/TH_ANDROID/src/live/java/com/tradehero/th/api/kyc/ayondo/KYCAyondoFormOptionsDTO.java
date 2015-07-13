@@ -25,7 +25,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final List<AnnualIncomeRange> annualIncomeOptions;
     @NonNull public final List<NetWorthRange> netWorthOptions;
     @NonNull public final List<PercentNetWorthForInvestmentRange> percentNetWorthOptions;
-    @NonNull public final List<EmploymentStatus> employmentStatusIncomeOptions;
+    @NonNull public final List<EmploymentStatus> employmentStatusOptions;
 
     public KYCAyondoFormOptionsDTO(
             @JsonProperty("identityPromptInfo") @NonNull IdentityPromptInfoDTO identityPromptInfo,
@@ -35,7 +35,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("annualIncomeOptions") @NonNull List<AnnualIncomeRange> annualIncomeOptions,
             @JsonProperty("netWorthOptions") @NonNull List<NetWorthRange> netWorthOptions,
             @JsonProperty("percentNetWorthOptions") @NonNull List<PercentNetWorthForInvestmentRange> percentNetWorthOptions,
-            @JsonProperty("employmentStatusIncomeOptions") @NonNull List<EmploymentStatus> employmentStatusIncomeOptions)
+            @JsonProperty("employmentStatusOptions") @NonNull List<EmploymentStatus> employmentStatusOptions)
     {
         this.identityPromptInfo = identityPromptInfo;
         if (allowedMobilePhoneCountries == null)
@@ -65,7 +65,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         this.annualIncomeOptions = Collections.unmodifiableList(annualIncomeOptions);
         this.netWorthOptions = Collections.unmodifiableList(netWorthOptions);
         this.percentNetWorthOptions = Collections.unmodifiableList(percentNetWorthOptions);
-        this.employmentStatusIncomeOptions = Collections.unmodifiableList(employmentStatusIncomeOptions);
+        this.employmentStatusOptions = Collections.unmodifiableList(employmentStatusOptions);
     }
 
     @NonNull @Override public IdentityPromptInfoDTO getIdentityPromptInfo()
