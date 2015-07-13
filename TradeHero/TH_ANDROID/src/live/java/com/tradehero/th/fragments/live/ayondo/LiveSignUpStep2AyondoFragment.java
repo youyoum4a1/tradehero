@@ -9,6 +9,10 @@ import android.widget.Spinner;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.th.R;
+import com.tradehero.th.api.kyc.AnnualIncomeRange;
+import com.tradehero.th.api.kyc.EmploymentStatus;
+import com.tradehero.th.api.kyc.NetWorthRange;
+import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import rx.Observable;
@@ -43,19 +47,19 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             @Override public Object call(LiveBrokerSituationDTO liveBrokerSituationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
                             {
                                 LollipopArrayAdapter annualIncomeAdapter =
-                                        new LollipopArrayAdapter(getActivity(), kycFormOptionsDTO.annualIncomeOptions);
+                                        new LollipopArrayAdapter(getActivity(), AnnualIncomeRange.createTexts(getResources(), kycFormOptionsDTO.annualIncomeOptions));
                                 annualIncome.setAdapter(annualIncomeAdapter);
 
                                 LollipopArrayAdapter netWorthAdapter =
-                                        new LollipopArrayAdapter(getActivity(), kycFormOptionsDTO.netWorthOptions);
+                                        new LollipopArrayAdapter(getActivity(), NetWorthRange.createTexts(getResources(), kycFormOptionsDTO.netWorthOptions));
                                 netWorth.setAdapter(netWorthAdapter);
 
                                 LollipopArrayAdapter percentageInvestmentAdapter =
-                                        new LollipopArrayAdapter(getActivity(), kycFormOptionsDTO.percentNetWorthOptions);
+                                        new LollipopArrayAdapter(getActivity(), PercentNetWorthForInvestmentRange.createTexts(getResources(), kycFormOptionsDTO.percentNetWorthOptions));
                                 percentageInvestment.setAdapter(percentageInvestmentAdapter);
 
                                 LollipopArrayAdapter employmentStatusAdapter =
-                                        new LollipopArrayAdapter(getActivity(), kycFormOptionsDTO.employmentStatusIncomeOptions);
+                                        new LollipopArrayAdapter(getActivity(), EmploymentStatus.createTexts(getResources(), kycFormOptionsDTO.employmentStatusIncomeOptions));
                                 employmentStatus.setAdapter(employmentStatusAdapter);
 
                                 return null;

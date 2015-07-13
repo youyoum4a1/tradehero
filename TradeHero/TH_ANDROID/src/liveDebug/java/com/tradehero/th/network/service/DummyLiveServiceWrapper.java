@@ -1,16 +1,20 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.kyc.AnnualIncomeRange;
+import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
+import com.tradehero.th.api.kyc.NetWorthRange;
+import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
-import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.market.Country;
-import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,12 +70,19 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                         Arrays.asList(Country.SG, Country.AU, Country.GB),
                                         nationalities,
                                         Arrays.asList(Country.SG, Country.AU, Country.GB),
-                                        Arrays.asList("Less than US$ 15,000", "US$ 15,000 - US$ 40,000", "US$ 40,001 - US$ 70,000", "US$ 70,001 - US$ 100,000",
-                                                "more than US$ 100,000"),
-                                        Arrays.asList("Less than US$ 15,000", "US$ 15,000 - US$ 40,000", "US$ 40,001 - US$ 70,000", "US$ 70,001 - US$ 100,000",
-                                                "US$ 100,001 - US$ 500,000", "more than US$ 500,000"),
-                                        Arrays.asList("Less than 25 %", "25 - 50 %", "51 - 75 %", "more than 75%"),
-                                        Arrays.asList("Employed", "Self-Employed", "Unemployed", "Retired", "Student"));
+                                        Arrays.asList(AnnualIncomeRange.LESS15KUSD, AnnualIncomeRange.FROM15KUSDTO40KUSD,
+                                                AnnualIncomeRange.FROM40KUSDTO70KUSD, AnnualIncomeRange.FROM70KUSDTO100KUSD,
+                                                AnnualIncomeRange.MORETHAN100KUSD),
+                                        Arrays.asList(NetWorthRange.LESS15KUSD, NetWorthRange.FROM15KUSDTO40KUSD,
+                                                NetWorthRange.FROM40KUSDTO70KUSD, NetWorthRange.FROM70KUSDTO100KUSD,
+                                                NetWorthRange.FROM100KUSDTO500KUSD, NetWorthRange.MORETHAN500KUSD),
+                                        Arrays.asList(PercentNetWorthForInvestmentRange.LESSTHAN25P,
+                                                PercentNetWorthForInvestmentRange.FROM25PTO50P,
+                                                PercentNetWorthForInvestmentRange.FROM51PTO75P,
+                                                PercentNetWorthForInvestmentRange.MORETHAN75P),
+                                        Arrays.asList(EmploymentStatus.EMPLOYED, EmploymentStatus.SELFEMPLOYED,
+                                                EmploymentStatus.UNEMPLOYED, EmploymentStatus.RETIRED,
+                                                EmploymentStatus.STUDENT));
                                 return Observable.just(options);
                             }
                         });

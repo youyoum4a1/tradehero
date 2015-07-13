@@ -3,8 +3,12 @@ package com.tradehero.th.api.kyc.ayondo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tradehero.th.api.kyc.AnnualIncomeRange;
+import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
+import com.tradehero.th.api.kyc.NetWorthRange;
+import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.market.Country;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,20 +22,20 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final List<Country> allowedMobilePhoneCountries;
     @NonNull public final List<Country> allowedNationalityCountries;
     @NonNull public final List<Country> allowedResidencyCountries;
-    @NonNull public final List<String> annualIncomeOptions;
-    @NonNull public final List<String> netWorthOptions;
-    @NonNull public final List<String> percentNetWorthOptions;
-    @NonNull public final List<String> employmentStatusIncomeOptions;
+    @NonNull public final List<AnnualIncomeRange> annualIncomeOptions;
+    @NonNull public final List<NetWorthRange> netWorthOptions;
+    @NonNull public final List<PercentNetWorthForInvestmentRange> percentNetWorthOptions;
+    @NonNull public final List<EmploymentStatus> employmentStatusIncomeOptions;
 
     public KYCAyondoFormOptionsDTO(
             @JsonProperty("identityPromptInfo") @NonNull IdentityPromptInfoDTO identityPromptInfo,
             @JsonProperty("allowedMobilePhoneCountries") @Nullable List<Country> allowedMobilePhoneCountries,
             @JsonProperty("allowedNationalityCountries") @Nullable List<Country> allowedNationalityCountries,
             @JsonProperty("allowedResidencyCountries") @Nullable List<Country> allowedResidencyCountries,
-            @JsonProperty("annualIncomeOptions") @NonNull List<String> annualIncomeOptions,
-            @JsonProperty("netWorthOptions") @NonNull List<String> netWorthOptions,
-            @JsonProperty("percentNetWorthOptions") @NonNull List<String> percentNetWorthOptions,
-            @JsonProperty("employmentStatusIncomeOptions") @NonNull List<String> employmentStatusIncomeOptions)
+            @JsonProperty("annualIncomeOptions") @NonNull List<AnnualIncomeRange> annualIncomeOptions,
+            @JsonProperty("netWorthOptions") @NonNull List<NetWorthRange> netWorthOptions,
+            @JsonProperty("percentNetWorthOptions") @NonNull List<PercentNetWorthForInvestmentRange> percentNetWorthOptions,
+            @JsonProperty("employmentStatusIncomeOptions") @NonNull List<EmploymentStatus> employmentStatusIncomeOptions)
     {
         this.identityPromptInfo = identityPromptInfo;
         if (allowedMobilePhoneCountries == null)
