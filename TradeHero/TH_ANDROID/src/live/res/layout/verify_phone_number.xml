@@ -17,15 +17,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="@dimen/margin_small"
+        android:paddingTop="@dimen/margin_small"
+        android:paddingBottom="@dimen/margin_small"
+        android:paddingRight="@dimen/medium_image_w_h"
         android:gravity="center"
         android:background="@color/tile_live_trading_bg"
         android:layout_alignParentTop="true"
         >
 
       <ImageView
-          android:layout_width="@dimen/clickable_element_min_dimen"
-          android:layout_height="@dimen/clickable_element_min_dimen"
+          android:layout_width="@dimen/medium_image_w_h"
+          android:layout_height="@dimen/medium_image_w_h"
           android:src="@drawable/th_app_logo"
           />
 
@@ -48,7 +50,14 @@
         android:background="@color/white"
         >
 
-      <TextView
+        <ImageView
+            android:layout_width="@dimen/medium_image_w_h"
+            android:layout_height="@dimen/medium_image_w_h"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_phone_verify"
+            />
+
+        <TextView
           style="@style/TH.Headline"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
