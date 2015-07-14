@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import android.view.Menu;
+import com.tradehero.th.fragments.trending.TileType;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 
 public class LiveActivityUtil

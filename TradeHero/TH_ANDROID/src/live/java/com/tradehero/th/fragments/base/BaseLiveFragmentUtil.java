@@ -8,6 +8,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.IdentityPromptActivity;
 import com.tradehero.th.activities.SignUpLiveActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.widget.GoLiveWidget;
@@ -26,8 +27,17 @@ public class BaseLiveFragmentUtil
     @Inject DashboardNavigator navigator;
     @Inject FastFillUtil fastFill;
 
+    public static BaseLiveFragmentUtil createFor(Fragment fragment, View view)
+    {
+        if (fragment instanceof TrendingMainFragment)
+        {
+            return new TrendingLiveFragmentUtil(fragment, view);
+        }
+        return new BaseLiveFragmentUtil(fragment, view);
+    }
+
     //Be careful of cyclic dependency. Improve this! most likely create an empty constructor and a new method onViewCreated(), pass the fragment and view through those method.
-    public BaseLiveFragmentUtil(Fragment f, View view)
+    protected BaseLiveFragmentUtil(Fragment f, View view)
     {
         fragment = f;
         ButterKnife.bind(this, view);

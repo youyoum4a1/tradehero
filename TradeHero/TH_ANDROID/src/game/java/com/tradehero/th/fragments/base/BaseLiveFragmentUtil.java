@@ -1,10 +1,16 @@
 package com.tradehero.th.fragments.base;
 
+import android.support.v4.app.Fragment;
 import android.view.View;
 
-public class LiveFragmentUtil
+public class BaseLiveFragmentUtil
 {
-    public LiveFragmentUtil(Fragment f, View view)
+    public static BaseLiveFragmentUtil createFor(Fragment f, View view)
+    {
+        return new BaseLiveFragmentUtil(f, view);
+    }
+
+    protected BaseLiveFragmentUtil(Fragment f, View view)
     {
     }
 
