@@ -21,7 +21,7 @@
         android:text="@string/basic_information"
         />
 
-    <LinearLayout
+      <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -30,54 +30,65 @@
       <Spinner
           android:id="@+id/info_title"
           style="@style/TH.Spinner"
-          android:layout_width="0dp"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="0.15"
           android:background="?attr/selectableItemBackground"
           android:minHeight="@dimen/clickable_element_min_dimen"
+          tools:layout_height="48dp"
+          tools:layout_width="48dp"
           />
 
-      <EditText
-          android:id="@+id/et_firstname"
-          style="@style/TH.Body"
-          android:layout_width="0dp"
+          <LinearLayout
+              android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_weight="0.425"
-          android:hint="@string/user_profile_first_name"
-          android:inputType="textPersonName|textCapWords"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          />
+              android:layout_alignParentRight="true"
+              android:layout_toRightOf="@id/info_title"
+              >
 
-      <EditText
-          android:id="@+id/et_lastname"
-          style="@style/TH.Body"
-          android:layout_width="0dp"
-          android:layout_height="wrap_content"
-          android:layout_weight="0.425"
-          android:hint="@string/user_profile_last_name"
-          android:inputType="textPersonName|textCapWords"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          />
-    </LinearLayout>
+              <EditText
+                  android:id="@+id/et_firstname"
+                  style="@style/TH.Body"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.5"
+                  android:hint="@string/user_profile_first_name"
+                  android:inputType="textPersonName|textCapWords"
+                  android:minHeight="@dimen/clickable_element_min_dimen"
+                  />
+
+              <EditText
+                  android:id="@+id/et_lastname"
+                  style="@style/TH.Body"
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="0.5"
+                  android:hint="@string/user_profile_last_name"
+                  android:inputType="textPersonName|textCapWords"
+                  android:minHeight="@dimen/clickable_element_min_dimen"
+                  />
+          </LinearLayout>
+
+
+      </RelativeLayout>
 
     <com.tradehero.th.widget.validation.ValidatedText
         android:id="@+id/sign_up_email"
         style="@style/TH.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
+        android:drawableRight="@drawable/accounts_glyph_transparent_default"
         android:hint="@string/email"
+
         android:inputType="textEmailAddress"
         android:minHeight="@dimen/clickable_element_min_dimen"
-
-        android:drawableRight="@drawable/accounts_glyph_transparent_default"
-        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
-        app:invalidDrawableRight="@drawable/warning_red"
-        app:validDrawableRight="@drawable/tick_green"
-
-        app:minTextLength="1"
-        app:validatePattern="@string/regex_email_validator"
-        app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
         app:delayValidationByMilliSec="1500"
+        app:invalidDrawableRight="@drawable/warning_red"
+
+        app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
+        app:minTextLength="1"
+        app:validDrawableRight="@drawable/tick_green"
+        app:validatePattern="@string/regex_email_validator"
         />
 
     <RelativeLayout
@@ -99,14 +110,14 @@
 
       <Button
           android:id="@+id/btn_verify_phone"
+          style="@style/TH.Button.LiveForm"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          style="@style/TH.Button.LiveForm"
-          tools:enabled="false"
-          android:layout_alignParentRight="true"
           android:layout_alignParentEnd="true"
+          android:layout_alignParentRight="true"
           android:layout_centerVertical="true"
           android:text="@string/verify"
+          tools:enabled="false"
           />
 
       <EditText
@@ -115,10 +126,10 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
-          android:layout_toLeftOf="@id/btn_verify_phone"
-          android:layout_toStartOf="@id/btn_verify_phone"
-          android:layout_toRightOf="@id/country_code_spinner"
           android:layout_toEndOf="@id/country_code_spinner"
+          android:layout_toLeftOf="@id/btn_verify_phone"
+          android:layout_toRightOf="@id/country_code_spinner"
+          android:layout_toStartOf="@id/btn_verify_phone"
           android:hint="@string/mobile_number"
           android:inputType="number|phone"
           android:minHeight="@dimen/clickable_element_min_dimen"
@@ -171,24 +182,24 @@
         style="@style/TH.Body"
         android:layout_width="match_parent"
         android:layout_height="@dimen/clickable_element_min_dimen"
-        android:gravity="left|center_vertical"
+        android:background="?attr/editTextBackground"
         android:clickable="true"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:background="?attr/editTextBackground"
-        android:textColor="?attr/editTextColor"
+        android:gravity="left|center_vertical"
         android:hint="@string/date_of_birth"
+        android:textColor="?attr/editTextColor"
         />
 
       <Button
           android:id="@+id/btn_next"
+          style="@style/TH.Button.LiveForm"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          style="@style/TH.Button.LiveForm"
-          android:layout_marginTop="@dimen/margin_medium"
-          tools:enabled="true"
-          android:text="@string/next"
           android:layout_gravity="end"
+          android:layout_marginTop="@dimen/margin_medium"
+          android:text="@string/next"
+          tools:enabled="true"
           />
 
   </LinearLayout>
