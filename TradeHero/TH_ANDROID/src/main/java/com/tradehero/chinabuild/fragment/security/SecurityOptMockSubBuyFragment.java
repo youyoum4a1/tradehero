@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
@@ -275,6 +274,10 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                             @Override
                             public void success(Response value, Response response) {
                                 THToast.show("交易成功");
+                                if(portfolioId == 0){
+                                    retrieveMainPositionsNoCallback();
+                                }
+                                retrieveUserInformation();
                             }
 
                             @Override
@@ -516,10 +519,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         private void onFinish() {
             if (isNeedToRefresh()) {
                 if(isRefresh) {
-                    THLog.d("Refresh Buy Sell Buy");
                     refreshBuySellHandler.sendEmptyMessageDelayed(-1, 5000);
-                } else {
-                    THLog.d("No Refresh Buy Sell Buy");
                 }
             }
         }
@@ -625,10 +625,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
 
         private void onFinish() {
             if(isRefresh){
-                THLog.d("Refresh Positions Buy");
                 refreshPositionsHandler.sendEmptyMessageDelayed(-1, 60000);
-            } else {
-                THLog.d("No Refresh Positions Buy");
             }
         }
     }
@@ -673,5 +670,19 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         return new QuoteDTO(getArguments().getBundle(SecurityOptActivity.KEY_QUOTE_DTO));
     }
 
+    private void retrieveMainPositionsNoCallback(){
+        quoteServiceWrapper.retrieveMainPositions(new Callback<SecurityOptPositionsList>() {
+            @Override
+            public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
+                SecurityOptMockSubBuyFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
+                securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
 
 }

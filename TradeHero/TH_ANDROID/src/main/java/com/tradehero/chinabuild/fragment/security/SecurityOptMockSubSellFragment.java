@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
@@ -82,7 +81,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
 
     private QuoteDetail quoteDetail;
     SecurityOptPositionsList securityOptPositionDTOs;
-    private int portfolioId = -1;
+    private int portfolioId = 0;
 
     private RefreshPositionsHandler refreshPositionsHandler = new RefreshPositionsHandler();
     private RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
@@ -113,7 +112,6 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private int color_up;
     private int color_down;
 
-    private int totalSells = 0;
     private int availableSells = 0;
 
     private boolean isRefresh = true;
@@ -145,7 +143,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         if (!TextUtils.isEmpty(securitySymbol) && !TextUtils.isEmpty(securityExchange)) {
             quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
         }
-        if(portfolioId == -1) {
+        if(portfolioId == 0) {
             retrieveMainPositions();
         }
         return view;
@@ -225,7 +223,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             dlgStockPriceTV = (TextView)sellConfirmDialog.findViewById(R.id.dialog_security_price);
             dlgStockAmountTV = (TextView)sellConfirmDialog.findViewById(R.id.dialog_security_amount);
             dlgStockTotalTV = (TextView)sellConfirmDialog.findViewById(R.id.dialog_security_total);
-
+            dlgConfirmTV = (TextView) sellConfirmDialog.findViewById(R.id.dialog_confirm);
             dlgCancelTV = (TextView) sellConfirmDialog.findViewById(R.id.dialog_cancel);
             dlgCancelTV.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -251,13 +249,16 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                     if(TextUtils.isEmpty(priceET.getText().toString())){
                         return;
                     }
-                    int quantity = Integer.valueOf(decisionET.getText().toString());
+                    int quantity = 0 - Integer.valueOf(decisionET.getText().toString());
                     double price = Double.valueOf(priceET.getText().toString());
                     if(isSHASHE()){
-                        securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, -quantity, price, new Callback<Response>() {
+                        securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback<Response>() {
                             @Override
                             public void success(Response value, Response response) {
                                 THToast.show("交易成功");
+                                if(portfolioId == 0) {
+                                    retrieveMainPositionsNoCallback();
+                                }
                             }
 
                             @Override
@@ -316,10 +317,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         private void onFinish() {
             if (isNeedToRefresh()) {
                 if(isRefresh){
-                    THLog.d("Refresh Buy Sell Sell");
                     refreshBuySellHandler.sendEmptyMessageDelayed(-1, 5000);
-                } else {
-                    THLog.d("No Refresh Buy Sell Sell");
                 }
             }
         }
@@ -620,20 +618,33 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
 
         private void onFinish() {
             if(isRefresh) {
-                THLog.d("Refresh Positions Sell");
                 refreshPositionsHandler.sendEmptyMessageDelayed(-1, 60000);
-            } else {
-                THLog.d("No Refresh Positions Sell");
             }
         }
     }
 
     class RefreshPositionsHandler extends Handler {
         public void handleMessage(Message msg) {
-            if (portfolioId == -1) {
+            if (portfolioId == 0) {
                 retrieveMainPositions();
             }
         }
+    }
+
+    private void retrieveMainPositionsNoCallback(){
+        quoteServiceWrapper.retrieveMainPositions(new Callback<SecurityOptPositionsList>() {
+            @Override
+            public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
+                SecurityOptMockSubSellFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
+                securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
+                displaySells(securityOptPositionDTOs);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 
     private void displaySells(SecurityOptPositionsList securityOptPositionDTOs){
@@ -650,7 +661,6 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         for(SecurityOptPositionDTO securityOptPositionDTO : securityOptPositionDTOs){
             if(securityOptPositionDTO.symbol.equals(securitySymbol) && securityOptPositionDTO.exchange.equals(securityExchange)){
                 totalSellTV.setText(String.valueOf(securityOptPositionDTO.shares));
-                totalSells = securityOptPositionDTO.shares;
                 availableSellTV.setText(String.valueOf(securityOptPositionDTO.sellableShares));
                 availableSells = securityOptPositionDTO.sellableShares;
             }

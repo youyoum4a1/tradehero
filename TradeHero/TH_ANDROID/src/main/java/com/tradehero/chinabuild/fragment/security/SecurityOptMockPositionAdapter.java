@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 
 import java.text.DecimalFormat;
@@ -72,7 +71,6 @@ public class SecurityOptMockPositionAdapter extends BaseAdapter{
             holder = (Holder)convertView.getTag();
         }
         SecurityOptPositionDTO securityOptPositionDTO = getItem(i);
-        THLog.d(securityOptPositionDTO.toString());
         holder.stockName.setText(securityOptPositionDTO.name);
         holder.totalAccount.setText(String.valueOf(securityOptPositionDTO.shares));
         holder.availableAccount.setText(String.valueOf(securityOptPositionDTO.sellableShares));

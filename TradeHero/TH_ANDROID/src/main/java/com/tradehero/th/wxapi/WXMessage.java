@@ -1,8 +1,5 @@
 package com.tradehero.th.wxapi;
 
-import android.provider.Settings;
-
-import com.tradehero.common.utils.THLog;
 
 /**
  * Created by palmer on 15/6/16.
@@ -26,7 +23,6 @@ public class WXMessage {
     }
 
     public static String getSecurityShareMessage(int percent, String securityName){
-        THLog.d("percent " + percent);
         String message = "";
         if(percent >= 4){
             message = "涨了" + percent +"%哦，<security>棒棒哒";

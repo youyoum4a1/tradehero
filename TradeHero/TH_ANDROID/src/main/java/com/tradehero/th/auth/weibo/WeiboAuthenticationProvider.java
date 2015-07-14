@@ -10,7 +10,6 @@ import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.th.auth.SocialAuthenticationProvider;
 import com.tradehero.th.auth.operator.ForWeiboAppAuthData;
 import com.tradehero.th.base.Application;
@@ -139,9 +138,6 @@ public class WeiboAuthenticationProvider extends SocialAuthenticationProvider
         String scope = mAuthData.scope;
         // 创建微博实例(create instance)
         mWeiboAuth = new AuthInfo(context, appId, redirectUrl, scope);
-        THLog.d(appId);
-        THLog.d(redirectUrl);
-        THLog.d(scope);
     }
 
     private boolean checkContext()
