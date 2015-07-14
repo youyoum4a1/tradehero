@@ -41,9 +41,20 @@
           android:text="@string/experience_financial_qualifications_ayondo"
           />
 
+      <TextView
+          style="@style/TH.Caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:text="@string/live_trades_per_quarter"
+          android:layout_marginTop="@dimen/margin_small"
+          />
+
       <Spinner
+          android:id="@+id/info_trading_experience"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
+          style="@style/TH.Spinner"
           />
 
       <TextView

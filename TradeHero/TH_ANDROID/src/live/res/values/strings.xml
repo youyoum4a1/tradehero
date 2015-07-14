@@ -74,4 +74,6 @@
   <string name="error_date_earlier">You have to be at least %1$d years old.</string>
   <string name="info_date_format">dd MMM yyyy</string>
 
+  <string name="live_trades_per_quarter">Live Trades per Quarter (Past Year)</string>
+
 </resources>
