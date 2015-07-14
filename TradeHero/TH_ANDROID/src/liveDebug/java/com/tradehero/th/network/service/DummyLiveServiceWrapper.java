@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
@@ -49,6 +48,21 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
     @NonNull @Override public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
     {
         return super.getLiveTradingSituation()
+                .map(new Func1<LiveTradingSituationDTO, LiveTradingSituationDTO>()
+                {
+                    @Override public LiveTradingSituationDTO call(LiveTradingSituationDTO liveTradingSituationDTO)
+                    {
+                        for (LiveBrokerSituationDTO situationDTO : liveTradingSituationDTO.brokerSituations)
+                        {
+                            //noinspection ConstantConditions
+                            if (situationDTO.kycForm.getCountry() == null)
+                            {
+                                ((KYCAyondoForm) situationDTO.kycForm).setCountry(Country.SG);
+                            }
+                        }
+                        return liveTradingSituationDTO;
+                    }
+                })
                 //.timeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
                 .onErrorResumeNext(
                         new Func1<Throwable, Observable<? extends LiveTradingSituationDTO>>()
@@ -71,6 +85,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                 {
                     @Override public KYCFormOptionsDTO call(KYCFormOptionsDTO kycFormOptionsDTO)
                     {
+                        //noinspection ConstantConditions
                         if (kycFormOptionsDTO.getIdentityPromptInfo() != null)
                         {
                             return kycFormOptionsDTO;
