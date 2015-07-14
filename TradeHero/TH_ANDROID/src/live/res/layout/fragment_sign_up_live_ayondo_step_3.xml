@@ -51,7 +51,7 @@
           />
 
       <Spinner
-          android:id="@+id/info_trading_experience"
+          android:id="@+id/info_trading_per_quarter"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
           style="@style/TH.Spinner"
