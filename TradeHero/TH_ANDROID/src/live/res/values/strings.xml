@@ -71,6 +71,11 @@
   <string name="employment_status_retired">Retired</string>
   <string name="employment_status_student">Student</string>
 
+  <string name="trading_per_quarter_none">No at all</string>
+  <string name="trading_per_quarter_1_to_5">1 – 5 times</string>
+  <string name="trading_per_quarter_6_to_10">6 – 10 times</string>
+  <string name="trading_per_quarter_over_10">Mote than 10</string>
+
   <string name="error_date_earlier">You have to be at least %1$d years old.</string>
   <string name="info_date_format">dd MMM yyyy</string>
 

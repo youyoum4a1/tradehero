@@ -10,6 +10,7 @@ import com.tradehero.th.api.kyc.KYCFormOptionsId;
 import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.ayondo.DummyAyondoData;
+import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
@@ -83,6 +84,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                 ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).netWorthOptions,
                                 ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).percentNetWorthOptions,
                                 ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).employmentStatusOptions,
+                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).tradingPerQuarterOptions,
                                 ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).minAge);
                     }
                 })
@@ -120,7 +122,8 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                         Arrays.asList(EmploymentStatus.EMPLOYED, EmploymentStatus.SELFEMPLOYED,
                                                 EmploymentStatus.UNEMPLOYED, EmploymentStatus.RETIRED,
                                                 EmploymentStatus.STUDENT),
-                                        21);
+                                        Arrays.asList(TradingPerQuarter.NONE, TradingPerQuarter.ONE_TO_FIVE, TradingPerQuarter.SIX_TO_TEN,
+                                                TradingPerQuarter.OVER_TEN), 21);
                                 return Observable.just(options);
                             }
                         });
