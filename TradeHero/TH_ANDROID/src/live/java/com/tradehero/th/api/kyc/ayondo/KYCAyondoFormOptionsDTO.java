@@ -40,7 +40,8 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("netWorthOptions") @NonNull List<NetWorthRange> netWorthOptions,
             @JsonProperty("percentNetWorthOptions") @NonNull List<PercentNetWorthForInvestmentRange> percentNetWorthOptions,
             @JsonProperty("employmentStatusOptions") @NonNull List<EmploymentStatus> employmentStatusOptions,
-            @NonNull List<TradingPerQuarter> tradingPerQuarterOptions, @JsonProperty("minAge") int minAge)
+            @JsonProperty("tradingPerQuarterOptions") @NonNull List<TradingPerQuarter> tradingPerQuarterOptions,
+            @JsonProperty("minAge") int minAge)
     {
         this.identityPromptInfo = identityPromptInfo;
         if (allowedMobilePhoneCountries == null)
