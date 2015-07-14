@@ -54,6 +54,7 @@
           android:id="@+id/info_trading_per_quarter"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
+          android:paddingLeft="@dimen/margin_small"
           style="@style/TH.Spinner"
           />
 
