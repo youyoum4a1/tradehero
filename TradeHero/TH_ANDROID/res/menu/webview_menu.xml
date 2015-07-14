@@ -7,11 +7,13 @@
       android:id="@+id/webview_back"
       android:title="@string/webview_back"
       app:showAsAction="always"
+      android:icon="@drawable/ic_action_navigation_arrow_back"
       />
   <item
       android:id="@+id/webview_forward"
       android:title="@string/webview_forward"
       app:showAsAction="always"
+      android:icon="@drawable/ic_action_navigation_arrow_forward"
       />
   <item
       android:id="@+id/webview_view_in_browser"

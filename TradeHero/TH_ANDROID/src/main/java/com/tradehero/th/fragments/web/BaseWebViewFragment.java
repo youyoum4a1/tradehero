@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,16 +48,11 @@ public class BaseWebViewFragment extends BaseFragment
         return null;
     }
 
-    @SuppressLint("NewApi")
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(getLayoutResId(), container, false);
         setHasOptionsMenu(true);
         webView = (WebView) view.findViewById(R.id.webview);
-        if (SDKUtils.isKitKatOrHigher() && !Constants.RELEASE)
-        {
-            WebView.setWebContentsDebuggingEnabled(true);
-        }
         initViews(view);
         return view;
     }
@@ -78,6 +74,7 @@ public class BaseWebViewFragment extends BaseFragment
         return getUrl(getArguments());
     }
 
+    @SuppressLint("NewApi")
     protected void initViews(View v)
     {
         webView.getSettings().setBuiltInZoomControls(true);
@@ -89,6 +86,11 @@ public class BaseWebViewFragment extends BaseFragment
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
 
+        if (SDKUtils.isKitKatOrHigher() && !Constants.RELEASE)
+        {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+
         if (SDKUtils.isKitKatOrHigher())
         {
             webView.setLayerType(View.LAYER_TYPE_NONE, null);
@@ -99,6 +101,18 @@ public class BaseWebViewFragment extends BaseFragment
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
+        webView.setOnKeyListener(new View.OnKeyListener()
+        {
+            @Override public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack())
+                {
+                    webView.goBack();
+                    return true;
+                }
+                return false;
+            }
+        });
         webChromeClient = new THWebChromeClient(this);
         webView.setWebChromeClient(webChromeClient);
 
