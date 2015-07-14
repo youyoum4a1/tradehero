@@ -21,11 +21,14 @@ import android.widget.TextView;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 
 import java.text.DecimalFormat;
@@ -74,6 +77,9 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private String securitySymbol = "";
     private String securityName;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
+    @Inject
+    SecurityServiceWrapper securityServiceWrapper;
+
     private QuoteDetail quoteDetail;
     SecurityOptPositionsList securityOptPositionDTOs;
     private int portfolioId = -1;
@@ -232,7 +238,37 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             dlgConfirmTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    sellConfirmDialog.dismiss();
+                    if(decisionET.getText() == null){
+                        return;
+                    }
+                    if(TextUtils.isEmpty(decisionET.getText().toString())){
+                        return;
+                    }
+                    if(priceET.getText() == null){
+                        return;
+                    }
+                    if(TextUtils.isEmpty(priceET.getText().toString())){
+                        return;
+                    }
+                    int quantity = Integer.valueOf(decisionET.getText().toString());
+                    double price = Double.valueOf(priceET.getText().toString());
+                    if(isSHASHE()){
+                        securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, -quantity, price, new Callback<Response>() {
+                            @Override
+                            public void success(Response value, Response response) {
+                                THToast.show("交易成功");
+                            }
 
+                            @Override
+                            public void failure(RetrofitError error) {
+                                THException thException = new THException(error);
+                                THToast.show(thException.toString());
+                            }
+                        });
+                    } else {
+
+                    }
                 }
             });
 
@@ -444,6 +480,13 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             return false;
         }
         if(securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isSHASHE(){
+        if (securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")) {
             return true;
         }
         return false;
