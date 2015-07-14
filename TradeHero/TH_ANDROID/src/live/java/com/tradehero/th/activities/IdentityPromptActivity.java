@@ -76,7 +76,7 @@ public class IdentityPromptActivity extends BaseActivity
                                     @Override public LiveBrokerSituationDTO call(KYCFormOptionsDTO kycFormOptions)
                                     {
                                         picasso.load(kycFormOptions.getIdentityPromptInfo().image)
-                                                .placeholder(R.drawable.image_identity_proof)
+                                                .placeholder(situation.kycForm.getCountry().logoId)
                                                 .into(imgPrompt);
                                         txtPrompt.setText(kycFormOptions.getIdentityPromptInfo().prompt);
                                         imgPrompt.setVisibility(View.VISIBLE);
