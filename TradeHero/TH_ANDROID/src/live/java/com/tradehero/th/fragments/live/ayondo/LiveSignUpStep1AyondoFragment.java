@@ -333,6 +333,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 Timber.e(e, "Failed to parse to number %s", onTextChangeEvent.text().toString());
                             }
                         }
+                        else
+                        {
+                            buttonVerifyPhone.setEnabled(false);
+                        }
                         return true;
                     }
                 })
@@ -572,7 +576,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             boolean verified = Integer.valueOf(countryCode).equals(kycForm.getVerifiedMobileNumberDialingPrefix())
                     && typedNumber.equals(kycForm.getVerifiedMobileNumber());
             buttonVerifyPhone.setText(verified ? R.string.verified : R.string.verify);
-            buttonVerifyPhone.setEnabled(!verified);
+            buttonVerifyPhone.setEnabled(!verified && !TextUtils.isEmpty(typedNumber));
         }
     }
 
