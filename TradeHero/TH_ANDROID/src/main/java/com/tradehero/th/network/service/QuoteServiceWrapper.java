@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import android.os.Handler;
 
+import com.squareup.okhttp.Call;
 import com.tradehero.chinabuild.data.KLineItem;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
@@ -183,6 +184,10 @@ public class QuoteServiceWrapper {
             quoteService.getQuoteLegacy(securityId.getExchange(),
                     securityId.getSecuritySymbol(), myCallback);
         }
+    }
+
+    public void getQuote(String securityExchange, String securitySymbol, Callback<Response> callback){
+        quoteService.getQuoteForSecurityOpt(securityExchange, securitySymbol, callback);
     }
 
     public void getKline(final SecurityId securityId, final String type, final Callback<List<KLineItem>> callback) {

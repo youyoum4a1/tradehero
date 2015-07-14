@@ -291,4 +291,12 @@ import java.util.Map;
         securityOrderDTO.price = price;
         securityServiceAsync.order(securityOrderDTO, callback);
     }
+
+    public void sell(String exchange, String symbol, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback){
+        securityServiceAsync.sell(exchange, symbol, transactionFormDTO, callback);
+    }
+
+    public void buy(String exchange, String symbol, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback){
+        securityServiceAsync.buy(exchange, symbol, transactionFormDTO, callback);
+    }
 }

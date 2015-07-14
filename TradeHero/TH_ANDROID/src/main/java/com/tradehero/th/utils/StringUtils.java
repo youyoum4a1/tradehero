@@ -3,6 +3,7 @@ package com.tradehero.th.utils;
 import android.text.TextUtils;
 import net.sourceforge.pinyin4j.PinyinHelper;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -106,4 +107,5 @@ public class StringUtils
             return content;
         }
     }
+
 }

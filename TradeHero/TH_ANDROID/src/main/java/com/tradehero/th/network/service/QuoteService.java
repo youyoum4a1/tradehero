@@ -7,6 +7,7 @@ import com.tradehero.chinabuild.data.SecurityUserPositionDTO;
 import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.data.SecurityUserOptDTO;
 import com.tradehero.chinabuild.fragment.security.SecurityOptPositionsList;
+import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 
 import java.util.List;
@@ -75,6 +76,12 @@ interface QuoteService
 
     @GET("/securities/{exchange}/{securitySymbol}/quote")
     void getQuoteLegacy(
+            @Path("exchange") String exchange,
+            @Path("securitySymbol") String securitySymbol,
+            Callback<Response> callback);
+
+    @GET("/securities/{exchange}/{securitySymbol}/quote")
+    void getQuoteForSecurityOpt(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             Callback<Response> callback);

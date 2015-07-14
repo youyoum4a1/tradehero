@@ -19,13 +19,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
+import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
+import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
@@ -42,6 +46,8 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+import retrofit.converter.Converter;
+import retrofit.mime.TypedByteArray;
 
 /**
  * Buy Page
@@ -91,9 +97,11 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     @Inject CurrentUserId currentUserId;
     @Inject PortfolioServiceWrapper portfolioServiceWrapper;
     @Inject SecurityServiceWrapper securityServiceWrapper;
+    @Inject Converter converter;
 
     private RefreshPositionsHandler refreshPositionsHandler = new RefreshPositionsHandler();
     private RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
+    private RefreshQuoteHandler refreshQuoteHandler = new RefreshQuoteHandler();
 
     private SecurityOptMockPositionAdapter securityOptMockPositionAdapter;
 
@@ -134,9 +142,6 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         securitySymbol = getArguments().getString(SecurityOptActivity.KEY_SECURITY_SYMBOL, "");
         securityExchange = getArguments().getString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, "");
         securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, "");
-        if(getArguments().containsKey(SecurityOptActivity.KEY_QUOTE_DTO)) {
-            quoteDTO = getBundledQuoteDTO();
-        }
     }
 
     @Override
@@ -158,6 +163,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                 addOneTV.setEnabled(false);
                 reduceOneTV.setEnabled(false);
             }
+            retrieveQuoteDTO();
         }
         if (portfolioId == 0) {
             retrieveMainPositions();
@@ -269,13 +275,16 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                     }
                     int quantity = Integer.valueOf(decisionET.getText().toString());
                     double price = Double.valueOf(priceET.getText().toString());
+                    if(quantity <= 0 || price <=0){
+                        return;
+                    }
                     if(isSHASHE()){
                         securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback<Response>() {
                             @Override
                             public void success(Response value, Response response) {
                                 THToast.show("交易成功");
                                 if(portfolioId == 0){
-                                    retrieveMainPositionsNoCallback();
+                                    retrieveMainPositionsNoRepeatCallback();
                                 }
                                 retrieveUserInformation();
                             }
@@ -287,7 +296,29 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                             }
                         });
                     } else {
+                        if(quoteDTO == null) {
+                            return;
+                        }
+                        TransactionFormDTO transactionFormDTO = buildTransactionFormDTO();
+                        if(transactionFormDTO == null){
+                            return;
+                        }
+                        securityServiceWrapper.buy(securityExchange, securitySymbol, buildTransactionFormDTO(), new Callback<SecurityPositionDetailDTO>() {
+                            @Override
+                            public void success(SecurityPositionDetailDTO securityPositionDetailDTO, Response response) {
+                                THToast.show("交易成功");
+                                if(portfolioId == 0){
+                                    retrieveMainPositionsNoRepeatCallback();
+                                }
+                                retrieveUserInformation();
+                            }
 
+                            @Override
+                            public void failure(RetrofitError error) {
+                                THException thException = new THException(error);
+                                THToast.show(thException.toString());
+                            }
+                        });
                     }
                 }
             });
@@ -457,7 +488,10 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             return;
         }
         double cashNeed = portfolioDTO.cashBalance;
-        double price = 0;
+        if(cashNeed <= 0){
+            return;
+        }
+        double price;
         if(priceET.getText() == null){
             return;
         }
@@ -577,7 +611,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if ((quoteDetail.prec * 1.1) < value) {
             return;
         }
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("#0.00");
         priceET.setText(df.format(value));
     }
 
@@ -600,7 +634,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if ((quoteDetail.prec * 0.9) > value) {
             return;
         }
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("#0.00");
         priceET.setText(df.format(value));
     }
 
@@ -666,11 +700,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         }
     }
 
-    private QuoteDTO getBundledQuoteDTO() {
-        return new QuoteDTO(getArguments().getBundle(SecurityOptActivity.KEY_QUOTE_DTO));
-    }
-
-    private void retrieveMainPositionsNoCallback(){
+    private void retrieveMainPositionsNoRepeatCallback(){
         quoteServiceWrapper.retrieveMainPositions(new Callback<SecurityOptPositionsList>() {
             @Override
             public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
@@ -684,5 +714,67 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             }
         });
     }
+
+
+    class RefreshQuoteHandler extends Handler {
+        public void handleMessage(Message msg) {
+            retrieveQuoteDTO();
+        }
+    }
+    class QuoteNoSHASHECallback implements Callback<Response> {
+
+        @Override
+        public void success(Response rawResponse, Response response) {
+            try {
+                byte[] bytes = IOUtils.streamToBytes(rawResponse.getBody().in());
+                SignedQuote signedQuote = (SignedQuote) converter.fromBody(new TypedByteArray(rawResponse.getBody().mimeType(), bytes), SignedQuote.class);
+                QuoteDTO quoteDTO = signedQuote.signedObject;
+                quoteDTO.rawResponse = new String(bytes);
+                SecurityOptMockSubBuyFragment.this.quoteDTO = quoteDTO;
+                if (!isSHASHE() && quoteDTO.ask != null) {
+                    DecimalFormat df = new DecimalFormat("#0.00");
+                    sell1Price.setText(df.format(quoteDTO.ask));
+                    buy1Price.setText(df.format(quoteDTO.ask));
+                    priceET.setText(df.format(quoteDTO.ask));
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            onFinish();
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+            onFinish();
+        }
+
+        private void onFinish() {
+            if (isRefresh && TextUtils.isEmpty(securitySymbol) && TextUtils.isEmpty(securityExchange)) {
+                refreshQuoteHandler.sendEmptyMessageDelayed(-1, 10000);
+            }
+
+        }
+    }
+
+    private void retrieveQuoteDTO(){
+        quoteServiceWrapper.getQuote(securityExchange, securitySymbol, new QuoteNoSHASHECallback());
+    }
+
+    private TransactionFormDTO buildTransactionFormDTO(){
+        if (quoteDTO == null || portfolioDTO == null) {
+            return null;
+        }
+        if(decisionET == null || decisionET.getText() == null || TextUtils.isEmpty(decisionET.getText().toString())){
+            return null;
+        }
+        if(portfolioId == 0) {
+            int mTransactionQuantity = Integer.valueOf(decisionET.getText().toString());
+            return new TransactionFormDTO(null, null, null, null, null, null, null, false, null,
+                    quoteDTO.rawResponse, mTransactionQuantity, portfolioDTO.id);
+        } else {
+            return null;
+        }
+    }
+
 
 }
