@@ -16,10 +16,10 @@ import java.util.Date;
 
 public class DatePickerDialogFragment extends BaseDialogFragment implements DatePickerDialog.OnDateSetListener
 {
-    public static final String INTENT_KEY_DATE_BUNDLE = DatePickerDialogFragment.class.getName() + ".dateBundle";
+    private static final String INTENT_KEY_DATE_BUNDLE = DatePickerDialogFragment.class.getName() + ".dateBundle";
 
     private static final String BUNDLE_KEY_MAX_DATE = DatePickerDialogFragment.class.getName() + ".maxDate";
-    public static final String BUNDLE_KEY_SELECTED_DATE = DatePickerDialogFragment.class.getName() + ".selectedDate";
+    private static final String BUNDLE_KEY_SELECTED_DATE = DatePickerDialogFragment.class.getName() + ".selectedDate";
 
     private static final String BUNDLE_KEY_YEAR = DatePickerDialogFragment.class.getName() + ".year";
     private static final String BUNDLE_KEY_MONTH_OF_YEAR = DatePickerDialogFragment.class.getName() + ".monthOfYear";
@@ -47,6 +47,12 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements Date
         b.putInt(BUNDLE_KEY_MONTH_OF_YEAR, calendar.get(Calendar.MONTH));
         b.putInt(BUNDLE_KEY_DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH));
         args.putBundle(bundleKey, b);
+    }
+
+    public static Calendar getCalendarFromIntent(Intent intent)
+    {
+        return getCalendar(
+                intent.getBundleExtra(DatePickerDialogFragment.INTENT_KEY_DATE_BUNDLE).getBundle(DatePickerDialogFragment.BUNDLE_KEY_SELECTED_DATE));
     }
 
     public static Calendar getCalendar(Bundle args)

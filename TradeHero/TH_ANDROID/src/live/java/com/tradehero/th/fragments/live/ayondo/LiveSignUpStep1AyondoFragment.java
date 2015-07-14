@@ -947,9 +947,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_PICK_DATE && resultCode == Activity.RESULT_OK)
         {
-            Bundle b =
-                    data.getBundleExtra(DatePickerDialogFragment.INTENT_KEY_DATE_BUNDLE).getBundle(DatePickerDialogFragment.BUNDLE_KEY_SELECTED_DATE);
-            Calendar c = DatePickerDialogFragment.getCalendar(b);
+            Calendar c = DatePickerDialogFragment.getCalendarFromIntent(data);
             dob.setText(DateUtils.getDisplayableDate(getResources(), c.getTime(), R.string.info_date_format));
         }
     }
