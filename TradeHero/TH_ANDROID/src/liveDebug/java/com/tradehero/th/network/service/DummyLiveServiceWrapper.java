@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
 import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
@@ -8,6 +9,7 @@ import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
 import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
+import com.tradehero.th.api.kyc.ayondo.DummyAyondoData;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
@@ -16,6 +18,7 @@ import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,28 +27,34 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 public class DummyLiveServiceWrapper extends LiveServiceWrapper
 {
+    private static final int TIME_OUT_SECONDS = 10;
     private final Country pretendInCountry = Country.SG;
+
+    @NonNull private final ObjectMapperWrapper objectMapperWrapper;
 
     @Inject public DummyLiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
-            @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference)
+            @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference,
+            @NonNull ObjectMapperWrapper objectMapperWrapper)
     {
         super(liveServiceRx, liveBrokerSituationPreference);
+        this.objectMapperWrapper = objectMapperWrapper;
     }
 
     @NonNull @Override public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
     {
         return super.getLiveTradingSituation()
-                .timeout(1, TimeUnit.SECONDS)
+                //.timeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
                 .onErrorResumeNext(
                         new Func1<Throwable, Observable<? extends LiveTradingSituationDTO>>()
                         {
                             @Override public Observable<? extends LiveTradingSituationDTO> call(Throwable throwable)
                             {
-                                LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "ayondo Market");
+                                LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "ayondo markets");
                                 KYCAyondoForm form = new KYCAyondoForm();
                                 form.setCountry(Country.SG);
                                 LiveBrokerSituationDTO fakeSituation = new LiveBrokerSituationDTO(ayondo, form);
@@ -57,12 +66,40 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
     @NonNull @Override public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)
     {
         return super.getKYCFormOptions(optionsId)
-                .timeout(1, TimeUnit.SECONDS)
+                .map(new Func1<KYCFormOptionsDTO, KYCFormOptionsDTO>()
+                {
+                    @Override public KYCFormOptionsDTO call(KYCFormOptionsDTO kycFormOptionsDTO)
+                    {
+                        if (kycFormOptionsDTO.getIdentityPromptInfo() != null)
+                        {
+                            return kycFormOptionsDTO;
+                        }
+                        return new KYCAyondoFormOptionsDTO(
+                                createIdentityPromptInfo(),
+                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).allowedMobilePhoneCountries,
+                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).allowedNationalityCountries,
+                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).allowedResidencyCountries,
+                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).annualIncomeOptions,
+                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).netWorthOptions,
+                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).percentNetWorthOptions,
+                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).employmentStatusOptions,
+                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).minAge);
+                    }
+                })
+                        //.timeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
                 .onErrorResumeNext(
                         new Func1<Throwable, Observable<? extends KYCFormOptionsDTO>>()
                         {
                             @Override public Observable<? extends KYCFormOptionsDTO> call(Throwable throwable)
                             {
+                                try
+                                {
+                                    return Observable.just(objectMapperWrapper.readValue(DummyAyondoData.KYC_OPTIONS, KYCAyondoFormOptionsDTO.class));
+                                } catch (IOException e)
+                                {
+                                    Timber.e(e, "Failed to deserialise dummy Options");
+                                }
+
                                 List<Country> nationalities = new ArrayList<>(Arrays.asList(Country.values()));
                                 nationalities.removeAll(createNoBusinessNationalities());
                                 KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(

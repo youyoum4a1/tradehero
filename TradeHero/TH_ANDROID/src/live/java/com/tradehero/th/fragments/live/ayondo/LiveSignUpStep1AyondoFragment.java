@@ -238,12 +238,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         phoneCountryCodeAdapter = new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
         spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
+        spinnerPhoneCountryCode.setClickable(false);
 
         nationalityAdapter = new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
         spinnerNationality.setAdapter(nationalityAdapter);
+        spinnerNationality.setClickable(false);
 
         residencyAdapter = new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
         spinnerResidency.setAdapter(residencyAdapter);
+        spinnerResidency.setClickable(false);
 
         // Maybe move this until we get the KYCForm, and use the KYCForm to fetch the list of country of residence.
         onDestroyViewSubscriptions.add(Observable.combineLatest(
@@ -273,18 +276,21 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
                         phoneCountryCodeAdapter.setNotifyOnChange(true);
                         phoneCountryCodeAdapter.notifyDataSetChanged();
+                        spinnerPhoneCountryCode.setClickable(options.allowedMobilePhoneCountryDTOs.size() > 1);
 
                         residencyAdapter.setNotifyOnChange(false);
                         residencyAdapter.clear();
                         residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
                         residencyAdapter.setNotifyOnChange(true);
                         residencyAdapter.notifyDataSetChanged();
+                        spinnerResidency.setClickable(options.allowedResidencyCountryDTOs.size() > 1);
 
                         nationalityAdapter.setNotifyOnChange(false);
                         nationalityAdapter.clear();
                         nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
                         nationalityAdapter.setNotifyOnChange(true);
                         nationalityAdapter.notifyDataSetChanged();
+                        spinnerNationality.setClickable(options.allowedNationalityCountryDTOs.size() > 1);
 
                         //noinspection ConstantConditions
                         populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedMobilePhoneCountryDTOs);
@@ -299,12 +305,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         return null;
                     }
                 })
-                .subscribe(new Action1<Object>()
-                {
-                    @Override public void call(Object o)
-                    {
-                    }
-                }));
+                .subscribe(
+                        new Action1<Object>()
+                        {
+                            @Override public void call(Object o)
+                            {
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to load phone drop down lists")));
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 userProfileCache.getOne(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
@@ -348,7 +356,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to listen to phone number")));
+                        new ToastAndLogOnErrorAction("Failed to listen to phone number updates")));
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
@@ -398,7 +406,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             {
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to nationality")));
+                        new TimberOnErrorAction("Failed to listen to residency")));
 
         onDestroyViewSubscriptions.add(ViewObservable.clicks(dob)
                 .flatMap(new Func1<OnClickEvent, Observable<KYCAyondoFormOptionsDTO>>()
@@ -445,7 +453,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 {
                     @Override public Boolean call(LiveBrokerSituationDTO situation, OnTextChangeEvent dobEvent)
                     {
-                        ((KYCAyondoForm) situation.kycForm).setDateOfBirth(dobEvent.text().toString());
+                        //noinspection ConstantConditions
+                        ((KYCAyondoForm) situation.kycForm).setDob(dobEvent.text().toString());
                         onNext(situation);
                         return null;
                     }
@@ -457,7 +466,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             {
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to last name")));
+                        new TimberOnErrorAction("Failed to listen to DOB updates")));
 
         if (savedInstanceState != null)
         {

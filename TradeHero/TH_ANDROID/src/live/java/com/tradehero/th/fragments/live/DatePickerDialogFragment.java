@@ -27,7 +27,7 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements Date
 
     private Date maxDate;
 
-    public static DatePickerDialogFragment newInstance(@NonNull Calendar maxDate, @Nullable Calendar selectedDate)
+    @NonNull public static DatePickerDialogFragment newInstance(@NonNull Calendar maxDate, @Nullable Calendar selectedDate)
     {
         DatePickerDialogFragment dpf = new DatePickerDialogFragment();
         Bundle b = new Bundle();
@@ -40,7 +40,7 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements Date
         return dpf;
     }
 
-    public static void setCalendar(@NonNull Bundle args, String bundleKey, @NonNull Calendar calendar)
+    public static void setCalendar(@NonNull Bundle args, @NonNull String bundleKey, @NonNull Calendar calendar)
     {
         Bundle b = new Bundle();
         b.putInt(BUNDLE_KEY_YEAR, calendar.get(Calendar.YEAR));
@@ -49,13 +49,22 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements Date
         args.putBundle(bundleKey, b);
     }
 
-    public static Calendar getCalendarFromIntent(Intent intent)
+    @NonNull public static Calendar getCalendarFromIntent(@NonNull Intent intent)
     {
-        return getCalendar(
-                intent.getBundleExtra(DatePickerDialogFragment.INTENT_KEY_DATE_BUNDLE).getBundle(DatePickerDialogFragment.BUNDLE_KEY_SELECTED_DATE));
+        Bundle extras = intent.getBundleExtra(DatePickerDialogFragment.INTENT_KEY_DATE_BUNDLE);
+        if (extras == null)
+        {
+            throw new NullPointerException("No bundle extra found with key " + DatePickerDialogFragment.INTENT_KEY_DATE_BUNDLE);
+        }
+        Bundle calendarBundle = extras.getBundle(DatePickerDialogFragment.BUNDLE_KEY_SELECTED_DATE);
+        if (calendarBundle == null)
+        {
+            throw new NullPointerException("No calendar bundle found with key " + DatePickerDialogFragment.BUNDLE_KEY_SELECTED_DATE);
+        }
+        return getCalendar(calendarBundle);
     }
 
-    public static Calendar getCalendar(Bundle args)
+    @NonNull public static Calendar getCalendar(@NonNull Bundle args)
     {
         int year = args.getInt(BUNDLE_KEY_YEAR);
         int month = args.getInt(BUNDLE_KEY_MONTH_OF_YEAR);
@@ -69,8 +78,13 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements Date
 
     @NonNull @Override public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
+        Bundle maxDateBundle = getArguments().getBundle(BUNDLE_KEY_MAX_DATE);
+        if (maxDateBundle == null)
+        {
+            throw new NullPointerException("No calendar bundle found with key " + DatePickerDialogFragment.BUNDLE_KEY_MAX_DATE);
+        }
         // Get max date
-        Calendar c = getCalendar(getArguments().getBundle(BUNDLE_KEY_MAX_DATE));
+        Calendar c = getCalendar(maxDateBundle);
 
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
@@ -78,10 +92,11 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements Date
 
         maxDate = c.getTime();
 
+        Bundle selectedDateBundle = getArguments().getBundle(BUNDLE_KEY_SELECTED_DATE);
         // Get the selected Date if exist;
-        if (getArguments().getBundle(BUNDLE_KEY_SELECTED_DATE) != null)
+        if (selectedDateBundle != null)
         {
-            Calendar selected = getCalendar(getArguments().getBundle(BUNDLE_KEY_SELECTED_DATE));
+            Calendar selected = getCalendar(selectedDateBundle);
             year = selected.get(Calendar.YEAR);
             month = selected.get(Calendar.MONTH);
             day = selected.get(Calendar.DAY_OF_MONTH);

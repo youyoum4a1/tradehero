@@ -6,10 +6,10 @@ import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
-import com.tradehero.th.api.market.Country;
-import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.StepStatus;
+import com.tradehero.th.api.market.Country;
+import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.utils.DateUtils;
 import java.util.Collections;
 import java.util.Date;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class KYCAyondoForm implements KYCForm
 {
-    public static final String KEY_AYONDO_TYPE = "Ayondo";
+    public static final String KEY_AYONDO_TYPE = "AYD";
     public static final String DATE_FORMAT_AYONDO = "dd-MM-yyyy";
 
     @NonNull private Country country;
@@ -87,6 +87,7 @@ public class KYCAyondoForm implements KYCForm
                     ayondoForm.getVerifiedMobileNumber() != null ? ayondoForm.getVerifiedMobileNumber() : this.verifiedMobileNumber;
             this.nationality = ayondoForm.getNationality() != null ? ayondoForm.getNationality() : this.nationality;
             this.residency = ayondoForm.getResidency() != null ? ayondoForm.getResidency() : this.residency;
+            this.dob = ayondoForm.getDob() != null ? ayondoForm.getDob() : this.dob;
         }
     }
 
@@ -221,15 +222,19 @@ public class KYCAyondoForm implements KYCForm
             same &= firstName == null ? ayondoForm.firstName == null : firstName.equals(ayondoForm.firstName);
             same &= lastName == null ? ayondoForm.lastName == null : lastName.equals(ayondoForm.lastName);
             same &= email == null ? ayondoForm.email == null : email.equals(ayondoForm.email);
-            same &= verifiedEmail == null ? ayondoForm.verifiedEmail == null : verifiedEmail.equals(ayondoForm.verifiedEmail);
-            same &= mobileNumberDialingPrefix == null ? ayondoForm.mobileNumberDialingPrefix
-                    == null : mobileNumberDialingPrefix.equals(ayondoForm.mobileNumberDialingPrefix);
+            same &= verifiedEmail == null
+                    ? ayondoForm.verifiedEmail == null
+                    : verifiedEmail.equals(ayondoForm.verifiedEmail);
+            same &= mobileNumberDialingPrefix == null
+                    ? ayondoForm.mobileNumberDialingPrefix == null
+                    : mobileNumberDialingPrefix.equals(ayondoForm.mobileNumberDialingPrefix);
             same &= mobileNumber == null ? ayondoForm.mobileNumber == null : mobileNumber.equals(ayondoForm.mobileNumber);
-            same &= verifiedMobileNumberDialingPrefix == null ? ayondoForm.verifiedMobileNumberDialingPrefix == null
-                    : verifiedMobileNumberDialingPrefix
-                            .equals(ayondoForm.verifiedMobileNumberDialingPrefix);
-            same &= verifiedMobileNumber == null ? ayondoForm.verifiedMobileNumber == null : verifiedMobileNumber.equals(
-                    ayondoForm.verifiedMobileNumber);
+            same &= verifiedMobileNumberDialingPrefix == null
+                    ? ayondoForm.verifiedMobileNumberDialingPrefix == null
+                    : verifiedMobileNumberDialingPrefix.equals(ayondoForm.verifiedMobileNumberDialingPrefix);
+            same &= verifiedMobileNumber == null
+                    ? ayondoForm.verifiedMobileNumber == null
+                    : verifiedMobileNumber.equals(ayondoForm.verifiedMobileNumber);
             same &= nationality == null ? ayondoForm.nationality == null : nationality.equals(ayondoForm.nationality);
             same &= residency == null ? ayondoForm.residency == null : residency.equals(ayondoForm.residency);
             same &= dob == null ? ayondoForm.dob == null : dob.equals(ayondoForm.dob);
@@ -250,12 +255,12 @@ public class KYCAyondoForm implements KYCForm
         return same;
     }
 
-    public String getDob()
+    @Nullable public String getDob()
     {
         return dob;
     }
 
-    public void setDateOfBirth(String dob)
+    public void setDob(@Nullable String dob)
     {
         this.dob = dob;
     }

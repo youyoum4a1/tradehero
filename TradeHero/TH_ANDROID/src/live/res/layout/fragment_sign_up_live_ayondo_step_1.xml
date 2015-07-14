@@ -158,7 +158,15 @@
         android:background="?attr/selectableItemBackground"
         />
 
-    <TextView
+      <TextView
+          style="@style/TH.Caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:text="@string/date_of_birth"
+          />
+
+      <TextView
         android:id="@+id/info_dob"
         style="@style/TH.Body"
         android:layout_width="match_parent"

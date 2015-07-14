@@ -157,7 +157,7 @@ public class PreferenceModule
         return new BooleanPreference(sharedPreferences, PREF_IS_FX_SHOWN_FLAG, false);
     }
 
-    @Provides @Singleton @IsLiveTrading BooleanPreference provideIsLiveTrading(@ForApp SharedPreferences sharedPreferences)
+    @Provides @Singleton @IsLiveTrading BooleanPreference provideIsLiveTrading(@ForUser SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_IS_LIVE_TRADING, false);
     }
