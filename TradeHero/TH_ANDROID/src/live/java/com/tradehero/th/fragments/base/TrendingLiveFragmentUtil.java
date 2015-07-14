@@ -93,6 +93,7 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
         if (callToActionFragment != null && callToActionFragment.isAdded())
         {
             fragment.getChildFragmentManager().beginTransaction().remove(callToActionFragment).commit();
+            showCallToActionFragment.set(false); //Only display fragment once, the next one should be a bubble
         }
         if (laterClickedSubscription != null)
         {
@@ -100,6 +101,5 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
         }
         liveFragmentContainer.setVisibility(View.GONE);
         pager.setVisibility(View.VISIBLE);
-        showCallToActionFragment.set(false); //Only display fragment once, the next one should be a bubble
     }
 }
