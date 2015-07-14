@@ -187,7 +187,6 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:gravity="left|center_vertical"
-        android:hint="@string/date_of_birth"
         android:textColor="?attr/editTextColor"
         />
 
