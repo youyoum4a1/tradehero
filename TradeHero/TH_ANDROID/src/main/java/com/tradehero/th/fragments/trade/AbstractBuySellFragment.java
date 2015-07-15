@@ -9,7 +9,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -30,7 +29,6 @@ import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.TillExchangeOpenDuration;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.share.wechat.WeChatDTO;
 import com.tradehero.th.api.share.wechat.WeChatMessageType;
@@ -69,7 +67,6 @@ import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
@@ -85,6 +82,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 abstract public class AbstractBuySellFragment extends DashboardFragment
         implements WithTutorial
@@ -127,6 +125,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     protected Animation progressAnimation;
     protected AbstractTransactionDialogFragment abstractTransactionDialogFragment;
     protected boolean poppedPortfolioChanged = false;
+    private PublishSubject<Void> quoteRepeatSubject;
+    private Observable<Void> quoteRepeatDelayedObservable;
     public Observable<QuoteDTO> quoteObservable;
     public Observable<SecurityCompactDTO> securityObservable;
 
@@ -152,6 +152,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
         requisite = createRequisite();
+        quoteRepeatSubject = PublishSubject.create();
+        quoteRepeatDelayedObservable = quoteRepeatSubject.delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -401,6 +403,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
+        quoteRepeatSubject.onCompleted();
         abstractTransactionDialogFragment = null;
         super.onDestroy();
     }
@@ -430,7 +433,14 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 {
                     @Override public Observable<?> call(Observable<? extends Void> observable)
                     {
-                        return observable.delay(AbstractBuySellFragment.this.getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
+                        return observable.flatMap(new Func1<Void, Observable<?>>()
+                        {
+                            @Override public Observable<?> call(Void aVoid)
+                            {
+                                quoteRepeatSubject.onNext(aVoid);
+                                return quoteRepeatDelayedObservable;
+                            }
+                        });
                     }
                 })
                 .share()
