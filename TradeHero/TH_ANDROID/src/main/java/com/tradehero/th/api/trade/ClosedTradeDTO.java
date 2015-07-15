@@ -11,10 +11,11 @@ public class ClosedTradeDTO implements DTO
     public String symbol;
     public String securityName;
     public int quantity;
-    public int price;
+    public double price;
     public String currencyDisplay;
     public int state;// 0: 未成交,  1: 已成交,  2: 已撤
     public String closedAtUtc;
+    public String createdAtUtc;
 
     public ClosedTradeDTO()
     {
@@ -34,6 +35,7 @@ public class ClosedTradeDTO implements DTO
                 ", currencyDisplay='" + currencyDisplay + '\'' +
                 ", state=" + state +
                 ", closedAtUtc=" + closedAtUtc +
+                ", createdAtUtc=" + createdAtUtc +
                 '}';
     }
 }
