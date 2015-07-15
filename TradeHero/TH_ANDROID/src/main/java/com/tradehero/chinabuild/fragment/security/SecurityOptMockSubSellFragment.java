@@ -31,8 +31,10 @@ import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
+import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -87,6 +89,8 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject Converter converter;
+    @Inject PortfolioServiceWrapper portfolioServiceWrapper;
+    @Inject CurrentUserId currentUserId;
 
     private QuoteDetail quoteDetail;
     private SecurityOptPositionsList securityOptPositionDTOs;
@@ -144,9 +148,11 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         securityExchange = getArguments().getString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, "");
         securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, "");
         competitionId = getArguments().getInt(SecurityOptActivity.KEY_COMPETITION_ID, 0);
-        portfolioIdObj = getPortfolioId();
-        if(competitionId != 0){
-            portfolioId = portfolioIdObj.key;
+        if(getArguments().containsKey(SecurityOptActivity.KEY_PORTFOLIO_ID)) {
+            portfolioIdObj = getPortfolioId();
+            if (competitionId != 0) {
+                portfolioId = portfolioIdObj.key;
+            }
         }
     }
 
@@ -176,6 +182,9 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         } else {
             retrieveCompetitionPositions();
         }
+
+        //Retrieve user portfolio
+        retrieveUserInformation();
 
         return view;
     }
@@ -813,7 +822,9 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             return new TransactionFormDTO(null, null, null, null, null, null, null, false, null,
                     quoteDTO.rawResponse, mTransactionQuantity, portfolioDTO.id);
         } else {
-            return null;
+            int mTransactionQuantity = Integer.valueOf(decisionET.getText().toString());
+            return new TransactionFormDTO(null, null, null, null, null, null, null, false, null,
+                    quoteDTO.rawResponse, mTransactionQuantity, portfolioIdObj.key);
         }
     }
 
@@ -822,5 +833,21 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             this.portfolioIdObj = new PortfolioId(getArguments().getBundle(SecurityOptActivity.KEY_PORTFOLIO_ID));
         }
         return portfolioIdObj;
+    }
+
+    private void retrieveUserInformation(){
+        if(portfolioId == 0){
+            portfolioServiceWrapper.getMainPortfolio(currentUserId.toUserBaseKey().getUserId(), new Callback<PortfolioDTO>() {
+                @Override
+                public void success(PortfolioDTO portfolioDTO, Response response) {
+                    SecurityOptMockSubSellFragment.this.portfolioDTO = portfolioDTO;
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
+        }
     }
 }
