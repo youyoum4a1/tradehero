@@ -118,7 +118,7 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"
-        android:background="#a9a9a9">
+        android:background="@drawable/btn_background_cancel_delegation">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -143,15 +143,23 @@
             android:listSelector="@null" />
 
         <LinearLayout
+            android:id="@+id/no_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone">
-            <ImageView
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:background="@color/gray_color"
+            android:visibility="gone"
+            >
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/security_opt_no_position"
-                android:scaleType="center"/>
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:text="@string/no_delegation_history"
+                android:textColor="@color/white"/>
         </LinearLayout>
     </RelativeLayout>
 

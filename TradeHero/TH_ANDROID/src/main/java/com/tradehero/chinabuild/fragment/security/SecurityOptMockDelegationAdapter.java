@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.trade.ClosedTradeDTO;
@@ -13,6 +14,7 @@ import com.tradehero.th.api.trade.ClosedTradeDTOList;
 public class SecurityOptMockDelegationAdapter extends BaseAdapter{
     private ClosedTradeDTOList mList = new ClosedTradeDTOList();
     private LayoutInflater inflater;
+    private int mSelectedPosition = -1;
 
     public SecurityOptMockDelegationAdapter(Context context){
         inflater = LayoutInflater.from(context);
@@ -39,6 +41,12 @@ public class SecurityOptMockDelegationAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.security_opt_delegation_position_item, null);
         }
         ClosedTradeDTO item = getItem(i);
+        ImageView choiceImageView = (ImageView)convertView.findViewById(R.id.choice);
+        if (mSelectedPosition == i) {
+            choiceImageView.setImageResource(R.drawable.choice);
+        } else {
+            choiceImageView.setImageResource(R.drawable.no_choice);
+        }
         TextView stockTitle = (TextView)convertView.findViewById(R.id.stock_name);
         stockTitle.setText(item.securityName);
         TextView stockID = (TextView)convertView.findViewById(R.id.stock_id);
@@ -61,5 +69,13 @@ public class SecurityOptMockDelegationAdapter extends BaseAdapter{
 
     public void setItems(ClosedTradeDTOList list) {
         mList = list;
+    }
+
+    public void setSelectedItem(int position) {
+        if (mSelectedPosition == position) {
+            mSelectedPosition = -1;
+        } else {
+            mSelectedPosition = position;
+        }
     }
 }

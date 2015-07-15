@@ -35,6 +35,35 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
         DaggerUtils.inject(this);
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.security_opt_sub_query, container, false);
+        initViews(view);
+        return view;
+    }
+
+    private void initViews(View view) {
+        mClickShowMore = (TextView) view.findViewById(R.id.click_show_more);
+        mClickShowMore.setOnClickListener(this);
+        mListView1 = (ListView) view.findViewById(R.id.list_1);
+        if (mListViewAdapter1 == null) {
+            mListViewAdapter1 = new SecurityOptMockQueryTradeAdapter(getActivity());
+        }
+        mListView1.setAdapter(mListViewAdapter1);
+        mListView2 = (ListView) view.findViewById(R.id.list_2);
+        if (mListViewAdapter2 == null) {
+            mListViewAdapter2 = new SecurityOptMockQueryDelegationAdapter(getActivity());
+        }
+        mListView2.setAdapter(mListViewAdapter2);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        queryTradeHistroy();
+        queryDelegationHistory();
+    }
+
     private void queryDelegationHistory() {
         mTradeServiceWrapper.getDelegation(new Callback<ClosedTradeDTOList>() {
             @Override
@@ -65,35 +94,6 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
 
             }
         });
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.security_opt_sub_query, container, false);
-        initViews(view);
-        return view;
-    }
-
-    private void initViews(View view) {
-        mClickShowMore = (TextView) view.findViewById(R.id.click_show_more);
-        mClickShowMore.setOnClickListener(this);
-        mListView1 = (ListView) view.findViewById(R.id.list_1);
-        if (mListViewAdapter1 == null) {
-            mListViewAdapter1 = new SecurityOptMockQueryTradeAdapter(getActivity());
-        }
-        mListView1.setAdapter(mListViewAdapter1);
-        mListView2 = (ListView) view.findViewById(R.id.list_2);
-        if (mListViewAdapter2 == null) {
-            mListViewAdapter2 = new SecurityOptMockQueryDelegationAdapter(getActivity());
-        }
-        mListView2.setAdapter(mListViewAdapter2);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        queryTradeHistroy();
-        queryDelegationHistory();
     }
 
     @Override

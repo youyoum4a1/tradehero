@@ -599,5 +599,8 @@
     <string name="click_show_more">click show more</string>
     <string name="is_buy">buy</string>
     <string name="is_sell">sell</string>
+    <string name="no_delegation_history">no delegation history</string>
+    <string name="cancel_delegation_success">cancel delegation success</string>
+    <string name="cancel_delegation_fail">cancel delegation fail</string>
 
 </resources>

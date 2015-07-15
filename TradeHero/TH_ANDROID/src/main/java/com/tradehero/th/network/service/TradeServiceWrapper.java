@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
+import retrofit.client.Response;
 
 @Singleton public class TradeServiceWrapper
 {
@@ -70,5 +71,10 @@ import retrofit.Callback;
     public void getPendingDelegation(Callback<ClosedTradeDTOList> callback)
     {
         tradeService.getPendingDelegation(callback);
+    }
+
+    public void deletePendingDelegation(int orderId, Callback<Response> callback)
+    {
+        tradeService.deletePendingDelegation(orderId, callback);
     }
 }
