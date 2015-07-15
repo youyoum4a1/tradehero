@@ -360,8 +360,10 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 			paint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
             paint.setStrokeWidth(2);
             paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-			canvas.drawText(lineEntity.getTitle() + "=" + new DecimalFormat("#.##").format(lineEntity.getLineData().get(
-									mDataStartIndext)), 2 + MATitleWidth * j, DEFAULT_AXIS_TITLE_SIZE, paint);
+			if (mDataStartIndext < lineEntity.getLineData().size()) {
+                canvas.drawText(lineEntity.getTitle() + "=" + new DecimalFormat("#.##").format(lineEntity.getLineData().get(
+                                        mDataStartIndext)), 2 + MATitleWidth * j, DEFAULT_AXIS_TITLE_SIZE, paint);
+			}
 			for (int i = 0; i < mShowDataNum && mDataStartIndext + i < lineEntity.getLineData().size(); i++) {
 				if (i != 0) {
 					canvas.drawLine(

@@ -230,4 +230,7 @@
     <string name="click_show_more">点击查看更多</string>
     <string name="is_buy">买入</string>
     <string name="is_sell">卖出</string>
+    <string name="no_delegation_history">暂无委托中的交易</string>
+    <string name="cancel_delegation_success">撤单成功</string>
+    <string name="cancel_delegation_fail">撤单失败</string>
 </resources>

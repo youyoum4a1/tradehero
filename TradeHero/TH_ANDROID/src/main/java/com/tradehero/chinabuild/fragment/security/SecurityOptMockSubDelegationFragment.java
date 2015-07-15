@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import com.tradehero.common.utils.THToast;
@@ -19,10 +21,12 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-public class SecurityOptMockSubDelegationFragment extends Fragment implements View.OnClickListener{
+public class SecurityOptMockSubDelegationFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
     private RelativeLayout mDelegrationButton;
     private ListView mListView;
     private SecurityOptMockDelegationAdapter mListViewAdapter;
+    private LinearLayout mNoItemLayout;
+    private int mSelectedPosition = -1;
     @Inject
     TradeServiceWrapper mTradeServiceWrapper;
 
@@ -40,13 +44,16 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
     }
 
     private void initViews(View view) {
-        mDelegrationButton = (RelativeLayout) view.findViewById(R.id.delegration_button);
-        mDelegrationButton.setOnClickListener(this);
         mListView = (ListView) view.findViewById(R.id.listview_security_opt_positions);
         if (mListViewAdapter == null) {
             mListViewAdapter = new SecurityOptMockDelegationAdapter(getActivity());
         }
         mListView.setAdapter(mListViewAdapter);
+        mListView.setOnItemClickListener(this);
+        mDelegrationButton = (RelativeLayout) view.findViewById(R.id.delegration_button);
+        mDelegrationButton.setEnabled(false);
+        mDelegrationButton.setOnClickListener(this);
+        mNoItemLayout = (LinearLayout) view.findViewById(R.id.no_item);
     }
 
     @Override
@@ -60,8 +67,16 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
             @Override
             public void success(ClosedTradeDTOList list, Response response2) {
                 Timber.d("lyl getPendingDelegation size=" + list.size());
+                mListViewAdapter.setSelectedItem(-1);
                 mListViewAdapter.setItems(list);
                 mListViewAdapter.notifyDataSetChanged();
+                if (list.size() > 0) {
+                    mNoItemLayout.setVisibility(View.GONE);
+                    mListView.setVisibility(View.VISIBLE);
+                } else {
+                    mNoItemLayout.setVisibility(View.VISIBLE);
+                    mListView.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -75,7 +90,22 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delegration_button:
-                THToast.show("click delegration_button");
+                mDelegrationButton.setEnabled(false);
+                if (mListViewAdapter.getCount() > 0) {
+                    mTradeServiceWrapper.deletePendingDelegation(mListViewAdapter.getItem(mSelectedPosition).id, new Callback<Response>() {
+                        @Override
+                        public void success(Response response, Response response2) {
+                            THToast.show(getString(R.string.cancel_delegation_success));
+                            queryPendingDelegationHistory();
+                        }
+
+                        @Override
+                        public void failure(RetrofitError error) {
+                            THToast.show(getString(R.string.cancel_delegation_fail));
+                            queryPendingDelegationHistory();
+                        }
+                    });
+                }
                 break;
         }
     }
@@ -86,5 +116,19 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
 //        mListViewAdapter = null;
 //        mListView = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Timber.d("lyl onItemClick "+position);
+        if (mSelectedPosition == position) {
+            mSelectedPosition = -1;
+            mDelegrationButton.setEnabled(false);
+        } else {
+            mSelectedPosition = position;
+            mDelegrationButton.setEnabled(true);
+        }
+        mListViewAdapter.setSelectedItem(position);
+        mListViewAdapter.notifyDataSetChanged();
     }
 }

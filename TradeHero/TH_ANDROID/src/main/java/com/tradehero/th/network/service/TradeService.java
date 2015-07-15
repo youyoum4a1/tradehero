@@ -3,6 +3,8 @@ package com.tradehero.th.network.service;
 import com.tradehero.th.api.trade.ClosedTradeDTOList;
 import com.tradehero.th.api.trade.TradeDTOList;
 import retrofit.Callback;
+import retrofit.client.Response;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.Path;
 
@@ -24,4 +26,7 @@ public interface TradeService
 
     @GET("/cn/v2/orders/pending")//可撤单委托
     void getPendingDelegation(Callback<ClosedTradeDTOList> callback);
+
+    @DELETE("/cn/v2/orders/{orderId}")
+    void deletePendingDelegation(@Path("orderId") int orderId, Callback<Response> callback);
 }

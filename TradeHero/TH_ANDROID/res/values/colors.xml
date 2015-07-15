@@ -13,6 +13,7 @@
     <color name="light_grey_transparent">#99BFBFBF</color>
     <color name="white">@android:color/white</color>
     <color name="textbox_light_background_color">#fafafa</color>
+    <color name="gray_color">#a9a9a9</color>
 
     <color name="btn_twitter_color_end">#419aff</color>
     <color name="btn_linkedin_color_light">#1c8fcf</color>
