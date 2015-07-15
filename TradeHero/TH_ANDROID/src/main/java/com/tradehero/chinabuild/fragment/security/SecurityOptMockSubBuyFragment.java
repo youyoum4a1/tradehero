@@ -2,10 +2,12 @@ package com.tradehero.chinabuild.fragment.security;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.common.utils.IOUtils;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
@@ -306,7 +309,11 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                         securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback<Response>() {
                             @Override
                             public void success(Response value, Response response) {
-                                THToast.show("交易成功");
+                                if(isSHASHE()){
+                                    THToast.show("委托成功");
+                                } else {
+                                    THToast.show("交易成功");
+                                }
                                 if(portfolioId == 0){
                                     //Main postions
                                     retrieveMainPositionsNoRepeat();
@@ -314,6 +321,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                                     retrieveCompetitionPositionsNoRepeat();
                                 }
                                 retrieveUserInformation();
+                                if(getActivity()!=null) {
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptMockSubSellFragment.INTENT_REFRESH_POSITION_REQUIRED));
+                                }
                             }
 
                             @Override
@@ -324,27 +334,39 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                         });
                     } else {
                         if(quoteDTO == null) {
+                            THLog.d("1");
                             return;
                         }
+                        THLog.d("2");
                         TransactionFormDTO transactionFormDTO = buildTransactionFormDTO();
                         if(transactionFormDTO == null){
+                            THLog.d("3");
                             return;
                         }
+                        THLog.d("4");
                         securityServiceWrapper.buy(securityExchange, securitySymbol, buildTransactionFormDTO(), new Callback<SecurityPositionDetailDTO>() {
                             @Override
                             public void success(SecurityPositionDetailDTO securityPositionDetailDTO, Response response) {
-                                THToast.show("交易成功");
+                                if(isSHASHE()){
+                                    THToast.show("委托成功");
+                                } else {
+                                    THToast.show("交易成功");
+                                }
                                 if(portfolioId == 0){
                                     retrieveMainPositionsNoRepeat();
                                 } else {
                                     retrieveCompetitionPositionsNoRepeat();
                                 }
                                 retrieveUserInformation();
+                                if(getActivity()!=null) {
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptMockSubSellFragment.INTENT_REFRESH_POSITION_REQUIRED));
+                                }
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
-                                THToast.show("交易失败");
+                                THException thException = new THException(error);
+                                THToast.show(thException.toString());
                             }
                         });
                     }
@@ -750,7 +772,10 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                 }
             });
         } else {
-            portfolioServiceWrapper.getCompetitionPortfolio(portfolioId, new Callback<PortfolioDTO>() {
+            if(competitionId == 0){
+                return;
+            }
+            portfolioServiceWrapper.getCompetitionPortfolio(competitionId, new Callback<PortfolioDTO>() {
                 @Override
                 public void success(PortfolioDTO portfolioDTO, Response response) {
                     SecurityOptMockSubBuyFragment.this.portfolioDTO = portfolioDTO;
@@ -820,17 +845,23 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     }
 
     private TransactionFormDTO buildTransactionFormDTO(){
-        if (quoteDTO == null || portfolioDTO == null) {
+        if (quoteDTO == null) {
             return null;
         }
         if(decisionET == null || decisionET.getText() == null || TextUtils.isEmpty(decisionET.getText().toString())){
             return null;
         }
         if(portfolioId == 0) {
+            if(portfolioDTO == null) {
+                return null;
+            }
             int mTransactionQuantity = Integer.valueOf(decisionET.getText().toString());
             return new TransactionFormDTO(null, null, null, null, null, null, null, false, null,
                     quoteDTO.rawResponse, mTransactionQuantity, portfolioDTO.id);
         } else {
+            if(portfolioIdObj == null || portfolioIdObj.key == null){
+                return null;
+            }
             int mTransactionQuantity = Integer.valueOf(decisionET.getText().toString());
             return new TransactionFormDTO(null, null, null, null, null, null, null, false, null,
                     quoteDTO.rawResponse, mTransactionQuantity, portfolioIdObj.key);

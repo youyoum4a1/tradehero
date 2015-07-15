@@ -2,10 +2,15 @@ package com.tradehero.chinabuild.fragment.security;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -138,6 +143,23 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private PortfolioDTO portfolioDTO;
     private PortfolioId portfolioIdObj;
 
+
+    public final static String INTENT_REFRESH_POSITION_REQUIRED = "INTENT_REFRESH_POSITION_REQUIRED";
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals(INTENT_REFRESH_POSITION_REQUIRED)){
+                if (portfolioId == 0) {
+                    retrieveMainPositionsNoRepeat();
+                } else {
+                    retrieveCompetitionPositionsNoRepeat();
+                }
+            }
+        }
+    };
+    private IntentFilter intentFilter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,13 +208,18 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         //Retrieve user portfolio
         retrieveUserInformation();
 
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(INTENT_REFRESH_POSITION_REQUIRED);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver ,intentFilter);
+
         return view;
     }
 
     @Override
     public void onDestroyView(){
-        super.onDestroyView();
         isRefresh = false;
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
+        super.onDestroyView();
     }
 
 
@@ -310,7 +337,11 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                         securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback<Response>() {
                             @Override
                             public void success(Response value, Response response) {
-                                THToast.show("交易成功");
+                                if(isSHASHE()){
+                                    THToast.show("委托成功");
+                                } else {
+                                    THToast.show("交易成功");
+                                }
                                 if(portfolioId == 0) {
                                     retrieveMainPositionsNoRepeat();
                                 }else {
@@ -335,7 +366,11 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                         securityServiceWrapper.sell(securityExchange, securitySymbol, buildTransactionFormDTO(), new Callback<SecurityPositionDetailDTO>() {
                             @Override
                             public void success(SecurityPositionDetailDTO securityPositionDetailDTO, Response response) {
-                                THToast.show("交易成功");
+                                if(isSHASHE()){
+                                    THToast.show("委托成功");
+                                } else {
+                                    THToast.show("交易成功");
+                                }
                                 if (portfolioId == 0) {
                                     retrieveMainPositionsNoRepeat();
                                 } else {
@@ -345,7 +380,8 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
 
                             @Override
                             public void failure(RetrofitError error) {
-                                THToast.show("交易失败");
+                                THException thException = new THException(error);
+                                THToast.show(thException.toString());
                             }
                         });
                     }
@@ -811,17 +847,23 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     }
 
     private TransactionFormDTO buildTransactionFormDTO(){
-        if (quoteDTO == null || portfolioDTO == null) {
+        if (quoteDTO == null) {
             return null;
         }
         if(decisionET == null || decisionET.getText() == null || TextUtils.isEmpty(decisionET.getText().toString())){
             return null;
         }
         if(portfolioId == 0) {
+            if(portfolioDTO == null) {
+                return null;
+            }
             int mTransactionQuantity = Integer.valueOf(decisionET.getText().toString());
             return new TransactionFormDTO(null, null, null, null, null, null, null, false, null,
                     quoteDTO.rawResponse, mTransactionQuantity, portfolioDTO.id);
         } else {
+            if(portfolioIdObj == null || portfolioIdObj.key == null){
+                return null;
+            }
             int mTransactionQuantity = Integer.valueOf(decisionET.getText().toString());
             return new TransactionFormDTO(null, null, null, null, null, null, null, false, null,
                     quoteDTO.rawResponse, mTransactionQuantity, portfolioIdObj.key);

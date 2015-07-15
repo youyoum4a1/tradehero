@@ -83,7 +83,7 @@ import javax.inject.Singleton;
        portfolioService.getMainPortfolio(userId, callback);
    }
 
-   public void getCompetitionPortfolio(int portfolioId, Callback<PortfolioDTO> callback){
-       portfolioService.getCompetitionPortfolio(portfolioId, callback);
+   public void getCompetitionPortfolio(int competitionId, Callback<PortfolioDTO> callback){
+       portfolioService.getCompetitionPortfolio(competitionId, callback);
    }
 }
