@@ -147,9 +147,11 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         securityExchange = getArguments().getString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, "");
         securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, "");
         competitionId = getArguments().getInt(SecurityOptActivity.KEY_COMPETITION_ID, 0);
-        portfolioIdObj = getPortfolioId();
-        if(competitionId != 0){
-            portfolioId = portfolioIdObj.key;
+        if(getArguments().containsKey(SecurityOptActivity.KEY_PORTFOLIO_ID)) {
+            portfolioIdObj = getPortfolioId();
+            if (competitionId != 0) {
+                portfolioId = portfolioIdObj.key;
+            }
         }
     }
 
