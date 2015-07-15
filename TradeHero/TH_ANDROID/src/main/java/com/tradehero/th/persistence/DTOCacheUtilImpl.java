@@ -54,13 +54,11 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func2;
 
-@Singleton public class DTOCacheUtilImpl
-        implements DTOCacheUtilRx
+public class DTOCacheUtilImpl implements DTOCacheUtilRx
 {
     protected final CurrentUserId currentUserId;
 
@@ -172,7 +170,7 @@ import rx.functions.Func2;
         clearUserCaches();
     }
 
-    public void clearSystemCaches()
+    @Override public void clearSystemCaches()
     {
 //        CollectionUtils.apply(systemCacheNews, DTOCacheNew::invalidateAll);
 //        CollectionUtils.apply(systemCacheRxs, DTOCacheRx::invalidateAll);
@@ -183,7 +181,7 @@ import rx.functions.Func2;
         }
     }
 
-    public void clearUserCaches()
+    @Override public void clearUserCaches()
     {
 //        CollectionUtils.apply(userCacheNews, DTOCacheNew::invalidateAll);
 //        CollectionUtils.apply(userCacheRxs, DTOCacheRx::invalidateAll);
@@ -200,7 +198,7 @@ import rx.functions.Func2;
         broadcastUtils.clear();
     }
 
-    public void anonymousPrefetches()
+    @Override public void anonymousPrefetches()
     {
         preFetchExchanges();
         preFetchProviders();
@@ -284,7 +282,7 @@ import rx.functions.Func2;
         this.questBonusListCacheLazy.get().getOne(new QuestBonusListId());
     }
 
-    public void prefetchesUponLogin(@Nullable final UserProfileDTO profile)
+    @Override public void prefetchesUponLogin(@Nullable final UserProfileDTO profile)
     {
         if (profile != null)
         {
@@ -316,7 +314,7 @@ import rx.functions.Func2;
         //initialPrefetches();
     }
 
-    public void initialPrefetches()
+    @Override public void initialPrefetches()
     {
         preFetchWatchlist();
         preFetchTranslationToken();

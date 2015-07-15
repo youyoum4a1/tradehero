@@ -1,9 +1,7 @@
 package com.tradehero.th.persistence;
 
-import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import dagger.Module;
-import dagger.Provides;
 
 @Module(
         includes = {
@@ -15,8 +13,4 @@ import dagger.Provides;
 )
 public class PersistenceModule
 {
-    @Provides DTOCacheUtilRx provideDTOCacheUtilRx(DTOCacheUtilImpl dtoCacheUtil)
-    {
-        return dtoCacheUtil;
-    }
 }

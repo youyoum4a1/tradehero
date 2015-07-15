@@ -9,8 +9,8 @@ import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
 import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
-import com.tradehero.th.api.kyc.ayondo.DummyAyondoData;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
+import com.tradehero.th.api.kyc.ayondo.DummyAyondoData;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
@@ -63,7 +64,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                         return liveTradingSituationDTO;
                     }
                 })
-                //.timeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+                .timeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
                 .onErrorResumeNext(
                         new Func1<Throwable, Observable<? extends LiveTradingSituationDTO>>()
                         {
@@ -103,7 +104,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                 ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).minAge);
                     }
                 })
-                        //.timeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+                .timeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
                 .onErrorResumeNext(
                         new Func1<Throwable, Observable<? extends KYCFormOptionsDTO>>()
                         {

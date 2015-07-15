@@ -2,6 +2,7 @@ package com.tradehero.th.models.user;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.system.SystemStatusKey;
@@ -11,7 +12,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.auth.AuthDataUtil;
 import com.tradehero.th.models.ThroughDTOProcessor;
-import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 
@@ -30,7 +30,7 @@ public class DTOProcessorUserLogin extends ThroughDTOProcessor<UserLoginDTO>
             @NonNull UserProfileCacheRx userProfileCache,
             @NonNull CurrentUserId currentUserId,
             @NonNull Context context,
-            @NonNull DTOCacheUtilImpl dtoCacheUtil,
+            @NonNull DTOCacheUtilRx dtoCacheUtil,
             @NonNull BooleanPreference isOnBoardShown)
     {
         this.authData = authData;

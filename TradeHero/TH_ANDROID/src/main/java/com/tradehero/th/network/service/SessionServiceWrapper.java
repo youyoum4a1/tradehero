@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.system.SystemStatusDTO;
@@ -15,7 +16,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.user.DTOProcessorLogout;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUserLogin;
-import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -32,7 +32,7 @@ import timber.log.Timber;
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final SessionServiceRx sessionServiceRx;
     @NonNull private final UserProfileCacheRx userProfileCache;
-    @NonNull private final DTOCacheUtilImpl dtoCacheUtil;
+    @NonNull private final DTOCacheUtilRx dtoCacheUtil;
     @NonNull private final Context context;
     @NonNull private final Lazy<SystemStatusCache> systemStatusCache;
     @NonNull private final BooleanPreference isOnBoardShown;
@@ -42,7 +42,7 @@ import timber.log.Timber;
             @NonNull CurrentUserId currentUserId,
             @NonNull SessionServiceRx sessionServiceRx,
             @NonNull UserProfileCacheRx userProfileCache,
-            @NonNull DTOCacheUtilImpl dtoCacheUtil,
+            @NonNull DTOCacheUtilRx dtoCacheUtil,
             @NonNull Context context,
             @NonNull Lazy<SystemStatusCache> systemStatusCache,
             @NonNull @IsOnBoardShown BooleanPreference isOnBoardShown)

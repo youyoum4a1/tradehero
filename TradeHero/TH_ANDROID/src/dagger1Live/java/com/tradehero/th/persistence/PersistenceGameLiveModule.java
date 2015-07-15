@@ -1,7 +1,10 @@
 package com.tradehero.th.persistence;
 
+import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.th.persistence.kyc.KYCFormOptionsCache;
 import dagger.Module;
+import dagger.Provides;
+import javax.inject.Singleton;
 
 @Module(
         includes = {
@@ -14,4 +17,8 @@ import dagger.Module;
 )
 public class PersistenceGameLiveModule
 {
+    @Provides @Singleton DTOCacheUtilRx provideDTOCacheUtilRx(DTOCacheUtilLiveImpl dtoCacheUtil)
+    {
+        return dtoCacheUtil;
+    }
 }

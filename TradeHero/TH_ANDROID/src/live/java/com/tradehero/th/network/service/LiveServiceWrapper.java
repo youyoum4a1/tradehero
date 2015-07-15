@@ -73,7 +73,8 @@ public class LiveServiceWrapper
                         liveBrokerSituationPreference.set(savedSituation);
                         return savedSituation;
                     }
-                });
+                })
+                .startWith(liveBrokerSituationPreference.get());
     }
 
     @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)

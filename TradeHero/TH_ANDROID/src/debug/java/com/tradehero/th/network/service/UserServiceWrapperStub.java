@@ -2,13 +2,13 @@ package com.tradehero.th.network.service;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.SuggestHeroesListType;
 import com.tradehero.th.api.users.SuggestHeroesListTypeNew;
-import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
@@ -30,7 +30,7 @@ public class UserServiceWrapperStub extends UserServiceWrapper
             @NonNull Context context,
             @NonNull UserServiceRx userServiceRx,
             @NonNull CurrentUserId currentUserId,
-            @NonNull DTOCacheUtilImpl dtoCacheUtil,
+            @NonNull DTOCacheUtilRx dtoCacheUtil,
             @NonNull Lazy<UserProfileCacheRx> userProfileCache,
             @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,

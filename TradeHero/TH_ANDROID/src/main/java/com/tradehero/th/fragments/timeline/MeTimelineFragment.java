@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.UpdateCenterActivity;
@@ -19,7 +20,6 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import javax.inject.Inject;
 import rx.functions.Action1;
@@ -31,7 +31,7 @@ public class MeTimelineFragment extends TimelineFragment
         implements WithTutorial
 {
     @Inject protected CurrentUserId currentUserId;
-    @Inject DTOCacheUtilImpl dtoCacheUtil;
+    @Inject DTOCacheUtilRx dtoCacheUtil;
 
     TextView unreadCountView;
     @Nullable FxOnBoardDialogFragment onBoardDialogFragment;

@@ -117,8 +117,8 @@ public class LiveActivityUtil
         if (activity instanceof DashboardActivity)
         {
             DashboardActivity dashboardActivity = (DashboardActivity) activity;
-                    dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
-                            dashboardActivity.getResources().getColor(event.isOn ? R.color.tradehero_red_status_bar : R.color.tradehero_blue_status_bar));
+            dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
+                    dashboardActivity.getResources().getColor(event.isOn ? R.color.tradehero_red_status_bar : R.color.tradehero_blue_status_bar));
 
             for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
             {

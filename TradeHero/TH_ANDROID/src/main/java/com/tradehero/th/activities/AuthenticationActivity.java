@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.Window;
 import com.tradehero.common.activities.ActivityResultRequester;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -24,7 +25,6 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.GuideAuthenticationFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.network.service.SessionServiceWrapper;
-import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.rx.ToastOnErrorAction;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -54,7 +54,7 @@ import timber.log.Timber;
 public class AuthenticationActivity extends BaseActivity
 {
     @Inject Analytics analytics;
-    @Inject DTOCacheUtilImpl dtoCacheUtilImpl;
+    @Inject DTOCacheUtilRx dtoCacheUtil;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
     @Inject Provider<LoginSignUpFormDTO.Builder2> authenticationFormBuilderProvider;
@@ -72,7 +72,7 @@ public class AuthenticationActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.authentication_layout);
 
-        dtoCacheUtilImpl.clearUserCaches();
+        dtoCacheUtil.clearUserCaches();
 
         selectedSocialNetworkSubject = PublishSubject.create();
         authenticationObservable = selectedSocialNetworkSubject

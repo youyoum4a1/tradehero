@@ -10,6 +10,7 @@ import com.facebook.AppEventsLogger;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -47,6 +48,7 @@ public class SplashActivity extends BaseActivity
     @Inject @AuthHeader String authToken;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
+    @Inject DTOCacheUtilRx dtoCacheUtil;
 
     @Nullable Subscription userProfileSubscription;
     @Nullable Uri deepLink;
@@ -116,6 +118,7 @@ public class SplashActivity extends BaseActivity
                             {
                                 @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
                                 {
+                                    dtoCacheUtil.prefetchesUponLogin(pair.second);
                                     ActivityHelper.launchDashboard(SplashActivity.this, deepLink);
                                     finish();
                                 }

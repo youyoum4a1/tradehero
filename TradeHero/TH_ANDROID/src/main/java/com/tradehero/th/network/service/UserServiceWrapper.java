@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.analytics.BatchAnalyticsEventForm;
@@ -48,7 +49,6 @@ import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdateAlipayAccount;
 import com.tradehero.th.models.user.payment.DTOProcessorUpdatePayPalEmail;
-import com.tradehero.th.persistence.DTOCacheUtilImpl;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
@@ -69,7 +69,7 @@ import rx.functions.Func1;
     @NonNull private final UserServiceRx userServiceRx;
     @NonNull private final Provider<UserFormDTO.Builder2> userFormBuilderProvider;
     @NonNull private final CurrentUserId currentUserId;
-    @NonNull private final DTOCacheUtilImpl dtoCacheUtil;
+    @NonNull private final DTOCacheUtilRx dtoCacheUtil;
     @NonNull private final Lazy<UserProfileCacheRx> userProfileCache;
     @NonNull private final Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache;
     @NonNull private final Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache;
@@ -82,7 +82,7 @@ import rx.functions.Func1;
             @NonNull Context context,
             @NonNull UserServiceRx userServiceRx,
             @NonNull CurrentUserId currentUserId,
-            @NonNull DTOCacheUtilImpl dtoCacheUtil,
+            @NonNull DTOCacheUtilRx dtoCacheUtil,
             @NonNull Lazy<UserProfileCacheRx> userProfileCache,
             @NonNull Lazy<PortfolioCompactListCacheRx> portfolioCompactListCache,
             @NonNull Lazy<UserMessagingRelationshipCacheRx> userMessagingRelationshipCache,
