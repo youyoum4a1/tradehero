@@ -307,6 +307,9 @@ public class CompetitionDetailFragment extends Fragment
         listRanks.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long position) {
+                if (userCompetitionDTO==null || !userCompetitionDTO.isOngoing) {
+                    return;
+                }
                 if (position >= 0) {
                     LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
                     enterPortfolio(userDTO);

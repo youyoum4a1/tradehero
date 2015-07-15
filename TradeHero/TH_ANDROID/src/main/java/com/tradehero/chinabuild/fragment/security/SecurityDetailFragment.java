@@ -277,8 +277,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private int percent;
     private String securityHead;
 
-    public static final int ERROR_NO_COMPETITION_PROTFOLIO = 3;
-
     boolean isFromCompetition = false;
 
     private Double preClose;
@@ -1444,18 +1442,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private boolean isBuyOrSaleValid() {
         if (quoteDTO == null) return false;
         if (isFromCompetition && portfolioCompactDTO == null) {
-            showBuyOrSaleError(ERROR_NO_COMPETITION_PROTFOLIO);
             return false;
         }
-
         return true;
     }
 
-    public void showBuyOrSaleError(int type) {
-        if (type == ERROR_NO_COMPETITION_PROTFOLIO) {
-            THToast.show("参加比赛后才能买卖股票");
-        }
-    }
 
     public void enterBuySale(boolean isBuy) {
         if (isBuyOrSaleValid()) {
@@ -2220,6 +2211,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     }
 
     private void enterSecurityOptBuy(){
+        if (isFromCompetition && portfolioCompactDTO == null) {
+            THToast.show("参加比赛后才能买卖股票");
+            return;
+        }
         if(securityId == null){
             return;
         }
@@ -2240,6 +2235,10 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     }
 
     private void enterSecurityOptSell(){
+        if (isFromCompetition && portfolioCompactDTO == null) {
+            THToast.show("请先参加比赛");
+            return;
+        }
         if(securityId == null){
             return;
         }
