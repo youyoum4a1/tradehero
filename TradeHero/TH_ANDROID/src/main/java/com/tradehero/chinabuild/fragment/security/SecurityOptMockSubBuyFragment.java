@@ -27,6 +27,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
@@ -85,10 +86,13 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     private String securityName = "";
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     private QuoteDetail quoteDetail;
-    SecurityOptPositionsList securityOptPositionDTOs;
+    private SecurityOptPositionsList securityOptPositionDTOs;
     private String securityExchange = "";
     private String securitySymbol = "";
     private int portfolioId = 0;
+    private int competitionId = 0;
+    private PortfolioId portfolioIdObj;
+
 
     private QuoteDTO quoteDTO;
 
@@ -142,6 +146,11 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         securitySymbol = getArguments().getString(SecurityOptActivity.KEY_SECURITY_SYMBOL, "");
         securityExchange = getArguments().getString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, "");
         securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, "");
+        competitionId = getArguments().getInt(SecurityOptActivity.KEY_COMPETITION_ID, 0);
+        portfolioIdObj = getPortfolioId();
+        if(competitionId != 0){
+            portfolioId = portfolioIdObj.key;
+        }
     }
 
     @Override
@@ -167,6 +176,8 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         }
         if (portfolioId == 0) {
             retrieveMainPositions();
+        } else {
+            retrieveCompetitionPositions();
         }
         //Retrieve user portfolio
         retrieveUserInformation();
@@ -275,16 +286,30 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                     }
                     int quantity = Integer.valueOf(decisionET.getText().toString());
                     double price = Double.valueOf(priceET.getText().toString());
-                    if(quantity <= 0 || price <=0){
+                    if(price <= 0){
+                        THToast.show("股票价格错误");
+                        return;
+                    }
+                    if(quantity <= 0){
+                        THToast.show("股票交易数量错误");
                         return;
                     }
                     if(isSHASHE()){
+                        if(quoteDetail!=null && quoteDetail.prec !=null){
+                            if(price > (quoteDetail.prec*1.11) || price < (quoteDetail.prec*0.89)){
+                                THToast.show("股票价格错误");
+                                return;
+                            }
+                        }
                         securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback<Response>() {
                             @Override
                             public void success(Response value, Response response) {
                                 THToast.show("交易成功");
                                 if(portfolioId == 0){
-                                    retrieveMainPositionsNoRepeatCallback();
+                                    //Main postions
+                                    retrieveMainPositionsNoRepeat();
+                                } else {
+                                    retrieveCompetitionPositionsNoRepeat();
                                 }
                                 retrieveUserInformation();
                             }
@@ -308,15 +333,16 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                             public void success(SecurityPositionDetailDTO securityPositionDetailDTO, Response response) {
                                 THToast.show("交易成功");
                                 if(portfolioId == 0){
-                                    retrieveMainPositionsNoRepeatCallback();
+                                    retrieveMainPositionsNoRepeat();
+                                } else {
+                                    retrieveCompetitionPositionsNoRepeat();
                                 }
                                 retrieveUserInformation();
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
-                                THException thException = new THException(error);
-                                THToast.show(thException.toString());
+                                THToast.show("交易失败");
                             }
                         });
                     }
@@ -507,28 +533,28 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         decisionET.setText(String.valueOf(amount));
         switch (percent){
             case 1:
-                allIV.setBackgroundResource(R.drawable.all);
-                halfIV.setBackgroundResource(R.drawable.half_normal);
-                oneThirdIV.setBackgroundResource(R.drawable.one_third_normal);
-                oneFourIV.setBackgroundResource(R.drawable.one_fourth_normal);
+                allIV.setImageResource(R.drawable.all);
+                halfIV.setImageResource(R.drawable.half_normal);
+                oneThirdIV.setImageResource(R.drawable.one_third_normal);
+                oneFourIV.setImageResource(R.drawable.one_fourth_normal);
                 break;
             case 2:
-                allIV.setBackgroundResource(R.drawable.all_normal);
-                halfIV.setBackgroundResource(R.drawable.half);
-                oneThirdIV.setBackgroundResource(R.drawable.one_third_normal);
-                oneFourIV.setBackgroundResource(R.drawable.one_fourth_normal);
+                allIV.setImageResource(R.drawable.all_normal);
+                halfIV.setImageResource(R.drawable.half);
+                oneThirdIV.setImageResource(R.drawable.one_third_normal);
+                oneFourIV.setImageResource(R.drawable.one_fourth_normal);
                 break;
             case 3:
-                allIV.setBackgroundResource(R.drawable.all_normal);
-                halfIV.setBackgroundResource(R.drawable.half_normal);
-                oneThirdIV.setBackgroundResource(R.drawable.one_third);
-                oneFourIV.setBackgroundResource(R.drawable.one_fourth_normal);
+                allIV.setImageResource(R.drawable.all_normal);
+                halfIV.setImageResource(R.drawable.half_normal);
+                oneThirdIV.setImageResource(R.drawable.one_third);
+                oneFourIV.setImageResource(R.drawable.one_fourth_normal);
                 break;
             case 4:
-                allIV.setBackgroundResource(R.drawable.all_normal);
-                halfIV.setBackgroundResource(R.drawable.half_normal);
-                oneThirdIV.setBackgroundResource(R.drawable.one_third_normal);
-                oneFourIV.setBackgroundResource(R.drawable.one_fourth);
+                allIV.setImageResource(R.drawable.all_normal);
+                halfIV.setImageResource(R.drawable.half_normal);
+                oneThirdIV.setImageResource(R.drawable.one_third_normal);
+                oneFourIV.setImageResource(R.drawable.one_fourth);
                 break;
         }
     }
@@ -642,6 +668,40 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         quoteServiceWrapper.retrieveMainPositions(new RetrievePositionsCallback());
     }
 
+    private void retrieveMainPositionsNoRepeat(){
+        quoteServiceWrapper.retrieveMainPositions(new Callback<SecurityOptPositionsList>() {
+            @Override
+            public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
+                SecurityOptMockSubBuyFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
+                securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    private void retrieveCompetitionPositions(){
+        quoteServiceWrapper.retrieveCompetitionPositions(portfolioId, new RetrievePositionsCallback());
+    }
+
+    private void retrieveCompetitionPositionsNoRepeat() {
+        quoteServiceWrapper.retrieveCompetitionPositions(portfolioId, new Callback<SecurityOptPositionsList>() {
+            @Override
+            public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
+                SecurityOptMockSubBuyFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
+                securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
     class RetrievePositionsCallback implements Callback<SecurityOptPositionsList> {
 
         @Override
@@ -687,6 +747,19 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
 
                 }
             });
+        } else {
+            portfolioServiceWrapper.getCompetitionPortfolio(portfolioId, new Callback<PortfolioDTO>() {
+                @Override
+                public void success(PortfolioDTO portfolioDTO, Response response) {
+                    SecurityOptMockSubBuyFragment.this.portfolioDTO = portfolioDTO;
+                    displayAvailableBalance();
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+
+                }
+            });
         }
     }
 
@@ -699,22 +772,6 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             availableCashTV.setText("$"+String.valueOf(balance));
         }
     }
-
-    private void retrieveMainPositionsNoRepeatCallback(){
-        quoteServiceWrapper.retrieveMainPositions(new Callback<SecurityOptPositionsList>() {
-            @Override
-            public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
-                SecurityOptMockSubBuyFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
-                securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
 
     class RefreshQuoteHandler extends Handler {
         public void handleMessage(Message msg) {
@@ -772,9 +829,17 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             return new TransactionFormDTO(null, null, null, null, null, null, null, false, null,
                     quoteDTO.rawResponse, mTransactionQuantity, portfolioDTO.id);
         } else {
-            return null;
+            int mTransactionQuantity = Integer.valueOf(decisionET.getText().toString());
+            return new TransactionFormDTO(null, null, null, null, null, null, null, false, null,
+                    quoteDTO.rawResponse, mTransactionQuantity, portfolioIdObj.key);
         }
     }
 
 
+    protected PortfolioId getPortfolioId() {
+        if (this.portfolioIdObj == null) {
+            this.portfolioIdObj = new PortfolioId(getArguments().getBundle(SecurityOptActivity.KEY_PORTFOLIO_ID));
+        }
+        return portfolioIdObj;
+    }
 }

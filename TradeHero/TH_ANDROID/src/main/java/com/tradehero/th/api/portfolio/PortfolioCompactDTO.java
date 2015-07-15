@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class PortfolioCompactDTO implements DTO ,Serializable
 {
-    public static final String DEFAULT_TITLE = "Default";
 
     public int id;
     //<editor-fold desc="Populated on client side">

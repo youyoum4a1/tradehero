@@ -2,7 +2,6 @@ package com.tradehero.th.network.service;
 
 import android.os.Handler;
 
-import com.squareup.okhttp.Call;
 import com.tradehero.chinabuild.data.KLineItem;
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
@@ -31,7 +30,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedByteArray;
-import timber.log.Timber;
 
 @Singleton
 public class QuoteServiceWrapper {
@@ -117,6 +115,10 @@ public class QuoteServiceWrapper {
 
     public void retrieveMainPositions(Callback<SecurityOptPositionsList> callback){
         quoteService.retrieveMainPositions(callback);
+    }
+
+    public void retrieveCompetitionPositions(int portfolioId, Callback<SecurityOptPositionsList> callback){
+        quoteService.retrieveCompetitionPositions(portfolioId, callback);
     }
 
     public void getQuoteTicks(final SecurityId securityId, final int quoteTicksDelay, final Callback<List<QuoteTick>> callback) {
@@ -230,28 +232,25 @@ public class QuoteServiceWrapper {
     public void stopSecurityCompactTask() {
         if (securityCompactTask != null) {
             handler.removeCallbacks(securityCompactTask);
-            Timber.e("Stop SecurityCompactTask................");
         }
     }
 
     public void stopQuoteDetailTask() {
         if (quoteDetailTask != null) {
             handler.removeCallbacks(quoteDetailTask);
-            Timber.e("Stop quoteDetailTask................");
         }
     }
 
     public void stopQuoteTicksTask() {
         if (quoteTicksTask != null) {
             handler.removeCallbacks(quoteTicksTask);
-            Timber.e("Stop quoteTicksTask................");
-        }
+            }
     }
+
 
     public void stopQuoteTask() {
         if (quoteTask != null) {
             handler.removeCallbacks(quoteTask);
-            Timber.e("Stop quoteTask................");
         }
     }
 
@@ -284,7 +283,6 @@ public class QuoteServiceWrapper {
         @Override
         public void failure(RetrofitError error) {
             if (failureCount < MAX_API_RETRIES) {
-                Timber.e("failureCount: " + failureCount);
                 handler.postDelayed(task, delay);
                 failureCount++;
             }
@@ -326,7 +324,6 @@ public class QuoteServiceWrapper {
                     callback.success(quoteDTO, response);
                 }
             } catch (Exception e) {
-                Timber.e(e, "Error in parsing retrofit response.");
             }
 
             handler.postDelayed(task, delay);
@@ -335,7 +332,6 @@ public class QuoteServiceWrapper {
         @Override
         public void failure(RetrofitError error) {
             if (failureCount < MAX_API_RETRIES) {
-                Timber.e("failureCount: " + failureCount);
                 handler.postDelayed(task, delay);
                 failureCount++;
             }
@@ -365,7 +361,6 @@ public class QuoteServiceWrapper {
                     callback.success(quoteDTO, response);
                 }
             } catch (Exception e) {
-                Timber.e(e, "Error in parsing retrofit response.");
             }
         }
 

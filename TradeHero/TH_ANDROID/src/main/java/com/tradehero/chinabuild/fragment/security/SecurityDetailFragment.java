@@ -437,7 +437,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         }
     }
 
-    private void setBuySaleButtonVisable() {
+    private void setBuySaleButtonVisible() {
         try {
             llBuySaleButtons.setVisibility(View.VISIBLE);
             if (isBuyOrSaleValid()) {
@@ -821,7 +821,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     {
         setInitialBuyQuantityIfCan();
         setInitialSellQuantityIfCan();
-        setBuySaleButtonVisable();
+        setBuySaleButtonVisible();
     }
 
     protected void setInitialBuyQuantityIfCan()
@@ -1168,11 +1168,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private void refreshQuoteInfo(final SecurityId securityId) {
         getQuote(securityId);
         askKLines(securityId);
-        //if the stock is suspended, don't refresh quote info.
-        //if (securityCompactDTO == null
-        //        || securityCompactDTO.isSuspended()) {
-        //    return;
-        //}
         if (QuoteServiceWrapper.isChinaStock(securityId)) {
             refreshCNQuoteInfo(securityId);
         } else {
@@ -1218,16 +1213,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
         //涨跌幅
         int colorResId = R.color.black;
-
-        //if (securityCompactDTO.isSuspended()) {
-        //    if (securityCompactDTO.previousClose == null) {
-        //        tvSecurityPrice.setText("- -");
-        //    } else {
-        //        tvSecurityPrice.setText(SecurityCompactDTO.getShortValue(securityCompactDTO.previousClose));
-        //        tvSecurityPrice.setTextColor(getResources().getColor(colorResId));
-        //    }
-        //    return;
-        //}
 
         String currency = "";
         if (securityCompactDTO != null) {
@@ -1468,30 +1453,29 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void showBuyOrSaleError(int type) {
         if (type == ERROR_NO_COMPETITION_PROTFOLIO) {
-            THToast.show("请先报名参加比赛");
+            THToast.show("参加比赛后才能买卖股票");
         }
     }
 
     public void enterBuySale(boolean isBuy) {
         if (isBuyOrSaleValid()) {
             Bundle bundle = new Bundle();
-            if (portfolioCompactDTO!=null&& portfolioCompactDTO.getPortfolioId()!=null) {
-                bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
-            } else {
+            if (portfolioCompactDTO==null ||  portfolioCompactDTO.getPortfolioId()==null) {
                 return;
             }
+            bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
             if (isBuy) {
                 enterSecurityOptBuy();
             } else {
                 enterSecurityOptSell();
             }
-            bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
-            bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
-            bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
-            bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
-            bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
-            bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO, positionDTOCompactList);
-            bundle.putDouble(BuySaleSecurityFragment.KEY_PRE_CLOSE, preClose == null? 0 : preClose);
+//            bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
+//            bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
+//            bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
+//            bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
+//            bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
+//            bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO, positionDTOCompactList);
+//            bundle.putDouble(BuySaleSecurityFragment.KEY_PRE_CLOSE, preClose == null? 0 : preClose);
             //pushFragment(BuySaleSecurityFragment.class, bundle);
 
         }
@@ -2239,10 +2223,15 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         if(securityId == null){
             return;
         }
+        if (portfolioCompactDTO==null ||  portfolioCompactDTO.getPortfolioId()==null) {
+            return;
+        }
         Bundle bundle = new Bundle();
+        bundle.putBundle(SecurityOptActivity.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
         bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, securityId.getExchange());
         bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, securityId.getSecuritySymbol());
+        bundle.putInt(SecurityOptActivity.KEY_COMPETITION_ID, competitionID);
         bundle.putString(BUNDLE_KEY_SECURITY_NAME, securityName);
         Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
         intent.putExtras(bundle);
@@ -2251,10 +2240,18 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     }
 
     private void enterSecurityOptSell(){
+        if(securityId == null){
+            return;
+        }
+        if (portfolioCompactDTO==null ||  portfolioCompactDTO.getPortfolioId()==null) {
+            return;
+        }
         Bundle bundle = new Bundle();
+        bundle.putBundle(SecurityOptActivity.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_SELL);
         bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, securityId.getExchange());
         bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, securityId.getSecuritySymbol());
+        bundle.putInt(SecurityOptActivity.KEY_COMPETITION_ID, competitionID);
         bundle.putString(BUNDLE_KEY_SECURITY_NAME, securityName);
         Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
         intent.putExtras(bundle);

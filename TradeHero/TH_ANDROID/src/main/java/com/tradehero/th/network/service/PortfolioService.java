@@ -38,4 +38,9 @@ public interface PortfolioService
     PortfolioDTO getPortfolioCompact(
             @Path("competitionId") int competitionId);
     //</editor-fold>
+
+    @GET("/usercompetitions/{competitionId}/portfolio")
+    void getCompetitionPortfolio(
+            @Path("competitionId") int competitionId,
+            Callback<PortfolioDTO> callback);
 }

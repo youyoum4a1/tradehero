@@ -27,14 +27,12 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
-import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.service.PortfolioService;
-import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -87,14 +85,13 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private String securitySymbol = "";
     private String securityName;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
-    @Inject CurrentUserId currentUserId;
-    @Inject PortfolioServiceWrapper portfolioServiceWrapper;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject Converter converter;
 
     private QuoteDetail quoteDetail;
-    SecurityOptPositionsList securityOptPositionDTOs;
+    private SecurityOptPositionsList securityOptPositionDTOs;
     private int portfolioId = 0;
+    private int competitionId;
 
     private RefreshPositionsHandler refreshPositionsHandler = new RefreshPositionsHandler();
     private RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
@@ -135,6 +132,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     private SecurityOptMockPositionAdapter securityOptMockPositionAdapter;
 
     private PortfolioDTO portfolioDTO;
+    private PortfolioId portfolioIdObj;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -145,6 +143,11 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         securitySymbol = getArguments().getString(SecurityOptActivity.KEY_SECURITY_SYMBOL, "");
         securityExchange = getArguments().getString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, "");
         securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, "");
+        competitionId = getArguments().getInt(SecurityOptActivity.KEY_COMPETITION_ID, 0);
+        portfolioIdObj = getPortfolioId();
+        if(competitionId != 0){
+            portfolioId = portfolioIdObj.key;
+        }
     }
 
     @Override
@@ -170,10 +173,10 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         }
         if(portfolioId == 0) {
             retrieveMainPositions();
+        } else {
+            retrieveCompetitionPositions();
         }
 
-        //Retrieve user portfolio
-        retrieveUserInformation();
         return view;
     }
 
@@ -279,16 +282,30 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                     }
                     int quantity = 0 - Integer.valueOf(decisionET.getText().toString());
                     double price = Double.valueOf(priceET.getText().toString());
-                    if(quantity >= 0 || price <=0){
+                    if(price <= 0){
+                        THToast.show("股票价格错误");
                         return;
                     }
+                    if(quantity >= 0){
+                        THToast.show("股票交易数量错误");
+                        return;
+                    }
+
                     if(isSHASHE()){
+                        if(quoteDetail!=null && quoteDetail.prec !=null){
+                            if(price > (quoteDetail.prec*1.11) || price < (quoteDetail.prec*0.89)){
+                                THToast.show("股票价格错误");
+                                return;
+                            }
+                        }
                         securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback<Response>() {
                             @Override
                             public void success(Response value, Response response) {
                                 THToast.show("交易成功");
                                 if(portfolioId == 0) {
-                                    retrieveMainPositionsNoCallback();
+                                    retrieveMainPositionsNoRepeat();
+                                }else {
+                                    retrieveCompetitionPositionsNoRepeat();
                                 }
                             }
 
@@ -311,15 +328,15 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                             public void success(SecurityPositionDetailDTO securityPositionDetailDTO, Response response) {
                                 THToast.show("交易成功");
                                 if (portfolioId == 0) {
-                                    retrieveMainPositionsNoRepeatCallback();
+                                    retrieveMainPositionsNoRepeat();
+                                } else {
+                                    retrieveCompetitionPositionsNoRepeat();
                                 }
-                                retrieveUserInformation();
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
-                                THException thException = new THException(error);
-                                THToast.show(thException.toString());
+                                THToast.show("交易失败");
                             }
                         });
                     }
@@ -581,28 +598,28 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         decisionET.setText(String.valueOf(availableSells/percent));
         switch (percent){
             case 1:
-                allIV.setBackgroundResource(R.drawable.all);
-                halfIV.setBackgroundResource(R.drawable.half_normal);
-                oneThirdIV.setBackgroundResource(R.drawable.one_third_normal);
-                oneFourIV.setBackgroundResource(R.drawable.one_fourth_normal);
+                allIV.setImageResource(R.drawable.all);
+                halfIV.setImageResource(R.drawable.half_normal);
+                oneThirdIV.setImageResource(R.drawable.one_third_normal);
+                oneFourIV.setImageResource(R.drawable.one_fourth_normal);
                 break;
             case 2:
-                allIV.setBackgroundResource(R.drawable.all_normal);
-                halfIV.setBackgroundResource(R.drawable.half);
-                oneThirdIV.setBackgroundResource(R.drawable.one_third_normal);
-                oneFourIV.setBackgroundResource(R.drawable.one_fourth_normal);
+                allIV.setImageResource(R.drawable.all_normal);
+                halfIV.setImageResource(R.drawable.half);
+                oneThirdIV.setImageResource(R.drawable.one_third_normal);
+                oneFourIV.setImageResource(R.drawable.one_fourth_normal);
                 break;
             case 3:
-                allIV.setBackgroundResource(R.drawable.all_normal);
-                halfIV.setBackgroundResource(R.drawable.half_normal);
-                oneThirdIV.setBackgroundResource(R.drawable.one_third);
-                oneFourIV.setBackgroundResource(R.drawable.one_fourth_normal);
+                allIV.setImageResource(R.drawable.all_normal);
+                halfIV.setImageResource(R.drawable.half_normal);
+                oneThirdIV.setImageResource(R.drawable.one_third);
+                oneFourIV.setImageResource(R.drawable.one_fourth_normal);
                 break;
             case 4:
-                allIV.setBackgroundResource(R.drawable.all_normal);
-                halfIV.setBackgroundResource(R.drawable.half_normal);
-                oneThirdIV.setBackgroundResource(R.drawable.one_third_normal);
-                oneFourIV.setBackgroundResource(R.drawable.one_fourth);
+                allIV.setImageResource(R.drawable.all_normal);
+                halfIV.setImageResource(R.drawable.half_normal);
+                oneThirdIV.setImageResource(R.drawable.one_third_normal);
+                oneFourIV.setImageResource(R.drawable.one_fourth);
                 break;
         }
     }
@@ -653,6 +670,42 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         quoteServiceWrapper.retrieveMainPositions(new RetrievePositionsCallback());
     }
 
+    private void retrieveMainPositionsNoRepeat(){
+        quoteServiceWrapper.retrieveMainPositions(new Callback<SecurityOptPositionsList>() {
+            @Override
+            public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
+                SecurityOptMockSubSellFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
+                securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
+                displaySells(securityOptPositionDTOs);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    private void retrieveCompetitionPositions(){
+        quoteServiceWrapper.retrieveCompetitionPositions(portfolioId, new RetrievePositionsCallback());
+    }
+
+    private void retrieveCompetitionPositionsNoRepeat() {
+        quoteServiceWrapper.retrieveCompetitionPositions(portfolioId, new Callback<SecurityOptPositionsList>() {
+            @Override
+            public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
+                SecurityOptMockSubSellFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
+                securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
+                displaySells(securityOptPositionDTOs);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
     class RetrievePositionsCallback implements Callback<SecurityOptPositionsList> {
 
         @Override
@@ -682,22 +735,6 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                 retrieveMainPositions();
             }
         }
-    }
-
-    private void retrieveMainPositionsNoCallback(){
-        quoteServiceWrapper.retrieveMainPositions(new Callback<SecurityOptPositionsList>() {
-            @Override
-            public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
-                SecurityOptMockSubSellFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
-                securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
-                displaySells(securityOptPositionDTOs);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
     }
 
     private void displaySells(SecurityOptPositionsList securityOptPositionDTOs){
@@ -753,7 +790,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         }
 
         private void onFinish() {
-            if (isRefresh && TextUtils.isEmpty(securitySymbol) && TextUtils.isEmpty(securityExchange)) {
+            if (isRefresh && !TextUtils.isEmpty(securitySymbol) && !TextUtils.isEmpty(securityExchange)) {
                 refreshQuoteHandler.sendEmptyMessageDelayed(-1, 10000);
             }
 
@@ -780,34 +817,10 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         }
     }
 
-    private void retrieveUserInformation(){
-        if(portfolioId == 0){
-            portfolioServiceWrapper.getMainPortfolio(currentUserId.toUserBaseKey().getUserId(), new Callback<PortfolioDTO>() {
-                @Override
-                public void success(PortfolioDTO portfolioDTO, Response response) {
-                    SecurityOptMockSubSellFragment.this.portfolioDTO = portfolioDTO;
-                }
-
-                @Override
-                public void failure(RetrofitError error) {
-
-                }
-            });
+    protected PortfolioId getPortfolioId() {
+        if (this.portfolioIdObj == null) {
+            this.portfolioIdObj = new PortfolioId(getArguments().getBundle(SecurityOptActivity.KEY_PORTFOLIO_ID));
         }
-    }
-
-    private void retrieveMainPositionsNoRepeatCallback(){
-        quoteServiceWrapper.retrieveMainPositions(new Callback<SecurityOptPositionsList>() {
-            @Override
-            public void success(SecurityOptPositionsList securityOptPositionDTOs, Response response) {
-                SecurityOptMockSubSellFragment.this.securityOptPositionDTOs = securityOptPositionDTOs;
-                securityOptMockPositionAdapter.addData(securityOptPositionDTOs);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
+        return portfolioIdObj;
     }
 }

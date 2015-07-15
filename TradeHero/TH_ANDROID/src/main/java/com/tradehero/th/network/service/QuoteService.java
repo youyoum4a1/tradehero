@@ -107,4 +107,7 @@ interface QuoteService
 
     @GET("/cn/v2/positions/open")
     void retrieveMainPositions(Callback<SecurityOptPositionsList> callback);
+
+    @GET("/cn/v2/portfolio/{portfolioId}/positions/open")
+    void retrieveCompetitionPositions(@Path("portfolioId") int portfolioId,Callback<SecurityOptPositionsList> callback);
 }

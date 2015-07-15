@@ -24,10 +24,11 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     public final static String TYPE_SEARCH = "TYPE_SEARCH";
     public final static String TYPE_RECALL = "TYPE_RECALL";
 
-
     public final static String KEY_SECURITY_SYMBOL = "KEY_SECURITY_SYMBOL";
     public final static String KEY_SECURITY_EXCHANGE = "KEY_SECURITY_EXCHANGE";
-    public static final String KEY_QUOTE_DTO = "KEY_QUOTE_DTO";
+    public final static String KEY_COMPETITION_ID = "KEY_COMPETITION_ID";
+    public final static String KEY_PORTFOLIO_ID = "KEY_PORTFOLIO_ID";
+
 
     private ImageButton searchBtn;
     private ImageButton backButton;
