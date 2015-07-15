@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.live;
+package com.tradehero.th.persistence.kyc;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;

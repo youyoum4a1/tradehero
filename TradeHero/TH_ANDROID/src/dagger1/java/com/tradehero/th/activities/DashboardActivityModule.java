@@ -60,7 +60,10 @@ import javax.inject.Singleton;
 @Module(
         addsTo = AppModule.class,
         includes = {
-                UIModule.class
+                UIModule.class,
+        },
+        injects = {
+                LiveActivityUtil.class,
         },
         library = true,
         complete = false,

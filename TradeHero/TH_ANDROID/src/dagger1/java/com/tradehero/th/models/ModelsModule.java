@@ -6,6 +6,7 @@ import dagger.Module;
 
 @Module(
         includes = {
+                GameLiveModelsModule.class,
         },
         injects = {
                 RunnableInvalidateNotificationList.class,

@@ -21,18 +21,18 @@ import rx.subscriptions.CompositeSubscription;
 
 public class LiveActivityUtil
 {
-    private DashboardActivity dashboardActivity;
+    private BaseActivity activity;
     private CompositeSubscription onDestroyOptionsMenuSubscriptions;
 
     @Inject @IsLiveTrading BooleanPreference isLiveTrading;
     private PublishSubject<OffOnViewSwitcherEvent> isTradingLivePublishSubject;
     private OffOnViewSwitcher liveSwitcher;
 
-    public LiveActivityUtil(DashboardActivity dashboardActivity)
+    public LiveActivityUtil(BaseActivity activity)
     {
-        this.dashboardActivity = dashboardActivity;
+        this.activity = activity;
         isTradingLivePublishSubject = PublishSubject.create();
-        HierarchyInjector.inject(dashboardActivity, this);
+        HierarchyInjector.inject(activity, this);
     }
 
     public void onCreateOptionsMenu(Menu menu)
@@ -45,7 +45,7 @@ public class LiveActivityUtil
         }
         onDestroyOptionsMenuSubscriptions = new CompositeSubscription();
 
-        dashboardActivity.getMenuInflater().inflate(R.menu.live_switch_menu, menu);
+        activity.getMenuInflater().inflate(R.menu.live_switch_menu, menu);
         MenuItem item = menu.findItem(R.id.switch_live);
         liveSwitcher = (OffOnViewSwitcher) item.getActionView();
 
@@ -84,7 +84,7 @@ public class LiveActivityUtil
                             }
                         }));
 
-        for (Fragment f : dashboardActivity.getSupportFragmentManager().getFragments())
+        for (Fragment f : activity.getSupportFragmentManager().getFragments())
         {
             if (f instanceof DashboardFragment && f.isVisible() && ((DashboardFragment) f).shouldShowLiveTradingToggle())
             {
@@ -102,7 +102,7 @@ public class LiveActivityUtil
 
     private void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
-        for (Fragment f : dashboardActivity.getSupportFragmentManager().getFragments())
+        for (Fragment f : activity.getSupportFragmentManager().getFragments())
         {
             if (f instanceof DashboardFragment && f.isVisible())
             {
@@ -110,18 +110,22 @@ public class LiveActivityUtil
             }
         }
 
-        dashboardActivity.getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(dashboardActivity.getResources().getColor(event.isOn ? R.color.tradehero_red : R.color.tradehero_blue)));
+        activity.getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(activity.getResources().getColor(event.isOn ? R.color.tradehero_red : R.color.tradehero_blue)));
 
         //Specific to this activity?
-        dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
-                dashboardActivity.getResources().getColor(event.isOn ? R.color.tradehero_red_status_bar : R.color.tradehero_blue_status_bar));
-
-        for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
+        if (activity instanceof DashboardActivity)
         {
-            dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
-                    .setBackgroundResource(
-                            event.isOn ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
+            DashboardActivity dashboardActivity = (DashboardActivity) activity;
+                    dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
+                            dashboardActivity.getResources().getColor(event.isOn ? R.color.tradehero_red_status_bar : R.color.tradehero_blue_status_bar));
+
+            for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
+            {
+                dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
+                        .setBackgroundResource(
+                                event.isOn ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
+            }
         }
     }
 
@@ -144,7 +148,7 @@ public class LiveActivityUtil
         }
         liveSwitcher = null;
         this.isTradingLivePublishSubject = null;
-        this.dashboardActivity = null;
+        this.activity = null;
     }
 
     public void switchLive(boolean isLive)

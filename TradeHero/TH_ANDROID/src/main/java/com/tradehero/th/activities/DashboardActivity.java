@@ -22,8 +22,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TabHost;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
@@ -142,7 +142,7 @@ public class DashboardActivity extends BaseActivity
     private CompositeSubscription onDestroySubscriptions;
     private CompositeSubscription onPauseSubscriptions;
 
-    private LiveActivityUtil lifeActivityUtil;
+    private LiveActivityUtil liveActivityUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -167,8 +167,8 @@ public class DashboardActivity extends BaseActivity
 
         ButterKnife.bind(this);
 
-        lifeActivityUtil = new LiveActivityUtil(this);
-        activityModule.liveActivityUtil = lifeActivityUtil;
+        liveActivityUtil = new LiveActivityUtil(this);
+        activityModule.liveActivityUtil = liveActivityUtil;
 
         activityModule.drawerLayout = drawerLayout;
 
@@ -197,19 +197,21 @@ public class DashboardActivity extends BaseActivity
         initBroadcastReceivers();
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
-
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
     {
-        lifeActivityUtil.onCreateOptionsMenu(menu);
+        liveActivityUtil.onCreateOptionsMenu(menu);
         return true;
     }
 
     @Override public void supportInvalidateOptionsMenu()
     {
         super.supportInvalidateOptionsMenu();
-        lifeActivityUtil.supportInvalidateOptionsMenu();
+        if (liveActivityUtil != null)
+        {
+            liveActivityUtil.supportInvalidateOptionsMenu();
+        }
     }
 
     private void setupNavigator()
@@ -565,7 +567,7 @@ public class DashboardActivity extends BaseActivity
 
         ButterKnife.unbind(this);
 
-        lifeActivityUtil.onDestroy();
+        liveActivityUtil.onDestroy();
         super.onDestroy();
     }
 

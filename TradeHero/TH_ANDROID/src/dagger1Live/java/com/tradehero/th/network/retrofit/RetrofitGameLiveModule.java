@@ -4,7 +4,6 @@ import com.tradehero.common.log.RetrofitErrorHandlerLogger;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.network.ForLive;
 import com.tradehero.th.network.ServerEndpointLive;
-import com.tradehero.th.network.service.RetrofitGameLiveProtectedModule;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -13,9 +12,6 @@ import retrofit.Endpoints;
 import retrofit.RestAdapter;
 
 @Module(
-        includes = {
-                RetrofitGameLiveProtectedModule.class,
-        },
         injects = {
         },
         complete = false,

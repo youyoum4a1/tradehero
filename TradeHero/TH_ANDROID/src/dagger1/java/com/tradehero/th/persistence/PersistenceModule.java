@@ -8,6 +8,7 @@ import dagger.Provides;
 @Module(
         includes = {
                 PreferenceModule.class,
+                PersistenceGameLiveModule.class,
         },
         complete = false,
         library = true
