@@ -35,16 +35,13 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
         DaggerUtils.inject(this);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Timber.d("lyl onCreate");
-        mTradeServiceWrapper.getTrades(new Callback<ClosedTradeDTOList>() {
+    private void queryDelegationHistory() {
+        mTradeServiceWrapper.getDelegation(new Callback<ClosedTradeDTOList>() {
             @Override
             public void success(ClosedTradeDTOList list, Response response2) {
-                Timber.d("lyl getTrades size=" + list.size());
-                mListViewAdapter1.setItems(list);
-                mListViewAdapter1.notifyDataSetChanged();
+                Timber.d("lyl getDelegation size=" + list.size());
+                mListViewAdapter2.setItems(list);
+                mListViewAdapter2.notifyDataSetChanged();
             }
 
             @Override
@@ -52,10 +49,15 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
 
             }
         });
-        mTradeServiceWrapper.getDelegation(new Callback<ClosedTradeDTOList>() {
+    }
+
+    private void queryTradeHistroy() {
+        mTradeServiceWrapper.getTrades(new Callback<ClosedTradeDTOList>() {
             @Override
             public void success(ClosedTradeDTOList list, Response response2) {
-                Timber.d("lyl getDelegation size=" + list.size());
+                Timber.d("lyl getTrades size=" + list.size());
+                mListViewAdapter1.setItems(list);
+                mListViewAdapter1.notifyDataSetChanged();
             }
 
             @Override
@@ -85,6 +87,13 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
             mListViewAdapter2 = new SecurityOptMockQueryDelegationAdapter(getActivity());
         }
         mListView2.setAdapter(mListViewAdapter2);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        queryTradeHistroy();
+        queryDelegationHistory();
     }
 
     @Override

@@ -50,9 +50,11 @@ public class SecurityOptMockQueryTradeAdapter extends BaseAdapter{
         TextView numbers = (TextView)convertView.findViewById(R.id.numbers);
         numbers.setText(item.quantity < 0 ? String.valueOf(item.quantity * -1) : String.valueOf(item.quantity));
         TextView timeDate = (TextView)convertView.findViewById(R.id.time_date);
-        timeDate.setText(item.closedAtUtc.substring(0, 10).replace("-", "/"));
         TextView timeTime = (TextView)convertView.findViewById(R.id.time_time);
-        timeTime.setText(item.closedAtUtc.substring(11));
+        if (item.closedAtUtc != null) {
+            timeDate.setText(item.closedAtUtc.substring(0, 10).replace("-", "/"));
+            timeTime.setText(item.closedAtUtc.substring(11));
+        }
 
         return convertView;
     }

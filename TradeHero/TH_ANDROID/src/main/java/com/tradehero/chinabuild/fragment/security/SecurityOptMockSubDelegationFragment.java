@@ -33,24 +33,6 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mTradeServiceWrapper.getPendingDelegation(new Callback<ClosedTradeDTOList>() {
-            @Override
-            public void success(ClosedTradeDTOList list, Response response2) {
-                Timber.d("lyl getPendingDelegation size=" + list.size());
-                mListViewAdapter.setItems(list);
-                mListViewAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.security_opt_sub_delegation, container, false);
         initViews(view);
@@ -68,6 +50,28 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        queryPendingDelegationHistory();
+    }
+
+    private void queryPendingDelegationHistory() {
+        mTradeServiceWrapper.getPendingDelegation(new Callback<ClosedTradeDTOList>() {
+            @Override
+            public void success(ClosedTradeDTOList list, Response response2) {
+                Timber.d("lyl getPendingDelegation size=" + list.size());
+                mListViewAdapter.setItems(list);
+                mListViewAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.delegration_button:
@@ -78,9 +82,9 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
 
     @Override
     public void onDestroyView() {
-        mDelegrationButton = null;
-        mListViewAdapter = null;
-        mListView = null;
+//        mDelegrationButton = null;
+//        mListViewAdapter = null;
+//        mListView = null;
         super.onDestroyView();
     }
 }

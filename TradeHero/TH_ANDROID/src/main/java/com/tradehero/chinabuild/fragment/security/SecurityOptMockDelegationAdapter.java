@@ -51,9 +51,9 @@ public class SecurityOptMockDelegationAdapter extends BaseAdapter{
         numbers.setText(item.quantity < 0 ? String.valueOf(item.quantity * -1) : String.valueOf(item.quantity));
         TextView timeDate = (TextView)convertView.findViewById(R.id.time_date);
         TextView timeTime = (TextView) convertView.findViewById(R.id.time_time);
-        if(item.closedAtUtc != null) {
-            timeDate.setText(item.closedAtUtc.substring(0, 10).replace("-", "/"));
-            timeTime.setText(item.closedAtUtc.substring(11));
+        if(item.createdAtUtc != null) {
+            timeDate.setText(item.createdAtUtc.substring(0, 10).replace("-", "/"));
+            timeTime.setText(item.createdAtUtc.substring(11));
         }
 
         return convertView;
