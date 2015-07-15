@@ -22,9 +22,9 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.SignedQuote;
+import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.common.utils.IOUtils;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
@@ -149,7 +149,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         securitySymbol = getArguments().getString(SecurityOptActivity.KEY_SECURITY_SYMBOL, "");
         securityExchange = getArguments().getString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, "");
         securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, "");
-        competitionId = getArguments().getInt(SecurityOptActivity.KEY_COMPETITION_ID, 0);
+        competitionId = getArguments().getInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, 0);
         if(getArguments().containsKey(SecurityOptActivity.KEY_PORTFOLIO_ID)) {
             portfolioIdObj = getPortfolioId();
             if (competitionId != 0) {
@@ -220,11 +220,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         securityCodeTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(getActivity()!=null) {
-                    getActivity().finish();
-                    gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
-                    getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
-                }
+                    enterSearchPage();
             }
         });
         if (!TextUtils.isEmpty(securitySymbol)) {
@@ -334,16 +330,12 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                         });
                     } else {
                         if(quoteDTO == null) {
-                            THLog.d("1");
                             return;
                         }
-                        THLog.d("2");
                         TransactionFormDTO transactionFormDTO = buildTransactionFormDTO();
                         if(transactionFormDTO == null){
-                            THLog.d("3");
                             return;
                         }
-                        THLog.d("4");
                         securityServiceWrapper.buy(securityExchange, securitySymbol, buildTransactionFormDTO(), new Callback<SecurityPositionDetailDTO>() {
                             @Override
                             public void success(SecurityPositionDetailDTO securityPositionDetailDTO, Response response) {
@@ -874,5 +866,20 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             this.portfolioIdObj = new PortfolioId(getArguments().getBundle(SecurityOptActivity.KEY_PORTFOLIO_ID));
         }
         return portfolioIdObj;
+    }
+
+    private void enterSearchPage(){
+        if(getActivity()!=null){
+            getActivity().finish();
+        }
+        Bundle bundle = new Bundle();
+        if(competitionId!=0){
+            bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
+            gotoDashboard(CompetitionSecuritySearchFragment.class.getName(), bundle);
+            getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+        } else {
+            gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
+            getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+        }
     }
 }

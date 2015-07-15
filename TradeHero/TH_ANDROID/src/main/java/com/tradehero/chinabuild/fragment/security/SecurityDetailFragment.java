@@ -34,6 +34,7 @@ import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.QuoteTick;
 import com.tradehero.chinabuild.data.SecurityCommentList;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
+import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.message.SecurityDiscussSendFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
@@ -2226,7 +2227,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
         bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, securityId.getExchange());
         bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, securityId.getSecuritySymbol());
-        bundle.putInt(SecurityOptActivity.KEY_COMPETITION_ID, competitionID);
+        bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionID);
         bundle.putString(BUNDLE_KEY_SECURITY_NAME, securityName);
         Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
         intent.putExtras(bundle);
@@ -2250,7 +2251,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_SELL);
         bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, securityId.getExchange());
         bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, securityId.getSecuritySymbol());
-        bundle.putInt(SecurityOptActivity.KEY_COMPETITION_ID, competitionID);
+        bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionID);
         bundle.putString(BUNDLE_KEY_SECURITY_NAME, securityName);
         Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
         intent.putExtras(bundle);

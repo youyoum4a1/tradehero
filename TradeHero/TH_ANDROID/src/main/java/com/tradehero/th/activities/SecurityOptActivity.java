@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptActualFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockFragment;
@@ -26,7 +28,6 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
     public final static String KEY_SECURITY_SYMBOL = "KEY_SECURITY_SYMBOL";
     public final static String KEY_SECURITY_EXCHANGE = "KEY_SECURITY_EXCHANGE";
-    public final static String KEY_COMPETITION_ID = "KEY_COMPETITION_ID";
     public final static String KEY_PORTFOLIO_ID = "KEY_PORTFOLIO_ID";
 
 
@@ -42,13 +43,16 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
     private boolean isMock = true;
 
+    private int competitionId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_security_opt);
+        initArguments();
         initResources();
         initViews();
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         SecurityOptMockFragment securityOptMockFragment = new SecurityOptMockFragment();
@@ -66,8 +70,15 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
                 break;
             case R.id.button_security_opt_search:
                 finish();
-                gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
-                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+                Bundle bundle = new Bundle();
+                if(competitionId!=0){
+                    bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
+                    gotoDashboard(CompetitionSecuritySearchFragment.class.getName(), bundle);
+                    overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+                } else {
+                    gotoDashboard(SearchUnitFragment.class.getName(), bundle);
+                    overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+                }
                 break;
             case R.id.textview_actual:
                 enterActual();
@@ -97,6 +108,10 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
         color_mock = getResources().getColor(R.color.color_blue);
         color_white = getResources().getColor(R.color.white);
 
+    }
+
+    private void initArguments(){
+        competitionId = getIntent().getIntExtra(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID , 0);
     }
 
     private void gotoDashboard(String strFragment,Bundle bundle) {
