@@ -30,7 +30,6 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final List<TradingPerQuarter> tradingPerQuarterOptions;
     public final int minAge;
 
-
     public KYCAyondoFormOptionsDTO(
             @JsonProperty("identityPromptInfo") @NonNull IdentityPromptInfoDTO identityPromptInfo,
             @JsonProperty("allowedMobilePhoneCountries") @Nullable List<Country> allowedMobilePhoneCountries,
@@ -72,7 +71,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         this.netWorthOptions = Collections.unmodifiableList(netWorthOptions);
         this.percentNetWorthOptions = Collections.unmodifiableList(percentNetWorthOptions);
         this.employmentStatusOptions = Collections.unmodifiableList(employmentStatusOptions);
-        this.tradingPerQuarterOptions = tradingPerQuarterOptions;
+        this.tradingPerQuarterOptions = Collections.unmodifiableList(tradingPerQuarterOptions);
         this.minAge = minAge;
     }
 

@@ -19,7 +19,7 @@ public enum TradingPerQuarter
     SIX_TO_TEN(R.string.trading_per_quarter_6_to_10, 3),
     OVER_TEN(R.string.trading_per_quarter_over_10, 4);
 
-    public static final Map<Integer, TradingPerQuarter> filedEmploymentStatuses;
+    public static final Map<Integer, TradingPerQuarter> filedTradingPerQuarters;
 
     @StringRes public final int dropDownText;
     private final int fromServer;
@@ -33,10 +33,10 @@ public enum TradingPerQuarter
     @SuppressWarnings("unused")
     @JsonCreator @NonNull static TradingPerQuarter getTradingPerQuarter(int fromServer)
     {
-        TradingPerQuarter candidate = filedEmploymentStatuses.get(fromServer);
+        TradingPerQuarter candidate = filedTradingPerQuarters.get(fromServer);
         if (candidate == null)
         {
-            throw new IllegalArgumentException(fromServer + " does not match any EmploymentStatus");
+            throw new IllegalArgumentException(fromServer + " does not match any TradingPerQuarter");
         }
         return candidate;
     }
@@ -52,15 +52,15 @@ public enum TradingPerQuarter
             }
             map.put(candidate.fromServer, candidate);
         }
-        filedEmploymentStatuses = Collections.unmodifiableMap(map);
+        filedTradingPerQuarters = Collections.unmodifiableMap(map);
     }
 
-    @NonNull public static List<String> createTexts(@NonNull Resources resources, @NonNull Collection<TradingPerQuarter> employmentStatuses)
+    @NonNull public static List<String> createTexts(@NonNull Resources resources, @NonNull Collection<TradingPerQuarter> tradingPerQuarters)
     {
         List<String> created = new ArrayList<>();
-        for (TradingPerQuarter employmentStatus : employmentStatuses)
+        for (TradingPerQuarter tradingPerQuarter : tradingPerQuarters)
         {
-            created.add(resources.getString(employmentStatus.dropDownText));
+            created.add(resources.getString(tradingPerQuarter.dropDownText));
         }
         return created;
     }
