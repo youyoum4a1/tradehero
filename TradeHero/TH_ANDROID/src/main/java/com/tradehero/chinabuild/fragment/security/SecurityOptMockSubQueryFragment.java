@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.tradehero.th.R;
@@ -18,16 +19,15 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import timber.log.Timber;
 
-/**
- * Created by palmer on 15/7/6.
- */
 public class SecurityOptMockSubQueryFragment extends Fragment implements View.OnClickListener{
     private TextView mClickShowMore;
     private ListView mListView1;
     private ListView mListView2;
+    private LinearLayout mBelowLayout;
     private SecurityOptMockQueryTradeAdapter mListViewAdapter1;
     private SecurityOptMockQueryDelegationAdapter mListViewAdapter2;
     @Inject TradeServiceWrapper mTradeServiceWrapper;
+    private boolean mIsShowMore = false;
 
     @Override
     public void onAttach(Activity activity) {
@@ -55,6 +55,7 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
             mListViewAdapter2 = new SecurityOptMockQueryDelegationAdapter(getActivity());
         }
         mListView2.setAdapter(mListViewAdapter2);
+        mBelowLayout = (LinearLayout) view.findViewById(R.id.below_layout);
     }
 
     @Override
@@ -98,7 +99,14 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.click_show_more:
+                mIsShowMore = !mIsShowMore;
+                mListViewAdapter1.setShowMore(mIsShowMore);
+                mListViewAdapter1.notifyDataSetChanged();
+                mBelowLayout.setVisibility(mIsShowMore ? View.GONE : View.VISIBLE);
+                break;
+        }
     }
 
     @Override
