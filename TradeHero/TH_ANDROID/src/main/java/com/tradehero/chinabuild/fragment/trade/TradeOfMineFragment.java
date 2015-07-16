@@ -50,6 +50,8 @@ import com.tradehero.th.persistence.prefs.ShareDialogROIValueKey;
 import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+
+import cn.htsec.TradeModule;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +83,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
     private Button buyTV;
     private Button sellTV;
     private Button recallTV;
+    private Button firmBargainTV;
 
     @InjectView(R.id.tradeMyPositionList) PullToRefreshExpandableListView listView;
 
@@ -155,6 +158,8 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         sellTV.setOnClickListener(this);
         recallTV = (Button)mRefreshView.findViewById(R.id.security_recall);
         recallTV.setOnClickListener(this);
+        firmBargainTV = (Button)mRefreshView.findViewById(R.id.security_firm_bargain);
+        firmBargainTV.setOnClickListener(this);
     }
 
     private void initView() {
@@ -297,6 +302,9 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
                 break;
             case R.id.security_recall:
                 enterSecurityOptRecall();
+                break;
+            case R.id.security_firm_bargain:
+                enterSecurityFirmBargain();
                 break;
         }
     }
@@ -560,5 +568,17 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         intent.putExtras(bundle);
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+    }
+
+    private void enterSecurityFirmBargain(){
+        Intent intent = new Intent(getActivity(), TradeModule.class);
+        Bundle bundle = new Bundle();
+        //用户唯一标识
+        bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
+        //渠道
+        bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "ht6c4bb1384e63c92d");
+        //设置在线时间(秒)
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 1);
     }
 }

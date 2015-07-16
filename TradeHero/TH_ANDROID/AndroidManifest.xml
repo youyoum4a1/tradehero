@@ -251,5 +251,11 @@
         <service android:name="com.sina.weibo.sdk.net.DownloadService"
             android:exported="false"/>
 
+
+        <!-- 实盘 -->
+        <activity
+            android:name="cn.htsec.TradeModule"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+        <!-- 实盘 -->
     </application>
 </manifest>

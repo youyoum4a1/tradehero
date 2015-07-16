@@ -164,6 +164,17 @@
                 android:textColor="@drawable/selector_security_opt_textcolor"
                 android:background="@drawable/selector_security_opt"
                 android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/security_firm_bargain"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginTop="11dp"
+                android:gravity="center"
+                android:text="实盘交易"
+                android:textColor="@drawable/selector_security_opt_textcolor"
+                android:background="@drawable/selector_security_opt"
+                android:textSize="14sp" />
         </LinearLayout>
     </RelativeLayout>
 
