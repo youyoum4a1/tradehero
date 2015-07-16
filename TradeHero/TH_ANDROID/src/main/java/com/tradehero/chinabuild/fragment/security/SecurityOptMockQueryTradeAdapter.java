@@ -13,6 +13,7 @@ import com.tradehero.th.api.trade.ClosedTradeDTOList;
 public class SecurityOptMockQueryTradeAdapter extends BaseAdapter{
     private ClosedTradeDTOList mList = new ClosedTradeDTOList();
     private LayoutInflater inflater;
+    private boolean mIsShowMore = false;
 
     public SecurityOptMockQueryTradeAdapter(Context context){
         inflater = LayoutInflater.from(context);
@@ -20,6 +21,9 @@ public class SecurityOptMockQueryTradeAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
+        if (!mIsShowMore && mList.size() > 3) {
+            return 3;
+        }
         return mList.size();
     }
 
@@ -61,5 +65,9 @@ public class SecurityOptMockQueryTradeAdapter extends BaseAdapter{
 
     public void setItems(ClosedTradeDTOList list) {
         mList = list;
+    }
+
+    public void setShowMore(boolean isShowMore) {
+        mIsShowMore = isShowMore;
     }
 }
