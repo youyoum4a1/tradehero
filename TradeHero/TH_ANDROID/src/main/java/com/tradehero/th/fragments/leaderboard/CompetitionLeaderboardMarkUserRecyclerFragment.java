@@ -24,7 +24,7 @@ import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
-import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.fragments.web.WebViewIntentFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
@@ -55,7 +55,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
     protected CompetitionId competitionId;
 
     protected THIntentPassedListener webViewTHIntentPassedListener;
-    protected WebViewFragment webViewFragment;
+    protected WebViewIntentFragment webViewFragment;
     protected CompetitionLeaderboardWrapperRecyclerAdapter competitionAdapter;
     protected CompetitionLeaderboardDTO competitionLeaderboardDTO;
     protected CompetitionDTO competitionDTO;
@@ -342,11 +342,11 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
     private void pushWizardElement()
     {
         Bundle args = new Bundle();
-        WebViewFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
-        WebViewFragment.putIsOptionMenuVisible(args, false);
+        WebViewIntentFragment.putUrl(args, providerUtil.getWizardPage(providerId) + "&previous=whatever");
+        WebViewIntentFragment.putIsOptionMenuVisible(args, false);
         if (navigator != null)
         {
-            this.webViewFragment = navigator.get().pushFragment(WebViewFragment.class, args);
+            this.webViewFragment = navigator.get().pushFragment(WebViewIntentFragment.class, args);
             this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
         }
     }
@@ -371,7 +371,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
             super();
         }
 
-        @Override protected WebViewFragment getApplicableWebViewFragment()
+        @Override protected WebViewIntentFragment getApplicableWebViewFragment()
         {
             return CompetitionLeaderboardMarkUserRecyclerFragment.this.webViewFragment;
         }

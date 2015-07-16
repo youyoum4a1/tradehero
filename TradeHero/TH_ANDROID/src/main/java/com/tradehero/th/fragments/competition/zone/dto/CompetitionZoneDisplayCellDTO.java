@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
@@ -23,11 +24,6 @@ public class CompetitionZoneDisplayCellDTO extends CompetitionZoneDTO
     @NonNull public ProviderDisplayCellDTO getProviderDisplayCellDTO()
     {
         return providerDisplayCellDTO;
-    }
-
-    public String getRedirectUrl()
-    {
-        return providerDisplayCellDTO.redirectUrl;
     }
 
     @Override public int hashCode()
@@ -59,5 +55,10 @@ public class CompetitionZoneDisplayCellDTO extends CompetitionZoneDTO
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 '}';
+    }
+
+    @Nullable public String extractRedirectUrl(@NonNull Resources resources)
+    {
+        return providerDisplayCellDTO.extractRedirectUrl(resources);
     }
 }

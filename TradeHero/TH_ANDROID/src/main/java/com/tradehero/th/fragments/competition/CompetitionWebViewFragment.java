@@ -12,7 +12,7 @@ import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
@@ -26,7 +26,7 @@ import timber.log.Timber;
         "providers-enroll/:enrollProviderId",
         "providers-enroll/:enrollProviderId/pages/:encodedUrl",
 })
-public class CompetitionWebViewFragment extends BaseWebViewFragment
+public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
 {
     @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
     @RouteProperty("encodedUrl") protected String encodedUrl;

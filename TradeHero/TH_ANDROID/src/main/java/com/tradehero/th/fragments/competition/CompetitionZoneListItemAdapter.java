@@ -25,6 +25,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
     public static final int ITEM_TYPE_LEGAL_MENTIONS = 5;
     public static final int ITEM_TYPE_LOADING = 6;
     public static final int ITEM_TYPE_PRIZE_POOL = 7;
+    public static final int ITEM_TYPE_WIZARD = 8;
 
     @NonNull private final Integer[] viewTypeToResId;
     @NonNull protected final PublishSubject<AbstractCompetitionZoneListItemView.UserAction> userActionSubject;
@@ -39,11 +40,12 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
             @LayoutRes int prizeResId,
             @LayoutRes int portfolioResId,
             @LayoutRes int leaderboardResId,
-            @LayoutRes int legalResId)
+            @LayoutRes int legalResId,
+            @LayoutRes int wizardResId)
     {
         super(context, zoneItemLayoutResId);
 
-        this.viewTypeToResId = new Integer[8];
+        this.viewTypeToResId = new Integer[9];
         this.viewTypeToResId[ITEM_TYPE_ADS] = adsResId;
         this.viewTypeToResId[ITEM_TYPE_HEADER] = headerResId;
         this.viewTypeToResId[ITEM_TYPE_PRIZE_POOL] = prizeResId;
@@ -52,6 +54,7 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         this.viewTypeToResId[ITEM_TYPE_LEADERBOARD] = leaderboardResId;
         this.viewTypeToResId[ITEM_TYPE_LEGAL_MENTIONS] = legalResId;
         this.viewTypeToResId[ITEM_TYPE_LOADING] = R.layout.loading_item;
+        this.viewTypeToResId[ITEM_TYPE_WIZARD] = wizardResId;
 
         this.userActionSubject = PublishSubject.create();
         this.elements = new ArrayList<>();

@@ -15,6 +15,7 @@ import butterknife.OnClick;
 import android.support.annotation.Nullable;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
@@ -114,6 +115,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Bind(R.id.btn_buy) protected Button buyBtn;
     @Bind(R.id.btn_sell) protected Button sellBtn;
 
+    @RouteProperty("applicablePortfolioId")
+    @Nullable protected Integer routedApplicablePortfolioId;
     protected Requisite requisite;
     @Nullable protected QuoteDTO quoteDTO;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
@@ -151,6 +154,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
+        if (routedApplicablePortfolioId != null)
+        {
+            Requisite.putApplicablePorfolioId(getArguments(), new OwnedPortfolioId(currentUserId.get(), routedApplicablePortfolioId));
+        }
         requisite = createRequisite();
         quoteRepeatSubject = PublishSubject.create();
         quoteRepeatDelayedObservable = quoteRepeatSubject.delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
@@ -1035,6 +1042,11 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             args.putBundle(KEY_SECURITY_ID, securityId.getArgs());
             args.putBundle(KEY_APPLICABLE_PORTFOLIO_ID, applicablePortfolioIdSubject.toBlocking().first().getArgs());
             args.putInt(KEY_CLOSE_UNITS_BUNDLE, closeUnits);
+        }
+
+        static void putApplicablePorfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId applicablePortfolioId)
+        {
+            args.putBundle(KEY_APPLICABLE_PORTFOLIO_ID, applicablePortfolioId.getArgs());
         }
     }
 }

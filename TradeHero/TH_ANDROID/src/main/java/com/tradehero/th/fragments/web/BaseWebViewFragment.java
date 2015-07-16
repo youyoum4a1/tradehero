@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.web;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,12 +13,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import com.google.common.annotations.VisibleForTesting;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.network.NetworkConstants;
 import com.tradehero.th.utils.Constants;
 import java.util.Map;
@@ -28,10 +28,7 @@ public class BaseWebViewFragment extends BaseFragment
     private static final String BUNDLE_KEY_URL = BaseWebViewFragment.class.getName() + ".url";
 
     protected WebView webView;
-
-    protected THIntentPassedListener parentTHIntentPassedListener;
-    protected THIntentPassedListener thIntentPassedListener;
-    protected THWebViewClient thWebViewClient;
+    protected WebViewClient webViewClient;
     protected THWebChromeClient webChromeClient;
 
     public static void putUrl(@NonNull Bundle args, @NonNull String url)
@@ -50,11 +47,15 @@ public class BaseWebViewFragment extends BaseFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(getLayoutResId(), container, false);
+        return inflater.inflate(getLayoutResId(), container, false);
+    }
+
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
         webView = (WebView) view.findViewById(R.id.webview);
         initViews(view);
-        return view;
     }
 
     @LayoutRes protected int getLayoutResId()
@@ -74,7 +75,7 @@ public class BaseWebViewFragment extends BaseFragment
         return getUrl(getArguments());
     }
 
-    @SuppressLint("NewApi")
+    @SuppressLint("NewApi") @CallSuper
     protected void initViews(View v)
     {
         webView.getSettings().setBuiltInZoomControls(true);
@@ -116,17 +117,13 @@ public class BaseWebViewFragment extends BaseFragment
         webChromeClient = new THWebChromeClient(this);
         webView.setWebChromeClient(webChromeClient);
 
-        this.thIntentPassedListener = new THIntentPassedListener()
-        {
-            @Override public void onIntentPassed(THIntent thIntent)
-            {
-                BaseWebViewFragment.this.notifyParentIntentPassed(thIntent);
-            }
-        };
+        this.webViewClient = createWebViewClient();
+        webView.setWebViewClient(webViewClient);
+    }
 
-        this.thWebViewClient = new THWebViewClient(getActivity());
-        thWebViewClient.setThIntentPassedListener(this.thIntentPassedListener);
-        webView.setWebViewClient(thWebViewClient);
+    @NonNull protected WebViewClient createWebViewClient()
+    {
+        return new THWebViewClient(getActivity());
     }
 
     protected void onProgressChanged(WebView view, int newProgress)
@@ -146,24 +143,13 @@ public class BaseWebViewFragment extends BaseFragment
             this.webChromeClient.setBaseWebViewFragment(null);
         }
         this.webChromeClient = null;
-        if (this.thWebViewClient != null)
-        {
-            this.thWebViewClient.setThIntentPassedListener(null);
-        }
-        this.thWebViewClient = null;
+        this.webViewClient = null;
         if (webView != null)
         {
             webView.setWebChromeClient(null);
         }
         webView = null;
-        this.thIntentPassedListener = null;
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        this.parentTHIntentPassedListener = null;
-        super.onDestroy();
     }
 
     public void loadUrl(@Nullable String url)
@@ -182,25 +168,6 @@ public class BaseWebViewFragment extends BaseFragment
 
             Timber.d("url: %s", url);
             webView.loadUrl(url, additionalHttpHeaders);
-        }
-    }
-
-    public void setThIntentPassedListener(THIntentPassedListener thIntentPassedListener)
-    {
-        Timber.d("setThIntentPassedListener %s", thIntentPassedListener);
-        this.parentTHIntentPassedListener = thIntentPassedListener;
-    }
-
-    private void notifyParentIntentPassed(THIntent thIntent)
-    {
-        THIntentPassedListener parentListenerCopy = this.parentTHIntentPassedListener;
-        if (parentListenerCopy != null)
-        {
-            parentListenerCopy.onIntentPassed(thIntent);
-        }
-        else
-        {
-            Timber.d("notifyParentIntentPassed listener is null");
         }
     }
 

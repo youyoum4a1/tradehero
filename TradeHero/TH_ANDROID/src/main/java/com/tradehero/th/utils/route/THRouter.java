@@ -3,6 +3,7 @@ package com.tradehero.th.utils.route;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import timber.log.Timber;
@@ -56,6 +58,12 @@ public class THRouter extends Router
         {
             url = aliases.get(url);
         }
+
+        if (extras == null)
+        {
+            extras = new Bundle();
+        }
+        url = extractParamsToExtras(context.getResources(), extras, Uri.parse(url));
 
         try
         {
@@ -201,6 +209,27 @@ public class THRouter extends Router
                 }
             }
         }
+    }
+
+    @NonNull public static String extractParamsToExtras(
+            @NonNull Resources resources,
+            @NonNull Bundle extras,
+            @NonNull Uri originalUrl)
+    {
+        String url = originalUrl.toString().substring((resources.getString(R.string.intent_scheme) + "://").length());
+        int queryMark = url.indexOf('?');
+        if (queryMark > 0)
+        {
+            url = url.substring(0, queryMark);
+            //Quick fix to pass deeplink query
+            Set<String> keys = originalUrl.getQueryParameterNames();
+            for (String k : keys)
+            {
+                extras.putString(k, originalUrl.getQueryParameter(k));
+            }
+            return url;
+        }
+        return originalUrl.toString();
     }
 
     public void inject(Fragment fragment)

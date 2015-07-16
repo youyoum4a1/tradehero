@@ -413,7 +413,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
         {
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-            MainCompetitionFragment.putApplicablePortfolioId(args, providerDTO.getAssociatedOwnedPortfolioId());
+            OwnedPortfolioId applicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
+            if (applicablePortfolioId != null)
+            {
+                MainCompetitionFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+            }
             navigator.get().pushFragment(MainCompetitionFragment.class, args);
         }
         else if (providerDTO != null)

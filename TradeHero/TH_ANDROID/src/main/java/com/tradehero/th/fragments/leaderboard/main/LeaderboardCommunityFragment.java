@@ -15,8 +15,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.rx.PairGetSecond;
@@ -36,7 +36,7 @@ import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserRecyclerFragmen
 import com.tradehero.th.fragments.leaderboard.LeaderboardType;
 import com.tradehero.th.fragments.social.PeopleSearchFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
@@ -72,7 +72,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Bind(R.id.pager) ViewPager tabViewPager;
     @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
-    private BaseWebViewFragment webFragment;
+    private BaseWebViewIntentFragment webFragment;
     private int currentDisplayedChildLayoutId;
     private LeaderboardDefDTOList leaderboardDefDTOs;
 

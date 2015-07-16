@@ -16,8 +16,8 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
@@ -57,8 +57,9 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneWizardDTO;
 import com.tradehero.th.fragments.leaderboard.CompetitionLeaderboardMarkUserRecyclerFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.fragments.web.WebViewIntentFragment;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
@@ -68,6 +69,7 @@ import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -103,7 +105,7 @@ public class MainCompetitionFragment extends DashboardFragment
     private CompetitionZoneListItemAdapter competitionZoneListItemAdapter;
 
     private THIntentPassedListener webViewTHIntentPassedListener;
-    private BaseWebViewFragment webViewFragment;
+    private BaseWebViewIntentFragment webViewFragment;
 
     @Inject ProviderCacheRx providerCache;
     @Inject THRouter thRouter;
@@ -136,7 +138,12 @@ public class MainCompetitionFragment extends DashboardFragment
 
     @NonNull public static ProviderId getProviderId(@NonNull Bundle args)
     {
-        return new ProviderId(args.getBundle(BUNDLE_KEY_PROVIDER_ID));
+        Bundle providerBundle = args.getBundle(BUNDLE_KEY_PROVIDER_ID);
+        if (providerBundle == null)
+        {
+            throw new NullPointerException("ProviderId has to be passed");
+        }
+        return new ProviderId(providerBundle);
     }
 
     public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
@@ -144,14 +151,12 @@ public class MainCompetitionFragment extends DashboardFragment
         args.putBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE, ownedPortfolioId.getArgs());
     }
 
-    private static OwnedPortfolioId getApplicablePortfolioId(@Nullable Bundle args)
+    @Nullable private static OwnedPortfolioId getApplicablePortfolioId(@NonNull Bundle args)
     {
-        if (args != null)
+        Bundle portfolioBundle = args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE);
+        if (portfolioBundle != null)
         {
-            if (args.containsKey(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE))
-            {
-                return new OwnedPortfolioId(args.getBundle(BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE));
-            }
+            return new OwnedPortfolioId(portfolioBundle);
         }
         return null;
     }
@@ -252,7 +257,8 @@ public class MainCompetitionFragment extends DashboardFragment
                 R.layout.competition_zone_prize_pool,
                 R.layout.competition_zone_portfolio,
                 R.layout.competition_zone_leaderboard_item,
-                R.layout.competition_zone_legal_mentions);
+                R.layout.competition_zone_legal_mentions,
+                R.layout.competition_zone_item);
     }
 
     private void fetchAdapterRequisite()
@@ -519,12 +525,27 @@ public class MainCompetitionFragment extends DashboardFragment
             if (competitionUrl == null)
             {
                 competitionUrl = providerUtil.getWizardPage(providerId);
-                CompetitionWebViewFragment.putIsOptionMenuVisible(args, false);
+                WizardWebViewFragment.putIsOptionMenuVisible(args, false);
             }
 
-            CompetitionWebViewFragment.putUrl(args, competitionUrl);
-            this.webViewFragment = navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
-            this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
+            WizardWebViewFragment.putUrl(args, competitionUrl);
+            final OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+            if (applicablePortfolioId != null)
+            {
+                WizardWebViewFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+            }
+            onDestroySubscriptions.add(navigator.get().pushFragment(WizardWebViewFragment.class, args)
+                    .getUrlObservable()
+                    .subscribe(
+                            new Action1<String>()
+                            {
+                                @Override public void call(String url)
+                                {
+                                    navigator.get().popFragment();
+                                    thRouter.open(url + "&applicablePortfolioId=" + applicablePortfolioId);
+                                }
+                            },
+                            new TimberOnErrorAction("Failed to listen to Wizard Url")));
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
         {
@@ -572,7 +593,7 @@ public class MainCompetitionFragment extends DashboardFragment
 
     private void handleDisplayCellClicked(@NonNull CompetitionZoneDisplayCellDTO competitionZoneDisplayCellDTO)
     {
-        String redirectUrl = competitionZoneDisplayCellDTO.getRedirectUrl();
+        String redirectUrl = competitionZoneDisplayCellDTO.extractRedirectUrl(getResources());
         if (redirectUrl != null)
         {
             //thRouter.open(redirectUrl); TODO implement this when router is updated
@@ -586,8 +607,8 @@ public class MainCompetitionFragment extends DashboardFragment
                     {
                         Timber.d("Opening this page: %s", url);
                         Bundle bundle = new Bundle();
-                        CompetitionWebViewFragment.putUrl(bundle, url);
-                        this.webViewFragment = navigator.get().pushFragment(WebViewFragment.class, bundle);
+                        WebViewIntentFragment.putUrl(bundle, url);
+                        this.webViewFragment = navigator.get().pushFragment(WebViewIntentFragment.class, bundle);
                         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
                     }
                 }
@@ -602,6 +623,12 @@ public class MainCompetitionFragment extends DashboardFragment
                         Timber.e(e, "Failed to create intent with string %s", redirectUrl);
                     }
                 }
+            }
+            else
+            {
+                Bundle bundle = new Bundle();
+                WebViewIntentFragment.putUrl(bundle, redirectUrl);
+                this.webViewFragment = navigator.get().pushFragment(WebViewIntentFragment.class, bundle);
             }
         }
     }
@@ -682,7 +709,7 @@ public class MainCompetitionFragment extends DashboardFragment
             super();
         }
 
-        @Override protected BaseWebViewFragment getApplicableWebViewFragment()
+        @Override protected BaseWebViewIntentFragment getApplicableWebViewFragment()
         {
             return webViewFragment;
         }

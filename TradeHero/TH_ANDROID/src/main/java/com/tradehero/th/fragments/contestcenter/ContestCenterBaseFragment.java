@@ -9,8 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
@@ -24,7 +24,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderIntent;
@@ -52,7 +52,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     public ContestItemAdapter contestListAdapter;
     @IdRes private int currentDisplayedChildLayoutId;
     public ProviderDTOList providerDTOs;
-    private BaseWebViewFragment webFragment;
+    private BaseWebViewIntentFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
 
     @Override

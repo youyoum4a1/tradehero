@@ -116,14 +116,44 @@ public class CompetitionZoneDTOUtil
 
             if (providerDisplayCellDTOs != null)
             {
+                List<String> wizards = new ArrayList<>();
                 for (ProviderDisplayCellDTO providerDisplayCellDTO : providerDisplayCellDTOs)
                 {
                     if (providerDisplayCellDTO != null)
                     {
-                        list.add(Pair.create(
-                                CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM,
-                                (CompetitionZoneDTO) new CompetitionZoneDisplayCellDTO(providerDisplayCellDTO)));
+                        if (providerDisplayCellDTO.redirectUrl != null
+                                && providerDisplayCellDTO.redirectUrl.toLowerCase().contains("wizard"))
+                        {
+                            CompetitionZoneWizardDTO wizardDTO = new CompetitionZoneWizardDTO(providerDisplayCellDTO, context.getResources());
+                            list.add(Pair.create(
+                                    CompetitionZoneListItemAdapter.ITEM_TYPE_WIZARD,
+                                    (CompetitionZoneDTO) wizardDTO));
+                            String webUrl = wizardDTO.getWebUrl();
+                            if (webUrl != null)
+                            {
+                                wizards.add(webUrl.toLowerCase());
+                            }
+                        }
+                        else
+                        {
+                            list.add(Pair.create(
+                                    CompetitionZoneListItemAdapter.ITEM_TYPE_ZONE_ITEM,
+                                    (CompetitionZoneDTO) new CompetitionZoneDisplayCellDTO(providerDisplayCellDTO)));
+                        }
                     }
+                }
+
+                if (providerDTO.wizardUrl != null
+                        && providerDTO.wizardTitle != null
+                        && !wizards.contains(providerDTO.wizardUrl.toLowerCase()))
+                {
+                    list.add(Pair.create(
+                            CompetitionZoneListItemAdapter.ITEM_TYPE_WIZARD,
+                            (CompetitionZoneDTO) new CompetitionZoneWizardDTO(
+                                    providerDTO.wizardTitle,
+                                    null,
+                                    providerDTO.wizardImageUrl,
+                                    providerDTO.wizardUrl)));
                 }
             }
             else

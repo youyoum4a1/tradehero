@@ -25,7 +25,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.rx.ToastAction;
@@ -45,7 +45,7 @@ public class ProviderSecurityListRxFragment
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
     private THIntentPassedListener webViewTHIntentPassedListener;
-    private BaseWebViewFragment webViewFragment;
+    private BaseWebViewIntentFragment webViewFragment;
 
     protected TextView tradeTitleView;
 
@@ -56,7 +56,12 @@ public class ProviderSecurityListRxFragment
 
     @NonNull private static ProviderId getProviderId(@NonNull Bundle bundle)
     {
-        return new ProviderId(bundle.getBundle(BUNDLE_PROVIDER_ID_KEY));
+        Bundle providerBundle = bundle.getBundle(BUNDLE_PROVIDER_ID_KEY);
+        if (providerBundle == null)
+        {
+            throw new NullPointerException("Provider needs to be passed");
+        }
+        return new ProviderId(providerBundle);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -253,7 +258,7 @@ public class ProviderSecurityListRxFragment
             super();
         }
 
-        @Override protected BaseWebViewFragment getApplicableWebViewFragment()
+        @Override protected BaseWebViewIntentFragment getApplicableWebViewFragment()
         {
             return webViewFragment;
         }

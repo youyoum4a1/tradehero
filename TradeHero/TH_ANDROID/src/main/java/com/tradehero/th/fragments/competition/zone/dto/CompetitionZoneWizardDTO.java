@@ -1,13 +1,24 @@
 package com.tradehero.th.fragments.competition.zone.dto;
 
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
 
 public class CompetitionZoneWizardDTO extends CompetitionZoneDTO
 {
     @Nullable private final String webUrl;
 
     //<editor-fold desc="Constructors">
+    public CompetitionZoneWizardDTO(@NonNull ProviderDisplayCellDTO providerDisplayCellDTO, @NonNull Resources resources)
+    {
+        this(providerDisplayCellDTO.title,
+                providerDisplayCellDTO.subtitle,
+                providerDisplayCellDTO.getNonEmptyImageUrl(),
+                providerDisplayCellDTO.extractRedirectUrl(resources));
+    }
+
     public CompetitionZoneWizardDTO(
             @Nullable String title,
             @Nullable String description,

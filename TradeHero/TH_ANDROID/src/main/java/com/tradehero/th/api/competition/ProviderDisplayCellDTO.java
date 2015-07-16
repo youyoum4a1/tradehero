@@ -1,8 +1,12 @@
 package com.tradehero.th.api.competition;
 
+import android.content.res.Resources;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.th.R;
 import com.tradehero.th.api.competition.key.ProviderDisplayCellId;
 
 public class ProviderDisplayCellDTO implements DTO
@@ -59,6 +63,22 @@ public class ProviderDisplayCellDTO implements DTO
     @Nullable public String getNonEmptyImageUrl()
     {
         return imageUrl == null || imageUrl.isEmpty() ? null : imageUrl;
+    }
+
+    @Nullable public String extractRedirectUrl(@NonNull Resources resources)
+    {
+        if (redirectUrl != null)
+        {
+            Uri uri = Uri.parse(redirectUrl);
+            if (uri.getScheme().equals(resources.getString(R.string.intent_scheme)))
+            {
+                if (uri.getHost().equalsIgnoreCase(resources.getString(R.string.intent_host_web)))
+                {
+                    return uri.getQueryParameter("url");
+                }
+            }
+        }
+        return redirectUrl;
     }
 
     @Override public String toString()
