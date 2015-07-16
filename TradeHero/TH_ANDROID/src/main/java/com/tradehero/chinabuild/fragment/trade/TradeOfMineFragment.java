@@ -38,6 +38,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -52,6 +53,8 @@ import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 
 import cn.htsec.TradeModule;
+import cn.htsec.data.ServerManager;
+import cn.htsec.data.pkg.trade.TradeManager;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,6 +103,8 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
     private final long duration_showing_dialog = 120000;
     private boolean availableShowDialog = false;
 
+    private TradeManager mTradeManager = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -109,6 +114,13 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         userWatchlistPositionFetchListener = new WatchlistPositionFragmentSecurityIdListCacheListener();
         portfolioFetchListener = new WatchlistPositionFragmentPortfolioCacheListener();
         portfolioCompactListFetchListener = new BasePurchaseManagementPortfolioCompactListFetchListener();
+
+        //下载站点列表 海通
+        mTradeManager = TradeManager.getInstance(getActivity());
+        TradeModule.debug();
+        ServerManager serverManager = ServerManager.getInstance(getActivity());
+        serverManager.startDownloadServerList();
+
     }
 
     @Override
@@ -571,15 +583,27 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
     }
 
     private void enterSecurityFirmBargain(){
-        TradeModule.debug();
-        Intent intent = new Intent(getActivity(), TradeModule.class);
-        Bundle bundle = new Bundle();
-        //用户唯一标识
-        bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
-        //渠道
-        bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
-        //设置在线时间(秒)
-        intent.putExtras(bundle);
-        startActivityForResult(intent, 1);
+        if(mTradeManager==null){
+            mTradeManager = TradeManager.getInstance(Application.context());
+        }
+        if(mTradeManager.isLogined()){
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
+            bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+            Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+        } else {
+            Intent intent = new Intent(getActivity(), TradeModule.class);
+            Bundle bundle = new Bundle();
+            //用户唯一标识
+            bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
+            //渠道
+            bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
+            //设置在线时间(秒)
+            intent.putExtras(bundle);
+            startActivityForResult(intent, 1);
+        }
     }
 }

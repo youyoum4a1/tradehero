@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
-import com.tradehero.chinabuild.fragment.security.SecurityOptActualFragment;
+import com.tradehero.firmbargain.SecurityOptActualFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -29,7 +29,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     public final static String KEY_SECURITY_SYMBOL = "KEY_SECURITY_SYMBOL";
     public final static String KEY_SECURITY_EXCHANGE = "KEY_SECURITY_EXCHANGE";
     public final static String KEY_PORTFOLIO_ID = "KEY_PORTFOLIO_ID";
-
+    public final static String KEY_IS_FOR_ACTUAL = "KEY_IS_FOR_ACTUAL";
 
     private ImageButton searchBtn;
     private ImageButton backButton;
@@ -45,6 +45,8 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
     private int competitionId = 0;
 
+    private boolean isForActual = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,12 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
         SecurityOptMockFragment securityOptMockFragment = new SecurityOptMockFragment();
         securityOptMockFragment.setArguments(getIntent().getExtras());
         fragmentManager.beginTransaction().replace(R.id.framelayout_mock_actual, securityOptMockFragment).commit();
+
+        if(isForActual){
+            enterActual();
+        } else {
+            enterMock();
+        }
     }
 
     @Override
@@ -112,6 +120,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
     private void initArguments(){
         competitionId = getIntent().getIntExtra(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID , 0);
+        isForActual = getIntent().getBooleanExtra(KEY_IS_FOR_ACTUAL, false);
     }
 
     private void gotoDashboard(String strFragment,Bundle bundle) {
@@ -149,6 +158,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         SecurityOptActualFragment securityOptActualFragment = new SecurityOptActualFragment();
+        securityOptActualFragment.setArguments(getIntent().getExtras());
         fragmentManager.beginTransaction().replace(R.id.framelayout_mock_actual, securityOptActualFragment).commit();
     }
 }
