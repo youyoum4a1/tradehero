@@ -514,6 +514,20 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @NonNull protected Observable<OwnedPortfolioIdList> getApplicablePortfolioIdsObservable()
     {
         return ownedPortfolioIdListCache.get(requisite.securityId)
+                .distinctUntilChanged(
+                        new Func1<Pair<PortfolioCompactListKey, OwnedPortfolioIdList>, String>()
+                        {
+                            @Override
+                            public String call(Pair<PortfolioCompactListKey, OwnedPortfolioIdList> pair)
+                            {
+                                String code = "first=" + pair.first + ", second=";
+                                for (OwnedPortfolioId portfolioId : pair.second)
+                                {
+                                    code += portfolioId.toString() + ",";
+                                }
+                                return code;
+                            }
+                        })
                 .map(new Func1<Pair<PortfolioCompactListKey, OwnedPortfolioIdList>, OwnedPortfolioIdList>()
                 {
                     @Override public OwnedPortfolioIdList call(Pair<PortfolioCompactListKey, OwnedPortfolioIdList> pair)
@@ -543,6 +557,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                     {
                         if (ownedPortfolioIds.contains(ownedPortfolioId))
                         {
+                            poppedPortfolioChanged = true;
                             return ownedPortfolioId;
                         }
                         popPortfolioChanged();
