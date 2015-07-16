@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.route.THRouter;
+import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
@@ -49,6 +51,16 @@ public class WebViewFragment extends BaseWebViewFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         inflater.inflate(R.menu.webview_menu, menu);
+        MenuItem back = menu.findItem(R.id.webview_back);
+        if (back != null)
+        {
+            back.setVisible(webView.canGoBack());
+        }
+        MenuItem forward = menu.findItem(R.id.webview_forward);
+        if (forward != null)
+        {
+            forward.setVisible(webView.canGoForward());
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -99,4 +111,10 @@ public class WebViewFragment extends BaseWebViewFragment
         return super.onOptionsItemSelected(item);
     }
     //</editor-fold>
+
+    @Override public void loadUrl(@Nullable String url, @Nullable Map<String, String> additionalHttpHeaders)
+    {
+        super.loadUrl(url, additionalHttpHeaders);
+        getActivity().invalidateOptionsMenu();
+    }
 }

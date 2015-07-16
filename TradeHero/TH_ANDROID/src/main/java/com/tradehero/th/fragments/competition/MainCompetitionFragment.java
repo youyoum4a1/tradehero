@@ -542,7 +542,7 @@ public class MainCompetitionFragment extends DashboardFragment
                                 @Override public void call(String url)
                                 {
                                     navigator.get().popFragment();
-                                    thRouter.open(url + "&applicablePortfolioId=" + applicablePortfolioId);
+                                    thRouter.open(url + (url.indexOf('?') < 0 ? "?" : "&") + "applicablePortfolioId=" + applicablePortfolioId);
                                 }
                             },
                             new TimberOnErrorAction("Failed to listen to Wizard Url")));

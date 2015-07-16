@@ -1,27 +1,16 @@
 package com.tradehero.th.fragments.base;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.ViewAnimator;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.BaseActivity;
-import timber.log.Timber;
 
 public class ActionBarOwnerMixin
 {
@@ -192,133 +181,6 @@ public class ActionBarOwnerMixin
             actionBar.setTitle(title);
         }
     }
-
-    public void addAnimatorView(
-            @NonNull BaseActivity activity,
-            @IdRes int animatorId,
-            @NonNull View view,
-            int index)
-    {
-        Toolbar toolbar = activity.getToolbar();
-        if (toolbar == null)
-        {
-            return;
-        }
-
-        ViewAnimator animator = (ViewAnimator) toolbar.findViewById(animatorId);
-        if (animator == null)
-        {
-            Timber.e(new NullPointerException(), "There was no animator");
-            return;
-        }
-        animator.addView(view, index);
-        animator.setVisibility(View.VISIBLE);
-    }
-
-    public void removeView(
-            @NonNull BaseActivity activity,
-            @IdRes int animatorId,
-            int index)
-    {
-        Toolbar toolbar = activity.getToolbar();
-        if (toolbar == null)
-        {
-            return;
-        }
-
-        ViewAnimator animator = (ViewAnimator) toolbar.findViewById(animatorId);
-        if (animator == null)
-        {
-            Timber.e(new NullPointerException(), "There was no animator");
-            return;
-        }
-        animator.removeViewAt(index);
-    }
-
-    ///**
-    // * Set the spinner adapter and OnItemSelectedListener of the Spinner.
-    // *
-    // * @param toolbarSpinnerResId resource id of the spinner.
-    // */
-    //@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    //public void configureSpinner(
-    //        @NonNull BaseActivity activity,
-    //        @IdRes int toolbarSpinnerResId,
-    //        ArrayAdapter adapter,
-    //        AdapterView.OnItemSelectedListener listener,
-    //        int selectedPosition)
-    //{
-    //    Toolbar toolbar = activity.getToolbar();
-    //    if (toolbar == null)
-    //    {
-    //        return;
-    //    }
-    //
-    //    Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
-    //    if (toolbarSpinner == null)
-    //    {
-    //        return;
-    //    }
-    //
-    //    toolbarSpinner.setAdapter(adapter);
-    //    if ((selectedPosition >= 0) && (selectedPosition < adapter.getCount()))
-    //    {
-    //        toolbarSpinner.setSelection(selectedPosition);
-    //    }
-    //    toolbarSpinner.setOnItemSelectedListener(listener);
-    //    toolbarSpinner.setVisibility(View.VISIBLE);
-    //}
-    //
-    //public void setSpinnerSelection(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId, int index)
-    //{
-    //    Toolbar toolbar = activity.getToolbar();
-    //    if (toolbar == null)
-    //    {
-    //        return;
-    //    }
-    //
-    //    Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
-    //
-    //    if (toolbarSpinner == null)
-    //    {
-    //        return;
-    //    }
-    //    toolbarSpinner.setSelection(index);
-    //}
-    //
-    //public void hideToolbarSpinner(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId)
-    //{
-    //    Toolbar toolbar = activity.getToolbar();
-    //    if (toolbar == null)
-    //    {
-    //        return;
-    //    }
-    //
-    //    Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
-    //
-    //    if (toolbarSpinner == null)
-    //    {
-    //        return;
-    //    }
-    //    toolbarSpinner.setVisibility(View.GONE);
-    //}
-    //
-    //public void showToolbarSpinner(@NonNull BaseActivity activity, @IdRes int toolbarSpinnerResId)
-    //{
-    //    Toolbar toolbar = activity.getToolbar();
-    //    if (toolbar == null)
-    //    {
-    //        return;
-    //    }
-    //
-    //    Spinner toolbarSpinner = (Spinner) toolbar.findViewById(toolbarSpinnerResId);
-    //
-    //    if (toolbarSpinner == null)
-    //    {
-    //        return;
-    //    }
-    //    toolbarSpinner.setVisibility(View.VISIBLE);
-    //}
 
     public void setCustomView(View view)
     {

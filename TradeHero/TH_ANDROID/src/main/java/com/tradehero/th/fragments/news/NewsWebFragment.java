@@ -247,7 +247,7 @@ public class NewsWebFragment extends WebViewFragment
                                 {
                                     return Observable.empty();
                                 }
-                                ArrayList<SecurityIntegerId> keyList = new ArrayList();
+                                ArrayList<SecurityIntegerId> keyList = new ArrayList<>();
                                 for (int securityId : newsItemDTO.securityIds)
                                 {
                                     keyList.add(new SecurityIntegerId(securityId));
