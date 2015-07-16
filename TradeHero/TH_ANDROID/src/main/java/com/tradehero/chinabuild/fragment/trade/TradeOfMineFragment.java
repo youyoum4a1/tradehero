@@ -577,7 +577,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         //用户唯一标识
         bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
         //渠道
-        bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "ht6c4bb1384e63c92d");
+        bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
         //设置在线时间(秒)
         intent.putExtras(bundle);
         startActivityForResult(intent, 1);
