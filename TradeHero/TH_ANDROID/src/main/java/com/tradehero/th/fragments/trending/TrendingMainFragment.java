@@ -29,6 +29,8 @@ import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.BaseActivity;
 import com.tradehero.th.adapters.DTOAdapterNew;
+import com.tradehero.th.api.market.Country;
+import com.tradehero.th.api.market.ExchangeCompactDTO;
 import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
 import com.tradehero.th.api.market.ExchangeCompactDTOList;
 import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
@@ -70,6 +72,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
@@ -340,7 +343,7 @@ public class TrendingMainFragment extends DashboardFragment
         actionBarOwnerMixin.setCustomView(view);
     }
 
-    private void setupStockFxSwitcher(View view)
+    private void setupStockFxSwitcher(@NonNull View view)
     {
         stockFxSwitcher = (OffOnViewSwitcher) view.findViewById(R.id.switch_stock_fx);
         onDestroyOptionsMenuSubscriptions.add(stockFxSwitcher.getSwitchObservable()
@@ -443,7 +446,7 @@ public class TrendingMainFragment extends DashboardFragment
         stockFxSwitcher.setIsOn(lastType.equals(TrendingTabType.FX), false);
     }
 
-    private void setupExchangeSpinner(View view)
+    private void setupExchangeSpinner(@NonNull View view)
     {
         exchangeSpinner = (ExchangeSpinner) view.findViewById(R.id.exchange_selection_menu);
         if (lastType == TrendingTabType.FX)
@@ -480,41 +483,53 @@ public class TrendingMainFragment extends DashboardFragment
         ExchangeListType key = new ExchangeListType();
         onDestroyOptionsMenuSubscriptions.add(AppObservable.bindFragment(
                 this,
-                exchangeCompactListCache.getOne(key)
-                        .map(new PairGetSecond<ExchangeListType, ExchangeCompactDTOList>()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<ExchangeCompactDTOList, ExchangeCompactSpinnerDTOList>()
-                {
-                    @Override public ExchangeCompactSpinnerDTOList call(ExchangeCompactDTOList exchangeDTOs)
-                    {
-                        ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
-                                getResources(),
-                                ExchangeCompactDTOUtil.filterAndOrderForTrending(
-                                        exchangeDTOs,
-                                        new ExchangeCompactDTODescriptionNameComparator<>()));
-                        // Adding the "All" choice
-                        spinnerList.add(0, new ExchangeCompactSpinnerDTO(getResources()));
-                        return spinnerList;
-                    }
-                })
-                .startWith(exchangeCompactSpinnerDTOList != null ? Observable.just(exchangeCompactSpinnerDTOList)
-                        : Observable.<ExchangeCompactSpinnerDTOList>empty())
-                .distinctUntilChanged()
-                .doOnNext(new Action1<ExchangeCompactSpinnerDTOList>()
-                {
-                    @Override public void call(ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs)
-                    {
-                        exchangeCompactSpinnerDTOList = exchangeCompactSpinnerDTOs;
-                    }
-                })
-                .subscribe(
-                        new Action1<ExchangeCompactSpinnerDTOList>()
+                Observable.combineLatest(
+                        exchangeCompactListCache.getOne(key)
+                                .map(new PairGetSecond<ExchangeListType, ExchangeCompactDTOList>())
+                                .map(new Func1<ExchangeCompactDTOList, ExchangeCompactSpinnerDTOList>()
+                                {
+                                    @Override public ExchangeCompactSpinnerDTOList call(ExchangeCompactDTOList exchangeDTOs)
+                                    {
+                                        ExchangeCompactSpinnerDTOList spinnerList = new ExchangeCompactSpinnerDTOList(
+                                                getResources(),
+                                                ExchangeCompactDTOUtil.filterAndOrderForTrending(
+                                                        exchangeDTOs,
+                                                        new ExchangeCompactDTODescriptionNameComparator<>()));
+                                        // Adding the "All" choice
+                                        spinnerList.add(0, new ExchangeCompactSpinnerDTO(getResources()));
+                                        return spinnerList;
+                                    }
+                                })
+                                .startWith(exchangeCompactSpinnerDTOList != null
+                                        ? Observable.just(exchangeCompactSpinnerDTOList)
+                                        : Observable.<ExchangeCompactSpinnerDTOList>empty())
+                                .distinctUntilChanged(),
+                        userProfileCache.getOne(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
+                        new Func2<ExchangeCompactSpinnerDTOList, UserProfileDTO, Pair<ExchangeCompactSpinnerDTOList, ExchangeCompactSpinnerDTO>>()
                         {
-                            @Override public void call(ExchangeCompactSpinnerDTOList list)
+                            @Override
+                            public Pair<ExchangeCompactSpinnerDTOList, ExchangeCompactSpinnerDTO> call(
+                                    ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOs,
+                                    UserProfileDTO userProfileDTO)
                             {
-                                exchangeAdapter.addAll(list);
+                                Country defaultCountry = userProfileDTO.getCountry();
+                                return Pair.create(
+                                        exchangeCompactSpinnerDTOs,
+                                        defaultCountry == null
+                                                ? null
+                                                : exchangeCompactSpinnerDTOs.findFirstDefaultFor(defaultCountry));
+                            }
+                        }))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new Action1<Pair<ExchangeCompactSpinnerDTOList, ExchangeCompactSpinnerDTO>>()
+                        {
+                            @Override public void call(Pair<ExchangeCompactSpinnerDTOList, ExchangeCompactSpinnerDTO> pair)
+                            {
+                                exchangeCompactSpinnerDTOList = pair.first;
+                                exchangeAdapter.addAll(pair.first);
                                 exchangeAdapter.notifyDataSetChanged();
-                                handleExchangeRouting();
+                                handleExchangeRouting(pair.second);
                             }
                         },
                         new ToastAndLogOnErrorAction(
@@ -610,7 +625,7 @@ public class TrendingMainFragment extends DashboardFragment
         clearRoutingParam();
     }
 
-    private void handleExchangeRouting()
+    private void handleExchangeRouting(@Nullable ExchangeCompactDTO defaultValue)
     {
         if (routedExchangeId != null
                 && lastType.equals(TrendingTabType.STOCK))
@@ -618,9 +633,13 @@ public class TrendingMainFragment extends DashboardFragment
             exchangeSpinner.setSelectionById(new ExchangeIntegerId(routedExchangeId));
             routedExchangeId = null;
         }
-        else if (lastType.equals(TrendingTabType.STOCK))
+        else if (lastType.equals(TrendingTabType.STOCK) && preferredExchangeMarket.get() > 0)
         {
             exchangeSpinner.setSelectionById(new ExchangeIntegerId(preferredExchangeMarket.get()));
+        }
+        else if (defaultValue != null)
+        {
+            exchangeSpinner.setSelectionById(defaultValue.getExchangeIntegerId());
         }
     }
 
