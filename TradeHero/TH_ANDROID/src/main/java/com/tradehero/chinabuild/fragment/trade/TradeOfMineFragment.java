@@ -571,6 +571,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
     }
 
     private void enterSecurityFirmBargain(){
+        TradeModule.debug();
         Intent intent = new Intent(getActivity(), TradeModule.class);
         Bundle bundle = new Bundle();
         //用户唯一标识

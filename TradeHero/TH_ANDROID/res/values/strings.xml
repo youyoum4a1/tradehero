@@ -603,4 +603,7 @@
     <string name="cancel_delegation_success">cancel delegation success</string>
     <string name="cancel_delegation_fail">cancel delegation fail</string>
 
+    <!-- HAITONG SDK -->
+    <string name="action_settings">Settings</string>
+    <!-- HAITONG SDK -->
 </resources>
