@@ -35,6 +35,11 @@
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
     <!-- 个推SDK权限配置 -->
 
+    <!-- 实盘 -->
+    <!-- 超时对话框权限 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <!-- 实盘 -->
+
     <application
             android:name="com.tradehero.th.base.Application"
             android:allowBackup="true"

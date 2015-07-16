@@ -1,0 +1,62 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/test_btn_login"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="登录交易">
+        
+    </Button>
+    <Button
+        android:id="@+id/test_btn_logout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="退出交易">
+        
+    </Button>
+    <LinearLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+	    <Button
+	        android:id="@+id/test_btn_entrust"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="买卖委托">
+	        
+	    </Button>
+	    <Button
+	        android:id="@+id/test_btn_query_position"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="查询持仓">
+	        
+	    </Button>
+	    <Button
+	        android:id="@+id/test_btn_transfer"
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="银证转账">
+	        
+	    </Button>
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1">
+        
+	    <TextView 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:id="@+id/test_tv_result"/>
+    </ScrollView>
+</LinearLayout>

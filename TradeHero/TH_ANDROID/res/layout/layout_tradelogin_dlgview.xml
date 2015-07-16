@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="#FFFFFFFF"
+    android:minHeight="240dip">
+    
+	<LinearLayout 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    android:paddingTop="6dip"
+	    android:paddingBottom="6dip">
+	    <TextView 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="4"
+	        android:gravity="center"
+	        android:text="站点"
+	        android:textColor="#FF000000"
+	        android:textSize="16sp"/>
+	    <TextView 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="6"
+	        android:gravity="center"
+	        android:text="响应时间"
+	        android:textColor="#FF000000"
+	        android:textSize="16sp"/>
+	</LinearLayout>
+	<ListView 
+	    android:id="@+id/dlg_listview"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_weight="1"
+	    android:cacheColorHint="#00000000">
+	    
+	</ListView>
+</LinearLayout>
