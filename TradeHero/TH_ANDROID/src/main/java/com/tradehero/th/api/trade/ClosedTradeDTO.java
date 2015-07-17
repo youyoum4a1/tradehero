@@ -17,6 +17,22 @@ public class ClosedTradeDTO implements DTO
     public String closedAtUtc;
     public String createdAtUtc;
 
+    public String business_price;
+    public String business_amt;
+    public String business_date;
+    public String business_time;
+
+    public String entrust_name;
+    public String entrust_price;
+    public String entrust_amt;
+    public String entrust_date;
+    public String entrust_time;
+    public String entrust_status_name;
+
+    public String market_code;
+    public String sec_account;
+    public String withdraw_cate;
+
     public ClosedTradeDTO()
     {
     }
@@ -34,8 +50,21 @@ public class ClosedTradeDTO implements DTO
                 ", price=" + price +
                 ", currencyDisplay='" + currencyDisplay + '\'' +
                 ", state=" + state +
-                ", closedAtUtc=" + closedAtUtc +
-                ", createdAtUtc=" + createdAtUtc +
+                ", closedAtUtc='" + closedAtUtc + '\'' +
+                ", createdAtUtc='" + createdAtUtc + '\'' +
+                ", business_price='" + business_price + '\'' +
+                ", business_amt='" + business_amt + '\'' +
+                ", business_date='" + business_date + '\'' +
+                ", business_time='" + business_time + '\'' +
+                ", entrust_name='" + entrust_name + '\'' +
+                ", entrust_price='" + entrust_price + '\'' +
+                ", entrust_amt='" + entrust_amt + '\'' +
+                ", entrust_date='" + entrust_date + '\'' +
+                ", entrust_time='" + entrust_time + '\'' +
+                ", entrust_status_name='" + entrust_status_name + '\'' +
+                ", market_code='" + market_code + '\'' +
+                ", sec_account='" + sec_account + '\'' +
+                ", withdraw_cate='" + withdraw_cate + '\'' +
                 '}';
     }
 }

@@ -111,14 +111,6 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
     }
 
     @Override
-    public void onDestroyView() {
-//        mDelegrationButton = null;
-//        mListViewAdapter = null;
-//        mListView = null;
-        super.onDestroyView();
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Timber.d("lyl onItemClick "+position);
         if (mSelectedPosition == position) {

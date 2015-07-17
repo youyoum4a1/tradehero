@@ -89,6 +89,8 @@ import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.firmbargain.SecurityOptActualSubBuyFragment;
 import com.tradehero.firmbargain.SecurityOptActualSubSellFragment;
+import com.tradehero.firmbargain.SecurityOptActualSubDelegationFragment;
+import com.tradehero.firmbargain.SecurityOptActualSubQueryFragment;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.adapters.CNPersonTradePositionListAdapter;
 import com.tradehero.th.adapters.CompetitionListAdapter;
@@ -250,6 +252,8 @@ import javax.inject.Singleton;
                         SecurityDetailSubPositionFragment.class,
                         SecurityOptMockSubQueryFragment.class,
                         SecurityOptMockSubDelegationFragment.class,
+                        SecurityOptActualSubDelegationFragment.class,
+                        SecurityOptActualSubQueryFragment.class,
 
                         TimeLineDetailDialogLayout.class,
                         TimeLineCommentDialogLayout.class,
@@ -320,9 +324,7 @@ import javax.inject.Singleton;
 
                         //Security Opt
                         SecurityOptMockSubSellFragment.class,
-                        SecurityOptMockSubBuyFragment.class,
-                        SecurityOptActualSubBuyFragment.class,
-                        SecurityOptActualSubSellFragment.class
+                        SecurityOptMockSubBuyFragment.class
                         //Security Opt
 
                         //China Build End
