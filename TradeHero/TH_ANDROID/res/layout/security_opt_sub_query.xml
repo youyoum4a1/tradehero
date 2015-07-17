@@ -5,11 +5,13 @@
     android:layout_height="match_parent"
     android:background="@color/red">
     <LinearLayout
+        android:id="@+id/title_layout"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:layout_marginLeft="5dp"
         android:background="@color/white">
         <TextView
+            android:id="@+id/trade_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="15dp"
@@ -173,7 +175,7 @@
             android:background="@color/white"/>
     </LinearLayout>
     <LinearLayout
-        android:id="@+id/title_layout"
+        android:id="@+id/title_layout2"
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:background="#eeeeee">
