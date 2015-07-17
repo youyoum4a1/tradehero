@@ -109,7 +109,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     private RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
     private RefreshQuoteHandler refreshQuoteHandler = new RefreshQuoteHandler();
 
-    private SecurityOptPositionAdapter securityOptMockPositionAdapter;
+    private SecurityOptPositionMockAdapter securityOptMockPositionAdapter;
 
     //Buy Sell Layout
     private TextView sell5Price;
@@ -142,7 +142,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        securityOptMockPositionAdapter = new SecurityOptPositionAdapter(getActivity());
+        securityOptMockPositionAdapter = new SecurityOptPositionMockAdapter(getActivity());
         color_up = getResources().getColor(R.color.number_up);
         color_down = getResources().getColor(R.color.number_down);
         securitySymbol = getArguments().getString(SecurityOptActivity.KEY_SECURITY_SYMBOL, "");
@@ -212,7 +212,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         });
         positionsLV = (ListView) view.findViewById(R.id.listview_security_opt_positions);
         if (securityOptMockPositionAdapter == null) {
-            securityOptMockPositionAdapter = new SecurityOptPositionAdapter(getActivity());
+            securityOptMockPositionAdapter = new SecurityOptPositionMockAdapter(getActivity());
         }
         positionsLV.setAdapter(securityOptMockPositionAdapter);
         securityCodeTV = (TextView) view.findViewById(R.id.textview_security_code);

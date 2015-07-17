@@ -21,6 +21,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#1789d5"
                 android:textSize="12sp"
+                android:singleLine="true"
                 android:layout_gravity="center_horizontal"
                 android:text="- -"/>
             <TextView
@@ -30,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#1789d5"
                 android:textSize="12sp"
+                android:singleLine="true"
                 android:layout_gravity="center_horizontal"
                 android:text="- -" />
         </LinearLayout>
@@ -45,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/number_up"
                 android:textSize="12sp"
+                android:singleLine="true"
                 android:layout_gravity="center_horizontal"
                 android:text="- -"/>
             <TextView
@@ -54,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/number_up"
                 android:textSize="12sp"
+                android:singleLine="true"
                 android:layout_gravity="center_horizontal"
                 android:text="- -" />
         </LinearLayout>
@@ -68,6 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000000"
+                android:singleLine="true"
                 android:textSize="12sp"
                 android:layout_gravity="center_horizontal"
                 android:text="- -"/>
@@ -77,6 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000000"
+                android:singleLine="true"
                 android:textSize="12sp"
                 android:layout_gravity="center_horizontal"
                 android:text="- -" />
@@ -92,6 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000000"
+                android:singleLine="true"
                 android:textSize="12sp"
                 android:layout_gravity="center_horizontal"
                 android:text="- -"/>
@@ -101,6 +108,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#000000"
+                android:singleLine="true"
                 android:textSize="12sp"
                 android:layout_gravity="center_horizontal"
                 android:text="- -" />

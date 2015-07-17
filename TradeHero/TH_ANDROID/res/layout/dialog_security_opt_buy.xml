@@ -98,6 +98,8 @@
             android:id="@+id/dialog_security_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingRight="19dp"
+            android:singleLine="true"
             android:textColor="#000000"
             android:text="- -"
             android:textSize="16sp"/>
@@ -121,6 +123,8 @@
             android:id="@+id/dialog_security_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingRight="19dp"
+            android:singleLine="true"
             android:textColor="@color/number_up"
             android:text="- -"
             android:textSize="16sp"/>

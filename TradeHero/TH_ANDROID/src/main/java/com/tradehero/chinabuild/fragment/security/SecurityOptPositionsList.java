@@ -5,7 +5,7 @@ import com.tradehero.common.api.BaseArrayList;
 /**
  * Created by palmer on 15/7/10.
  */
-public class SecurityOptPositionsList extends BaseArrayList<SecurityOptPositionDTO> {
+public class SecurityOptPositionsList extends BaseArrayList<SecurityOptPositionMockDTO> {
 
     public SecurityOptPositionsList(){
         super();

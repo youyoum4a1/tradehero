@@ -139,7 +139,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
 
     private boolean isRefresh = true;
 
-    private SecurityOptPositionAdapter securityOptMockPositionAdapter;
+    private SecurityOptPositionMockAdapter securityOptMockPositionAdapter;
 
     private PortfolioDTO portfolioDTO;
     private PortfolioId portfolioIdObj;
@@ -164,7 +164,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        securityOptMockPositionAdapter = new SecurityOptPositionAdapter(getActivity());
+        securityOptMockPositionAdapter = new SecurityOptPositionMockAdapter(getActivity());
         color_up = getResources().getColor(R.color.number_up);
         color_down = getResources().getColor(R.color.number_down);
         securitySymbol = getArguments().getString(SecurityOptActivity.KEY_SECURITY_SYMBOL, "");
@@ -242,7 +242,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         });
         positionsLV = (ListView) view.findViewById(R.id.listview_security_opt_positions);
         if (securityOptMockPositionAdapter == null) {
-            securityOptMockPositionAdapter = new SecurityOptPositionAdapter(getActivity());
+            securityOptMockPositionAdapter = new SecurityOptPositionMockAdapter(getActivity());
         }
         positionsLV.setAdapter(securityOptMockPositionAdapter);
         securityCodeTV = (TextView)view.findViewById(R.id.textview_security_code);
@@ -790,7 +790,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
             availableSellTV.setText("0");
             return;
         }
-        for(SecurityOptPositionDTO securityOptPositionDTO : securityOptPositionDTOs){
+        for(SecurityOptPositionMockDTO securityOptPositionDTO : securityOptPositionDTOs){
             if(securityOptPositionDTO.symbol.equals(securitySymbol) && securityOptPositionDTO.exchange.equals(securityExchange)){
                 totalSellTV.setText(String.valueOf(securityOptPositionDTO.shares));
                 availableSellTV.setText(String.valueOf(securityOptPositionDTO.sellableShares));

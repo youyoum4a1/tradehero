@@ -22,8 +22,6 @@ import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.chinabuild.fragment.security.SecurityOptPositionAdapter;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
@@ -31,12 +29,14 @@ import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
+import com.tradehero.th.utils.SecurityUtils;
 
 import java.text.DecimalFormat;
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import cn.htsec.data.SecAccountInfo;
 import cn.htsec.data.pkg.trade.IPackageProxy;
 import cn.htsec.data.pkg.trade.TradeDataHelper;
 import cn.htsec.data.pkg.trade.TradeInterface;
@@ -78,7 +78,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
     private TextView dlgConfirmTV;
     private TextView dlgCancelTV;
 
-    private SecurityOptPositionAdapter securityOptMockPositionAdapter;
+    private SecurityOptPositionActualAdapter securityOptPositionActualAdapter;
 
     private int color_up;
     private int color_down;
@@ -87,6 +87,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
     private String securitySymbol = "";
     private String securityName = "";
     private int competitionId = 0;
+    private double balance = 0.0;
 
     //Buy Sell Layout
     private TextView sell5Price;
@@ -118,6 +119,8 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
 
     private boolean isRefresh = true;
 
+    private ArrayList<SecurityOptPositionActualDTO> securityOptPositionActualDTOs = new ArrayList();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -145,6 +148,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
             if (isSHASHE()) {
                 quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
                 queryPositionsRepeat();
+                queryBalance();
             }
         }
         return view;
@@ -172,10 +176,10 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
             }
         });
         positionsLV = (ListView) view.findViewById(R.id.listview_security_opt_positions);
-        if (securityOptMockPositionAdapter == null) {
-            securityOptMockPositionAdapter = new SecurityOptPositionAdapter(getActivity());
+        if (securityOptPositionActualAdapter == null) {
+            securityOptPositionActualAdapter = new SecurityOptPositionActualAdapter(getActivity());
         }
-        positionsLV.setAdapter(securityOptMockPositionAdapter);
+        positionsLV.setAdapter(securityOptPositionActualAdapter);
         securityCodeTV = (TextView) view.findViewById(R.id.textview_security_code);
         securityCodeTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -257,28 +261,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                 @Override
                 public void onClick(View view) {
                     buyConfirmDialog.dismiss();
-                    if (decisionET.getText() == null) {
-                        return;
-                    }
-                    if (TextUtils.isEmpty(decisionET.getText().toString())) {
-                        return;
-                    }
-                    if (priceET.getText() == null) {
-                        return;
-                    }
-                    if (TextUtils.isEmpty(priceET.getText().toString())) {
-                        return;
-                    }
-                    int quantity = Integer.valueOf(decisionET.getText().toString());
-                    double price = Double.valueOf(priceET.getText().toString());
-                    if (price <= 0) {
-                        THToast.show("股票价格错误");
-                        return;
-                    }
-                    if (quantity <= 0) {
-                        THToast.show("股票交易数量错误");
-                        return;
-                    }
+                    tradeStock();
                 }
 
             });
@@ -302,7 +285,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         dlgStockCodeTV.setText(securitySymbol);
         dlgStockPriceTV.setText(priceET.getText());
         dlgStockAmountTV.setText(decisionET.getText());
-        int price = (int) (Double.valueOf(priceET.getText().toString()) * Integer.valueOf(decisionET.getText().toString()));
+        int price = (int) (Double.valueOf(priceET.getText().toString()) * Double.valueOf(decisionET.getText().toString()));
         dlgStockTotalTV.setText(String.valueOf(price));
         buyConfirmDialog.show();
     }
@@ -375,6 +358,14 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
     }
 
     private void setBuyAmount(int percent){
+        if(balance <=0 ){
+            return;
+        }
+        if(quoteDetail == null){
+            return;
+        }
+        double amount = balance/(quoteDetail.prec * percent);
+        decisionET.setText(String.valueOf(amount));
         switch (percent){
             case 1:
                 allIV.setImageResource(R.drawable.all);
@@ -581,23 +572,21 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
 
             @Override
             public void onReceive(TradeDataHelper helper) {
+                securityOptPositionActualDTOs.clear();
                 int rowCount = helper.getRowCount();
-                StringBuffer sb = new StringBuffer();
-                List<String> keys = helper.getKeys();
-                for(int i = 0; i < rowCount; i++)
-                {
-                    sb.append(i+",");
-                    for(int j = 0; j < keys.size(); j++)
-                    {
-                        String key = keys.get(j);
-                        sb.append(key+":"+helper.get(i, key, null));
-                        if(j != keys.size() - 1)
-                        {
-                            sb.append("  ");
-                        }
-                    }
-                    sb.append("\n");
+                for(int i = 0; i < rowCount; i++) {
+                    SecurityOptPositionActualDTO securityOptPositionActualDTO = new SecurityOptPositionActualDTO();
+                    securityOptPositionActualDTO.sec_name = helper.get(i, "sec_name", "");
+                    securityOptPositionActualDTO.sec_code = helper.get(i, "sec_code", null);
+                    securityOptPositionActualDTO.profit = helper.get(i, "profit", 0.0);
+                    securityOptPositionActualDTO.profit_ratio = helper.get(i, "profit_ratio", 0.0);
+                    securityOptPositionActualDTO.buy_money = helper.get(i, "buy_money", 0.0);
+                    securityOptPositionActualDTO.cost_price = helper.get(i, "cost_price", 0.0);
+                    securityOptPositionActualDTO.current_amt = helper.get(i, "current_amt", 0.0);
+                    securityOptPositionActualDTO.enable_amt = helper.get(i, "enable_amt", 0.0);
+                    securityOptPositionActualDTOs.add(securityOptPositionActualDTO);
                 }
+                securityOptPositionActualAdapter.addData(securityOptPositionActualDTOs);
                 if (isNeedToRefresh()) {
                     if(isRefresh) {
                         refreshQueryPositionHandler.sendEmptyMessageDelayed(-1, 20000);
@@ -623,6 +612,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
             return;
         }
         tradeManager.sendData(TradeInterface.ID_QUERY_POSITION, new IPackageProxy(){
+
             @Override
             public void onSend(TradeDataHelper helper) {
                 helper.setStartPosition(0);
@@ -631,26 +621,111 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
 
             @Override
             public void onReceive(TradeDataHelper helper) {
+                securityOptPositionActualDTOs.clear();
                 int rowCount = helper.getRowCount();
-                StringBuffer sb = new StringBuffer();
-                List<String> keys = helper.getKeys();
-                for(int i = 0; i < rowCount; i++)
-                {
-                    sb.append(i+",");
-                    for(int j = 0; j < keys.size(); j++)
-                    {
-                        String key = keys.get(j);
-                        sb.append(key+":"+helper.get(i, key, null));
-                        if(j != keys.size() - 1)
-                        {
-                            sb.append("  ");
-                        }
-                    }
-                    sb.append("\n");
+                for(int i = 0; i < rowCount; i++) {
+                    SecurityOptPositionActualDTO securityOptPositionActualDTO = new SecurityOptPositionActualDTO();
+                    securityOptPositionActualDTO.sec_name = helper.get(i, "sec_name", "");
+                    securityOptPositionActualDTO.sec_code = helper.get(i, "sec_code", null);
+                    securityOptPositionActualDTO.profit = helper.get(i, "profit", 0.0);
+                    securityOptPositionActualDTO.profit_ratio = helper.get(i, "profit_ratio", 0.0);
+                    securityOptPositionActualDTO.buy_money = helper.get(i, "buy_money", 0.0);
+                    securityOptPositionActualDTO.cost_price = helper.get(i, "cost_price", 0.0);
+                    securityOptPositionActualDTO.current_amt = helper.get(i, "current_amt", 0.0);
+                    securityOptPositionActualDTO.enable_amt = helper.get(i, "enable_amt", 0.0);
+                    securityOptPositionActualDTOs.add(securityOptPositionActualDTO);
                 }
-                THLog.d(sb.toString());
+                securityOptPositionActualAdapter.addData(securityOptPositionActualDTOs);
             }
         });
 
+    }
+
+    private void queryBalance(){
+        if(tradeManager==null || !tradeManager.isLogined() ){
+            if(getActivity()!=null) {
+                getActivity().finish();
+            }
+            return;
+        }
+        tradeManager.sendData(TradeInterface.ID_QUERY_MONEY_BALANCE, new IPackageProxy(){
+            @Override
+            public void onSend(TradeDataHelper helper) {
+
+            }
+
+            @Override
+            public void onReceive(TradeDataHelper helper) {
+                int rowCount = helper.getRowCount();
+                for(int i = 0; i < rowCount; i++) {
+                    balance = helper.get(i, "enable_balance", 0.0);
+                    if(balance > 0){
+                        if(availableCashTV!=null) {
+                            availableCashTV.setText(String.valueOf(balance));
+                        }
+                        return;
+                    }
+                }
+
+            }
+        });
+    }
+
+    private void tradeStock(){
+        if (decisionET.getText() == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(decisionET.getText().toString())) {
+            return;
+        }
+        if (priceET.getText() == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(priceET.getText().toString())) {
+            return;
+        }
+        final double quantity = Double.valueOf(decisionET.getText().toString());
+        final double price = Double.valueOf(priceET.getText().toString());
+        if (price <= 0) {
+            THToast.show("股票价格错误");
+            return;
+        }
+        if (quantity <= 0) {
+            THToast.show("股票交易数量错误");
+            return;
+        }
+        if(isSHASHE()) {
+            if (quoteDetail != null && quoteDetail.prec != null) {
+                if (price > (quoteDetail.prec * 1.11) || price < (quoteDetail.prec * 0.89)) {
+                    THToast.show("股票价格错误");
+                    return;
+                }
+            }
+            if(tradeManager!=null){
+                tradeManager.sendData(TradeInterface.ID_ENTRUST, new IPackageProxy() {
+
+                    @Override
+                    public void onSend(TradeDataHelper helper) {
+                        helper.set(TradeInterface.KEY_MARKET_CODE, SecurityUtils.getMarketCodeBySymbol(securitySymbol));
+                        helper.set(TradeInterface.KEY_ENTRUST_TYPE, "1");
+                        SecAccountInfo secAccountInfo = tradeManager.getSecAccounts().get(0);
+                        helper.set(TradeInterface.KEY_SEC_ACCOUNT, secAccountInfo.getAccount());
+                        helper.set(TradeInterface.KEY_SEC_CODE, securitySymbol);
+                        helper.set(TradeInterface.KEY_ENTRUST_PRICE, String.valueOf(price));
+                        helper.set(TradeInterface.KEY_ENTRUST_AMT, String.valueOf(quantity));
+                        helper.set(TradeInterface.KEY_MARKET_ORDER_TYPE, "");
+                    }
+
+                    @Override
+                    public void onReceive(TradeDataHelper helper) {
+                        String resultMsg = helper.getResultMsg();
+                        THToast.show(resultMsg);
+                        queryBalance();
+                        queryPositionsNoRepeat();
+                    }
+
+                });
+            }
+        }
     }
 }

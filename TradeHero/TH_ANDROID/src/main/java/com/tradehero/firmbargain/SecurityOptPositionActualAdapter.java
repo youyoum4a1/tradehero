@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.fragment.security;
+package com.tradehero.firmbargain;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,29 +7,30 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.tradehero.chinabuild.fragment.security.SecurityOptPositionMockDTO;
 import com.tradehero.th.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
- * Created by palmer on 15/7/7.
+ * Created by palmer on 15/7/17.
  */
-public class SecurityOptPositionAdapter extends BaseAdapter{
+public class SecurityOptPositionActualAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
-    private ArrayList<SecurityOptPositionDTO> securityOptPositionDTOs = new ArrayList();
+    private ArrayList<SecurityOptPositionActualDTO> securityOptPositionDTOs = new ArrayList();
 
     private int color_up;
     private int color_down;
 
-    public SecurityOptPositionAdapter(Context context){
+    public SecurityOptPositionActualAdapter(Context context){
         inflater = LayoutInflater.from(context);
         color_up = context.getResources().getColor(R.color.number_up);
         color_down = context.getResources().getColor(R.color.number_down);
     }
 
-    public void addData(ArrayList<SecurityOptPositionDTO> securityOptPositionDTOs){
+    public void addData(ArrayList<SecurityOptPositionActualDTO> securityOptPositionDTOs){
         this.securityOptPositionDTOs.clear();
         if(securityOptPositionDTOs != null){
             this.securityOptPositionDTOs.addAll(securityOptPositionDTOs);
@@ -43,7 +44,7 @@ public class SecurityOptPositionAdapter extends BaseAdapter{
     }
 
     @Override
-    public SecurityOptPositionDTO getItem(int i) {
+    public SecurityOptPositionActualDTO getItem(int i) {
         return securityOptPositionDTOs.get(i);
     }
 
@@ -70,26 +71,26 @@ public class SecurityOptPositionAdapter extends BaseAdapter{
         } else {
             holder = (Holder)convertView.getTag();
         }
-        SecurityOptPositionDTO securityOptPositionDTO = getItem(i);
-        holder.stockName.setText(securityOptPositionDTO.name);
-        holder.totalAccount.setText(String.valueOf(securityOptPositionDTO.shares));
-        holder.availableAccount.setText(String.valueOf(securityOptPositionDTO.sellableShares));
-        holder.code.setText(securityOptPositionDTO.symbol);
-        int benefit = (int)(securityOptPositionDTO.unrealizedPLRefCcy);
-        double percentage = securityOptPositionDTO.unrealizedPLRefCcy / (securityOptPositionDTO.averagePriceRefCcy * securityOptPositionDTO.shares);
-        DecimalFormat df = new DecimalFormat("#0.00");
-        holder.benefit.setText(securityOptPositionDTO.currencyDisplay + String.valueOf(benefit));
-        holder.percentageBenefit.setText(df.format(percentage * 100) + "%");
-        if(securityOptPositionDTO.unrealizedPLRefCcy >= 0){
-            holder.benefit.setTextColor(color_up);
-            holder.percentageBenefit.setTextColor(color_up);
-        } else {
-            holder.benefit.setTextColor(color_down);
-            holder.percentageBenefit.setTextColor(color_down);
+        SecurityOptPositionActualDTO securityOptPositionDTO = getItem(i);
+        if(securityOptPositionDTO!=null){
+            holder.stockName.setText(securityOptPositionDTO.sec_name);
+            holder.code.setText(securityOptPositionDTO.sec_code);
+            if(securityOptPositionDTO.profit_ratio >= 0){
+                holder.benefit.setTextColor(color_up);
+                holder.percentageBenefit.setTextColor(color_up);
+            } else {
+                holder.benefit.setTextColor(color_down);
+                holder.percentageBenefit.setTextColor(color_down);
+            }
+            holder.basePrice.setText(String.valueOf(securityOptPositionDTO.cost_price));
+            holder.base.setText(String.valueOf(securityOptPositionDTO.buy_money));
+            String ratio = securityOptPositionDTO.profit_ratio + "%";
+            holder.percentageBenefit.setText(ratio);
+            holder.benefit.setText(String.valueOf(securityOptPositionDTO.profit));
+            holder.totalAccount.setText(String.valueOf(securityOptPositionDTO.current_amt));
+            holder.availableAccount.setText(String.valueOf(securityOptPositionDTO.enable_amt));
         }
-        int base = (int)(securityOptPositionDTO.averagePriceRefCcy * securityOptPositionDTO.shares);
-        holder.base.setText(securityOptPositionDTO.currencyDisplay + String.valueOf(base));
-        holder.basePrice.setText(securityOptPositionDTO.currencyDisplay + df.format(securityOptPositionDTO.averagePriceRefCcy));
+
         return convertView;
     }
 

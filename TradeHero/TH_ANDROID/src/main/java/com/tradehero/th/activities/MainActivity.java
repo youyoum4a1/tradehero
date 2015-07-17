@@ -310,7 +310,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
-        THToast.show("requestCode="+requestCode+"resultCode"+resultCode);
     }
 
     @Override
