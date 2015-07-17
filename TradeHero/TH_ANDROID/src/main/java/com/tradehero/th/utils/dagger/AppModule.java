@@ -87,6 +87,8 @@ import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.CacheHelper;
+import com.tradehero.firmbargain.SecurityOptActualSubBuyFragment;
+import com.tradehero.firmbargain.SecurityOptActualSubSellFragment;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.adapters.CNPersonTradePositionListAdapter;
 import com.tradehero.th.adapters.CompetitionListAdapter;
@@ -318,7 +320,9 @@ import javax.inject.Singleton;
 
                         //Security Opt
                         SecurityOptMockSubSellFragment.class,
-                        SecurityOptMockSubBuyFragment.class
+                        SecurityOptMockSubBuyFragment.class,
+                        SecurityOptActualSubBuyFragment.class,
+                        SecurityOptActualSubSellFragment.class
                         //Security Opt
 
                         //China Build End

@@ -22,6 +22,7 @@ import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -586,6 +587,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         if(mTradeManager==null){
             mTradeManager = TradeManager.getInstance(Application.context());
         }
+        THLog.d("SecAccountInfo size aaaa");
         if(mTradeManager.isLogined()){
             Bundle bundle = new Bundle();
             bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
@@ -594,6 +596,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
             intent.putExtras(bundle);
             startActivity(intent);
             getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+
         } else {
             Intent intent = new Intent(getActivity(), TradeModule.class);
             Bundle bundle = new Bundle();

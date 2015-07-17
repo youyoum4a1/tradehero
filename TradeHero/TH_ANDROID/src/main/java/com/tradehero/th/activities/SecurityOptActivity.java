@@ -1,8 +1,10 @@
 package com.tradehero.th.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -10,10 +12,14 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.firmbargain.SecurityOptActualFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
+
+import cn.htsec.TradeModule;
+import cn.htsec.data.pkg.trade.TradeManager;
 
 /**
  * Created by palmer on 15/7/1.
@@ -42,10 +48,10 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     private int color_white;
 
     private boolean isMock = true;
-
     private int competitionId = 0;
-
     private boolean isForActual = false;
+
+    private String securityExchange = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +60,6 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
         initArguments();
         initResources();
         initViews();
-
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         SecurityOptMockFragment securityOptMockFragment = new SecurityOptMockFragment();
@@ -66,6 +71,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
         } else {
             enterMock();
         }
+
     }
 
     @Override
@@ -121,6 +127,9 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     private void initArguments(){
         competitionId = getIntent().getIntExtra(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID , 0);
         isForActual = getIntent().getBooleanExtra(KEY_IS_FOR_ACTUAL, false);
+        if(getIntent().hasExtra(KEY_SECURITY_EXCHANGE)) {
+            securityExchange = getIntent().getStringExtra(KEY_SECURITY_EXCHANGE);
+        }
     }
 
     private void gotoDashboard(String strFragment,Bundle bundle) {
@@ -147,6 +156,27 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
     private void enterActual(){
         if(!isMock){
+            return;
+        }
+        if(!TextUtils.isEmpty(securityExchange)){
+            if(!securityExchange.equalsIgnoreCase("SHA") && !securityExchange.equalsIgnoreCase("SHE")){
+                THToast.show("非沪深不能实盘交易");
+                enterMock();
+                return;
+            }
+        }
+
+        if(!TradeManager.getInstance(this).isLogined()){
+            finish();
+            Intent intent = new Intent(this, TradeModule.class);
+            Bundle bundle = new Bundle();
+            //用户唯一标识
+            bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
+            //渠道
+            bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
+            //设置在线时间(秒)
+            intent.putExtras(bundle);
+            startActivityForResult(intent, 1);
             return;
         }
         isMock = false;

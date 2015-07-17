@@ -15,7 +15,7 @@ import java.util.ArrayList;
 /**
  * Created by palmer on 15/7/7.
  */
-public class SecurityOptMockPositionAdapter extends BaseAdapter{
+public class SecurityOptPositionAdapter extends BaseAdapter{
 
     private LayoutInflater inflater;
     private ArrayList<SecurityOptPositionDTO> securityOptPositionDTOs = new ArrayList();
@@ -23,7 +23,7 @@ public class SecurityOptMockPositionAdapter extends BaseAdapter{
     private int color_up;
     private int color_down;
 
-    public SecurityOptMockPositionAdapter(Context context){
+    public SecurityOptPositionAdapter(Context context){
         inflater = LayoutInflater.from(context);
         color_up = context.getResources().getColor(R.color.number_up);
         color_down = context.getResources().getColor(R.color.number_down);

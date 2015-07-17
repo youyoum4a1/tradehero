@@ -1,5 +1,6 @@
 package com.tradehero.firmbargain;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,10 +17,15 @@ import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubBuyFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubDelegationFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubQueryFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubSellFragment;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
 
 import java.util.ArrayList;
+
+import cn.htsec.TradeModule;
+import cn.htsec.data.pkg.trade.OnlineListener;
+import cn.htsec.data.pkg.trade.TradeManager;
 
 public class SecurityOptActualFragment extends Fragment implements View.OnClickListener {
 
@@ -45,6 +51,8 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
 
     private String type = "";
 
+    private TradeManager tradeManager;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +61,7 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
         black_color = getResources().getColor(R.color.black);
 
         fragmentManager = getChildFragmentManager();
+
     }
 
     @Override
@@ -60,6 +69,30 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
         View view = inflater.inflate(R.layout.fragment_security_opt_mock, container, false);
         initViews(view);
         initSubViewPager();
+
+        tradeManager = TradeManager.getInstance(getActivity());
+        tradeManager.setOnlineListener(new OnlineListener() {
+            @Override
+            public void onTimeout() {
+                THToast.show("交易已超时，请重新登录！");
+                if(getActivity()!=null) {
+                    getActivity().finish();
+                    if(!TradeManager.getInstance(getActivity()).isLogined()){
+                        Intent intent = new Intent(getActivity(), TradeModule.class);
+                        Bundle bundle = new Bundle();
+                        //用户唯一标识
+                        bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
+                        //渠道
+                        bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
+                        //设置在线时间(秒)
+                        intent.putExtras(bundle);
+                        startActivityForResult(intent, 1);
+                        return;
+                    }
+                }
+            }
+        });
+
         return view;
     }
 
