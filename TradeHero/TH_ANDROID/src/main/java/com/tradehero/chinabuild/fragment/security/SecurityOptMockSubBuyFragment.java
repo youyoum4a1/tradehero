@@ -250,7 +250,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             buyConfirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             buyConfirmDialog.setCanceledOnTouchOutside(false);
             buyConfirmDialog.setCancelable(true);
-            buyConfirmDialog.setContentView(R.layout.dialog_security_opt_sell);
+            buyConfirmDialog.setContentView(R.layout.dialog_security_opt_buy);
             dlgStockNameTV = (TextView)buyConfirmDialog.findViewById(R.id.dialog_security_name);
             dlgStockCodeTV = (TextView)buyConfirmDialog.findViewById(R.id.dialog_security_code);
             dlgStockPriceTV = (TextView)buyConfirmDialog.findViewById(R.id.dialog_security_price);
@@ -267,7 +267,6 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                 }
             });
             dlgConfirmTV = (TextView)buyConfirmDialog.findViewById(R.id.dialog_confirm);
-            dlgConfirmTV.setText("确认买入");
             dlgConfirmTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

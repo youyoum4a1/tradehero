@@ -169,7 +169,7 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         availableSellTV = (TextView)view.findViewById(R.id.textview_available_sells);
         totalSellTV = (TextView)view.findViewById(R.id.textview_all_sells);
         buySellBtn = (Button) view.findViewById(R.id.button_security_opt_buy_sell);
-        buySellBtn.setText(R.string.security_opt_buy);
+        buySellBtn.setText(R.string.security_opt_sell);
         buySellBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -257,7 +257,6 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                 }
             });
             dlgConfirmTV = (TextView) buyConfirmDialog.findViewById(R.id.dialog_confirm);
-            dlgConfirmTV.setText("确认买入");
             dlgConfirmTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -704,7 +703,7 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                     @Override
                     public void onSend(TradeDataHelper helper) {
                         helper.set(TradeInterface.KEY_MARKET_CODE, SecurityUtils.getMarketCodeBySymbol(securitySymbol));
-                        helper.set(TradeInterface.KEY_ENTRUST_TYPE, "1");
+                        helper.set(TradeInterface.KEY_ENTRUST_TYPE, "2");
                         SecAccountInfo secAccountInfo = tradeManager.getSecAccounts().get(0);
                         helper.set(TradeInterface.KEY_SEC_ACCOUNT, secAccountInfo.getAccount());
                         helper.set(TradeInterface.KEY_SEC_CODE, securitySymbol);
@@ -716,8 +715,15 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                     @Override
                     public void onReceive(TradeDataHelper helper) {
                         String resultMsg = helper.getResultMsg();
-                        THToast.show(resultMsg);
+                        if(!TextUtils.isEmpty(resultMsg)) {
+                            THToast.show(resultMsg);
+                        }
                         queryPositionsNoRepeat();
+                    }
+
+                    @Override
+                    public void onRequestFail(String msg) {
+                        THToast.show(msg);
                     }
 
                 });
