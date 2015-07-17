@@ -324,7 +324,9 @@ import javax.inject.Singleton;
 
                         //Security Opt
                         SecurityOptMockSubSellFragment.class,
-                        SecurityOptMockSubBuyFragment.class
+                        SecurityOptMockSubBuyFragment.class,
+                        SecurityOptActualSubBuyFragment.class,
+                        SecurityOptActualSubSellFragment.class
                         //Security Opt
 
                         //China Build End

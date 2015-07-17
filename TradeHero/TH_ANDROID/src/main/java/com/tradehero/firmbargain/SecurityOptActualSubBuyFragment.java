@@ -365,7 +365,11 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
             return;
         }
         double amount = balance/(quoteDetail.prec * percent);
-        decisionET.setText(String.valueOf(amount));
+        if(amount < 1){
+            return;
+        }
+        DecimalFormat df = new DecimalFormat("#0");
+        decisionET.setText(df.format(amount));
         switch (percent){
             case 1:
                 allIV.setImageResource(R.drawable.all);

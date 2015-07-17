@@ -362,12 +362,12 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         if(availableSells <= 0){
             return;
         }
-        double sells = availableSells/percent;
-        if(sells < 1){
+        double amount = availableSells/percent;
+        if(amount < 1){
             return;
         }
         DecimalFormat df = new DecimalFormat("#0");
-        decisionET.setText(df.format(sells));
+        decisionET.setText(df.format(amount));
         switch (percent){
             case 1:
                 allIV.setImageResource(R.drawable.all);
