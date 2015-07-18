@@ -76,10 +76,10 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
         mTradeManager.sendData(TradeInterface.ID_QUERY_ORDERS, new IPackageProxy() {
             @Override
             public void onSend(TradeDataHelper helper) {
-                helper.set(TradeInterface.KEY_START_DATE, "20150618");
-                helper.set(TradeInterface.KEY_END_DATE, "20150717");
+//                helper.set(TradeInterface.KEY_START_DATE, "20150618");
+//                helper.set(TradeInterface.KEY_END_DATE, "20150717");
                 helper.set(TradeInterface.KEY_WITHDRAW_FLAG, "1");
-                helper.setStartPosition(0);
+//                helper.setStartPosition(0);
             }
 
             @Override

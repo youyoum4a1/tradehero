@@ -85,10 +85,10 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
         mTradeManager.sendData(TradeInterface.ID_QUERY_ORDERS, new IPackageProxy() {
             @Override
             public void onSend(TradeDataHelper helper) {
-                helper.set(TradeInterface.KEY_START_DATE, "20150618");
-                helper.set(TradeInterface.KEY_END_DATE, "20150717");
+//                helper.set(TradeInterface.KEY_START_DATE, "20150618");
+//                helper.set(TradeInterface.KEY_END_DATE, "20150717");
                 helper.set(TradeInterface.KEY_WITHDRAW_FLAG, "0");
-                helper.setStartPosition(0);
+//                helper.setStartPosition(0);
             }
 
             @Override
@@ -172,9 +172,9 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
 
             @Override
             public void onSend(TradeDataHelper helper) {
-                helper.set(TradeInterface.KEY_START_DATE, "20150701");
-                helper.set(TradeInterface.KEY_END_DATE, "20150717");
-                helper.setStartPosition(0);
+//                helper.set(TradeInterface.KEY_START_DATE, "20150701");
+//                helper.set(TradeInterface.KEY_END_DATE, "20150718");
+//                helper.setStartPosition(0);
             }
 
             @Override
