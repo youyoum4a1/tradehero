@@ -41,7 +41,9 @@ public class SecurityOptMockActualQueryDelegationAdapter extends BaseAdapter{
         }
         ClosedTradeDTO item = getItem(i);
         ImageView flagImageView = (ImageView)convertView.findViewById(R.id.flag);
-        if (item.entrust_status_name.equalsIgnoreCase("已撤单")) {
+        if (item.entrust_status_name.equalsIgnoreCase("场外撤单")) {
+            flagImageView.setImageResource(R.drawable.cancel_deal);
+        } else if (item.entrust_status_name.equalsIgnoreCase("已撤单")) {
             flagImageView.setImageResource(R.drawable.cancel_deal);
         } else if (item.entrust_status_name.equalsIgnoreCase("已成交")) {
             flagImageView.setImageResource(R.drawable.finish_deal);
