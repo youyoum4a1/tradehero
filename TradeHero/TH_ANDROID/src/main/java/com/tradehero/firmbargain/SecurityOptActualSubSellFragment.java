@@ -148,9 +148,9 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         if (!TextUtils.isEmpty(securitySymbol) && !TextUtils.isEmpty(securityExchange)) {
             if (isSHASHE()) {
                 quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
-                queryPositionsRepeat();
             }
         }
+        queryPositionsRepeat();
         return view;
     }
 

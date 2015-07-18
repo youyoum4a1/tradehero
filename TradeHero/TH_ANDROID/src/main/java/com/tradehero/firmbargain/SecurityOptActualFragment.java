@@ -46,7 +46,7 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
     private View recallFocus;
     private View queryFocus;
 
-    private int blue_color;
+    private int red_color;
     private int black_color;
 
     private String type = "";
@@ -57,7 +57,7 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initBundle();
-        blue_color = getResources().getColor(R.color.color_blue);
+        red_color = getResources().getColor(R.color.number_up);
         black_color = getResources().getColor(R.color.black);
 
         fragmentManager = getChildFragmentManager();
@@ -78,16 +78,7 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
                 if(getActivity()!=null) {
                     getActivity().finish();
                     if(!TradeManager.getInstance(getActivity()).isLogined()){
-                        Intent intent = new Intent(getActivity(), TradeModule.class);
-                        Bundle bundle = new Bundle();
-                        //用户唯一标识
-                        bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
-                        //渠道
-                        bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
-                        //设置在线时间(秒)
-                        intent.putExtras(bundle);
-                        startActivityForResult(intent, 1);
-                        return;
+
                     }
                 }
             }
@@ -106,6 +97,11 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
         sellFocus = view.findViewById(R.id.view_sell_focus);
         recallFocus = view.findViewById(R.id.view_recall_focus);
         queryFocus = view.findViewById(R.id.view_query_focus);
+
+        buyFocus.setBackgroundColor(red_color);
+        sellFocus.setBackgroundColor(red_color);
+        recallFocus.setBackgroundColor(red_color);
+        queryFocus.setBackgroundColor(red_color);
 
         buyBtn.setOnClickListener(this);
         sellBtn.setOnClickListener(this);
@@ -218,7 +214,7 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
 
     private void initSubTabs() {
         if (index == 0) {
-            buyBtn.setTextColor(blue_color);
+            buyBtn.setTextColor(red_color);
             sellBtn.setTextColor(black_color);
             recallBtn.setTextColor(black_color);
             queryBtn.setTextColor(black_color);
@@ -230,7 +226,7 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
         }
         if (index == 1) {
             buyBtn.setTextColor(black_color);
-            sellBtn.setTextColor(blue_color);
+            sellBtn.setTextColor(red_color);
             recallBtn.setTextColor(black_color);
             queryBtn.setTextColor(black_color);
 
@@ -242,7 +238,7 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
         if (index == 2) {
             buyBtn.setTextColor(black_color);
             sellBtn.setTextColor(black_color);
-            recallBtn.setTextColor(blue_color);
+            recallBtn.setTextColor(red_color);
             queryBtn.setTextColor(black_color);
 
             buyFocus.setVisibility(View.GONE);
@@ -254,7 +250,7 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
             buyBtn.setTextColor(black_color);
             sellBtn.setTextColor(black_color);
             recallBtn.setTextColor(black_color);
-            queryBtn.setTextColor(blue_color);
+            queryBtn.setTextColor(red_color);
 
             buyFocus.setVisibility(View.GONE);
             sellFocus.setVisibility(View.GONE);

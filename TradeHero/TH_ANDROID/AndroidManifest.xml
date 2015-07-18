@@ -261,6 +261,12 @@
         <activity
             android:name="cn.htsec.TradeModule"
             android:windowSoftInputMode="stateAlwaysHidden"/>
+
+        <activity
+            android:name="com.tradehero.th.activities.SearchSecurityActualActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <!-- 实盘 -->
     </application>
 </manifest>

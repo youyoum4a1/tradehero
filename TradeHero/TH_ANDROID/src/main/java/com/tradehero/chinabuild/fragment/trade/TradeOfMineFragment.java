@@ -23,6 +23,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THLog;
+import com.tradehero.firmbargain.HAITONGUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.MainActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -587,7 +588,6 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         if(mTradeManager==null){
             mTradeManager = TradeManager.getInstance(Application.context());
         }
-        THLog.d("SecAccountInfo size aaaa");
         if(mTradeManager.isLogined()){
             Bundle bundle = new Bundle();
             bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
@@ -598,15 +598,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
             getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
 
         } else {
-            Intent intent = new Intent(getActivity(), TradeModule.class);
-            Bundle bundle = new Bundle();
-            //用户唯一标识
-            bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
-            //渠道
-            bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
-            //设置在线时间(秒)
-            intent.putExtras(bundle);
-            startActivityForResult(intent, 1);
+            HAITONGUtils.jumpToLoginHAITONG(getActivity());
         }
     }
 }

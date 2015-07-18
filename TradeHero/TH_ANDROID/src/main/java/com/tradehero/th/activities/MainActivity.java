@@ -58,7 +58,6 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import dagger.Lazy;
@@ -69,7 +68,6 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
-    @Inject Lazy<WeiboUtils> weiboUtils;
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentActivityHolder currentActivityHolder;
@@ -153,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView dialogCancelBtn;
     private TextView dialogTitleATV;
     private TextView dialogTitleBTV;
+
+    public final static int ACTIVITY_RESULT_HAITONG_TRADE = 999;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -309,7 +309,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        weiboUtils.get().authorizeCallBack(requestCode, resultCode, data);
+        if (requestCode == MainActivity.ACTIVITY_RESULT_HAITONG_TRADE) {
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
+            bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+            Intent intent = new Intent(this, SecurityOptActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+        }
     }
 
     @Override

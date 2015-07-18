@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.firmbargain.HAITONGUtils;
 import com.tradehero.firmbargain.SecurityOptActualFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockFragment;
 import com.tradehero.th.R;
@@ -168,15 +169,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
         if(!TradeManager.getInstance(this).isLogined()){
             finish();
-            Intent intent = new Intent(this, TradeModule.class);
-            Bundle bundle = new Bundle();
-            //用户唯一标识
-            bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
-            //渠道
-            bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
-            //设置在线时间(秒)
-            intent.putExtras(bundle);
-            startActivityForResult(intent, 1);
+            HAITONGUtils.jumpToLoginHAITONG(this);
             return;
         }
         isMock = false;
