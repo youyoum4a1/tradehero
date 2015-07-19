@@ -4,17 +4,65 @@
     android:layout_height="match_parent">
     <TextView android:layout_height="0dp" android:layout_width="0dp" android:visibility="visible"
         android:focusable="true" android:focusableInTouchMode="true"/>
-    <include layout="@layout/search_line_layout"/>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:background="@color/number_up">
+
+        <TextView
+            android:id="@+id/tvSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:layout_marginRight="15sp"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="10dp"
+            android:text="@string/search_cancel"/>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_toLeftOf="@id/tvSearch"
+            android:layout_margin="5dp"
+            android:background="@drawable/bg_search">
+
+            <ImageView
+                android:id="@+id/imgSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@drawable/icon_search"/>
+
+            <Button
+                android:id="@+id/btn_search_x"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/btn_search_x_xml"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
+
+            <EditText
+                android:id="@+id/edtSearchInput"
+                android:singleLine="true"
+                android:maxLength="16"
+                android:layout_toRightOf="@id/imgSearch"
+                android:layout_toLeftOf="@id/btn_search_x"
+                android:layout_width="fill_parent"
+                android:layout_marginLeft="3dp"
+                android:layout_height="fill_parent"
+                android:textSize="12sp"
+                android:background="@color/transparent"
+                android:imeOptions="actionSearch"
+                android:hint="股票代码／拼音／简称"/>
+        </RelativeLayout>
+    </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.tradehero.th.widget.TradeHeroProgressBar
-            android:id="@+id/tradeheroprogressbar"
-            android:layout_width="@dimen/loading_logo_width"
-            android:layout_height="@dimen/loading_logo_height"
-            android:layout_gravity="center"
-            android:background="@drawable/logo"
-            />
+
         <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView
             xmlns:ptr="http://schemas.android.com/apk/res-auto"
             ptr:ptrHeaderTextColor="@color/black"
@@ -25,5 +73,16 @@
             android:divider="@color/separate_line_color"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"/>
+
+        <com.tradehero.th.widget.TradeHeroProgressBar
+            android:id="@+id/tradeheroprogressbar"
+            android:layout_width="@dimen/loading_logo_width"
+            android:layout_height="@dimen/loading_logo_height"
+            android:layout_centerInParent="true"
+            android:background="@drawable/logo"
+            android:visibility="gone"
+            />
     </RelativeLayout>
+
+
 </LinearLayout>

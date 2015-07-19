@@ -6,8 +6,8 @@ package com.tradehero.firmbargain;
 public class ActualSecurityDTO {
 
     public int id;
-    public String exchange;
-    public String symbol;
-    public String name;
+    public String exchange = "";
+    public String symbol = "";
+    public String name = "";
 
 }

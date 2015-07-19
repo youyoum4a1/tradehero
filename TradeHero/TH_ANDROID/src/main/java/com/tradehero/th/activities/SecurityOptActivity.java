@@ -86,13 +86,18 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
             case R.id.button_security_opt_search:
                 finish();
                 Bundle bundle = new Bundle();
-                if(competitionId!=0){
-                    bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
-                    gotoDashboard(CompetitionSecuritySearchFragment.class.getName(), bundle);
-                    overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+                if(isMock) {
+                    if (competitionId != 0) {
+                        bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
+                        gotoDashboard(CompetitionSecuritySearchFragment.class.getName(), bundle);
+                        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+                    } else {
+                        gotoDashboard(SearchUnitFragment.class.getName(), bundle);
+                        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+                    }
                 } else {
-                    gotoDashboard(SearchUnitFragment.class.getName(), bundle);
-                    overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+                    Intent intent = new Intent(this, SearchSecurityActualActivity.class);
+                    startActivity(intent);
                 }
                 break;
             case R.id.textview_actual:

@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.SecurityOrderDTO;
 import com.tradehero.firmbargain.ActualSecurityDTO;
+import com.tradehero.firmbargain.ActualSecurityListDTO;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -101,9 +102,9 @@ interface SecurityServiceAsync
             Callback<Response> callback);
 
     @GET("/cn/v2/securities/searchChina") void searchSecuritySHESHA(
-            @Path("p") String p,
-            @Path("page") int page,
-            @Path("perPage") int perPage,
-            Callback<ActualSecurityDTO> callback
+            @Query("q") String q,
+            @Query("page") int page,
+            @Query("perPage") int perPage,
+            Callback<ActualSecurityListDTO> callback
     );
 }

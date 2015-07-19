@@ -2,6 +2,7 @@ package com.tradehero.firmbargain;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -27,6 +28,7 @@ import com.tradehero.chinabuild.fragment.security.SecurityOptPositionsList;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.SearchSecurityActualActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
@@ -493,15 +495,8 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         if(getActivity()!=null){
             getActivity().finish();
         }
-        Bundle bundle = new Bundle();
-        if(competitionId!=0){
-            bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
-            gotoDashboard(CompetitionSecuritySearchFragment.class.getName(), bundle);
-            getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
-        } else {
-            gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
-            getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
-        }
+        Intent intent = new Intent(getActivity(), SearchSecurityActualActivity.class);
+        getActivity().startActivity(intent);
     }
 
     private void gotoDashboard(String strFragment, Bundle bundle) {
