@@ -378,7 +378,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                             @Override
                             public void failure(RetrofitError error) {
                                 THException thException = new THException(error);
-                                THToast.show(thException.toString());
+                                THToast.show(thException.getMessage());
                             }
                         });
                     }

@@ -2,5 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <TextView android:layout_height="0dp" android:layout_width="0dp" android:visibility="visible"
+        android:focusable="true" android:focusableInTouchMode="true"/>
+    <include layout="@layout/search_line_layout"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.tradehero.th.widget.TradeHeroProgressBar
+            android:id="@+id/tradeheroprogressbar"
+            android:layout_width="@dimen/loading_logo_width"
+            android:layout_height="@dimen/loading_logo_height"
+            android:layout_gravity="center"
+            android:background="@drawable/logo"
+            />
+        <com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView
+            xmlns:ptr="http://schemas.android.com/apk/res-auto"
+            ptr:ptrHeaderTextColor="@color/black"
+            android:id="@+id/listSearch"
+            android:scrollingCache="false"
+            android:fadingEdge="none"
+            android:dividerHeight="1px"
+            android:divider="@color/separate_line_color"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"/>
+    </RelativeLayout>
 </LinearLayout>

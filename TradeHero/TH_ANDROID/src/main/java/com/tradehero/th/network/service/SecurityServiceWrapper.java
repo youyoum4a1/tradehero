@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.SecurityOrderDTO;
+import com.tradehero.firmbargain.ActualSecurityDTO;
 import com.tradehero.th.api.competition.key.ProviderSecurityListType;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.security.*;
@@ -298,5 +299,10 @@ import java.util.Map;
 
     public void buy(String exchange, String symbol, TransactionFormDTO transactionFormDTO, Callback<SecurityPositionDetailDTO> callback){
         securityServiceAsync.buy(exchange, symbol, transactionFormDTO, callback);
+    }
+
+    public void searchSecuritySHESHA(String p, int page, int perPage,
+                                     Callback<ActualSecurityDTO> callback){
+        securityServiceAsync.searchSecuritySHESHA(p, page, perPage, callback);
     }
 }

@@ -92,6 +92,7 @@ import com.tradehero.firmbargain.SecurityOptActualSubSellFragment;
 import com.tradehero.firmbargain.SecurityOptActualSubDelegationFragment;
 import com.tradehero.firmbargain.SecurityOptActualSubQueryFragment;
 import com.tradehero.th.activities.GuideActivity;
+import com.tradehero.th.activities.SearchSecurityActualActivity;
 import com.tradehero.th.adapters.CNPersonTradePositionListAdapter;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
@@ -322,12 +323,16 @@ import javax.inject.Singleton;
                         SignInFragment.class,
                         EmailSignUpFragment.class,
 
-                        //Security Opt
+                        //Security Opt Mock
                         SecurityOptMockSubSellFragment.class,
                         SecurityOptMockSubBuyFragment.class,
+                        //Security Opt Mock
+
+                        //Security Opt Actual
+                        SearchSecurityActualActivity.class,
                         SecurityOptActualSubBuyFragment.class,
                         SecurityOptActualSubSellFragment.class
-                        //Security Opt
+                        //Security Opt Actual
 
                         //China Build End
                 },
