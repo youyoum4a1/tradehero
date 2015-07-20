@@ -47,7 +47,7 @@ public class LiveSignUpMainFragment extends BaseFragment
 
         tabLayout.setCustomTabView(R.layout.th_sign_up_tab_indicator, android.R.id.title);
         tabLayout.setDistributeEvenly(true);
-        tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+        tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.transparent));
 
         onDestroyViewSubscriptions.add(
                 signUpLivePagerAdapterFactory.create(getChildFragmentManager(), getArguments())
