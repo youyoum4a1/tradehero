@@ -41,8 +41,8 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public Object call(LiveBrokerSituationDTO liveBrokerSituationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
                             {
-                                LollipopArrayAdapter tradingPerQuarterAdapter =
-                                        new LollipopArrayAdapter(getActivity(), TradingPerQuarter.createTexts(getResources(),
+                                LollipopArrayAdapter<String> tradingPerQuarterAdapter =
+                                        new LollipopArrayAdapter<>(getActivity(), TradingPerQuarter.createTexts(getResources(),
                                                 kycFormOptionsDTO.tradingPerQuarterOptions));
                                 tradingPerQuarterSpinner.setAdapter(tradingPerQuarterAdapter);
                                 return null;

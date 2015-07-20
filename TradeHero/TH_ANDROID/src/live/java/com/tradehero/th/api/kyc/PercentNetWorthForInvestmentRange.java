@@ -1,15 +1,12 @@
 package com.tradehero.th.api.kyc;
 
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.tradehero.th.R;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public enum PercentNetWorthForInvestmentRange
@@ -55,13 +52,9 @@ public enum PercentNetWorthForInvestmentRange
         filedPercentNetWorthRanges = Collections.unmodifiableMap(map);
     }
 
-    @NonNull public static List<String> createTexts(@NonNull Resources resources, @NonNull Collection<PercentNetWorthForInvestmentRange> percentWorthRanges)
+    @SuppressWarnings("unused")
+    @JsonValue int getFromServerCode()
     {
-        List<String> created = new ArrayList<>();
-        for (PercentNetWorthForInvestmentRange percentWorthRange : percentWorthRanges)
-        {
-            created.add(resources.getString(percentWorthRange.dropDownText));
-        }
-        return created;
+        return fromServer;
     }
 }

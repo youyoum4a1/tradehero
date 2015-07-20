@@ -14,6 +14,7 @@ import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
+import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.persistence.kyc.KYCFormOptionsCache;
@@ -68,7 +69,8 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 
     @NonNull protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
-        return brokerSituationSubject.asObservable();
+        return brokerSituationSubject
+                .distinctUntilChanged();
     }
 
     @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptionsObservable()
@@ -85,6 +87,13 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @NonNull protected Observable<KYCFormOptionsDTO> createKYCFormOptionsObservable()
     {
         return getBrokerSituationObservable()
+                .distinctUntilChanged(new Func1<LiveBrokerSituationDTO, LiveBrokerId>()
+                {
+                    @Override public LiveBrokerId call(LiveBrokerSituationDTO situationDTO)
+                    {
+                        return situationDTO.broker.id;
+                    }
+                })
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<KYCFormOptionsDTO>>()
                 {
                     @Override public Observable<KYCFormOptionsDTO> call(LiveBrokerSituationDTO situationDTO)
@@ -95,9 +104,9 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                 });
     }
 
-    protected static class LollipopArrayAdapter extends ArrayAdapter<String>
+    protected static class LollipopArrayAdapter<T> extends ArrayAdapter<T>
     {
-        public LollipopArrayAdapter(Context context, List<String> objects)
+        public LollipopArrayAdapter(Context context, List<T> objects)
         {
             super(context, R.layout.sign_up_dropdown_item_selected, objects);
             setDropDownViewResource(R.layout.sign_up_dropdown_item);

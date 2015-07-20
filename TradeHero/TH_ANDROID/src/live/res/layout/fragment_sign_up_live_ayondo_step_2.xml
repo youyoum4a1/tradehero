@@ -82,6 +82,7 @@
           />
 
       <CheckBox
+          android:id="@+id/employer_regulated_financial"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:minHeight="@dimen/clickable_element_min_dimen"
@@ -89,5 +90,7 @@
           />
 
       <include layout="@layout/live_form_control" />
+
   </LinearLayout>
+
 </ScrollView>

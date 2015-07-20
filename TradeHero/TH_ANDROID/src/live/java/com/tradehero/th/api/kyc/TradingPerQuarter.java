@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.tradehero.th.R;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,5 +64,11 @@ public enum TradingPerQuarter
             created.add(resources.getString(tradingPerQuarter.dropDownText));
         }
         return created;
+    }
+
+    @SuppressWarnings("unused")
+    @JsonValue int getFromServerCode()
+    {
+        return fromServer;
     }
 }

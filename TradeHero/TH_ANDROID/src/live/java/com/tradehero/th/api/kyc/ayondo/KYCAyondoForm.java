@@ -6,7 +6,11 @@ import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
+import com.tradehero.th.api.kyc.AnnualIncomeRange;
+import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.KYCForm;
+import com.tradehero.th.api.kyc.NetWorthRange;
+import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.ScannedDocument;
@@ -32,6 +36,11 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private CountryCode nationality;
     @Nullable private CountryCode residency;
     @Nullable private String dob;
+    @Nullable private AnnualIncomeRange annualIncomeRange;
+    @Nullable private NetWorthRange netWorthRange;
+    @Nullable private PercentNetWorthForInvestmentRange percentNetWorthForInvestmentRange;
+    @Nullable private EmploymentStatus employmentStatus;
+    @Nullable private Boolean employerRegulatedFinancial;
 
     private List<StepStatus> stepStatuses;
 
@@ -88,6 +97,13 @@ public class KYCAyondoForm implements KYCForm
             this.nationality = ayondoForm.getNationality() != null ? ayondoForm.getNationality() : this.nationality;
             this.residency = ayondoForm.getResidency() != null ? ayondoForm.getResidency() : this.residency;
             this.dob = ayondoForm.getDob() != null ? ayondoForm.getDob() : this.dob;
+            this.annualIncomeRange = ayondoForm.getAnnualIncomeRange() != null ? ayondoForm.getAnnualIncomeRange() : this.annualIncomeRange;
+            this.netWorthRange = ayondoForm.getNetWorthRange() != null ? ayondoForm.getNetWorthRange() : this.netWorthRange;
+            this.percentNetWorthForInvestmentRange = ayondoForm.getPercentNetWorthForInvestmentRange() != null
+                    ? ayondoForm.getPercentNetWorthForInvestmentRange()
+                    : this.percentNetWorthForInvestmentRange;
+            this.employmentStatus = ayondoForm.getEmploymentStatus() != null ? ayondoForm.getEmploymentStatus() : this.employmentStatus;
+            this.employerRegulatedFinancial = ayondoForm.isEmployerRegulatedFinancial() != null ? ayondoForm.isEmployerRegulatedFinancial() : this.employerRegulatedFinancial;
         }
     }
 
@@ -212,6 +228,66 @@ public class KYCAyondoForm implements KYCForm
         this.residency = residency;
     }
 
+    @Nullable public String getDob()
+    {
+        return dob;
+    }
+
+    public void setDob(@Nullable String dob)
+    {
+        this.dob = dob;
+    }
+
+    @Nullable public AnnualIncomeRange getAnnualIncomeRange()
+    {
+        return annualIncomeRange;
+    }
+
+    public void setAnnualIncomeRange(@Nullable AnnualIncomeRange annualIncomeRange)
+    {
+        this.annualIncomeRange = annualIncomeRange;
+    }
+
+    @Nullable public NetWorthRange getNetWorthRange()
+    {
+        return netWorthRange;
+    }
+
+    public void setNetWorthRange(@Nullable NetWorthRange netWorthRange)
+    {
+        this.netWorthRange = netWorthRange;
+    }
+
+    @Nullable public PercentNetWorthForInvestmentRange getPercentNetWorthForInvestmentRange()
+    {
+        return percentNetWorthForInvestmentRange;
+    }
+
+    public void setPercentNetWorthForInvestmentRange(@Nullable PercentNetWorthForInvestmentRange percentNetWorthForInvestmentRange)
+    {
+        this.percentNetWorthForInvestmentRange = percentNetWorthForInvestmentRange;
+    }
+
+    @Nullable public EmploymentStatus getEmploymentStatus()
+    {
+        return employmentStatus;
+    }
+
+    public void setEmploymentStatus(@Nullable EmploymentStatus employmentStatus)
+    {
+        this.employmentStatus = employmentStatus;
+    }
+
+    @Nullable public Boolean isEmployerRegulatedFinancial()
+    {
+        return employerRegulatedFinancial;
+    }
+
+    public void setEmployerRegulatedFinancial(@Nullable Boolean employerRegulatedFinancial)
+    {
+        this.employerRegulatedFinancial = employerRegulatedFinancial;
+    }
+
     @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
     {
         boolean same;
@@ -238,6 +314,13 @@ public class KYCAyondoForm implements KYCForm
             same &= nationality == null ? ayondoForm.nationality == null : nationality.equals(ayondoForm.nationality);
             same &= residency == null ? ayondoForm.residency == null : residency.equals(ayondoForm.residency);
             same &= dob == null ? ayondoForm.dob == null : dob.equals(ayondoForm.dob);
+            same &= annualIncomeRange == null ? ayondoForm.annualIncomeRange == null : annualIncomeRange.equals(ayondoForm.annualIncomeRange);
+            same &= netWorthRange == null ? ayondoForm.netWorthRange == null : netWorthRange.equals(ayondoForm.netWorthRange);
+            same &= percentNetWorthForInvestmentRange == null
+                    ? ayondoForm.percentNetWorthForInvestmentRange == null
+                    : percentNetWorthForInvestmentRange.equals(ayondoForm.percentNetWorthForInvestmentRange);
+            same &= employmentStatus == null ? ayondoForm.employmentStatus == null : employmentStatus.equals(ayondoForm.employmentStatus);
+            same &= employerRegulatedFinancial == null ? ayondoForm.employerRegulatedFinancial == null : employerRegulatedFinancial.equals(ayondoForm.employerRegulatedFinancial);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
                     : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
@@ -253,15 +336,5 @@ public class KYCAyondoForm implements KYCForm
             same = false;
         }
         return same;
-    }
-
-    @Nullable public String getDob()
-    {
-        return dob;
-    }
-
-    public void setDob(@Nullable String dob)
-    {
-        this.dob = dob;
     }
 }

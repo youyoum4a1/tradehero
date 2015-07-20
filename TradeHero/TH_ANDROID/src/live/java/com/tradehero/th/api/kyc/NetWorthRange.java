@@ -1,15 +1,12 @@
 package com.tradehero.th.api.kyc;
 
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.tradehero.th.R;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public enum NetWorthRange
@@ -57,13 +54,9 @@ public enum NetWorthRange
         filedNetWorthRanges = Collections.unmodifiableMap(map);
     }
 
-    @NonNull public static List<String> createTexts(@NonNull Resources resources, @NonNull Collection<NetWorthRange> worthRanges)
+    @SuppressWarnings("unused")
+    @JsonValue int getFromServerCode()
     {
-        List<String> created = new ArrayList<>();
-        for (NetWorthRange worthRange : worthRanges)
-        {
-            created.add(resources.getString(worthRange.dropDownText));
-        }
-        return created;
+        return fromServer;
     }
 }
