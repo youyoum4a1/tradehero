@@ -12,6 +12,7 @@ import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.StepStatus;
+import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.utils.DateUtils;
@@ -41,6 +42,13 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private PercentNetWorthForInvestmentRange percentNetWorthForInvestmentRange;
     @Nullable private EmploymentStatus employmentStatus;
     @Nullable private Boolean employerRegulatedFinancial;
+    @Nullable private Boolean workedInFinance1Year;
+    @Nullable private Boolean attendedSeminarAyondo;
+    @Nullable private Boolean haveOtherQualification;
+    @Nullable private TradingPerQuarter tradingPerQuarter;
+    @Nullable private Boolean tradedSharesBonds;
+    @Nullable private Boolean tradedOtcDerivative;
+    @Nullable private Boolean tradedEtc;
 
     private List<StepStatus> stepStatuses;
 
@@ -104,6 +112,13 @@ public class KYCAyondoForm implements KYCForm
                     : this.percentNetWorthForInvestmentRange;
             this.employmentStatus = ayondoForm.getEmploymentStatus() != null ? ayondoForm.getEmploymentStatus() : this.employmentStatus;
             this.employerRegulatedFinancial = ayondoForm.isEmployerRegulatedFinancial() != null ? ayondoForm.isEmployerRegulatedFinancial() : this.employerRegulatedFinancial;
+            this.workedInFinance1Year = ayondoForm.isWorkedInFinance1Year() != null ? ayondoForm.isWorkedInFinance1Year() : this.workedInFinance1Year;
+            this.attendedSeminarAyondo = ayondoForm.isAttendedSeminarAyondo() != null ? ayondoForm.isAttendedSeminarAyondo() : this.attendedSeminarAyondo;
+            this.haveOtherQualification = ayondoForm.isHaveOtherQualification() != null ? ayondoForm.isHaveOtherQualification() : this.haveOtherQualification;
+            this.tradingPerQuarter = ayondoForm.getTradingPerQuarter() != null ? ayondoForm.getTradingPerQuarter() : this.tradingPerQuarter;
+            this.tradedSharesBonds = ayondoForm.isTradedSharesBonds() != null ? ayondoForm.isTradedSharesBonds() : this.tradedSharesBonds;
+            this.tradedOtcDerivative = ayondoForm.isTradedOtcDerivative() != null ? ayondoForm.isTradedOtcDerivative() : this.tradedOtcDerivative;
+            this.tradedEtc = ayondoForm.isTradedEtc() != null ? ayondoForm.isTradedEtc() : this.tradedEtc;
         }
     }
 
@@ -288,6 +303,76 @@ public class KYCAyondoForm implements KYCForm
         this.employerRegulatedFinancial = employerRegulatedFinancial;
     }
 
+    @Nullable public Boolean isWorkedInFinance1Year()
+    {
+        return workedInFinance1Year;
+    }
+
+    public void setWorkedInFinance1Year(@Nullable Boolean workedInFinance1Year)
+    {
+        this.workedInFinance1Year = workedInFinance1Year;
+    }
+
+    @Nullable public Boolean isAttendedSeminarAyondo()
+    {
+        return attendedSeminarAyondo;
+    }
+
+    public void setAttendedSeminarAyondo(@Nullable Boolean attendedSeminarAyondo)
+    {
+        this.attendedSeminarAyondo = attendedSeminarAyondo;
+    }
+
+    @Nullable public Boolean isHaveOtherQualification()
+    {
+        return haveOtherQualification;
+    }
+
+    public void setHaveOtherQualification(@Nullable Boolean haveOtherQualification)
+    {
+        this.haveOtherQualification = haveOtherQualification;
+    }
+
+    @Nullable public TradingPerQuarter getTradingPerQuarter()
+    {
+        return tradingPerQuarter;
+    }
+
+    public void setTradingPerQuarter(@Nullable TradingPerQuarter tradingPerQuarter)
+    {
+        this.tradingPerQuarter = tradingPerQuarter;
+    }
+
+    @Nullable public Boolean isTradedSharesBonds()
+    {
+        return tradedSharesBonds;
+    }
+
+    public void setTradedSharesBonds(@Nullable Boolean tradedSharesBonds)
+    {
+        this.tradedSharesBonds = tradedSharesBonds;
+    }
+
+    @Nullable public Boolean isTradedOtcDerivative()
+    {
+        return tradedOtcDerivative;
+    }
+
+    public void setTradedOtcDerivative(@Nullable Boolean tradedOtcDerivative)
+    {
+        this.tradedOtcDerivative = tradedOtcDerivative;
+    }
+
+    @Nullable public Boolean isTradedEtc()
+    {
+        return tradedEtc;
+    }
+
+    public void setTradedEtc(@Nullable Boolean tradedEtc)
+    {
+        this.tradedEtc = tradedEtc;
+    }
+
     @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
     {
         boolean same;
@@ -321,6 +406,13 @@ public class KYCAyondoForm implements KYCForm
                     : percentNetWorthForInvestmentRange.equals(ayondoForm.percentNetWorthForInvestmentRange);
             same &= employmentStatus == null ? ayondoForm.employmentStatus == null : employmentStatus.equals(ayondoForm.employmentStatus);
             same &= employerRegulatedFinancial == null ? ayondoForm.employerRegulatedFinancial == null : employerRegulatedFinancial.equals(ayondoForm.employerRegulatedFinancial);
+            same &= workedInFinance1Year == null ? ayondoForm.workedInFinance1Year == null : workedInFinance1Year.equals(ayondoForm.workedInFinance1Year);
+            same &= attendedSeminarAyondo == null ? ayondoForm.attendedSeminarAyondo == null : attendedSeminarAyondo.equals(ayondoForm.attendedSeminarAyondo);
+            same &= haveOtherQualification == null ? ayondoForm.haveOtherQualification == null : haveOtherQualification.equals(ayondoForm.haveOtherQualification);
+            same &= tradingPerQuarter == null ? ayondoForm.tradingPerQuarter == null : tradingPerQuarter.equals(ayondoForm.tradingPerQuarter);
+            same &= tradedSharesBonds == null ? ayondoForm.tradedSharesBonds == null : tradedSharesBonds.equals(ayondoForm.tradedSharesBonds);
+            same &= tradedOtcDerivative == null ? ayondoForm.tradedOtcDerivative == null : tradedOtcDerivative.equals(ayondoForm.tradedOtcDerivative);
+            same &= tradedEtc == null ? ayondoForm.tradedEtc == null : tradedEtc.equals(ayondoForm.tradedEtc);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
                     : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
