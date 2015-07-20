@@ -32,6 +32,7 @@ public class ClosedTradeDTO implements DTO
     public String market_code;
     public String sec_account;
     public String withdraw_cate;
+    public String entrust_no;
 
     public ClosedTradeDTO()
     {

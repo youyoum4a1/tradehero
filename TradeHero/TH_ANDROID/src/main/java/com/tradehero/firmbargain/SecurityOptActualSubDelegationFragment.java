@@ -69,10 +69,11 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
     @Override
     public void onResume() {
         super.onResume();
-        queryPendingDelegationHistory2();
+        queryPendingDelegationHistory();
     }
 
-    private void queryPendingDelegationHistory2() {
+    private void queryPendingDelegationHistory() {
+        mSelectedPosition = -1;
         mTradeManager.sendData(TradeInterface.ID_QUERY_ORDERS, new IPackageProxy() {
             @Override
             public void onSend(TradeDataHelper helper) {
@@ -132,6 +133,8 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
                             dto.sec_account = helper.get(i, key, null);
                         } else if (key.equalsIgnoreCase("withdraw_cate")) {
                             dto.withdraw_cate = helper.get(i, key, null);
+                        } else if (key.equalsIgnoreCase("entrust_no")) {
+                            dto.entrust_no = helper.get(i, key, null);
                         }
                     }
                     sb.append("\n");
@@ -185,11 +188,12 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
             mTradeManager.sendData(TradeInterface.ID_CANCEL, new IPackageProxy() {
                 @Override
                 public void onSend(TradeDataHelper helper) {
-                    Timber.d("lyl "+mListViewAdapter.getItem(mSelectedPosition).toString());
+                    Timber.d("lyl " + mListViewAdapter.getItem(mSelectedPosition).toString());
                     helper.set(TradeInterface.KEY_MARKET_CODE, mListViewAdapter.getItem(mSelectedPosition).market_code);
-                    helper.set(TradeInterface.KEY_SEC_ACCOUNT, mListViewAdapter.getItem(mSelectedPosition).sec_account);
                     helper.set(TradeInterface.KEY_ENTRUST_DATE, mListViewAdapter.getItem(mSelectedPosition).entrust_date);
                     helper.set(TradeInterface.KEY_WITHDRAW_CATE, mListViewAdapter.getItem(mSelectedPosition).withdraw_cate);
+                    helper.set(TradeInterface.KEY_ENTRUST_NO, mListViewAdapter.getItem(mSelectedPosition).entrust_no);
+                    helper.set(TradeInterface.KEY_SEC_CODE, mListViewAdapter.getItem(mSelectedPosition).securityId);
                 }
 
                 @Override
@@ -210,6 +214,7 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
 
 //                    mTvResult.setText(sb.toString());
                     Timber.d("lyl "+sb.toString());
+                    queryPendingDelegationHistory();
                 }
 
                 @Override
