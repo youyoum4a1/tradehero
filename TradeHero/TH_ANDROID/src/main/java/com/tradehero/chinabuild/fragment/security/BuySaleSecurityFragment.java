@@ -28,7 +28,7 @@ import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -971,7 +971,7 @@ public class BuySaleSecurityFragment extends DashboardFragment
     public class GetPositionCallback implements Callback<GetPositionsDTO> {
         @Override public void success(GetPositionsDTO getPositionsDTO, Response response) {
             onFinish();
-            MainActivity.setGetPositionDTO(getPositionsDTO);
+            TradeHeroMainActivity.setGetPositionDTO(getPositionsDTO);
             if(getActivity()!=null) {
                 popCurrentFragment();
             }

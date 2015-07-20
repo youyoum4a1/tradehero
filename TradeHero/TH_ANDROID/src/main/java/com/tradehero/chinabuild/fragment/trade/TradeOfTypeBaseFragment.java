@@ -21,7 +21,7 @@ import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SpinnerExchangeIconAdapter;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
@@ -392,7 +392,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
             }
             if (adapterSecurity.getCount() > 0)
             {
-                ((MainActivity) getActivity()).showGuideView(MainActivity.GUIDE_TYPE_STOCK_DETAIL);
+                ((TradeHeroMainActivity) getActivity()).showGuideView(TradeHeroMainActivity.GUIDE_TYPE_STOCK_DETAIL);
             }
         }
     }

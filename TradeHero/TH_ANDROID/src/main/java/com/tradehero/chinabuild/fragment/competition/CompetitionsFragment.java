@@ -30,7 +30,7 @@ import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.metrics.Analytics;
@@ -429,7 +429,7 @@ public class CompetitionsFragment extends DashboardFragment {
             {
                 if (adapterList.getOfficialCompetitions() > 0 || adapterList.getUserCompetitions() > 0)
                 {
-                    ((MainActivity) getActivity()).showGuideView(MainActivity.GUIDE_TYPE_COMPETITION);
+                    ((TradeHeroMainActivity) getActivity()).showGuideView(TradeHeroMainActivity.GUIDE_TYPE_COMPETITION);
                 }
             }
         }

@@ -9,7 +9,7 @@ import android.widget.*;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.api.users.UserLoginDTO;
 import com.tradehero.th.auth.AuthenticationMode;
 import com.tradehero.th.auth.EmailAuthenticationProvider;
@@ -232,7 +232,7 @@ public class BindEmailSignUpFragment extends EmailSignUpFragment
     {
         THSharePreferenceManager.clearDialogShowedRecord();
 
-        Intent intent = new Intent(getActivity(), MainActivity.class);
+        Intent intent = new Intent(getActivity(), TradeHeroMainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         intent.putExtra(UserLoginDTO.SUGGEST_UPGRADE, userLoginDTO.suggestUpgrade);

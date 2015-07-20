@@ -6,7 +6,7 @@ import android.os.Looper;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.th.activities.CurrentActivityHolder;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.activities.RecommendStocksActivity;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.loaders.FriendListLoader;
@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 DashboardActivity.class,
-                MainActivity.class,
+                TradeHeroMainActivity.class,
                 FriendListLoader.class,
                 RecommendStocksActivity.class,
                 WXEntryActivity.class

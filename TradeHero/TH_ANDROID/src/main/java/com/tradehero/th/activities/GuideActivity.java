@@ -463,7 +463,7 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
 
         int userId = userLoginDTO.profileDTO.id;
         if(userId <=0 ||THSharePreferenceManager.isRecommendedStock(userId, this)){
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, TradeHeroMainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra(UserLoginDTO.SUGGEST_UPGRADE, userLoginDTO.suggestUpgrade);
             intent.putExtra(UserLoginDTO.SUGGEST_LI_REAUTH, userLoginDTO.suggestLiReauth);

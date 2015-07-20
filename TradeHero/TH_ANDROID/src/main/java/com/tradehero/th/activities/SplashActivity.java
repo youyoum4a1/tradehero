@@ -129,7 +129,7 @@ public class SplashActivity extends AppCompatActivity {
                 case STATUS_AUTH_OK:
                     if (userId <= 0 || THSharePreferenceManager.isRecommendedStock(userId, getActivity())) {
                         THSharePreferenceManager.clearDialogShowedRecord();
-                        ActivityHelper.presentFromActivity(getActivity(), MainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP, null);
+                        ActivityHelper.presentFromActivity(getActivity(), TradeHeroMainActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP, null);
                     } else {
                         Bundle args = new Bundle();
                         args.putInt(RecommendStocksActivity.LOGIN_USER_ID, userId);

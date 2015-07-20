@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tradehero.th.activities.MainActivity;
+import com.cairh.app.sjkh.MainActivity;
+import com.tradehero.th.R;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 
 import cn.htsec.TradeModule;
 
@@ -13,6 +15,7 @@ import cn.htsec.TradeModule;
  */
 public class HAITONGUtils {
 
+    //到海通登陆界面
     public final static void jumpToLoginHAITONG(Activity activity){
         if(activity == null){
             return;
@@ -25,7 +28,19 @@ public class HAITONGUtils {
         bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
         //设置在线时间(秒)
         intent.putExtras(bundle);
-        activity.startActivityForResult(intent, MainActivity.ACTIVITY_RESULT_HAITONG_TRADE);
+        activity.startActivityForResult(intent, TradeHeroMainActivity.ACTIVITY_RESULT_HAITONG_TRADE);
+        activity.overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         return;
+    }
+
+    //到海通开户界面
+    public final static void openAnAccount(Activity activity){
+        Intent intent = new Intent();
+        intent.putExtra("type", 1);//启动的功能编号,具体详见功能编号表
+        intent.putExtra("username", "username");//自动登陆的账号,非必填
+        intent.putExtra("password", "password");//自动登陆的密码
+        intent.setClass(activity, MainActivity.class);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
     }
 }

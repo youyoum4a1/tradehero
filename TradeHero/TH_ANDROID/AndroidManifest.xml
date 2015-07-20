@@ -35,10 +35,22 @@
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
     <!-- 个推SDK权限配置 -->
 
-    <!-- 实盘 -->
+    <!-- 海通实盘 -->
     <!-- 超时对话框权限 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <!-- 实盘 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.hardware.camera" />
+    <uses-permission android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <!-- 这个权限用于进行网络定位-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <!-- 这个权限用于访问GPS定位-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <!--允许应用读取低级别的系统日志文件 -->
+    <uses-permission android:name="android.permission.READ_LOGS"></uses-permission>
+    <!-- 海通实盘 -->
 
     <application
             android:name="com.tradehero.th.base.Application"
@@ -82,7 +94,7 @@
             android:theme="@style/AppBaseTheme.NoActionBar2" />
 
         <activity
-            android:name="com.tradehero.th.activities.MainActivity"
+            android:name=".activities.TradeHeroMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PageIndicatorDefaults"
             android:windowSoftInputMode="adjustResize" />
@@ -267,6 +279,35 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:name="com.cairh.app.sjkh.MainActivity">
+        </activity>
+
+        <activity android:name="com.cairh.app.sjkh.ui.VideoActivity"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name="com.cairh.app.sjkh.ui.CameraMainActivity"
+            android:screenOrientation="landscape" />
+
+        <activity android:name="com.cairh.app.sjkh.SchemeActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <!-- <data android:scheme="CRHSJKH4HT" /> -->
+                <data android:scheme="CRHSJKH" />
+            </intent-filter>
+        </activity>
+
+        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
+        </service>
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="ljeTCCsVh1rap0tutGgG29Up" />
         <!-- 实盘 -->
     </application>
 </manifest>

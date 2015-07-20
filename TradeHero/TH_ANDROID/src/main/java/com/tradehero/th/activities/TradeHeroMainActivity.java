@@ -67,7 +67,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class TradeHeroMainActivity extends AppCompatActivity {
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCache> userProfileCache;
     @Inject CurrentActivityHolder currentActivityHolder;
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                     R.string.ok, R.string.cancel, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Intent gotoAuthticationIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
+                            Intent gotoAuthticationIntent = new Intent(TradeHeroMainActivity.this, AuthenticationActivity.class);
                             startActivity(gotoAuthticationIntent);
                             finish();
                         }
@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == MainActivity.ACTIVITY_RESULT_HAITONG_TRADE) {
+        if (requestCode == TradeHeroMainActivity.ACTIVITY_RESULT_HAITONG_TRADE) {
             Bundle bundle = new Bundle();
             bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
             bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
@@ -481,7 +481,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void success(GetPositionsDTO getPositionsDTO, Response response) {
                         setGetPositionDTO(getPositionsDTO);
-                        MainActivity.getPositionsDTO = getPositionsDTO;
+                        TradeHeroMainActivity.getPositionsDTO = getPositionsDTO;
                     }
 
                     @Override
@@ -492,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static PositionDTOKey getSecurityPositionDTOKey(SecurityId securityId) {
-        GetPositionsDTO getPositionsDTO = MainActivity.getPositionsDTO;
+        GetPositionsDTO getPositionsDTO = TradeHeroMainActivity.getPositionsDTO;
         if (getPositionsDTO == null)
             return null;
         PositionDTO positionDTO = getPositionsDTO.getSecurityPositionDTO(securityId);
@@ -502,7 +502,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static PositionDTOKey getSecurityPositionDTOKey(int securityId) {
-        GetPositionsDTO getPositionsDTO = MainActivity.getPositionsDTO;
+        GetPositionsDTO getPositionsDTO = TradeHeroMainActivity.getPositionsDTO;
         if (getPositionsDTO == null)
             return null;
         PositionDTO positionDTO = getPositionsDTO.getSecurityPositionDTO(securityId);
@@ -512,7 +512,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void setGetPositionDTO(GetPositionsDTO getPositionsDTO) {
-        MainActivity.getPositionsDTO = getPositionsDTO;
+        TradeHeroMainActivity.getPositionsDTO = getPositionsDTO;
     }
 
     private void downloadEndPoint() {
@@ -522,8 +522,8 @@ public class MainActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(endpoint)) {
                     return;
                 }
-                if (MainActivity.this != null) {
-                    THSharePreferenceManager.setShareEndpoint(MainActivity.this, endpoint);
+                if (TradeHeroMainActivity.this != null) {
+                    THSharePreferenceManager.setShareEndpoint(TradeHeroMainActivity.this, endpoint);
                 }
             }
 
@@ -539,13 +539,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void success(AppInfoDTO appInfoDTO, THResponse thResponse) {
                 {
-                    if (appInfoDTO == null || MainActivity.this == null) {
+                    if (appInfoDTO == null || TradeHeroMainActivity.this == null) {
                         return;
                     }
                     boolean suggestUpdate = appInfoDTO.isSuggestUpgrade();
                     boolean forceUpdate = appInfoDTO.isForceUpgrade();
                     String url = appInfoDTO.getLatestVersionDownloadUrl();
-                    THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(MainActivity.this, url, suggestUpdate, forceUpdate);
+                    THSharePreferenceManager.saveUpdateAppUrlLastestVersionCode(TradeHeroMainActivity.this, url, suggestUpdate, forceUpdate);
                     if (suggestUpdate || forceUpdate) {
                         showUpdateDialog();
                     } else {
@@ -604,7 +604,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-        if (!updateAppDialog.isShowing() && MainActivity.this != null) {
+        if (!updateAppDialog.isShowing() && TradeHeroMainActivity.this != null) {
             updateAppDialog.show();
         }
     }

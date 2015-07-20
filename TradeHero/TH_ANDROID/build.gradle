@@ -52,6 +52,8 @@ android {
 
         buildConfigField "int", "DISTRIBUTION", distId
 
+        multiDexEnabled = true
+
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
                 if (outputRoot) {
@@ -171,4 +173,5 @@ dependencies {
     } else {
         android.buildTypes.release.signingConfig = null
     }
+    compile files('libs/android-async-http-1.4.4.jar')
 }

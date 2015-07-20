@@ -135,7 +135,7 @@ public class RecommendStocksActivity extends AppCompatActivity implements View.O
     }
 
     private void gotoNextActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, TradeHeroMainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();

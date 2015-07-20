@@ -44,7 +44,7 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.competition.ProviderId;
@@ -708,11 +708,11 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         {
             if (positionDTOKey == null && securityId != null)
             {
-                positionDTOKey = MainActivity.getSecurityPositionDTOKey(securityId);
+                positionDTOKey = TradeHeroMainActivity.getSecurityPositionDTOKey(securityId);
             }
             if (positionDTOKey == null && securityCompactDTO != null)
             {
-                positionDTOKey = MainActivity.getSecurityPositionDTOKey(securityCompactDTO.id);
+                positionDTOKey = TradeHeroMainActivity.getSecurityPositionDTOKey(securityCompactDTO.id);
             }
             if (positionDTOKey != null)
             {

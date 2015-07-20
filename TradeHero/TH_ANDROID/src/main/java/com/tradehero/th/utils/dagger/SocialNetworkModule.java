@@ -6,7 +6,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.activities.RecommendStocksActivity;
 import com.tradehero.th.auth.operator.ConsumerKey;
 import com.tradehero.th.auth.operator.ConsumerSecret;
@@ -28,7 +28,7 @@ import java.util.Set;
         injects = {
                 AuthenticationActivity.class,
                 DashboardActivity.class,
-                MainActivity.class,
+                TradeHeroMainActivity.class,
                 RecommendStocksActivity.class
         },
         complete = false,

@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CameraMainActivity" 
+    android:background="@android:color/black">
+    
+    <SurfaceView 
+        android:id="@+id/sView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"/>
+    <com.cairh.app.sjkh.ui.BorderView
+        android:id="@+id/kView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"/>
+
+    <TextView 
+        android:id="@+id/cameraMsg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="请将方框对准身份证拍摄"
+        android:textColor="#00FF00"
+        android:textSize="16sp"/>
+    <Button 
+        android:id="@+id/take"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="capture"
+        android:layout_width="200dip"
+        android:textColor="#FFFFFF"
+        android:layout_height="wrap_content"
+        android:text="拍  照" />
+    <Button 
+        android:id="@+id/cancel"
+        android:layout_alignParentRight="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="cancel"
+        android:layout_width="200dip"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/take"
+        android:textColor="#FFFFFF"
+        android:text="取  消" />
+    
+</RelativeLayout>

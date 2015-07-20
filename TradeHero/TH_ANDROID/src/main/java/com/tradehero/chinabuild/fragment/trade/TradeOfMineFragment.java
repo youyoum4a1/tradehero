@@ -22,10 +22,9 @@ import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.firmbargain.HAITONGUtils;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.MainActivity;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.adapters.CNPersonTradePositionListAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -85,10 +84,11 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
     private TextView returnTV;
     private TextView totalTV;
     private TextView availableTV;
-    private Button buyTV;
-    private Button sellTV;
-    private Button recallTV;
-    private Button firmBargainTV;
+    private Button buyBtn;
+    private Button sellBtn;
+    private Button recallBtn;
+    private Button firmBargainBtn;
+    private Button openAccountBtn;
 
     @InjectView(R.id.tradeMyPositionList) PullToRefreshExpandableListView listView;
 
@@ -166,14 +166,16 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         returnTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_return);
         totalTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_total);
         availableTV = (TextView)mRefreshView.findViewById(R.id.textview_trade_available);
-        buyTV = (Button)mRefreshView.findViewById(R.id.security_buy);
-        buyTV.setOnClickListener(this);
-        sellTV = (Button)mRefreshView.findViewById(R.id.security_sell);
-        sellTV.setOnClickListener(this);
-        recallTV = (Button)mRefreshView.findViewById(R.id.security_recall);
-        recallTV.setOnClickListener(this);
-        firmBargainTV = (Button)mRefreshView.findViewById(R.id.security_firm_bargain);
-        firmBargainTV.setOnClickListener(this);
+        buyBtn = (Button)mRefreshView.findViewById(R.id.security_buy);
+        buyBtn.setOnClickListener(this);
+        sellBtn = (Button)mRefreshView.findViewById(R.id.security_sell);
+        sellBtn.setOnClickListener(this);
+        recallBtn = (Button)mRefreshView.findViewById(R.id.security_recall);
+        recallBtn.setOnClickListener(this);
+        firmBargainBtn = (Button)mRefreshView.findViewById(R.id.security_firm_bargain);
+        firmBargainBtn.setOnClickListener(this);
+        openAccountBtn = (Button)mRefreshView.findViewById(R.id.security_open_account);
+        openAccountBtn.setOnClickListener(this);
     }
 
     private void initView() {
@@ -320,6 +322,9 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
             case R.id.security_firm_bargain:
                 enterSecurityFirmBargain();
                 break;
+            case R.id.security_open_account:
+                enterSecurityOpenAccount();
+                break;
         }
     }
 
@@ -330,7 +335,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
                 @NotNull GetPositionsDTOKey key,
                 @NotNull GetPositionsDTO value)
         {
-            MainActivity.setGetPositionDTO(value);
+            TradeHeroMainActivity.setGetPositionDTO(value);
             initPositionSecurity(value);
             if(listView!=null) {
                 listView.onRefreshComplete();
@@ -341,7 +346,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
                 @NotNull GetPositionsDTOKey key,
                 @NotNull GetPositionsDTO value)
         {
-            MainActivity.setGetPositionDTO(value);
+            TradeHeroMainActivity.setGetPositionDTO(value);
             initPositionSecurity(value);
             if(listView!=null) {
                 listView.onRefreshComplete();
@@ -600,5 +605,9 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         } else {
             HAITONGUtils.jumpToLoginHAITONG(getActivity());
         }
+    }
+
+    private void enterSecurityOpenAccount(){
+        HAITONGUtils.openAnAccount(getActivity());
     }
 }
