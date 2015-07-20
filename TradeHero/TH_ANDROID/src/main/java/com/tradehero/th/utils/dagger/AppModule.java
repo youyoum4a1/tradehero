@@ -53,7 +53,6 @@ import com.tradehero.chinabuild.fragment.portfolio.PositionDetailFragment;
 import com.tradehero.chinabuild.fragment.search.SearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.BasePurchaseManagerFragment;
-import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailSubDiscussFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailSubNewsFragment;
@@ -244,7 +243,6 @@ import javax.inject.Singleton;
                         SecurityDetailFragment.class,
                         BasePurchaseManagerFragment.class,
                         DiscussSendFragment.class,
-                        BuySaleSecurityFragment.class,
                         SecurityUserOptFragment.class,
                         SecurityUserPositionFragment.class,
                         SecurityDetailSubDiscussFragment.class,

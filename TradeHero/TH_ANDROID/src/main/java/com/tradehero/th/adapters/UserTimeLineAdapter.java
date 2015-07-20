@@ -2,6 +2,7 @@ package com.tradehero.th.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -15,15 +16,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.cache.NoticeNewsCache;
+import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoveryUtils;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
-import com.tradehero.chinabuild.fragment.security.BuySaleSecurityFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -78,28 +80,28 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
     private String fromWhere = "";
 
-    public UserTimeLineAdapter(Context context)
+    public UserTimeLineAdapter(Activity activity)
     {
         DaggerUtils.inject(this);
-        this.context = context;
+        this.context = activity;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         animation = AnimationUtils.loadAnimation(context, R.anim.vote_ani);
         praiseAnimation = AnimationUtils.loadAnimation(context, R.anim.vote_praise);
     }
 
-    public UserTimeLineAdapter(Context context, String fromWhere)
+    public UserTimeLineAdapter(Activity activity, String fromWhere)
     {
         DaggerUtils.inject(this);
-        this.context = context;
+        this.context = activity;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         animation = AnimationUtils.loadAnimation(context, R.anim.vote_ani);
         praiseAnimation = AnimationUtils.loadAnimation(context, R.anim.vote_praise);
         this.fromWhere = fromWhere;
     }
 
-    public UserTimeLineAdapter(Context context, boolean isMySelf)
+    public UserTimeLineAdapter(Activity activity, boolean isMySelf)
     {
-        this(context);
+        this(activity);
         this.isMySelf = isMySelf;
     }
 
@@ -618,18 +620,21 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
 
 
-    public void clickedBuy(int position)
-    {
+    public void clickedBuy(int position){
         SecurityId securityId = ((TimelineItemDTO) getItem(position)).getMedias().get(0).createSecurityId();
-        Timber.d("跟买：POSITION ＝ " + securityId.toString());
 
         Bundle bundle = new Bundle();
-        bundle.putBoolean(BuySaleSecurityFragment.KEY_IS_BUY_DIRECTLY, true);
-        bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
-        bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, true);
-        bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityId.getDisplayName());
-
-        enterFragment(BuySaleSecurityFragment.class, bundle);
+        bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_SELL);
+        bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, securityId.getExchange());
+        bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, securityId.getSecuritySymbol());
+        bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, 0);
+        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityId.getDisplayName());
+        Intent intent = new Intent(context, SecurityOptActivity.class);
+        intent.putExtras(bundle);
+        context.startActivity(intent);
+        if(context instanceof Activity) {
+            ((Activity)context).overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+        }
     }
 
     private void enterFragment(Class fragmentClass, Bundle args)

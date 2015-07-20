@@ -15,7 +15,6 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshListView;
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.firmbargain.ActualSecurityDTO;
 import com.tradehero.firmbargain.ActualSecurityListDTO;
@@ -101,9 +100,9 @@ public class SearchSecurityActualActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 if(searchSecurityListAdapter!=null) {
+                    finish();
                     int index = (position-1);
                     ActualSecurityDTO actualSecurityDTO = searchSecurityListAdapter.getItem(index);
-                    THLog.d(actualSecurityDTO.name + " " +actualSecurityDTO.exchange + " " +actualSecurityDTO.symbol);
                     enterSecurityOptActualPage(actualSecurityDTO.name, actualSecurityDTO.exchange, actualSecurityDTO.symbol);
                 }
             }
@@ -120,7 +119,6 @@ public class SearchSecurityActualActivity extends Activity {
             progressBar.startLoading();
         }
         inputStr = edtSearchInput.getText().toString();
-        THLog.d(inputStr);
         index = 1;
         securityServiceWrapper.searchSecuritySHESHA(inputStr, index, 20, new Callback<ActualSecurityListDTO>() {
             @Override

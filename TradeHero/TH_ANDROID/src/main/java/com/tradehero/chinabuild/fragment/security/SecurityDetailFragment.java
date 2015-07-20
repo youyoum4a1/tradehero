@@ -1451,25 +1451,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     public void enterBuySale(boolean isBuy) {
         if (isBuyOrSaleValid()) {
-            Bundle bundle = new Bundle();
             if (portfolioCompactDTO==null ||  portfolioCompactDTO.getPortfolioId()==null) {
                 return;
             }
-            bundle.putBundle(BuySaleSecurityFragment.KEY_PORTFOLIO_ID, portfolioCompactDTO.getPortfolioId().getArgs());
             if (isBuy) {
                 enterSecurityOptBuy();
             } else {
                 enterSecurityOptSell();
             }
-//            bundle.putBundle(BuySaleSecurityFragment.KEY_SECURITY_ID, securityId.getArgs());
-//            bundle.putBundle(BuySaleSecurityFragment.KEY_QUOTE_DTO, quoteDTO.getArgs());
-//            bundle.putBoolean(BuySaleSecurityFragment.KEY_BUY_OR_SALE, isBuy);
-//            bundle.putString(BuySaleSecurityFragment.KEY_SECURITY_NAME, securityName);
-//            bundle.putInt(BuySaleSecurityFragment.KEY_COMPETITION_ID, competitionID);
-//            bundle.putSerializable(BuySaleSecurityFragment.KEY_POSITION_COMPACT_DTO, positionDTOCompactList);
-//            bundle.putDouble(BuySaleSecurityFragment.KEY_PRE_CLOSE, preClose == null? 0 : preClose);
-            //pushFragment(BuySaleSecurityFragment.class, bundle);
-
         }
     }
 
