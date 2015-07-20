@@ -157,12 +157,12 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
 
             @Override
             public void onRequestStart() {
-                showProgress();
+//                showProgress();
             }
 
             @Override
             public void onRequestFinish() {
-                dismissProgress();
+//                dismissProgress();
             }
 
             @Override
@@ -219,12 +219,12 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
 
                 @Override
                 public void onRequestStart() {
-                    showProgress();
+//                    showProgress();
                 }
 
                 @Override
                 public void onRequestFinish() {
-                    dismissProgress();
+//                    dismissProgress();
                 }
 
                 @Override
@@ -249,31 +249,31 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
         mListViewAdapter.notifyDataSetChanged();
     }
 
-    protected void showProgress() {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mProgressDlg == null) {
-                    mProgressDlg = new ProgressDialog(getActivity());
-                    mProgressDlg.setMessage("数据请求中...");
-                }
-                if (!mProgressDlg.isShowing()) {
-                    mProgressDlg.show();
-                }
-            }
-        });
-    }
-
-    protected void dismissProgress() {
-        mHandler.post(new Runnable(){
-
-            @Override
-            public void run() {
-                if(mProgressDlg != null && mProgressDlg.isShowing()) {
-                    mProgressDlg.dismiss();
-                }
-            }
-
-        });
-    }
+//    protected void showProgress() {
+//        mHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (mProgressDlg == null) {
+//                    mProgressDlg = new ProgressDialog(getActivity());
+//                    mProgressDlg.setMessage("数据请求中...");
+//                }
+//                if (!mProgressDlg.isShowing()) {
+//                    mProgressDlg.show();
+//                }
+//            }
+//        });
+//    }
+//
+//    protected void dismissProgress() {
+//        mHandler.post(new Runnable(){
+//
+//            @Override
+//            public void run() {
+//                if(mProgressDlg != null && mProgressDlg.isShowing()) {
+//                    mProgressDlg.dismiss();
+//                }
+//            }
+//
+//        });
+//    }
 }
