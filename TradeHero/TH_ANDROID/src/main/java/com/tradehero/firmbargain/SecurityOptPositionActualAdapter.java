@@ -83,12 +83,12 @@ public class SecurityOptPositionActualAdapter extends BaseAdapter {
                 holder.percentageBenefit.setTextColor(color_down);
             }
             holder.basePrice.setText(String.valueOf(securityOptPositionDTO.cost_price));
-            holder.base.setText(String.valueOf(securityOptPositionDTO.buy_money));
+            holder.base.setText(DataUtils.keepInteger(securityOptPositionDTO.buy_money));
             String ratio = securityOptPositionDTO.profit_ratio + "%";
             holder.percentageBenefit.setText(ratio);
-            holder.benefit.setText(String.valueOf(securityOptPositionDTO.profit));
-            holder.totalAccount.setText(String.valueOf(securityOptPositionDTO.current_amt));
-            holder.availableAccount.setText(String.valueOf(securityOptPositionDTO.enable_amt));
+            holder.benefit.setText(DataUtils.keepInteger(securityOptPositionDTO.profit));
+            holder.totalAccount.setText(DataUtils.keepInteger(securityOptPositionDTO.current_amt));
+            holder.availableAccount.setText(DataUtils.keepInteger(securityOptPositionDTO.enable_amt));
         }
 
         return convertView;

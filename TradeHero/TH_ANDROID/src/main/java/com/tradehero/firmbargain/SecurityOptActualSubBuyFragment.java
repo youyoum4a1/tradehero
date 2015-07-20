@@ -198,6 +198,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         addOneTV.setOnClickListener(this);
         reduceOneTV.setOnClickListener(this);
         decisionET = (EditText) view.findViewById(R.id.edittext_security_decision);
+        decisionET.setHint("请输入100的整数倍");
         oneFourIV = (ImageView) view.findViewById(R.id.security_opt_one_fourth);
         oneThirdIV = (ImageView) view.findViewById(R.id.security_opt_one_third);
         halfIV = (ImageView) view.findViewById(R.id.security_opt_half);
@@ -271,21 +272,22 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         if (TextUtils.isEmpty(securityName) || TextUtils.isEmpty(securitySymbol)) {
             return;
         }
-        if (priceET.getText() == null) {
+        if (priceET.getText() == null || TextUtils.isEmpty(priceET.getText().toString())) {
             return;
         }
-        if (TextUtils.isEmpty(priceET.getText().toString())) {
+        if (decisionET.getText() == null || TextUtils.isEmpty(decisionET.getText().toString())) {
             return;
         }
-        if (decisionET.getText() == null) {
-            return;
-        }
-        if (TextUtils.isEmpty(decisionET.getText().toString())) {
+        double amount = Double.valueOf(decisionET.getText().toString());
+        double plus = amount%100;
+        if(plus > 0){
+            THToast.show("购买股票数量必须是100的整数倍哦");
             return;
         }
         dlgStockNameTV.setText(securityName);
         dlgStockCodeTV.setText(securitySymbol);
         dlgStockPriceTV.setText(priceET.getText());
+
         dlgStockAmountTV.setText(decisionET.getText());
         int price = (int) (Double.valueOf(priceET.getText().toString()) * Double.valueOf(decisionET.getText().toString()));
         dlgStockTotalTV.setText(String.valueOf(price));
@@ -332,8 +334,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         if ((quoteDetail.prec * 1.1) < value) {
             return;
         }
-        DecimalFormat df = new DecimalFormat("#0.00");
-        priceET.setText(df.format(value));
+        priceET.setText(DataUtils.keepTwoDecimal(value));
     }
 
     private void reduceOne() {
@@ -355,8 +356,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         if ((quoteDetail.prec * 0.9) > value) {
             return;
         }
-        DecimalFormat df = new DecimalFormat("#0.00");
-        priceET.setText(df.format(value));
+        priceET.setText(DataUtils.keepTwoDecimal(value));
     }
 
     private void setBuyAmount(int percent){
@@ -370,8 +370,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         if(amount < 1){
             return;
         }
-        DecimalFormat df = new DecimalFormat("#0");
-        decisionET.setText(df.format(amount));
+        decisionET.setText(DataUtils.keepInteger(amount));
         switch (percent){
             case 1:
                 allIV.setImageResource(R.drawable.all);
@@ -487,8 +486,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         int valueNew = value / 100;
         if (valueNew > 10000) {
             double valueNewD = (double) valueNew / 10000.0;
-            DecimalFormat df = new DecimalFormat("#.0");
-            return df.format(valueNewD) + "万";
+            return DataUtils.keepOneDecimal(valueNewD) + "万";
         } else {
             return String.valueOf(valueNew);
         }
@@ -660,7 +658,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                     balance = helper.get(i, "enable_balance", 0.0);
                     if(balance > 0){
                         if(availableCashTV!=null) {
-                            availableCashTV.setText(String.valueOf(balance));
+                            availableCashTV.setText(DataUtils.keepInteger(balance));
                         }
                         return;
                     }

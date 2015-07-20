@@ -29,6 +29,7 @@ import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFr
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.firmbargain.DataUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -795,6 +796,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                 totalSellTV.setText(String.valueOf(securityOptPositionDTO.shares));
                 availableSellTV.setText(String.valueOf(securityOptPositionDTO.sellableShares));
                 availableSells = securityOptPositionDTO.sellableShares;
+                decisionET.setHint("可委托数量： " + DataUtils.keepInteger(availableSells));
             }
         }
     }
@@ -815,10 +817,9 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                 quoteDTO.rawResponse = new String(bytes);
                 SecurityOptMockSubSellFragment.this.quoteDTO = quoteDTO;
                 if (!isSHASHE() && quoteDTO.ask != null) {
-                    DecimalFormat df = new DecimalFormat("#0.00");
-                    sell1Price.setText(df.format(quoteDTO.ask));
-                    buy1Price.setText(df.format(quoteDTO.ask));
-                    priceET.setText(df.format(quoteDTO.ask));
+                    sell1Price.setText(DataUtils.keepTwoDecimal(quoteDTO.ask));
+                    buy1Price.setText(DataUtils.keepTwoDecimal(quoteDTO.ask));
+                    priceET.setText(DataUtils.keepTwoDecimal(quoteDTO.ask));
                 }
             }catch (Exception e){
                 e.printStackTrace();

@@ -1,6 +1,7 @@
 package com.tradehero.th.api.position;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.tradehero.firmbargain.DataUtils;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.utils.SecurityUtils;
 import java.io.Serializable;
@@ -108,10 +109,7 @@ public class PositionDTOCompact extends ExtendedDTO implements Serializable
                 '}';
     }
 
-    public static String getShortDouble(double d)
-    {
-        DecimalFormat df = new DecimalFormat("0.00");
-        String db = df.format(d);
-        return db;
+    public static String getShortDouble(double d){
+        return DataUtils.keepTwoDecimal(d);
     }
 }

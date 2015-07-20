@@ -2,6 +2,7 @@ package com.tradehero.th.api.security;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.tradehero.firmbargain.DataUtils;
 import com.tradehero.th.api.ExtendedDTO;
 import com.tradehero.th.api.market.Exchange;
 import com.tradehero.th.api.security.compact.BondCompactDTO;
@@ -193,15 +194,11 @@ public class SecurityCompactDTO extends ExtendedDTO implements Serializable
             return "- -";
         }
         double d1 = lastPrice - previousClose;
-        DecimalFormat df = new DecimalFormat("#0.00");
-        return df.format(d1);
+        return DataUtils.keepTwoDecimal(d1);
     }
 
-    public static String getShortValue(double value)
-    {
-        double d1 = value;
-        DecimalFormat df = new DecimalFormat("#0.00");
-        return df.format(d1);
+    public static String getShortValue(double value) {
+        return DataUtils.keepTwoDecimal(value);
     }
 
     public boolean isLastPriceNotNullOrZero()

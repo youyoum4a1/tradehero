@@ -332,8 +332,7 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         if ((quoteDetail.prec * 1.1) < value) {
             return;
         }
-        DecimalFormat df = new DecimalFormat("#0.00");
-        priceET.setText(df.format(value));
+        priceET.setText(DataUtils.keepTwoDecimal(value));
     }
 
     private void reduceOne() {
@@ -355,8 +354,7 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         if ((quoteDetail.prec * 0.9) > value) {
             return;
         }
-        DecimalFormat df = new DecimalFormat("#0.00");
-        priceET.setText(df.format(value));
+        priceET.setText(DataUtils.keepTwoDecimal(value));
     }
 
     private void setBuyAmount(int percent){
@@ -367,8 +365,7 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         if(amount < 1){
             return;
         }
-        DecimalFormat df = new DecimalFormat("#0");
-        decisionET.setText(df.format(amount));
+        decisionET.setText(DataUtils.keepInteger(amount));
         switch (percent){
             case 1:
                 allIV.setImageResource(R.drawable.all);
@@ -484,8 +481,7 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         int valueNew = value / 100;
         if (valueNew > 10000) {
             double valueNewD = (double) valueNew / 10000.0;
-            DecimalFormat df = new DecimalFormat("#.0");
-            return df.format(valueNewD) + "万";
+            return DataUtils.keepOneDecimal(valueNewD) + "万";
         } else {
             return String.valueOf(valueNew);
         }
@@ -654,10 +650,10 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         }
         for(SecurityOptPositionActualDTO securityOptPositionActualDTO : securityOptPositionActualDTOs){
             if(securityOptPositionActualDTO.sec_code.equals(securitySymbol)){
-                DecimalFormat df = new DecimalFormat("#0");
-                totalSellTV.setText(df.format(securityOptPositionActualDTO.current_amt));
-                availableSellTV.setText(df.format(securityOptPositionActualDTO.enable_amt));
+                totalSellTV.setText(DataUtils.keepInteger(securityOptPositionActualDTO.current_amt));
+                availableSellTV.setText(DataUtils.keepInteger(securityOptPositionActualDTO.enable_amt));
                 availableSells = securityOptPositionActualDTO.enable_amt;
+                decisionET.setHint("可委托数量： " + availableSells);
             }
         }
     }

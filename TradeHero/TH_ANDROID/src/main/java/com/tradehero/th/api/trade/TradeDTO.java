@@ -3,6 +3,7 @@ package com.tradehero.th.api.trade;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.firmbargain.DataUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -31,7 +32,6 @@ public class TradeDTO implements DTO
     @JsonProperty("unit_price_currency")
     public String unit_price_currency;
 
-
     public String commentText;
 
     //<editor-fold desc="These need to be set on client side, in ServiceWrapper">
@@ -40,23 +40,19 @@ public class TradeDTO implements DTO
     public int positionId;
     //</editor-fold>
 
-    public TradeDTO()
-    {
+    public TradeDTO() {
     }
 
-    @JsonIgnore @NotNull public OwnedTradeId getOwnedTradeId()
-    {
+    @JsonIgnore @NotNull public OwnedTradeId getOwnedTradeId() {
         return new OwnedTradeId(userId, portfolioId, positionId, id);
     }
 
-    public String getCurrencyDisplay()
-    {
+    public String getCurrencyDisplay() {
         return SecurityUtils.getCurrencyShortDispaly(unit_price_currency);
     }
 
     //成交金额
-    public String displayTradeMoney()
-    {
+    public String displayTradeMoney() {
         return "" + Math.round(Math.abs(quantity * unitPriceRefCcy));
     }
 
@@ -70,11 +66,8 @@ public class TradeDTO implements DTO
         return quantity > 0 ? true : false;
     }
 
-    public double getUnitPriceCurrency()
-    {
+    public double getUnitPriceCurrency() {
         double d1 = unitPriceRefCcy;
-        DecimalFormat df = new DecimalFormat("#0.00");
-        String show = df.format(d1);
-        return Double.valueOf(show);
+        return Double.valueOf(DataUtils.keepTwoDecimal(d1));
     }
 }

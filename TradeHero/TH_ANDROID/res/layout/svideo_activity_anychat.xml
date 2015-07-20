@@ -1,0 +1,174 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".MainActivity" >
+    
+    <SurfaceView
+            android:id="@+id/surfaceView_anychat"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_marginBottom="70dp"/>
+    
+	<RelativeLayout
+        android:id="@+id/show_view"
+         android:layout_width="fill_parent"
+	    android:layout_height="fill_parent">
+        
+        <FrameLayout
+            android:id="@+id/top_nav"
+            android:layout_width="fill_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true">
+            <RelativeLayout
+                android:id="@+id/top_nav_alpha"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" 
+                android:background="@android:color/black" >
+            </RelativeLayout>
+            
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                
+                <antistatic.spinnerwheel.WheelVerticalView 
+                    android:id="@+id/wheelText1"
+                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                  	/>
+            </RelativeLayout>
+            
+        </FrameLayout>
+        <!-- 
+        <SurfaceView
+            android:id="@+id/surfaceView1"
+            android:layout_marginTop="100dp"
+	        android:layout_marginBottom="70dp"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"/>
+	     
+		-->
+        <FrameLayout
+            android:id="@+id/botom_nav"
+            android:layout_width="fill_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true">
+            
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" 
+                android:background="@android:color/black" >
+
+                <ImageView
+                    android:id="@+id/imageView_overturn"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:src="@drawable/crh_video_overturn" />
+
+                <TextView
+                    android:id="@+id/textView_reRecord"
+                    android:layout_width="100dp"
+                    android:layout_height="25dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="25dp"
+                    android:text="重新录制"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/white" 
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
+            
+            <ImageView
+                android:id="@+id/imageView_start"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:src="@drawable/crh_start" 
+                android:visibility="gone"/>
+            
+        </FrameLayout>
+        
+        <ImageView
+            android:id="@+id/imageView_video_prompt"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="70dp"
+            android:src="@drawable/crh_video_prompt" 
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:id="@+id/timeview"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true" >
+            
+            <ImageView
+	            android:id="@+id/imageView_timebg"
+	            android:layout_width="fill_parent"
+	            android:layout_height="fill_parent"
+	            android:layout_below="@+id/imageView_video_prompt"
+	            android:layout_centerHorizontal="true"
+	            android:src="@drawable/crh_time_bg" 
+	            android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/textView_timenum"
+                android:layout_width="fill_parent"
+            	android:layout_height="wrap_content"
+            	android:layout_marginLeft="30dp"
+            	android:layout_marginRight="30dp"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:text="5"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="70sp" 
+                android:visibility="gone"/>
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/imageView_video_prompt2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="35dp"
+            android:src="@drawable/crh_videostart_prompt" 
+            android:visibility="gone"/>
+
+        <Chronometer
+            android:id="@+id/chronometer1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/top_nav"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"
+            android:textColor="#873324"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/textView_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/timeview"
+            android:layout_centerHorizontal="true"
+            android:text="正在连接服务器进行验证,请稍后...."
+            android:textColor="@android:color/white"
+            android:textSize="20dp" />
+        
+    </RelativeLayout>
+</FrameLayout>

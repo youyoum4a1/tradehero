@@ -26,6 +26,7 @@ import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFr
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.firmbargain.DataUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -651,8 +652,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if ((quoteDetail.prec * 1.1) < value) {
             return;
         }
-        DecimalFormat df = new DecimalFormat("#0.00");
-        priceET.setText(df.format(value));
+        priceET.setText(DataUtils.keepTwoDecimal(value));
     }
 
     private void reduceOne() {
@@ -674,8 +674,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         if ((quoteDetail.prec * 0.9) > value) {
             return;
         }
-        DecimalFormat df = new DecimalFormat("#0.00");
-        priceET.setText(df.format(value));
+        priceET.setText(DataUtils.keepTwoDecimal(value));
     }
 
     private void retrieveMainPositions() {
@@ -806,10 +805,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                 quoteDTO.rawResponse = new String(bytes);
                 SecurityOptMockSubBuyFragment.this.quoteDTO = quoteDTO;
                 if (!isSHASHE() && quoteDTO.ask != null) {
-                    DecimalFormat df = new DecimalFormat("#0.00");
-                    sell1Price.setText(df.format(quoteDTO.ask));
-                    buy1Price.setText(df.format(quoteDTO.ask));
-                    priceET.setText(df.format(quoteDTO.ask));
+                    sell1Price.setText(DataUtils.keepTwoDecimal(quoteDTO.ask));
+                    buy1Price.setText(DataUtils.keepTwoDecimal(quoteDTO.ask));
+                    priceET.setText(DataUtils.keepTwoDecimal(quoteDTO.ask));
                 }
             }catch (Exception e){
                 e.printStackTrace();

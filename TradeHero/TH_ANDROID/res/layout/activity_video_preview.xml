@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+	    	android:layout_height="fill_parent">
+	   	 	
+    <RelativeLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:background="@android:color/background_dark">
+	</RelativeLayout>
+            
+    <RelativeLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent">
+	    <VideoView
+	        android:id="@+id/videoView_preview"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_above="@+id/videoView_preview"
+	        android:layout_marginTop="30dp"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp"
+	        android:layout_marginBottom="100dp"/>
+	         
+	    <ImageView 
+	      android:src="@drawable/crh_vdieo_bj"
+	      android:id="@+id/recordPlayIv"
+	      android:layout_width="wrap_content"
+	      android:layout_height="wrap_content"
+	      android:clickable="true"
+	      android:onClick="playVideo"
+	      android:visibility="gone"
+	     />
+	
+	
+	    <RelativeLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="70dp"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentLeft="true"
+	        android:layout_marginBottom="20dp" >
+	
+	        <ImageView
+	            android:id="@+id/imageView_back"
+	            android:layout_width="60dp"
+	            android:layout_height="60dp"
+	            android:layout_alignParentBottom="true"
+	            android:layout_alignParentLeft="true"
+	            android:layout_marginLeft="27dp"
+	            android:src="@drawable/crh_video_goback" />
+	
+	        <ImageView
+	            android:id="@+id/imageView_use"
+	            android:layout_width="60dp"
+	            android:layout_height="60dp"
+	            android:layout_alignParentBottom="true"
+	            android:layout_centerHorizontal="true"
+	            android:src="@drawable/crh_upload" />
+	    </RelativeLayout>
+	</RelativeLayout>
+</FrameLayout>
+
