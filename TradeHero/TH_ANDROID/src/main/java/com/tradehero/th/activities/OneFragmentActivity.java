@@ -35,7 +35,7 @@ abstract public class OneFragmentActivity extends BaseActivity
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-
+        activityModule.toolbar = toolbar;
         activityModule.navigator = new DashboardNavigator(this, R.id.realtabcontent);
 
         if (savedInstanceState == null)

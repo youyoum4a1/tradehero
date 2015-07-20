@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import android.content.Context;
+import android.support.v7.widget.Toolbar;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseFragmentOuterElements;
@@ -22,6 +23,7 @@ import javax.inject.Singleton;
         overrides = true) class OneFragmentActivityModule
 {
     DashboardNavigator navigator;
+    Toolbar toolbar;
 
     @Provides DashboardNavigator provideDashboardNavigator()
     {
@@ -36,5 +38,10 @@ import javax.inject.Singleton;
     @Provides FragmentOuterElements provideFragmentElements()
     {
         return new BaseFragmentOuterElements();
+    }
+
+    @Provides Toolbar provideToolbar()
+    {
+        return toolbar;
     }
 }

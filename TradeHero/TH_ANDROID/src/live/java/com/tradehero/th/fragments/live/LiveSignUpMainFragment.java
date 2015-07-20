@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,14 +23,16 @@ import rx.functions.Action1;
 public class LiveSignUpMainFragment extends BaseFragment
 {
     @Inject SignUpLivePagerAdapterFactory signUpLivePagerAdapterFactory;
+    @Inject Toolbar toolbar;
 
     @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
     @Bind(R.id.pager) protected ViewPager viewPager;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        inflater.inflate(R.menu.settings_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.settings_menu, menu);
+        actionBarOwnerMixin.setCustomView(LayoutInflater.from(getActivity()).inflate(R.layout.sign_up_custom_actionbar, toolbar, false));
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
