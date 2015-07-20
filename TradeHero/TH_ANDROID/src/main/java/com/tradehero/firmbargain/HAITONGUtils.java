@@ -36,11 +36,12 @@ public class HAITONGUtils {
     //到海通开户界面
     public final static void openAnAccount(Activity activity){
         Intent intent = new Intent();
-        intent.putExtra("type", 0);//启动的功能编号,具体详见功能编号表
-        intent.putExtra("username", "username");//自动登陆的账号,非必填
-        intent.putExtra("password", "password");//自动登陆的密码
-        intent.setClass(activity, MainActivity.class);
+        intent.putExtra("type", 0);//开户 ，开户传此
+//		intent.putExtra("channel", "渠道短连接");// 开户时可以传此参数
+//		intent.putExtra("mobileNo", "手机号");// 开户时可以传此参数，有就传 没有不传
+
+
+        intent.setClass(activity, com.cairh.app.sjkh.MainActivity.class);
         activity.startActivity(intent);
-        activity.overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
     }
 }

@@ -1,8 +1,9 @@
 package com.tradehero.common.application;
 
 import android.content.Context;
+import android.support.multidex.MultiDexApplication;
 
-public class PApplication extends android.app.Application
+public class PApplication extends MultiDexApplication
 {
     private static Context context;
 
@@ -25,10 +26,5 @@ public class PApplication extends android.app.Application
     public static String getResourceString(int resourceId)
     {
         return context().getResources().getString(resourceId);
-    }
-
-    public static int getResourceInteger(int resourceId)
-    {
-        return context().getResources().getInteger(resourceId);
     }
 }

@@ -52,8 +52,6 @@ android {
 
         buildConfigField "int", "DISTRIBUTION", distId
 
-        multiDexEnabled = true
-
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
                 if (outputRoot) {
@@ -63,7 +61,10 @@ android {
                 }
             }
         }
+
+        multiDexEnabled true
     }
+
 
     sourceSets {
         main {
@@ -174,4 +175,5 @@ dependencies {
         android.buildTypes.release.signingConfig = null
     }
     compile files('libs/android-async-http-1.4.4.jar')
+    compile 'com.android.support:multidex:'
 }

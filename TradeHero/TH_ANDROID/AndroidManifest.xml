@@ -46,11 +46,11 @@
     <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <!-- 这个权限用于进行网络定位-->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <!-- 这个权限用于访问GPS定位-->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!--允许应用读取低级别的系统日志文件 -->
-    <uses-permission android:name="android.permission.READ_LOGS"></uses-permission>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
     <!-- 海通实盘 -->
 
     <application
@@ -281,6 +281,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
+        <!-- 海通SDK -->
         <activity
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"
@@ -309,6 +310,7 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="ljeTCCsVh1rap0tutGgG29Up" />
+        <!-- 海通SDK -->
         <!-- 实盘 -->
     </application>
 </manifest>
