@@ -9,7 +9,8 @@
 
   <com.android.common.SlidingTabLayout
       android:id="@+id/android_tabs"
-      style="@style/TradeHero.TabContainer"
+      android:minHeight="@dimen/size_4"
+      android:background="@color/grey"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       />
@@ -20,7 +21,7 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/android_tabs"
       android:layout_marginTop="@dimen/size_8"
-      tools:background="@android:color/holo_red_dark"
+      tools:background="@color/background_material_light"
       />
 
   <com.tradehero.th.widget.LiveRewardWidget

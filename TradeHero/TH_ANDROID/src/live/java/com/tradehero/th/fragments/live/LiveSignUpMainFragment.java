@@ -42,7 +42,7 @@ public class LiveSignUpMainFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        tabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
+        tabLayout.setCustomTabView(R.layout.th_sign_up_tab_indicator, android.R.id.title);
         tabLayout.setDistributeEvenly(true);
         tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
 
