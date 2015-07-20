@@ -13,20 +13,20 @@ import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.IdentityPromptActivity;
 import com.tradehero.th.activities.SignUpLiveActivity;
+import com.tradehero.th.api.kyc.KYCFormUtil;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.fastfill.FastFillUtil;
-import com.tradehero.th.api.kyc.KYCFormUtil;
 import com.tradehero.th.network.service.LiveServiceWrapper;
-import com.tradehero.th.rx.TimberOnErrorAction;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.functions.Action1;
-import rx.functions.Func3;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 
 public class LiveCallToActionFragment extends DashboardFragment
@@ -50,38 +50,43 @@ public class LiveCallToActionFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        onDestroyViewSubscriptions.add(Observable.combineLatest(
+        onDestroyViewSubscriptions.add(
                 getBrokerSituationToUse()
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnNext(new Action1<LiveBrokerSituationDTO>()
+                        .subscribe(new Action1<LiveBrokerSituationDTO>()
                         {
-                            @Override public void call(LiveBrokerSituationDTO situation)
+                            @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
                             {
-                                //noinspection ConstantConditions
-                                liveDescription.setText(KYCFormUtil.getCallToActionText(situation.kycForm));
-                                livePoweredBy.setText(situation.kycForm.getBrokerName());
+                                if (liveBrokerSituationDTO.kycForm != null)
+                                {
+                                    liveDescription.setText(KYCFormUtil.getCallToActionText(liveBrokerSituationDTO.kycForm));
+                                    livePoweredBy.setText(liveBrokerSituationDTO.kycForm.getBrokerName());
+                                }
                             }
-                        }),
-                ViewObservable.clicks(goLiveButton),
-                fastFill.isAvailable(getActivity()),
-                new Func3<LiveBrokerSituationDTO, OnClickEvent, Boolean, Boolean>()
+                        }));
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
+        onStopSubscriptions.add(ViewObservable.clicks(goLiveButton)
+                .flatMap(new Func1<OnClickEvent, Observable<Boolean>>()
                 {
-                    @Override public Boolean call(LiveBrokerSituationDTO situationDTO, OnClickEvent onClickEvent, Boolean fastFillAvailable)
+                    @Override public Observable<Boolean> call(OnClickEvent onClickEvent)
                     {
-                        return fastFillAvailable;
+                        return fastFill.isAvailable(getActivity()).distinctUntilChanged().take(1);
                     }
                 })
-                .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean fastFillAvailable)
-                            {
-                                navigator.launchActivity(fastFillAvailable
-                                        ? IdentityPromptActivity.class
-                                        : SignUpLiveActivity.class);
-                            }
-                        },
-                        new TimberOnErrorAction("Failed to get FastFill available")));
+                .subscribe(new Action1<Boolean>()
+                {
+                    @Override public void call(Boolean fastFillAvailable)
+                    {
+                        navigator.launchActivity(fastFillAvailable
+                                ? IdentityPromptActivity.class
+                                : SignUpLiveActivity.class);
+                    }
+                }));
     }
 
     @Override public void onDestroyView()
