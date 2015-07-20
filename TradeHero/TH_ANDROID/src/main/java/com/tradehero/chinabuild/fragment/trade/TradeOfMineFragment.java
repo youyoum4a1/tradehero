@@ -231,8 +231,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         }
     }
 
-    private void enterSecurity(SecurityId securityId, String securityName, PositionDTO positionDTO,boolean isGotoTradeDetail)
-    {
+    private void enterSecurity(SecurityId securityId, String securityName, PositionDTO positionDTO,boolean isGotoTradeDetail) {
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
@@ -245,8 +244,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         gotoDashboard(SecurityDetailFragment.class, bundle);
     }
 
-    private void enterSecurity(SecurityId securityId, String securityName)
-    {
+    private void enterSecurity(SecurityId securityId, String securityName) {
         Bundle bundle = new Bundle();
         bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);

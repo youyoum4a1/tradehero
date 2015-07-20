@@ -36,7 +36,7 @@ public class HAITONGUtils {
     //到海通开户界面
     public final static void openAnAccount(Activity activity){
         Intent intent = new Intent();
-        intent.putExtra("type", 1);//启动的功能编号,具体详见功能编号表
+        intent.putExtra("type", 0);//启动的功能编号,具体详见功能编号表
         intent.putExtra("username", "username");//自动登陆的账号,非必填
         intent.putExtra("password", "password");//自动登陆的密码
         intent.setClass(activity, MainActivity.class);
