@@ -220,10 +220,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction("Failed to listen to email validation")));
 
-        spinnerPhoneCountryCode.setClickable(false);
-        spinnerNationality.setClickable(false);
-        spinnerResidency.setClickable(false);
-
         // Maybe move this until we get the KYCForm, and use the KYCForm to fetch the list of country of residence.
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 getBrokerSituationObservable()
@@ -628,19 +624,19 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
                         phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
                         spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
-                        spinnerPhoneCountryCode.setClickable(options.allowedMobilePhoneCountryDTOs.size() > 1);
+                        spinnerPhoneCountryCode.setEnabled(options.allowedMobilePhoneCountryDTOs.size() > 1);
 
                         CountrySpinnerAdapter residencyAdapter =
                                 new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
                         residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
                         spinnerResidency.setAdapter(residencyAdapter);
-                        spinnerResidency.setClickable(options.allowedResidencyCountryDTOs.size() > 1);
+                        spinnerResidency.setEnabled(options.allowedResidencyCountryDTOs.size() > 1);
 
                         CountrySpinnerAdapter nationalityAdapter =
                                 new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
                         nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
                         spinnerNationality.setAdapter(nationalityAdapter);
-                        spinnerNationality.setClickable(options.allowedNationalityCountryDTOs.size() > 1);
+                        spinnerNationality.setEnabled(options.allowedNationalityCountryDTOs.size() > 1);
                     }
                 });
     }
