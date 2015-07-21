@@ -22,6 +22,7 @@ import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
+import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,9 +45,10 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
     @Inject public DummyLiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
             @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference,
-            @NonNull ObjectMapperWrapper objectMapperWrapper)
+            @NonNull ObjectMapperWrapper objectMapperWrapper,
+            @NonNull PhoneNumberVerifiedPreference phoneNumberVerifiedPreference)
     {
-        super(liveServiceRx, liveBrokerSituationPreference);
+        super(liveServiceRx, liveBrokerSituationPreference, phoneNumberVerifiedPreference);
         this.objectMapperWrapper = objectMapperWrapper;
     }
 

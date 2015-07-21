@@ -57,6 +57,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func2;
+import timber.log.Timber;
 
 public class DTOCacheUtilImpl implements DTOCacheUtilRx
 {
@@ -188,7 +189,13 @@ public class DTOCacheUtilImpl implements DTOCacheUtilRx
 
         for (int i = 0, length = userCacheRxs.size(); i < length; i++)
         {
-            userCacheRxs.get(i).invalidateAll();
+            try
+            {
+                userCacheRxs.get(i).invalidateAll();
+            } catch (Throwable e)
+            {
+                Timber.e(e, "Failed to clear cache " + userCacheRxs.get(i).getClass().getSimpleName());
+            }
         }
 
         serverEndpointPreference.delete();

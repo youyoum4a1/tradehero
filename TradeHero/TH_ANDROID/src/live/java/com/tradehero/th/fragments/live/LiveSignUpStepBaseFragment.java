@@ -46,6 +46,12 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         brokerSituationSubject.onNext(liveBrokerSituationPreference.get());
     }
 
+    @Override public void onDestroy()
+    {
+        this.brokerSituationSubject.onCompleted(); // To clear all the .cache(1)
+        super.onDestroy();
+    }
+
     @CallSuper public void onNext(@NonNull LiveBrokerSituationDTO situationDTO)
     {
         LiveBrokerSituationDTO previous = liveBrokerSituationPreference.get();

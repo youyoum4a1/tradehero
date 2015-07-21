@@ -1,14 +1,16 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
+import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
+import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
-import com.tradehero.th.api.kyc.KYCForm;
-import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
+import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
@@ -17,13 +19,16 @@ public class LiveServiceWrapper
 {
     @NonNull private final LiveServiceRx liveServiceRx;
     @NonNull private final LiveBrokerSituationPreference liveBrokerSituationPreference;
+    @NonNull private final PhoneNumberVerifiedPreference phoneNumberVerifiedPreference;
 
     @Inject public LiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
-            @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference)
+            @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference,
+            @NonNull PhoneNumberVerifiedPreference phoneNumberVerifiedPreference)
     {
         this.liveServiceRx = liveServiceRx;
         this.liveBrokerSituationPreference = liveBrokerSituationPreference;
+        this.phoneNumberVerifiedPreference = phoneNumberVerifiedPreference;
     }
 
     @NonNull public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
@@ -80,5 +85,12 @@ public class LiveServiceWrapper
     @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)
     {
         return liveServiceRx.getKYCFormOptions(optionsId.brokerId.key);
+    }
+
+    @NonNull public Observable<PhoneNumberVerifiedStatusDTO> getPhoneNumberVerifiedStatus(@NonNull String phoneNumber)
+    {
+        return Observable.just(new PhoneNumberVerifiedStatusDTO(
+                phoneNumber,
+                phoneNumberVerifiedPreference.get().contains(phoneNumber)));
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
@@ -38,6 +40,8 @@ import com.tradehero.th.models.sms.SMSRequestFactory;
 import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
 import com.tradehero.th.models.sms.SMSServiceWrapper;
 import com.tradehero.th.models.sms.empty.EmptySMSSentConfirmationDTO;
+import com.tradehero.th.network.service.LiveServiceWrapper;
+import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.ToastAndLogOnErrorAction;
@@ -67,12 +71,10 @@ import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func3;
-import rx.functions.Func4;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
@@ -102,11 +104,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject SMSServiceWrapper smsServiceWrapper;
+    @Inject LiveServiceWrapper liveServiceWrapper;
+    @Inject PhoneNumberVerifiedPreference phoneNumberVerifiedPreference;
 
+    private Observable<CountryDTOForSpinner> countryDTOSpinnerObservable;
     private Random randomiser;
-    private CountrySpinnerAdapter phoneCountryCodeAdapter;
-    private CountrySpinnerAdapter nationalityAdapter;
-    private CountrySpinnerAdapter residencyAdapter;
     @Nullable private String expectedCode;
     @Nullable private BehaviorSubject<SMSSentConfirmationDTO> confirmationSubject;
     private Subscription confirmationSubscription;
@@ -148,49 +150,53 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         stringArrayAdapter.setDropDownViewResource(R.layout.sign_up_dropdown_item);
         title.setAdapter(stringArrayAdapter);
 
-        onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
-                WidgetObservable.text(firstName),
-                new Func2<LiveBrokerSituationDTO, OnTextChangeEvent, Boolean>()
+        onDestroyViewSubscriptions.add(getBrokerSituationObservable()
+                .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
                 {
-                    @Override public Boolean call(LiveBrokerSituationDTO situation, OnTextChangeEvent firstNameEvent)
+                    @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
                     {
-                        //noinspection ConstantConditions
-                        ((KYCAyondoForm) situation.kycForm).setFirstName(firstNameEvent.text().toString());
-                        onNext(situation);
-                        return null;
+                        return Observable.merge(
+                                WidgetObservable.text(firstName)
+                                        .map(new Func1<OnTextChangeEvent, LiveBrokerSituationDTO>()
+                                        {
+                                            @Override public LiveBrokerSituationDTO call(OnTextChangeEvent firstNameEvent)
+                                            {
+                                                //noinspection ConstantConditions
+                                                ((KYCAyondoForm) situation.kycForm).setFirstName(firstNameEvent.text().toString());
+                                                return situation;
+                                            }
+                                        }),
+                                WidgetObservable.text(lastName)
+                                        .map(new Func1<OnTextChangeEvent, LiveBrokerSituationDTO>()
+                                        {
+                                            @Override public LiveBrokerSituationDTO call(OnTextChangeEvent lastNameEvent)
+                                            {
+                                                //noinspection ConstantConditions
+                                                ((KYCAyondoForm) situation.kycForm).setLastName(lastNameEvent.text().toString());
+                                                return situation;
+                                            }
+                                        }),
+                                WidgetObservable.text(email)
+                                        .map(new Func1<OnTextChangeEvent, LiveBrokerSituationDTO>()
+                                        {
+                                            @Override public LiveBrokerSituationDTO call(OnTextChangeEvent emailEvent)
+                                            {
+                                                //noinspection ConstantConditions
+                                                ((KYCAyondoForm) situation.kycForm).setEmail(emailEvent.text().toString());
+                                                return situation;
+                                            }
+                                        }));
                     }
                 })
                 .subscribe(
-                        new Action1<Boolean>()
+                        new Action1<LiveBrokerSituationDTO>()
                         {
-                            @Override public void call(Boolean aBoolean)
+                            @Override public void call(LiveBrokerSituationDTO situation)
                             {
+                                onNext(situation);
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to first name")));
-
-        onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
-                WidgetObservable.text(lastName),
-                new Func2<LiveBrokerSituationDTO, OnTextChangeEvent, Boolean>()
-                {
-                    @Override public Boolean call(LiveBrokerSituationDTO situation, OnTextChangeEvent lastNameEvent)
-                    {
-                        //noinspection ConstantConditions
-                        ((KYCAyondoForm) situation.kycForm).setLastName(lastNameEvent.text().toString());
-                        onNext(situation);
-                        return null;
-                    }
-                })
-                .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean aBoolean)
-                            {
-                            }
-                        },
-                        new TimberOnErrorAction("Failed to listen to last name")));
+                        new TimberOnErrorAction("Failed to listen to first or last name or email")));
 
         emailValidator = email.getValidator();
         email.setOnFocusChangeListener(emailValidator);
@@ -214,53 +220,45 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction("Failed to listen to email validation")));
 
-        onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
-                WidgetObservable.text(email),
-                new Func2<LiveBrokerSituationDTO, OnTextChangeEvent, Boolean>()
-                {
-                    @Override public Boolean call(LiveBrokerSituationDTO situation, OnTextChangeEvent emailEvent)
-                    {
-                        //noinspection ConstantConditions
-                        ((KYCAyondoForm) situation.kycForm).setEmail(emailEvent.text().toString());
-                        onNext(situation);
-                        return null;
-                    }
-                })
-                .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean aBoolean)
-                            {
-                            }
-                        },
-                        new TimberOnErrorAction("Failed to listen to email")));
-
-        phoneCountryCodeAdapter = new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
-        spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
         spinnerPhoneCountryCode.setClickable(false);
-
-        nationalityAdapter = new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
-        spinnerNationality.setAdapter(nationalityAdapter);
         spinnerNationality.setClickable(false);
-
-        residencyAdapter = new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
-        spinnerResidency.setAdapter(residencyAdapter);
         spinnerResidency.setClickable(false);
 
         // Maybe move this until we get the KYCForm, and use the KYCForm to fetch the list of country of residence.
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 getBrokerSituationObservable()
-                        .observeOn(AndroidSchedulers.mainThread()),
-                getKYCAyondoFormOptionsObservable()
-                        .observeOn(Schedulers.computation())
-                        .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
                         {
-                            @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
+                            @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
                             {
-                                return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO);
+                                //noinspection ConstantConditions
+                                final Integer dialingPrefix = ((KYCAyondoForm) situation.kycForm).getMobileNumberDialingPrefix();
+                                final String phoneNumber = ((KYCAyondoForm) situation.kycForm).getMobileNumber();
+                                if (dialingPrefix != null && phoneNumber != null)
+                                {
+                                    populateVerifyMobile((KYCAyondoForm) situation.kycForm, dialingPrefix, phoneNumber);
+                                    String numberText = "+" + dialingPrefix + phoneNumber;
+                                    return liveServiceWrapper.getPhoneNumberVerifiedStatus(numberText)
+                                            .map(new Func1<PhoneNumberVerifiedStatusDTO, LiveBrokerSituationDTO>()
+                                            {
+                                                @Override
+                                                public LiveBrokerSituationDTO call(PhoneNumberVerifiedStatusDTO verifiedStatus)
+                                                {
+                                                    if (verifiedStatus.verified)
+                                                    {
+                                                        ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumberDialingPrefix(dialingPrefix);
+                                                        ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumber(phoneNumber);
+                                                    }
+                                                    return situation;
+                                                }
+                                            });
+                                }
+                                return Observable.just(situation);
                             }
                         })
+                        .observeOn(AndroidSchedulers.mainThread()),
+                getCountryDTOSpinnerObservable()
                         .observeOn(AndroidSchedulers.mainThread()),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
@@ -271,37 +269,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             CountryDTOForSpinner options,
                             UserProfileDTO currentUserProfile)
                     {
-                        phoneCountryCodeAdapter.setNotifyOnChange(false);
-                        phoneCountryCodeAdapter.clear();
-                        phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
-                        phoneCountryCodeAdapter.setNotifyOnChange(true);
-                        phoneCountryCodeAdapter.notifyDataSetChanged();
-                        spinnerPhoneCountryCode.setClickable(options.allowedMobilePhoneCountryDTOs.size() > 1);
-
-                        residencyAdapter.setNotifyOnChange(false);
-                        residencyAdapter.clear();
-                        residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
-                        residencyAdapter.setNotifyOnChange(true);
-                        residencyAdapter.notifyDataSetChanged();
-                        spinnerResidency.setClickable(options.allowedResidencyCountryDTOs.size() > 1);
-
-                        nationalityAdapter.setNotifyOnChange(false);
-                        nationalityAdapter.clear();
-                        nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
-                        nationalityAdapter.setNotifyOnChange(true);
-                        nationalityAdapter.notifyDataSetChanged();
-                        spinnerNationality.setClickable(options.allowedNationalityCountryDTOs.size() > 1);
-
                         //noinspection ConstantConditions
                         populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedMobilePhoneCountryDTOs);
                         populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
                         populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
-                        Integer dialingPrefix = ((KYCAyondoForm) situation.kycForm).getMobileNumberDialingPrefix();
-                        String phoneNumber = ((KYCAyondoForm) situation.kycForm).getMobileNumber();
-                        if (dialingPrefix != null && phoneNumber != null)
-                        {
-                            populateVerifyMobile((KYCAyondoForm) situation.kycForm, dialingPrefix, phoneNumber);
-                        }
                         return null;
                     }
                 })
@@ -314,37 +285,87 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction("Failed to load phone drop down lists")));
 
+        ;
+
         onDestroyViewSubscriptions.add(Observable.combineLatest(
-                userProfileCache.getOne(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
-                getBrokerSituationObservable(),
-                AdapterViewObservable.selects(spinnerPhoneCountryCode),
-                WidgetObservable.text(phoneNumber),
-                new Func4<UserProfileDTO, LiveBrokerSituationDTO, OnSelectedEvent, OnTextChangeEvent, Boolean>()
-                {
-                    @Override public Boolean call(UserProfileDTO currentUserProfile, LiveBrokerSituationDTO situation, OnSelectedEvent countryEvent,
-                            OnTextChangeEvent onTextChangeEvent)
-                    {
-                        if (onTextChangeEvent.text().length() > 0 && countryEvent instanceof OnItemSelectedEvent)
+                getBrokerSituationObservable()
+                        .observeOn(AndroidSchedulers.mainThread()),
+                Observable.combineLatest(
+                        AdapterViewObservable.selects(spinnerPhoneCountryCode)
+                                .filter(new Func1<OnSelectedEvent, Boolean>()
+                                {
+                                    @Override public Boolean call(OnSelectedEvent onSelectedEvent)
+                                    {
+                                        boolean ok = onSelectedEvent instanceof OnItemSelectedEvent;
+                                        if (!ok)
+                                        {
+                                            buttonVerifyPhone.setEnabled(false);
+                                        }
+                                        return ok;
+                                    }
+                                })
+                                .cast(OnItemSelectedEvent.class),
+                        WidgetObservable.text(phoneNumber)
+                                .filter(new Func1<OnTextChangeEvent, Boolean>()
+                                {
+                                    @Override public Boolean call(OnTextChangeEvent onTextChangeEvent)
+                                    {
+                                        boolean ok = onTextChangeEvent.text().length() > 0;
+                                        if (!ok)
+                                        {
+                                            buttonVerifyPhone.setEnabled(false);
+                                        }
+                                        return ok;
+                                    }
+                                }),
+                        new Func2<OnItemSelectedEvent, OnTextChangeEvent, Pair<Integer, String>>()
                         {
-                            try
+                            @Override public Pair<Integer, String> call(OnItemSelectedEvent dialingPrefixEvent, OnTextChangeEvent typedNumberEvent)
                             {
-                                int newCountryCode = ((CountrySpinnerAdapter.DTO) countryEvent.parent.getItemAtPosition(
-                                        ((OnItemSelectedEvent) countryEvent).position)).phoneCountryCode;
-                                String newNumber = onTextChangeEvent.text().toString();
-                                //noinspection ConstantConditions
-                                populateVerifyMobile((KYCAyondoForm) situation.kycForm, newCountryCode, newNumber);
-                                ((KYCAyondoForm) situation.kycForm).setMobileNumberDialingPrefix(newCountryCode);
-                                ((KYCAyondoForm) situation.kycForm).setMobileNumber(newNumber);
-                                onNext(situation);
-                            } catch (NumberFormatException e)
-                            {
-                                Timber.e(e, "Failed to parse to number %s", onTextChangeEvent.text().toString());
+                                int dialingPrefix = ((CountrySpinnerAdapter.DTO) dialingPrefixEvent.parent.getItemAtPosition(
+                                        dialingPrefixEvent.position)).phoneCountryCode;
+                                String newNumber = typedNumberEvent.text().toString();
+                                return Pair.create(dialingPrefix, newNumber);
                             }
-                        }
-                        else
+                        })
+                        .flatMap(new Func1<Pair<Integer, String>, Observable<PhoneNumberAndVerifiedDTO>>()
                         {
-                            buttonVerifyPhone.setEnabled(false);
+                            @Override public Observable<PhoneNumberAndVerifiedDTO> call(final Pair<Integer, String> phoneNumberPair)
+                            {
+                                String numberText = "+" + phoneNumberPair.first + phoneNumberPair.second;
+                                return liveServiceWrapper.getPhoneNumberVerifiedStatus(numberText)
+                                        .map(new Func1<PhoneNumberVerifiedStatusDTO, PhoneNumberAndVerifiedDTO>()
+                                        {
+                                            @Override public PhoneNumberAndVerifiedDTO call(PhoneNumberVerifiedStatusDTO verifiedStatusDTO)
+                                            {
+                                                return new PhoneNumberAndVerifiedDTO(
+                                                        phoneNumberPair.first,
+                                                        phoneNumberPair.second,
+                                                        verifiedStatusDTO.verified);
+                                            }
+                                        });
+                            }
+                        })
+                        .observeOn(AndroidSchedulers.mainThread()),
+                new Func2<LiveBrokerSituationDTO, PhoneNumberAndVerifiedDTO, Boolean>()
+                {
+                    @Override public Boolean call(
+                            LiveBrokerSituationDTO situation,
+                            PhoneNumberAndVerifiedDTO phoneNumberAndVerifiedDTO)
+                    {
+                        int dialingPrefix = phoneNumberAndVerifiedDTO.dialingPrefix;
+                        String newNumber = phoneNumberAndVerifiedDTO.typedNumber;
+                        if (phoneNumberAndVerifiedDTO.verified)
+                        {
+                            //noinspection ConstantConditions
+                            ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumberDialingPrefix(dialingPrefix);
+                            ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumber(newNumber);
                         }
+                        //noinspection ConstantConditions
+                        populateVerifyMobile((KYCAyondoForm) situation.kycForm, dialingPrefix, newNumber);
+                        ((KYCAyondoForm) situation.kycForm).setMobileNumberDialingPrefix(dialingPrefix);
+                        ((KYCAyondoForm) situation.kycForm).setMobileNumber(newNumber);
+                        onNext(situation);
                         return true;
                     }
                 })
@@ -353,67 +374,68 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public void call(Boolean aBoolean)
                             {
-
                             }
                         },
                         new ToastAndLogOnErrorAction("Failed to listen to phone number updates")));
 
-        onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
-                AdapterViewObservable.selects(spinnerNationality),
-                new Func2<LiveBrokerSituationDTO, OnSelectedEvent, Boolean>()
+        onDestroyViewSubscriptions.add(getBrokerSituationObservable()
+                .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
                 {
-                    @Override public Boolean call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent nationalityEvent)
+                    @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situationDTO)
                     {
-                        CountryCode newNationality =
-                                CountryCode.getByCode(((CountrySpinnerAdapter.DTO) nationalityEvent.parent.getItemAtPosition(
-                                        ((OnItemSelectedEvent) nationalityEvent).position)).country.name());
-                        //noinspection ConstantConditions
-                        ((KYCAyondoForm) situationDTO.kycForm).setNationality(newNationality);
-                        onNext(situationDTO);
-                        return true;
+                        return Observable.merge(
+                                AdapterViewObservable.selects(spinnerNationality)
+                                        .map(new Func1<OnSelectedEvent, LiveBrokerSituationDTO>()
+                                        {
+                                            @Override public LiveBrokerSituationDTO call(OnSelectedEvent nationalityEvent)
+                                            {
+                                                if (nationalityEvent instanceof OnItemSelectedEvent)
+                                                {
+                                                    CountryCode newNationality =
+                                                            CountryCode.getByCode(
+                                                                    ((CountrySpinnerAdapter.DTO) nationalityEvent.parent.getItemAtPosition(
+                                                                            ((OnItemSelectedEvent) nationalityEvent).position)).country.name());
+                                                    //noinspection ConstantConditions
+                                                    ((KYCAyondoForm) situationDTO.kycForm).setNationality(newNationality);
+                                                }
+                                                return situationDTO;
+                                            }
+                                        }),
+                                AdapterViewObservable.selects(spinnerResidency)
+                                        .map(new Func1<OnSelectedEvent, LiveBrokerSituationDTO>()
+                                        {
+                                            @Override public LiveBrokerSituationDTO call(OnSelectedEvent residencyEvent)
+                                            {
+                                                if (residencyEvent instanceof OnItemSelectedEvent)
+                                                {
+                                                    CountryCode newResidency =
+                                                            CountryCode.getByCode(
+                                                                    ((CountrySpinnerAdapter.DTO) residencyEvent.parent.getItemAtPosition(
+                                                                            ((OnItemSelectedEvent) residencyEvent).position)).country.name());
+                                                    //noinspection ConstantConditions
+                                                    ((KYCAyondoForm) situationDTO.kycForm).setResidency(newResidency);
+                                                }
+                                                return situationDTO;
+                                            }
+                                        }));
                     }
                 })
                 .subscribe(
-                        new Action1<Boolean>()
+                        new Action1<LiveBrokerSituationDTO>()
                         {
-                            @Override public void call(Boolean aBoolean)
+                            @Override public void call(LiveBrokerSituationDTO situationDTO)
                             {
+                                onNext(situationDTO);
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to nationality")));
-
-        onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
-                AdapterViewObservable.selects(spinnerResidency),
-                new Func2<LiveBrokerSituationDTO, OnSelectedEvent, Boolean>()
-                {
-                    @Override public Boolean call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent residencyEvent)
-                    {
-                        CountryCode newResidency =
-                                CountryCode.getByCode(((CountrySpinnerAdapter.DTO) residencyEvent.parent.getItemAtPosition(
-                                        ((OnItemSelectedEvent) residencyEvent).position)).country.name());
-                        //noinspection ConstantConditions
-                        ((KYCAyondoForm) situationDTO.kycForm).setResidency(newResidency);
-                        onNext(situationDTO);
-                        return true;
-                    }
-                })
-                .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean aBoolean)
-                            {
-                            }
-                        },
-                        new TimberOnErrorAction("Failed to listen to residency")));
+                        new TimberOnErrorAction("Failed to listen to nationality or residency")));
 
         onDestroyViewSubscriptions.add(ViewObservable.clicks(dob)
                 .flatMap(new Func1<OnClickEvent, Observable<KYCAyondoFormOptionsDTO>>()
                 {
                     @Override public Observable<KYCAyondoFormOptionsDTO> call(OnClickEvent onClickEvent)
                     {
-                        return getKYCAyondoFormOptionsObservable().distinctUntilChanged().take(1);
+                        return getKYCAyondoFormOptionsObservable().take(1);
                     }
                 })
                 .map(new Func1<KYCAyondoFormOptionsDTO, Calendar>()
@@ -508,9 +530,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         email.removeTextChangedListener(emailValidator);
         email.setOnFocusChangeListener(null);
         emailValidator = null;
-        phoneCountryCodeAdapter = null;
-        residencyAdapter = null;
-        nationalityAdapter = null;
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
@@ -578,14 +597,62 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
     }
 
+    @NonNull protected Observable<CountryDTOForSpinner> getCountryDTOSpinnerObservable()
+    {
+        Observable<CountryDTOForSpinner> copy = countryDTOSpinnerObservable;
+        if (copy == null)
+        {
+            copy = createCountryDTOSpinnerObservable().share().cache(1);
+            countryDTOSpinnerObservable = copy;
+        }
+        return copy;
+    }
+
+    @NonNull protected Observable<CountryDTOForSpinner> createCountryDTOSpinnerObservable()
+    {
+        return getKYCAyondoFormOptionsObservable()
+                .observeOn(Schedulers.computation())
+                .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
+                {
+                    @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
+                    {
+                        return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<CountryDTOForSpinner>()
+                {
+                    @Override public void call(CountryDTOForSpinner options)
+                    {
+                        CountrySpinnerAdapter phoneCountryCodeAdapter =
+                                new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
+                        phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
+                        spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
+                        spinnerPhoneCountryCode.setClickable(options.allowedMobilePhoneCountryDTOs.size() > 1);
+
+                        CountrySpinnerAdapter residencyAdapter =
+                                new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+                        residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
+                        spinnerResidency.setAdapter(residencyAdapter);
+                        spinnerResidency.setClickable(options.allowedResidencyCountryDTOs.size() > 1);
+
+                        CountrySpinnerAdapter nationalityAdapter =
+                                new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+                        nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
+                        spinnerNationality.setAdapter(nationalityAdapter);
+                        spinnerNationality.setClickable(options.allowedNationalityCountryDTOs.size() > 1);
+                    }
+                });
+    }
+
     protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, int countryCode, @NonNull String typedNumber)
     {
         if (buttonVerifyPhone != null)
         {
             boolean verified = Integer.valueOf(countryCode).equals(kycForm.getVerifiedMobileNumberDialingPrefix())
                     && typedNumber.equals(kycForm.getVerifiedMobileNumber());
-            buttonVerifyPhone.setText(verified ? R.string.verified : R.string.verify);
             buttonVerifyPhone.setEnabled(!verified && !TextUtils.isEmpty(typedNumber));
+            buttonVerifyPhone.setText(verified ? R.string.verified : R.string.verify);
         }
     }
 
@@ -705,8 +772,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @OnClick(R.id.btn_verify_phone)
     protected void onVerifyPhoneClicked(View view)
     {
-        buttonVerifyPhone.setEnabled(false);
-
         final int phoneCountryCode = ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
         final String phoneNumberInt = phoneNumber.getText().toString();
         final String phoneNumberText = "+" + phoneCountryCode + phoneNumberInt;
@@ -806,6 +871,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         //noinspection ConstantConditions
                                         ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumberDialingPrefix(phoneCountryCode);
                                         ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumber(phoneNumberInt);
+                                        phoneNumberVerifiedPreference.addVerifiedNumber(phoneNumberText);
+                                        populateVerifyMobile((KYCAyondoForm) situation.kycForm, phoneCountryCode, phoneNumberInt);
                                         alertDialog.dismiss();
                                         onNext(situation);
                                     }
@@ -937,13 +1004,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 .setView(verifyView)
                 .setAlertDialogObserver(verifyDialogObserver)
                 .build()
-                .finallyDo(new Action0()
-                {
-                    @Override public void call()
-                    {
-                        buttonVerifyPhone.setEnabled(true);
-                    }
-                })
                 .subscribe(new Action1<OnDialogClickEvent>()
                            {
                                @Override public void call(OnDialogClickEvent clickEvent)

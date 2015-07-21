@@ -175,6 +175,18 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.DT
             this.phoneCountryCode = CountryUtil.getPhoneCodePlusLeadingDigits(country);
             this.phoneCountryCodeText = "+" + phoneCountryCode;
         }
+
+        @Override public int hashCode()
+        {
+            return country.hashCode();
+        }
+
+        @Override public boolean equals(Object o)
+        {
+            if (o == this) return true;
+            if (o == null) return false;
+            return o instanceof DTO && ((DTO) o).country.equals(country);
+        }
     }
 
     public static class DTOCountryNameComparator implements Comparator<DTO>
