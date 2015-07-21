@@ -1,9 +1,15 @@
 package com.tradehero.th.activities;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
@@ -54,6 +60,29 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
     private String securityExchange = "";
 
+    private String hintA = "";
+    private String hintB = "";
+    private String hintC = "";
+
+    //Trading View
+    private RelativeLayout tradingRL;
+    private TextView tradingTV;
+    public final static String INTENT_START_TRADING = "INTENT_START_TRADING";
+    public final static String INTENT_END_TRADING = "INTENT_END_TRADING";
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals(INTENT_END_TRADING)){
+                stopTradingHint();
+            }
+            if(action.equals(INTENT_START_TRADING)){
+                startTradingHit();
+            }
+        }
+    };
+    private IntentFilter intentFilter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +102,17 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
             enterMock();
         }
 
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(INTENT_END_TRADING);
+        intentFilter.addAction(INTENT_START_TRADING);
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    @Override
+    public void onDestroy(){
+        stopTradingHint();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+        super.onDestroy();
     }
 
     @Override
@@ -84,21 +124,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
                 overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
                 break;
             case R.id.button_security_opt_search:
-                finish();
-                Bundle bundle = new Bundle();
-                if(isMock) {
-                    if (competitionId != 0) {
-                        bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
-                        gotoDashboard(CompetitionSecuritySearchFragment.class.getName(), bundle);
-                        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
-                    } else {
-                        gotoDashboard(SearchUnitFragment.class.getName(), bundle);
-                        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
-                    }
-                } else {
-                    Intent intent = new Intent(this, SearchSecurityActualActivity.class);
-                    startActivity(intent);
-                }
+                enterSearchPage();
                 break;
             case R.id.textview_actual:
                 enterActual();
@@ -121,13 +147,24 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
         mockTV.setOnClickListener(this);
         actualTV.setOnClickListener(this);
         toolbarRL = (RelativeLayout)findViewById(R.id.relativelayout_security_opt_toolbar);
+
+        tradingTV = (TextView)findViewById(R.id.textview_trading);
+        tradingRL = (RelativeLayout)findViewById(R.id.relativelayout_trading);
+        tradingRL.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                return;
+            }
+        });
     }
 
     private void initResources(){
         color_actual = getResources().getColor(R.color.number_up);
         color_mock = getResources().getColor(R.color.color_blue);
         color_white = getResources().getColor(R.color.white);
-
+        hintA = getResources().getString(R.string.trading_hint_a);
+        hintB = getResources().getString(R.string.trading_hint_b);
+        hintC = getResources().getString(R.string.trading_hint_c);
     }
 
     private void initArguments(){
@@ -188,5 +225,64 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
         SecurityOptActualFragment securityOptActualFragment = new SecurityOptActualFragment();
         securityOptActualFragment.setArguments(getIntent().getExtras());
         fragmentManager.beginTransaction().replace(R.id.framelayout_mock_actual, securityOptActualFragment).commit();
+    }
+
+    private void enterSearchPage(){
+        finish();
+        Bundle bundle = new Bundle();
+        if(isMock) {
+            if (competitionId != 0) {
+                bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
+                gotoDashboard(CompetitionSecuritySearchFragment.class.getName(), bundle);
+                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+            } else {
+                gotoDashboard(SearchUnitFragment.class.getName(), bundle);
+                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+            }
+        } else {
+            Intent intent = new Intent(this, SearchSecurityActualActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+        }
+    }
+
+    private void startTradingHit(){
+        if (tradingTV == null || tradingRL == null) {
+            return;
+        }
+        tradingRL.setVisibility(View.VISIBLE);
+        tradingTV.setText(hintA);
+        RefreshLoadingHandler handler = new RefreshLoadingHandler();
+        handler.sendEmptyMessageDelayed(-1, 1000);
+    }
+
+    private void stopTradingHint(){
+        if (tradingTV == null || tradingRL == null) {
+            return;
+        }
+        tradingRL.setVisibility(View.GONE);
+        tradingTV.setText(hintA);
+        RefreshLoadingHandler handler = new RefreshLoadingHandler();
+        handler.sendEmptyMessageDelayed(-1, 1000);
+    }
+
+    class RefreshLoadingHandler extends Handler {
+        public void handleMessage(Message msg) {
+            if (tradingTV == null || tradingRL == null) {
+                return;
+            }
+            if (tradingRL.getVisibility() == View.VISIBLE) {
+                String tradingStr = tradingTV.getText().toString();
+                if (tradingStr.equals(hintA)) {
+                    tradingTV.setText(hintB);
+                } else if (tradingStr.equals(hintB)) {
+                    tradingTV.setText(hintC);
+                } else {
+                    tradingTV.setText(hintA);
+                }
+                RefreshLoadingHandler handler = new RefreshLoadingHandler();
+                handler.sendEmptyMessageDelayed(-1, 1000);
+            }
+        }
     }
 }

@@ -60,6 +60,8 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+
+import cn.htsec.data.pkg.trade.TradeManager;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -310,13 +312,15 @@ public class TradeHeroMainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TradeHeroMainActivity.ACTIVITY_RESULT_HAITONG_TRADE) {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
-            bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
-            Intent intent = new Intent(this, SecurityOptActivity.class);
-            intent.putExtras(bundle);
-            startActivity(intent);
-            overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+            if(TradeManager.getInstance(this).isLogined()) {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
+                bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+                Intent intent = new Intent(this, SecurityOptActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+            }
         }
     }
 

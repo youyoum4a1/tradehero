@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,20 +21,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
-import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
-import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SearchSecurityActualActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -48,6 +44,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
+ * Actual Security Buy Page
+ *
  * Created by palmer on 15/7/16.
  */
 public class SecurityOptActualSubBuyFragment extends Fragment implements View.OnClickListener{
@@ -500,11 +498,6 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         getActivity().startActivity(intent);
     }
 
-    private void gotoDashboard(String strFragment, Bundle bundle) {
-        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, strFragment);
-        ActivityHelper.launchDashboard(getActivity(), bundle);
-    }
-
     private boolean isSHASHE(){
         if (securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")) {
             return true;
@@ -691,6 +684,11 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
             THToast.show("股票交易数量错误");
             return;
         }
+        double totalAmount = price * quantity;
+        if(totalAmount > balance) {
+            THToast.show("买入股票价格超出可用本金");
+            return;
+        }
         if(isSHASHE()) {
             if (quoteDetail != null && quoteDetail.prec != null) {
                 if (price > (quoteDetail.prec * 1.11) || price < (quoteDetail.prec * 0.89)) {
@@ -699,6 +697,9 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                 }
             }
             if(tradeManager!=null){
+                if(getActivity()!=null) {
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_START_TRADING));
+                }
                 tradeManager.sendData(TradeInterface.ID_ENTRUST, new IPackageProxy() {
 
                     @Override
@@ -721,11 +722,17 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                         }
                         queryBalance();
                         queryPositionsNoRepeat();
+                        if(getActivity()!=null) {
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
+                        }
                     }
 
                     @Override
                     public void onRequestFail(String msg) {
                         THToast.show(msg);
+                        if(getActivity()!=null) {
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
+                        }
                     }
 
                 });

@@ -294,12 +294,20 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                         THToast.show("股票交易数量错误");
                         return;
                     }
+                    double totalAmount = price * quantity;
+                    if(portfolioDTO == null || totalAmount > portfolioDTO.cashBalance) {
+                        THToast.show("买入股票价格超出可用本金");
+                        return;
+                    }
                     if(isSHASHE()){
                         if(quoteDetail!=null && quoteDetail.prec !=null){
                             if(price > (quoteDetail.prec*1.11) || price < (quoteDetail.prec*0.89)){
                                 THToast.show("股票价格错误");
                                 return;
                             }
+                        }
+                        if(getActivity()!=null) {
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_START_TRADING));
                         }
                         securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback<Response>() {
                             @Override
@@ -319,12 +327,20 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                                 if(getActivity()!=null) {
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptMockSubSellFragment.INTENT_REFRESH_POSITION_REQUIRED));
                                 }
+                                onFinish();
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
                                 THException thException = new THException(error);
                                 THToast.show(thException.getMessage());
+                                onFinish();
+                            }
+
+                            private void onFinish(){
+                                if(getActivity()!=null) {
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
+                                }
                             }
                         });
                     } else {
@@ -334,6 +350,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                         TransactionFormDTO transactionFormDTO = buildTransactionFormDTO();
                         if(transactionFormDTO == null){
                             return;
+                        }
+                        if(getActivity()!=null) {
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_START_TRADING));
                         }
                         securityServiceWrapper.buy(securityExchange, securitySymbol, buildTransactionFormDTO(), new Callback<SecurityPositionDetailDTO>() {
                             @Override
@@ -352,12 +371,20 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                                 if(getActivity()!=null) {
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptMockSubSellFragment.INTENT_REFRESH_POSITION_REQUIRED));
                                 }
+                                onFinish();
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
                                 THException thException = new THException(error);
                                 THToast.show(thException.toString());
+                                onFinish();
+                            }
+
+                            private void onFinish(){
+                                if(getActivity()!=null) {
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
+                                }
                             }
                         });
                     }

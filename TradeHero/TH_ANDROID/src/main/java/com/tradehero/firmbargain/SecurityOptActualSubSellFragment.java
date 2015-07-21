@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -681,6 +682,10 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
             THToast.show("股票交易数量错误");
             return;
         }
+        if (quantity > availableSells){
+            THToast.show("可卖出股票数量不足");
+            return;
+        }
         if(isSHASHE()) {
             if (quoteDetail != null && quoteDetail.prec != null) {
                 if (price > (quoteDetail.prec * 1.11) || price < (quoteDetail.prec * 0.89)) {
@@ -689,6 +694,9 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                 }
             }
             if(tradeManager!=null){
+                if(getActivity()!=null) {
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_START_TRADING));
+                }
                 tradeManager.sendData(TradeInterface.ID_ENTRUST, new IPackageProxy() {
 
                     @Override
@@ -710,11 +718,17 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                             THToast.show(resultMsg);
                         }
                         queryPositionsNoRepeat();
+                        if(getActivity()!=null) {
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
+                        }
                     }
 
                     @Override
                     public void onRequestFail(String msg) {
                         THToast.show(msg);
+                        if(getActivity()!=null) {
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
+                        }
                     }
 
                 });

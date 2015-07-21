@@ -222,8 +222,6 @@
     <string name="numbers">数量</string>
     <string name="delegration_time">委托时间</string>
     <string name="delegration">撤单</string>
-    <string name="real_is_researching_title1">实盘交易功能正在开发中</string>
-    <string name="real_is_researching_title2">可以去看看大牛都在买啥</string>
     <string name="real_is_researching_title3">赶紧看看</string>
     <string name="trade_record">成交记录</string>
     <string name="delegation_record">委托记录</string>
@@ -233,4 +231,8 @@
     <string name="no_delegation_history">暂无委托中的交易</string>
     <string name="cancel_delegation_success">撤单成功</string>
     <string name="cancel_delegation_fail">撤单失败</string>
+
+    <string name="trading_hint_a">通讯中.&#160;</string>
+    <string name="trading_hint_b">通讯中..&#160;&#160;</string>
+    <string name="trading_hint_c">通讯中...</string>
 </resources>

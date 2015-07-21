@@ -591,8 +591,6 @@
     <string name="numbers">numbers</string>
     <string name="delegration_time">time</string>
     <string name="delegration">Delegration</string>
-    <string name="real_is_researching_title1">real trade is researching</string>
-    <string name="real_is_researching_title2">go for newbees</string>
     <string name="real_is_researching_title3">hurry up</string>
     <string name="trade_record">trade record</string>
     <string name="delegation_record">delegation record</string>
@@ -602,6 +600,10 @@
     <string name="no_delegation_history">no delegation history</string>
     <string name="cancel_delegation_success">cancel delegation success</string>
     <string name="cancel_delegation_fail">cancel delegation fail</string>
+
+    <string name="trading_hint_a">TRADING.&#160;&#160;</string>
+    <string name="trading_hint_b">TRADING..&#160;</string>
+    <string name="trading_hint_c">TRADING...</string>
 
     <!-- HAITONG SDK -->
     <string name="action_settings">Settings</string>

@@ -1,57 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/relativelayout_security_opt_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/tradehero_blue">
+
+            <ImageButton
+                android:id="@+id/button_security_opt_back"
+                android:layout_width="@dimen/tab_main_indicator_height"
+                android:layout_height="@dimen/tab_main_indicator_height"
+                android:layout_centerVertical="true"
+                android:background="@drawable/icon_return_xml" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textview_mock"
+                    android:layout_width="53dp"
+                    android:layout_height="26dp"
+                    android:background="@drawable/security_opt_c"
+                    android:gravity="center"
+                    android:text="模拟"
+                    android:textColor="@color/color_blue"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/textview_actual"
+                    android:layout_width="53dp"
+                    android:layout_height="26dp"
+                    android:background="@drawable/security_opt_d"
+                    android:gravity="center"
+                    android:text="实盘"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/button_security_opt_search"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:background="@drawable/search" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/framelayout_mock_actual"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/relativelayout_security_opt_toolbar"
+        android:id="@+id/relativelayout_trading"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/tradehero_blue">
-
-        <ImageButton
-            android:id="@+id/button_security_opt_back"
-            android:layout_width="@dimen/tab_main_indicator_height"
-            android:layout_height="@dimen/tab_main_indicator_height"
-            android:layout_centerVertical="true"
-            android:background="@drawable/icon_return_xml"/>
+        android:background="#cc000000"
+        android:visibility="gone"
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_centerInParent="true">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/logo_large"/>
             <TextView
-                android:id="@+id/textview_mock"
-                android:background="@drawable/security_opt_c"
-                android:layout_width="53dp"
-                android:text="模拟"
-                android:gravity="center"
-                android:textColor="@color/color_blue"
-                android:textSize="14sp"
-                android:layout_height="26dp" />
-            <TextView
-                android:id="@+id/textview_actual"
-                android:background="@drawable/security_opt_d"
-                android:layout_width="53dp"
-                android:text="实盘"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:layout_height="26dp" />
+                android:id="@+id/textview_trading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginTop="2dp"
+                android:text="@string/trading_hint_a"
+                android:textColor="#ffffff"/>
         </LinearLayout>
-        <ImageButton
-            android:id="@+id/button_security_opt_search"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/margin_medium"
-            android:background="@drawable/search"
-            android:layout_centerVertical="true"/>
     </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/framelayout_mock_actual"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+</RelativeLayout>

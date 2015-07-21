@@ -324,13 +324,20 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                         THToast.show("股票交易数量错误");
                         return;
                     }
-
+                    int realQuantity = Integer.valueOf(decisionET.getText().toString());
+                    if(availableSells < realQuantity) {
+                        THToast.show("可卖出股票数量不足");
+                        return;
+                    }
                     if(isSHASHE()){
                         if(quoteDetail!=null && quoteDetail.prec !=null){
                             if(price > (quoteDetail.prec*1.11) || price < (quoteDetail.prec*0.89)){
                                 THToast.show("股票价格错误");
                                 return;
                             }
+                        }
+                        if(getActivity()!=null) {
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_START_TRADING));
                         }
                         securityServiceWrapper.order(portfolioId, securityExchange, securitySymbol, quantity, price, new Callback<Response>() {
                             @Override
@@ -345,12 +352,20 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                                 }else {
                                     retrieveCompetitionPositionsNoRepeat();
                                 }
+                                onFinish();
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
                                 THException thException = new THException(error);
                                 THToast.show(thException.toString());
+                                onFinish();
+                            }
+
+                            private void onFinish(){
+                                if(getActivity()!=null) {
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
+                                }
                             }
                         });
                     } else {
@@ -360,6 +375,9 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                         TransactionFormDTO transactionFormDTO = buildTransactionFormDTO();
                         if (transactionFormDTO == null) {
                             return;
+                        }
+                        if(getActivity()!=null) {
+                            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_START_TRADING));
                         }
                         securityServiceWrapper.sell(securityExchange, securitySymbol, buildTransactionFormDTO(), new Callback<SecurityPositionDetailDTO>() {
                             @Override
@@ -374,12 +392,20 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                                 } else {
                                     retrieveCompetitionPositionsNoRepeat();
                                 }
+                                onFinish();
                             }
 
                             @Override
                             public void failure(RetrofitError error) {
                                 THException thException = new THException(error);
                                 THToast.show(thException.getMessage());
+                                onFinish();
+                            }
+
+                            private void onFinish(){
+                                if(getActivity()!=null) {
+                                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
+                                }
                             }
                         });
                     }
