@@ -96,12 +96,13 @@ public class VerifyCodeDigitView extends ScrollView
         codeViews[0].requestFocus();
         clickSubscriptions = new SubscriptionList();
         clickSubscriptions.add(getTypedCodeObservable(codeViews)
-                .map(new Func1<String, String>()
+                .filter(new Func1<String, Boolean>()
                 {
-                    @Override public String call(String givenCode)
+                    @Override public Boolean call(String givenCode)
                     {
-                        buttonVerify.setEnabled(!givenCode.contains(" "));
-                        return givenCode;
+                        boolean done = !givenCode.contains(" ");
+                        buttonVerify.setEnabled(done);
+                        return done;
                     }
                 })
                 .subscribe(
