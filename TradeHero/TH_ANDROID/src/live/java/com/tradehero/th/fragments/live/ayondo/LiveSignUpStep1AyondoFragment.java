@@ -255,7 +255,30 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         })
                         .observeOn(AndroidSchedulers.mainThread()),
                 getCountryDTOSpinnerObservable()
-                        .observeOn(AndroidSchedulers.mainThread()),
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnNext(new Action1<CountryDTOForSpinner>()
+                        {
+                            @Override public void call(CountryDTOForSpinner options)
+                            {
+                                CountrySpinnerAdapter phoneCountryCodeAdapter =
+                                        new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
+                                phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
+                                spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
+                                spinnerPhoneCountryCode.setEnabled(options.allowedMobilePhoneCountryDTOs.size() > 1);
+
+                                CountrySpinnerAdapter residencyAdapter =
+                                        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+                                residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
+                                spinnerResidency.setAdapter(residencyAdapter);
+                                spinnerResidency.setEnabled(options.allowedResidencyCountryDTOs.size() > 1);
+
+                                CountrySpinnerAdapter nationalityAdapter =
+                                        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+                                nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
+                                spinnerNationality.setAdapter(nationalityAdapter);
+                                spinnerNationality.setEnabled(options.allowedNationalityCountryDTOs.size() > 1);
+                            }
+                        }),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                         .observeOn(AndroidSchedulers.mainThread()),
@@ -613,30 +636,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
                     {
                         return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<CountryDTOForSpinner>()
-                {
-                    @Override public void call(CountryDTOForSpinner options)
-                    {
-                        CountrySpinnerAdapter phoneCountryCodeAdapter =
-                                new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
-                        phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
-                        spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
-                        spinnerPhoneCountryCode.setEnabled(options.allowedMobilePhoneCountryDTOs.size() > 1);
-
-                        CountrySpinnerAdapter residencyAdapter =
-                                new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
-                        residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
-                        spinnerResidency.setAdapter(residencyAdapter);
-                        spinnerResidency.setEnabled(options.allowedResidencyCountryDTOs.size() > 1);
-
-                        CountrySpinnerAdapter nationalityAdapter =
-                                new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
-                        nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
-                        spinnerNationality.setAdapter(nationalityAdapter);
-                        spinnerNationality.setEnabled(options.allowedNationalityCountryDTOs.size() > 1);
                     }
                 });
     }
