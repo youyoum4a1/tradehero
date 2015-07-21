@@ -11,7 +11,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.DisplayMetrics;
 import android.view.GestureDetector;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
@@ -139,9 +138,10 @@ public class NewsWebFragment extends WebViewFragment
         newsId = getNewsId();
     }
 
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        View view = super.onCreateView(inflater, container, savedInstanceState);
+        super.onViewCreated(view, savedInstanceState);
+
         stockGallery = (Gallery) view.findViewById(R.id.security_list);
         securityArrayAdapter = new CompactSecurityListAdapter(getActivity(), R.layout.news_compact_stock_info);
         stockGallery.setAdapter(securityArrayAdapter);
@@ -149,12 +149,6 @@ public class NewsWebFragment extends WebViewFragment
         stockGallery.setVisibility(View.INVISIBLE);
 
         webView.getSettings().setBuiltInZoomControls(false);
-        return view;
-    }
-
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
 
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
