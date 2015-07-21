@@ -53,6 +53,26 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public Object call(LiveBrokerSituationDTO liveBrokerSituationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
                             {
+                                LollipopArrayAdapter<AnnualIncomeDTO> annualIncomeAdapter =
+                                        new LollipopArrayAdapter<>(getActivity(),
+                                                AnnualIncomeDTO.createList(getResources(), kycFormOptionsDTO.annualIncomeOptions));
+                                annualIncomeSpinner.setAdapter(annualIncomeAdapter);
+
+                                LollipopArrayAdapter<NetWorthDTO> netWorthAdapter =
+                                        new LollipopArrayAdapter<>(getActivity(),
+                                                NetWorthDTO.createList(getResources(), kycFormOptionsDTO.netWorthOptions));
+                                netWorthSpinner.setAdapter(netWorthAdapter);
+
+                                LollipopArrayAdapter<PercentNetWorthDTO> percentageInvestmentAdapter =
+                                        new LollipopArrayAdapter<>(getActivity(),
+                                                PercentNetWorthDTO.createList(getResources(), kycFormOptionsDTO.percentNetWorthOptions));
+                                percentageInvestmentSpinner.setAdapter(percentageInvestmentAdapter);
+
+                                LollipopArrayAdapter<EmploymentStatusDTO> employmentStatusAdapter =
+                                        new LollipopArrayAdapter<>(getActivity(),
+                                                EmploymentStatusDTO.createList(getResources(), kycFormOptionsDTO.employmentStatusOptions));
+                                employmentStatusSpinner.setAdapter(employmentStatusAdapter);
+
                                 //noinspection ConstantConditions
                                 populateSpinner(annualIncomeSpinner,
                                         ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getAnnualIncomeRange(),
@@ -203,36 +223,5 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             employerRegulatedCheckBox.setChecked(employerRegulated);
         }
-    }
-
-    @NonNull @Override protected Observable<KYCAyondoFormOptionsDTO> createKYCAyondoFormOptionsObservable()
-    {
-        return super.createKYCAyondoFormOptionsObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<KYCAyondoFormOptionsDTO>()
-                {
-                    @Override public void call(KYCAyondoFormOptionsDTO kycFormOptionsDTO)
-                    {
-                        LollipopArrayAdapter<AnnualIncomeDTO> annualIncomeAdapter =
-                                new LollipopArrayAdapter<>(getActivity(),
-                                        AnnualIncomeDTO.createList(getResources(), kycFormOptionsDTO.annualIncomeOptions));
-                        annualIncomeSpinner.setAdapter(annualIncomeAdapter);
-
-                        LollipopArrayAdapter<NetWorthDTO> netWorthAdapter =
-                                new LollipopArrayAdapter<>(getActivity(),
-                                        NetWorthDTO.createList(getResources(), kycFormOptionsDTO.netWorthOptions));
-                        netWorthSpinner.setAdapter(netWorthAdapter);
-
-                        LollipopArrayAdapter<PercentNetWorthDTO> percentageInvestmentAdapter =
-                                new LollipopArrayAdapter<>(getActivity(),
-                                        PercentNetWorthDTO.createList(getResources(), kycFormOptionsDTO.percentNetWorthOptions));
-                        percentageInvestmentSpinner.setAdapter(percentageInvestmentAdapter);
-
-                        LollipopArrayAdapter<EmploymentStatusDTO> employmentStatusAdapter =
-                                new LollipopArrayAdapter<>(getActivity(),
-                                        EmploymentStatusDTO.createList(getResources(), kycFormOptionsDTO.employmentStatusOptions));
-                        employmentStatusSpinner.setAdapter(employmentStatusAdapter);
-                    }
-                });
     }
 }

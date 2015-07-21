@@ -57,6 +57,11 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             @Override
                             public Object call(LiveBrokerSituationDTO liveBrokerSituationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
                             {
+                                LollipopArrayAdapter<TradingPerQuarterDTO> tradingPerQuarterAdapter =
+                                        new LollipopArrayAdapter<>(getActivity(),
+                                                TradingPerQuarterDTO.createList(getResources(), kycFormOptionsDTO.tradingPerQuarterOptions));
+                                tradingPerQuarterSpinner.setAdapter(tradingPerQuarterAdapter);
+
                                 //noinspection ConstantConditions
                                 populateSpinner(tradingPerQuarterSpinner,
                                         ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getTradingPerQuarter(),
@@ -194,21 +199,5 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             button.setChecked(checked);
         }
-    }
-
-    @NonNull @Override protected Observable<KYCAyondoFormOptionsDTO> createKYCAyondoFormOptionsObservable()
-    {
-        return super.createKYCAyondoFormOptionsObservable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<KYCAyondoFormOptionsDTO>()
-                {
-                    @Override public void call(KYCAyondoFormOptionsDTO kycFormOptionsDTO)
-                    {
-                        LollipopArrayAdapter<TradingPerQuarterDTO> tradingPerQuarterAdapter =
-                                new LollipopArrayAdapter<>(getActivity(),
-                                        TradingPerQuarterDTO.createList(getResources(), kycFormOptionsDTO.tradingPerQuarterOptions));
-                        tradingPerQuarterSpinner.setAdapter(tradingPerQuarterAdapter);
-                    }
-                });
     }
 }
