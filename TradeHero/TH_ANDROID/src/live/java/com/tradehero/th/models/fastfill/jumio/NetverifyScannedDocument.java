@@ -9,18 +9,18 @@ import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.fastfill.ScannedDocumentType;
 import java.util.Date;
 
-public class ScannedDocumentNetverify implements ScannedDocument
+public class NetverifyScannedDocument implements ScannedDocument
 {
-    @NonNull private final String scanReference;
+    @NonNull private final NetverifyScanReference scanReference;
     @NonNull private final NetverifyDocumentData data;
 
-    public ScannedDocumentNetverify(@NonNull String scanReference, @NonNull NetverifyDocumentData data)
+    public NetverifyScannedDocument(@NonNull NetverifyScanReference scanReference, @NonNull NetverifyDocumentData data)
     {
         this.scanReference = scanReference;
         this.data = data;
     }
 
-    @NonNull @Override public String getScanReference()
+    @NonNull @Override public NetverifyScanReference getScanReference()
     {
         return scanReference;
     }

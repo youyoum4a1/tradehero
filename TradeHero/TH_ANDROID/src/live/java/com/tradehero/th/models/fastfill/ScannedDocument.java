@@ -7,7 +7,7 @@ import java.util.Date;
 
 public interface ScannedDocument
 {
-    @NonNull String getScanReference();
+    @NonNull ScanReference getScanReference();
 
     @Nullable String getFirstName();
     @Nullable String getMiddleName();

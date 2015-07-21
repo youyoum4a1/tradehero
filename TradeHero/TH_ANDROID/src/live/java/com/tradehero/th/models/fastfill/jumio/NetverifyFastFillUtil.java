@@ -29,18 +29,19 @@ import timber.log.Timber;
 public class NetverifyFastFillUtil implements FastFillUtil
 {
     public static final JumioDataCenter DATA_CENTER = JumioDataCenter.US;
-    public static final String NET_VERIFY_MERCHANT_API_TOKEN = "c4ed0584-b618-4311-b8c8-11ec5f36d47b";
-    public static final String NET_VERIFY_ACTIVE_API_SECRET = "EvMD7WCL98sErCZvEezDReV8dZuqbzaU";
     public static final int NET_VERIFY_REQUEST_CODE = R.string.net_verify_request_code & 0xFF;
 
     @NonNull private final CurrentUserId currentUserId;
+    @NonNull private final NetverifyServiceWrapper netverifyServiceWrapper;
     @NonNull private final BehaviorSubject<ScannedDocument> scannedDocumentSubject;
     private NetverifySDK netverifySDK;
     private Map<ScannedDocumentType, NVDocumentType> documentTypeMap;
 
-    @Inject public NetverifyFastFillUtil(@NonNull CurrentUserId currentUserId)
+    @Inject public NetverifyFastFillUtil(@NonNull CurrentUserId currentUserId,
+            @NonNull NetverifyServiceWrapper netverifyServiceWrapper)
     {
         this.currentUserId = currentUserId;
+        this.netverifyServiceWrapper = netverifyServiceWrapper;
         this.scannedDocumentSubject = BehaviorSubject.create();
         this.documentTypeMap = new HashMap<>();
         documentTypeMap.put(ScannedDocumentType.DRIVER_LICENSE, NVDocumentType.DRIVER_LICENSE);
@@ -55,7 +56,8 @@ public class NetverifyFastFillUtil implements FastFillUtil
         {
             try
             {
-                netverifySDK = NetverifySDK.create(activity, NET_VERIFY_MERCHANT_API_TOKEN, NET_VERIFY_ACTIVE_API_SECRET, DATA_CENTER);
+                netverifySDK = NetverifySDK.create(activity, NetverifyConstants.NET_VERIFY_MERCHANT_API_TOKEN,
+                        NetverifyConstants.NET_VERIFY_ACTIVE_API_SECRET, DATA_CENTER);
                 netverifySDK.setCustomerId(currentUserId.get().toString());
             } catch (ResourceNotFoundException | PlatformNotSupportedException e)
             {
@@ -123,8 +125,9 @@ public class NetverifyFastFillUtil implements FastFillUtil
             if (resultCode == NetverifySDK.RESULT_CODE_SUCCESS || resultCode ==
                     NetverifySDK.RESULT_CODE_BACK_WITH_SUCCESS)
             {
-                scannedDocumentSubject.onNext(new ScannedDocumentNetverify(
-                        data.getStringExtra(NetverifySDK.RESULT_DATA_SCAN_REFERENCE),
+                NetverifyScanReference scanReference = new NetverifyScanReference(data.getStringExtra(NetverifySDK.RESULT_DATA_SCAN_REFERENCE));
+                scannedDocumentSubject.onNext(new NetverifyScannedDocument(
+                        scanReference,
                         data.<NetverifyDocumentData>getParcelableExtra(NetverifySDK.RESULT_DATA_SCAN_DATA)));
             }
             else if (resultCode == NetverifySDK.RESULT_CODE_CANCEL)

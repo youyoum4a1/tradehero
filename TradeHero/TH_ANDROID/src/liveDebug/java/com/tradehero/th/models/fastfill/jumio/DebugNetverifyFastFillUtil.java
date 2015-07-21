@@ -8,9 +8,11 @@ import rx.Observable;
 
 public class DebugNetverifyFastFillUtil extends NetverifyFastFillUtil
 {
-    @Inject public DebugNetverifyFastFillUtil(@NonNull CurrentUserId currentUserId)
+    @Inject public DebugNetverifyFastFillUtil(
+            @NonNull CurrentUserId currentUserId,
+            @NonNull NetverifyServiceWrapper netverifyServiceWrapper)
     {
-        super(currentUserId);
+        super(currentUserId, netverifyServiceWrapper);
     }
 
     @NonNull @Override public Observable<Boolean> isAvailable(@NonNull final Activity activity)
