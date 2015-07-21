@@ -9,37 +9,6 @@
     android:animateLayoutChanges="true"
     >
 
-  <com.tradehero.th.fragments.trade.view.PortfolioSelectorView
-      android:id="@+id/portfolio_selector_container"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:padding="8dp"
-      android:visibility="gone"
-      android:background="@drawable/tradehero_spinner_background_holo_light"
-      >
-    <!--TODO use dropdown/spinner view-->
-
-    <TextView
-        android:id="@+id/selected_title_anchor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:text="@string/buy_sell_portfolio_selected_title"
-        style="@style/TH.Body"
-        android:layout_centerVertical="true"/>
-
-    <TextView
-        android:id="@+id/portfolio_selected"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_toRightOf="@id/selected_title_anchor"
-        tools:text="Main Portfolio"
-        style="@style/TH.Body.Accented"
-        android:layout_centerVertical="true"/>
-
-  </com.tradehero.th.fragments.trade.view.PortfolioSelectorView>
-
   <LinearLayout
       android:id="@+id/ll_position_status"
       android:layout_width="fill_parent"

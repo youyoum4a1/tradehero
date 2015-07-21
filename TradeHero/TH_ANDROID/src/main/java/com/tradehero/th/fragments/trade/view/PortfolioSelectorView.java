@@ -4,11 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
@@ -79,7 +78,6 @@ public class PortfolioSelectorView extends RelativeLayout
     public void display()
     {
         selectedPortfolio.setText(currentMenu);
-        setVisibility(usedMenuOwnedPortfolioIds.size() > 1 ? View.VISIBLE : View.GONE);
     }
 
     @NonNull public Observable<MenuOwnedPortfolioId> createMenuObservable()
