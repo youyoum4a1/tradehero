@@ -139,7 +139,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             if (v instanceof TextView)
                             {
                                 ((TextView) v).setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                        GraphicUtil.createStateListDrawableRes(getActivity(), R.drawable.abc_spinner_mtrl_am_alpha), null);
+                                        GraphicUtil.createStateListDrawableRes(v.getContext(), R.drawable.abc_spinner_mtrl_am_alpha), null);
                             }
                         }
                         return v;

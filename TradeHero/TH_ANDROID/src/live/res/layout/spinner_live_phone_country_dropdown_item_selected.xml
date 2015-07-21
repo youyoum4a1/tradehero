@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:drawableRight="@drawable/spinner_dropdown_arrow_red"
+    android:drawableRight="@drawable/spinner_dropdown_arrow_green"
     android:maxLines="1"
     android:padding="@dimen/margin_small"
     tools:text="+65"

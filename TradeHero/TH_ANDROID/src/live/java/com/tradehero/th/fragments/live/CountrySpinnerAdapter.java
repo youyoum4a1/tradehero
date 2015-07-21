@@ -55,7 +55,7 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.DT
                 if (tv != null)
                 {
                     tv.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                            GraphicUtil.createStateListDrawableRes(getContext(), R.drawable.abc_spinner_mtrl_am_alpha), null);
+                            GraphicUtil.createStateListDrawableRes(tv.getContext(), R.drawable.abc_spinner_mtrl_am_alpha), null);
                 }
             }
         }

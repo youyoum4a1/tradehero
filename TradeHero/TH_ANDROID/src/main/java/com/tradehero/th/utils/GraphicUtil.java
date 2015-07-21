@@ -338,7 +338,7 @@ public class GraphicUtil
     {
         int[] attrs = new int[] {
                 R.attr.colorControlNormal,
-                R.attr.colorPrimary
+                R.attr.colorAccent
         };
 
         TypedArray array = context.getTheme().obtainStyledAttributes(attrs);

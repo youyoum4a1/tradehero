@@ -28,7 +28,7 @@
       android:layout_height="wrap_content"
       android:layout_gravity="center"
       android:maxLines="1"
-      android:drawableRight="@drawable/spinner_dropdown_arrow_red"
+      android:drawableRight="@drawable/spinner_dropdown_arrow_green"
       tools:text="Singapore"
       />
 

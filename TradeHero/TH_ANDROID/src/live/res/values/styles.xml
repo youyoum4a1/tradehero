@@ -27,6 +27,13 @@
     <item name="android:paddingRight">@dimen/margin_small</item>
     <item name="android:paddingBottom">@dimen/margin_small</item>
     <item name="android:maxWidth">480dp</item>
+    <item name="theme">@style/TradeHero.Live.Form</item>
+    <item name="android:theme">@style/TradeHero.Live.Form</item>
+  </style>
+
+  <style name="TradeHero.Live.Form">
+    <item name="colorAccent">@color/light_green_normal</item>
+    <item name="colorControlHighlight">@color/light_green_focused</item>
   </style>
 
   <style name="TH.Button.Link"
