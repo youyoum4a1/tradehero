@@ -80,6 +80,7 @@
           android:layout_marginRight="@dimen/margin_medium"
           android:src="@drawable/image_identity_proof"
           android:visibility="gone"
+          tools:visibility="visible"
           />
 
       <ImageView
@@ -100,6 +101,7 @@
           android:background="@drawable/basic_green_selector"
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:visibility="gone"
+          tools:visibility="visible"
           tools:text="NRIC / Driver's License"
           />
 

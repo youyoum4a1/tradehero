@@ -3,16 +3,21 @@ package com.tradehero.th.models.fastfill.jumio;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import com.jumio.mobile.sdk.PlatformNotSupportedException;
 import com.jumio.mobile.sdk.ResourceNotFoundException;
 import com.jumio.mobile.sdk.enums.JumioDataCenter;
 import com.jumio.netverify.sdk.NetverifyDocumentData;
 import com.jumio.netverify.sdk.NetverifySDK;
+import com.jumio.netverify.sdk.enums.NVDocumentType;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
+import com.tradehero.th.models.fastfill.ScannedDocumentType;
+import java.util.HashMap;
+import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
@@ -21,7 +26,7 @@ import timber.log.Timber;
 /**
  * https://www.jumio.com/downloads/pdf/fastfill_netverify_mobile_implementation_guide_for_android_v1_5_0_jumio_sdk.pdf
  */
-public class JumioFastFillUtil implements FastFillUtil
+public class NetverifyFastFillUtil implements FastFillUtil
 {
     public static final JumioDataCenter DATA_CENTER = JumioDataCenter.US;
     public static final String NET_VERIFY_MERCHANT_API_TOKEN = "c4ed0584-b618-4311-b8c8-11ec5f36d47b";
@@ -31,11 +36,16 @@ public class JumioFastFillUtil implements FastFillUtil
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final BehaviorSubject<ScannedDocument> scannedDocumentSubject;
     private NetverifySDK netverifySDK;
+    private Map<ScannedDocumentType, NVDocumentType> documentTypeMap;
 
-    @Inject public JumioFastFillUtil(@NonNull CurrentUserId currentUserId)
+    @Inject public NetverifyFastFillUtil(@NonNull CurrentUserId currentUserId)
     {
         this.currentUserId = currentUserId;
         this.scannedDocumentSubject = BehaviorSubject.create();
+        this.documentTypeMap = new HashMap<>();
+        documentTypeMap.put(ScannedDocumentType.DRIVER_LICENSE, NVDocumentType.DRIVER_LICENSE);
+        documentTypeMap.put(ScannedDocumentType.IDENTITY_CARD, NVDocumentType.IDENTITY_CARD);
+        documentTypeMap.put(ScannedDocumentType.PASSPORT, NVDocumentType.PASSPORT);
     }
 
     @NonNull public NetverifySDK getNetverifySDK(@NonNull Activity activity)
@@ -77,11 +87,20 @@ public class JumioFastFillUtil implements FastFillUtil
 
     @Override public void fastFill(@NonNull Activity activity)
     {
-        fastFill(activity, getNetverifySDK(activity));
+        fastFill(activity, null);
     }
 
-    public void fastFill(@NonNull Activity activity, @NonNull NetverifySDK netverifySDK)
+    @Override public void fastFill(@NonNull Activity activity, @Nullable ScannedDocumentType documentType)
     {
+        fastFill(activity, getNetverifySDK(activity), documentType);
+    }
+
+    public void fastFill(@NonNull Activity activity, @NonNull NetverifySDK netverifySDK, @Nullable ScannedDocumentType documentType)
+    {
+        if (documentType != null)
+        {
+            netverifySDK.setPreselectedDocumentType(documentTypeMap.get(documentType));
+        }
         this.netverifySDK = netverifySDK;
         activity.startActivityForResult(netverifySDK.getIntent(), NET_VERIFY_REQUEST_CODE);
     }
@@ -116,7 +135,6 @@ public class JumioFastFillUtil implements FastFillUtil
                         data.getIntExtra(NetverifySDK.RESULT_DATA_ERROR_CODE, 0)));
             }
             this.netverifySDK.destroy();
-            this.netverifySDK = null;
         }
     }
 

@@ -3,6 +3,7 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,10 +24,12 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.fastfill.FastFillExceptionUtil;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
+import com.tradehero.th.models.fastfill.ScannedDocumentType;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.kyc.KYCFormOptionsCache;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ReplaceWith;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -86,19 +89,24 @@ public class IdentityPromptActivity extends BaseActivity
                                 });
                     }
                 })
+                .take(1)
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
                 {
                     @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situationToUse)
                     {
-                        return Observable.merge(ViewObservable.clicks(yesButton), ViewObservable.clicks(txtPrompt))
+                        return Observable.merge(
+                                ViewObservable.clicks(yesButton)
+                                        .map(new ReplaceWith<OnClickEvent, ScannedDocumentType>(ScannedDocumentType.PASSPORT)),
+                                ViewObservable.clicks(txtPrompt)
+                                        .map(new ReplaceWith<OnClickEvent, ScannedDocumentType>(null)))
                                 .flatMap(
-                                        new Func1<OnClickEvent, Observable<ScannedDocument>>()
+                                        new Func1<ScannedDocumentType, Observable<ScannedDocument>>()
                                         {
-                                            @Override public Observable<ScannedDocument> call(@NonNull OnClickEvent onClickEvent)
+                                            @Override public Observable<ScannedDocument> call(@Nullable ScannedDocumentType scannedDocumentType)
                                             {
                                                 Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable()
                                                         .cache(1);
-                                                fastFillUtil.fastFill(IdentityPromptActivity.this);
+                                                fastFillUtil.fastFill(IdentityPromptActivity.this, scannedDocumentType);
                                                 return documentObservable;
                                             }
                                         })

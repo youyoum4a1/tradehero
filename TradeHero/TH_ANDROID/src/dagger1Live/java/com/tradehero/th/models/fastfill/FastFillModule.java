@@ -1,6 +1,6 @@
 package com.tradehero.th.models.fastfill;
 
-import com.tradehero.th.models.fastfill.jumio.JumioFastFillUtil;
+import com.tradehero.th.models.fastfill.jumio.NetverifyFastFillUtil;
 import dagger.Module;
 import dagger.Provides;
 
@@ -13,7 +13,7 @@ import dagger.Provides;
 )
 public class FastFillModule
 {
-    @Provides FastFillUtil providesFastFillUtil(JumioFastFillUtil fastFillUtil)
+    @Provides FastFillUtil providesFastFillUtil(NetverifyFastFillUtil fastFillUtil)
     {
         return fastFillUtil;
     }

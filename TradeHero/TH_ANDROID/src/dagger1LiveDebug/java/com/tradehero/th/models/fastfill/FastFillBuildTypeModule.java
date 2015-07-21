@@ -1,7 +1,7 @@
 package com.tradehero.th.models.fastfill;
 
-import com.tradehero.th.models.fastfill.jumio.DebugJumioFastFillUtil;
-import com.tradehero.th.models.fastfill.jumio.JumioFastFillUtil;
+import com.tradehero.th.models.fastfill.jumio.DebugNetverifyFastFillUtil;
+import com.tradehero.th.models.fastfill.jumio.NetverifyFastFillUtil;
 import dagger.Module;
 import dagger.Provides;
 
@@ -11,7 +11,7 @@ import dagger.Provides;
 )
 public class FastFillBuildTypeModule
 {
-    @Provides JumioFastFillUtil providesFastFillUtil(DebugJumioFastFillUtil fastFillUtil)
+    @Provides NetverifyFastFillUtil providesFastFillUtil(DebugNetverifyFastFillUtil fastFillUtil)
     {
         return fastFillUtil;
     }
