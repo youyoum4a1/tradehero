@@ -7,11 +7,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.AbstractPreference;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import java.io.IOException;
+import javax.inject.Singleton;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
+@Singleton
 public class LiveBrokerSituationPreference extends AbstractPreference<LiveBrokerSituationDTO>
 {
     @NonNull private final ObjectMapper objectMapper;
+    @NonNull private final PublishSubject<LiveBrokerSituationDTO> liveBrokerSituationDTOPublishSubject;
+    private Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable;
 
     public LiveBrokerSituationPreference(
             @NonNull ObjectMapper objectMapper,
@@ -21,6 +27,7 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
     {
         super(preference, key, defaultValue);
         this.objectMapper = objectMapper;
+        liveBrokerSituationDTOPublishSubject = PublishSubject.create();
     }
 
     @NonNull @Override public synchronized LiveBrokerSituationDTO get()
@@ -49,10 +56,20 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
         try
         {
             preference.edit().putString(key, objectMapper.writeValueAsString(value)).apply();
+            liveBrokerSituationDTOPublishSubject.onNext(value);
         } catch (JsonProcessingException e)
         {
             Timber.e("Failed to serialise LiveBrokerSituationDTO %s", value);
             throw new IllegalArgumentException("Failed to serialise LiveBrokerSituationDTO");
         }
+    }
+
+    public Observable<LiveBrokerSituationDTO> getLiveBrokerSituationDTOObservable()
+    {
+        if (liveBrokerSituationDTOObservable == null)
+        {
+            liveBrokerSituationDTOObservable = liveBrokerSituationDTOPublishSubject.asObservable();
+        }
+        return liveBrokerSituationDTOObservable;
     }
 }

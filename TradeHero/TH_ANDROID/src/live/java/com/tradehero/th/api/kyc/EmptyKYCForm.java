@@ -5,6 +5,7 @@ import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.ScannedDocument;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmptyKYCForm implements KYCForm
@@ -31,6 +32,11 @@ public class EmptyKYCForm implements KYCForm
 
     @Override public void setStepStatuses(@NonNull List<StepStatus> stepStatuses)
     {
+    }
+
+    @Override public List<StepStatus> getStepStatuses()
+    {
+        return new ArrayList<>();
     }
 
     @Override public boolean hasSameFields(@NonNull KYCForm kycForm)

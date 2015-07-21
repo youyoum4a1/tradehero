@@ -28,5 +28,7 @@ import java.util.List;
 
     void setStepStatuses(@NonNull List<StepStatus> stepStatuses);
 
+    List<StepStatus> getStepStatuses();
+
     boolean hasSameFields(@NonNull KYCForm kycForm);
 }

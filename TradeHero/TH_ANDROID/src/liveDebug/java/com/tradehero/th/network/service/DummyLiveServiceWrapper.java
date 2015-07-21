@@ -5,10 +5,13 @@ import com.tradehero.th.api.ObjectMapperWrapper;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
 import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
+import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
 import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
+import com.tradehero.th.api.kyc.StepStatus;
+import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.kyc.ayondo.DummyAyondoData;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
@@ -27,6 +30,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import timber.log.Timber;
 
@@ -64,6 +68,22 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                         return liveTradingSituationDTO;
                     }
                 })
+                .doOnNext(new Action1<LiveTradingSituationDTO>()
+                {
+                    @Override public void call(LiveTradingSituationDTO liveTradingSituationDTO)
+                    {
+                        for (LiveBrokerSituationDTO situationDTO : liveTradingSituationDTO.brokerSituations)
+                        {
+                            //noinspection ConstantConditions
+                            if (situationDTO.kycForm.getStepStatuses().isEmpty())
+                            {
+                                situationDTO.kycForm.setStepStatuses(
+                                        Arrays.asList(StepStatus.UNSTARTED, StepStatus.COMPLETE, StepStatus.UNSTARTED, StepStatus.UNSTARTED,
+                                                StepStatus.UNSTARTED));
+                            }
+                        }
+                    }
+                })
                 .timeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
                 .onErrorResumeNext(
                         new Func1<Throwable, Observable<? extends LiveTradingSituationDTO>>()
@@ -72,11 +92,29 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                             {
                                 LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "ayondo markets");
                                 KYCAyondoForm form = new KYCAyondoForm();
+                                form.setStepStatuses(
+                                        Arrays.asList(StepStatus.UNSTARTED, StepStatus.COMPLETE, StepStatus.UNSTARTED, StepStatus.UNSTARTED,
+                                                StepStatus.UNSTARTED));
                                 form.setCountry(Country.SG);
                                 LiveBrokerSituationDTO fakeSituation = new LiveBrokerSituationDTO(ayondo, form);
                                 return Observable.just(new LiveTradingSituationDTO(Collections.singletonList(fakeSituation)));
                             }
                         });
+    }
+
+    @NonNull @Override public Observable<StepStatusesDTO> applyToLiveBroker(@NonNull LiveBrokerId brokerId, @NonNull KYCForm kycForm)
+    {
+        return super.applyToLiveBroker(brokerId, kycForm)
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends StepStatusesDTO>>()
+                {
+                    @Override public Observable<? extends StepStatusesDTO> call(Throwable throwable)
+                    {
+                        StepStatusesDTO stepStatusesDTO = new StepStatusesDTO(
+                                Arrays.asList(StepStatus.UNSTARTED, StepStatus.COMPLETE, StepStatus.UNSTARTED, StepStatus.UNSTARTED,
+                                        StepStatus.UNSTARTED));
+                        return Observable.just(stepStatusesDTO);
+                    }
+                });
     }
 
     @NonNull @Override public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)

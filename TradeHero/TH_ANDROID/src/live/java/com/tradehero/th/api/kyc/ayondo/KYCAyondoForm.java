@@ -3,7 +3,6 @@ package com.tradehero.th.api.kyc.ayondo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
@@ -119,6 +118,10 @@ public class KYCAyondoForm implements KYCForm
             this.tradedSharesBonds = ayondoForm.isTradedSharesBonds() != null ? ayondoForm.isTradedSharesBonds() : this.tradedSharesBonds;
             this.tradedOtcDerivative = ayondoForm.isTradedOtcDerivative() != null ? ayondoForm.isTradedOtcDerivative() : this.tradedOtcDerivative;
             this.tradedEtc = ayondoForm.isTradedEtc() != null ? ayondoForm.isTradedEtc() : this.tradedEtc;
+            if (other.getStepStatuses() != null)
+            {
+                this.stepStatuses = other.getStepStatuses();
+            }
         }
     }
 
@@ -127,10 +130,17 @@ public class KYCAyondoForm implements KYCForm
         this.stepStatuses = stepStatuses;
     }
 
-    @JsonIgnore
+    @NonNull
     public List<StepStatus> getStepStatuses()
     {
-        return Collections.unmodifiableList(stepStatuses);
+        if (stepStatuses != null)
+        {
+            return Collections.unmodifiableList(stepStatuses);
+        }
+        else
+        {
+            return Collections.emptyList();
+        }
     }
 
     @NonNull @Override public Country getCountry()
