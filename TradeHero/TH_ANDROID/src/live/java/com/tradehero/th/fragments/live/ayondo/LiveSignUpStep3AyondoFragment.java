@@ -51,17 +51,23 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         getBrokerSituationObservable()
                                 .observeOn(AndroidSchedulers.mainThread()),
                         getKYCAyondoFormOptionsObservable()
-                                .observeOn(AndroidSchedulers.mainThread()),
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(new Action1<KYCAyondoFormOptionsDTO>()
+                                {
+                                    @Override public void call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
+                                    {
+                                        LollipopArrayAdapter<TradingPerQuarterDTO> tradingPerQuarterAdapter =
+                                                new LollipopArrayAdapter<>(getActivity(),
+                                                        TradingPerQuarterDTO.createList(getResources(), kycAyondoFormOptionsDTO.tradingPerQuarterOptions));
+                                        tradingPerQuarterSpinner.setAdapter(tradingPerQuarterAdapter);
+
+                                    }
+                                }),
                         new Func2<LiveBrokerSituationDTO, KYCAyondoFormOptionsDTO, Object>()
                         {
                             @Override
                             public Object call(LiveBrokerSituationDTO liveBrokerSituationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
                             {
-                                LollipopArrayAdapter<TradingPerQuarterDTO> tradingPerQuarterAdapter =
-                                        new LollipopArrayAdapter<>(getActivity(),
-                                                TradingPerQuarterDTO.createList(getResources(), kycFormOptionsDTO.tradingPerQuarterOptions));
-                                tradingPerQuarterSpinner.setAdapter(tradingPerQuarterAdapter);
-
                                 //noinspection ConstantConditions
                                 populateSpinner(tradingPerQuarterSpinner,
                                         ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getTradingPerQuarter(),
