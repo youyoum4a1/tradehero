@@ -32,7 +32,7 @@
   <string name="experience_otc_derivatives">OTC Derivatives</string>
   <string name="experience_exchange_traded_derivatives">Exchange Traded Derivatives</string>
   <string name="experience_product_traded">Products Traded</string>
-  <string name="use_current_location">Use Current Location</string>
+  <string name="use_current_location">Pick Nearby Location</string>
   <string name="address_line_1">Address Line 1</string>
   <string name="address_line_2">Address Line 2</string>
   <string name="city">City</string>

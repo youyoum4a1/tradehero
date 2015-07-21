@@ -691,6 +691,7 @@ dependencies {
   //  liveCompile "com.jumio.android:netswipe-resources:${JUMIO_SDK_VERSION}@aar"
   liveCompile 'com.neovisionaries:nv-i18n:1.15'
   liveCompile 'com.googlecode.libphonenumber:libphonenumber:7.0.7'
+  liveCompile 'com.google.android.gms:play-services-location:7.5.0'
 
   // For Test
   testCompile('org.robolectric:robolectric:3.0-rc2') {
