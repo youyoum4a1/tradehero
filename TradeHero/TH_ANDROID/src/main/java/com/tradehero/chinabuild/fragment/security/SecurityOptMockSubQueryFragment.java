@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.trade.ClosedTradeDTOList;
@@ -24,6 +25,8 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
     private ListView mListView1;
     private ListView mListView2;
     private LinearLayout mBelowLayout;
+    private ProgressBar mProgressBar1;
+    private ProgressBar mProgressBar2;
     private SecurityOptMockQueryTradeAdapter mListViewAdapter1;
     private SecurityOptMockQueryDelegationAdapter mListViewAdapter2;
     @Inject TradeServiceWrapper mTradeServiceWrapper;
@@ -56,6 +59,8 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
         }
         mListView2.setAdapter(mListViewAdapter2);
         mBelowLayout = (LinearLayout) view.findViewById(R.id.below_layout);
+        mProgressBar1 = (ProgressBar) view.findViewById(R.id.loading);
+        mProgressBar2 = (ProgressBar) view.findViewById(R.id.loading2);
     }
 
     @Override
@@ -66,12 +71,14 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
     }
 
     private void queryDelegationHistory() {
+        mProgressBar2.setVisibility(View.VISIBLE);
         mTradeServiceWrapper.getDelegation(new Callback<ClosedTradeDTOList>() {
             @Override
             public void success(ClosedTradeDTOList list, Response response2) {
                 Timber.d("lyl getDelegation size=" + list.size());
                 mListViewAdapter2.setItems(list);
                 mListViewAdapter2.notifyDataSetChanged();
+                mProgressBar2.setVisibility(View.GONE);
             }
 
             @Override
@@ -82,12 +89,14 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
     }
 
     private void queryTradeHistroy() {
+        mProgressBar1.setVisibility(View.VISIBLE);
         mTradeServiceWrapper.getTrades(new Callback<ClosedTradeDTOList>() {
             @Override
             public void success(ClosedTradeDTOList list, Response response2) {
                 Timber.d("lyl getTrades size=" + list.size());
                 mListViewAdapter1.setItems(list);
                 mListViewAdapter1.notifyDataSetChanged();
+                mProgressBar1.setVisibility(View.GONE);
             }
 
             @Override

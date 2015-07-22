@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -26,6 +27,7 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
     private ListView mListView;
     private SecurityOptMockDelegationAdapter mListViewAdapter;
     private LinearLayout mNoItemLayout;
+    private ProgressBar mProgressBar;
     private int mSelectedPosition = -1;
     @Inject
     TradeServiceWrapper mTradeServiceWrapper;
@@ -54,6 +56,7 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
         mDelegrationButton.setEnabled(false);
         mDelegrationButton.setOnClickListener(this);
         mNoItemLayout = (LinearLayout) view.findViewById(R.id.no_item);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.loading);
     }
 
     @Override
@@ -63,6 +66,7 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
     }
 
     private void queryPendingDelegationHistory() {
+        mProgressBar.setVisibility(View.VISIBLE);
         mTradeServiceWrapper.getPendingDelegation(new Callback<ClosedTradeDTOList>() {
             @Override
             public void success(ClosedTradeDTOList list, Response response2) {
@@ -70,6 +74,7 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
                 mListViewAdapter.setSelectedItem(-1);
                 mListViewAdapter.setItems(list);
                 mListViewAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.GONE);
                 if (list.size() > 0) {
                     mNoItemLayout.setVisibility(View.GONE);
                     mListView.setVisibility(View.VISIBLE);

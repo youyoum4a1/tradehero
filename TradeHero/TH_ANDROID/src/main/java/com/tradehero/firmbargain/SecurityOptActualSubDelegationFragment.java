@@ -1,7 +1,6 @@
 package com.tradehero.firmbargain;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -11,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import cn.htsec.data.pkg.trade.IPackageProxy;
 import cn.htsec.data.pkg.trade.TradeDataHelper;
@@ -36,7 +36,7 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
     @Inject
     TradeServiceWrapper mTradeServiceWrapper;
     private TradeManager mTradeManager;
-    private ProgressDialog mProgressDlg;
+    private ProgressBar mProgressBar;
     private Handler mHandler = new Handler();
 
     @Override
@@ -64,6 +64,7 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
         mDelegrationButton.setEnabled(false);
         mDelegrationButton.setOnClickListener(this);
         mNoItemLayout = (LinearLayout) view.findViewById(R.id.no_item);
+        mProgressBar = (ProgressBar) view.findViewById(R.id.loading);
     }
 
     @Override
@@ -73,6 +74,7 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
     }
 
     private void queryPendingDelegationHistory() {
+        mProgressBar.setVisibility(View.VISIBLE);
         mSelectedPosition = -1;
         mTradeManager.sendData(TradeInterface.ID_QUERY_ORDERS, new IPackageProxy() {
             @Override
@@ -146,6 +148,7 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
                 mListViewAdapter.setSelectedItem(-1);
                 mListViewAdapter.setItems(list);
                 mListViewAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.GONE);
                 if (list.size() > 0) {
                     mNoItemLayout.setVisibility(View.GONE);
                     mListView.setVisibility(View.VISIBLE);

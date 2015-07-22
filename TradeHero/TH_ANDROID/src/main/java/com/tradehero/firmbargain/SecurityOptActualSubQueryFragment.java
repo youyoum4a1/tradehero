@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import cn.htsec.data.pkg.trade.IPackageProxy;
 import cn.htsec.data.pkg.trade.TradeDataHelper;
@@ -33,6 +34,8 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
     private ListView mListView2;
     private LinearLayout mBelowLayout;
     private LinearLayout mTitleLayout;
+    private ProgressBar mProgressBar1;
+    private ProgressBar mProgressBar2;
     private SecurityOptMockActualQueryTradeAdapter mListViewAdapter1;
     private SecurityOptMockActualQueryDelegationAdapter mListViewAdapter2;
     @Inject
@@ -72,6 +75,8 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
         mBelowLayout = (LinearLayout) view.findViewById(R.id.below_layout);
         mTitleLayout = (LinearLayout) view.findViewById(R.id.title_layout);
         mTitleLayout.setOnClickListener(this);
+        mProgressBar1 = (ProgressBar) view.findViewById(R.id.loading);
+        mProgressBar2 = (ProgressBar) view.findViewById(R.id.loading2);
     }
 
     @Override
@@ -82,6 +87,7 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
     }
 
     private void queryDelegationHistory() {
+        mProgressBar2.setVisibility(View.VISIBLE);
         mTradeManager.sendData(TradeInterface.ID_QUERY_ORDERS, new IPackageProxy() {
             @Override
             public void onSend(TradeDataHelper helper) {
@@ -147,6 +153,7 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
                 Timber.d("lyl getDelegation size=" + list.size());
                 mListViewAdapter2.setItems(list);
                 mListViewAdapter2.notifyDataSetChanged();
+                mProgressBar2.setVisibility(View.GONE);
             }
 
             @Override
@@ -168,6 +175,7 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
     }
 
     private void queryTradeHistroy() {
+        mProgressBar1.setVisibility(View.VISIBLE);
             mTradeManager.sendData(TradeInterface.ID_QUERY_BARGAINS, new IPackageProxy() {
 
             @Override
@@ -233,6 +241,7 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
                 Timber.d("lyl ID_QUERY_BARGAINS size=" + list.size());
                 mListViewAdapter1.setItems(list);
                 mListViewAdapter1.notifyDataSetChanged();
+                mProgressBar1.setVisibility(View.GONE);
             }
 
             @Override
