@@ -21,7 +21,6 @@ import com.tradehero.th.R;
 
 public class DocumentActionWidget extends RelativeLayout
 {
-
     @Bind(R.id.document_action) Button btnAction;
     @Bind(R.id.document_clear) ImageButton btnClear;
     @Bind(R.id.document_preview) ImageView imgPreview;
@@ -68,7 +67,6 @@ public class DocumentActionWidget extends RelativeLayout
 
         btnClear.setOnClickListener(new View.OnClickListener()
         {
-
             @Override public void onClick(View v)
             {
                 imgPreview.setImageDrawable(null);
