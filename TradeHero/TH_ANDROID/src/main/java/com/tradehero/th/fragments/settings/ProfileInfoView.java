@@ -72,8 +72,10 @@ import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 public class ProfileInfoView extends LinearLayout
         implements ActivityResultRequester
 {
-    public static final int REQUEST_GALLERY = 1309;
-    public static final int REQUEST_CAMERA = 1310;
+    private static final int INDEX_CHOICE_FROM_CAMERA = 0;
+    private static final int INDEX_CHOICE_FROM_LIBRARY = 1;
+    private static final int REQUEST_GALLERY = 1309;
+    private static final int REQUEST_CAMERA = 1310;
     private final static int REQUEST_PHOTO_ZOOM = 1311;
 
     @Bind(R.id.authentication_sign_up_email) ValidatedText email;
@@ -365,13 +367,13 @@ public class ProfileInfoView extends LinearLayout
     @OnClick(R.id.image_optional) @Nullable
     protected void showImageFromDialog()
     {
+        String[] choices = new String[2];
+        choices[INDEX_CHOICE_FROM_CAMERA] = getContext().getString(R.string.user_profile_choose_image_from_camera);
+        choices[INDEX_CHOICE_FROM_LIBRARY] = getContext().getString(R.string.user_profile_choose_image_from_library);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 getContext(),
                 R.layout.image_picker_item,
-                new String[] {
-                        getContext().getString(R.string.user_profile_choose_image_from_camera),
-                        getContext().getString(R.string.user_profile_choose_image_from_library)
-                });
+                choices);
         subscriptions.add(AlertDialogRxUtil.build(getContext())
                 .setTitle(R.string.user_profile_choose_image_from_choice)
                 .setNegativeButton(R.string.cancel)
@@ -386,10 +388,10 @@ public class ProfileInfoView extends LinearLayout
                                 event.dialog.dismiss();
                                 switch (event.which)
                                 {
-                                    case 0:
+                                    case INDEX_CHOICE_FROM_CAMERA:
                                         onImageFromCameraRequested();
                                         break;
-                                    case 1:
+                                    case INDEX_CHOICE_FROM_LIBRARY:
                                         onImageFromLibraryRequested();
                                         break;
                                 }
@@ -473,7 +475,6 @@ public class ProfileInfoView extends LinearLayout
 
     @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
-
         if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK
                 && data != null)
         {
