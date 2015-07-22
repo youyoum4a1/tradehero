@@ -6,7 +6,7 @@ import com.jumio.netverify.sdk.NetverifyDocumentData;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.models.fastfill.Gender;
 import com.tradehero.th.models.fastfill.ScannedDocument;
-import com.tradehero.th.models.fastfill.ScannedDocumentType;
+import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import java.util.Date;
 
 public class NetverifyScannedDocument implements ScannedDocument
@@ -58,16 +58,16 @@ public class NetverifyScannedDocument implements ScannedDocument
         return data.getDob();
     }
 
-    @Nullable @Override public ScannedDocumentType getSelectedDocumentType()
+    @Nullable @Override public IdentityScannedDocumentType getSelectedDocumentType()
     {
         switch (data.getSelectedDocumentType())
         {
             case PASSPORT:
-                return ScannedDocumentType.PASSPORT;
+                return IdentityScannedDocumentType.PASSPORT;
             case DRIVER_LICENSE:
-                return ScannedDocumentType.DRIVER_LICENSE;
+                return IdentityScannedDocumentType.DRIVER_LICENSE;
             case IDENTITY_CARD:
-                return ScannedDocumentType.IDENTITY_CARD;
+                return IdentityScannedDocumentType.IDENTITY_CARD;
             default:
                 return null;
         }

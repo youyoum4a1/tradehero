@@ -24,7 +24,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.fastfill.FastFillExceptionUtil;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
-import com.tradehero.th.models.fastfill.ScannedDocumentType;
+import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.kyc.KYCFormOptionsCache;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
@@ -96,17 +96,18 @@ public class IdentityPromptActivity extends BaseActivity
                     {
                         return Observable.merge(
                                 ViewObservable.clicks(yesButton)
-                                        .map(new ReplaceWith<OnClickEvent, ScannedDocumentType>(ScannedDocumentType.PASSPORT)),
+                                        .map(new ReplaceWith<OnClickEvent, IdentityScannedDocumentType>(IdentityScannedDocumentType.PASSPORT)),
                                 ViewObservable.clicks(txtPrompt)
-                                        .map(new ReplaceWith<OnClickEvent, ScannedDocumentType>(null)))
+                                        .map(new ReplaceWith<OnClickEvent, IdentityScannedDocumentType>(null)))
                                 .flatMap(
-                                        new Func1<ScannedDocumentType, Observable<ScannedDocument>>()
+                                        new Func1<IdentityScannedDocumentType, Observable<ScannedDocument>>()
                                         {
-                                            @Override public Observable<ScannedDocument> call(@Nullable ScannedDocumentType scannedDocumentType)
+                                            @Override public Observable<ScannedDocument> call(@Nullable
+                                            IdentityScannedDocumentType identityScannedDocumentType)
                                             {
                                                 Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable()
                                                         .cache(1);
-                                                fastFillUtil.fastFill(IdentityPromptActivity.this, scannedDocumentType);
+                                                fastFillUtil.fastFill(IdentityPromptActivity.this, identityScannedDocumentType);
                                                 return documentObservable;
                                             }
                                         })

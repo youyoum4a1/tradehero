@@ -11,7 +11,7 @@ public interface FastFillUtil extends ActivityResultRequester
 {
     @NonNull Observable<Boolean> isAvailable(@NonNull Activity activity);
     void fastFill(@NonNull Activity activity);
-    void fastFill(@NonNull Activity activity, @Nullable ScannedDocumentType documentType);
+    void fastFill(@NonNull Activity activity, @Nullable IdentityScannedDocumentType documentType);
     void fastFill(@NonNull Fragment fragment);
     @NonNull Observable<ScannedDocument> getScannedDocumentObservable();
 }

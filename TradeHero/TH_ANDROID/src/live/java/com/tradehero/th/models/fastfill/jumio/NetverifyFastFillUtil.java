@@ -15,7 +15,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.ScannedDocument;
-import com.tradehero.th.models.fastfill.ScannedDocumentType;
+import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -35,7 +35,7 @@ public class NetverifyFastFillUtil implements FastFillUtil
     @NonNull private final NetverifyServiceWrapper netverifyServiceWrapper;
     @NonNull private final BehaviorSubject<ScannedDocument> scannedDocumentSubject;
     private NetverifySDK netverifySDK;
-    private Map<ScannedDocumentType, NVDocumentType> documentTypeMap;
+    private Map<IdentityScannedDocumentType, NVDocumentType> documentTypeMap;
 
     @Inject public NetverifyFastFillUtil(@NonNull CurrentUserId currentUserId,
             @NonNull NetverifyServiceWrapper netverifyServiceWrapper)
@@ -44,9 +44,9 @@ public class NetverifyFastFillUtil implements FastFillUtil
         this.netverifyServiceWrapper = netverifyServiceWrapper;
         this.scannedDocumentSubject = BehaviorSubject.create();
         this.documentTypeMap = new HashMap<>();
-        documentTypeMap.put(ScannedDocumentType.DRIVER_LICENSE, NVDocumentType.DRIVER_LICENSE);
-        documentTypeMap.put(ScannedDocumentType.IDENTITY_CARD, NVDocumentType.IDENTITY_CARD);
-        documentTypeMap.put(ScannedDocumentType.PASSPORT, NVDocumentType.PASSPORT);
+        documentTypeMap.put(IdentityScannedDocumentType.DRIVER_LICENSE, NVDocumentType.DRIVER_LICENSE);
+        documentTypeMap.put(IdentityScannedDocumentType.IDENTITY_CARD, NVDocumentType.IDENTITY_CARD);
+        documentTypeMap.put(IdentityScannedDocumentType.PASSPORT, NVDocumentType.PASSPORT);
     }
 
     @NonNull public NetverifySDK getNetverifySDK(@NonNull Activity activity)
@@ -92,12 +92,12 @@ public class NetverifyFastFillUtil implements FastFillUtil
         fastFill(activity, null);
     }
 
-    @Override public void fastFill(@NonNull Activity activity, @Nullable ScannedDocumentType documentType)
+    @Override public void fastFill(@NonNull Activity activity, @Nullable IdentityScannedDocumentType documentType)
     {
         fastFill(activity, getNetverifySDK(activity), documentType);
     }
 
-    public void fastFill(@NonNull Activity activity, @NonNull NetverifySDK netverifySDK, @Nullable ScannedDocumentType documentType)
+    public void fastFill(@NonNull Activity activity, @NonNull NetverifySDK netverifySDK, @Nullable IdentityScannedDocumentType documentType)
     {
         if (documentType != null)
         {

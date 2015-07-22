@@ -81,4 +81,13 @@
 
   <string name="live_trades_per_quarter">Live Trades per Quarter (Past Year)</string>
 
+  <string name="proof_identity_caption">Proof of Identity</string>
+  <string name="identity_document_type_passport">Passport</string>
+  <string name="identity_document_type_driver_license">Driver\'s License</string>
+  <string name="identity_document_type_driver_id_card">Identity Card</string>
+  <string name="proof_residence_caption">Proof of Residence</string>
+  <string name="residence_document_type_utility_bill">A bill: water, electricity, phone or gas</string>
+  <string name="residence_document_type_bank_statement">A bank or credit card statement</string>
+  <string name="live_signature_caption">Signature</string>
+
 </resources>

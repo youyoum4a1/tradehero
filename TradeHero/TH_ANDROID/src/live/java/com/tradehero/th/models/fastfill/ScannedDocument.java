@@ -16,7 +16,7 @@ public interface ScannedDocument
     @Nullable Gender getGender();
     @Nullable Date getDob();
 
-    @Nullable ScannedDocumentType getSelectedDocumentType();
+    @Nullable IdentityScannedDocumentType getSelectedDocumentType();
     @Nullable String getPersonalNumber();
     @Nullable String getIdNumber();
     @Nullable CountryCode getSelectedCountry();
