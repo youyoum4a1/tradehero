@@ -111,94 +111,98 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 },
                                 new TimberOnErrorAction("Failed to populate AyondoStep2 spinners")));
 
-        onDestroyViewSubscriptions.add(getBrokerSituationObservable()
-                .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
-                {
-                    @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situationDTO)
-                    {
-                        return Observable.merge(
-                                AdapterViewObservable.selects(annualIncomeSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
-                                        .map(new Func1<OnSelectedEvent, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent)
-                                            {
-                                                if (onSelectedEvent instanceof OnItemSelectedEvent)
-                                                {
-                                                    //noinspection ConstantConditions
-                                                    ((KYCAyondoForm) situationDTO.kycForm).setAnnualIncomeRange(
-                                                            ((AnnualIncomeDTO) onSelectedEvent.parent.getItemAtPosition(
-                                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).annualIncomeRange);
-                                                }
-                                                return situationDTO;
-                                            }
-                                        }),
-                                AdapterViewObservable.selects(netWorthSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
-                                        .map(new Func1<OnSelectedEvent, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent)
-                                            {
-                                                if (onSelectedEvent instanceof OnItemSelectedEvent)
-                                                {
-                                                    //noinspection ConstantConditions
-                                                    ((KYCAyondoForm) situationDTO.kycForm).setNetWorthRange(
-                                                            ((NetWorthDTO) onSelectedEvent.parent.getItemAtPosition(
-                                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).netWorthRange);
-                                                }
-                                                return situationDTO;
-                                            }
-                                        }),
-                                AdapterViewObservable.selects(percentageInvestmentSpinner)
-                                        .distinctUntilChanged(createSpinnerDistinctByPosition())
-                                        .map(new Func1<OnSelectedEvent, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent)
-                                            {
-                                                if (onSelectedEvent instanceof OnItemSelectedEvent)
-                                                {
-                                                    //noinspection ConstantConditions
-                                                    ((KYCAyondoForm) situationDTO.kycForm).setPercentNetWorthForInvestmentRange(
-                                                            ((PercentNetWorthDTO) onSelectedEvent.parent.getItemAtPosition(
-                                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).netWorthForInvestmentRange);
-                                                }
-                                                return situationDTO;
-                                            }
-                                        }),
-                                AdapterViewObservable.selects(employmentStatusSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
-                                        .map(new Func1<OnSelectedEvent, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent)
-                                            {
-                                                if (onSelectedEvent instanceof OnItemSelectedEvent)
-                                                {
-                                                    //noinspection ConstantConditions
-                                                    ((KYCAyondoForm) situationDTO.kycForm).setEmploymentStatus(
-                                                            ((EmploymentStatusDTO) onSelectedEvent.parent.getItemAtPosition(
-                                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).employmentStatus);
-                                                }
-                                                return situationDTO;
-                                            }
-                                        }),
-                                WidgetObservable.input(employerRegulatedCheckBox).distinctUntilChanged(
-                                        new Func1<OnCheckedChangeEvent, Boolean>()
-                                        {
-                                            @Override public Boolean call(OnCheckedChangeEvent onCheckedChangeEvent)
-                                            {
-                                                return onCheckedChangeEvent.value();
-                                            }
-                                        })
-                                        .map(new Func1<OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(OnCheckedChangeEvent onCheckedChangeEvent)
-                                            {
-                                                //noinspection ConstantConditions
-                                                ((KYCAyondoForm) situationDTO.kycForm).setEmployerRegulatedFinancial(
-                                                        onCheckedChangeEvent.value());
-                                                onNext(situationDTO);
-                                                return situationDTO;
-                                            }
-                                        }));
-                    }
-                })
+        onDestroyViewSubscriptions.add(Observable.merge(
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        AdapterViewObservable.selects(annualIncomeSpinner).distinctUntilChanged(createSpinnerDistinctByPosition()),
+                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent onSelectedEvent)
+                            {
+                                if (onSelectedEvent instanceof OnItemSelectedEvent)
+                                {
+                                    //noinspection ConstantConditions
+                                    ((KYCAyondoForm) situationDTO.kycForm).setAnnualIncomeRange(
+                                            ((AnnualIncomeDTO) onSelectedEvent.parent.getItemAtPosition(
+                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).annualIncomeRange);
+                                }
+                                return situationDTO;
+                            }
+                        }),
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        AdapterViewObservable.selects(netWorthSpinner).distinctUntilChanged(createSpinnerDistinctByPosition()),
+                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent onSelectedEvent)
+                            {
+                                if (onSelectedEvent instanceof OnItemSelectedEvent)
+                                {
+                                    //noinspection ConstantConditions
+                                    ((KYCAyondoForm) situationDTO.kycForm).setNetWorthRange(
+                                            ((NetWorthDTO) onSelectedEvent.parent.getItemAtPosition(
+                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).netWorthRange);
+                                }
+                                return situationDTO;
+                            }
+                        }),
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        AdapterViewObservable.selects(percentageInvestmentSpinner)
+                                .distinctUntilChanged(createSpinnerDistinctByPosition()),
+                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent onSelectedEvent)
+                            {
+                                if (onSelectedEvent instanceof OnItemSelectedEvent)
+                                {
+                                    //noinspection ConstantConditions
+                                    ((KYCAyondoForm) situationDTO.kycForm).setPercentNetWorthForInvestmentRange(
+                                            ((PercentNetWorthDTO) onSelectedEvent.parent.getItemAtPosition(
+                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).netWorthForInvestmentRange);
+                                }
+                                return situationDTO;
+                            }
+                        }),
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        AdapterViewObservable.selects(employmentStatusSpinner).distinctUntilChanged(createSpinnerDistinctByPosition()),
+                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent onSelectedEvent)
+                            {
+                                if (onSelectedEvent instanceof OnItemSelectedEvent)
+                                {
+                                    //noinspection ConstantConditions
+                                    ((KYCAyondoForm) situationDTO.kycForm).setEmploymentStatus(
+                                            ((EmploymentStatusDTO) onSelectedEvent.parent.getItemAtPosition(
+                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).employmentStatus);
+                                }
+                                return situationDTO;
+                            }
+                        }),
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        WidgetObservable.input(employerRegulatedCheckBox).distinctUntilChanged(
+                                new Func1<OnCheckedChangeEvent, Boolean>()
+                                {
+                                    @Override public Boolean call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return onCheckedChangeEvent.value();
+                                    }
+                                }),
+                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override
+                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnCheckedChangeEvent onCheckedChangeEvent)
+                            {
+                                //noinspection ConstantConditions
+                                ((KYCAyondoForm) situationDTO.kycForm).setEmployerRegulatedFinancial(
+                                        onCheckedChangeEvent.value());
+                                onNext(situationDTO);
+                                return situationDTO;
+                            }
+                        }))
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
                         {
