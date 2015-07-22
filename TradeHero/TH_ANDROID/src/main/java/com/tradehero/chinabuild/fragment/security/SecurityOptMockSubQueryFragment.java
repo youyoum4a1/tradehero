@@ -27,6 +27,7 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
     private LinearLayout mBelowLayout;
     private ProgressBar mProgressBar1;
     private ProgressBar mProgressBar2;
+    private LinearLayout mTitleLayout;
     private SecurityOptMockQueryTradeAdapter mListViewAdapter1;
     private SecurityOptMockQueryDelegationAdapter mListViewAdapter2;
     @Inject TradeServiceWrapper mTradeServiceWrapper;
@@ -61,6 +62,8 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
         mBelowLayout = (LinearLayout) view.findViewById(R.id.below_layout);
         mProgressBar1 = (ProgressBar) view.findViewById(R.id.loading);
         mProgressBar2 = (ProgressBar) view.findViewById(R.id.loading2);
+        mTitleLayout = (LinearLayout) view.findViewById(R.id.title_layout);
+        mTitleLayout.setOnClickListener(this);
     }
 
     @Override
@@ -110,6 +113,7 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.click_show_more:
+            case R.id.title_layout:
                 mIsShowMore = !mIsShowMore;
                 mListViewAdapter1.setShowMore(mIsShowMore);
                 mListViewAdapter1.notifyDataSetChanged();
