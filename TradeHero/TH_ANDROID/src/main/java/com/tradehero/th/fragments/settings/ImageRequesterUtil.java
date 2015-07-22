@@ -30,13 +30,25 @@ public class ImageRequesterUtil implements ActivityResultRequester
     private static final int REQUEST_CAMERA = 1310;
     private final static int REQUEST_PHOTO_ZOOM = 1311;
 
+    @Nullable private final Integer cropAspectX;
+    @Nullable private final Integer cropAspectY;
+    @Nullable private final Integer cropSizeX;
+    @Nullable private final Integer cropSizeY;
     private final BehaviorSubject<Bitmap> bitmapSubject;
     private File mCurrentPhotoFile;
     private File croppedPhotoFile;
     private int currentRequest = -1;
 
-    public ImageRequesterUtil()
+    public ImageRequesterUtil(
+            @Nullable Integer cropAspectX,
+            @Nullable Integer cropAspectY,
+            @Nullable Integer cropSizeX,
+            @Nullable Integer cropSizeY)
     {
+        this.cropAspectX = cropAspectX;
+        this.cropAspectY = cropAspectY;
+        this.cropSizeX = cropSizeX;
+        this.cropSizeY = cropSizeY;
         bitmapSubject = BehaviorSubject.create();
     }
 
@@ -88,18 +100,18 @@ public class ImageRequesterUtil implements ActivityResultRequester
         }
     }
 
-    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, @NonNull Intent data)
+    @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, @Nullable Intent data)
     {
         if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK
                 && data != null)
         {
             currentRequest = REQUEST_GALLERY;
-            startPhotoZoom(activity, data.getData(), 150);
+            startPhotoZoom(activity, data.getData());
         }
         else if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK)
         {
             currentRequest = REQUEST_CAMERA;
-            startPhotoZoom(activity, Uri.fromFile(mCurrentPhotoFile), 150);
+            startPhotoZoom(activity, Uri.fromFile(mCurrentPhotoFile));
         }
         else if (requestCode == REQUEST_PHOTO_ZOOM && data != null)
         {
@@ -107,7 +119,10 @@ public class ImageRequesterUtil implements ActivityResultRequester
             if (bundle != null)
             {
                 Bitmap bitmap = bundle.getParcelable("data");
-                if (saveBitmapToFile(activity, bitmap)) return;
+                if (bitmap == null || saveBitmapToFile(activity, bitmap))
+                {
+                    return;
+                }
 
                 if (currentRequest == REQUEST_CAMERA)
                 {
@@ -123,15 +138,27 @@ public class ImageRequesterUtil implements ActivityResultRequester
         }
     }
 
-    private void startPhotoZoom(@NonNull Activity activity, Uri data, int size)
+    private void startPhotoZoom(@NonNull Activity activity, Uri data)
     {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(data, "image/*");
         intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", size);
-        intent.putExtra("outputY", size);
+        if (cropAspectX != null)
+        {
+            intent.putExtra("aspectX", cropAspectX);
+        }
+        if (cropAspectY != null)
+        {
+            intent.putExtra("aspectY", cropAspectY);
+        }
+        if (cropSizeX != null)
+        {
+            intent.putExtra("outputX", cropSizeX);
+        }
+        if (cropSizeY != null)
+        {
+            intent.putExtra("outputY", cropAspectY);
+        }
         intent.putExtra("return-data", true);
         activity.startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
     }

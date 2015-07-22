@@ -359,7 +359,7 @@ public class ProfileInfoView extends LinearLayout
                 getContext(),
                 R.layout.image_picker_item,
                 choices);
-        imageRequesterUtil = new ImageRequesterUtil();
+        imageRequesterUtil = new ImageRequesterUtil(1, 1, 150, 150);
         subscriptions.add(AlertDialogRxUtil.build(getContext())
                 .setTitle(R.string.user_profile_choose_image_from_choice)
                 .setNegativeButton(R.string.cancel)
