@@ -21,7 +21,10 @@ public class KYCFormUtil
         {
             return R.string.live_call_to_action_string_ayondo;
         }
-        throw new IllegalArgumentException("Unknown call to action text for type: " + kycForm);
+        else
+        {
+            return R.string.live_call_to_action_string_ayondo;
+        }
     }
 
     public static boolean fillInBlanks(@Nullable KYCForm kycForm, @NonNull UserProfileDTO currentUserProfile)
