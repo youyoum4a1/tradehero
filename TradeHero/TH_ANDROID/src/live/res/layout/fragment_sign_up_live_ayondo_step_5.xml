@@ -32,6 +32,7 @@
           android:id="@+id/identify_document_type"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
+          style="@style/TH.Spinner"
           />
 
       <com.tradehero.th.widget.DocumentActionWidget
@@ -53,6 +54,7 @@
 
       <Spinner
           android:id="@+id/residence_document_type"
+          style="@style/TH.Spinner"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
           android:layout_marginTop="@dimen/margin_xsmall"
