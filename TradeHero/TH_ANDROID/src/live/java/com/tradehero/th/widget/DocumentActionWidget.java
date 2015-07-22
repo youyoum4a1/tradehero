@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.tradehero.th.R;
 
 public class DocumentActionWidget extends RelativeLayout
@@ -24,6 +25,8 @@ public class DocumentActionWidget extends RelativeLayout
     @Bind(R.id.document_action) Button btnAction;
     @Bind(R.id.document_clear) ImageButton btnClear;
     @Bind(R.id.document_preview) ImageView imgPreview;
+
+    @Nullable private View.OnClickListener clearOnClickListener;
 
     public DocumentActionWidget(Context context)
     {
@@ -71,13 +74,23 @@ public class DocumentActionWidget extends RelativeLayout
             {
                 imgPreview.setImageDrawable(null);
                 hidePreview();
+                View.OnClickListener copy = clearOnClickListener;
+                if (copy != null)
+                {
+                    copy.onClick(v);
+                }
             }
         });
     }
 
-    public void setActionOnClickListener(View.OnClickListener onClickListener)
+    public void setActionOnClickListener(@Nullable View.OnClickListener onClickListener)
     {
         btnAction.setOnClickListener(onClickListener);
+    }
+
+    public void setClearOnClickListener(@Nullable View.OnClickListener onClickListener)
+    {
+        clearOnClickListener = onClickListener;
     }
 
     public void setPreviewBitmap(Bitmap bmp)
