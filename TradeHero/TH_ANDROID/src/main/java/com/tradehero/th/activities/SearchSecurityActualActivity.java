@@ -3,7 +3,9 @@ package com.tradehero.th.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -32,6 +34,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
+ * Actual Search Stock Page
+ *
  * Created by palmer on 15/7/18.
  */
 public class SearchSecurityActualActivity extends Activity {
@@ -50,6 +54,9 @@ public class SearchSecurityActualActivity extends Activity {
     @Inject SecurityServiceWrapper securityServiceWrapper;
     private SearchSecurityListAdapter searchSecurityListAdapter;
 
+    private String searchStr;
+    private String searchCancelStr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +64,8 @@ public class SearchSecurityActualActivity extends Activity {
         DaggerUtils.inject(this);
 
         setContentView(R.layout.activity_search_security_actual);
-
+        searchStr = getString(R.string.search_search);
+        searchCancelStr = getString(R.string.search_cancel);
         initViews();
     }
 
@@ -78,7 +86,11 @@ public class SearchSecurityActualActivity extends Activity {
         tvSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                downloadFirstPage();
+                if(TextUtils.isEmpty(edtSearchInput.getText())){
+                    finish();
+                } else {
+                    downloadFirstPage();
+                }
             }
         });
         pullToRefreshListView = (PullToRefreshListView)findViewById(R.id.listSearch);
@@ -108,6 +120,29 @@ public class SearchSecurityActualActivity extends Activity {
             }
         });
         progressBar.setVisibility(View.GONE);
+        tvSearch.setText(searchCancelStr);
+        edtSearchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String inputStr = editable.toString();
+                if(TextUtils.isEmpty(inputStr)){
+                    tvSearch.setText(searchCancelStr);
+                } else {
+                    tvSearch.setText(searchStr);
+                    downloadFirstPage();
+                }
+            }
+        });
     }
 
     private void downloadFirstPage(){

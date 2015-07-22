@@ -294,10 +294,12 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                         THToast.show("股票交易数量错误");
                         return;
                     }
-                    double totalAmount = price * quantity;
-                    if(portfolioDTO == null || totalAmount > portfolioDTO.cashBalance) {
-                        THToast.show("买入股票价格超出可用本金");
-                        return;
+                    if(quoteDTO!=null && quoteDTO.toUSDRate!=null) {
+                        double totalAmount = price * quantity * quoteDTO.toUSDRate;
+                        if (portfolioDTO == null || totalAmount > portfolioDTO.cashBalance) {
+                            THToast.show("买入股票价格超出可用本金");
+                            return;
+                        }
                     }
                     if(isSHASHE()){
                         if(quoteDetail!=null && quoteDetail.prec !=null){
