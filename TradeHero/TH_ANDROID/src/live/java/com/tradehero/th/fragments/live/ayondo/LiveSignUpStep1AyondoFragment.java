@@ -151,6 +151,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         title.setAdapter(stringArrayAdapter);
 
         onDestroyViewSubscriptions.add(getBrokerSituationObservable()
+                .doOnNext(new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO situationDTO)
+                    {
+                        //noinspection ConstantConditions
+                        populate((KYCAyondoForm) situationDTO.kycForm);
+                    }
+                })
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
                 {
                     @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
