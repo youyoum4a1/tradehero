@@ -28,6 +28,7 @@
         >
 
       <Button
+          android:id="@+id/info_pick_location"
           style="@style/TH.Button.Inverse.Small"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -61,6 +62,7 @@
           />
 
     <EditText
+        android:id="@+id/info_address_line1"
         style="@style/TH.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -70,6 +72,7 @@
         />
 
     <EditText
+        android:id="@+id/info_address_line2"
         style="@style/TH.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -79,6 +82,7 @@
         />
 
     <EditText
+        android:id="@+id/info_city"
         style="@style/TH.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -87,6 +91,7 @@
         />
 
     <EditText
+        android:id="@+id/info_postal_code"
         style="@style/TH.Body"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

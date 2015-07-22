@@ -691,7 +691,6 @@ dependencies {
   //  liveCompile "com.jumio.android:netswipe-resources:${JUMIO_SDK_VERSION}@aar"
   liveCompile 'com.neovisionaries:nv-i18n:1.15'
   liveCompile 'com.googlecode.libphonenumber:libphonenumber:7.0.7'
-  liveCompile 'com.google.android.gms:play-services-location:7.5.0'
 
   // For Test
   testCompile('org.robolectric:robolectric:3.0-rc2') {
@@ -721,9 +720,10 @@ dependencies {
   }
 
   // Remove those when building for Amazon
-  releaseCompile 'com.google.android.gms:play-services-base:7.3.0' // This one has fewer methods
-  releaseCompile 'com.google.android.gms:play-services-gcm:7.3.0'
-  releaseCompile 'com.google.android.gms:play-services-ads:7.3.0'
+  releaseCompile 'com.google.android.gms:play-services-base:7.5.0' // This one has fewer methods
+  releaseCompile 'com.google.android.gms:play-services-gcm:7.5.0'
+  releaseCompile 'com.google.android.gms:play-services-ads:7.5.0'
+  liveCompile 'com.google.android.gms:play-services-location:7.5.0'
   //releaseCompile 'com.google.android.gms:play-services:6.1.+'
 }
 

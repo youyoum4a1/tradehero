@@ -1,7 +1,9 @@
 package com.tradehero.th.fragments.live;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -106,6 +108,12 @@ public class LiveSignUpMainFragment extends BaseFragment
                                 }));
     }
 
+    @Override public void onDestroyView()
+    {
+        super.onDestroyView();
+        Timber.d("on destroy view");
+    }
+
     private void updatePageIndicator(List<StepStatus> stepStatusList)
     {
         int childCount = tabLayout.getTabStrip().getChildCount();
@@ -115,6 +123,19 @@ public class LiveSignUpMainFragment extends BaseFragment
             Checkable textView = (Checkable) tabLayout.getTabStrip().getChildAt(i);
             StepStatus step = stepStatusList.get(i);
             textView.setChecked(step.equals(StepStatus.COMPLETE));
+        }
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        List<Fragment> fragments = getChildFragmentManager().getFragments();
+        if (fragments != null)
+        {
+            for (Fragment fragment : fragments)
+            {
+                fragment.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 }

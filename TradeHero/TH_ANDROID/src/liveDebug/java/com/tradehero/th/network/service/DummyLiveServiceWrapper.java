@@ -57,6 +57,24 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
     @NonNull @Override public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
     {
         return super.getLiveTradingSituation()
+                .doOnNext(new Action1<LiveTradingSituationDTO>()
+                {
+                    @Override public void call(LiveTradingSituationDTO liveTradingSituationDTO)
+                    {
+                        if (liveTradingSituationDTO.brokerSituations.isEmpty())
+                        {
+                            LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "ayondo markets");
+                            KYCAyondoForm form = new KYCAyondoForm();
+                            form.setStepStatuses(
+                                    Arrays.asList(StepStatus.UNSTARTED, StepStatus.COMPLETE, StepStatus.UNSTARTED, StepStatus.UNSTARTED,
+                                            StepStatus.UNSTARTED));
+                            form.setCountry(Country.SG);
+                            LiveBrokerSituationDTO fakeSituation = new LiveBrokerSituationDTO(ayondo, form);
+
+                            liveTradingSituationDTO.brokerSituations.add(fakeSituation);
+                        }
+                    }
+                })
                 .map(new Func1<LiveTradingSituationDTO, LiveTradingSituationDTO>()
                 {
                     @Override public LiveTradingSituationDTO call(LiveTradingSituationDTO liveTradingSituationDTO)

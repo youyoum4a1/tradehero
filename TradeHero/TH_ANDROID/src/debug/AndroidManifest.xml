@@ -9,6 +9,11 @@
       android:label="@string/app_name_dev"
       tools:replace="android:icon,android:label">
 
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="AIzaSyBrdCIJh7VAJ92_ROwHBdNNp_2QmmZp9TM"
+        />
+
   </application>
 
 </manifest>
