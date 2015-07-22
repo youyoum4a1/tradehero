@@ -3,19 +3,12 @@ package com.tradehero.th.fragments.settings;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -23,10 +16,9 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
-import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.activities.ActivityResultRequester;
@@ -35,11 +27,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.widget.validation.DisplayNameValidatedText;
@@ -52,9 +43,6 @@ import com.tradehero.th.widget.validation.ValidatedText;
 import com.tradehero.th.widget.validation.ValidatedView;
 import com.tradehero.th.widget.validation.ValidationMessage;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
@@ -62,6 +50,7 @@ import rx.Observer;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.functions.Func4;
 import rx.functions.Func8;
 import rx.internal.util.SubscriptionList;
@@ -74,9 +63,6 @@ public class ProfileInfoView extends LinearLayout
 {
     private static final int INDEX_CHOICE_FROM_CAMERA = 0;
     private static final int INDEX_CHOICE_FROM_LIBRARY = 1;
-    private static final int REQUEST_GALLERY = 1309;
-    private static final int REQUEST_CAMERA = 1310;
-    private final static int REQUEST_PHOTO_ZOOM = 1311;
 
     @Bind(R.id.authentication_sign_up_email) ValidatedText email;
     TextValidator emailValidator;
@@ -95,14 +81,11 @@ public class ProfileInfoView extends LinearLayout
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
-    @Inject DashboardNavigator dashboardNavigator;
 
     @NonNull final AccountManager accountManager;
     private UserProfileDTO userProfileDTO;
     @NonNull protected SubscriptionList subscriptions;
-    private File mCurrentPhotoFile;
-    private File croppedPhotoFile;
-    private int currentRequest = -1;
+    private ImageRequesterUtil imageRequesterUtil;
 
     //<editor-fold desc="Constructors">
     public ProfileInfoView(Context context, AttributeSet attrs)
@@ -228,6 +211,7 @@ public class ProfileInfoView extends LinearLayout
     protected BitmapTypedOutput safeCreateProfilePhoto()
     {
         BitmapTypedOutput created = null;
+        File croppedPhotoFile = imageRequesterUtil == null ? null : imageRequesterUtil.getCroppedPhotoFile();
         if (croppedPhotoFile != null)
         {
             try
@@ -267,6 +251,7 @@ public class ProfileInfoView extends LinearLayout
     //region Display user information
     public void displayProfileImage()
     {
+        File croppedPhotoFile = imageRequesterUtil == null ? null : imageRequesterUtil.getCroppedPhotoFile();
         if (croppedPhotoFile != null)
         {
             Bitmap bitmap = BitmapFactory.decodeFile(croppedPhotoFile.getAbsolutePath());
@@ -374,190 +359,49 @@ public class ProfileInfoView extends LinearLayout
                 getContext(),
                 R.layout.image_picker_item,
                 choices);
+        imageRequesterUtil = new ImageRequesterUtil();
         subscriptions.add(AlertDialogRxUtil.build(getContext())
                 .setTitle(R.string.user_profile_choose_image_from_choice)
                 .setNegativeButton(R.string.cancel)
                 .setSingleChoiceItems(adapter, -1)
                 .setCanceledOnTouchOutside(true)
                 .build()
-                .subscribe(
-                        new Action1<OnDialogClickEvent>()
+                .flatMap(new Func1<OnDialogClickEvent, Observable<Bitmap>>()
+                {
+                    @Override public Observable<Bitmap> call(OnDialogClickEvent event)
+                    {
+                        event.dialog.dismiss();
+                        switch (event.which)
                         {
-                            @Override public void call(OnDialogClickEvent event)
+                            case INDEX_CHOICE_FROM_CAMERA:
+                                imageRequesterUtil.onImageFromCameraRequested((Activity) getContext());
+                                break;
+                            case INDEX_CHOICE_FROM_LIBRARY:
+                                imageRequesterUtil.onImageFromLibraryRequested((Activity) getContext());
+                                break;
+                        }
+                        return imageRequesterUtil.getBitmapObservable();
+                    }
+                })
+                .subscribe(
+                        new Action1<Bitmap>()
+                        {
+                            @Override public void call(Bitmap bitmap)
                             {
-                                event.dialog.dismiss();
-                                switch (event.which)
+                                if (profileImage != null)
                                 {
-                                    case INDEX_CHOICE_FROM_CAMERA:
-                                        onImageFromCameraRequested();
-                                        break;
-                                    case INDEX_CHOICE_FROM_LIBRARY:
-                                        onImageFromLibraryRequested();
-                                        break;
+                                    profileImage.setImageBitmap(bitmap);
                                 }
                             }
                         },
-                        new EmptyAction1<Throwable>()));
-    }
-
-    private void onImageFromCameraRequested()
-    {
-        PackageManager pm = getContext().getPackageManager();
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-
-        List<ResolveInfo> handlerActivities = pm.queryIntentActivities(cameraIntent, 0);
-        if (handlerActivities.size() > 0)
-        {
-            mCurrentPhotoFile = createImageFile();
-            if (mCurrentPhotoFile == null)
-            {
-                THToast.show(R.string.error_save_image_in_external_storage);
-                return;
-            }
-            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                    Uri.fromFile(mCurrentPhotoFile));
-            Fragment currentFragment = dashboardNavigator.getCurrentFragment();
-            if (currentFragment != null)
-            {
-                currentFragment.startActivityForResult(cameraIntent, REQUEST_CAMERA);
-            }
-        }
-        else
-        {
-            THToast.show(R.string.device_no_camera);
-        }
-    }
-
-    private File createImageFile()
-    {
-        String imageFileName = "JPEG_" + System.currentTimeMillis();
-        Fragment currentFragment = dashboardNavigator.getCurrentFragment();
-        if (currentFragment == null)
-        {
-            return null;
-        }
-        File storageDir = currentFragment.getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = null;
-        try
-        {
-            image = File.createTempFile(
-                    imageFileName,  /* prefix */
-                    ".jpg",         /* suffix */
-                    storageDir      /* directory */
-            );
-        }
-        catch (IOException e)
-        {
-            Timber.d(e, "createImageFile");
-            return null;
-        }
-        return image;
-    }
-
-    private void onImageFromLibraryRequested()
-    {
-        Intent libraryIntent = new Intent(Intent.ACTION_PICK);
-        libraryIntent.setType("image/jpeg");
-        Fragment currentFragment = dashboardNavigator.getCurrentFragment();
-        if (currentFragment != null)
-        {
-            try
-            {
-                currentFragment.startActivityForResult(libraryIntent, REQUEST_GALLERY);
-            }
-            catch (ActivityNotFoundException e)
-            {
-                Timber.e(e, "Could not request gallery");
-                THToast.show(R.string.error_launch_photo_library);
-            }
-        }
+                        new TimberOnErrorAction("Failed to ask for and get bitmap")));
     }
 
     @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)
     {
-        if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK
-                && data != null)
+        if (imageRequesterUtil != null)
         {
-            startPhotoZoom(data.getData(), 150);
-            currentRequest = REQUEST_GALLERY;
-            return;
-        }
-        if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK)
-        {
-            startPhotoZoom(Uri.fromFile(mCurrentPhotoFile), 150);
-            currentRequest = REQUEST_CAMERA;
-            return;
-        }
-        if (requestCode == REQUEST_PHOTO_ZOOM && data != null)
-        {
-            Bundle bundle = data.getExtras();
-            if (bundle != null)
-            {
-                Bitmap bitmap = bundle.getParcelable("data");
-                if (saveBitmapToFile(bitmap)) return;
-
-                if (currentRequest == REQUEST_CAMERA)
-                {
-                    currentRequest = -1;
-                    profileImage.setImageBitmap(bitmap);
-                    return;
-                }
-                if (currentRequest == REQUEST_GALLERY)
-                {
-                    currentRequest = -1;
-                    profileImage.setImageBitmap(bitmap);
-                    return;
-                }
-            }
-            return;
-        }
-    }
-
-    private boolean saveBitmapToFile(Bitmap bitmap)
-    {
-        croppedPhotoFile = createImageFile();
-        if (croppedPhotoFile == null)
-        {
-            THToast.show(R.string.error_save_image_in_external_storage);
-            return true;
-        }
-        FileOutputStream outputStream = null;
-        try {
-            outputStream = new FileOutputStream(croppedPhotoFile);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream);
-            outputStream.flush();
-        } catch (Exception e) {
-            THToast.show(R.string.error_save_image_in_external_storage);
-            return true;
-        } finally
-        {
-            if (outputStream != null) {
-                try
-                {
-                    outputStream.close();
-                }
-                catch (IOException e)
-                {
-                    Timber.d(e, "Close");
-                }
-            }
-        }
-        return false;
-    }
-
-    private void startPhotoZoom(Uri data, int size) {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(data, "image/*");
-        intent.putExtra("crop", "true");
-        intent.putExtra("aspectX", 1);
-        intent.putExtra("aspectY", 1);
-        intent.putExtra("outputX", size);
-        intent.putExtra("outputY", size);
-        intent.putExtra("return-data", true);
-        Fragment currentFragment = dashboardNavigator.getCurrentFragment();
-        if (currentFragment != null)
-        {
-            currentFragment.startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
+            imageRequesterUtil.onActivityResult(activity, requestCode, resultCode, data);
         }
     }
 

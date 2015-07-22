@@ -5,9 +5,6 @@ import android.os.Environment;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.tradehero.th.R;
 
-/**
- * Created by liangyx on 4/21/15.
- */
 public class ImageUtils
 {
     public static String getImageStoragePath(Context context){
