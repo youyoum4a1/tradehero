@@ -13,7 +13,9 @@ import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
 import com.tradehero.th.models.fastfill.ScannedDocument;
+import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.utils.DateUtils;
 import java.util.Collections;
 import java.util.Date;
@@ -48,6 +50,8 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean tradedSharesBonds;
     @Nullable private Boolean tradedOtcDerivative;
     @Nullable private Boolean tradedEtc;
+    @Nullable private IdentityScannedDocumentType identifyDocumentType;
+    @Nullable private ResidenceScannedDocumentType residenceDocumentType;
 
     private List<StepStatus> stepStatuses;
 
@@ -118,6 +122,8 @@ public class KYCAyondoForm implements KYCForm
             this.tradedSharesBonds = ayondoForm.isTradedSharesBonds() != null ? ayondoForm.isTradedSharesBonds() : this.tradedSharesBonds;
             this.tradedOtcDerivative = ayondoForm.isTradedOtcDerivative() != null ? ayondoForm.isTradedOtcDerivative() : this.tradedOtcDerivative;
             this.tradedEtc = ayondoForm.isTradedEtc() != null ? ayondoForm.isTradedEtc() : this.tradedEtc;
+            this.identifyDocumentType = ayondoForm.getIdentifyDocumentType() != null ? ayondoForm.getIdentifyDocumentType() : this.identifyDocumentType;
+            this.residenceDocumentType = ayondoForm.getResidenceDocumentType() != null ? ayondoForm.getResidenceDocumentType() : this.residenceDocumentType;
             if (other.getStepStatuses() != null)
             {
                 this.stepStatuses = other.getStepStatuses();
@@ -383,6 +389,26 @@ public class KYCAyondoForm implements KYCForm
         this.tradedEtc = tradedEtc;
     }
 
+    @Nullable public IdentityScannedDocumentType getIdentifyDocumentType()
+    {
+        return identifyDocumentType;
+    }
+
+    public void setIdentifyDocumentType(@Nullable IdentityScannedDocumentType identifyDocumentType)
+    {
+        this.identifyDocumentType = identifyDocumentType;
+    }
+
+    @Nullable public ResidenceScannedDocumentType getResidenceDocumentType()
+    {
+        return residenceDocumentType;
+    }
+
+    public void setResidenceDocumentType(@Nullable ResidenceScannedDocumentType residenceDocumentType)
+    {
+        this.residenceDocumentType = residenceDocumentType;
+    }
+
     @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
     {
         boolean same;
@@ -423,6 +449,8 @@ public class KYCAyondoForm implements KYCForm
             same &= tradedSharesBonds == null ? ayondoForm.tradedSharesBonds == null : tradedSharesBonds.equals(ayondoForm.tradedSharesBonds);
             same &= tradedOtcDerivative == null ? ayondoForm.tradedOtcDerivative == null : tradedOtcDerivative.equals(ayondoForm.tradedOtcDerivative);
             same &= tradedEtc == null ? ayondoForm.tradedEtc == null : tradedEtc.equals(ayondoForm.tradedEtc);
+            same &= identifyDocumentType == null ? ayondoForm.identifyDocumentType == null : identifyDocumentType.equals(ayondoForm.identifyDocumentType);
+            same &= residenceDocumentType == null ? ayondoForm.residenceDocumentType == null : residenceDocumentType.equals(ayondoForm.residenceDocumentType);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
                     : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
