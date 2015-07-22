@@ -12,6 +12,7 @@ public interface ScannedDocument
     @Nullable String getFirstName();
     @Nullable String getMiddleName();
     @Nullable String getLastName();
+    @Nullable String getFullName();
 
     @Nullable Gender getGender();
     @Nullable Date getDob();

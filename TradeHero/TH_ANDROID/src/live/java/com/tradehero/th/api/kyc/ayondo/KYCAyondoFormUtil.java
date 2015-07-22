@@ -14,14 +14,11 @@ public class KYCAyondoFormUtil
     public static boolean fillInBlanks(@NonNull KYCAyondoForm kycForm, @NonNull UserProfileDTO currentUserProfile)
     {
         boolean modified = false;
-        if (TextUtils.isEmpty(kycForm.getFirstName()) && !TextUtils.isEmpty(currentUserProfile.firstName))
+        if (TextUtils.isEmpty(kycForm.getFullName()) && !(TextUtils.isEmpty(currentUserProfile.firstName) && TextUtils.isEmpty(
+                currentUserProfile.lastName)))
         {
-            kycForm.setFirstName(currentUserProfile.firstName);
-            modified = true;
-        }
-        if (TextUtils.isEmpty(kycForm.getLastName()) && !TextUtils.isEmpty(currentUserProfile.lastName))
-        {
-            kycForm.setLastName(currentUserProfile.lastName);
+            String fullName = TextUtils.concat(currentUserProfile.firstName + " ", currentUserProfile.lastName).toString().trim();
+            kycForm.setFullName(fullName);
             modified = true;
         }
         if (TextUtils.isEmpty(kycForm.getEmail()))

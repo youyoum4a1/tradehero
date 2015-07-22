@@ -27,8 +27,7 @@ public class KYCAyondoForm implements KYCForm
     public static final String DATE_FORMAT_AYONDO = "dd-MM-yyyy";
 
     @NonNull private Country country;
-    @Nullable private String firstName;
-    @Nullable private String lastName;
+    @Nullable private String fullName;
     @Nullable private String email;
     @Nullable private String verifiedEmail;
     @Nullable private Integer mobileNumberDialingPrefix;
@@ -62,16 +61,10 @@ public class KYCAyondoForm implements KYCForm
 
     @Override public void pickFrom(@NonNull ScannedDocument scannedDocument)
     {
-        String firstName = scannedDocument.getFirstName();
-        if (firstName != null)
+        String fullName = scannedDocument.getFullName();
+        if (fullName != null)
         {
-            this.firstName = firstName;
-        }
-
-        String lastName = scannedDocument.getLastName();
-        if (lastName != null)
-        {
-            this.lastName = lastName;
+            this.fullName = fullName;
         }
 
         CountryCode issuingCountry = scannedDocument.getIssuingCountry();
@@ -93,8 +86,7 @@ public class KYCAyondoForm implements KYCForm
         if (other instanceof KYCAyondoForm)
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) other;
-            this.firstName = ayondoForm.getFirstName() != null ? ayondoForm.getFirstName() : this.firstName;
-            this.lastName = ayondoForm.getLastName() != null ? ayondoForm.getLastName() : this.lastName;
+            this.fullName = ayondoForm.getFullName() != null ? ayondoForm.getFullName() : this.fullName;
             this.email = ayondoForm.getEmail() != null ? ayondoForm.getEmail() : this.email;
             this.verifiedEmail = ayondoForm.getVerifiedEmail() != null ? ayondoForm.getVerifiedEmail() : this.verifiedEmail;
             this.mobileNumberDialingPrefix =
@@ -159,24 +151,14 @@ public class KYCAyondoForm implements KYCForm
         this.country = country;
     }
 
-    @Nullable public String getFirstName()
+    @Nullable public String getFullName()
     {
-        return firstName;
+        return fullName;
     }
 
-    public void setFirstName(@Nullable String firstName)
+    public void setFullName(@Nullable String fullName)
     {
-        this.firstName = firstName;
-    }
-
-    @Nullable public String getLastName()
-    {
-        return lastName;
-    }
-
-    public void setLastName(@Nullable String lastName)
-    {
-        this.lastName = lastName;
+        this.fullName = fullName;
     }
 
     @Nullable public String getEmail()
@@ -416,8 +398,7 @@ public class KYCAyondoForm implements KYCForm
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) kycForm;
             same = country.equals(ayondoForm.country);
-            same &= firstName == null ? ayondoForm.firstName == null : firstName.equals(ayondoForm.firstName);
-            same &= lastName == null ? ayondoForm.lastName == null : lastName.equals(ayondoForm.lastName);
+            same &= fullName == null ? ayondoForm.fullName == null : fullName.equals(ayondoForm.fullName);
             same &= email == null ? ayondoForm.email == null : email.equals(ayondoForm.email);
             same &= verifiedEmail == null
                     ? ayondoForm.verifiedEmail == null

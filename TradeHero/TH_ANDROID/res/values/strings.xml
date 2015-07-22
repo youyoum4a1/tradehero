@@ -332,5 +332,6 @@
   <string name="previous">Previous</string>
   <string name="create">Create</string>
   <string name="clear_all">Clear All</string>
+  <string name="hint_full_name">Full Name</string>
 
 </resources>

@@ -90,8 +90,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final int REQUEST_PICK_DATE = 2805;
 
     @Bind(R.id.info_title) Spinner title;
-    @Bind(R.id.et_firstname) TextView firstName;
-    @Bind(R.id.et_lastname) TextView lastName;
+    @Bind(R.id.info_full_name) TextView fullName;
     @Bind(R.id.sign_up_email) ValidatedText email;
     TextValidator emailValidator;
     @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
@@ -164,23 +163,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
                     {
                         return Observable.merge(
-                                WidgetObservable.text(firstName)
+                                WidgetObservable.text(fullName)
                                         .map(new Func1<OnTextChangeEvent, LiveBrokerSituationDTO>()
                                         {
-                                            @Override public LiveBrokerSituationDTO call(OnTextChangeEvent firstNameEvent)
+                                            @Override public LiveBrokerSituationDTO call(OnTextChangeEvent fullNameEvent)
                                             {
                                                 //noinspection ConstantConditions
-                                                ((KYCAyondoForm) situation.kycForm).setFirstName(firstNameEvent.text().toString());
-                                                return situation;
-                                            }
-                                        }),
-                                WidgetObservable.text(lastName)
-                                        .map(new Func1<OnTextChangeEvent, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(OnTextChangeEvent lastNameEvent)
-                                            {
-                                                //noinspection ConstantConditions
-                                                ((KYCAyondoForm) situation.kycForm).setLastName(lastNameEvent.text().toString());
+                                                ((KYCAyondoForm) situation.kycForm).setFullName(fullNameEvent.text().toString());
                                                 return situation;
                                             }
                                         }),
@@ -593,16 +582,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     protected void populate(@NonNull KYCAyondoForm kycForm)
     {
-        String firstNameText = kycForm.getFirstName();
-        if (firstName != null && firstNameText != null && !firstNameText.equals(firstName.getText().toString()))
+        String fullNameText = kycForm.getFullName();
+        if (fullName != null && fullNameText != null && !fullNameText.equals(fullName.getText().toString()))
         {
-            firstName.setText(firstNameText);
-        }
-
-        String lastNameText = kycForm.getLastName();
-        if (lastName != null && lastNameText != null && !lastNameText.equals(lastName.getText().toString()))
-        {
-            lastName.setText(lastNameText);
+            fullName.setText(fullNameText);
         }
 
         String emailText = kycForm.getEmail();

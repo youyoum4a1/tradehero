@@ -2,6 +2,7 @@ package com.tradehero.th.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import com.jumio.netverify.sdk.NetverifyDocumentData;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.models.fastfill.Gender;
@@ -38,6 +39,13 @@ public class NetverifyScannedDocument implements ScannedDocument
     @Override @Nullable public String getLastName()
     {
         return data.getLastName();
+    }
+
+    @Override @Nullable public String getFullName()
+    {
+        String firstName = getFirstName();
+        String lastName = getLastName();
+        return TextUtils.concat(firstName + " ", lastName).toString().trim();
     }
 
     @Override @Nullable public Gender getGender()
