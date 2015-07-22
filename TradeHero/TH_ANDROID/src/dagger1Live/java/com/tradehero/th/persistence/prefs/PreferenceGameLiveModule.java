@@ -2,7 +2,6 @@ package com.tradehero.th.persistence.prefs;
 
 import android.content.SharedPreferences;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.kyc.EmptyKYCForm;
@@ -25,7 +24,7 @@ public class PreferenceGameLiveModule
     private static final String PREF_SHOW_CALL_TO_ACTION = "PREF_SHOW_CALL_TO_ACTION";
 
     @Provides @Singleton LiveBrokerSituationPreference provideLiveBrokerSituationPreference(
-            @ForApp ObjectMapper objectMapper,
+            ObjectMapper objectMapper, // Do not use @ForApp because it removes the Jackson visibility of methods
             @ForUser SharedPreferences sharedPreferences)
     {
         return new LiveBrokerSituationPreference(objectMapper, sharedPreferences, PREF_SAVED_BROKER_SITUATION, new LiveBrokerSituationDTO(

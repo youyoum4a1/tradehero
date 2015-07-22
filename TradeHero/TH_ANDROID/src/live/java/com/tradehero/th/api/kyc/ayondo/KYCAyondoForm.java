@@ -3,6 +3,7 @@ package com.tradehero.th.api.kyc.ayondo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
@@ -13,10 +14,12 @@ import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
 import com.tradehero.th.models.fastfill.ScannedDocument;
-import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.utils.DateUtils;
+import java.io.File;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -49,8 +52,10 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean tradedSharesBonds;
     @Nullable private Boolean tradedOtcDerivative;
     @Nullable private Boolean tradedEtc;
-    @Nullable private IdentityScannedDocumentType identifyDocumentType;
+    @Nullable private IdentityScannedDocumentType identityDocumentType;
+    @Nullable private File identityDocumentFile;
     @Nullable private ResidenceScannedDocumentType residenceDocumentType;
+    @Nullable private File residenceDocumentFile;
 
     private List<StepStatus> stepStatuses;
 
@@ -114,8 +119,10 @@ public class KYCAyondoForm implements KYCForm
             this.tradedSharesBonds = ayondoForm.isTradedSharesBonds() != null ? ayondoForm.isTradedSharesBonds() : this.tradedSharesBonds;
             this.tradedOtcDerivative = ayondoForm.isTradedOtcDerivative() != null ? ayondoForm.isTradedOtcDerivative() : this.tradedOtcDerivative;
             this.tradedEtc = ayondoForm.isTradedEtc() != null ? ayondoForm.isTradedEtc() : this.tradedEtc;
-            this.identifyDocumentType = ayondoForm.getIdentifyDocumentType() != null ? ayondoForm.getIdentifyDocumentType() : this.identifyDocumentType;
+            this.identityDocumentType = ayondoForm.getIdentityDocumentType() != null ? ayondoForm.getIdentityDocumentType() : this.identityDocumentType;
+            this.identityDocumentFile = ayondoForm.identityDocumentFile != null ? ayondoForm.identityDocumentFile : this.identityDocumentFile;
             this.residenceDocumentType = ayondoForm.getResidenceDocumentType() != null ? ayondoForm.getResidenceDocumentType() : this.residenceDocumentType;
+            this.residenceDocumentFile = ayondoForm.residenceDocumentFile != null ? ayondoForm.residenceDocumentFile : this.residenceDocumentFile;
             if (other.getStepStatuses() != null)
             {
                 this.stepStatuses = other.getStepStatuses();
@@ -181,6 +188,7 @@ public class KYCAyondoForm implements KYCForm
         this.verifiedEmail = verifiedEmail;
     }
 
+    //<editor-fold desc="Phone Number">
     @Nullable public Integer getMobileNumberDialingPrefix()
     {
         return mobileNumberDialingPrefix;
@@ -220,7 +228,9 @@ public class KYCAyondoForm implements KYCForm
     {
         this.verifiedMobileNumber = verifiedMobileNumber;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Countries">
     @Nullable public CountryCode getNationality()
     {
         return nationality;
@@ -240,6 +250,7 @@ public class KYCAyondoForm implements KYCForm
     {
         this.residency = residency;
     }
+    //</editor-fold>
 
     @Nullable public String getDob()
     {
@@ -251,6 +262,7 @@ public class KYCAyondoForm implements KYCForm
         this.dob = dob;
     }
 
+    //<editor-fold desc="Wealth">
     @Nullable public AnnualIncomeRange getAnnualIncomeRange()
     {
         return annualIncomeRange;
@@ -280,7 +292,9 @@ public class KYCAyondoForm implements KYCForm
     {
         this.percentNetWorthForInvestmentRange = percentNetWorthForInvestmentRange;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Employment">
     @Nullable public EmploymentStatus getEmploymentStatus()
     {
         return employmentStatus;
@@ -300,7 +314,9 @@ public class KYCAyondoForm implements KYCForm
     {
         this.employerRegulatedFinancial = employerRegulatedFinancial;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Academic Knowledge">
     @Nullable public Boolean isWorkedInFinance1Year()
     {
         return workedInFinance1Year;
@@ -330,7 +346,9 @@ public class KYCAyondoForm implements KYCForm
     {
         this.haveOtherQualification = haveOtherQualification;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Experience">
     @Nullable public TradingPerQuarter getTradingPerQuarter()
     {
         return tradingPerQuarter;
@@ -370,17 +388,45 @@ public class KYCAyondoForm implements KYCForm
     {
         this.tradedEtc = tradedEtc;
     }
+    //</editor-fold>
 
-    @Nullable public IdentityScannedDocumentType getIdentifyDocumentType()
+    //<editor-fold desc="Identity Document File">
+    @Nullable public IdentityScannedDocumentType getIdentityDocumentType()
     {
-        return identifyDocumentType;
+        return identityDocumentType;
     }
 
-    public void setIdentifyDocumentType(@Nullable IdentityScannedDocumentType identifyDocumentType)
+    public void setIdentityDocumentType(@Nullable IdentityScannedDocumentType identityDocumentType)
     {
-        this.identifyDocumentType = identifyDocumentType;
+        this.identityDocumentType = identityDocumentType;
     }
 
+    @Nullable @JsonIgnore public File getIdentityDocumentFile()
+    {
+        return identityDocumentFile;
+    }
+
+    @Nullable public String getIdentityDocumentFileString()
+    {
+        return identityDocumentFile == null
+                ? null
+                : identityDocumentFile.toURI().toString();
+    }
+
+    @JsonIgnore public void setIdentityDocumentFile(@Nullable File identityDocumentFile)
+    {
+        this.identityDocumentFile = identityDocumentFile;
+    }
+
+    public void setIdentityDocumentFileString(@Nullable String identityDocumentFileString)
+    {
+        this.identityDocumentFile = identityDocumentFileString == null
+                ? null
+                : new File(URI.create(identityDocumentFileString));
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Residence Document File">
     @Nullable public ResidenceScannedDocumentType getResidenceDocumentType()
     {
         return residenceDocumentType;
@@ -390,6 +436,31 @@ public class KYCAyondoForm implements KYCForm
     {
         this.residenceDocumentType = residenceDocumentType;
     }
+
+    @Nullable @JsonIgnore public File getResidenceDocumentFile()
+    {
+        return residenceDocumentFile;
+    }
+
+    @Nullable public String getResidenceDocumentFileString()
+    {
+        return residenceDocumentFile == null
+                ? null
+                : residenceDocumentFile.toURI().toString();
+    }
+
+    @JsonIgnore public void setResidenceDocumentFile(@Nullable File residenceDocumentFile)
+    {
+        this.residenceDocumentFile = residenceDocumentFile;
+    }
+
+    public void setResidenceDocumentFileString(@Nullable String residenceDocumentFileString)
+    {
+        this.residenceDocumentFile = residenceDocumentFileString == null
+                ? null
+                : new File(URI.create(residenceDocumentFileString));
+    }
+    //</editor-fold>
 
     @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
     {
@@ -430,8 +501,11 @@ public class KYCAyondoForm implements KYCForm
             same &= tradedSharesBonds == null ? ayondoForm.tradedSharesBonds == null : tradedSharesBonds.equals(ayondoForm.tradedSharesBonds);
             same &= tradedOtcDerivative == null ? ayondoForm.tradedOtcDerivative == null : tradedOtcDerivative.equals(ayondoForm.tradedOtcDerivative);
             same &= tradedEtc == null ? ayondoForm.tradedEtc == null : tradedEtc.equals(ayondoForm.tradedEtc);
-            same &= identifyDocumentType == null ? ayondoForm.identifyDocumentType == null : identifyDocumentType.equals(ayondoForm.identifyDocumentType);
+            same &= identityDocumentType == null ? ayondoForm.identityDocumentType
+                    == null : identityDocumentType.equals(ayondoForm.identityDocumentType);
+            same &= identityDocumentFile == null ? ayondoForm.identityDocumentFile == null : identityDocumentFile.equals(ayondoForm.identityDocumentFile);
             same &= residenceDocumentType == null ? ayondoForm.residenceDocumentType == null : residenceDocumentType.equals(ayondoForm.residenceDocumentType);
+            same &= residenceDocumentFile == null ? ayondoForm.residenceDocumentFile == null : residenceDocumentFile.equals(ayondoForm.residenceDocumentFile);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
                     : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
