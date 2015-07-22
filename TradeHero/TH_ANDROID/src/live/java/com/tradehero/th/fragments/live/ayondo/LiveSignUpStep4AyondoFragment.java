@@ -114,12 +114,11 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             {
                                 Address addr = addresses.get(0);
 
-                                String fName = addr.getFeatureName();
                                 String add1 = addr.getAddressLine(0);
                                 String add2 = addr.getAddressLine(1);
 
-                                txtLine1.setText(fName != null ? fName : add1);
-                                txtLine2.setText(fName != null ? add1 : add2);
+                                txtLine1.setText(add1 != null ? add1 : "");
+                                txtLine2.setText(add2 != null ? add2 : "");
 
                                 if (addr.getAdminArea() != null)
                                 {
