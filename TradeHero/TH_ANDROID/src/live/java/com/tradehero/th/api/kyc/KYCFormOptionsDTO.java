@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.kyc.kenanga.KYCKenangaFormOptionsDTO;
+import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
+import java.util.List;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -18,4 +20,6 @@ import com.tradehero.th.api.kyc.kenanga.KYCKenangaFormOptionsDTO;
 public interface KYCFormOptionsDTO extends DTO
 {
     @NonNull IdentityPromptInfoDTO getIdentityPromptInfo();
+
+    @NonNull List<IdentityScannedDocumentType> getIdentityDocumentTypes();
 }

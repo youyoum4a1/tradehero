@@ -11,6 +11,8 @@ import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
+import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +30,8 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final List<PercentNetWorthForInvestmentRange> percentNetWorthOptions;
     @NonNull public final List<EmploymentStatus> employmentStatusOptions;
     @NonNull public final List<TradingPerQuarter> tradingPerQuarterOptions;
+    @NonNull public final List<IdentityScannedDocumentType> identityDocumentTypes;
+    @NonNull public final List<ResidenceScannedDocumentType> residenceDocumentTypes;
     public final int minAge;
 
     public KYCAyondoFormOptionsDTO(
@@ -40,6 +44,8 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("percentNetWorthOptions") @NonNull List<PercentNetWorthForInvestmentRange> percentNetWorthOptions,
             @JsonProperty("employmentStatusOptions") @NonNull List<EmploymentStatus> employmentStatusOptions,
             @JsonProperty("tradingPerQuarterOptions") @NonNull List<TradingPerQuarter> tradingPerQuarterOptions,
+            @JsonProperty("identityDocumentTypes") @NonNull List<IdentityScannedDocumentType> identityDocumentTypes,
+            @JsonProperty("residenceDocumentTypes") @NonNull List<ResidenceScannedDocumentType> residenceDocumentTypes,
             @JsonProperty("minAge") int minAge)
     {
         this.identityPromptInfo = identityPromptInfo;
@@ -72,11 +78,18 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         this.percentNetWorthOptions = Collections.unmodifiableList(percentNetWorthOptions);
         this.employmentStatusOptions = Collections.unmodifiableList(employmentStatusOptions);
         this.tradingPerQuarterOptions = Collections.unmodifiableList(tradingPerQuarterOptions);
+        this.identityDocumentTypes = Collections.unmodifiableList(identityDocumentTypes);
+        this.residenceDocumentTypes = Collections.unmodifiableList(residenceDocumentTypes);
         this.minAge = minAge;
     }
 
     @NonNull @Override public IdentityPromptInfoDTO getIdentityPromptInfo()
     {
         return identityPromptInfo;
+    }
+
+    @NonNull public List<IdentityScannedDocumentType> getIdentityDocumentTypes()
+    {
+        return identityDocumentTypes;
     }
 }

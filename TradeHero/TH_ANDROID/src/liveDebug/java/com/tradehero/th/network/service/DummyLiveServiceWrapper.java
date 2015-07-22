@@ -21,6 +21,8 @@ import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
+import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
 import java.io.IOException;
@@ -141,6 +143,8 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                 ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).percentNetWorthOptions,
                                 ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).employmentStatusOptions,
                                 ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).tradingPerQuarterOptions,
+                                kycFormOptionsDTO.getIdentityDocumentTypes(),
+                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).residenceDocumentTypes,
                                 ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).minAge);
                     }
                 })
@@ -165,21 +169,14 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                         Arrays.asList(Country.SG, Country.AU, Country.GB),
                                         nationalities,
                                         Arrays.asList(Country.SG, Country.AU, Country.GB),
-                                        Arrays.asList(AnnualIncomeRange.LESS15KUSD, AnnualIncomeRange.FROM15KUSDTO40KUSD,
-                                                AnnualIncomeRange.FROM40KUSDTO70KUSD, AnnualIncomeRange.FROM70KUSDTO100KUSD,
-                                                AnnualIncomeRange.MORETHAN100KUSD),
-                                        Arrays.asList(NetWorthRange.LESS15KUSD, NetWorthRange.FROM15KUSDTO40KUSD,
-                                                NetWorthRange.FROM40KUSDTO70KUSD, NetWorthRange.FROM70KUSDTO100KUSD,
-                                                NetWorthRange.FROM100KUSDTO500KUSD, NetWorthRange.MORETHAN500KUSD),
-                                        Arrays.asList(PercentNetWorthForInvestmentRange.LESSTHAN25P,
-                                                PercentNetWorthForInvestmentRange.FROM25PTO50P,
-                                                PercentNetWorthForInvestmentRange.FROM51PTO75P,
-                                                PercentNetWorthForInvestmentRange.MORETHAN75P),
-                                        Arrays.asList(EmploymentStatus.EMPLOYED, EmploymentStatus.SELFEMPLOYED,
-                                                EmploymentStatus.UNEMPLOYED, EmploymentStatus.RETIRED,
-                                                EmploymentStatus.STUDENT),
-                                        Arrays.asList(TradingPerQuarter.NONE, TradingPerQuarter.ONE_TO_FIVE, TradingPerQuarter.SIX_TO_TEN,
-                                                TradingPerQuarter.OVER_TEN), 21);
+                                        Arrays.asList(AnnualIncomeRange.values()),
+                                        Arrays.asList(NetWorthRange.values()),
+                                        Arrays.asList(PercentNetWorthForInvestmentRange.values()),
+                                        Arrays.asList(EmploymentStatus.values()),
+                                        Arrays.asList(TradingPerQuarter.values()),
+                                        Arrays.asList(IdentityScannedDocumentType.values()),
+                                        Arrays.asList(ResidenceScannedDocumentType.values()),
+                                        21);
                                 return Observable.just(options);
                             }
                         });
