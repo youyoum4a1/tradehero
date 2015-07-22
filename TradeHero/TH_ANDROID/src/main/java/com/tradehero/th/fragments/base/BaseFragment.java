@@ -118,14 +118,7 @@ public class BaseFragment extends Fragment
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        if (this.onStopSubscriptions != null)
-        {
-            this.onStopSubscriptions.unsubscribe();
-        }
-        if (this.onDestroyViewSubscriptions != null)
-        {
-            onDestroyViewSubscriptions.unsubscribe();
-        }
+        // Do not unsubscribe here
     }
 
     @CallSuper
