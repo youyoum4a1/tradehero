@@ -9,6 +9,7 @@
       style="@style/TradeHero.Live.SignUpInnerContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Light"
       >
 
       <TextView
@@ -83,6 +84,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:layout_marginTop="@dimen/margin_medium"
+          android:theme="@style/TradeHero.Live.Form"
           >
 
           <Button
