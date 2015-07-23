@@ -10,20 +10,21 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.tradehero.th.R;
+import com.tradehero.th.api.kyc.KYCAddress;
+import com.tradehero.th.widget.KYCAddressWidget;
 import java.io.IOException;
 import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnClickEvent;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -34,10 +35,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final int PICK_LOCATION_REQUEST = 2513;
     private Geocoder mGeocoder;
 
-    @Bind(R.id.info_address_line1) EditText txtLine1;
-    @Bind(R.id.info_address_line2) EditText txtLine2;
-    @Bind(R.id.info_city) EditText txtCity;
-    @Bind(R.id.info_postal_code) EditText txtPostalCode;
+    @Bind(R.id.info_address_pri) KYCAddressWidget primaryWidget;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -54,9 +52,27 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        onDestroyViewSubscriptions.add(primaryWidget.getPickLocationClickedObservable()
+                        .subscribe(new Action1<OnClickEvent>()
+                        {
+                            @Override public void call(OnClickEvent onClickEvent)
+                            {
+                                pickLocation();
+                            }
+                        })
+        );
+
+        onDestroyViewSubscriptions.add(primaryWidget.getKYCAddressObservable()
+        .subscribe(new Action1<KYCAddress>()
+        {
+            @Override public void call(KYCAddress kycAddress)
+            {
+                Timber.d("%s",kycAddress);
+            }
+        }));
     }
 
-    @OnClick(R.id.info_pick_location)
     public void pickLocation()
     {
         try
@@ -105,31 +121,32 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<List<Address>>()
+                    .filter(new Func1<List<Address>, Boolean>()
                     {
-                        @Override public void call(List<Address> addresses)
+                        @Override public Boolean call(List<Address> addresses)
                         {
-                            Timber.d("addresses %s", addresses);
-                            if (addresses.get(0) != null)
-                            {
-                                Address addr = addresses.get(0);
+                            return addresses.size() == 1;
+                        }
+                    })
+                    .map(new Func1<List<Address>, KYCAddress>()
+                    {
+                        @Override public KYCAddress call(List<Address> addresses)
+                        {
+                            Address addr = addresses.get(0);
 
-                                String add1 = addr.getAddressLine(0);
-                                String add2 = addr.getAddressLine(1);
+                            String add1 = addr.getAddressLine(0);
+                            String add2 = addr.getAddressLine(1);
+                            String city = addr.getAdminArea();
+                            String postal = addr.getPostalCode();
 
-                                txtLine1.setText(add1 != null ? add1 : "");
-                                txtLine2.setText(add2 != null ? add2 : "");
-
-                                if (addr.getAdminArea() != null)
-                                {
-                                    txtCity.setText(addr.getAdminArea());
-                                }
-
-                                if (addr.getPostalCode() != null)
-                                {
-                                    txtPostalCode.setText(addr.getPostalCode());
-                                }
-                            }
+                            return new KYCAddress(add1, add2, city, postal);
+                        }
+                    })
+                    .subscribe(new Action1<KYCAddress>()
+                    {
+                        @Override public void call(KYCAddress kycAddress)
+                        {
+                            primaryWidget.setKYCAddress(kycAddress);
                         }
                     });
             Timber.d("Place selected %s", place.getAddress());
