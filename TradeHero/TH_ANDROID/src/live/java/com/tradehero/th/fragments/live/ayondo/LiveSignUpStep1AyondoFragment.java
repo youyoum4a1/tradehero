@@ -149,42 +149,34 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         stringArrayAdapter.setDropDownViewResource(R.layout.sign_up_dropdown_item);
         title.setAdapter(stringArrayAdapter);
 
-        onDestroyViewSubscriptions.add(getBrokerSituationObservable()
-                .doOnNext(new Action1<LiveBrokerSituationDTO>()
-                {
-                    @Override public void call(LiveBrokerSituationDTO situationDTO)
-                    {
-                        //noinspection ConstantConditions
-                        populate((KYCAyondoForm) situationDTO.kycForm);
-                    }
-                })
-                .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
-                {
-                    @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
-                    {
-                        return Observable.merge(
-                                WidgetObservable.text(fullName)
-                                        .map(new Func1<OnTextChangeEvent, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(OnTextChangeEvent fullNameEvent)
-                                            {
-                                                //noinspection ConstantConditions
-                                                ((KYCAyondoForm) situation.kycForm).setFullName(fullNameEvent.text().toString());
-                                                return situation;
-                                            }
-                                        }),
-                                WidgetObservable.text(email)
-                                        .map(new Func1<OnTextChangeEvent, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(OnTextChangeEvent emailEvent)
-                                            {
-                                                //noinspection ConstantConditions
-                                                ((KYCAyondoForm) situation.kycForm).setEmail(emailEvent.text().toString());
-                                                return situation;
-                                            }
-                                        }));
-                    }
-                })
+        onDestroyViewSubscriptions.add(Observable.merge(
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        WidgetObservable.text(fullName),
+                        new Func2<LiveBrokerSituationDTO, OnTextChangeEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override public LiveBrokerSituationDTO call(
+                                    LiveBrokerSituationDTO situation,
+                                    OnTextChangeEvent fullNameEvent)
+                            {
+                                //noinspection ConstantConditions
+                                ((KYCAyondoForm) situation.kycForm).setFullName(fullNameEvent.text().toString());
+                                return situation;
+                            }
+                        }),
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        WidgetObservable.text(email),
+                        new Func2<LiveBrokerSituationDTO, OnTextChangeEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override public LiveBrokerSituationDTO call(
+                                    LiveBrokerSituationDTO situation, OnTextChangeEvent emailEvent)
+                            {
+                                //noinspection ConstantConditions
+                                ((KYCAyondoForm) situation.kycForm).setEmail(emailEvent.text().toString());
+                                return situation;
+                            }
+                        }))
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
                         {
@@ -226,11 +218,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
                             {
                                 //noinspection ConstantConditions
+                                populate((KYCAyondoForm) situation.kycForm);
+
                                 final Integer dialingPrefix = ((KYCAyondoForm) situation.kycForm).getMobileNumberDialingPrefix();
                                 final String phoneNumber = ((KYCAyondoForm) situation.kycForm).getMobileNumber();
                                 if (dialingPrefix != null && phoneNumber != null)
                                 {
-                                    populateVerifyMobile((KYCAyondoForm) situation.kycForm, dialingPrefix, phoneNumber);
                                     String numberText = "+" + dialingPrefix + phoneNumber;
                                     return liveServiceWrapper.getPhoneNumberVerifiedStatus(numberText)
                                             .map(new Func1<PhoneNumberVerifiedStatusDTO, LiveBrokerSituationDTO>()
@@ -243,6 +236,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                         ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumberDialingPrefix(dialingPrefix);
                                                         ((KYCAyondoForm) situation.kycForm).setVerifiedMobileNumber(phoneNumber);
                                                     }
+                                                    populateVerifyMobile((KYCAyondoForm) situation.kycForm, dialingPrefix, phoneNumber);
+                                                    onNext(situation);
                                                     return situation;
                                                 }
                                             });
@@ -279,9 +274,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                         .observeOn(AndroidSchedulers.mainThread()),
-                new Func3<LiveBrokerSituationDTO, CountryDTOForSpinner, UserProfileDTO, Object>()
+                new Func3<LiveBrokerSituationDTO, CountryDTOForSpinner, UserProfileDTO, LiveBrokerSituationDTO>()
                 {
-                    @Override public Object call(LiveBrokerSituationDTO situation,
+                    @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation,
                             CountryDTOForSpinner options,
                             UserProfileDTO currentUserProfile)
                     {
@@ -289,19 +284,17 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedMobilePhoneCountryDTOs);
                         populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
                         populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
-                        return null;
+                        return situation;
                     }
                 })
                 .subscribe(
-                        new Action1<Object>()
+                        new Action1<LiveBrokerSituationDTO>()
                         {
-                            @Override public void call(Object o)
+                            @Override public void call(LiveBrokerSituationDTO situation)
                             {
                             }
                         },
                         new TimberOnErrorAction("Failed to load phone drop down lists")));
-
-        ;
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 getBrokerSituationObservable()
@@ -394,48 +387,47 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new ToastAndLogOnErrorAction("Failed to listen to phone number updates")));
 
-        onDestroyViewSubscriptions.add(getBrokerSituationObservable()
-                .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
-                {
-                    @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situationDTO)
-                    {
-                        return Observable.merge(
-                                AdapterViewObservable.selects(spinnerNationality)
-                                        .map(new Func1<OnSelectedEvent, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(OnSelectedEvent nationalityEvent)
-                                            {
-                                                if (nationalityEvent instanceof OnItemSelectedEvent)
-                                                {
-                                                    CountryCode newNationality =
-                                                            CountryCode.getByCode(
-                                                                    ((CountrySpinnerAdapter.DTO) nationalityEvent.parent.getItemAtPosition(
-                                                                            ((OnItemSelectedEvent) nationalityEvent).position)).country.name());
-                                                    //noinspection ConstantConditions
-                                                    ((KYCAyondoForm) situationDTO.kycForm).setNationality(newNationality);
-                                                }
-                                                return situationDTO;
-                                            }
-                                        }),
-                                AdapterViewObservable.selects(spinnerResidency)
-                                        .map(new Func1<OnSelectedEvent, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(OnSelectedEvent residencyEvent)
-                                            {
-                                                if (residencyEvent instanceof OnItemSelectedEvent)
-                                                {
-                                                    CountryCode newResidency =
-                                                            CountryCode.getByCode(
-                                                                    ((CountrySpinnerAdapter.DTO) residencyEvent.parent.getItemAtPosition(
-                                                                            ((OnItemSelectedEvent) residencyEvent).position)).country.name());
-                                                    //noinspection ConstantConditions
-                                                    ((KYCAyondoForm) situationDTO.kycForm).setResidency(newResidency);
-                                                }
-                                                return situationDTO;
-                                            }
-                                        }));
-                    }
-                })
+        onDestroyViewSubscriptions.add(Observable.merge(
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        AdapterViewObservable.selects(spinnerNationality),
+                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override
+                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent nationalityEvent)
+                            {
+                                if (nationalityEvent instanceof OnItemSelectedEvent)
+                                {
+                                    CountryCode newNationality =
+                                            CountryCode.getByCode(
+                                                    ((CountrySpinnerAdapter.DTO) nationalityEvent.parent.getItemAtPosition(
+                                                            ((OnItemSelectedEvent) nationalityEvent).position)).country.name());
+                                    //noinspection ConstantConditions
+                                    ((KYCAyondoForm) situationDTO.kycForm).setNationality(newNationality);
+                                }
+                                return situationDTO;
+                            }
+                        }),
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        AdapterViewObservable.selects(spinnerResidency),
+                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override
+                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent residencyEvent)
+                            {
+                                if (residencyEvent instanceof OnItemSelectedEvent)
+                                {
+                                    CountryCode newResidency =
+                                            CountryCode.getByCode(
+                                                    ((CountrySpinnerAdapter.DTO) residencyEvent.parent.getItemAtPosition(
+                                                            ((OnItemSelectedEvent) residencyEvent).position)).country.name());
+                                    //noinspection ConstantConditions
+                                    ((KYCAyondoForm) situationDTO.kycForm).setResidency(newResidency);
+                                }
+                                return situationDTO;
+                            }
+                        }))
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
                         {
@@ -565,19 +557,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             Timber.e(new IllegalArgumentException(), "Should not submit a situation.KYC of type: %s", situationDTO.kycForm);
         }
         // TODO
-    }
-
-    @NonNull @Override protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
-    {
-        return super.createBrokerSituationObservable()
-                .doOnNext(new Action1<LiveBrokerSituationDTO>()
-                {
-                    @Override public void call(LiveBrokerSituationDTO situationDTO)
-                    {
-                        //noinspection ConstantConditions
-                        populate((KYCAyondoForm) situationDTO.kycForm);
-                    }
-                });
     }
 
     protected void populate(@NonNull KYCAyondoForm kycForm)
