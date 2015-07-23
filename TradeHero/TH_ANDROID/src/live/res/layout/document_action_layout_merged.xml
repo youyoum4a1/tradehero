@@ -25,6 +25,7 @@
       android:layout_alignParentRight="true"
       android:background="?attr/selectableItemBackgroundBorderless"
       android:visibility="gone"
+      android:tint="@color/text_primary"
       tools:visibility="visible"
       />
 
