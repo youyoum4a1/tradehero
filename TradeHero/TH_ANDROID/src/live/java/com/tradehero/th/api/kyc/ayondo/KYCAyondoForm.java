@@ -56,6 +56,10 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private File identityDocumentFile;
     @Nullable private ResidenceScannedDocumentType residenceDocumentType;
     @Nullable private File residenceDocumentFile;
+    @Nullable private Boolean agreeTermsConditions;
+    @Nullable private Boolean agreeRisksWarnings;
+    @Nullable private Boolean agreeDataSharing;
+    @Nullable private Boolean agreeFundsPolicy;
 
     private List<StepStatus> stepStatuses;
 
@@ -123,6 +127,10 @@ public class KYCAyondoForm implements KYCForm
             this.identityDocumentFile = ayondoForm.identityDocumentFile != null ? ayondoForm.identityDocumentFile : this.identityDocumentFile;
             this.residenceDocumentType = ayondoForm.getResidenceDocumentType() != null ? ayondoForm.getResidenceDocumentType() : this.residenceDocumentType;
             this.residenceDocumentFile = ayondoForm.residenceDocumentFile != null ? ayondoForm.residenceDocumentFile : this.residenceDocumentFile;
+            this.agreeTermsConditions = ayondoForm.agreeTermsConditions != null ? ayondoForm.agreeTermsConditions : this.agreeTermsConditions;
+            this.agreeRisksWarnings = ayondoForm.agreeRisksWarnings != null ? ayondoForm.agreeRisksWarnings : this.agreeRisksWarnings;
+            this.agreeDataSharing = ayondoForm.agreeDataSharing != null ? ayondoForm.agreeDataSharing : this.agreeDataSharing;
+            this.agreeFundsPolicy = ayondoForm.agreeFundsPolicy != null ? ayondoForm.agreeFundsPolicy : this.agreeFundsPolicy;
             if (other.getStepStatuses() != null)
             {
                 this.stepStatuses = other.getStepStatuses();
@@ -462,6 +470,48 @@ public class KYCAyondoForm implements KYCForm
     }
     //</editor-fold>
 
+    //<editor-fold desc="Agreements">
+    @Nullable public Boolean isAgreeTermsConditions()
+    {
+        return agreeTermsConditions;
+    }
+
+    public void setAgreeTermsConditions(@Nullable Boolean agreeTermsConditions)
+    {
+        this.agreeTermsConditions = agreeTermsConditions;
+    }
+
+    @Nullable public Boolean isAgreeRisksWarnings()
+    {
+        return agreeRisksWarnings;
+    }
+
+    public void setAgreeRisksWarnings(@Nullable Boolean agreeRisksWarnings)
+    {
+        this.agreeRisksWarnings = agreeRisksWarnings;
+    }
+
+    @Nullable public Boolean isAgreeDataSharing()
+    {
+        return agreeDataSharing;
+    }
+
+    public void setAgreeDataSharing(@Nullable Boolean agreeDataSharing)
+    {
+        this.agreeDataSharing = agreeDataSharing;
+    }
+
+    @Nullable public Boolean isAgreeFundsPolicy()
+    {
+        return agreeFundsPolicy;
+    }
+
+    public void setAgreeFundsPolicy(@Nullable Boolean agreeFundsPolicy)
+    {
+        this.agreeFundsPolicy = agreeFundsPolicy;
+    }
+    //</editor-fold>
+
     @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
     {
         boolean same;
@@ -506,6 +556,10 @@ public class KYCAyondoForm implements KYCForm
             same &= identityDocumentFile == null ? ayondoForm.identityDocumentFile == null : identityDocumentFile.equals(ayondoForm.identityDocumentFile);
             same &= residenceDocumentType == null ? ayondoForm.residenceDocumentType == null : residenceDocumentType.equals(ayondoForm.residenceDocumentType);
             same &= residenceDocumentFile == null ? ayondoForm.residenceDocumentFile == null : residenceDocumentFile.equals(ayondoForm.residenceDocumentFile);
+            same &= agreeTermsConditions == null ? ayondoForm.agreeTermsConditions == null : agreeTermsConditions.equals(ayondoForm.agreeTermsConditions);
+            same &= agreeRisksWarnings == null ? ayondoForm.agreeRisksWarnings == null : agreeRisksWarnings.equals(ayondoForm.agreeRisksWarnings);
+            same &= agreeDataSharing == null ? ayondoForm.agreeDataSharing == null : agreeDataSharing.equals(ayondoForm.agreeDataSharing);
+            same &= agreeFundsPolicy == null ? ayondoForm.agreeFundsPolicy == null : agreeFundsPolicy.equals(ayondoForm.agreeFundsPolicy);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
                     : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
