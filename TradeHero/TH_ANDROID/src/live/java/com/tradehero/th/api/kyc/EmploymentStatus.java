@@ -17,7 +17,7 @@ public enum EmploymentStatus
     RETIRED(R.string.employment_status_retired, 4),
     STUDENT(R.string.employment_status_student, 5),;
 
-    public static final Map<Integer, EmploymentStatus> filedEmploymentStatuses;
+    private static final Map<Integer, EmploymentStatus> filedEmploymentStatuses;
 
     @StringRes public final int dropDownText;
     private final int fromServer;

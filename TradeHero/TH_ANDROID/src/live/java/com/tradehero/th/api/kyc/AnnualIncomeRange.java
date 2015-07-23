@@ -17,7 +17,7 @@ public enum AnnualIncomeRange
     FROM70KUSDTO100KUSD(R.string.annual_income_from_70_k_to_100_k_usd, 4),
     MORETHAN100KUSD(R.string.annual_income_more_than_100_k_usd, 5),;
 
-    public static final Map<Integer, AnnualIncomeRange> filedAnnualIncomeRanges;
+    private static final Map<Integer, AnnualIncomeRange> filedAnnualIncomeRanges;
 
     @StringRes public final int dropDownText;
     private final int fromServer;

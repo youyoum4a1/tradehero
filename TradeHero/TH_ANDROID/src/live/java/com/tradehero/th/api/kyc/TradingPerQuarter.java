@@ -20,7 +20,7 @@ public enum TradingPerQuarter
     SIX_TO_TEN(R.string.trading_per_quarter_6_to_10, 3),
     OVER_TEN(R.string.trading_per_quarter_over_10, 4);
 
-    public static final Map<Integer, TradingPerQuarter> filedTradingPerQuarters;
+    private static final Map<Integer, TradingPerQuarter> filedTradingPerQuarters;
 
     @StringRes public final int dropDownText;
     private final int fromServer;

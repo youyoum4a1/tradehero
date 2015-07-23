@@ -18,7 +18,7 @@ public enum NetWorthRange
     FROM100KUSDTO500KUSD(R.string.net_worth_from_100_k_to_500_k_usd, 5),
     MORETHAN500KUSD(R.string.net_worth_more_than_500_k_usd, 6),;
 
-    public static final Map<Integer, NetWorthRange> filedNetWorthRanges;
+    private static final Map<Integer, NetWorthRange> filedNetWorthRanges;
 
     @StringRes public final int dropDownText;
     private final int fromServer;

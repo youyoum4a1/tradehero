@@ -16,7 +16,7 @@ public enum PercentNetWorthForInvestmentRange
     FROM51PTO75P(R.string.percent_net_worth_invest_from_51_p_to_75_p, 3),
     MORETHAN75P(R.string.percent_net_worth_invest_from_more_than_75p, 4),;
 
-    public static final Map<Integer, PercentNetWorthForInvestmentRange> filedPercentNetWorthRanges;
+    private static final Map<Integer, PercentNetWorthForInvestmentRange> filedPercentNetWorthRanges;
 
     @StringRes public final int dropDownText;
     private final int fromServer;
