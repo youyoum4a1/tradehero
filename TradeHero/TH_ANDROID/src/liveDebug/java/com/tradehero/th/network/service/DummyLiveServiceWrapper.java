@@ -168,6 +168,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                         Arrays.asList(PercentNetWorthForInvestmentRange.values()),
                                         Arrays.asList(EmploymentStatus.values()),
                                         Arrays.asList(TradingPerQuarter.values()),
+                                        DummyAyondoData.DEFAULT_MAX_ADDRESS_REQUIRED,
                                         Arrays.asList(IdentityScannedDocumentType.values()),
                                         Arrays.asList(ResidenceScannedDocumentType.values()),
                                         DummyAyondoData.TERMS_CONDITIONS_URL,

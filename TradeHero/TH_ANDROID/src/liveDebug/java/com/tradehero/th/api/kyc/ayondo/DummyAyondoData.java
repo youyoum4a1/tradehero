@@ -2,6 +2,7 @@ package com.tradehero.th.api.kyc.ayondo;
 
 public class DummyAyondoData
 {
+    public static final int DEFAULT_MAX_ADDRESS_REQUIRED = 3;
     public static final String TERMS_CONDITIONS_URL = "http://www.ayondo.com/en/legal/terms-conditions";
     public static final String RISK_WARNING_DISCLAIMER_URL = "http://www.ayondo.com/en/risk-disclosure";
     public static final String DATA_SHARING_AGREEMENT_URL = "http://www.ayondo.com/en/ayondo-data-sharing-agreement";
@@ -17,6 +18,7 @@ public class DummyAyondoData
             + "\"percentNetWorthOptions\":[1,2,3,4],"
             + "\"employmentStatusOptions\":[1,2,3,4,5],"
             + "\"tradingPerQuarterOptions\":[1,2,3,4],"
+            + "\"maxAddressRequired\":" + DEFAULT_MAX_ADDRESS_REQUIRED + ","
             + "\"identityDocumentTypes\":[1,2,3],"
             + "\"residenceDocumentTypes\":[1,2],"
             + "\"termsConditionsUrl\":\"" + TERMS_CONDITIONS_URL + "\","
