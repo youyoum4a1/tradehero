@@ -114,8 +114,6 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
 
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     private QuoteDetail quoteDetail;
-    private RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
-    private RefreshQueryPositionHandler refreshQueryPositionHandler = new RefreshQueryPositionHandler();
 
     private boolean isRefresh = true;
 
@@ -205,6 +203,21 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         oneThirdIV.setOnClickListener(this);
         halfIV.setOnClickListener(this);
         allIV.setOnClickListener(this);
+
+        if(!isSHASHE()){
+            disableIfNoSHASHE();
+        }
+    }
+
+    private void disableIfNoSHASHE(){
+        decisionET.setEnabled(false);
+        oneFourIV.setClickable(false);
+        oneThirdIV.setClickable(false);
+        halfIV.setClickable(false);
+        allIV.setClickable(false);
+        reduceOneTV.setClickable(false);
+        addOneTV.setClickable(false);
+        priceET.setEnabled(false);
     }
 
     private void initSellBuyViews(View view) {
@@ -233,6 +246,9 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
 
     private void showBuyConfirmDialog() {
         if (getActivity() == null) {
+            return;
+        }
+        if(!isSHASHE()){
             return;
         }
         if (buyConfirmDialog == null) {
@@ -534,6 +550,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         private void onFinish() {
             if (isNeedToRefresh()) {
                 if(isRefresh) {
+                    RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
                     refreshBuySellHandler.sendEmptyMessageDelayed(-1, 5000);
                 }
             }
@@ -579,7 +596,8 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                 securityOptPositionActualAdapter.addData(securityOptPositionActualDTOs);
                 if (isNeedToRefresh()) {
                     if(isRefresh) {
-                        refreshQueryPositionHandler.sendEmptyMessageDelayed(-1, 20000);
+                        RefreshQueryPositionHandler refreshQueryPositionHandler = new RefreshQueryPositionHandler();
+                        refreshQueryPositionHandler.sendEmptyMessageDelayed(-1, 5000);
                     }
                 }
             }

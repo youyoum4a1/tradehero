@@ -89,7 +89,6 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
     private String securityExchange = "";
     private String securitySymbol = "";
     private String securityName = "";
-    private int competitionId = 0;
 
     //Buy Sell Layout
     private TextView sell5Price;
@@ -116,8 +115,6 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
 
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     private QuoteDetail quoteDetail;
-    private RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
-    private RefreshQueryPositionHandler refreshQueryPositionHandler = new RefreshQueryPositionHandler();
     private ArrayList<SecurityOptPositionActualDTO> securityOptPositionActualDTOs = new ArrayList();
     private SecurityOptPositionActualAdapter securityOptPositionActualAdapter;
     private double availableSells = 0;
@@ -208,6 +205,21 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         oneThirdIV.setOnClickListener(this);
         halfIV.setOnClickListener(this);
         allIV.setOnClickListener(this);
+        if(!isSHASHE()){
+            disableIfNoSHASHE();
+        }
+
+    }
+
+    private void disableIfNoSHASHE(){
+        decisionET.setEnabled(false);
+        oneFourIV.setClickable(false);
+        oneThirdIV.setClickable(false);
+        halfIV.setClickable(false);
+        allIV.setClickable(false);
+        reduceOneTV.setClickable(false);
+        addOneTV.setClickable(false);
+        priceET.setEnabled(false);
     }
 
     private void initSellBuyViews(View view) {
@@ -236,6 +248,9 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
 
     private void showBuyConfirmDialog() {
         if (getActivity() == null) {
+            return;
+        }
+        if(!isSHASHE()){
             return;
         }
         if (buyConfirmDialog == null) {
@@ -537,6 +552,7 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         private void onFinish() {
             if (isNeedToRefresh()) {
                 if(isRefresh) {
+                    RefreshBuySellHandler refreshBuySellHandler = new RefreshBuySellHandler();
                     refreshBuySellHandler.sendEmptyMessageDelayed(-1, 5000);
                 }
             }
@@ -583,7 +599,8 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                 displaySells();
                 if (isNeedToRefresh()) {
                     if(isRefresh) {
-                        refreshQueryPositionHandler.sendEmptyMessageDelayed(-1, 20000);
+                        RefreshQueryPositionHandler refreshQueryPositionHandler = new RefreshQueryPositionHandler();
+                        refreshQueryPositionHandler.sendEmptyMessageDelayed(-1, 5000);
                     }
                 }
             }

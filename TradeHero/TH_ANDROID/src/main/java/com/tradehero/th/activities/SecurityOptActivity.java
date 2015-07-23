@@ -98,8 +98,6 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
         if(isForActual){
             enterActual();
-        } else {
-            enterMock();
         }
 
         intentFilter = new IntentFilter();
@@ -200,13 +198,6 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     private void enterActual(){
         if(!isMock){
             return;
-        }
-        if(!TextUtils.isEmpty(securityExchange)){
-            if(!securityExchange.equalsIgnoreCase("SHA") && !securityExchange.equalsIgnoreCase("SHE")){
-                THToast.show("非沪深不能实盘交易");
-                enterMock();
-                return;
-            }
         }
 
         if(!TradeManager.getInstance(this).isLogined()){
