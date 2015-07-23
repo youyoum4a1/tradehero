@@ -31,7 +31,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -260,7 +260,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
                                 informSelectedExchanges();
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to load exchanges or register map clicks")));
+                        new TimberAndToastOnErrorAction1("Failed to load exchanges or register map clicks")));
     }
 
     @NonNull List<SelectableExchangeDTO> createSelectables(@NonNull Collection<ExchangeIntegerId> toShow)

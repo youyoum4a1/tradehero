@@ -53,7 +53,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
@@ -231,7 +231,7 @@ public class TradeListFragment extends DashboardFragment
                                 }
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to handle action bar")));
+                        new TimberAndToastOnErrorAction1("Failed to handle action bar")));
         actionBar.setCustomView(actionBarLayout);
         displayActionBar();
     }
@@ -380,7 +380,7 @@ public class TradeListFragment extends DashboardFragment
                                 displayActionBar();
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to load all")));
+                        new TimberAndToastOnErrorAction1("Failed to load all")));
     }
 
     public void displayBuySellContainer()

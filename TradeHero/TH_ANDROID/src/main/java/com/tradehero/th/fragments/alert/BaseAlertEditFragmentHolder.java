@@ -17,8 +17,8 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.alert.AlertSlotDTO;
 import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction1;
 import rx.Notification;
 import rx.Observable;
@@ -95,7 +95,7 @@ abstract public class BaseAlertEditFragmentHolder
                                         linkWith(alertDTO);
                                     }
                                 },
-                                new ToastAndLogOnErrorAction("Failed to fetch Alert")));
+                                new TimberAndToastOnErrorAction1("Failed to fetch Alert")));
     }
 
     @NonNull abstract protected Observable<AlertDTO> getAlertObservable();
@@ -128,7 +128,7 @@ abstract public class BaseAlertEditFragmentHolder
                                 holderStatus = status;
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to sliders")));
+                        new TimberOnErrorAction1("Failed to listen to sliders")));
     }
 
     protected void startRefreshAnimation(@NonNull final AlertDTO alertDTO)
@@ -144,7 +144,7 @@ abstract public class BaseAlertEditFragmentHolder
                                         fetchQuote(alertDTO);
                                     }
                                 },
-                                new TimberOnErrorAction("Failed to animate")
+                                new TimberOnErrorAction1("Failed to animate")
                         ));
     }
 
@@ -163,7 +163,7 @@ abstract public class BaseAlertEditFragmentHolder
                                         startRefreshAnimation(alertDTO);
                                     }
                                 },
-                                new TimberOnErrorAction("Failed to fetch quote")));
+                                new TimberOnErrorAction1("Failed to fetch quote")));
     }
 
     @NonNull public Observable<AlertCompactDTO> conditionalSaveAlert()

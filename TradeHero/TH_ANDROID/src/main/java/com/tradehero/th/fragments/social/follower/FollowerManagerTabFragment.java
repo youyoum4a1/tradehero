@@ -32,7 +32,7 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
@@ -154,7 +154,7 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
                                 notifyFollowerLoaded(followerSummaryDTOListPair.first);
                             }
                         },
-                        new ToastAndLogOnErrorAction(
+                        new TimberAndToastOnErrorAction1(
                                 getString(R.string.error_fetch_follower),
                                 "Failed to fetch FollowerSummary")
                         {
@@ -175,7 +175,7 @@ abstract public class FollowerManagerTabFragment extends DashboardFragment
                                 onUserAction(userAction);
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to listen to user actions")));
+                        new TimberAndToastOnErrorAction1("Failed to listen to user actions")));
     }
 
     @Override public void onDestroyView()

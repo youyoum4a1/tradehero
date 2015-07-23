@@ -34,9 +34,9 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.rx.view.DismissDialogAction1;
@@ -201,7 +201,7 @@ public class EmailSignInFragment extends Fragment
                                 deepLink);
                     }
                 })
-                .doOnError(new ToastOnErrorAction())
+                .doOnError(new ToastOnErrorAction1())
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
     }
 
@@ -225,7 +225,7 @@ public class EmailSignInFragment extends Fragment
                                 loginButton.setEnabled(areFieldsValid);
                             }
                         },
-                        new TimberOnErrorAction("Error in validation")));
+                        new TimberOnErrorAction1("Error in validation")));
         onStopSubscriptions.add(AppObservable.bindFragment(
                 this,
                 ViewObservable.clicks(loginButton, false)
@@ -253,7 +253,7 @@ public class EmailSignInFragment extends Fragment
                                 }
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to listent to social network button")));
+                        new TimberAndToastOnErrorAction1("Failed to listent to social network button")));
     }
 
     @Override public void onStop()
@@ -360,7 +360,7 @@ public class EmailSignInFragment extends Fragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new EmptyAction1<OnDialogClickEvent>(),
-                        new TimberOnErrorAction("Failed to ask for forgotten password")));
+                        new TimberOnErrorAction1("Failed to ask for forgotten password")));
     }
 
     @NonNull protected Observable<OnDialogClickEvent> validateForgottenEmail(@NonNull ValidatedText validatedEmail)

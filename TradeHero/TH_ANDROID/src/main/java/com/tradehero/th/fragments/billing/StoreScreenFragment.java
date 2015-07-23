@@ -41,8 +41,8 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -143,7 +143,7 @@ public class StoreScreenFragment extends BaseFragment
                                 storeItemAdapter.notifyDataSetChanged();
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
 
         cancelOthersAndShowBillingAvailable();
     }
@@ -225,7 +225,7 @@ public class StoreScreenFragment extends BaseFragment
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 Actions.empty(),
-                                new ToastOnErrorAction()));
+                                new ToastOnErrorAction1()));
                 productDomainIdentifierOrdinal = null;
             }
         }
@@ -253,7 +253,7 @@ public class StoreScreenFragment extends BaseFragment
                                     portfolioCompactListCache.get(currentUserId.toUserBaseKey());
                                 }
                             },
-                            new ToastAndLogOnErrorAction("Purchase failed"));
+                            new TimberAndToastOnErrorAction1("Purchase failed"));
         }
         else if (clickedItem instanceof StoreItemRestoreDTO)
         {
@@ -272,7 +272,7 @@ public class StoreScreenFragment extends BaseFragment
                                     portfolioCompactListCache.get(currentUserId.toUserBaseKey());
                                 }
                             },
-                            new ToastAndLogOnErrorAction("Restore failed"));
+                            new TimberAndToastOnErrorAction1("Restore failed"));
         }
         else if (clickedItem instanceof StoreItemHasFurtherDTO)
         {

@@ -28,7 +28,7 @@ import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
-import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.DeviceUtil;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
@@ -176,7 +176,7 @@ public class ProviderSecurityListRxFragment
                                 ProviderSecurityListRxFragment.this.linkWith(provider);
                             }
                         },
-                        new ToastAction<Throwable>(getString(R.string.error_fetch_provider_info))));
+                        new ToastOnErrorAction1(getString(R.string.error_fetch_provider_info))));
     }
 
     protected void linkWith(@NonNull ProviderDTO providerDTO)

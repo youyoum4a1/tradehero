@@ -21,8 +21,9 @@ import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.settings.ImageRequesterUtil;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWith;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
@@ -112,13 +113,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         })
                         .subscribe(
-                                new Action1<LiveBrokerSituationDTO>()
-                                {
-                                    @Override public void call(LiveBrokerSituationDTO situationDTO)
-                                    {
-                                    }
-                                },
-                                new TimberOnErrorAction("Failed to populate identity document type spinner")));
+                                new EmptyAction1<LiveBrokerSituationDTO>(),
+                                new TimberOnErrorAction1("Failed to populate identity document type spinner")));
 
         onDestroyViewSubscriptions.add(
                 Observable.merge(
@@ -166,7 +162,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         onNext(situationDTO);
                                     }
                                 },
-                                new TimberOnErrorAction("Failed to listen to spinner updates")));
+                                new TimberOnErrorAction1("Failed to listen to spinner updates")));
 
         onDestroyViewSubscriptions.add(getBrokerSituationObservable()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -182,7 +178,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 populate(documentActionResidence, ((KYCAyondoForm) situationDTO.kycForm).getResidenceDocumentFile());
                             }
                         },
-                        new TimberOnErrorAction("Failed to prepare files from KYC")));
+                        new TimberOnErrorAction1("Failed to prepare files from KYC")));
 
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
@@ -240,7 +236,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         documentActionIdentity.setPreviewBitmap(bitmap);
                                     }
                                 },
-                                new TimberOnErrorAction("Failed to ask for and get identity document bitmap")));
+                                new TimberOnErrorAction1("Failed to ask for and get identity document bitmap")));
 
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
@@ -298,7 +294,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         documentActionResidence.setPreviewBitmap(bitmap);
                                     }
                                 },
-                                new TimberOnErrorAction("Failed to ask for and get residence document bitmap")));
+                                new TimberOnErrorAction1("Failed to ask for and get residence document bitmap")));
 
         onDestroyViewSubscriptions.add(Observable.merge(
                 Observable.combineLatest(
@@ -361,7 +357,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 onNext(situation);
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to agreement checkboxes")));
+                        new TimberOnErrorAction1("Failed to listen to agreement checkboxes")));
 
         onDestroyViewSubscriptions.add(getKYCAyondoFormOptionsObservable()
                 .flatMap(new Func1<KYCAyondoFormOptionsDTO, Observable<String>>()
@@ -388,7 +384,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to url clicks")));
+                        new TimberOnErrorAction1("Failed to listen to url clicks")));
     }
 
     @NonNull private Observable<Bitmap> pickDocument(@StringRes int dialogTitle, @NonNull final ImageRequesterUtil imageRequesterUtil)

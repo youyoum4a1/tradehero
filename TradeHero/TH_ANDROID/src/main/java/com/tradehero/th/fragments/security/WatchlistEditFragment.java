@@ -31,7 +31,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.SecurityUtils;
@@ -155,7 +155,7 @@ public class WatchlistEditFragment extends DashboardFragment
                                         display(pair.first, pair.second);
                                     }
                                 },
-                                new ToastOnErrorAction())
+                                new ToastOnErrorAction1())
         );
     }
 

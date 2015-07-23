@@ -9,7 +9,7 @@ import com.tradehero.th.fragments.security.FXSecurityPagedViewDTOAdapter;
 import com.tradehero.th.fragments.security.ProviderSecurityListRxFragment;
 import com.tradehero.th.fragments.trending.TrendingFXFragment;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -63,7 +63,7 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
                                 ProviderFxListFragment.this.handlePricesReceived(quoteDTOs);
                             }
                         },
-                        new ToastAction<Throwable>(getString(R.string.error_fetch_fx_list_price))));
+                        new ToastOnErrorAction1(getString(R.string.error_fetch_fx_list_price))));
     }
 
     private void handlePricesReceived(@NonNull List<QuoteDTO> list)

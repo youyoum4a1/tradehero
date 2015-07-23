@@ -29,7 +29,7 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import java.util.concurrent.TimeUnit;
@@ -114,7 +114,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                                 // Nothing to do
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to end of animation")));
+                        new TimberOnErrorAction1("Failed to listen to end of animation")));
 
         onDestroyOptionsMenuSubscriptions.add(
                 securityObservable.startWith(securityCompactDTO)
@@ -129,7 +129,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                                         securityCompactDTO,
                                         null, null));
                             }
-                        }, new TimberOnErrorAction("Failed to fetch list of watch list items"))
+                        }, new TimberOnErrorAction1("Failed to fetch list of watch list items"))
         );
         actionBar.setCustomView(actionBarLayout);
     }

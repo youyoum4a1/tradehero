@@ -3,7 +3,9 @@ package com.tradehero.th.rx.dialog;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.widget.ListAdapter;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.internal.Assertions;
 import rx.functions.Action0;
@@ -33,10 +35,11 @@ class AlertDialogOnSubscribe implements Observable.OnSubscribe<OnDialogClickEven
                 subscriber.onNext(new OnDialogClickEvent(dialogInterface, i));
             }
         };
-        if (builder.positiveButtonRes != null)
+        Integer positiveButtonRes = builder.positiveButtonRes;
+        if (positiveButtonRes != null)
         {
             dialogBuilder.setPositiveButton(
-                    builder.positiveButtonRes,
+                    positiveButtonRes,
                     passingOnListener);
         }
         else
@@ -46,10 +49,11 @@ class AlertDialogOnSubscribe implements Observable.OnSubscribe<OnDialogClickEven
                     passingOnListener);
         }
 
-        if (builder.negativeButtonRes != null)
+        Integer negativeButtonRes = builder.negativeButtonRes;
+        if (negativeButtonRes != null)
         {
             dialogBuilder.setNegativeButton(
-                    builder.negativeButtonRes,
+                    negativeButtonRes,
                     passingOnListener);
         }
         else
@@ -59,10 +63,11 @@ class AlertDialogOnSubscribe implements Observable.OnSubscribe<OnDialogClickEven
                     passingOnListener);
         }
 
-        if (builder.neutralButtonRes != null)
+        Integer neutralButtonRes = builder.neutralButtonRes;
+        if (neutralButtonRes != null)
         {
             dialogBuilder.setNeutralButton(
-                    builder.neutralButtonRes,
+                    neutralButtonRes,
                     passingOnListener);
         }
         else
@@ -72,19 +77,21 @@ class AlertDialogOnSubscribe implements Observable.OnSubscribe<OnDialogClickEven
                     passingOnListener);
         }
 
-        if (builder.singleChoiceAdapter != null)
+        ListAdapter singleChoiceAdapter = builder.singleChoiceAdapter;
+        if (singleChoiceAdapter != null)
         {
             dialogBuilder.setSingleChoiceItems(
-                    builder.singleChoiceAdapter,
+                    singleChoiceAdapter,
                     builder.singleChoiceCheckedItem,
                     passingOnListener);
         }
 
         final AlertDialog dialog = dialogBuilder.create();
-        if (builder.alertDialogObserver != null)
+        Observer<AlertDialog> alertDialogObserver = builder.alertDialogObserver;
+        if (alertDialogObserver != null)
         {
-            builder.alertDialogObserver.onNext(dialog);
-            builder.alertDialogObserver.onCompleted();
+            alertDialogObserver.onNext(dialog);
+            alertDialogObserver.onCompleted();
         }
         subscriber.add(Subscriptions.create(new Action0()
         {

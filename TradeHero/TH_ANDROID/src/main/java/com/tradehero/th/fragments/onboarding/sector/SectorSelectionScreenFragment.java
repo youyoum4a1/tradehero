@@ -26,7 +26,7 @@ import com.tradehero.th.api.market.SectorListType;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardHeaderLinearView;
 import com.tradehero.th.persistence.market.SectorListCacheRx;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -182,7 +182,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
                                 informSelectedSectors();
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to load sectors")));
+                        new TimberAndToastOnErrorAction1("Failed to load sectors")));
     }
 
     @NonNull List<SelectableSectorDTO> createSelectables(@NonNull Collection<SectorDTO> sectors)

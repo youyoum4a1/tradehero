@@ -44,7 +44,7 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -442,7 +442,7 @@ public class MessagesCenterNewFragment extends BaseFragment
                                 MessagesCenterNewFragment.this.onMessageDeleted(messageHeaderDTO);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
         //MessagesCenterNewFragment.this.onMessageDeleted(messageHeaderDTO);
     }
 
@@ -540,7 +540,7 @@ public class MessagesCenterNewFragment extends BaseFragment
                                         MessagesCenterNewFragment.this.updateAllAsRead();
                                     }
                                 },
-                                new ToastOnErrorAction()
+                                new ToastOnErrorAction1()
                         ));
 
         //Mark this locally as read, makes the user feels it's marked instantly for better experience

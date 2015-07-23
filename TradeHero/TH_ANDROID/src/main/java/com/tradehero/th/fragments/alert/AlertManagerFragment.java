@@ -34,8 +34,8 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.widget.list.BaseListHeaderView;
 import java.util.List;
 import javax.inject.Inject;
@@ -160,7 +160,7 @@ public class AlertManagerFragment extends BaseFragment
                                 linkWith(statusPair.second);
                             }
                         },
-                        new TimberOnErrorAction("Failed to fetch system status")));
+                        new TimberOnErrorAction1("Failed to fetch system status")));
     }
 
     protected void linkWith(@NonNull SystemStatusDTO status)
@@ -186,7 +186,7 @@ public class AlertManagerFragment extends BaseFragment
                                 linkWith(pair.second);
                             }
                         },
-                        new ToastOnErrorAction()
+                        new ToastOnErrorAction1()
                 ));
     }
 
@@ -228,7 +228,7 @@ public class AlertManagerFragment extends BaseFragment
                                 linkWith(pair);
                             }
                         },
-                        new ToastOnErrorAction()
+                        new ToastOnErrorAction1()
                 ));
     }
 
@@ -262,7 +262,7 @@ public class AlertManagerFragment extends BaseFragment
                                 AlertManagerFragment.this.displayAlertCountIcon();
                             }
                         },
-                        new ToastOnErrorAction()
+                        new ToastOnErrorAction1()
                 ));
     }
 

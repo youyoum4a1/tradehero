@@ -20,7 +20,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import javax.inject.Inject;
 import rx.functions.Action1;
 
@@ -130,7 +130,7 @@ public class MeTimelineFragment extends TimelineFragment
                                     swipeRefreshContainer.setRefreshing(false);
                                 }
                             },
-                            new ToastOnErrorAction()
+                            new ToastOnErrorAction1()
                     );
         }
     }

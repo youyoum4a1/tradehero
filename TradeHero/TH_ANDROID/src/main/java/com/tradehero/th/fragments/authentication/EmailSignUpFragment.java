@@ -31,9 +31,9 @@ import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -167,12 +167,12 @@ public class EmailSignUpFragment extends Fragment
                                 signUpButton.setEnabled(areFieldsValid);
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to valid fields")));
+                        new TimberOnErrorAction1("Failed to listen to valid fields")));
         onStopSubscriptions.add(AppObservable.bindFragment(this, getSignUpObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
-                        new TimberOnErrorAction("Failed to listen to sign-up observable")));
+                        new TimberOnErrorAction1("Failed to listen to sign-up observable")));
         onStopSubscriptions.add(socialNetworkButtonList.getSocialNetworkEnumObservable()
                 .subscribe(
                         new Action1<SocialNetworkEnum>()
@@ -185,7 +185,7 @@ public class EmailSignUpFragment extends Fragment
                                 }
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to listent to social network button")));
+                        new TimberAndToastOnErrorAction1("Failed to listent to social network button")));
     }
 
     @Override public void onStop()
@@ -249,7 +249,7 @@ public class EmailSignUpFragment extends Fragment
                                 deepLink);
                     }
                 })
-                .doOnError(new ToastOnErrorAction())
+                .doOnError(new ToastOnErrorAction1())
                 .retry();
     }
 }

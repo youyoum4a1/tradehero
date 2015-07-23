@@ -37,7 +37,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.persistence.competition.HelpVideoListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.List;
 import javax.inject.Inject;
@@ -200,7 +200,7 @@ public class ProviderVideoListFragment extends DashboardFragment
                                 linkWith(pair.second);
                             }
                         },
-                        new ToastAndLogOnErrorAction(getString(R.string.error_fetch_help_video_list_info),
+                        new TimberAndToastOnErrorAction1(getString(R.string.error_fetch_help_video_list_info),
                                 "Error fetching the list of help videos")));
     }
 

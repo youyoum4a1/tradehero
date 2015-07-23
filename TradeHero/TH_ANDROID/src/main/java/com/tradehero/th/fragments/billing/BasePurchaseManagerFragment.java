@@ -12,7 +12,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
@@ -121,7 +121,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
                                 BasePurchaseManagerFragment.this.handleReceivedPortfolioCompactList(list);
                             }
                         },
-                        new ToastAndLogOnErrorAction(
+                        new TimberAndToastOnErrorAction1(
                                 getString(R.string.error_fetch_portfolio_list_info),
                                 "Failed fetching portfolios list")));
     }

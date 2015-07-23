@@ -36,8 +36,8 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.position.PositionListCacheRx;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.widget.KChartsView;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
@@ -141,7 +141,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
                                 linkWith(pair.second);
                             }
                         },
-                        new ToastAndLogOnErrorAction(
+                        new TimberAndToastOnErrorAction1(
                                 getString(R.string.error_fetch_position_list_info),
                                 "Failed to fetch positions for this security")));
     }
@@ -194,7 +194,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
                                 displayPositionStatus();
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     private void initTimeSpanButton()
@@ -239,7 +239,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
                                 displayPositionStatus();
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to listen to portfolio")));
+                        new TimberAndToastOnErrorAction1("Failed to listen to portfolio")));
     }
 
     //<editor-fold desc="Display Methods"> //hide switch portfolios for temp

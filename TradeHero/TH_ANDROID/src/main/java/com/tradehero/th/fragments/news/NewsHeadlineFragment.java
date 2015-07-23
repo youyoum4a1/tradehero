@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -34,8 +34,8 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.persistence.news.NewsItemCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import dagger.Lazy;
 import java.util.List;
@@ -157,7 +157,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
                                             listViewWrapper.setDisplayedChildByLayoutId(listView.getId());
                                         }
                                     },
-                                    new ToastAction<Throwable>(getString(R.string.error_fetch_security_info))));
+                                    new ToastOnErrorAction1(getString(R.string.error_fetch_security_info))));
         }
     }
 
@@ -182,7 +182,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
                                 Timber.e(new Exception(), "Unhandled " + userDiscussionAction);
                             }
                         },
-                        new TimberOnErrorAction("When registering actions")));
+                        new TimberOnErrorAction1("When registering actions")));
     }
 
     @SuppressWarnings({"UnusedDeclaration", "UnusedParameters"})

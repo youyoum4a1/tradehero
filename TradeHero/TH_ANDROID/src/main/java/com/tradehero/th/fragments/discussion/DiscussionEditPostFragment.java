@@ -38,7 +38,7 @@ import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
@@ -221,7 +221,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
                                     DiscussionEditPostFragment.this.onDiscussionReceived(discussion);
                                 }
                             },
-                            new ToastOnErrorAction());
+                            new ToastOnErrorAction1());
         }
     }
 

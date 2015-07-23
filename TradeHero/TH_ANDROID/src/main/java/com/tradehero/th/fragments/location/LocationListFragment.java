@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
@@ -26,8 +26,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ToastAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -126,7 +125,7 @@ public class LocationListFragment extends BaseFragment
                                 LocationListFragment.this.linkWith(profile);
                             }
                         },
-                        new ToastAction<Throwable>(getString(R.string.error_fetch_your_user_profile)));
+                        new ToastOnErrorAction1(getString(R.string.error_fetch_your_user_profile)));
     }
 
     protected void linkWith(UserProfileDTO userProfileDTO)
@@ -191,7 +190,7 @@ public class LocationListFragment extends BaseFragment
                                 LocationListFragment.this.backToSettings();
                             }
                         },
-                        new ToastOnErrorAction());
+                        new ToastOnErrorAction1());
     }
 
     private void backToSettings()

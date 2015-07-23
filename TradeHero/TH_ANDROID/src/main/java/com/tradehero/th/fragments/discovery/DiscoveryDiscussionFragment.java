@@ -33,9 +33,9 @@ import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
@@ -160,7 +160,7 @@ public class DiscoveryDiscussionFragment extends Fragment
                                         discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
                                     }
                                 },
-                                new ToastAndLogOnErrorAction("Failed to listen to user actions")));
+                                new TimberAndToastOnErrorAction1("Failed to listen to user actions")));
     }
 
     private void refresh()
@@ -257,7 +257,7 @@ public class DiscoveryDiscussionFragment extends Fragment
                                 discoveryDiscussionAdapter.notifyDataSetChanged();
                             }
                         },
-                        new TimberOnErrorAction("Gotcha timelineSubject in DiscoveryDiscussion gave error")));
+                        new TimberOnErrorAction1("Gotcha timelineSubject in DiscoveryDiscussion gave error")));
         timelineSubscriptions.add(timelineSubject.subscribe(new UpdateRangeObserver()));
 
         Observable<RangeDTO> timelineRefreshRangeObservable = createPaginationObservable();
@@ -284,7 +284,7 @@ public class DiscoveryDiscussionFragment extends Fragment
                         }))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(new ToastOnErrorAction())
+                .doOnError(new ToastOnErrorAction1())
                 .onErrorResumeNext(Observable.<List<TimelineItemDTO>>empty())
                 .doOnUnsubscribe(new Action0()
                 {

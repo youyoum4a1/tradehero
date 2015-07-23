@@ -5,17 +5,17 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.misc.exception.THException;
 import rx.functions.Action1;
 
-public class ToastOnErrorAction implements Action1<Throwable>
+public class ToastOnErrorAction1 implements Action1<Throwable>
 {
     @Nullable private final String message;
 
     //<editor-fold desc="Constructors">
-    public ToastOnErrorAction()
+    public ToastOnErrorAction1()
     {
         this.message = null;
     }
 
-    public ToastOnErrorAction(@Nullable String message)
+    public ToastOnErrorAction1(@Nullable String message)
     {
         this.message = message;
     }

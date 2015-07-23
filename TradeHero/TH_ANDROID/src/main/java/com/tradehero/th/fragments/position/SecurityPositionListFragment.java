@@ -12,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ViewAnimator;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
@@ -40,7 +40,7 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.position.PositionListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -233,7 +233,7 @@ public class SecurityPositionListFragment
                                 linkWith(pair.second);
                             }
                         },
-                        new ToastAction<Throwable>(getString(R.string.error_fetch_user_profile))));
+                        new ToastOnErrorAction1(getString(R.string.error_fetch_user_profile))));
     }
 
     public void linkWith(UserProfileDTO userProfileDTO)

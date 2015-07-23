@@ -66,9 +66,8 @@ import com.tradehero.th.persistence.translation.UserTranslationSettingPreference
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWith;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AlertDialogRxUtil;
@@ -413,7 +412,7 @@ public final class SettingsFragment extends BasePreferenceFragment
                                 updateStatus(profile);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
 
         return false;
     }
@@ -437,7 +436,7 @@ public final class SettingsFragment extends BasePreferenceFragment
                                 updateStatus(profile);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
 
         return false;
     }
@@ -817,7 +816,7 @@ public final class SettingsFragment extends BasePreferenceFragment
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(
                         new EmptyAction1<Integer>(),
-                        new TimberOnErrorAction("Failed to clear cache"));
+                        new TimberOnErrorAction1("Failed to clear cache"));
     }
 
     public void handleAboutClick()
@@ -875,7 +874,7 @@ public final class SettingsFragment extends BasePreferenceFragment
                                 SettingsFragment.this.onSignedOut(profile);
                             }
                         },
-                        new TimberOnErrorAction("Failed to sign out")));
+                        new TimberOnErrorAction1("Failed to sign out")));
     }
 
     protected void onSignedOut(@SuppressWarnings("UnusedParameters") UserProfileDTO userProfileDTO)
@@ -1161,6 +1160,6 @@ public final class SettingsFragment extends BasePreferenceFragment
                                 SettingsFragment.this.updateStatus(profile);
                             }
                         },
-                        new ToastAction<Throwable>(getString(R.string.error_fetch_your_user_profile)));
+                        new ToastOnErrorAction1(getString(R.string.error_fetch_your_user_profile)));
     }
 }

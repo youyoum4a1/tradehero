@@ -26,7 +26,7 @@ import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import java.text.SimpleDateFormat;
@@ -171,7 +171,7 @@ public class LeaderboardMarkUserListFragmentUtil
                                 fragment.updateListViewRow(pair.second, userBaseDTO.getBaseKey());
                             }
                         },
-                        new ToastOnErrorAction()
+                        new ToastOnErrorAction1()
                 ));
     }
 

@@ -22,7 +22,7 @@ import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneAdvertisem
 import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -109,7 +109,7 @@ public class AdView extends RelativeLayout
         userServiceWrapper.sendAnalyticsRx(createBatchForm(adDTO, event, providerId))
                 .subscribe(
                         Actions.empty(),
-                        new ToastOnErrorAction());
+                        new ToastOnErrorAction1());
     }
 
 

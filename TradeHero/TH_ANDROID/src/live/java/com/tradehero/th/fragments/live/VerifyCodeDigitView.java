@@ -15,8 +15,8 @@ import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.utils.DeviceUtil;
 import rx.Observable;
 import rx.android.widget.OnTextChangeEvent;
@@ -113,7 +113,7 @@ public class VerifyCodeDigitView extends ScrollView
                                 typedCodeSubject.onNext(code);
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to listen to typed code")));
+                        new TimberAndToastOnErrorAction1("Failed to listen to typed code")));
     }
 
     @Override protected void onDetachedFromWindow()
@@ -195,7 +195,7 @@ public class VerifyCodeDigitView extends ScrollView
                         userActionSubject.onNext(new UserActionVerify(code));
                     }
                 },
-                new TimberOnErrorAction("Failed to pass on typed code")));
+                new TimberOnErrorAction1("Failed to pass on typed code")));
     }
 
     @SuppressWarnings("unused")

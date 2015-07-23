@@ -31,9 +31,9 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import java.util.List;
 import javax.inject.Inject;
@@ -142,7 +142,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
                                 notifyHeroesLoaded(pair.first);
                             }
                         },
-                        new ToastAndLogOnErrorAction(
+                        new TimberAndToastOnErrorAction1(
                                 getString(R.string.error_fetch_hero),
                                 "Could not fetch heroes")
                         {
@@ -170,7 +170,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
                                 }
                             }
                         },
-                        new TimberOnErrorAction("Failed to handle UserAction")));
+                        new TimberOnErrorAction1("Failed to handle UserAction")));
     }
 
     @Override public void onDestroyView()
@@ -234,7 +234,7 @@ abstract public class HeroesTabContentFragment extends DashboardFragment
                                 heroListCache.get(followerId);
                             }
                         },
-                        new ToastOnErrorAction()
+                        new ToastOnErrorAction1()
                 ));
     }
 

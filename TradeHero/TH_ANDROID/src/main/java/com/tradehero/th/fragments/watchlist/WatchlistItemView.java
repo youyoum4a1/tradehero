@@ -36,7 +36,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import dagger.Lazy;
@@ -149,7 +149,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                                 analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to clicks")));
+                        new TimberOnErrorAction1("Failed to listen to clicks")));
     }
 
     @Override protected void onDetachedFromWindow()

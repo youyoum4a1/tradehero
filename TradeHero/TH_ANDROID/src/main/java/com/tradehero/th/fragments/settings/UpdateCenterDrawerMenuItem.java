@@ -15,7 +15,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -75,7 +75,7 @@ public class UpdateCenterDrawerMenuItem extends LinearLayout
                                 linkWith(userBaseKeyUserProfileDTOPair.second);
                             }
                         },
-                        new TimberOnErrorAction("Failed to get userProfile in LeftMenu")));
+                        new TimberOnErrorAction1("Failed to get userProfile in LeftMenu")));
     }
 
     @Override protected void onDetachedFromWindow()

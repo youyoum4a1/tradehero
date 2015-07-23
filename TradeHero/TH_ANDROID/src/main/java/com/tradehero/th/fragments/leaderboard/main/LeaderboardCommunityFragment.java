@@ -42,7 +42,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.prefs.THPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.OffOnViewSwitcher;
@@ -303,7 +303,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
                                 communityScreen.setDisplayedChildByLayoutId(R.id.lb_pager_wrapper);
                             }
                         },
-                        new ToastAction<Throwable>(getString(R.string.error_fetch_leaderboard_def_list_key)));
+                        new ToastOnErrorAction1(getString(R.string.error_fetch_leaderboard_def_list_key)));
     }
 
     @Override public int getTutorialLayout()

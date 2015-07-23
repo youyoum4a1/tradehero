@@ -40,8 +40,8 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -208,7 +208,7 @@ public class SendMessageFragment extends BaseFragment
                                 mentionTaggedStockHandler.setHasSelectedItemFragment(hasSelectedItem);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     protected boolean canSendMessage()
@@ -241,7 +241,7 @@ public class SendMessageFragment extends BaseFragment
                                 SendMessageFragment.this.dismissDialog(dialogPair.first);
                             }
                         },
-                        new TimberOnErrorAction("Failed with dialog"));
+                        new TimberOnErrorAction1("Failed with dialog"));
     }
 
     private void linkWith(@NonNull MessageType messageType)

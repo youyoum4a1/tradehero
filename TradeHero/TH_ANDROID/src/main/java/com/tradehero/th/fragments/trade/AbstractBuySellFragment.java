@@ -63,9 +63,9 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DeviceUtil;
@@ -202,7 +202,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 linkWith(quote);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
 
         onStopSubscriptions.add(securityObservable
                 .observeOn(AndroidSchedulers.mainThread())
@@ -235,7 +235,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 // Nothing to do
                             }
                         },
-                        new TimberOnErrorAction("Failed to get Security and Quote")));
+                        new TimberOnErrorAction1("Failed to get Security and Quote")));
 
         onStopSubscriptions.add(getCloseablePositionObservable()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -247,7 +247,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 linkWith(closeablePosition);
                             }
                         },
-                        new TimberOnErrorAction(getString(R.string.error_fetch_position_list_info))));
+                        new TimberOnErrorAction1(getString(R.string.error_fetch_position_list_info))));
 
         onStopSubscriptions.add(getPortfolioCompactObservable()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -259,7 +259,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 linkWith(portfolioCompactDTO);
                             }
                         },
-                        new TimberOnErrorAction("Failed to get PortfolioCompact")));
+                        new TimberOnErrorAction1("Failed to get PortfolioCompact")));
 
         onStopSubscriptions.add(
                 Observable.zip(
@@ -295,7 +295,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                         // Nothing to do
                                     }
                                 },
-                                new TimberOnErrorAction("Failed to update portfolio selector")));
+                                new TimberOnErrorAction1("Failed to update portfolio selector")));
 
         onStopSubscriptions.add(getBuySellReady()
                 .subscribe(
@@ -306,7 +306,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 // Nothing to do
                             }
                         },
-                        new TimberOnErrorAction("Failed to get BuySellReady")));
+                        new TimberOnErrorAction1("Failed to get BuySellReady")));
 
         onStopSubscriptions.add(getSupportSell()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -321,7 +321,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 }
                             }
                         },
-                        new TimberOnErrorAction("Failed to get SupportSell")));
+                        new TimberOnErrorAction1("Failed to get SupportSell")));
 
         final int closeUnits = requisite.getCloseUnits();
         if (closeUnits != 0)
@@ -350,7 +350,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                     // Nothing to do
                                 }
                             },
-                            new TimberOnErrorAction("Failed to prepare for closing")));
+                            new TimberOnErrorAction1("Failed to prepare for closing")));
         }
     }
 
@@ -880,7 +880,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             socialSharerLazy.get().share(weChatDTO)
                     .subscribe(
                             new EmptyAction1<SocialShareResult>(),
-                            new ToastAndLogOnErrorAction("Failed to share to WeChat")); // TODO proper callback?
+                            new TimberAndToastOnErrorAction1("Failed to share to WeChat")); // TODO proper callback?
         }
     }
 
@@ -1009,7 +1009,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                     subject.onNext(ownedPortfolioId);
                                 }
                             },
-                            new TimberOnErrorAction("Failed to get portfolio list"),
+                            new TimberOnErrorAction1("Failed to get portfolio list"),
                             new Action0()
                             {
                                 @Override public void call()

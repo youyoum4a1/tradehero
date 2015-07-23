@@ -44,7 +44,7 @@ import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.rx.PaginationObservable;
 import com.tradehero.th.rx.RxLoaderManager;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -255,7 +255,7 @@ public class NewsHeadlineFragment extends Fragment
                                 newsAdapter.notifyDataSetChanged();
                             }
                         },
-                        new TimberOnErrorAction("Gotcha newsSubject in NewsHeadline passed error")));
+                        new TimberOnErrorAction1("Gotcha newsSubject in NewsHeadline passed error")));
         subscriptions.add(newsSubject.subscribe(new UpdateUIObserver()));
 
         activateNewsItemListView();
@@ -401,7 +401,7 @@ public class NewsHeadlineFragment extends Fragment
                                 Timber.e(new Exception(), "Unhandled " + userDiscussionAction);
                             }
                         },
-                        new TimberOnErrorAction("Failed to register user actions")));
+                        new TimberOnErrorAction1("Failed to register user actions")));
     }
 
     private class UpdateUIObserver implements rx.Observer<List<NewsItemCompactDTO>>

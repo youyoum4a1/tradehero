@@ -60,7 +60,7 @@ import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -700,7 +700,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                                     linkWith(securityCompactDTO);
                                 }
                             },
-                            new ToastAction<Throwable>(getString(R.string.error_fetch_security_info))));
+                            new ToastOnErrorAction1(getString(R.string.error_fetch_security_info))));
         }
     }
 

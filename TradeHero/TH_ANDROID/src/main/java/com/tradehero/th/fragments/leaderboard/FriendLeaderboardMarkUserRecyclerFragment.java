@@ -31,8 +31,8 @@ import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
 import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.AlertDialogRx;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -84,7 +84,7 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
         onStopSubscriptions.add(((FriendsLeaderboardRecyclerAdapter) itemViewAdapter).getUserActionObservable()
                 .subscribe(
                         fragmentUtil,
-                        new TimberOnErrorAction("Error on follow requested")));
+                        new TimberOnErrorAction1("Error on follow requested")));
 
         onStopSubscriptions.add(((FriendsLeaderboardRecyclerAdapter) itemViewAdapter).getInviteRequestedObservable()
                 .flatMap(new Func1<LeaderboardFriendUserAction, Observable<Boolean>>()
@@ -106,7 +106,7 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
                                 }
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to invite friend")));
+                        new TimberAndToastOnErrorAction1("Failed to invite friend")));
 
         onStopSubscriptions.add(((FriendsLeaderboardRecyclerAdapter) itemViewAdapter).getSocialNetworkEnumObservable()
                 .flatMap(new Func1<SocialNetworkEnum, Observable<UserProfileDTO>>()
@@ -129,7 +129,7 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
                         }
                     }
                 })
-                .doOnError(new ToastAndLogOnErrorAction("Failed to listen to social network"))
+                .doOnError(new TimberAndToastOnErrorAction1("Failed to listen to social network"))
                 .retry()
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<UserProfileDTO, Observable<UserProfileDTO>>()
@@ -159,7 +159,7 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
                             {
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to listen to social network")));
+                        new TimberAndToastOnErrorAction1("Failed to listen to social network")));
         if ((itemViewAdapter != null) && (itemViewAdapter.getItemCount() == 0))
         {
             requestDtos();

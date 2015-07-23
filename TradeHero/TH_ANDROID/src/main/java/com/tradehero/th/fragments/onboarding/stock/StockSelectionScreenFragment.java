@@ -27,7 +27,7 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardHeaderLinearView;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import in.srain.cube.views.GridViewWithHeaderAndFooter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -200,7 +200,7 @@ public class StockSelectionScreenFragment extends BaseFragment
                                 informSelectedStocks();
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to load securities")));
+                        new TimberAndToastOnErrorAction1("Failed to load securities")));
     }
 
     @SuppressWarnings("UnusedDeclaration")

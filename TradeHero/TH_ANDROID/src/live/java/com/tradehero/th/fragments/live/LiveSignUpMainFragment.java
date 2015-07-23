@@ -22,7 +22,7 @@ import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -98,13 +98,14 @@ public class LiveSignUpMainFragment extends BaseFragment
                                 return liveBrokerSituationDTO.kycForm;
                             }
                         })
-                        .subscribe(new Action1<KYCForm>()
-                                   {
-                                       @Override public void call(KYCForm kycForm)
-                                       {
-                                           updatePageIndicator(kycForm.getStepStatuses());
-                                       }
-                                   },
+                        .subscribe(
+                                new Action1<KYCForm>()
+                                {
+                                    @Override public void call(KYCForm kycForm)
+                                    {
+                                        updatePageIndicator(kycForm.getStepStatuses());
+                                    }
+                                },
                                 new Action1<Throwable>()
                                 {
                                     @Override public void call(Throwable throwable)
@@ -133,7 +134,7 @@ public class LiveSignUpMainFragment extends BaseFragment
                                 viewPager.setCurrentItem(viewPager.getCurrentItem() + (next ? 1 : -1));
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to prev / next buttons")));
+                        new TimberOnErrorAction1("Failed to listen to prev / next buttons")));
 
         pagerAdapterObservable.connect();
     }

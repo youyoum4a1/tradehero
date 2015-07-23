@@ -28,7 +28,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import javax.inject.Inject;
@@ -88,7 +88,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
                                 pref.setSummary(getString(R.string.admin_setting_user_info, pair.second.displayName, pair.first.key));
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     private void initPreferenceClickHandlers()

@@ -23,7 +23,6 @@ import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -49,9 +48,8 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.rx.ToastAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ProfileEvent;
@@ -236,7 +234,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                                 linkWith(profileDTO);
                             }
                         },
-                        new ToastAndLogOnErrorAction(getString(R.string.error_fetch_user_profile), "Failed to fetch user profile")));
+                        new TimberAndToastOnErrorAction1(getString(R.string.error_fetch_user_profile), "Failed to fetch user profile")));
     }
 
     private void linkWith(UserProfileDTO userProfileDTO)
@@ -259,7 +257,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                                 linkWith(list);
                             }
                         },
-                        new ToastAction<Throwable>(getString(R.string.error_fetch_provider_competition_list))));
+                        new ToastOnErrorAction1(getString(R.string.error_fetch_provider_competition_list))));
     }
 
     protected void linkWith(@NonNull ProviderDTOList providers)
@@ -451,7 +449,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                                 }
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     private void handleResetPortfolioItemOnClick()
@@ -463,7 +461,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         Actions.empty(),
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     protected void handleExtraCashItemOnClick()
@@ -475,7 +473,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         Actions.empty(),
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     private void handleEarnCreditItemOnClick()

@@ -30,7 +30,7 @@ import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ToastAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -153,7 +153,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
                                 TrendingFXFragment.this.handlePricesReceived(quoteDTOs);
                             }
                         },
-                        new ToastAction<Throwable>(getString(R.string.error_fetch_fx_list_price)));
+                        new ToastOnErrorAction1(getString(R.string.error_fetch_fx_list_price)));
     }
 
     private void handlePricesReceived(List<QuoteDTO> list)

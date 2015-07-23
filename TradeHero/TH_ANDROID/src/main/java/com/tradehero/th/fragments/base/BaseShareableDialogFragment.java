@@ -21,7 +21,7 @@ import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
@@ -166,7 +166,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                                         ((ToggleButton) event.view()).isChecked());
                             }
                         },
-                        new ToastOnErrorAction());
+                        new ToastOnErrorAction1());
     }
     //</editor-fold>
 

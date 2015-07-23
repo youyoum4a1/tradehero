@@ -30,7 +30,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.widget.validation.DisplayNameValidatedText;
@@ -394,7 +394,7 @@ public class ProfileInfoView extends LinearLayout
                                 }
                             }
                         },
-                        new TimberOnErrorAction("Failed to ask for and get bitmap")));
+                        new TimberOnErrorAction1("Failed to ask for and get bitmap")));
     }
 
     @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, Intent data)

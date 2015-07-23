@@ -3,11 +3,11 @@ package com.tradehero.th.rx;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class TimberOnErrorAction implements Action1<Throwable>
+public class TimberOnErrorAction1 implements Action1<Throwable>
 {
     private final String message;
 
-    public TimberOnErrorAction(String message)
+    public TimberOnErrorAction1(String message)
     {
         this.message = message;
     }

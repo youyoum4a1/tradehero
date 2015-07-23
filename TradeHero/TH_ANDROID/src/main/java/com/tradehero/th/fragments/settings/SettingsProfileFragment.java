@@ -13,8 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.tradehero.common.utils.OnlineStateReceiver;
@@ -29,9 +29,7 @@ import com.tradehero.th.auth.AuthDataUtil;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.MakePairFunc2;
-import com.tradehero.th.rx.ToastAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
 import dagger.Lazy;
@@ -41,6 +39,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import timber.log.Timber;
 
 public class SettingsProfileFragment extends BaseFragment
@@ -120,7 +119,7 @@ public class SettingsProfileFragment extends BaseFragment
                                 profileView.populate(pair.second);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -172,7 +171,14 @@ public class SettingsProfileFragment extends BaseFragment
                                                         return Observable.zip(
                                                                 Observable.just(authData),
                                                                 userProfileDTOObservable,
-                                                                new MakePairFunc2<AuthData, UserProfileDTO>());
+                                                                new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
+                                                                {
+                                                                    @Override public Pair<AuthData, UserProfileDTO> call(AuthData authData,
+                                                                            UserProfileDTO userProfileDTO)
+                                                                    {
+                                                                        return Pair.create(authData, userProfileDTO);
+                                                                    }
+                                                                });
                                                     }
                                                 })
                                                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
@@ -190,7 +196,7 @@ public class SettingsProfileFragment extends BaseFragment
                                     getActivity().finish();
                                 }
                             },
-                            new ToastAction<Throwable>(getString(R.string.error_update_your_user_profile))));
+                            new ToastOnErrorAction1(getString(R.string.error_update_your_user_profile))));
         }
     }
 

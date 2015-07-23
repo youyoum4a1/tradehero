@@ -38,8 +38,8 @@ import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.rx.TimberAction1;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.viewpagerindicator.PageIndicator;
 import javax.inject.Inject;
@@ -316,7 +316,7 @@ public class OnBoardFragment extends BaseFragment
                 })
                 .subscribe(
                         new TimberAction1<Boolean>("Moved to sectors page"),
-                        new TimberOnErrorAction("Failed to collect exchange compacts"));
+                        new TimberOnErrorAction1("Failed to collect exchange compacts"));
         return fragment;
     }
 
@@ -360,7 +360,7 @@ public class OnBoardFragment extends BaseFragment
                 })
                 .subscribe(
                         new TimberAction1<Boolean>("Sector selection button"),
-                        new TimberOnErrorAction("Failed to collect sectors"));
+                        new TimberOnErrorAction1("Failed to collect sectors"));
         return fragment;
     }
 
@@ -401,7 +401,7 @@ public class OnBoardFragment extends BaseFragment
                 })
                 .subscribe(
                         new TimberAction1<Boolean>("Heroes selection button"),
-                        new TimberOnErrorAction("Failed to collect heroes"));
+                        new TimberOnErrorAction1("Failed to collect heroes"));
         return fragment;
     }
 
@@ -443,7 +443,7 @@ public class OnBoardFragment extends BaseFragment
                 })
                 .subscribe(
                         new TimberAction1<Boolean>("Stocks selection button"),
-                        new ToastAndLogOnErrorAction("Failed to get selected stocks"));
+                        new TimberAndToastOnErrorAction1("Failed to get selected stocks"));
         return fragment;
     }
 
@@ -482,11 +482,11 @@ public class OnBoardFragment extends BaseFragment
         userServiceWrapper.followBatchFreeRx(new BatchFollowFormDTO(selectedHeroes, null))
                 .subscribe(
                         new TimberAction1<UserProfileDTO>("Submitted selectedHeroes"),
-                        new ToastAndLogOnErrorAction("Failed to submit selectedHeroes " + selectedHeroes));
+                        new TimberAndToastOnErrorAction1("Failed to submit selectedHeroes " + selectedHeroes));
 
         watchlistServiceWrapper.batchCreateRx(new SecurityIntegerIdListForm(selectedStocks, null))
                 .subscribe(
                         new TimberAction1<WatchlistPositionDTOList>("Submitted selectedStocks"),
-                        new ToastAndLogOnErrorAction("Failed to submit selectedStocks" + selectedStocks));
+                        new TimberAndToastOnErrorAction1("Failed to submit selectedStocks" + selectedStocks));
     }
 }

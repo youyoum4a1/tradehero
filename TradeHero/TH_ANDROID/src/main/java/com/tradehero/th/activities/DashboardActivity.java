@@ -63,8 +63,8 @@ import com.tradehero.th.persistence.prefs.IsOnBoardShown;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.ui.LeftDrawerMenuItemClickListener;
@@ -312,7 +312,7 @@ public class DashboardActivity extends BaseActivity
                                 }
                             }
                         },
-                        new TimberOnErrorAction("Failed to load drawer")));
+                        new TimberOnErrorAction1("Failed to load drawer")));
 
         drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.tradehero_blue_status_bar));
 
@@ -356,7 +356,7 @@ public class DashboardActivity extends BaseActivity
                 billingInteractorRx.get().restorePurchasesAndClear(false))
                 .subscribe(
                         new EmptyAction1<OnDialogClickEvent>(),
-                        new TimberOnErrorAction("Failed to restore")));
+                        new TimberOnErrorAction1("Failed to restore")));
     }
 
     @Override public void onBackPressed()
@@ -521,7 +521,7 @@ public class DashboardActivity extends BaseActivity
                                     DashboardActivity.this.onNotificationReceived(pair);
                                 }
                             },
-                            new ToastOnErrorAction());
+                            new ToastOnErrorAction1());
         }
     }
 
@@ -607,7 +607,7 @@ public class DashboardActivity extends BaseActivity
                                 broadcastUtilsLazy.get().enqueue(new CompetitionEnrollmentBroadcastSignal());
                             }
                         },
-                        new ToastOnErrorAction());
+                        new ToastOnErrorAction1());
     }
 
     @NonNull @Override protected List<Object> getModules()

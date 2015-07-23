@@ -31,7 +31,7 @@ import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AdapterViewUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -148,7 +148,7 @@ public class AllRelationsFragment extends BaseFragment
                                 AllRelationsFragment.this.onNextRecipients(pair);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     protected void onNextRecipients(Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
@@ -197,7 +197,7 @@ public class AllRelationsFragment extends BaseFragment
                                 AllRelationsFragment.this.forceUpdateLook(userBaseKey);
                             }
                         },
-                        new ToastOnErrorAction()
+                        new ToastOnErrorAction1()
                 ));
     }
 

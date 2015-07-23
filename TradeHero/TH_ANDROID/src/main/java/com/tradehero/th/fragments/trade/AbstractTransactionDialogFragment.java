@@ -61,8 +61,8 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -340,7 +340,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                                         Timber.d("Element");
                                     }
                                 },
-                                new ToastAndLogOnErrorAction("Failed to fetch all")));
+                                new TimberAndToastOnErrorAction1("Failed to fetch all")));
     }
 
     @NonNull protected Observable<SecurityCompactDTO> getSecurityObservable()
@@ -1031,7 +1031,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                                             price);
                                 }
                             },
-                            new TimberOnErrorAction("")));
+                            new TimberOnErrorAction1("")));
             buttonSetSet = true;
         }
     }

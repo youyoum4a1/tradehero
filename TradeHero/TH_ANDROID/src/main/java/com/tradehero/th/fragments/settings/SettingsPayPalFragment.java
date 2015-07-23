@@ -25,7 +25,7 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -148,7 +148,7 @@ public class SettingsPayPalFragment extends BaseFragment
                                 SettingsPayPalFragment.this.onPayPalUpdated(emailDto);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     protected void onPayPalUpdated(@SuppressWarnings("UnusedParameters") @NonNull UpdatePayPalEmailDTO args)

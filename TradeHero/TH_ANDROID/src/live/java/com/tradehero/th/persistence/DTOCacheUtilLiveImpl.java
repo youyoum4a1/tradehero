@@ -34,7 +34,7 @@ import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -130,6 +130,6 @@ public class DTOCacheUtilLiveImpl extends DTOCacheUtilImpl
                                 // Nothing to do
                             }
                         },
-                        new TimberOnErrorAction("Failed to prefetch live broker situation"));
+                        new TimberOnErrorAction1("Failed to prefetch live broker situation"));
     }
 }

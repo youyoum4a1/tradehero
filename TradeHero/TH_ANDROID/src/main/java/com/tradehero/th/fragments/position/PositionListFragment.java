@@ -92,9 +92,9 @@ import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.AlertDialogRx;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -395,7 +395,7 @@ public class PositionListFragment
                                 // Nothing to do
                             }
                         },
-                        new TimberOnErrorAction("Failed to collect all")));
+                        new TimberOnErrorAction1("Failed to collect all")));
 
         onStopSubscriptions.add(
                 Observable.combineLatest(
@@ -427,7 +427,7 @@ public class PositionListFragment
                                         // Nothing to do
                                     }
                                 },
-                                new ToastAndLogOnErrorAction("Failed to listen to user action")));
+                                new TimberAndToastOnErrorAction1("Failed to listen to user action")));
     }
 
     @Override public void onPause()
@@ -748,7 +748,7 @@ public class PositionListFragment
                                     Timber.d("Received");
                                 }
                             },
-                            new ToastAndLogOnErrorAction("Failed")));
+                            new TimberAndToastOnErrorAction1("Failed")));
 
             return true;
         }
@@ -856,7 +856,7 @@ public class PositionListFragment
                         return shownProfile;
                     }
                 })
-                .doOnError(new ToastAction<Throwable>(getString(R.string.error_fetch_user_profile)));
+                .doOnError(new ToastOnErrorAction1(getString(R.string.error_fetch_user_profile)));
     }
 
     @NonNull protected Observable<PortfolioDTO> getPortfolioObservable()

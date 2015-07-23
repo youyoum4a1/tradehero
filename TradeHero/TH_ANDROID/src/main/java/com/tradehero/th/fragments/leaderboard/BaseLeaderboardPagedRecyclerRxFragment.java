@@ -14,7 +14,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.BasePagedRecyclerRxFragment;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
@@ -91,7 +91,7 @@ abstract public class BaseLeaderboardPagedRecyclerRxFragment<
                                 BaseLeaderboardPagedRecyclerRxFragment.this.setCurrentUserProfileDTO(userProfileDTO);
                             }
                         },
-                        new ToastAndLogOnErrorAction(
+                        new TimberAndToastOnErrorAction1(
                                 getString(R.string.error_fetch_your_user_profile),
                                 "Failed to download current UserProfile")));
     }

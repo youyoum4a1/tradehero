@@ -14,7 +14,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
@@ -88,13 +89,8 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 })
                 .subscribe(
-                        new Action1<Object>()
-                        {
-                            @Override public void call(Object o)
-                            {
-                            }
-                        },
-                        new TimberOnErrorAction("Failed to populate AyondoStep2 spinners")));
+                        new EmptyAction1<>(),
+                        new TimberOnErrorAction1("Failed to populate AyondoStep2 spinners")));
 
         onDestroyViewSubscriptions.add(Observable.merge(
                 Observable.combineLatest(
@@ -204,7 +200,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 onNext(situationDTO);
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to compound buttons")));
+                        new TimberOnErrorAction1("Failed to listen to compound buttons")));
     }
 
     protected void setChecked(@NonNull CompoundButton button, @Nullable Boolean checked)

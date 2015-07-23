@@ -69,8 +69,8 @@ import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
@@ -427,7 +427,7 @@ public class MainCompetitionFragment extends DashboardFragment
                                 displayTradeNowButton();
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to get requisite")
+                        new TimberAndToastOnErrorAction1("Failed to get requisite")
                 ));
     }
 
@@ -545,7 +545,7 @@ public class MainCompetitionFragment extends DashboardFragment
                                     thRouter.open(url + (url.indexOf('?') < 0 ? "?" : "&") + "applicablePortfolioId=" + applicablePortfolioId);
                                 }
                             },
-                            new TimberOnErrorAction("Failed to listen to Wizard Url")));
+                            new TimberOnErrorAction1("Failed to listen to Wizard Url")));
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
         {

@@ -34,7 +34,7 @@ import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderCont
 import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiRecyclerScrollListener;
@@ -125,7 +125,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         onStopSubscriptions.add(((LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO>) itemViewAdapter).getUserActionObservable()
                 .subscribe(
                         fragmentUtil,
-                        new TimberOnErrorAction("Error when receiving user follow requested")));
+                        new TimberOnErrorAction1("Error when receiving user follow requested")));
         if ((itemViewAdapter != null) && (itemViewAdapter.getItemCount() == 0))
         {
             requestDtos();

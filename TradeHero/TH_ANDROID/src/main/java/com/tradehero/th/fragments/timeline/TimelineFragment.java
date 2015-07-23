@@ -51,9 +51,9 @@ import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.timeline.TimelineCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
@@ -212,7 +212,7 @@ abstract public class TimelineFragment extends DashboardFragment
                                         display(tabType);
                                     }
                                 },
-                                new TimberOnErrorAction("Failed to display tabType")));
+                                new TimberOnErrorAction1("Failed to display tabType")));
     }
 
     @Override public void onResume()
@@ -270,7 +270,7 @@ abstract public class TimelineFragment extends DashboardFragment
                                 swipeRefreshContainer.setRefreshing(false);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     protected void loadOlderTimeline()
@@ -292,7 +292,7 @@ abstract public class TimelineFragment extends DashboardFragment
                                 subTimelineAdapter.notifyDataSetChanged();
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     @NonNull protected Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> getTimelineObservable(
@@ -378,7 +378,7 @@ abstract public class TimelineFragment extends DashboardFragment
                                 handleButtonClicked(buttonType);
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to register to button clicks")));
+                        new TimberAndToastOnErrorAction1("Failed to register to button clicks")));
     }
 
     //<editor-fold desc="Display methods">
@@ -464,7 +464,7 @@ abstract public class TimelineFragment extends DashboardFragment
                                 userProfileView.setLevelDef(pair.second);
                             }
                         },
-                        new TimberOnErrorAction("Failed to fetch level definitions")));
+                        new TimberOnErrorAction1("Failed to fetch level definitions")));
     }
 
     protected void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
@@ -584,7 +584,7 @@ abstract public class TimelineFragment extends DashboardFragment
                                 Timber.e(new Exception("Not handled " + userDiscussionAction), "");
                             }
                         },
-                        new TimberOnErrorAction("When registering user actions")));
+                        new TimberOnErrorAction1("When registering user actions")));
     }
 
     //<editor-fold desc="UserProfileCompactViewHolder">

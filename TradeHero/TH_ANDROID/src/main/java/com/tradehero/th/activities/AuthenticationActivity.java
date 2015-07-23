@@ -25,8 +25,8 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.authentication.GuideAuthenticationFragment;
 import com.tradehero.th.fragments.authentication.TwitterEmailFragment;
 import com.tradehero.th.network.service.SessionServiceWrapper;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
@@ -166,7 +166,7 @@ public class AuthenticationActivity extends BaseActivity
                         return safeSignUpAndLogin(loginForm, progressDialog);
                     }
                 })
-                .doOnError(new ToastAndLogOnErrorAction("Error on logging in"))
+                .doOnError(new TimberAndToastOnErrorAction1("Error on logging in"))
                 .doOnNext(new Action1<Pair<AuthData, UserProfileDTO>>()
                 {
                     @Override public void call(Pair<AuthData, UserProfileDTO> pair)
@@ -270,7 +270,7 @@ public class AuthenticationActivity extends BaseActivity
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(new ToastOnErrorAction())
+                .doOnError(new ToastOnErrorAction1())
                 .retry()
                 .doOnNext(new Action1<UserLoginDTO>()
                 {

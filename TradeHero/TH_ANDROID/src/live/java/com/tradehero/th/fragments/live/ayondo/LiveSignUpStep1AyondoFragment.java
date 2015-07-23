@@ -43,8 +43,9 @@ import com.tradehero.th.models.sms.empty.EmptySMSSentConfirmationDTO;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
@@ -185,7 +186,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 onNext(situation);
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to first or last name or email")));
+                        new TimberOnErrorAction1("Failed to listen to first or last name or email")));
 
         emailValidator = email.getValidator();
         email.setOnFocusChangeListener(emailValidator);
@@ -207,7 +208,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 previousMessage = message;
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to email validation")));
+                        new TimberOnErrorAction1("Failed to listen to email validation")));
 
         // Maybe move this until we get the KYCForm, and use the KYCForm to fetch the list of country of residence.
         onDestroyViewSubscriptions.add(Observable.combineLatest(
@@ -288,13 +289,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 })
                 .subscribe(
-                        new Action1<LiveBrokerSituationDTO>()
-                        {
-                            @Override public void call(LiveBrokerSituationDTO situation)
-                            {
-                            }
-                        },
-                        new TimberOnErrorAction("Failed to load phone drop down lists")));
+                        new EmptyAction1<LiveBrokerSituationDTO>(),
+                        new TimberOnErrorAction1("Failed to load phone drop down lists")));
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 getBrokerSituationObservable()
@@ -379,13 +375,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 })
                 .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean aBoolean)
-                            {
-                            }
-                        },
-                        new ToastAndLogOnErrorAction("Failed to listen to phone number updates")));
+                        new EmptyAction1<Boolean>(),
+                        new TimberAndToastOnErrorAction1("Failed to listen to phone number updates")));
 
         onDestroyViewSubscriptions.add(Observable.merge(
                 Observable.combineLatest(
@@ -436,7 +427,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 onNext(situationDTO);
                             }
                         },
-                        new TimberOnErrorAction("Failed to listen to nationality or residency")));
+                        new TimberOnErrorAction1("Failed to listen to nationality or residency")));
 
         onDestroyViewSubscriptions.add(ViewObservable.clicks(dob)
                 .flatMap(new Func1<OnClickEvent, Observable<KYCAyondoFormOptionsDTO>>()
@@ -474,7 +465,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         dpf.setTargetFragment(LiveSignUpStep1AyondoFragment.this, REQUEST_PICK_DATE);
                         dpf.show(getChildFragmentManager(), dpf.getClass().getName());
                     }
-                }, new TimberOnErrorAction("Failed to listen to DOB clicks")));
+                }, new TimberOnErrorAction1("Failed to listen to DOB clicks")));
 
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
@@ -490,13 +481,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 })
                 .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean aBoolean)
-                            {
-                            }
-                        },
-                        new TimberOnErrorAction("Failed to listen to DOB updates")));
+                        new EmptyAction1<Boolean>(),
+                        new TimberOnErrorAction1("Failed to listen to DOB updates")));
 
         if (savedInstanceState != null)
         {
@@ -758,7 +744,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 confirmationSubject.onNext(smsSentConfirmationDTO);
                             }
                         },
-                        new TimberOnErrorAction("Failed to get confirmation from sms"));
+                        new TimberOnErrorAction1("Failed to get confirmation from sms"));
 
         offerToEnterCode(
                 phoneCountryCode,
@@ -793,14 +779,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     {
                                         onStopSubscriptions.add(smsSentConfirmationDTOObservable
                                                 .subscribe(
-                                                        new Action1<SMSSentConfirmationDTO>()
-                                                        {
-                                                            @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
-                                                            {
-                                                                // Nothing to do
-                                                            }
-                                                        },
-                                                        new TimberOnErrorAction("Failed to collect SMS confirmation")));
+                                                        new EmptyAction1<SMSSentConfirmationDTO>(),
+                                                        new TimberOnErrorAction1("Failed to collect SMS confirmation")));
                                         return userActionObservable;
                                     }
                                 }),
@@ -825,7 +805,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                             }
                                                         }
                                                     },
-                                                    new TimberOnErrorAction("Failed to get confirmation from sms")));
+                                                    new TimberOnErrorAction1("Failed to get confirmation from sms")));
                                 }
                                 else if (userAction instanceof VerifyCodeDigitView.UserActionVerify)
                                 {
@@ -848,13 +828,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                 .setPositiveButton(R.string.ok)
                                                 .build()
                                                 .subscribe(
-                                                        new Action1<OnDialogClickEvent>()
-                                                        {
-                                                            @Override public void call(OnDialogClickEvent clickEvent)
-                                                            {
-                                                            }
-                                                        },
-                                                        new TimberOnErrorAction("Failed to prompt user to start sms verification again")));
+                                                        new EmptyAction1<OnDialogClickEvent>(),
+                                                        new TimberOnErrorAction1("Failed to prompt user to start sms verification again")));
                                     }
                                 }
                                 else if (userAction instanceof VerifyCodeDigitView.UserActionDismiss)
@@ -867,13 +842,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         })
                         .subscribe(
-                                new Action1<VerifyCodeDigitView.UserAction>()
-                                {
-                                    @Override public void call(VerifyCodeDigitView.UserAction userAction)
-                                    {
-                                    }
-                                },
-                                new TimberOnErrorAction("Failed to send SMS")
+                                new EmptyAction1<VerifyCodeDigitView.UserAction>(),
+                                new TimberOnErrorAction1("Failed to send SMS")
                                 {
                                     @Override public void call(Throwable throwable)
                                     {
@@ -976,7 +946,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                    Timber.d("ClickEvent " + clickEvent);
                                }
                            },
-                        new ToastAndLogOnErrorAction("Failed to listen to VerifyView")));
+                        new TimberAndToastOnErrorAction1("Failed to listen to VerifyView")));
         return verifyView.getUserActionObservable();
     }
 

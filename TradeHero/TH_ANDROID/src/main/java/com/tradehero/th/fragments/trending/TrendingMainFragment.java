@@ -54,8 +54,8 @@ import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -418,7 +418,7 @@ public class TrendingMainFragment extends DashboardFragment
                                                                     handleUserEnrolledFX(action);
                                                                 }
                                                             },
-                                                            new TimberOnErrorAction("")
+                                                            new TimberOnErrorAction1("")
                                                     );
                                         }
                                         else
@@ -532,7 +532,7 @@ public class TrendingMainFragment extends DashboardFragment
                                 handleExchangeRouting(pair.second);
                             }
                         },
-                        new ToastAndLogOnErrorAction(
+                        new TimberAndToastOnErrorAction1(
                                 getString(R.string.error_fetch_exchange_list_info),
                                 "Error fetching the list of exchanges")));
     }

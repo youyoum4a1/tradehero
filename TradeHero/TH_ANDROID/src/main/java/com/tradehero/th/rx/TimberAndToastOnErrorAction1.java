@@ -3,16 +3,16 @@ package com.tradehero.th.rx;
 import android.support.annotation.NonNull;
 import timber.log.Timber;
 
-public class ToastAndLogOnErrorAction extends ToastOnErrorAction
+public class TimberAndToastOnErrorAction1 extends ToastOnErrorAction1
 {
     @NonNull private final String logMessage;
 
-    public ToastAndLogOnErrorAction(@NonNull String logMessage)
+    public TimberAndToastOnErrorAction1(@NonNull String logMessage)
     {
         this.logMessage = logMessage;
     }
 
-    public ToastAndLogOnErrorAction(@NonNull String toastMessage, @NonNull String logMessage)
+    public TimberAndToastOnErrorAction1(@NonNull String toastMessage, @NonNull String logMessage)
     {
         super(toastMessage);
         this.logMessage = logMessage;

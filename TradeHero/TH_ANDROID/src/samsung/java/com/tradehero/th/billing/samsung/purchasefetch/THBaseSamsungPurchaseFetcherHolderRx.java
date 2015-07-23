@@ -13,7 +13,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.samsung.THSamsungOrderId;
 import com.tradehero.th.billing.samsung.THSamsungPurchase;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import javax.inject.Inject;
 import rx.functions.Action1;
 
@@ -47,7 +47,7 @@ public class THBaseSamsungPurchaseFetcherHolderRx
                                 defaultPortfolioId = userBaseKeyPortfolioCompactDTOListPair.second.getDefaultPortfolio().getOwnedPortfolioId();
                             }
                         },
-                        new ToastOnErrorAction());
+                        new ToastOnErrorAction1());
     }
     //</editor-fold>
 

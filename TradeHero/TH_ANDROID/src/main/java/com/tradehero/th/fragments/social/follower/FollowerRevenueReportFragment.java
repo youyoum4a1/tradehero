@@ -22,7 +22,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.Observer;
@@ -92,7 +92,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
                                 FollowerRevenueReportFragment.this.onListItemClick(userFollowerDTO);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     @Override public void onDestroyView()

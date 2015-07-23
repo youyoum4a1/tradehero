@@ -29,7 +29,7 @@ import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.persistence.competition.CompetitionCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.leaderboard.CompetitionLeaderboardCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import java.util.Date;
 import javax.inject.Inject;
 import rx.Observable;
@@ -208,7 +208,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
                     {
                         addExtraTiles();
                     }
-                }, new ToastOnErrorAction()));
+                }, new ToastOnErrorAction1()));
     }
 
     protected void linkWith(ProviderDTO providerDTO, CompetitionDTO competitionDTO, @NonNull CompetitionLeaderboardDTO competitionLeaderboardDTO)

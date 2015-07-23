@@ -24,7 +24,7 @@ import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.Injector;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -227,7 +227,7 @@ public class GuideAuthenticationFragment extends Fragment
                                     }
                                 }
                             },
-                            new TimberOnErrorAction("Failed to set guide background")
+                            new TimberOnErrorAction1("Failed to set guide background")
                             {
                                 @Override public void call(Throwable error)
                                 {

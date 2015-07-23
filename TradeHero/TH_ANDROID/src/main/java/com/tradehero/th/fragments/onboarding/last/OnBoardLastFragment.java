@@ -16,7 +16,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Observable;
@@ -94,7 +94,7 @@ public class OnBoardLastFragment extends BaseFragment
                                 }
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to load exchanges")));
+                        new TimberAndToastOnErrorAction1("Failed to load exchanges")));
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})

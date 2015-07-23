@@ -33,7 +33,7 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.onboarding.OnBoardHeaderLinearView;
 import com.tradehero.th.persistence.leaderboard.LeaderboardUserListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -219,7 +219,7 @@ public class UserSelectionScreenFragment extends BaseFragment
                                 informSelectedHeroes();
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to load exchanges")));
+                        new TimberAndToastOnErrorAction1("Failed to load exchanges")));
     }
 
     @SuppressWarnings("UnusedDeclaration")

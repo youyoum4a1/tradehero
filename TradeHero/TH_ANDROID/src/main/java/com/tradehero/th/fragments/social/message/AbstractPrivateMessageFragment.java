@@ -38,7 +38,7 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -246,7 +246,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
                                 linkWith(pair.second);
                             }
                         },
-                        new TimberOnErrorAction("")));
+                        new TimberOnErrorAction1("")));
     }
 
     public void linkWith(UserProfileDTO userProfileDTO)

@@ -31,9 +31,9 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.List;
 import javax.inject.Inject;
@@ -113,7 +113,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
                                 discussionList.setAdapter(discussionListAdapter);
                             }
                         },
-                        new TimberOnErrorAction("Failed to get topic view")));
+                        new TimberOnErrorAction1("Failed to get topic view")));
 
         mentionTaggedStockHandler.setDiscussionPostContent(postCommentText);
         subscribeHasSelected();
@@ -255,7 +255,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
                                         viewDTOsPair.second);
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to load discussion")));
+                        new TimberAndToastOnErrorAction1("Failed to load discussion")));
     }
 
     @NonNull protected Observable<DiscussionListKey> createTopicDiscussionListKey()
@@ -310,7 +310,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
                                                 viewDTOsPair.second);
                                     }
                                 },
-                                new ToastOnErrorAction()));
+                                new ToastOnErrorAction1()));
             }
         }
     }
@@ -358,7 +358,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
                                 fetchMostRecentDiscussionList(viewDTOsPair.first, viewDTOsPair.second);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     @Nullable protected DiscussionListKey getMostRecentKey(
@@ -480,7 +480,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
                                 discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
                             }
                         },
-                        new ToastOnErrorAction()));
+                        new ToastOnErrorAction1()));
     }
 
     private void subscribeHasSelected()
@@ -497,7 +497,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
                                     mentionTaggedStockHandler.setHasSelectedItemFragment(hasSelectedItem);
                                 }
                             },
-                            new ToastOnErrorAction());
+                            new ToastOnErrorAction1());
         }
     }
 

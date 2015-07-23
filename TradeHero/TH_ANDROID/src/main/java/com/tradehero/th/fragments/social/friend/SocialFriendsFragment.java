@@ -32,7 +32,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.persistence.social.friend.FriendsListCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.DeviceUtil;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -187,7 +187,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
                                 socialFriendsListAdapter.setItemsToShow(list);
                             }
                         },
-                        new TimberOnErrorAction("error when filtering")));
+                        new TimberOnErrorAction1("error when filtering")));
     }
 
     @NonNull protected Observable<List<SocialFriendListItemDTO>> getFilteredObservable(

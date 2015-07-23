@@ -36,7 +36,7 @@ import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWith;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -269,7 +269,7 @@ public class PushableTimelineFragment extends TimelineFragment
                                 analytics.addEvent(new ScreenFlowEvent(actionName, AnalyticsConstants.Profile));
                             }
                         },
-                        new ToastOnErrorAction()
+                        new ToastOnErrorAction1()
                 ));
     }
 

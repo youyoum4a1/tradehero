@@ -16,7 +16,7 @@ import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.api.news.NewsItemDTO;
 import com.tradehero.th.fragments.news.NewsViewLinear;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -101,7 +101,7 @@ public class NewsDiscussionFragment extends AbstractDiscussionFragment
                                 discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
                             }
                         },
-                        new ToastAndLogOnErrorAction("Failed to register to topic's user action")));
+                        new TimberAndToastOnErrorAction1("Failed to register to topic's user action")));
         return topicView;
     }
 

@@ -13,7 +13,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForExtraTileBackground;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -71,7 +71,7 @@ public final class SurveyTileView extends ImageView
                                     linkWith(pair.second);
                                 }
                             },
-                            new TimberOnErrorAction("Failed to load user profile for survey tile"));
+                            new TimberOnErrorAction1("Failed to load user profile for survey tile"));
         }
         else
         {

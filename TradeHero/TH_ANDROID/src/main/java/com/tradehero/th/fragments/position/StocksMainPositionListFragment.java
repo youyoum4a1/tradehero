@@ -26,7 +26,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -102,7 +102,7 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
                                         pagerSlidingTabStrip.setVisibility(View.GONE);
                                     }
                                 },
-                                new ToastOnErrorAction());
+                                new ToastOnErrorAction1());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)

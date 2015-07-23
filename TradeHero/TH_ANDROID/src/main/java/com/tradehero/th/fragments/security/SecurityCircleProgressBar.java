@@ -14,7 +14,7 @@ import com.tradehero.common.widget.CircleProgressBar;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.rx.TimberOnErrorAction;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
@@ -170,6 +170,6 @@ public class SecurityCircleProgressBar extends CircleProgressBar
                                 // Nothing to do
                             }
                         },
-                        new TimberOnErrorAction("Failed to load image"));
+                        new TimberOnErrorAction1("Failed to load image"));
     }
 }

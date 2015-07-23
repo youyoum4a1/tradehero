@@ -28,7 +28,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.NotificationServiceWrapper;
 import com.tradehero.th.persistence.notification.NotificationListCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction;
+import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.EndlessScrollingHelper;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -273,7 +273,7 @@ public class NotificationsView extends BetterViewAnimator
                                         NotificationsView.this.onNotificationMarkedAsRead(response);
                                     }
                                 },
-                                new ToastOnErrorAction()));
+                                new ToastOnErrorAction1()));
     }
 
     protected void onNotificationMarkedAsRead(BaseResponseDTO baseResponseDTO)
@@ -299,7 +299,7 @@ public class NotificationsView extends BetterViewAnimator
                                         NotificationsView.this.updateAllAsRead();
                                     }
                                 },
-                                new ToastOnErrorAction()
+                                new ToastOnErrorAction1()
                         ));
 
         //Mark this locally as read, makes the user feels it's marked instantly for better experience

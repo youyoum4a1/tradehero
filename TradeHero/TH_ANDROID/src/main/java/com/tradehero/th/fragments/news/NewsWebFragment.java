@@ -42,7 +42,7 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.NewsServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
-import com.tradehero.th.rx.ToastAndLogOnErrorAction;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
 import com.tradehero.th.utils.metrics.events.AttributesEvent;
@@ -193,7 +193,7 @@ public class NewsWebFragment extends WebViewFragment
                                         // Nothing to do
                                     }
                                 },
-                                new ToastAndLogOnErrorAction("Failed to listen to clicks"))
+                                new TimberAndToastOnErrorAction1("Failed to listen to clicks"))
         );
 
         final GestureDetector gestureDetector = new GestureDetector(getActivity(), new GestureDetector.SimpleOnGestureListener()
