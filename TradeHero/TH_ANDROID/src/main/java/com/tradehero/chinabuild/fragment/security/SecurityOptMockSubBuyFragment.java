@@ -220,6 +220,10 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 SecurityOptPositionMockDTO securityOptPositionMockDTO = securityOptMockPositionAdapter.getItem(position);
                 if(securityOptPositionMockDTO!=null){
+                    boolean isEmptyBefore = false;
+                    if(TextUtils.isEmpty(securityExchange) && TextUtils.isEmpty(securitySymbol)){
+                        isEmptyBefore = true;
+                    }
                     if(TextUtils.isEmpty(securityOptPositionMockDTO.symbol) || TextUtils.isEmpty(securityOptPositionMockDTO.exchange)
                             || TextUtils.isEmpty(securityOptPositionMockDTO.name) || getActivity() == null){
                         return;
@@ -240,8 +244,13 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                         addOneTV.setEnabled(true);
                         reduceOneTV.setEnabled(true);
                     }
-                    quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLNoRepeatCallback());
-                    retrieveQuoteDTONoRepeat();
+                    if(isEmptyBefore) {
+                        quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
+                        retrieveQuoteDTO();
+                    } else {
+                        quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLNoRepeatCallback());
+                        retrieveQuoteDTONoRepeat();
+                    }
                 }
             }
         });
