@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
@@ -25,18 +26,21 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 {
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject protected KYCFormOptionsCache kycFormOptionsCache;
 
+    @NonNull protected PublishSubject<Boolean> prevNextSubject;
     @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;
     @Nullable private Observable<LiveBrokerSituationDTO> brokerSituationObservable;
     @Nullable private Observable<KYCFormOptionsDTO> kycOptionsObservable;
 
     public LiveSignUpStepBaseFragment()
     {
+        this.prevNextSubject = PublishSubject.create();
         this.brokerSituationSubject = BehaviorSubject.create();
     }
 
@@ -60,6 +64,26 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         {
             brokerSituationSubject.onNext(situationDTO);
         }
+    }
+
+    @SuppressWarnings({"unused", "NullableProblems"})
+    @OnClick({R.id.btn_prev, R.id.btn_next}) @Nullable
+    protected void onButtonClicked(View clicked)
+    {
+        switch (clicked.getId())
+        {
+            case R.id.btn_prev:
+                prevNextSubject.onNext(false);
+                break;
+            case R.id.btn_next:
+                prevNextSubject.onNext(true);
+                break;
+        }
+    }
+
+    @NonNull public Observable<Boolean> getPrevNextObservabel()
+    {
+        return prevNextSubject.asObservable();
     }
 
     @NonNull public Observable<LiveBrokerSituationDTO> getBrokerSituationObservable()

@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.fragments.live.ayondo.SignUpLiveAyondoPagerAdapter;
-import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import javax.inject.Inject;
 import rx.Observable;
@@ -23,6 +23,9 @@ public class SignUpLivePagerAdapterFactory
         this.liveServiceWrapper = liveServiceWrapper;
     }
 
+    /**
+     * You may want to make your PagerAdapter implement {@link PrevNextObservable}.
+     */
     @NonNull public Observable<PagerAdapter> create(@NonNull final FragmentManager fm, @NonNull final Bundle args)
     {
         return liveServiceWrapper.getLiveTradingSituation()

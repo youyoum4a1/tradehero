@@ -5,11 +5,15 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import com.tradehero.th.fragments.live.PrevNextObservable;
+import rx.Observable;
+import rx.functions.Func1;
 
 public class SignUpLiveAyondoPagerAdapter extends FragmentPagerAdapter
+    implements PrevNextObservable
 {
     @NonNull private final Bundle args;
-    @NonNull private final Fragment[] fragments = new Fragment[] {
+    @NonNull private final LiveSignUpStepBaseAyondoFragment[] fragments = new LiveSignUpStepBaseAyondoFragment[] {
             new LiveSignUpStep1AyondoFragment(),
             new LiveSignUpStep2AyondoFragment(),
             new LiveSignUpStep3AyondoFragment(),
@@ -37,5 +41,17 @@ public class SignUpLiveAyondoPagerAdapter extends FragmentPagerAdapter
         Fragment f = fragments[position];
         f.setArguments(args);
         return f;
+    }
+
+    @NonNull @Override public Observable<Boolean> getPrevNextObservable()
+    {
+        return Observable.from(fragments)
+                .flatMap(new Func1<LiveSignUpStepBaseAyondoFragment, Observable<Boolean>>()
+                {
+                    @Override public Observable<Boolean> call(LiveSignUpStepBaseAyondoFragment fragment)
+                    {
+                        return fragment.getPrevNextObservabel();
+                    }
+                });
     }
 }

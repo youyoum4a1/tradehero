@@ -22,12 +22,14 @@ import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
+import com.tradehero.th.rx.TimberOnErrorAction;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.observables.ConnectableObservable;
 import timber.log.Timber;
 
 public class LiveSignUpMainFragment extends BaseFragment
@@ -51,7 +53,7 @@ public class LiveSignUpMainFragment extends BaseFragment
         return inflater.inflate(R.layout.fragment_sign_up_live_main, container, false);
     }
 
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    @Override public void onViewCreated(final View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
@@ -60,8 +62,12 @@ public class LiveSignUpMainFragment extends BaseFragment
         tabLayout.setDistributeEvenly(true);
         tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.transparent));
 
+        ConnectableObservable<PagerAdapter> pagerAdapterObservable = signUpLivePagerAdapterFactory.create(
+                getChildFragmentManager(),
+                getArguments()).publish();
+
         onDestroyViewSubscriptions.add(
-                signUpLivePagerAdapterFactory.create(getChildFragmentManager(), getArguments())
+                pagerAdapterObservable
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<PagerAdapter>()
                         {
@@ -106,6 +112,30 @@ public class LiveSignUpMainFragment extends BaseFragment
                                         Timber.e(throwable, "Error on updating status");
                                     }
                                 }));
+
+        onDestroyViewSubscriptions.add(pagerAdapterObservable
+                .flatMap(new Func1<PagerAdapter, Observable<Boolean>>()
+                {
+                    @Override public Observable<Boolean> call(PagerAdapter pagerAdapter)
+                    {
+                        if (pagerAdapter instanceof PrevNextObservable)
+                        {
+                            return ((PrevNextObservable) pagerAdapter).getPrevNextObservable();
+                        }
+                        return Observable.empty();
+                    }
+                })
+                .subscribe(
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean next)
+                            {
+                                viewPager.setCurrentItem(viewPager.getCurrentItem() + (next ? 1 : -1));
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to listen to prev / next buttons")));
+
+        pagerAdapterObservable.connect();
     }
 
     @Override public void onDestroyView()
