@@ -13,7 +13,7 @@ import com.tradehero.th.models.push.PushNotificationManager;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.actions.Action;
@@ -100,7 +100,7 @@ import timber.log.Timber;
                                     @Override public Observable<Integer> call(Integer userId)
                                     {
                                         return userProfileCache.getOne(new UserBaseKey(userId))
-                                                .map(new ReplaceWith<Pair<UserBaseKey, UserProfileDTO>, Integer>(userId));
+                                                .map(new ReplaceWithFunc1<Pair<UserBaseKey, UserProfileDTO>, Integer>(userId));
                                     }
                                 })
                                 .flatMap(new Func1<Integer, Observable<UserProfileDTO>>()

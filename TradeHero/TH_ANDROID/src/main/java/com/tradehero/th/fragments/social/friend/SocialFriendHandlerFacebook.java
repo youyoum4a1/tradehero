@@ -34,7 +34,7 @@ import com.tradehero.th.models.social.facebook.UserFriendsFacebookUtil;
 import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -214,7 +214,7 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
                                     new AccessTokenForm(new AuthData(SocialNetworkEnum.FB,
                                             pair.second.getExpirationDate(),
                                             pair.second.getAccessToken())))
-                                    .map(new ReplaceWith<UserProfileDTO, Pair<UserProfileDTO, Session>>(pair));
+                                    .map(new ReplaceWithFunc1<UserProfileDTO, Pair<UserProfileDTO, Session>>(pair));
                         }
                         // Need to link then return
                         return Observable.combineLatest(

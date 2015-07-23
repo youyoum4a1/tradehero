@@ -17,7 +17,7 @@ import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.billing.tester.BillingAvailableTesterHolderRx;
 import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -467,7 +467,7 @@ abstract public class BaseBillingLogicHolderRx<
                     }
                 })
                 .toList()
-                .map(new ReplaceWith<List<PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>, PurchaseRestoreTotalResult<ProductIdentifierType, OrderIdType, ProductPurchaseType>>(
+                .map(new ReplaceWithFunc1<List<PurchaseRestoreResultWithError<ProductIdentifierType, OrderIdType, ProductPurchaseType>>, PurchaseRestoreTotalResult<ProductIdentifierType, OrderIdType, ProductPurchaseType>>(
                         result));
     }
     //</editor-fold>

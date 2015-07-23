@@ -1,6 +1,7 @@
 package com.tradehero.th.rx.view;
 
 import android.app.Dialog;
+import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import rx.functions.Action1;
 
@@ -13,7 +14,8 @@ public class DismissDialogAction1<T> implements Action1<T>
         this.dialog = dialog;
     }
 
-    @Override public void call(T t)
+    @CallSuper
+    @Override public void call(T ignored)
     {
         if (dialog != null)
         {

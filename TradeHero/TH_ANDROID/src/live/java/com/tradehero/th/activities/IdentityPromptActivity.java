@@ -29,7 +29,7 @@ import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.kyc.KYCFormOptionsCache;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -96,9 +96,9 @@ public class IdentityPromptActivity extends BaseActivity
                     {
                         return Observable.merge(
                                 ViewObservable.clicks(yesButton)
-                                        .map(new ReplaceWith<OnClickEvent, IdentityScannedDocumentType>(IdentityScannedDocumentType.PASSPORT)),
+                                        .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(IdentityScannedDocumentType.PASSPORT)),
                                 ViewObservable.clicks(txtPrompt)
-                                        .map(new ReplaceWith<OnClickEvent, IdentityScannedDocumentType>(null)))
+                                        .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(null)))
                                 .flatMap(
                                         new Func1<IdentityScannedDocumentType, Observable<ScannedDocument>>()
                                         {

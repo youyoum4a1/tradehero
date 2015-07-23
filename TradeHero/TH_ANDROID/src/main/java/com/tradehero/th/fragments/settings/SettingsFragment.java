@@ -65,7 +65,7 @@ import com.tradehero.th.persistence.translation.TranslationTokenKey;
 import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
@@ -861,7 +861,7 @@ public final class SettingsFragment extends BasePreferenceFragment
                         }
                         return Observable.just(0)
                                 .delay(3000, TimeUnit.MILLISECONDS)
-                                .flatMap(new ReplaceWith<Integer, Observable<UserProfileDTO>>(
+                                .flatMap(new ReplaceWithFunc1<Integer, Observable<UserProfileDTO>>(
                                         Observable.<UserProfileDTO>error(throwable)));
                     }
                 })

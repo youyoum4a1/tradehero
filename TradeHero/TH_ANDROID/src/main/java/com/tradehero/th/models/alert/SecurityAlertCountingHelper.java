@@ -12,7 +12,7 @@ import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
@@ -51,7 +51,7 @@ public class SecurityAlertCountingHelper
                         {
                             //noinspection unchecked
                             return userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_STOCK_ALERTS)
-                                    .map(new ReplaceWith<>(alertSlot));
+                                    .map(new ReplaceWithFunc1<>(alertSlot));
                         }
                         return Observable.just(alertSlot);
                     }

@@ -21,7 +21,7 @@ import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.persistence.billing.googleplay.IABSKUListCacheRx;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action0;
@@ -106,7 +106,7 @@ public class THBaseIABLogicHolderRx
                                     PurchaseReportResult<IABSKU, THIABOrderId, THIABPurchase> reportResult)
                             {
                                 return THBaseIABLogicHolderRx.this.consume(requestCode, reportResult.reportedPurchase)
-                                        .map(new ReplaceWith<>(reportResult));
+                                        .map(new ReplaceWithFunc1<>(reportResult));
                             }
                         });
     }

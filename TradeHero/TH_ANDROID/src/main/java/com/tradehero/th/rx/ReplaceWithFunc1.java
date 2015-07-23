@@ -2,16 +2,16 @@ package com.tradehero.th.rx;
 
 import rx.functions.Func1;
 
-public class ReplaceWith<T1, R> implements Func1<T1, R>
+public class ReplaceWithFunc1<T1, R> implements Func1<T1, R>
 {
     private final R r;
 
-    public ReplaceWith(R r)
+    public ReplaceWithFunc1(R r)
     {
         this.r = r;
     }
 
-    public R call(T1 t1)
+    public final R call(T1 ignored)
     {
         return r;
     }

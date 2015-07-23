@@ -22,7 +22,7 @@ import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.settings.ImageRequesterUtil;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
@@ -366,13 +366,13 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         return Observable.merge(
                                 ViewObservable.clicks(termsConditions)
-                                        .map(new ReplaceWith<OnClickEvent, String>(optionsDTO.termsConditionsUrl)),
+                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.termsConditionsUrl)),
                                 ViewObservable.clicks(riskWarning)
-                                        .map(new ReplaceWith<OnClickEvent, String>(optionsDTO.riskWarningDisclaimerUrl)),
+                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.riskWarningDisclaimerUrl)),
                                 ViewObservable.clicks(dataSharing)
-                                        .map(new ReplaceWith<OnClickEvent, String>(optionsDTO.dataSharingAgreementUrl)),
+                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.dataSharingAgreementUrl)),
                                 ViewObservable.clicks(fundsPolicy)
-                                        .map(new ReplaceWith<OnClickEvent, String>(optionsDTO.clientFundsPolicyUrl))
+                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.clientFundsPolicyUrl))
                         );
                     }
                 })

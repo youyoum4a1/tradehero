@@ -1,5 +1,6 @@
 package com.tradehero.th.rx.view;
 
+import android.support.annotation.NonNull;
 import android.view.View;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
@@ -14,7 +15,7 @@ public class ViewArrayObservable
      * @param emitInitialValue
      * @return
      */
-    public static Observable<OnClickEvent> clicks(final View[] views, final boolean emitInitialValue)
+    @NonNull public static Observable<OnClickEvent> clicks(@NonNull View[] views, final boolean emitInitialValue)
     {
         return Observable.from(views)
                 .flatMap(new Func1<View, Observable<? extends OnClickEvent>>()
@@ -30,7 +31,7 @@ public class ViewArrayObservable
                 });
     }
 
-    public static Observable<OnClickEvent> clicks(final Iterable<View> views, final boolean emitInitialValue)
+    @NonNull public static Observable<OnClickEvent> clicks(@NonNull Iterable<View> views, final boolean emitInitialValue)
     {
         return Observable.from(views)
                 .flatMap(new Func1<View, Observable<? extends OnClickEvent>>()

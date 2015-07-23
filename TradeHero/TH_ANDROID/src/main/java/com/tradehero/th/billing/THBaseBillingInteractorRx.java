@@ -16,7 +16,7 @@ import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.billing.ProductDetailAdapter;
 import com.tradehero.th.fragments.billing.ProductDetailView;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import java.util.HashMap;
 import java.util.List;
@@ -111,7 +111,7 @@ abstract public class THBaseBillingInteractorRx<
                 return billingAlertDialogUtil.popErrorAndHandle(
                         activityProvider.get(),
                         error)
-                        .flatMap(new ReplaceWith<OnDialogClickEvent, Observable<? extends T>>(Observable.<T>empty()));
+                        .flatMap(new ReplaceWithFunc1<OnDialogClickEvent, Observable<? extends T>>(Observable.<T>empty()));
             }
         });
     }
@@ -430,7 +430,7 @@ abstract public class THBaseBillingInteractorRx<
                                     return billingAlertDialogUtil.popRestoreResultAndHandle(
                                             activityProvider.get(),
                                             result)
-                                            .map(new ReplaceWith<OnDialogClickEvent, PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>(
+                                            .map(new ReplaceWithFunc1<OnDialogClickEvent, PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>(
                                                     result));
                                 }
                                 return Observable.empty();
@@ -454,7 +454,7 @@ abstract public class THBaseBillingInteractorRx<
                                 return billingAlertDialogUtil.popRestoreResultAndHandle(
                                         activityProvider.get(),
                                         result)
-                                        .map(new ReplaceWith<OnDialogClickEvent, PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>(result));
+                                        .map(new ReplaceWithFunc1<OnDialogClickEvent, PurchaseRestoreTotalResult<ProductIdentifierType, THOrderIdType, THProductPurchaseType>>(result));
                             }
                         }));
     }

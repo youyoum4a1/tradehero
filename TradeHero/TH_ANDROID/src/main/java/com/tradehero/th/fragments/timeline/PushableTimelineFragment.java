@@ -35,7 +35,7 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.ProgressDialogUtil;
@@ -279,7 +279,7 @@ public class PushableTimelineFragment extends TimelineFragment
         {
             //noinspection unchecked
             return userInteractorRx.purchaseAndPremiumFollowAndClear(request.heroId)
-                    .map(new ReplaceWith<>(new UserProfileDTO()));
+                    .map(new ReplaceWithFunc1<>(new UserProfileDTO()));
         }
         else
         {

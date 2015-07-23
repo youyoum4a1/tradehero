@@ -23,7 +23,7 @@ import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.models.share.SocialShareTranslationHelper;
 import com.tradehero.th.network.share.dto.SocialDialogResult;
 import com.tradehero.th.network.share.dto.TranslateResult;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
@@ -126,7 +126,7 @@ public class AbstractDiscussionCompactItemViewHolder
         if (userAction instanceof DiscussionActionButtonsView.ShareUserAction)
         {
             return socialShareHelper.show(userAction.discussionDTO, true)
-                    .map(new ReplaceWith<>(userAction));
+                    .map(new ReplaceWithFunc1<>(userAction));
         }
         else if (userAction instanceof TranslateUserAction)
         {
@@ -169,7 +169,7 @@ public class AbstractDiscussionCompactItemViewHolder
                             }
                         }
                     })
-                    .map(new ReplaceWith<>(userAction));
+                    .map(new ReplaceWithFunc1<>(userAction));
         }
         return Observable.just(userAction);
     }

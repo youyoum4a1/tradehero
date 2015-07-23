@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import com.tradehero.th.R;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import rx.Observable;
 import rx.android.view.ViewObservable;
 
@@ -20,6 +20,6 @@ public class LearnMoreView extends LinearLayout
     @NonNull @Override public Observable<Boolean> result()
     {
         return ViewObservable.clicks(findViewById(R.id.next_button), false)
-                .map(new ReplaceWith<>(true));
+                .map(new ReplaceWithFunc1<>(true));
     }
 }

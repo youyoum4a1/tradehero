@@ -25,7 +25,7 @@ import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.persistence.billing.AmazonSKUListCacheRx;
 import com.tradehero.th.persistence.billing.THAmazonProductDetailCacheRx;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -125,7 +125,7 @@ public class THBaseAmazonLogicHolderRx
                                     PurchaseReportResult<AmazonSKU, THAmazonOrderId, THAmazonPurchase> result)
                             {
                                 return THBaseAmazonLogicHolderRx.this.consume(requestCode, result.reportedPurchase)
-                                        .map(new ReplaceWith<>(result));
+                                        .map(new ReplaceWithFunc1<>(result));
                             }
                         });
     }

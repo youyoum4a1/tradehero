@@ -21,7 +21,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.auth.operator.FacebookPermissions;
 import com.tradehero.th.network.service.SocialLinker;
 import com.tradehero.th.network.share.SocialConstants;
-import com.tradehero.th.rx.ReplaceWith;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -163,7 +163,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         List<String> permissions = new ArrayList<>(this.permissions);
         permissions.add(FacebookPermissionsConstants.PUBLISH_ACTIONS);
         return logIn(activity)
-                .flatMap(new ReplaceWith<AuthData, Observable<AuthData>>(createAuthDataObservable(activity, permissions)))
+                .flatMap(new ReplaceWithFunc1<AuthData, Observable<AuthData>>(createAuthDataObservable(activity, permissions)))
                 .flatMap(new Func1<AuthData, Observable<? extends UserProfileDTO>>()
                 {
                     @Override public Observable<? extends UserProfileDTO> call(AuthData authData)
