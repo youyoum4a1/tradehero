@@ -33,6 +33,10 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     public final int maxAddressRequired;
     @NonNull public final List<IdentityScannedDocumentType> identityDocumentTypes;
     @NonNull public final List<ResidenceScannedDocumentType> residenceDocumentTypes;
+    @NonNull public final String termsConditionsUrl;
+    @NonNull public final String riskWarningDisclaimerUrl;
+    @NonNull public final String dataSharingAgreementUrl;
+    @NonNull public final String clientFundsPolicyUrl;
     public final int minAge;
 
     public KYCAyondoFormOptionsDTO(
@@ -48,6 +52,10 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("maxAddressRequired") int maxAddressRequired,
             @JsonProperty("identityDocumentTypes") @NonNull List<IdentityScannedDocumentType> identityDocumentTypes,
             @JsonProperty("residenceDocumentTypes") @NonNull List<ResidenceScannedDocumentType> residenceDocumentTypes,
+            @JsonProperty("termsConditionsUrl") @NonNull String termsConditionsUrl,
+            @JsonProperty("riskWarningDisclosureUrl") @NonNull String riskWarningDisclosureUrl,
+            @JsonProperty("dataSharingAgreementUrl") @NonNull String dataSharingAgreementUrl,
+            @JsonProperty("clientFundsPolicyUrl") @NonNull String clientFundsPolicyUrl,
             @JsonProperty("minAge") int minAge)
     {
         this.identityPromptInfo = identityPromptInfo;
@@ -83,6 +91,10 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         this.maxAddressRequired = maxAddressRequired;
         this.identityDocumentTypes = Collections.unmodifiableList(identityDocumentTypes);
         this.residenceDocumentTypes = Collections.unmodifiableList(residenceDocumentTypes);
+        this.termsConditionsUrl = termsConditionsUrl;
+        this.riskWarningDisclaimerUrl = riskWarningDisclosureUrl;
+        this.dataSharingAgreementUrl = dataSharingAgreementUrl;
+        this.clientFundsPolicyUrl = clientFundsPolicyUrl;
         this.minAge = minAge;
     }
 

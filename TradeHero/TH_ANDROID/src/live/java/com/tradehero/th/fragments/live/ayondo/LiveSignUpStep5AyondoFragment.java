@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.live.ayondo;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -19,6 +21,7 @@ import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.settings.ImageRequesterUtil;
+import com.tradehero.th.rx.ReplaceWith;
 import com.tradehero.th.rx.TimberOnErrorAction;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
@@ -34,6 +37,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnCheckedChangeEvent;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
+import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -49,6 +56,14 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.document_action_identity) DocumentActionWidget documentActionIdentity;
     @Bind(R.id.document_action_residence) DocumentActionWidget documentActionResidence;
     @Bind(R.id.document_action_signature) DocumentActionWidget documentActionSignature;
+    @Bind(R.id.cb_agree_terms_conditions) CheckBox termsConditionsCheckBox;
+    @Bind(R.id.agree_terms_conditions) View termsConditions;
+    @Bind(R.id.cb_agree_risk_warning) CheckBox riskWarningCheckBox;
+    @Bind(R.id.agree_risk_warning) View riskWarning;
+    @Bind(R.id.cb_agree_data_sharing) CheckBox dataSharingCheckBox;
+    @Bind(R.id.agree_data_sharing) View dataSharing;
+    @Bind(R.id.cb_agree_funds_policy) CheckBox fundsPolicyCheckBox;
+    @Bind(R.id.agree_funds_policy) View fundsPolicy;
 
     private ImageRequesterUtil imageRequesterUtil;
 
@@ -162,6 +177,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             @Override public void call(LiveBrokerSituationDTO situationDTO)
                             {
                                 //noinspection ConstantConditions
+                                populate((KYCAyondoForm) situationDTO.kycForm);
                                 populate(documentActionIdentity, ((KYCAyondoForm) situationDTO.kycForm).getIdentityDocumentFile());
                                 populate(documentActionResidence, ((KYCAyondoForm) situationDTO.kycForm).getResidenceDocumentFile());
                             }
@@ -283,6 +299,96 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     }
                                 },
                                 new TimberOnErrorAction("Failed to ask for and get residence document bitmap")));
+
+        onDestroyViewSubscriptions.add(Observable.merge(
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        WidgetObservable.input(termsConditionsCheckBox),
+                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override
+                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation, OnCheckedChangeEvent onCheckedChangeEvent)
+                            {
+                                //noinspection ConstantConditions
+                                ((KYCAyondoForm) situation.kycForm).setAgreeTermsConditions(onCheckedChangeEvent.value());
+                                return situation;
+                            }
+                        }),
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        WidgetObservable.input(riskWarningCheckBox),
+                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override
+                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation, OnCheckedChangeEvent onCheckedChangeEvent)
+                            {
+                                //noinspection ConstantConditions
+                                ((KYCAyondoForm) situation.kycForm).setAgreeRisksWarnings(onCheckedChangeEvent.value());
+                                return situation;
+                            }
+                        }),
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        WidgetObservable.input(dataSharingCheckBox),
+                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override
+                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation, OnCheckedChangeEvent onCheckedChangeEvent)
+                            {
+                                //noinspection ConstantConditions
+                                ((KYCAyondoForm) situation.kycForm).setAgreeDataSharing(onCheckedChangeEvent.value());
+                                return situation;
+                            }
+                        }),
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        WidgetObservable.input(fundsPolicyCheckBox),
+                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override
+                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation, OnCheckedChangeEvent onCheckedChangeEvent)
+                            {
+                                //noinspection ConstantConditions
+                                ((KYCAyondoForm) situation.kycForm).setAgreeFundsPolicy(onCheckedChangeEvent.value());
+                                return situation;
+                            }
+                        }))
+                .subscribe(
+                        new Action1<LiveBrokerSituationDTO>()
+                        {
+                            @Override public void call(LiveBrokerSituationDTO situation)
+                            {
+                                onNext(situation);
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to listen to agreement checkboxes")));
+
+        onDestroyViewSubscriptions.add(getKYCAyondoFormOptionsObservable()
+                .flatMap(new Func1<KYCAyondoFormOptionsDTO, Observable<String>>()
+                {
+                    @Override public Observable<String> call(KYCAyondoFormOptionsDTO optionsDTO)
+                    {
+                        return Observable.merge(
+                                ViewObservable.clicks(termsConditions)
+                                        .map(new ReplaceWith<OnClickEvent, String>(optionsDTO.termsConditionsUrl)),
+                                ViewObservable.clicks(riskWarning)
+                                        .map(new ReplaceWith<OnClickEvent, String>(optionsDTO.riskWarningDisclaimerUrl)),
+                                ViewObservable.clicks(dataSharing)
+                                        .map(new ReplaceWith<OnClickEvent, String>(optionsDTO.dataSharingAgreementUrl)),
+                                ViewObservable.clicks(fundsPolicy)
+                                        .map(new ReplaceWith<OnClickEvent, String>(optionsDTO.clientFundsPolicyUrl))
+                        );
+                    }
+                })
+                .subscribe(
+                        new Action1<String>()
+                        {
+                            @Override public void call(String url)
+                            {
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                            }
+                        },
+                        new TimberOnErrorAction("Failed to listen to url clicks")));
     }
 
     @NonNull private Observable<Bitmap> pickDocument(@StringRes int dialogTitle, @NonNull final ImageRequesterUtil imageRequesterUtil)
@@ -325,6 +431,33 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (imageRequesterUtil != null)
         {
             imageRequesterUtil.onActivityResult(getActivity(), requestCode, resultCode, data);
+        }
+    }
+
+    private void populate(@NonNull KYCAyondoForm kycForm)
+    {
+        Boolean agreeTerms = kycForm.isAgreeTermsConditions();
+        if (agreeTerms != null)
+        {
+            termsConditionsCheckBox.setChecked(agreeTerms);
+        }
+
+        Boolean riskWarning = kycForm.isAgreeRisksWarnings();
+        if (riskWarning != null)
+        {
+            riskWarningCheckBox.setChecked(riskWarning);
+        }
+
+        Boolean dataSharing = kycForm.isAgreeDataSharing();
+        if (dataSharing != null)
+        {
+            dataSharingCheckBox.setChecked(dataSharing);
+        }
+
+        Boolean fundsPolicy = kycForm.isAgreeFundsPolicy();
+        if (fundsPolicy != null)
+        {
+            fundsPolicyCheckBox.setChecked(fundsPolicy);
         }
     }
 

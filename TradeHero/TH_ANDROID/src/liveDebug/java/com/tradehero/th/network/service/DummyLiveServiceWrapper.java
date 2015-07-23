@@ -142,30 +142,6 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
     @NonNull @Override public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)
     {
         return super.getKYCFormOptions(optionsId)
-                .map(new Func1<KYCFormOptionsDTO, KYCFormOptionsDTO>()
-                {
-                    @Override public KYCFormOptionsDTO call(KYCFormOptionsDTO kycFormOptionsDTO)
-                    {
-                        //noinspection ConstantConditions
-                        if (kycFormOptionsDTO.getIdentityPromptInfo() != null)
-                        {
-                            return kycFormOptionsDTO;
-                        }
-                        return new KYCAyondoFormOptionsDTO(
-                                createIdentityPromptInfo(),
-                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).allowedMobilePhoneCountries,
-                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).allowedNationalityCountries,
-                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).allowedResidencyCountries,
-                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).annualIncomeOptions,
-                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).netWorthOptions,
-                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).percentNetWorthOptions,
-                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).employmentStatusOptions,
-                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).tradingPerQuarterOptions,
-                                kycFormOptionsDTO.getIdentityDocumentTypes(),
-                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).residenceDocumentTypes,
-                                ((KYCAyondoFormOptionsDTO) kycFormOptionsDTO).minAge);
-                    }
-                })
                 .timeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
                 .onErrorResumeNext(
                         new Func1<Throwable, Observable<? extends KYCFormOptionsDTO>>()
@@ -194,6 +170,10 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                         Arrays.asList(TradingPerQuarter.values()),
                                         Arrays.asList(IdentityScannedDocumentType.values()),
                                         Arrays.asList(ResidenceScannedDocumentType.values()),
+                                        DummyAyondoData.TERMS_CONDITIONS_URL,
+                                        DummyAyondoData.RISK_WARNING_DISCLAIMER_URL,
+                                        DummyAyondoData.DATA_SHARING_AGREEMENT_URL,
+                                        DummyAyondoData.FUNDS_POLICY_URL,
                                         21);
                                 return Observable.just(options);
                             }

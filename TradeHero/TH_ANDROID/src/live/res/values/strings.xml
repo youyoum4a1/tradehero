@@ -90,6 +90,14 @@
   <string name="residence_document_type_utility_bill">A bill: water, electricity, phone or gas</string>
   <string name="residence_document_type_bank_statement">A bank or credit card statement</string>
   <string name="residence_document_pick_title">For your Proof of Residence Document, Pick:</string>
+
   <string name="live_signature_caption">Signature</string>
+
+  <string name="live_agree_to_title">I agree to:</string>
+  <string name="live_agree_to_terms_and_conditions">Terms and Conditions</string>
+  <string name="live_agree_to_risks_and_warnings_disclaimer">Risks and Warnings Disclosure</string>
+  <string name="live_agree_to_data_sharing_agreement">Data Sharing Agreement</string>
+  <string name="live_agree_to_client_funds_policy">Client Funds Policy</string>
+  <string name="live_agree_read_it">Read</string>
 
 </resources>
