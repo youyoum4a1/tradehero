@@ -30,6 +30,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final List<PercentNetWorthForInvestmentRange> percentNetWorthOptions;
     @NonNull public final List<EmploymentStatus> employmentStatusOptions;
     @NonNull public final List<TradingPerQuarter> tradingPerQuarterOptions;
+    public final int maxAddressRequired;
     @NonNull public final List<IdentityScannedDocumentType> identityDocumentTypes;
     @NonNull public final List<ResidenceScannedDocumentType> residenceDocumentTypes;
     public final int minAge;
@@ -44,6 +45,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("percentNetWorthOptions") @NonNull List<PercentNetWorthForInvestmentRange> percentNetWorthOptions,
             @JsonProperty("employmentStatusOptions") @NonNull List<EmploymentStatus> employmentStatusOptions,
             @JsonProperty("tradingPerQuarterOptions") @NonNull List<TradingPerQuarter> tradingPerQuarterOptions,
+            @JsonProperty("maxAddressRequired") int maxAddressRequired,
             @JsonProperty("identityDocumentTypes") @NonNull List<IdentityScannedDocumentType> identityDocumentTypes,
             @JsonProperty("residenceDocumentTypes") @NonNull List<ResidenceScannedDocumentType> residenceDocumentTypes,
             @JsonProperty("minAge") int minAge)
@@ -78,6 +80,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         this.percentNetWorthOptions = Collections.unmodifiableList(percentNetWorthOptions);
         this.employmentStatusOptions = Collections.unmodifiableList(employmentStatusOptions);
         this.tradingPerQuarterOptions = Collections.unmodifiableList(tradingPerQuarterOptions);
+        this.maxAddressRequired = maxAddressRequired;
         this.identityDocumentTypes = Collections.unmodifiableList(identityDocumentTypes);
         this.residenceDocumentTypes = Collections.unmodifiableList(residenceDocumentTypes);
         this.minAge = minAge;

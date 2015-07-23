@@ -8,6 +8,7 @@ import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
 import com.tradehero.th.api.kyc.EmploymentStatus;
+import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
@@ -52,6 +53,7 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean tradedSharesBonds;
     @Nullable private Boolean tradedOtcDerivative;
     @Nullable private Boolean tradedEtc;
+    @Nullable private List<KYCAddress> addresses;
     @Nullable private IdentityScannedDocumentType identityDocumentType;
     @Nullable private File identityDocumentFile;
     @Nullable private ResidenceScannedDocumentType residenceDocumentType;
@@ -123,6 +125,7 @@ public class KYCAyondoForm implements KYCForm
             this.tradedSharesBonds = ayondoForm.isTradedSharesBonds() != null ? ayondoForm.isTradedSharesBonds() : this.tradedSharesBonds;
             this.tradedOtcDerivative = ayondoForm.isTradedOtcDerivative() != null ? ayondoForm.isTradedOtcDerivative() : this.tradedOtcDerivative;
             this.tradedEtc = ayondoForm.isTradedEtc() != null ? ayondoForm.isTradedEtc() : this.tradedEtc;
+            this.addresses = ayondoForm.getAddresses() != null ? ayondoForm.getAddresses() : this.addresses;
             this.identityDocumentType = ayondoForm.getIdentityDocumentType() != null ? ayondoForm.getIdentityDocumentType() : this.identityDocumentType;
             this.identityDocumentFile = ayondoForm.identityDocumentFile != null ? ayondoForm.identityDocumentFile : this.identityDocumentFile;
             this.residenceDocumentType = ayondoForm.getResidenceDocumentType() != null ? ayondoForm.getResidenceDocumentType() : this.residenceDocumentType;
@@ -398,6 +401,13 @@ public class KYCAyondoForm implements KYCForm
     }
     //</editor-fold>
 
+    //<editor-fold desc="Addresses">
+    @Nullable public List<KYCAddress> getAddresses()
+    {
+        return addresses;
+    }
+    //</editor-fold>
+
     //<editor-fold desc="Identity Document File">
     @Nullable public IdentityScannedDocumentType getIdentityDocumentType()
     {
@@ -551,6 +561,7 @@ public class KYCAyondoForm implements KYCForm
             same &= tradedSharesBonds == null ? ayondoForm.tradedSharesBonds == null : tradedSharesBonds.equals(ayondoForm.tradedSharesBonds);
             same &= tradedOtcDerivative == null ? ayondoForm.tradedOtcDerivative == null : tradedOtcDerivative.equals(ayondoForm.tradedOtcDerivative);
             same &= tradedEtc == null ? ayondoForm.tradedEtc == null : tradedEtc.equals(ayondoForm.tradedEtc);
+            same &= addresses == null ? ayondoForm.addresses == null : addresses.equals(ayondoForm.addresses);
             same &= identityDocumentType == null ? ayondoForm.identityDocumentType
                     == null : identityDocumentType.equals(ayondoForm.identityDocumentType);
             same &= identityDocumentFile == null ? ayondoForm.identityDocumentFile == null : identityDocumentFile.equals(ayondoForm.identityDocumentFile);
