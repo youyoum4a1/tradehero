@@ -10,7 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.SecurityOptActivity;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.trade.ClosedTradeDTOList;
 import com.tradehero.th.network.service.TradeServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -32,6 +35,9 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
     private SecurityOptMockQueryDelegationAdapter mListViewAdapter2;
     @Inject TradeServiceWrapper mTradeServiceWrapper;
     private boolean mIsShowMore = false;
+    private int mPortfolioId = 0;
+    private int competitionId = 0;
+    private PortfolioId portfolioIdObj;
 
     @Override
     public void onAttach(Activity activity) {
@@ -69,8 +75,57 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
     @Override
     public void onResume() {
         super.onResume();
-        queryTradeHistroy();
-        queryDelegationHistory();
+        competitionId = getArguments().getInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, 0);
+        if (getArguments().containsKey(SecurityOptActivity.KEY_PORTFOLIO_ID)) {
+            portfolioIdObj = getPortfolioId();
+            if (competitionId != 0) {
+                mPortfolioId = portfolioIdObj.key;
+            }
+        }
+
+        if (competitionId == 0) {
+            queryTradeHistory();
+            queryDelegationHistory();
+        } else {
+            queryTradeHistory2();
+            queryDelegationHistory2();
+        }
+    }
+
+    private void queryDelegationHistory2() {
+        mProgressBar2.setVisibility(View.VISIBLE);
+        mTradeServiceWrapper.getDelegationWP(mPortfolioId, new Callback<ClosedTradeDTOList>() {
+            @Override
+            public void success(ClosedTradeDTOList list, Response response2) {
+                Timber.d("lyl getDelegationWP size=" + list.size());
+                mListViewAdapter2.setItems(list);
+                mListViewAdapter2.notifyDataSetChanged();
+                mProgressBar2.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    private void queryTradeHistory2() {
+        mProgressBar1.setVisibility(View.VISIBLE);
+        mTradeServiceWrapper.getTradesWP(mPortfolioId, new Callback<ClosedTradeDTOList>() {
+            @Override
+            public void success(ClosedTradeDTOList list, Response response2) {
+                Timber.d("lyl getTradesWP size=" + list.size());
+                mListViewAdapter1.setItems(list);
+                mListViewAdapter1.notifyDataSetChanged();
+                mProgressBar1.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
     }
 
     private void queryDelegationHistory() {
@@ -91,7 +146,7 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
         });
     }
 
-    private void queryTradeHistroy() {
+    private void queryTradeHistory() {
         mProgressBar1.setVisibility(View.VISIBLE);
         mTradeServiceWrapper.getTrades(new Callback<ClosedTradeDTOList>() {
             @Override
@@ -122,8 +177,10 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
         }
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    protected PortfolioId getPortfolioId() {
+        if (this.portfolioIdObj == null) {
+            this.portfolioIdObj = new PortfolioId(getArguments().getBundle(SecurityOptActivity.KEY_PORTFOLIO_ID));
+        }
+        return portfolioIdObj;
     }
 }

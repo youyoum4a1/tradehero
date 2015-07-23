@@ -11,8 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.SecurityOptActivity;
+import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.trade.ClosedTradeDTOList;
 import com.tradehero.th.network.service.TradeServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
@@ -29,6 +32,9 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
     private LinearLayout mNoItemLayout;
     private ProgressBar mProgressBar;
     private int mSelectedPosition = -1;
+    private int mPortfolioId = 0;
+    private int competitionId = 0;
+    private PortfolioId portfolioIdObj;
     @Inject
     TradeServiceWrapper mTradeServiceWrapper;
 
@@ -62,8 +68,21 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
     @Override
     public void onResume() {
         super.onResume();
-        queryPendingDelegationHistory();
+        competitionId = getArguments().getInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, 0);
+        if (getArguments().containsKey(SecurityOptActivity.KEY_PORTFOLIO_ID)) {
+            portfolioIdObj = getPortfolioId();
+            if (competitionId != 0) {
+                mPortfolioId = portfolioIdObj.key;
+            }
+        }
+
+        if (competitionId == 0) {
+            queryPendingDelegationHistory();
+        } else {
+            queryPendingDelegationHistoryWithPortfolio();
+        }
     }
+
 
     private void queryPendingDelegationHistory() {
         mProgressBar.setVisibility(View.VISIBLE);
@@ -91,6 +110,39 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
         });
     }
 
+    private void queryPendingDelegationHistoryWithPortfolio() {
+        mProgressBar.setVisibility(View.VISIBLE);
+        mTradeServiceWrapper.getPendingDelegationWithPortfolio(mPortfolioId, new Callback<ClosedTradeDTOList>() {
+            @Override
+            public void success(ClosedTradeDTOList list, Response response2) {
+                Timber.d("lyl getPendingDelegationWP size=" + list.size());
+                mListViewAdapter.setSelectedItem(-1);
+                mListViewAdapter.setItems(list);
+                mListViewAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.GONE);
+                if (list.size() > 0) {
+                    mNoItemLayout.setVisibility(View.GONE);
+                    mListView.setVisibility(View.VISIBLE);
+                } else {
+                    mNoItemLayout.setVisibility(View.VISIBLE);
+                    mListView.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
+            }
+        });
+    }
+
+    protected PortfolioId getPortfolioId() {
+        if (this.portfolioIdObj == null) {
+            this.portfolioIdObj = new PortfolioId(getArguments().getBundle(SecurityOptActivity.KEY_PORTFOLIO_ID));
+        }
+        return portfolioIdObj;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -101,13 +153,21 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
                         @Override
                         public void success(Response response, Response response2) {
                             THToast.show(getString(R.string.cancel_delegation_success));
-                            queryPendingDelegationHistory();
+                            if (competitionId == 0) {
+                                queryPendingDelegationHistory();
+                            } else {
+                                queryPendingDelegationHistoryWithPortfolio();
+                            }
                         }
 
                         @Override
                         public void failure(RetrofitError error) {
                             THToast.show(getString(R.string.cancel_delegation_fail));
-                            queryPendingDelegationHistory();
+                            if (competitionId == 0) {
+                                queryPendingDelegationHistory();
+                            } else {
+                                queryPendingDelegationHistoryWithPortfolio();
+                            }
                         }
                     });
                 }
