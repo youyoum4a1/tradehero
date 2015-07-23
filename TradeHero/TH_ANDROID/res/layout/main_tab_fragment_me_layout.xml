@@ -28,9 +28,35 @@
 
             <include layout="@layout/user_main_page_header"/>
 
-            <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/security_open_account"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:text="开通实盘"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/basic_blue_selector_round_corner"/>
+                <Button
+                    android:id="@+id/security_firm_bargain"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:text="实盘交易"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/basic_blue_selector_round_corner"/>
+            </LinearLayout>
 
             <RelativeLayout
                     android:id="@+id/rlMeDynamic"

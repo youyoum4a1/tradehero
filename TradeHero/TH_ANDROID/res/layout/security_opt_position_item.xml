@@ -21,6 +21,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="#1789d5"
                 android:textSize="12sp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
                 android:singleLine="true"
                 android:layout_gravity="center_horizontal"
                 android:text="- -"/>

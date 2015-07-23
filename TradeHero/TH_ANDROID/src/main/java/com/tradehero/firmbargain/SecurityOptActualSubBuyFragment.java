@@ -667,7 +667,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                 int rowCount = helper.getRowCount();
                 for(int i = 0; i < rowCount; i++) {
                     balance = helper.get(i, "enable_balance", 0.0);
-                    if(balance > 0){
+                    if(balance != 0){
                         if(availableCashTV!=null) {
                             availableCashTV.setText(DataUtils.keepInteger(balance));
                         }

@@ -1,11 +1,13 @@
 package com.tradehero.chinabuild;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -27,7 +29,9 @@ import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.firmbargain.HAITONGUtils;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -35,6 +39,7 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -45,13 +50,15 @@ import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+
+import cn.htsec.data.pkg.trade.TradeManager;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
-public class SettingMineFragment extends AbsBaseFragment {
+public class SettingMineFragment extends AbsBaseFragment implements View.OnClickListener{
 
     DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject PortfolioCompactCache portfolioCompactCache;
@@ -92,6 +99,9 @@ public class SettingMineFragment extends AbsBaseFragment {
     @InjectView(R.id.tvAllFans) TextView tvAllFans;
     @InjectView(R.id.tvEarning) TextView tvEarning;
 
+    private Button openAccountBtn;
+    private Button loginAccountBtn;
+
     @Inject Analytics analytics;
 
     @Override public void onCreate(Bundle savedInstanceState) {
@@ -106,6 +116,11 @@ public class SettingMineFragment extends AbsBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_tab_fragment_me_layout, container, false);
         ButterKnife.inject(this, view);
+
+        openAccountBtn = (Button)view.findViewById(R.id.security_open_account);
+        loginAccountBtn = (Button)view.findViewById(R.id.security_firm_bargain);
+        openAccountBtn.setOnClickListener(this);
+        loginAccountBtn.setOnClickListener(this);
 
         userProfileCacheListener = createUserProfileFetchListener();
         portfolioFetchListener = createPortfolioCacheListener();
@@ -150,6 +165,19 @@ public class SettingMineFragment extends AbsBaseFragment {
     protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
     {
         return new UserProfileFetchListener();
+    }
+
+    @Override
+    public void onClick(View view) {
+        int viewId = view.getId();
+        switch (viewId){
+            case R.id.security_open_account:
+                enterSecurityOpenAccount();
+                break;
+            case R.id.security_firm_bargain:
+                enterSecurityFirmBargain();
+                break;
+        }
     }
 
     protected class UserProfileFetchListener implements DTOCacheNew.Listener<UserBaseKey, UserProfileDTO>
@@ -450,5 +478,24 @@ public class SettingMineFragment extends AbsBaseFragment {
         detachPortfolioCompactListCache();
         portfolioCompactListCache.register(currentUserId.toUserBaseKey(), portfolioCompactListFetchListener);
         portfolioCompactListCache.getOrFetchAsync(currentUserId.toUserBaseKey());
+    }
+
+    private void enterSecurityFirmBargain(){
+        if(TradeManager.getInstance(Application.context()).isLogined()){
+            Bundle bundle = new Bundle();
+            bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
+            bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+            Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+
+        } else {
+            HAITONGUtils.jumpToLoginHAITONG(getActivity());
+        }
+    }
+
+    private void enterSecurityOpenAccount(){
+        HAITONGUtils.openAnAccount(getActivity());
     }
 }
