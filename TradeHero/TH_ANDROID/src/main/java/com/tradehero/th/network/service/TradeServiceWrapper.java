@@ -63,14 +63,29 @@ import retrofit.client.Response;
         tradeService.getClosedTrade(callback);
     }
 
+    public void getTradesWP(int portfolioId, Callback<ClosedTradeDTOList> callback)
+    {
+        tradeService.getClosedTradeWP(portfolioId, callback);
+    }
+
     public void getDelegation(Callback<ClosedTradeDTOList> callback)
     {
         tradeService.getDelegation(callback);
     }
 
+    public void getDelegationWP(int portfolio, Callback<ClosedTradeDTOList> callback)
+    {
+        tradeService.getDelegationWP(portfolio, callback);
+    }
+
     public void getPendingDelegation(Callback<ClosedTradeDTOList> callback)
     {
         tradeService.getPendingDelegation(callback);
+    }
+
+    public void getPendingDelegationWithPortfolio(int portfolioId, Callback<ClosedTradeDTOList> callback)
+    {
+        tradeService.getPendingDelegationWithPortfolio(portfolioId, callback);
     }
 
     public void deletePendingDelegation(int orderId, Callback<Response> callback)

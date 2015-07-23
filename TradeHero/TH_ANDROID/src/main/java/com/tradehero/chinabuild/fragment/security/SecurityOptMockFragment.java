@@ -149,7 +149,9 @@ public class SecurityOptMockFragment extends Fragment implements View.OnClickLis
             SecurityOptMockSubSellFragment securityOptMockSubSellFragment = new SecurityOptMockSubSellFragment();
             securityOptMockSubSellFragment.setArguments(getArguments());
             SecurityOptMockSubDelegationFragment securityOptMockSubDelegationFragment = new SecurityOptMockSubDelegationFragment();
+            securityOptMockSubDelegationFragment.setArguments(getArguments());
             SecurityOptMockSubQueryFragment securityOptMockSubQueryFragment = new SecurityOptMockSubQueryFragment();
+            securityOptMockSubQueryFragment.setArguments(getArguments());
             subFragments.add(securityOptMockSubBuyFragment);
             subFragments.add(securityOptMockSubSellFragment);
             subFragments.add(securityOptMockSubDelegationFragment);
