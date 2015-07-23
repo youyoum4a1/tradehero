@@ -99,7 +99,7 @@ public class KYCAddressWidget extends LinearLayout
                 {
                     @Override public void call(KYCAddress kycAddress)
                     {
-                        btnClearAll.setEnabled(
+                        checkBoxLessThanAYear.setEnabled(
                                 TextUtils.isEmpty(txtLine1.getText())
                                         && TextUtils.isEmpty(txtLine2.getText())
                                         && TextUtils.isEmpty(txtCity.getText())
