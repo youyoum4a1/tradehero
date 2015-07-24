@@ -265,7 +265,19 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             UserProfileDTO currentUserProfile)
                     {
                         //noinspection ConstantConditions
-                        populateSpinner(title, new GenderDTO(getResources(), ((KYCAyondoForm) situation.kycForm).getGender()), options.genderDTOs);
+                        Gender gender = ((KYCAyondoForm) situation.kycForm).getGender();
+                        if (gender == null)
+                        {
+                            Object selectedItem = title.getSelectedItem();
+                            if (selectedItem != null)
+                            {
+                                ((KYCAyondoForm) situation.kycForm).setGender(((GenderDTO) selectedItem).gender);
+                            }
+                        }
+                        else
+                        {
+                            populateSpinner(title, new GenderDTO(getResources(), gender), options.genderDTOs);
+                        }
                         populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedMobilePhoneCountryDTOs);
                         populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
                         populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
@@ -626,7 +638,24 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
-        setSpinnerOnFirst(spinnerPhoneCountryCode, candidates, liveCountryDTOs);
+        Integer index = setSpinnerOnFirst(spinnerPhoneCountryCode, candidates, liveCountryDTOs);
+        if (savedMobileNumberDialingPrefix == null)
+        {
+            CountrySpinnerAdapter.DTO chosenDTO;
+            if (index != null)
+            {
+                chosenDTO = liveCountryDTOs.get(index);
+            }
+            else
+            {
+                chosenDTO = (CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem();
+            }
+
+            if (chosenDTO != null)
+            {
+                kycForm.setMobileNumberDialingPrefix(chosenDTO.phoneCountryCode);
+            }
+        }
     }
 
     protected void populateNationality(
@@ -653,7 +682,24 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
-        setSpinnerOnFirst(spinnerNationality, candidates, liveCountryDTOs);
+        Integer index = setSpinnerOnFirst(spinnerNationality, candidates, liveCountryDTOs);
+        if (savedNationality == null)
+        {
+            CountrySpinnerAdapter.DTO chosenDTO;
+            if (index != null)
+            {
+                chosenDTO = liveCountryDTOs.get(index);
+            }
+            else
+            {
+                chosenDTO = (CountrySpinnerAdapter.DTO) spinnerNationality.getSelectedItem();
+            }
+
+            if (chosenDTO != null)
+            {
+                kycForm.setNationality(CountryCode.getByCode(chosenDTO.country.name()));
+            }
+        }
     }
 
     protected void populateResidency(
@@ -680,7 +726,24 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
-        setSpinnerOnFirst(spinnerResidency, candidates, liveCountryDTOs);
+        Integer index = setSpinnerOnFirst(spinnerResidency, candidates, liveCountryDTOs);
+        if (savedResidency == null)
+        {
+            CountrySpinnerAdapter.DTO chosenDTO;
+            if (index != null)
+            {
+                chosenDTO = liveCountryDTOs.get(index);
+            }
+            else
+            {
+                chosenDTO = (CountrySpinnerAdapter.DTO) spinnerResidency.getSelectedItem();
+            }
+
+            if (chosenDTO != null)
+            {
+                kycForm.setResidency(CountryCode.getByCode(chosenDTO.country.name()));
+            }
+        }
     }
 
     @NonNull protected List<CountrySpinnerAdapter.DTO> getFilteredByCountries(
@@ -698,7 +761,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return defaultOnes;
     }
 
-    protected void setSpinnerOnFirst(
+    @Nullable protected Integer setSpinnerOnFirst(
             @NonNull Spinner spinner,
             @NonNull List<CountrySpinnerAdapter.DTO> candidates,
             @NonNull List<CountrySpinnerAdapter.DTO> liveCountryDTOs)
@@ -719,6 +782,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             spinner.setSelection(countryIndex);
         }
+        return countryIndex;
     }
 
     @SuppressWarnings("unused")
