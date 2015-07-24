@@ -53,6 +53,11 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
 
     @Override public synchronized void set(@NonNull LiveBrokerSituationDTO value)
     {
+        LiveBrokerSituationDTO saved = get();
+        if (saved.kycForm != null && value.kycForm != null)
+        {
+            value.kycForm.pickFrom(saved.kycForm);
+        }
         try
         {
             preference.edit().putString(key, objectMapper.writeValueAsString(value)).apply();
