@@ -2,12 +2,12 @@ package com.tradehero.th.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -18,7 +18,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCAddress;
 import java.util.concurrent.TimeUnit;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnCheckedChangeEvent;
 import rx.android.view.OnClickEvent;
@@ -26,9 +25,7 @@ import rx.android.view.ViewObservable;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
-import rx.functions.Func4;
 import rx.functions.Func5;
-import rx.subjects.PublishSubject;
 
 public class KYCAddressWidget extends LinearLayout
 {
@@ -70,6 +67,15 @@ public class KYCAddressWidget extends LinearLayout
         LayoutInflater.from(getContext()).inflate(R.layout.address_widget_merged, this, true);
         ButterKnife.bind(this);
 
+        if (attrs != null)
+        {
+            TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.KYCAddressWidget, defStyleAttr, defStyleRes);
+            boolean showCheckbox = a.getBoolean(R.styleable.KYCAddressWidget_showCheckbox, true);
+            a.recycle();
+
+            checkBoxLessThanAYear.setVisibility(showCheckbox ? View.VISIBLE : View.GONE);
+        }
+
         observable = Observable.combineLatest(
                 WidgetObservable.text(txtLine1, true),
                 WidgetObservable.text(txtLine2, true),
@@ -100,10 +106,10 @@ public class KYCAddressWidget extends LinearLayout
                     @Override public void call(KYCAddress kycAddress)
                     {
                         checkBoxLessThanAYear.setEnabled(
-                                TextUtils.isEmpty(txtLine1.getText())
+                                !(TextUtils.isEmpty(txtLine1.getText())
                                         && TextUtils.isEmpty(txtLine2.getText())
                                         && TextUtils.isEmpty(txtCity.getText())
-                                        && TextUtils.isEmpty(txtPostalCode.getText()));
+                                        && TextUtils.isEmpty(txtPostalCode.getText())));
                     }
                 });
     }

@@ -40,6 +40,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private Geocoder mGeocoder;
 
     @Bind(R.id.info_address_pri) KYCAddressWidget primaryWidget;
+    @Bind(R.id.info_address_sec) KYCAddressWidget secondaryWidget;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -86,6 +87,13 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     }
                                 }),
                         primaryWidget.getKYCAddressObservable()
+                                .doOnNext(new Action1<KYCAddress>()
+                                {
+                                    @Override public void call(KYCAddress kycAddress)
+                                    {
+                                        secondaryWidget.setVisibility(kycAddress.lessThanAYear ? View.VISIBLE : View.GONE);
+                                    }
+                                })
                                 .map(new Func1<KYCAddress, List<KYCAddress>>()
                                 {
                                     @Override public List<KYCAddress> call(KYCAddress kycAddress)

@@ -9,4 +9,8 @@
     <attr name="android:text" />
     <attr name="android:drawableLeft" />
   </declare-styleable>
+
+  <declare-styleable name="KYCAddressWidget">
+    <attr name="showCheckbox" format="boolean"/>
+  </declare-styleable>
 </resources>
