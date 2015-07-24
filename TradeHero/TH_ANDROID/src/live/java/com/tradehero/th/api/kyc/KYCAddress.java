@@ -1,23 +1,42 @@
 package com.tradehero.th.api.kyc;
 
+import android.support.annotation.Nullable;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class KYCAddress
 {
-    public String addressLine1;
-    public String addressLine2;
-    public String city;
-    public String postalCode;
-    public boolean lessThanAYear;
+    private static final boolean DEFAULT_LESS_THAN_A_YEAR = false;
 
-    public KYCAddress(String addressLine1, String addressLine2, String city, String postalCode)
+    @Nullable public final String addressLine1;
+    @Nullable public final String addressLine2;
+    @Nullable public final String city;
+    @Nullable public final String postalCode;
+    public final boolean lessThanAYear;
+
+    public KYCAddress(
+            @Nullable String addressLine1,
+            @Nullable String addressLine2,
+            @Nullable String city,
+            @Nullable String postalCode)
+    {
+        this(addressLine1, addressLine2, city, postalCode, DEFAULT_LESS_THAN_A_YEAR);
+    }
+
+    public KYCAddress(
+            @JsonProperty("addressLine1") @Nullable String addressLine1,
+            @JsonProperty("addressLine2") @Nullable String addressLine2,
+            @JsonProperty("city") @Nullable String city,
+            @JsonProperty("postalCode") @Nullable String postalCode,
+            @JsonProperty("lessThanAYear") boolean lessThanAYear)
     {
         this.addressLine1 = addressLine1;
         this.addressLine2 = addressLine2;
         this.city = city;
         this.postalCode = postalCode;
-        this.lessThanAYear = false;
+        this.lessThanAYear = lessThanAYear;
     }
 
-    @Override public boolean equals(Object o)
+    @Override public boolean equals(@Nullable Object o)
     {
         if (this == o) return true;
         if (!(o instanceof KYCAddress)) return false;

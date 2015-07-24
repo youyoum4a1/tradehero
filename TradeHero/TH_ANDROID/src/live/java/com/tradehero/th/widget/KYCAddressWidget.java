@@ -90,13 +90,11 @@ public class KYCAddressWidget extends LinearLayout
                             OnTextChangeEvent onTextChangePostalCode,
                             OnCheckedChangeEvent onCheckedChangeEventYear)
                     {
-                        KYCAddress kycAddress;
-                        kycAddress = new KYCAddress(onTextChangeLine1.text().toString(), onTextChangeLine2.text().toString(),
-                                onTextChangeCity.text().toString(), onTextChangePostalCode.text().toString());
-
-                        kycAddress.lessThanAYear = onCheckedChangeEventYear.value();
-
-                        return kycAddress;
+                        return new KYCAddress(onTextChangeLine1.text().toString(),
+                                onTextChangeLine2.text().toString(),
+                                onTextChangeCity.text().toString(),
+                                onTextChangePostalCode.text().toString(),
+                                onCheckedChangeEventYear.value());
                     }
                 })
                 .throttleLast(300, TimeUnit.MILLISECONDS)
