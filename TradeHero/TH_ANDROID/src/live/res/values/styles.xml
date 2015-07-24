@@ -69,4 +69,11 @@
     <item name="android:enabled">false</item>
   </style>
 
+  <style name="TH.LiveFormField"
+      parent="TH.Body">
+    <item name="android:singleLine">true</item>
+    <item name="android:inputType">textPostalAddress|textCapWords</item>
+    <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
+  </style>
+
 </resources>

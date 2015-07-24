@@ -46,41 +46,34 @@
 
   <EditText
       android:id="@+id/info_address_line1"
-      style="@style/TH.Body"
+      style="@style/TH.LiveFormField"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:hint="@string/address_line_1"
-      android:inputType="textPostalAddress|textCapWords"
-      android:minHeight="@dimen/clickable_element_min_dimen"
       />
 
   <EditText
       android:id="@+id/info_address_line2"
-      style="@style/TH.Body"
+      style="@style/TH.LiveFormField"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:hint="@string/address_line_2"
-      android:inputType="textPostalAddress|textCapWords"
-      android:minHeight="@dimen/clickable_element_min_dimen"
       />
 
   <EditText
       android:id="@+id/info_city"
-      style="@style/TH.Body"
+      style="@style/TH.LiveFormField"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:hint="@string/city"
-      android:minHeight="@dimen/clickable_element_min_dimen"
       />
 
   <EditText
       android:id="@+id/info_postal_code"
-      style="@style/TH.Body"
+      style="@style/TH.LiveFormField"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:hint="@string/postal_code"
-      android:inputType="textPostalAddress|textCapWords"
-      android:minHeight="@dimen/clickable_element_min_dimen"
       />
 
   <CheckBox
