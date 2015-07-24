@@ -21,6 +21,8 @@ import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.settings.ImageRequesterUtil;
+import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
+import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
@@ -36,6 +38,7 @@ import com.tradehero.th.widget.DocumentActionWidgetObservable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnCheckedChangeEvent;
@@ -101,11 +104,9 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             public LiveBrokerSituationDTO call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO, LiveBrokerSituationDTO situationDTO)
                             {
                                 //noinspection ConstantConditions
-                                populateSpinner(identityDocumentTypeSpinner,
-                                        ((KYCAyondoForm) situationDTO.kycForm).getIdentityDocumentType(),
+                                populateIdentityDocumentType((KYCAyondoForm) situationDTO.kycForm,
                                         kycAyondoFormOptionsDTO.getIdentityDocumentTypes());
-                                populateSpinner(residenceDocumentTypeSpinner,
-                                        ((KYCAyondoForm) situationDTO.kycForm).getResidenceDocumentType(),
+                                populateResidenceDocumentType((KYCAyondoForm) situationDTO.kycForm,
                                         kycAyondoFormOptionsDTO.residenceDocumentTypes);
                                 return situationDTO;
                             }
@@ -420,17 +421,81 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             termsConditionsCheckBox.setChecked(agreeTerms);
         }
+        else
+        {
+            kycForm.setAgreeTermsConditions(termsConditionsCheckBox.isChecked());
+        }
 
         Boolean riskWarning = kycForm.isAgreeRisksWarnings();
         if (riskWarning != null)
         {
             riskWarningCheckBox.setChecked(riskWarning);
         }
+        else
+        {
+            kycForm.setAgreeRisksWarnings(riskWarningCheckBox.isChecked());
+        }
 
         Boolean dataSharing = kycForm.isAgreeDataSharing();
         if (dataSharing != null)
         {
             dataSharingCheckBox.setChecked(dataSharing);
+        }
+        else
+        {
+            kycForm.setAgreeDataSharing(dataSharingCheckBox.isChecked());
+        }
+    }
+
+    private void populateIdentityDocumentType(@NonNull KYCAyondoForm kycForm,
+            @NonNull List<IdentityScannedDocumentType> identityScannedDocumentTypes)
+    {
+        IdentityScannedDocumentType type = kycForm.getIdentityDocumentType();
+        Integer index = populateSpinner(identityDocumentTypeSpinner,
+                type,
+                identityScannedDocumentTypes);
+        if (type == null)
+        {
+            IdentityScannedDocumentType chosen;
+            if (index != null)
+            {
+                chosen = identityScannedDocumentTypes.get(index);
+            }
+            else
+            {
+                chosen = ((IdentityDocumentDTO) identityDocumentTypeSpinner.getSelectedItem()).identityScannedDocumentType;
+            }
+
+            if (chosen != null)
+            {
+                kycForm.setIdentityDocumentType(chosen);
+            }
+        }
+    }
+
+    private void populateResidenceDocumentType(@NonNull KYCAyondoForm kycForm,
+            @NonNull List<ResidenceScannedDocumentType> residenceScannedDocumentTypes)
+    {
+        ResidenceScannedDocumentType type = kycForm.getResidenceDocumentType();
+        Integer index = populateSpinner(residenceDocumentTypeSpinner,
+                type,
+                residenceScannedDocumentTypes);
+        if (type == null)
+        {
+            ResidenceScannedDocumentType chosen;
+            if (index != null)
+            {
+                chosen = residenceScannedDocumentTypes.get(index);
+            }
+            else
+            {
+                chosen = ((ResidenceDocumentDTO) residenceDocumentTypeSpinner.getSelectedItem()).residenceScannedDocumentType;
+            }
+
+            if (chosen != null)
+            {
+                kycForm.setResidenceDocumentType(chosen);
+            }
         }
     }
 
