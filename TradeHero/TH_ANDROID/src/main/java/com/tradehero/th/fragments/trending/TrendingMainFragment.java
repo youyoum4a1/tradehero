@@ -335,12 +335,15 @@ public class TrendingMainFragment extends DashboardFragment
 
     private void inflateCustomToolbarView()
     {
-        View view = LayoutInflater.from(actionBarOwnerMixin.getActionBar().getThemedContext())
-                .inflate(R.layout.trending_custom_actionbar, toolbar, false);
-        setActionBarTitle("");
-        setupStockFxSwitcher(view);
-        setupExchangeSpinner(view);
-        actionBarOwnerMixin.setCustomView(view);
+        if (actionBarOwnerMixin.getActionBar() != null)
+        {
+            View view = LayoutInflater.from(actionBarOwnerMixin.getActionBar().getThemedContext())
+                    .inflate(R.layout.trending_custom_actionbar, toolbar, false);
+            setActionBarTitle("");
+            setupStockFxSwitcher(view);
+            setupExchangeSpinner(view);
+            actionBarOwnerMixin.setCustomView(view);
+        }
     }
 
     private void setupStockFxSwitcher(@NonNull View view)
