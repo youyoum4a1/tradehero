@@ -232,9 +232,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             {
                                 LollipopArrayAdapter<GenderDTO> genderAdapter = new LollipopArrayAdapter<>(
                                         getActivity(),
-                                        options.genderDTOs);
+                                        GenderDTO.createList(getResources(), options.genders));
                                 title.setAdapter(genderAdapter);
-                                title.setEnabled(options.genderDTOs.size() > 1);
+                                title.setEnabled(options.genders.size() > 1);
 
                                 CountrySpinnerAdapter phoneCountryCodeAdapter =
                                         new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
@@ -265,19 +265,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             UserProfileDTO currentUserProfile)
                     {
                         //noinspection ConstantConditions
-                        Gender gender = ((KYCAyondoForm) situation.kycForm).getGender();
-                        if (gender == null)
-                        {
-                            Object selectedItem = title.getSelectedItem();
-                            if (selectedItem != null)
-                            {
-                                ((KYCAyondoForm) situation.kycForm).setGender(((GenderDTO) selectedItem).gender);
-                            }
-                        }
-                        else
-                        {
-                            populateSpinner(title, new GenderDTO(getResources(), gender), options.genderDTOs);
-                        }
+                        populateGender((KYCAyondoForm) situation.kycForm, options.genders);
                         populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedMobilePhoneCountryDTOs);
                         populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
                         populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
@@ -618,6 +606,31 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     && typedNumber.equals(kycForm.getVerifiedMobileNumber());
             buttonVerifyPhone.setEnabled(!verified && !TextUtils.isEmpty(typedNumber));
             buttonVerifyPhone.setText(verified ? R.string.verified : R.string.verify);
+        }
+    }
+
+    protected void populateGender(
+            @NonNull final KYCAyondoForm kycForm,
+            @NonNull List<Gender> genders)
+    {
+        Gender savedGender = kycForm.getGender();
+        Integer genderIndex = populateSpinner(title, savedGender, genders);
+        if (savedGender == null)
+        {
+            Gender chosenGender;
+            if (genderIndex != null)
+            {
+                chosenGender = genders.get(genderIndex);
+            }
+            else
+            {
+                chosenGender = (Gender) title.getSelectedItem();
+            }
+
+            if (chosenGender != null)
+            {
+                kycForm.setGender(chosenGender);
+            }
         }
     }
 

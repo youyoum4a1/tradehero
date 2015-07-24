@@ -4,20 +4,21 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
+import com.tradehero.th.models.fastfill.Gender;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 class CountryDTOForSpinner
 {
-    @NonNull public final List<GenderDTO> genderDTOs;
+    @NonNull public final List<Gender> genders;
     @NonNull public final List<CountrySpinnerAdapter.DTO> allowedMobilePhoneCountryDTOs;
     @NonNull public final List<CountrySpinnerAdapter.DTO> allowedResidencyCountryDTOs;
     @NonNull public final List<CountrySpinnerAdapter.DTO> allowedNationalityCountryDTOs;
 
     public CountryDTOForSpinner(@NonNull Context context, @NonNull KYCAyondoFormOptionsDTO options)
     {
-        genderDTOs = GenderDTO.createList(context.getResources(), options.genders);
+        genders = Collections.unmodifiableList(options.genders);
 
         Comparator<CountrySpinnerAdapter.DTO> dtoComparator = new CountrySpinnerAdapter.DTOCountryNameComparator(context);
 
