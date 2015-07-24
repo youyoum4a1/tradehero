@@ -333,5 +333,6 @@
   <string name="create">Create</string>
   <string name="clear_all">Clear All</string>
   <string name="hint_full_name">Full Name</string>
+  <string name="previous_address">Previous Address</string>
 
 </resources>

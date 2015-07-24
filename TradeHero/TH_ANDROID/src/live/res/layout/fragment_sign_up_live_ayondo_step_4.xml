@@ -11,6 +11,7 @@
       style="@style/TradeHero.Live.SignUpInnerContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:animateLayoutChanges="true"
       >
 
     <TextView
@@ -28,13 +29,23 @@
         android:layout_height="wrap_content"
         />
 
-    <com.tradehero.th.widget.KYCAddressWidget
+      <TextView
+          android:id="@+id/info_address_sec_title"
+          style="@style/TH.Subhead"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_xsmall"
+          android:layout_marginBottom="@dimen/margin_xsmall"
+          android:gravity="center_horizontal"
+          android:text="@string/previous_address"
+          />
+
+      <com.tradehero.th.widget.KYCAddressWidget
         android:id="@+id/info_address_sec"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_xsmall"
-        app:showCheckbox="false"
         android:visibility="gone"
+          app:showCheckbox="false"
         tools:visibility="visible"
         />
 

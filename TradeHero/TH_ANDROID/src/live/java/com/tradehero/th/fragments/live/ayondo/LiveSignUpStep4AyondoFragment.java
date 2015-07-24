@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -43,6 +44,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Bind(R.id.info_address_pri) KYCAddressWidget primaryWidget;
     @Bind(R.id.info_address_sec) KYCAddressWidget secondaryWidget;
+    @Bind(R.id.info_address_sec_title) TextView secondaryAddressWidget;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -104,7 +106,9 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         {
                                             @Override public void call(KYCAddress kycAddress)
                                             {
-                                                secondaryWidget.setVisibility(kycAddress.lessThanAYear ? View.VISIBLE : View.GONE);
+                                                int visibility = kycAddress.lessThanAYear ? View.VISIBLE : View.GONE;
+                                                secondaryAddressWidget.setVisibility(visibility);
+                                                secondaryWidget.setVisibility(visibility);
                                             }
                                         }),
                                 secondaryWidget.getKYCAddressObservable(),
