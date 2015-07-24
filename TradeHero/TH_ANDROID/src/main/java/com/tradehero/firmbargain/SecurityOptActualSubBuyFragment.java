@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -86,7 +87,6 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
     private String securityExchange = "";
     private String securitySymbol = "";
     private String securityName = "";
-    private int competitionId = 0;
     private double balance = 0.0;
 
     //Buy Sell Layout
@@ -177,6 +177,31 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         if (securityOptPositionActualAdapter == null) {
             securityOptPositionActualAdapter = new SecurityOptPositionActualAdapter(getActivity());
         }
+        positionsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+//                SecurityOptPositionActualDTO securityOptPositionActualDTO = securityOptPositionActualAdapter.getItem(position);
+//                if(securityOptPositionActualDTO ==null || !isSHASHE(securityOptPositionActualDTO.market_name) || !TextUtils.isEmpty(securityOptPositionActualDTO.sec_code)){
+//                    return;
+//                }
+//                boolean isEmptyBefore = false;
+//                if(TextUtils.isEmpty(securityExchange) && TextUtils.isEmpty(securitySymbol)){
+//                    isEmptyBefore = true;
+//                }
+//                setExchange(securityOptPositionActualDTO.market_name);
+//                securitySymbol = securityOptPositionActualDTO.sec_code;
+//                securityName = securityOptPositionActualDTO.sec_name;
+//                priceET.setText("");
+//                decisionET.setText("");
+//                securityCodeTV.setText(securitySymbol + " " + securityName);
+//                clearAllSellBuy();
+//                if(isEmptyBefore){
+//                    quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
+//                } else {
+//                    quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLNoRepeatCallback());
+//                }
+            }
+        });
         positionsLV.setAdapter(securityOptPositionActualAdapter);
         securityCodeTV = (TextView) view.findViewById(R.id.textview_security_code);
         securityCodeTV.setOnClickListener(new View.OnClickListener() {
@@ -500,7 +525,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         int valueNew = value / 100;
         if (valueNew > 10000) {
             double valueNewD = (double) valueNew / 10000.0;
-            return DataUtils.keepOneDecimal(valueNewD) + "万";
+            return DataUtils.keepTwoDecimal(valueNewD) + "万";
         } else {
             return String.valueOf(valueNew);
         }
@@ -516,6 +541,19 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
 
     private boolean isSHASHE(){
         if (securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isSHASHE(String marketName){
+        if(TextUtils.isEmpty(marketName)){
+            return false;
+        }
+        if(marketName.equals("沪A")){
+            return true;
+        }
+        if(marketName.equals("深A")){
             return true;
         }
         return false;
@@ -557,6 +595,20 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         }
     }
 
+    class RefreshBUYSELLNoRepeatCallback implements  Callback<QuoteDetail> {
+        @Override
+        public void success(QuoteDetail quoteDetail, Response response) {
+            SecurityOptActualSubBuyFragment.this.quoteDetail = quoteDetail;
+            if (securitySymbol.equals(quoteDetail.symb)) {
+                setSellBuyData(quoteDetail);
+            }
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+        }
+    }
+
     class RefreshBuySellHandler extends Handler {
         public void handleMessage(Message msg) {
             quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
@@ -591,6 +643,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                     securityOptPositionActualDTO.cost_price = helper.get(i, "cost_price", 0.0);
                     securityOptPositionActualDTO.current_amt = helper.get(i, "current_amt", 0.0);
                     securityOptPositionActualDTO.enable_amt = helper.get(i, "enable_amt", 0.0);
+                    securityOptPositionActualDTO.market_name = helper.get(i, "market_name", "");
                     securityOptPositionActualDTOs.add(securityOptPositionActualDTO);
                 }
                 securityOptPositionActualAdapter.addData(securityOptPositionActualDTOs);
@@ -756,5 +809,43 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                 });
             }
         }
+    }
+
+    private void setExchange(String marketName){
+        if(TextUtils.isEmpty(marketName)){
+            return;
+        }
+        if(marketName.equals("沪A")){
+            securityExchange = "SHA";
+            return;
+        }
+        if(marketName.equals("深A")){
+            securityExchange = "SHE";
+            return;
+        }
+    }
+
+    private void clearAllSellBuy(){
+        buy1Price.setText("- -");
+        buy1Amount.setText("- -");
+        buy2Price.setText("- -");
+        buy2Amount.setText("- -");
+        buy3Price.setText("- -");
+        buy3Amount.setText("- -");
+        buy4Price.setText("- -");
+        buy4Amount.setText("- -");
+        buy5Price.setText("- -");
+        buy5Amount.setText("- -");
+
+        sell1Price.setText("- -");
+        sell1Amount.setText("- -");
+        sell2Price.setText("- -");
+        sell2Amount.setText("- -");
+        sell3Price.setText("- -");
+        sell3Amount.setText("- -");
+        sell4Price.setText("- -");
+        sell4Amount.setText("- -");
+        sell5Price.setText("- -");
+        sell5Amount.setText("- -");
     }
 }

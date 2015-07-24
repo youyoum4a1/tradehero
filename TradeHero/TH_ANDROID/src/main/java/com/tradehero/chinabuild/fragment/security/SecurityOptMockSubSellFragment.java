@@ -650,8 +650,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         int valueNew = value/100;
         if(valueNew > 10000){
             double valueNewD = (double)valueNew/10000.0;
-            DecimalFormat df =new DecimalFormat("#.0");
-            return df.format(valueNewD) + "万";
+            return DataUtils.keepTwoDecimal(valueNewD) + "万";
         } else{
             return String.valueOf(valueNew);
         }

@@ -15,5 +15,6 @@ public class SecurityOptPositionActualDTO {
     public double cost_price = 0.00;
     public double profit = 0.00;
     public double profit_ratio = 0.00;
+    public String market_name = "";
 
 }

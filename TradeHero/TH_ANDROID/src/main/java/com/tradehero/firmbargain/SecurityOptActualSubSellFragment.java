@@ -497,7 +497,7 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         int valueNew = value / 100;
         if (valueNew > 10000) {
             double valueNewD = (double) valueNew / 10000.0;
-            return DataUtils.keepOneDecimal(valueNewD) + "万";
+            return DataUtils.keepTwoDecimal(valueNewD) + "万";
         } else {
             return String.valueOf(valueNew);
         }
