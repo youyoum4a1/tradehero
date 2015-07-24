@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.th.R;
+import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
@@ -19,6 +20,7 @@ import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
+import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnCheckedChangeEvent;
@@ -33,8 +35,8 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.attended_seminar_ayondo) CompoundButton attendedSeminarAyondoButton;
     @Bind(R.id.have_other_qualification) CompoundButton haveOtherQualificationButton;
     @Bind(R.id.traded_shares_bonds) CompoundButton tradedSharesBondsButton;
-    @Bind(R.id.traded_otc_derivative) CompoundButton tradedOtcDerivative;
-    @Bind(R.id.traded_etc) CompoundButton tradedEtc;
+    @Bind(R.id.traded_otc_derivative) CompoundButton tradedOtcDerivativeButton;
+    @Bind(R.id.traded_etc) CompoundButton tradedEtcButton;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -52,14 +54,8 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public void call(LiveBrokerSituationDTO situationDTO)
                             {
-                                KYCAyondoForm kycForm = (KYCAyondoForm) situationDTO.kycForm;
                                 //noinspection ConstantConditions
-                                setChecked(workInFinanceButton, kycForm.isWorkedInFinance1Year());
-                                setChecked(attendedSeminarAyondoButton, kycForm.isAttendedSeminarAyondo());
-                                setChecked(haveOtherQualificationButton, kycForm.isHaveOtherQualification());
-                                setChecked(tradedSharesBondsButton, kycForm.isTradedSharesBonds());
-                                setChecked(tradedOtcDerivative, kycForm.isTradedOtcDerivative());
-                                setChecked(tradedEtc, kycForm.isTradedEtc());
+                                populate((KYCAyondoForm) situationDTO.kycForm);
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread()),
@@ -82,9 +78,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     public Object call(LiveBrokerSituationDTO liveBrokerSituationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
                     {
                         //noinspection ConstantConditions
-                        populateSpinner(tradingPerQuarterSpinner,
-                                ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getTradingPerQuarter(),
-                                kycFormOptionsDTO.tradingPerQuarterOptions);
+                        populateTradingPerQuarter((KYCAyondoForm) liveBrokerSituationDTO.kycForm, kycFormOptionsDTO.tradingPerQuarterOptions);
                         return null;
                     }
                 })
@@ -149,7 +143,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         }),
                 Observable.combineLatest(
                         getBrokerSituationObservable(),
-                        WidgetObservable.input(tradedOtcDerivative),
+                        WidgetObservable.input(tradedOtcDerivativeButton),
                         new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
                         {
                             @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO,
@@ -162,7 +156,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         }),
                 Observable.combineLatest(
                         getBrokerSituationObservable(),
-                        WidgetObservable.input(tradedEtc),
+                        WidgetObservable.input(tradedEtcButton),
                         new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
                         {
                             @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO,
@@ -208,6 +202,96 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (checked != null)
         {
             button.setChecked(checked);
+        }
+    }
+
+    protected void populate(@NonNull KYCAyondoForm kycForm)
+    {
+        Boolean workedInFinance = kycForm.isWorkedInFinance1Year();
+        if (workedInFinance != null)
+        {
+            workInFinanceButton.setChecked(workedInFinance);
+        }
+        else
+        {
+            kycForm.setWorkedInFinance1Year(workInFinanceButton.isChecked());
+        }
+
+        Boolean attendedSeminar = kycForm.isAttendedSeminarAyondo();
+        if (attendedSeminar != null)
+        {
+            attendedSeminarAyondoButton.setChecked(attendedSeminar);
+        }
+        else
+        {
+            kycForm.setAttendedSeminarAyondo(attendedSeminarAyondoButton.isChecked());
+        }
+
+        Boolean otherQualification = kycForm.isHaveOtherQualification();
+        if (otherQualification != null)
+        {
+            haveOtherQualificationButton.setChecked(otherQualification);
+        }
+        else
+        {
+            kycForm.setHaveOtherQualification(haveOtherQualificationButton.isChecked());
+        }
+
+        Boolean tradeSharesBonds = kycForm.isTradedSharesBonds();
+        if (tradeSharesBonds != null)
+        {
+            tradedSharesBondsButton.setChecked(tradeSharesBonds);
+        }
+        else
+        {
+            kycForm.setTradedSharesBonds(tradedSharesBondsButton.isChecked());
+        }
+
+        Boolean tradedOtc = kycForm.isTradedOtcDerivative();
+        if (tradedOtc != null)
+        {
+            tradedOtcDerivativeButton.setChecked(tradedOtc);
+        }
+        else
+        {
+            kycForm.setTradedOtcDerivative(tradedOtcDerivativeButton.isChecked());
+        }
+
+        Boolean tradedEtc = kycForm.isTradedEtc();
+        if (tradedEtc != null)
+        {
+            tradedEtcButton.setChecked(tradedEtc);
+        }
+        else
+        {
+            kycForm.setTradedEtc(tradedEtcButton.isChecked());
+        }
+    }
+
+    protected void populateTradingPerQuarter(
+            @NonNull KYCAyondoForm kycForm,
+            @NonNull List<TradingPerQuarter> tradingPerQuarters)
+    {
+        TradingPerQuarter savedTrading = kycForm.getTradingPerQuarter();
+        Integer indexTrading = populateSpinner(tradingPerQuarterSpinner,
+                savedTrading,
+                tradingPerQuarters);
+        if (savedTrading == null)
+        {
+            TradingPerQuarter chosenRange;
+            if (indexTrading != null)
+            {
+                chosenRange = tradingPerQuarters.get(indexTrading);
+            }
+            else
+            {
+                chosenRange = ((TradingPerQuarterDTO) tradingPerQuarterSpinner.getSelectedItem()).tradingPerQuarter;
+            }
+
+            if (chosenRange != null)
+            {
+                kycForm.setTradingPerQuarter(chosenRange);
+            }
         }
     }
 }

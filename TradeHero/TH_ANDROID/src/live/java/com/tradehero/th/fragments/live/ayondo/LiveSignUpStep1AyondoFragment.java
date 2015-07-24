@@ -624,7 +624,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             }
             else
             {
-                chosenGender = (Gender) title.getSelectedItem();
+                chosenGender = ((GenderDTO) title.getSelectedItem()).gender;
             }
 
             if (chosenGender != null)
