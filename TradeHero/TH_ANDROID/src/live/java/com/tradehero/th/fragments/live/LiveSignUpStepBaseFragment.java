@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
@@ -132,6 +133,44 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                                 .map(new PairGetSecond<KYCFormOptionsId, KYCFormOptionsDTO>());
                     }
                 });
+    }
+
+    @Nullable protected <T> Integer setSpinnerOnFirst(
+            @NonNull Spinner spinner,
+            @NonNull List<T> candidates,
+            @NonNull List<T> values)
+    {
+        Integer index = null;
+        int itemIndex;
+        for (T candidate : candidates)
+        {
+            itemIndex = values.indexOf(candidate);
+            if (itemIndex >= 0)
+            {
+                index = itemIndex;
+                break;
+            }
+        }
+
+        if (index != null)
+        {
+            spinner.setSelection(index);
+        }
+        return index;
+    }
+
+    @Nullable protected <T> Integer populateSpinner(@NonNull Spinner spinner, @Nullable T value, @NonNull List<T> list)
+    {
+        if (value != null)
+        {
+            int index = list.indexOf(value);
+            if (index >= 0)
+            {
+                spinner.setSelection(index);
+            }
+            return index;
+        }
+        return null;
     }
 
     protected static class LollipopArrayAdapter<T> extends ArrayAdapter<T>

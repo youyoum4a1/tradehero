@@ -761,30 +761,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return defaultOnes;
     }
 
-    @Nullable protected Integer setSpinnerOnFirst(
-            @NonNull Spinner spinner,
-            @NonNull List<CountrySpinnerAdapter.DTO> candidates,
-            @NonNull List<CountrySpinnerAdapter.DTO> liveCountryDTOs)
-    {
-        Integer countryIndex = null;
-        int candidatePhoneCountryIndex;
-        for (CountrySpinnerAdapter.DTO candidate : candidates)
-        {
-            candidatePhoneCountryIndex = liveCountryDTOs.indexOf(candidate);
-            if (candidatePhoneCountryIndex >= 0)
-            {
-                countryIndex = candidatePhoneCountryIndex;
-                break;
-            }
-        }
-
-        if (countryIndex != null)
-        {
-            spinner.setSelection(countryIndex);
-        }
-        return countryIndex;
-    }
-
     @SuppressWarnings("unused")
     @OnClick(R.id.btn_verify_phone)
     protected void onVerifyPhoneClicked(View view)
