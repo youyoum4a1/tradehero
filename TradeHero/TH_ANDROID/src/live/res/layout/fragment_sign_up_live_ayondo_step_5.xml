@@ -22,18 +22,18 @@
         />
 
     <TextView
+        style="@style/TH.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        style="@style/TH.Caption"
         android:text="@string/proof_identity_caption"
         />
 
     <Spinner
         android:id="@+id/identity_document_type"
+        style="@style/TH.Spinner"
         android:layout_width="match_parent"
         android:layout_height="@dimen/clickable_element_min_dimen"
-        style="@style/TH.Spinner"
         />
 
     <com.tradehero.th.widget.DocumentActionWidget
@@ -46,10 +46,10 @@
         />
 
     <TextView
+        style="@style/TH.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
-        style="@style/TH.Caption"
         android:text="@string/proof_residence_caption"
         />
 
@@ -74,8 +74,8 @@
         style="@style/TH.Subhead"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
         android:layout_marginBottom="@dimen/margin_xsmall"
+        android:layout_marginTop="@dimen/margin_small"
         android:gravity="center_horizontal"
         android:text="@string/live_agree_to_title"
         />
@@ -83,8 +83,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:theme="@style/TradeHero.Live.Form"
         >
 
       <CheckBox
@@ -92,17 +92,21 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/empty"
           android:paddingLeft="@dimen/margin_xsmall"
           android:paddingRight="@dimen/margin_xsmall"
+          android:text="@string/empty"
+          android:theme="@style/TradeHero.Live.Form"
           />
 
       <TextView
           android:id="@+id/agree_terms_conditions"
+          style="@style/TH.Button.Small.Link"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:background="@drawable/basic_transparent_selector"
+          android:gravity="center_vertical"
+          android:minHeight="@dimen/clickable_element_min_dimen"
           android:text="@string/live_agree_to_terms_and_conditions"
-          style="@style/TH.Button.Small.Link"
           />
 
     </LinearLayout>
@@ -110,8 +114,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:theme="@style/TradeHero.Live.Form"
         >
 
       <CheckBox
@@ -119,17 +123,21 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/empty"
           android:paddingLeft="@dimen/margin_xsmall"
           android:paddingRight="@dimen/margin_xsmall"
+          android:text="@string/empty"
+          android:theme="@style/TradeHero.Live.Form"
           />
 
       <TextView
           android:id="@+id/agree_risk_warning"
+          style="@style/TH.Button.Small.Link"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:background="@drawable/basic_transparent_selector"
+          android:gravity="center_vertical"
+          android:minHeight="@dimen/clickable_element_min_dimen"
           android:text="@string/live_agree_to_risks_and_warnings_disclaimer"
-          style="@style/TH.Button.Small.Link"
           />
 
     </LinearLayout>
@@ -137,8 +145,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:theme="@style/TradeHero.Live.Form"
         >
 
       <CheckBox
@@ -146,17 +154,21 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/empty"
           android:paddingLeft="@dimen/margin_xsmall"
           android:paddingRight="@dimen/margin_xsmall"
+          android:text="@string/empty"
+          android:theme="@style/TradeHero.Live.Form"
           />
 
       <TextView
           android:id="@+id/agree_data_sharing"
+          style="@style/TH.Button.Small.Link"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
+          android:background="@drawable/basic_transparent_selector"
+          android:gravity="center_vertical"
+          android:minHeight="@dimen/clickable_element_min_dimen"
           android:text="@string/live_agree_to_data_sharing_agreement"
-          style="@style/TH.Button.Small.Link"
           />
 
     </LinearLayout>
@@ -170,9 +182,9 @@
 
       <Button
           android:id="@+id/btn_prev"
+          style="@style/TH.Button.LiveForm"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          style="@style/TH.Button.LiveForm"
           android:layout_alignParentLeft="true"
           android:layout_alignParentStart="true"
           android:enabled="true"
@@ -180,13 +192,13 @@
           />
 
       <Button
+          style="@style/TH.Button.LiveForm"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          style="@style/TH.Button.LiveForm"
-          android:layout_alignParentRight="true"
           android:layout_alignParentEnd="true"
-          tools:enabled="true"
+          android:layout_alignParentRight="true"
           android:text="@string/create"
+          tools:enabled="true"
           />
 
     </RelativeLayout>
