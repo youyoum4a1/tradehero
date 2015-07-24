@@ -103,11 +103,16 @@ public class KYCAddressWidget extends LinearLayout
                 {
                     @Override public void call(KYCAddress kycAddress)
                     {
-                        checkBoxLessThanAYear.setEnabled(
+                        boolean enabled =
                                 !(TextUtils.isEmpty(txtLine1.getText())
                                         && TextUtils.isEmpty(txtLine2.getText())
                                         && TextUtils.isEmpty(txtCity.getText())
-                                        && TextUtils.isEmpty(txtPostalCode.getText())));
+                                        && TextUtils.isEmpty(txtPostalCode.getText()));
+                        checkBoxLessThanAYear.setEnabled(enabled);
+                        if (!enabled)
+                        {
+                            checkBoxLessThanAYear.setChecked(false);
+                        }
                     }
                 });
     }
