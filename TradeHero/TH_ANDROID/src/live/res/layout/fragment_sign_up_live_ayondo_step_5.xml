@@ -96,6 +96,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:theme="@style/TradeHero.Live.Form"
         >
 
       <CheckBox
@@ -113,7 +114,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/live_agree_to_terms_and_conditions"
-          style="@style/TH.Body.Accented"
+          style="@style/TH.Button.Small.Link"
           />
 
     </LinearLayout>
@@ -122,6 +123,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:theme="@style/TradeHero.Live.Form"
         >
 
       <CheckBox
@@ -139,7 +141,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/live_agree_to_risks_and_warnings_disclaimer"
-          style="@style/TH.Body.Accented"
+          style="@style/TH.Button.Small.Link"
           />
 
     </LinearLayout>
@@ -148,6 +150,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:theme="@style/TradeHero.Live.Form"
         >
 
       <CheckBox
@@ -165,7 +168,7 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:text="@string/live_agree_to_data_sharing_agreement"
-          style="@style/TH.Body.Accented"
+          style="@style/TH.Button.Small.Link"
           />
 
     </LinearLayout>
