@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -21,7 +20,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
@@ -35,6 +33,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
 import com.tradehero.th.fragments.live.DatePickerDialogFragment;
 import com.tradehero.th.fragments.live.VerifyCodeDigitView;
+import com.tradehero.th.models.fastfill.Gender;
 import com.tradehero.th.models.sms.SMSId;
 import com.tradehero.th.models.sms.SMSRequestFactory;
 import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
@@ -52,7 +51,6 @@ import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.validation.TextValidator;
 import com.tradehero.th.widget.validation.ValidatedText;
 import com.tradehero.th.widget.validation.ValidationMessage;
@@ -128,27 +126,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        ArrayAdapter stringArrayAdapter =
-                new ArrayAdapter<String>(getActivity(),
-                        R.layout.sign_up_dropdown_item_selected,
-                        getResources().getStringArray(R.array.live_title_array))
-                {
-                    @Override public View getView(int position, View convertView, ViewGroup parent)
-                    {
-                        View v = super.getView(position, convertView, parent);
-                        if (!SDKUtils.isLollipopOrHigher())
-                        {
-                            if (v instanceof TextView)
-                            {
-                                ((TextView) v).setCompoundDrawablesWithIntrinsicBounds(null, null,
-                                        GraphicUtil.createStateListDrawableRes(v.getContext(), R.drawable.abc_spinner_mtrl_am_alpha), null);
-                            }
-                        }
-                        return v;
-                    }
-                };
-        stringArrayAdapter.setDropDownViewResource(R.layout.sign_up_dropdown_item);
-        title.setAdapter(stringArrayAdapter);
 
         onDestroyViewSubscriptions.add(Observable.merge(
                 Observable.combineLatest(
@@ -253,6 +230,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public void call(CountryDTOForSpinner options)
                             {
+                                LollipopArrayAdapter<GenderDTO> genderAdapter = new LollipopArrayAdapter<>(
+                                        getActivity(),
+                                        options.genderDTOs);
+                                title.setAdapter(genderAdapter);
+                                title.setEnabled(options.genderDTOs.size() > 1);
+
                                 CountrySpinnerAdapter phoneCountryCodeAdapter =
                                         new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
                                 phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
@@ -282,6 +265,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             UserProfileDTO currentUserProfile)
                     {
                         //noinspection ConstantConditions
+                        populateSpinner(title, new GenderDTO(getResources(), ((KYCAyondoForm) situation.kycForm).getGender()), options.genderDTOs);
                         populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedMobilePhoneCountryDTOs);
                         populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
                         populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
@@ -379,6 +363,24 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new TimberAndToastOnErrorAction1("Failed to listen to phone number updates")));
 
         onDestroyViewSubscriptions.add(Observable.merge(
+                Observable.combineLatest(
+                        getBrokerSituationObservable(),
+                        AdapterViewObservable.selects(title),
+                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
+                        {
+                            @Override
+                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent titleEvent)
+                            {
+                                if (titleEvent instanceof OnItemSelectedEvent)
+                                {
+                                    Gender newGender = ((GenderDTO) titleEvent.parent.getItemAtPosition(
+                                            ((OnItemSelectedEvent) titleEvent).position)).gender;
+                                    //noinspection ConstantConditions
+                                    ((KYCAyondoForm) situationDTO.kycForm).setGender(newGender);
+                                }
+                                return situationDTO;
+                            }
+                        }),
                 Observable.combineLatest(
                         getBrokerSituationObservable(),
                         AdapterViewObservable.selects(spinnerNationality),

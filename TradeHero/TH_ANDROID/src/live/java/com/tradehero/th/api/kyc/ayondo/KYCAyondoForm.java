@@ -15,6 +15,7 @@ import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.models.fastfill.Gender;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
 import com.tradehero.th.models.fastfill.ScannedDocument;
@@ -31,6 +32,7 @@ public class KYCAyondoForm implements KYCForm
     public static final String DATE_FORMAT_AYONDO = "dd-MM-yyyy";
 
     @NonNull private Country country;
+    @Nullable private Gender gender;
     @Nullable private String fullName;
     @Nullable private String email;
     @Nullable private String verifiedEmail;
@@ -97,6 +99,7 @@ public class KYCAyondoForm implements KYCForm
         if (other instanceof KYCAyondoForm)
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) other;
+            this.gender = ayondoForm.gender != null ? ayondoForm.gender : this.gender;
             this.fullName = ayondoForm.getFullName() != null ? ayondoForm.getFullName() : this.fullName;
             this.email = ayondoForm.getEmail() != null ? ayondoForm.getEmail() : this.email;
             this.verifiedEmail = ayondoForm.getVerifiedEmail() != null ? ayondoForm.getVerifiedEmail() : this.verifiedEmail;
@@ -157,6 +160,16 @@ public class KYCAyondoForm implements KYCForm
         {
             return Collections.emptyList();
         }
+    }
+
+    @Nullable public Gender getGender()
+    {
+        return gender;
+    }
+
+    public void setGender(@Nullable Gender gender)
+    {
+        this.gender = gender;
     }
 
     @NonNull @Override public Country getCountry()
@@ -529,6 +542,7 @@ public class KYCAyondoForm implements KYCForm
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) kycForm;
             same = country.equals(ayondoForm.country);
+            same &= gender == null ? ayondoForm.gender == null : gender.equals(ayondoForm.gender);
             same &= fullName == null ? ayondoForm.fullName == null : fullName.equals(ayondoForm.fullName);
             same &= email == null ? ayondoForm.email == null : email.equals(ayondoForm.email);
             same &= verifiedEmail == null

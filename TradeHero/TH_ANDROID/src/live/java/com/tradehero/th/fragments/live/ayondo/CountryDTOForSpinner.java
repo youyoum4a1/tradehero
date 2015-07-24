@@ -10,12 +10,15 @@ import java.util.List;
 
 class CountryDTOForSpinner
 {
+    @NonNull public final List<GenderDTO> genderDTOs;
     @NonNull public final List<CountrySpinnerAdapter.DTO> allowedMobilePhoneCountryDTOs;
     @NonNull public final List<CountrySpinnerAdapter.DTO> allowedResidencyCountryDTOs;
     @NonNull public final List<CountrySpinnerAdapter.DTO> allowedNationalityCountryDTOs;
 
     public CountryDTOForSpinner(@NonNull Context context, @NonNull KYCAyondoFormOptionsDTO options)
     {
+        genderDTOs = GenderDTO.createList(context.getResources(), options.genders);
+
         Comparator<CountrySpinnerAdapter.DTO> dtoComparator = new CountrySpinnerAdapter.DTOCountryNameComparator(context);
 
         List<CountrySpinnerAdapter.DTO> allowedMobilePhoneCountryDTOs = CountrySpinnerAdapter.createDTOs(

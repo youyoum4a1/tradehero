@@ -11,6 +11,7 @@ import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.models.fastfill.Gender;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
 import java.util.Arrays;
@@ -22,6 +23,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     public static final String KEY_AYONDO_TYPE = "AYD";
 
     @NonNull public final IdentityPromptInfoDTO identityPromptInfo;
+    @NonNull public final List<Gender> genders;
     @NonNull public final List<Country> allowedMobilePhoneCountries;
     @NonNull public final List<Country> allowedNationalityCountries;
     @NonNull public final List<Country> allowedResidencyCountries;
@@ -41,6 +43,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
 
     public KYCAyondoFormOptionsDTO(
             @JsonProperty("identityPromptInfo") @NonNull IdentityPromptInfoDTO identityPromptInfo,
+            @JsonProperty("genders") @Nullable List<Gender> genders,
             @JsonProperty("allowedMobilePhoneCountries") @Nullable List<Country> allowedMobilePhoneCountries,
             @JsonProperty("allowedNationalityCountries") @Nullable List<Country> allowedNationalityCountries,
             @JsonProperty("allowedResidencyCountries") @Nullable List<Country> allowedResidencyCountries,
@@ -59,6 +62,14 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("minAge") int minAge)
     {
         this.identityPromptInfo = identityPromptInfo;
+        if (genders == null)
+        {
+            this.genders = Collections.unmodifiableList(Arrays.asList(Gender.values()));
+        }
+        else
+        {
+            this.genders = Collections.unmodifiableList(genders);
+        }
         if (allowedMobilePhoneCountries == null)
         {
             this.allowedMobilePhoneCountries = Collections.unmodifiableList(Arrays.asList(Country.values()));

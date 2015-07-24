@@ -21,6 +21,7 @@ import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.models.fastfill.Gender;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
@@ -160,6 +161,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                 nationalities.removeAll(createNoBusinessNationalities());
                                 KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(
                                         createIdentityPromptInfo(),
+                                        Arrays.asList(Gender.values()),
                                         Arrays.asList(Country.SG, Country.AU, Country.GB),
                                         nationalities,
                                         Arrays.asList(Country.SG, Country.AU, Country.GB),
