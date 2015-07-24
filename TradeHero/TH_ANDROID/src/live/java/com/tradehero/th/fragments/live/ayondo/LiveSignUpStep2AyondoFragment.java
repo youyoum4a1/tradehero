@@ -195,7 +195,6 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 //noinspection ConstantConditions
                                 ((KYCAyondoForm) situationDTO.kycForm).setEmployerRegulatedFinancial(
                                         onCheckedChangeEvent.value());
-                                onNext(situationDTO);
                                 return situationDTO;
                             }
                         }))
