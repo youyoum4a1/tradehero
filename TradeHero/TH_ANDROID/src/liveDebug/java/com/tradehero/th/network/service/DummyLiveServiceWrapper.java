@@ -14,6 +14,7 @@ import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.kyc.ayondo.DummyAyondoData;
+import com.tradehero.th.api.kyc.ayondo.DummyKYCAyondoUtil;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
@@ -100,9 +101,16 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                             //noinspection ConstantConditions
                             if (situationDTO.kycForm.getStepStatuses().isEmpty())
                             {
-                                situationDTO.kycForm.setStepStatuses(
-                                        Arrays.asList(StepStatus.UNSTARTED, StepStatus.COMPLETE, StepStatus.UNSTARTED, StepStatus.UNSTARTED,
-                                                StepStatus.UNSTARTED));
+                                if (situationDTO.kycForm instanceof KYCAyondoForm)
+                                {
+                                    situationDTO.kycForm.setStepStatuses(DummyKYCAyondoUtil.getSteps((KYCAyondoForm) situationDTO.kycForm).stepStatuses);
+                                }
+                                else
+                                {
+                                    situationDTO.kycForm.setStepStatuses(
+                                            Arrays.asList(StepStatus.UNSTARTED, StepStatus.COMPLETE, StepStatus.UNSTARTED, StepStatus.UNSTARTED,
+                                                    StepStatus.UNSTARTED));
+                                }
                             }
                         }
                     }
@@ -125,13 +133,17 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                         });
     }
 
-    @NonNull @Override public Observable<StepStatusesDTO> applyToLiveBroker(@NonNull LiveBrokerId brokerId, @NonNull KYCForm kycForm)
+    @NonNull @Override public Observable<StepStatusesDTO> applyToLiveBroker(@NonNull LiveBrokerId brokerId, @NonNull final KYCForm kycForm)
     {
         return super.applyToLiveBroker(brokerId, kycForm)
                 .onErrorResumeNext(new Func1<Throwable, Observable<? extends StepStatusesDTO>>()
                 {
                     @Override public Observable<? extends StepStatusesDTO> call(Throwable throwable)
                     {
+                        if (kycForm instanceof KYCAyondoForm)
+                        {
+                            return Observable.just(DummyKYCAyondoUtil.getSteps((KYCAyondoForm) kycForm));
+                        }
                         StepStatusesDTO stepStatusesDTO = new StepStatusesDTO(
                                 Arrays.asList(StepStatus.UNSTARTED, StepStatus.COMPLETE, StepStatus.UNSTARTED, StepStatus.UNSTARTED,
                                         StepStatus.UNSTARTED));
@@ -205,7 +217,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
         return identityPromptInfo;
     }
 
-    @NonNull public List<Country> createNoBusinessNationalities()
+    @NonNull public static List<Country> createNoBusinessNationalities()
     {
         return Collections.unmodifiableList(Arrays.asList(
                 Country.NONE,
