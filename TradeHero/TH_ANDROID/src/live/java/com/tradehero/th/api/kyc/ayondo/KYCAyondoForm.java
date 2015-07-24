@@ -63,7 +63,6 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean agreeTermsConditions;
     @Nullable private Boolean agreeRisksWarnings;
     @Nullable private Boolean agreeDataSharing;
-    @Nullable private Boolean agreeFundsPolicy;
 
     private List<StepStatus> stepStatuses;
 
@@ -136,7 +135,6 @@ public class KYCAyondoForm implements KYCForm
             this.agreeTermsConditions = ayondoForm.agreeTermsConditions != null ? ayondoForm.agreeTermsConditions : this.agreeTermsConditions;
             this.agreeRisksWarnings = ayondoForm.agreeRisksWarnings != null ? ayondoForm.agreeRisksWarnings : this.agreeRisksWarnings;
             this.agreeDataSharing = ayondoForm.agreeDataSharing != null ? ayondoForm.agreeDataSharing : this.agreeDataSharing;
-            this.agreeFundsPolicy = ayondoForm.agreeFundsPolicy != null ? ayondoForm.agreeFundsPolicy : this.agreeFundsPolicy;
             if (other.getStepStatuses() != null)
             {
                 this.stepStatuses = other.getStepStatuses();
@@ -528,16 +526,6 @@ public class KYCAyondoForm implements KYCForm
     {
         this.agreeDataSharing = agreeDataSharing;
     }
-
-    @Nullable public Boolean isAgreeFundsPolicy()
-    {
-        return agreeFundsPolicy;
-    }
-
-    public void setAgreeFundsPolicy(@Nullable Boolean agreeFundsPolicy)
-    {
-        this.agreeFundsPolicy = agreeFundsPolicy;
-    }
     //</editor-fold>
 
     @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
@@ -596,7 +584,6 @@ public class KYCAyondoForm implements KYCForm
             same &= agreeTermsConditions == null ? ayondoForm.agreeTermsConditions == null : agreeTermsConditions.equals(ayondoForm.agreeTermsConditions);
             same &= agreeRisksWarnings == null ? ayondoForm.agreeRisksWarnings == null : agreeRisksWarnings.equals(ayondoForm.agreeRisksWarnings);
             same &= agreeDataSharing == null ? ayondoForm.agreeDataSharing == null : agreeDataSharing.equals(ayondoForm.agreeDataSharing);
-            same &= agreeFundsPolicy == null ? ayondoForm.agreeFundsPolicy == null : agreeFundsPolicy.equals(ayondoForm.agreeFundsPolicy);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
                     : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)

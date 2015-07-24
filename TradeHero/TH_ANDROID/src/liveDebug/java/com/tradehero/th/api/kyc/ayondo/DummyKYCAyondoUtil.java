@@ -71,8 +71,7 @@ public class DummyKYCAyondoUtil
                 && kycForm.getResidenceDocumentFile() != null
                 && kycForm.isAgreeTermsConditions() != null
                 && kycForm.isAgreeRisksWarnings() != null
-                && kycForm.isAgreeDataSharing() != null
-                && kycForm.isAgreeFundsPolicy() != null)
+                && kycForm.isAgreeDataSharing() != null)
                 ? StepStatus.COMPLETE
                 : StepStatus.UNSTARTED;
     }

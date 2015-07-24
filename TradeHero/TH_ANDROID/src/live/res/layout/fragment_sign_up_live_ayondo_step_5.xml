@@ -170,32 +170,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-
-      <CheckBox
-          android:id="@+id/cb_agree_funds_policy"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/empty"
-          android:paddingLeft="@dimen/margin_xsmall"
-          android:paddingRight="@dimen/margin_xsmall"
-          />
-
-        <TextView
-            android:id="@+id/agree_funds_policy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/live_agree_to_client_funds_policy"
-            style="@style/TH.Body.Accented"
-            />
-
-    </LinearLayout>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

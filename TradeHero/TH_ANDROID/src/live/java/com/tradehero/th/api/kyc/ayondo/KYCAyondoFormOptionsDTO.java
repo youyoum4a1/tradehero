@@ -38,7 +38,6 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final String termsConditionsUrl;
     @NonNull public final String riskWarningDisclaimerUrl;
     @NonNull public final String dataSharingAgreementUrl;
-    @NonNull public final String clientFundsPolicyUrl;
     public final int minAge;
 
     public KYCAyondoFormOptionsDTO(
@@ -58,7 +57,6 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("termsConditionsUrl") @NonNull String termsConditionsUrl,
             @JsonProperty("riskWarningDisclosureUrl") @NonNull String riskWarningDisclosureUrl,
             @JsonProperty("dataSharingAgreementUrl") @NonNull String dataSharingAgreementUrl,
-            @JsonProperty("clientFundsPolicyUrl") @NonNull String clientFundsPolicyUrl,
             @JsonProperty("minAge") int minAge)
     {
         this.identityPromptInfo = identityPromptInfo;
@@ -105,7 +103,6 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         this.termsConditionsUrl = termsConditionsUrl;
         this.riskWarningDisclaimerUrl = riskWarningDisclosureUrl;
         this.dataSharingAgreementUrl = dataSharingAgreementUrl;
-        this.clientFundsPolicyUrl = clientFundsPolicyUrl;
         this.minAge = minAge;
     }
 

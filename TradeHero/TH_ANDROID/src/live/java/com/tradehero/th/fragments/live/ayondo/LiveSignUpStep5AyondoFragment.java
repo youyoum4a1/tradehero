@@ -63,8 +63,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.agree_risk_warning) View riskWarning;
     @Bind(R.id.cb_agree_data_sharing) CheckBox dataSharingCheckBox;
     @Bind(R.id.agree_data_sharing) View dataSharing;
-    @Bind(R.id.cb_agree_funds_policy) CheckBox fundsPolicyCheckBox;
-    @Bind(R.id.agree_funds_policy) View fundsPolicy;
 
     private ImageRequesterUtil imageRequesterUtil;
 
@@ -335,19 +333,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 ((KYCAyondoForm) situation.kycForm).setAgreeDataSharing(onCheckedChangeEvent.value());
                                 return situation;
                             }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        WidgetObservable.input(fundsPolicyCheckBox),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override
-                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation, OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situation.kycForm).setAgreeFundsPolicy(onCheckedChangeEvent.value());
-                                return situation;
-                            }
                         }))
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
@@ -370,9 +355,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 ViewObservable.clicks(riskWarning)
                                         .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.riskWarningDisclaimerUrl)),
                                 ViewObservable.clicks(dataSharing)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.dataSharingAgreementUrl)),
-                                ViewObservable.clicks(fundsPolicy)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.clientFundsPolicyUrl))
+                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.dataSharingAgreementUrl))
                         );
                     }
                 })
@@ -448,12 +431,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (dataSharing != null)
         {
             dataSharingCheckBox.setChecked(dataSharing);
-        }
-
-        Boolean fundsPolicy = kycForm.isAgreeFundsPolicy();
-        if (fundsPolicy != null)
-        {
-            fundsPolicyCheckBox.setChecked(fundsPolicy);
         }
     }
 

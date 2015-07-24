@@ -188,7 +188,6 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                         DummyAyondoData.TERMS_CONDITIONS_URL,
                                         DummyAyondoData.RISK_WARNING_DISCLAIMER_URL,
                                         DummyAyondoData.DATA_SHARING_AGREEMENT_URL,
-                                        DummyAyondoData.FUNDS_POLICY_URL,
                                         21);
                                 return Observable.just(options);
                             }

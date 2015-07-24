@@ -97,7 +97,6 @@
   <string name="live_agree_to_terms_and_conditions">Terms and Conditions</string>
   <string name="live_agree_to_risks_and_warnings_disclaimer">Risks and Warnings Disclosure</string>
   <string name="live_agree_to_data_sharing_agreement">Data Sharing Agreement</string>
-  <string name="live_agree_to_client_funds_policy">Client Funds Policy</string>
   <string name="live_agree_read_it">Read</string>
 
 </resources>

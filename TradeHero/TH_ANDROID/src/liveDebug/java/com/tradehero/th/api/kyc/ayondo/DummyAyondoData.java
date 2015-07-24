@@ -5,8 +5,7 @@ public class DummyAyondoData
     public static final int DEFAULT_MAX_ADDRESS_REQUIRED = 3;
     public static final String TERMS_CONDITIONS_URL = "http://www.ayondo.com/en/legal/terms-conditions";
     public static final String RISK_WARNING_DISCLAIMER_URL = "http://www.ayondo.com/en/risk-disclosure";
-    public static final String DATA_SHARING_AGREEMENT_URL = "http://www.ayondo.com/en/ayondo-data-sharing-agreement";
-    public static final String FUNDS_POLICY_URL = "http://www.activotrade.com/pt/assets/legal/activotrade-mini-ayondo-client-funds-policy.pdf";
+    public static final String DATA_SHARING_AGREEMENT_URL = "http://ayondo.com/en/manisku-data-sharing-agreement";
 
     public static final String KYC_OPTIONS = "{\"optionType\":\"AYD\","
             + "\"identityPromptInfo\":{\"image\":\"http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-sg.png\",\"prompt\":\"Singapore NRIC/ Driver's License\"},"
@@ -25,7 +24,6 @@ public class DummyAyondoData
             + "\"termsConditionsUrl\":\"" + TERMS_CONDITIONS_URL + "\","
             + "\"riskWarningDisclaimerUrl\":\"" + RISK_WARNING_DISCLAIMER_URL + "\","
             + "\"dataSharingAgreementUrl\":\"" + DATA_SHARING_AGREEMENT_URL + "\","
-            + "\"clientFundsPolicyUrl\":\"" + FUNDS_POLICY_URL + "\","
             + "\"minAge\":21"
             + "}";
 
