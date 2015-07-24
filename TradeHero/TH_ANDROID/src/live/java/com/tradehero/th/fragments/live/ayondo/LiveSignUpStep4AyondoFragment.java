@@ -19,14 +19,18 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCAddress;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
+import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.widget.KYCAddressWidget;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -63,14 +67,47 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         })
         );
 
-        onDestroyViewSubscriptions.add(primaryWidget.getKYCAddressObservable()
-        .subscribe(new Action1<KYCAddress>()
-        {
-            @Override public void call(KYCAddress kycAddress)
-            {
-                Timber.d("%s",kycAddress);
-            }
-        }));
+        onDestroyViewSubscriptions.add(
+                Observable.combineLatest(
+                        getBrokerSituationObservable()
+                                .doOnNext(new Action1<LiveBrokerSituationDTO>()
+                                {
+                                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                                    {
+                                        List<KYCAddress> addresses = ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getAddresses();
+                                        if (addresses != null)
+                                        {
+                                            if (addresses.size() > 0)
+                                            {
+                                                KYCAddress address = addresses.get(0);
+                                                primaryWidget.setKYCAddress(address);
+                                            }
+                                        }
+                                    }
+                                }),
+                        primaryWidget.getKYCAddressObservable()
+                                .map(new Func1<KYCAddress, List<KYCAddress>>()
+                                {
+                                    @Override public List<KYCAddress> call(KYCAddress kycAddress)
+                                    {
+                                        return Collections.singletonList(kycAddress);
+                                    }
+                                }),
+                        new Func2<LiveBrokerSituationDTO, List<KYCAddress>, LiveBrokerSituationDTO>()
+                        {
+                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO liveBrokerSituationDTO, List<KYCAddress> kycAddresses)
+                            {
+                                ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).setAddresses(kycAddresses);
+                                return liveBrokerSituationDTO;
+                            }
+                        })
+                        .subscribe(new Action1<LiveBrokerSituationDTO>()
+                        {
+                            @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                            {
+                                onNext(liveBrokerSituationDTO);
+                            }
+                        }));
     }
 
     public void pickLocation()

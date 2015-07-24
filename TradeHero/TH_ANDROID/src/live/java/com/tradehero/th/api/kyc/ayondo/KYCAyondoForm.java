@@ -419,6 +419,11 @@ public class KYCAyondoForm implements KYCForm
     {
         return addresses;
     }
+
+    public void setAddresses(List<KYCAddress> addresses)
+    {
+        this.addresses = addresses;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Identity Document File">
@@ -576,6 +581,13 @@ public class KYCAyondoForm implements KYCForm
             same &= tradedOtcDerivative == null ? ayondoForm.tradedOtcDerivative == null : tradedOtcDerivative.equals(ayondoForm.tradedOtcDerivative);
             same &= tradedEtc == null ? ayondoForm.tradedEtc == null : tradedEtc.equals(ayondoForm.tradedEtc);
             same &= addresses == null ? ayondoForm.addresses == null : addresses.equals(ayondoForm.addresses);
+            if (same && addresses != null && ayondoForm.getAddresses() != null)
+            {
+                for (int index = 0; index < addresses.size(); index++)
+                {
+                    same &= addresses.get(index).equals(ayondoForm.getAddresses().get(index));
+                }
+            }
             same &= identityDocumentType == null ? ayondoForm.identityDocumentType
                     == null : identityDocumentType.equals(ayondoForm.identityDocumentType);
             same &= identityDocumentFile == null ? ayondoForm.identityDocumentFile == null : identityDocumentFile.equals(ayondoForm.identityDocumentFile);
