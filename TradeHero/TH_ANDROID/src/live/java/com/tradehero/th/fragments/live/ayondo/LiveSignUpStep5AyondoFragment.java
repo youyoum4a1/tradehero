@@ -59,7 +59,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.residence_document_type) Spinner residenceDocumentTypeSpinner;
     @Bind(R.id.document_action_identity) DocumentActionWidget documentActionIdentity;
     @Bind(R.id.document_action_residence) DocumentActionWidget documentActionResidence;
-    @Bind(R.id.document_action_signature) DocumentActionWidget documentActionSignature;
     @Bind(R.id.cb_agree_terms_conditions) CheckBox termsConditionsCheckBox;
     @Bind(R.id.agree_terms_conditions) View termsConditions;
     @Bind(R.id.cb_agree_risk_warning) CheckBox riskWarningCheckBox;
