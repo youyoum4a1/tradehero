@@ -21,9 +21,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.widget.KYCAddressWidget;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -36,7 +37,8 @@ import timber.log.Timber;
 
 public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
-    private static final int PICK_LOCATION_REQUEST = 2513;
+    private static final int PICK_LOCATION_REQUEST_PRIMARY = 2513;
+    private static final int PICK_LOCATION_REQUEST_SECONDARY = 2514;
     private Geocoder mGeocoder;
 
     @Bind(R.id.info_address_pri) KYCAddressWidget primaryWidget;
@@ -63,7 +65,17 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public void call(OnClickEvent onClickEvent)
                             {
-                                pickLocation();
+                                pickLocation(PICK_LOCATION_REQUEST_PRIMARY);
+                            }
+                        })
+        );
+
+        onDestroyViewSubscriptions.add(secondaryWidget.getPickLocationClickedObservable()
+                        .subscribe(new Action1<OnClickEvent>()
+                        {
+                            @Override public void call(OnClickEvent onClickEvent)
+                            {
+                                pickLocation(PICK_LOCATION_REQUEST_SECONDARY);
                             }
                         })
         );
@@ -86,19 +98,27 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         }
                                     }
                                 }),
-                        primaryWidget.getKYCAddressObservable()
-                                .doOnNext(new Action1<KYCAddress>()
+                        Observable.combineLatest(
+                                primaryWidget.getKYCAddressObservable()
+                                        .doOnNext(new Action1<KYCAddress>()
+                                        {
+                                            @Override public void call(KYCAddress kycAddress)
+                                            {
+                                                secondaryWidget.setVisibility(kycAddress.lessThanAYear ? View.VISIBLE : View.GONE);
+                                            }
+                                        }),
+                                secondaryWidget.getKYCAddressObservable(),
+                                new Func2<KYCAddress, KYCAddress, List<KYCAddress>>()
                                 {
-                                    @Override public void call(KYCAddress kycAddress)
+                                    @Override public List<KYCAddress> call(KYCAddress primaryAddress, KYCAddress secondaryAddress)
                                     {
-                                        secondaryWidget.setVisibility(kycAddress.lessThanAYear ? View.VISIBLE : View.GONE);
-                                    }
-                                })
-                                .map(new Func1<KYCAddress, List<KYCAddress>>()
-                                {
-                                    @Override public List<KYCAddress> call(KYCAddress kycAddress)
-                                    {
-                                        return Collections.singletonList(kycAddress);
+                                        ArrayList<KYCAddress> addresses = new ArrayList<>(2);
+                                        addresses.add(primaryAddress);
+                                        if (primaryAddress.lessThanAYear)
+                                        {
+                                            addresses.add(secondaryAddress);
+                                        }
+                                        return addresses;
                                     }
                                 }),
                         new Func2<LiveBrokerSituationDTO, List<KYCAddress>, LiveBrokerSituationDTO>()
@@ -118,13 +138,13 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         }));
     }
 
-    public void pickLocation()
+    public void pickLocation(int requestCode)
     {
         try
         {
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             Context context = getActivity().getApplicationContext();
-            getParentFragment().startActivityForResult(builder.build(context), PICK_LOCATION_REQUEST);
+            getParentFragment().startActivityForResult(builder.build(context), requestCode);
         } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e)
         {
             e.printStackTrace();
@@ -140,61 +160,64 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_LOCATION_REQUEST && resultCode == Activity.RESULT_OK)
+        if ((requestCode == PICK_LOCATION_REQUEST_PRIMARY || requestCode == PICK_LOCATION_REQUEST_SECONDARY) && resultCode == Activity.RESULT_OK)
         {
             Place place = PlacePicker.getPlace(data, getActivity());
-            Observable.just(place)
-                    .map(new Func1<Place, LatLng>()
-                    {
-                        @Override public LatLng call(Place place)
-                        {
-                            return place.getLatLng();
-                        }
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .map(new Func1<LatLng, List<Address>>()
-                    {
-                        @Override public List<Address> call(LatLng latLng)
-                        {
-                            try
+            Observable.combineLatest(
+                    Observable.just(place)
+                            .map(new Func1<Place, LatLng>()
                             {
-                                return mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                            } catch (IOException e)
+                                @Override public LatLng call(Place place)
+                                {
+                                    return place.getLatLng();
+                                }
+                            })
+                            .subscribeOn(Schedulers.io())
+                            .map(new Func1<LatLng, List<Address>>()
                             {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    })
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .filter(new Func1<List<Address>, Boolean>()
-                    {
-                        @Override public Boolean call(List<Address> addresses)
-                        {
-                            return addresses.size() == 1;
-                        }
-                    })
-                    .map(new Func1<List<Address>, KYCAddress>()
-                    {
-                        @Override public KYCAddress call(List<Address> addresses)
-                        {
-                            Address addr = addresses.get(0);
+                                @Override public List<Address> call(LatLng latLng)
+                                {
+                                    try
+                                    {
+                                        return mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                                    } catch (IOException e)
+                                    {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            })
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .filter(new Func1<List<Address>, Boolean>()
+                            {
+                                @Override public Boolean call(List<Address> addresses)
+                                {
+                                    return addresses.size() == 1;
+                                }
+                            })
+                            .map(new Func1<List<Address>, KYCAddress>()
+                            {
+                                @Override public KYCAddress call(List<Address> addresses)
+                                {
+                                    Address addr = addresses.get(0);
 
-                            String add1 = addr.getAddressLine(0);
-                            String add2 = addr.getAddressLine(1);
-                            String city = addr.getAdminArea();
-                            String postal = addr.getPostalCode();
+                                    String add1 = addr.getAddressLine(0);
+                                    String add2 = addr.getAddressLine(1);
+                                    String city = addr.getAdminArea();
+                                    String postal = addr.getPostalCode();
 
-                            return new KYCAddress(add1, add2, city, postal);
-                        }
-                    })
-                    .subscribe(new Action1<KYCAddress>()
+                                    return new KYCAddress(add1, add2, city, postal);
+                                }
+                            }),
+                    Observable.just(requestCode == PICK_LOCATION_REQUEST_PRIMARY ? primaryWidget : secondaryWidget),
+                    new Func2<KYCAddress, KYCAddressWidget, Object>()
                     {
-                        @Override public void call(KYCAddress kycAddress)
+                        @Override public Object call(KYCAddress kycAddress, KYCAddressWidget kycAddressWidget)
                         {
-                            primaryWidget.setKYCAddress(kycAddress);
+                            kycAddressWidget.setKYCAddress(kycAddress);
+                            return null;
                         }
-                    });
-            Timber.d("Place selected %s", place.getAddress());
+                    }
+            ).subscribe(new EmptyAction1<>());
         }
     }
 }
