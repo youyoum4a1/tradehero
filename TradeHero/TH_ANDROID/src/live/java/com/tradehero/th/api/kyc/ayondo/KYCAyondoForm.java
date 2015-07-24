@@ -31,7 +31,7 @@ public class KYCAyondoForm implements KYCForm
     public static final String KEY_AYONDO_TYPE = "AYD";
     public static final String DATE_FORMAT_AYONDO = "dd-MM-yyyy";
 
-    @NonNull private Country country;
+    @Nullable private Country country;
     @Nullable private Gender gender;
     @Nullable private String fullName;
     @Nullable private String email;
@@ -58,8 +58,10 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private List<KYCAddress> addresses;
     @Nullable private IdentityScannedDocumentType identityDocumentType;
     @Nullable private File identityDocumentFile;
+    @Nullable @JsonIgnore private Boolean clearIdentityDocumentFile;
     @Nullable private ResidenceScannedDocumentType residenceDocumentType;
     @Nullable private File residenceDocumentFile;
+    @Nullable @JsonIgnore private Boolean clearResidenceDocumentFile;
     @Nullable private Boolean agreeTermsConditions;
     @Nullable private Boolean agreeRisksWarnings;
     @Nullable private Boolean agreeDataSharing;
@@ -94,7 +96,7 @@ public class KYCAyondoForm implements KYCForm
 
     @Override public void pickFrom(@NonNull KYCForm other)
     {
-        this.country = other.getCountry();
+        this.country = other.getCountry() != null ? other.getCountry() : this.country;
         if (other instanceof KYCAyondoForm)
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) other;
@@ -130,8 +132,16 @@ public class KYCAyondoForm implements KYCForm
             this.addresses = ayondoForm.getAddresses() != null ? ayondoForm.getAddresses() : this.addresses;
             this.identityDocumentType = ayondoForm.getIdentityDocumentType() != null ? ayondoForm.getIdentityDocumentType() : this.identityDocumentType;
             this.identityDocumentFile = ayondoForm.identityDocumentFile != null ? ayondoForm.identityDocumentFile : this.identityDocumentFile;
+            if (ayondoForm.clearIdentityDocumentFile != null && ayondoForm.clearIdentityDocumentFile)
+            {
+                this.identityDocumentFile = null;
+            }
             this.residenceDocumentType = ayondoForm.getResidenceDocumentType() != null ? ayondoForm.getResidenceDocumentType() : this.residenceDocumentType;
             this.residenceDocumentFile = ayondoForm.residenceDocumentFile != null ? ayondoForm.residenceDocumentFile : this.residenceDocumentFile;
+            if (ayondoForm.clearResidenceDocumentFile != null && ayondoForm.clearResidenceDocumentFile)
+            {
+                this.residenceDocumentFile = null;
+            }
             this.agreeTermsConditions = ayondoForm.agreeTermsConditions != null ? ayondoForm.agreeTermsConditions : this.agreeTermsConditions;
             this.agreeRisksWarnings = ayondoForm.agreeRisksWarnings != null ? ayondoForm.agreeRisksWarnings : this.agreeRisksWarnings;
             this.agreeDataSharing = ayondoForm.agreeDataSharing != null ? ayondoForm.agreeDataSharing : this.agreeDataSharing;
@@ -170,7 +180,7 @@ public class KYCAyondoForm implements KYCForm
         this.gender = gender;
     }
 
-    @NonNull @Override public Country getCountry()
+    @Nullable @Override public Country getCountry()
     {
         return country;
     }
@@ -418,7 +428,7 @@ public class KYCAyondoForm implements KYCForm
         return addresses;
     }
 
-    public void setAddresses(List<KYCAddress> addresses)
+    public void setAddresses(@Nullable List<KYCAddress> addresses)
     {
         this.addresses = addresses;
     }
@@ -458,6 +468,11 @@ public class KYCAyondoForm implements KYCForm
                 ? null
                 : new File(URI.create(identityDocumentFileString));
     }
+
+    public void setClearIdentityDocumentFile(@Nullable Boolean clearIdentityDocumentFile)
+    {
+        this.clearIdentityDocumentFile = clearIdentityDocumentFile;
+    }
     //</editor-fold>
 
     //<editor-fold desc="Residence Document File">
@@ -493,6 +508,11 @@ public class KYCAyondoForm implements KYCForm
         this.residenceDocumentFile = residenceDocumentFileString == null
                 ? null
                 : new File(URI.create(residenceDocumentFileString));
+    }
+
+    public void setClearResidenceDocumentFile(@Nullable Boolean clearResidenceDocumentFile)
+    {
+        this.clearResidenceDocumentFile = clearResidenceDocumentFile;
     }
     //</editor-fold>
 
@@ -534,7 +554,7 @@ public class KYCAyondoForm implements KYCForm
         if (kycForm instanceof KYCAyondoForm)
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) kycForm;
-            same = country.equals(ayondoForm.country);
+            same = country == null ? ayondoForm.country == null : country.equals(ayondoForm.country);
             same &= gender == null ? ayondoForm.gender == null : gender.equals(ayondoForm.gender);
             same &= fullName == null ? ayondoForm.fullName == null : fullName.equals(ayondoForm.fullName);
             same &= email == null ? ayondoForm.email == null : email.equals(ayondoForm.email);
@@ -579,8 +599,10 @@ public class KYCAyondoForm implements KYCForm
             same &= identityDocumentType == null ? ayondoForm.identityDocumentType
                     == null : identityDocumentType.equals(ayondoForm.identityDocumentType);
             same &= identityDocumentFile == null ? ayondoForm.identityDocumentFile == null : identityDocumentFile.equals(ayondoForm.identityDocumentFile);
+            // Do not compare clearIdentityDocumentFile
             same &= residenceDocumentType == null ? ayondoForm.residenceDocumentType == null : residenceDocumentType.equals(ayondoForm.residenceDocumentType);
             same &= residenceDocumentFile == null ? ayondoForm.residenceDocumentFile == null : residenceDocumentFile.equals(ayondoForm.residenceDocumentFile);
+            // Do not compare clearResidenceDocumentFile
             same &= agreeTermsConditions == null ? ayondoForm.agreeTermsConditions == null : agreeTermsConditions.equals(ayondoForm.agreeTermsConditions);
             same &= agreeRisksWarnings == null ? ayondoForm.agreeRisksWarnings == null : agreeRisksWarnings.equals(ayondoForm.agreeRisksWarnings);
             same &= agreeDataSharing == null ? ayondoForm.agreeDataSharing == null : agreeDataSharing.equals(ayondoForm.agreeDataSharing);

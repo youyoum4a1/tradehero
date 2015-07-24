@@ -1,6 +1,7 @@
 package com.tradehero.th.api.kyc;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -20,7 +21,7 @@ import java.util.List;
 {
     @StringRes int getBrokerName();
 
-    @NonNull Country getCountry();
+    @Nullable Country getCountry();
 
     void pickFrom(@NonNull ScannedDocument scannedDocument);
 

@@ -19,6 +19,7 @@ import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.settings.ImageRequesterUtil;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
@@ -28,7 +29,6 @@ import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
-import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.widget.DocumentActionWidget;
@@ -78,6 +78,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
+        final Observable<LiveBrokerDTO> brokerDTOObservable = createBrokerObservable();
+
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
                         getKYCAyondoFormOptionsObservable().observeOn(AndroidSchedulers.mainThread())
@@ -97,101 +99,121 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     }
                                 }),
                         getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
-                        new Func2<KYCAyondoFormOptionsDTO, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                        new Func2<KYCAyondoFormOptionsDTO, LiveBrokerSituationDTO, Object>()
                         {
                             @Override
                             public LiveBrokerSituationDTO call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO, LiveBrokerSituationDTO situationDTO)
                             {
+                                KYCAyondoForm update = new KYCAyondoForm();
                                 //noinspection ConstantConditions
-                                populateIdentityDocumentType((KYCAyondoForm) situationDTO.kycForm,
-                                        kycAyondoFormOptionsDTO.getIdentityDocumentTypes());
-                                populateResidenceDocumentType((KYCAyondoForm) situationDTO.kycForm,
-                                        kycAyondoFormOptionsDTO.residenceDocumentTypes);
-                                return situationDTO;
+                                update.pickFrom(populateIdentityDocumentType((KYCAyondoForm) situationDTO.kycForm,
+                                        kycAyondoFormOptionsDTO.getIdentityDocumentTypes()));
+                                update.pickFrom(populateResidenceDocumentType((KYCAyondoForm) situationDTO.kycForm,
+                                        kycAyondoFormOptionsDTO.residenceDocumentTypes));
+                                onNext(new LiveBrokerSituationDTO(situationDTO.broker, update));
+                                return null;
                             }
                         })
                         .subscribe(
-                                new EmptyAction1<LiveBrokerSituationDTO>(),
+                                new EmptyAction1<>(),
                                 new TimberOnErrorAction1("Failed to populate identity document type spinner")));
 
-        onDestroyViewSubscriptions.add(
+        onDestroyViewSubscriptions.add(Observable.combineLatest(
+                brokerDTOObservable,
                 Observable.merge(
-                        Observable.combineLatest(
-                                getBrokerSituationObservable(),
-                                AdapterViewObservable.selects(identityDocumentTypeSpinner),
-                                new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
+                        AdapterViewObservable.selects(identityDocumentTypeSpinner)
+                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
                                 {
                                     @Override
-                                    public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent identityTypeSelected)
+                                    public KYCAyondoForm call(OnSelectedEvent identityTypeSelected)
                                     {
-                                        if (identityTypeSelected instanceof OnItemSelectedEvent)
-                                        {
-                                            //noinspection ConstantConditions
-                                            ((KYCAyondoForm) situationDTO.kycForm).setIdentityDocumentType(
-                                                    ((IdentityDocumentDTO) identityTypeSelected.parent.getItemAtPosition(
-                                                            ((OnItemSelectedEvent) identityTypeSelected).position)).identityScannedDocumentType);
-                                        }
-                                        return situationDTO;
+                                        return KYCAyondoFormFactory.fromIdentityDocumentTypeEvent(identityTypeSelected);
                                     }
                                 }),
-                        Observable.combineLatest(
-                                getBrokerSituationObservable(),
-                                AdapterViewObservable.selects(residenceDocumentTypeSpinner),
-                                new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
+                        AdapterViewObservable.selects(residenceDocumentTypeSpinner)
+                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
                                 {
                                     @Override
-                                    public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent residenceTypeSelected)
+                                    public KYCAyondoForm call(OnSelectedEvent residenceTypeSelected)
                                     {
-                                        if (residenceTypeSelected instanceof OnItemSelectedEvent)
-                                        {
-                                            //noinspection ConstantConditions
-                                            ((KYCAyondoForm) situationDTO.kycForm).setResidenceDocumentType(
-                                                    ((ResidenceDocumentDTO) residenceTypeSelected.parent.getItemAtPosition(
-                                                            ((OnItemSelectedEvent) residenceTypeSelected).position)).residenceScannedDocumentType);
-                                        }
-                                        return situationDTO;
+                                        return KYCAyondoFormFactory.fromResidenceDocumentTypeEvent(residenceTypeSelected);
                                     }
-                                }))
-                        .subscribe(
-                                new Action1<LiveBrokerSituationDTO>()
+                                }),
+                        WidgetObservable.input(termsConditionsCheckBox)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
                                 {
-                                    @Override public void call(LiveBrokerSituationDTO situationDTO)
+                                    @Override
+                                    public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
                                     {
-                                        onNext(situationDTO);
+                                        return KYCAyondoFormFactory.fromAgreeTermsConditionsEvent(onCheckedChangeEvent);
                                     }
-                                },
-                                new TimberOnErrorAction1("Failed to listen to spinner updates")));
+                                }),
+                        WidgetObservable.input(riskWarningCheckBox)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override
+                                    public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromAgreeRiskWarningEvent(onCheckedChangeEvent);
+                                    }
+                                }),
+                        WidgetObservable.input(dataSharingCheckBox)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override
+                                    public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromAgreeDataSharingEvent(onCheckedChangeEvent);
+                                    }
+                                })),
+                new Func2<LiveBrokerDTO, KYCAyondoForm, LiveBrokerSituationDTO>()
+                {
+                    @Override public LiveBrokerSituationDTO call(LiveBrokerDTO brokerDTO, KYCAyondoForm update)
+                    {
+                        return new LiveBrokerSituationDTO(brokerDTO, update);
+                    }
+                })
+                .subscribe(
+                        new Action1<LiveBrokerSituationDTO>()
+                        {
+                            @Override public void call(LiveBrokerSituationDTO update)
+                            {
+                                onNext(update);
+                            }
+                        },
+                        new TimberOnErrorAction1("Failed to listen to spinner updates and agreement checkboxes")));
 
         onDestroyViewSubscriptions.add(getBrokerSituationObservable()
                 .observeOn(AndroidSchedulers.mainThread())
-                .take(1)
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
                         {
                             @Override public void call(LiveBrokerSituationDTO situationDTO)
                             {
+                                KYCAyondoForm update = new KYCAyondoForm();
                                 //noinspection ConstantConditions
-                                populate((KYCAyondoForm) situationDTO.kycForm);
+                                update.pickFrom(populate((KYCAyondoForm) situationDTO.kycForm));
                                 populate(documentActionIdentity, ((KYCAyondoForm) situationDTO.kycForm).getIdentityDocumentFile());
                                 populate(documentActionResidence, ((KYCAyondoForm) situationDTO.kycForm).getResidenceDocumentFile());
+                                onNext(new LiveBrokerSituationDTO(situationDTO.broker, update));
                             }
                         },
                         new TimberOnErrorAction1("Failed to prepare files from KYC")));
 
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
-                        getBrokerSituationObservable(),
+                        brokerDTOObservable,
                         DocumentActionWidgetObservable.actions(documentActionIdentity),
-                        new Func2<LiveBrokerSituationDTO, DocumentActionWidgetAction, DocumentActionWidgetAction>()
+                        new Func2<LiveBrokerDTO, DocumentActionWidgetAction, DocumentActionWidgetAction>()
                         {
-                            @Override public DocumentActionWidgetAction call(LiveBrokerSituationDTO situationDTO,
+                            @Override public DocumentActionWidgetAction call(LiveBrokerDTO brokerDTO,
                                     DocumentActionWidgetAction documentActionWidgetAction)
                             {
                                 if (documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.CLEAR))
                                 {
-                                    //noinspection ConstantConditions
-                                    ((KYCAyondoForm) situationDTO.kycForm).setIdentityDocumentFile(null);
-                                    onNext(situationDTO);
+                                    KYCAyondoForm update = new KYCAyondoForm();
+                                    update.setClearIdentityDocumentFile(true);
+                                    onNext(new LiveBrokerSituationDTO(brokerDTO, update));
                                 }
                                 return documentActionWidgetAction;
                             }
@@ -210,17 +232,16 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 final ImageRequesterUtil imageRequesterUtil = new ImageRequesterUtil(null, null, null, null);
                                 LiveSignUpStep5AyondoFragment.this.imageRequesterUtil = imageRequesterUtil;
                                 return Observable.combineLatest(
-                                        getBrokerSituationObservable(),
+                                        brokerDTOObservable,
                                         pickDocument(R.string.identity_document_pick_title, imageRequesterUtil)
                                                 .take(1),
-                                        new Func2<LiveBrokerSituationDTO, Bitmap, Bitmap>()
+                                        new Func2<LiveBrokerDTO, Bitmap, Bitmap>()
                                         {
-                                            @Override public Bitmap call(LiveBrokerSituationDTO situationDTO, Bitmap bitmap)
+                                            @Override public Bitmap call(LiveBrokerDTO brokerDTO, Bitmap bitmap)
                                             {
-                                                //noinspection ConstantConditions
-                                                ((KYCAyondoForm) situationDTO.kycForm).setIdentityDocumentFile(
-                                                        imageRequesterUtil.getCroppedPhotoFile());
-                                                onNext(situationDTO);
+                                                KYCAyondoForm update = new KYCAyondoForm();
+                                                update.setIdentityDocumentFile(imageRequesterUtil.getCroppedPhotoFile());
+                                                onNext(new LiveBrokerSituationDTO(brokerDTO, update));
                                                 return bitmap;
                                             }
                                         });
@@ -238,18 +259,18 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
-                        getBrokerSituationObservable(),
+                        brokerDTOObservable,
                         DocumentActionWidgetObservable.actions(documentActionResidence),
-                        new Func2<LiveBrokerSituationDTO, DocumentActionWidgetAction, DocumentActionWidgetAction>()
+                        new Func2<LiveBrokerDTO, DocumentActionWidgetAction, DocumentActionWidgetAction>()
                         {
-                            @Override public DocumentActionWidgetAction call(LiveBrokerSituationDTO situationDTO,
+                            @Override public DocumentActionWidgetAction call(LiveBrokerDTO brokerDTO,
                                     DocumentActionWidgetAction documentActionWidgetAction)
                             {
                                 if (documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.CLEAR))
                                 {
-                                    //noinspection ConstantConditions
-                                    ((KYCAyondoForm) situationDTO.kycForm).setResidenceDocumentFile(null);
-                                    onNext(situationDTO);
+                                    KYCAyondoForm update = new KYCAyondoForm();
+                                    update.setClearResidenceDocumentFile(true);
+                                    onNext(new LiveBrokerSituationDTO(brokerDTO, update));
                                 }
                                 return documentActionWidgetAction;
                             }
@@ -268,17 +289,16 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 final ImageRequesterUtil imageRequesterUtil = new ImageRequesterUtil(null, null, null, null);
                                 LiveSignUpStep5AyondoFragment.this.imageRequesterUtil = imageRequesterUtil;
                                 return Observable.combineLatest(
-                                        getBrokerSituationObservable(),
+                                        brokerDTOObservable,
                                         pickDocument(R.string.residence_document_pick_title, imageRequesterUtil)
                                                 .take(1),
-                                        new Func2<LiveBrokerSituationDTO, Bitmap, Bitmap>()
+                                        new Func2<LiveBrokerDTO, Bitmap, Bitmap>()
                                         {
-                                            @Override public Bitmap call(LiveBrokerSituationDTO situationDTO, Bitmap bitmap)
+                                            @Override public Bitmap call(LiveBrokerDTO brokerDTO, Bitmap bitmap)
                                             {
-                                                //noinspection ConstantConditions
-                                                ((KYCAyondoForm) situationDTO.kycForm).setResidenceDocumentFile(
-                                                        imageRequesterUtil.getCroppedPhotoFile());
-                                                onNext(situationDTO);
+                                                KYCAyondoForm update = new KYCAyondoForm();
+                                                update.setResidenceDocumentFile(imageRequesterUtil.getCroppedPhotoFile());
+                                                onNext(new LiveBrokerSituationDTO(brokerDTO, update));
                                                 return bitmap;
                                             }
                                         });
@@ -293,56 +313,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     }
                                 },
                                 new TimberOnErrorAction1("Failed to ask for and get residence document bitmap")));
-
-        onDestroyViewSubscriptions.add(Observable.merge(
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        WidgetObservable.input(termsConditionsCheckBox),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override
-                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation, OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situation.kycForm).setAgreeTermsConditions(onCheckedChangeEvent.value());
-                                return situation;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        WidgetObservable.input(riskWarningCheckBox),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override
-                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation, OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situation.kycForm).setAgreeRisksWarnings(onCheckedChangeEvent.value());
-                                return situation;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        WidgetObservable.input(dataSharingCheckBox),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override
-                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation, OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situation.kycForm).setAgreeDataSharing(onCheckedChangeEvent.value());
-                                return situation;
-                            }
-                        }))
-                .subscribe(
-                        new Action1<LiveBrokerSituationDTO>()
-                        {
-                            @Override public void call(LiveBrokerSituationDTO situation)
-                            {
-                                onNext(situation);
-                            }
-                        },
-                        new TimberOnErrorAction1("Failed to listen to agreement checkboxes")));
 
         onDestroyViewSubscriptions.add(getKYCAyondoFormOptionsObservable()
                 .flatMap(new Func1<KYCAyondoFormOptionsDTO, Observable<String>>()
@@ -413,8 +383,9 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
     }
 
-    private void populate(@NonNull KYCAyondoForm kycForm)
+    @NonNull private KYCAyondoForm populate(@NonNull KYCAyondoForm kycForm)
     {
+        KYCAyondoForm update = new KYCAyondoForm();
         Boolean agreeTerms = kycForm.isAgreeTermsConditions();
         if (agreeTerms != null)
         {
@@ -422,7 +393,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
-            kycForm.setAgreeTermsConditions(termsConditionsCheckBox.isChecked());
+            update.setAgreeTermsConditions(termsConditionsCheckBox.isChecked());
         }
 
         Boolean riskWarning = kycForm.isAgreeRisksWarnings();
@@ -432,7 +403,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
-            kycForm.setAgreeRisksWarnings(riskWarningCheckBox.isChecked());
+            update.setAgreeRisksWarnings(riskWarningCheckBox.isChecked());
         }
 
         Boolean dataSharing = kycForm.isAgreeDataSharing();
@@ -442,13 +413,16 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
-            kycForm.setAgreeDataSharing(dataSharingCheckBox.isChecked());
+            update.setAgreeDataSharing(dataSharingCheckBox.isChecked());
         }
+
+        return update;
     }
 
-    private void populateIdentityDocumentType(@NonNull KYCAyondoForm kycForm,
+    @NonNull private KYCAyondoForm populateIdentityDocumentType(@NonNull KYCAyondoForm kycForm,
             @NonNull List<IdentityScannedDocumentType> identityScannedDocumentTypes)
     {
+        KYCAyondoForm update = new KYCAyondoForm();
         IdentityScannedDocumentType type = kycForm.getIdentityDocumentType();
         Integer index = populateSpinner(identityDocumentTypeSpinner,
                 type,
@@ -467,14 +441,16 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
             if (chosen != null)
             {
-                kycForm.setIdentityDocumentType(chosen);
+                update.setIdentityDocumentType(chosen);
             }
         }
+        return update;
     }
 
-    private void populateResidenceDocumentType(@NonNull KYCAyondoForm kycForm,
+    @NonNull private KYCAyondoForm populateResidenceDocumentType(@NonNull KYCAyondoForm kycForm,
             @NonNull List<ResidenceScannedDocumentType> residenceScannedDocumentTypes)
     {
+        KYCAyondoForm update = new KYCAyondoForm();
         ResidenceScannedDocumentType type = kycForm.getResidenceDocumentType();
         Integer index = populateSpinner(residenceDocumentTypeSpinner,
                 type,
@@ -493,9 +469,10 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
             if (chosen != null)
             {
-                kycForm.setResidenceDocumentType(chosen);
+                update.setResidenceDocumentType(chosen);
             }
         }
+        return update;
     }
 
     private void populate(@Nullable DocumentActionWidget widget, @Nullable File imageFile)

@@ -16,6 +16,7 @@ import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
+import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
@@ -57,13 +58,17 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         super.onDestroy();
     }
 
+    /**
+     * You should only pass KYCForms that have values that need to be changed.
+     */
     @CallSuper public void onNext(@NonNull LiveBrokerSituationDTO situationDTO)
     {
         LiveBrokerSituationDTO previous = liveBrokerSituationPreference.get();
         liveBrokerSituationPreference.set(situationDTO);
-        if (!previous.hasSameFields(situationDTO))
+        LiveBrokerSituationDTO next = liveBrokerSituationPreference.get();
+        if (!previous.hasSameFields(next))
         {
-            brokerSituationSubject.onNext(situationDTO);
+            brokerSituationSubject.onNext(next);
         }
     }
 
@@ -100,9 +105,28 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 
     @NonNull protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
-        return brokerSituationSubject
-                .distinctUntilChanged();
+        return brokerSituationSubject.distinctUntilChanged();
     }
+
+    @NonNull protected Observable<LiveBrokerDTO> createBrokerObservable()
+    {
+        return getBrokerSituationObservable()
+                .map(new Func1<LiveBrokerSituationDTO, LiveBrokerDTO>()
+                {
+                    @Override public LiveBrokerDTO call(LiveBrokerSituationDTO situationDTO)
+                    {
+                        return situationDTO.broker;
+                    }
+                })
+                .distinctUntilChanged(new Func1<LiveBrokerDTO, String>()
+                {
+                    @Override public String call(LiveBrokerDTO liveBrokerDTO)
+                    {
+                        return liveBrokerDTO.id.key + liveBrokerDTO.name;
+                    }
+                });
+    }
+
 
     @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptionsObservable()
     {

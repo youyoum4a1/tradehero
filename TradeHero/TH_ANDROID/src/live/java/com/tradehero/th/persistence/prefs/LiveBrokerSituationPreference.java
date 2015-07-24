@@ -56,20 +56,20 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
         LiveBrokerSituationDTO saved = get();
         if (saved.kycForm != null && value.kycForm != null)
         {
-            value.kycForm.pickFrom(saved.kycForm);
+            saved.kycForm.pickFrom(value.kycForm);
         }
         try
         {
-            preference.edit().putString(key, objectMapper.writeValueAsString(value)).apply();
-            liveBrokerSituationDTOPublishSubject.onNext(value);
+            preference.edit().putString(key, objectMapper.writeValueAsString(saved)).apply();
+            liveBrokerSituationDTOPublishSubject.onNext(saved);
         } catch (JsonProcessingException e)
         {
-            Timber.e("Failed to serialise LiveBrokerSituationDTO %s", value);
+            Timber.e("Failed to serialise LiveBrokerSituationDTO %s", saved);
             throw new IllegalArgumentException("Failed to serialise LiveBrokerSituationDTO");
         }
     }
 
-    public Observable<LiveBrokerSituationDTO> getLiveBrokerSituationDTOObservable()
+    @NonNull public Observable<LiveBrokerSituationDTO> getLiveBrokerSituationDTOObservable()
     {
         if (liveBrokerSituationDTOObservable == null)
         {

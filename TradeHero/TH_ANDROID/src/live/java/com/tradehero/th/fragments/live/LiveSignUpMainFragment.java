@@ -98,6 +98,7 @@ public class LiveSignUpMainFragment extends BaseFragment
                                 return liveBrokerSituationDTO.kycForm;
                             }
                         })
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 new Action1<KYCForm>()
                                 {

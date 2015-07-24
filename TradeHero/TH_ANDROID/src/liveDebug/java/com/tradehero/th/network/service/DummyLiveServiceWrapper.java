@@ -41,7 +41,7 @@ import timber.log.Timber;
 
 public class DummyLiveServiceWrapper extends LiveServiceWrapper
 {
-    private static final int TIME_OUT_SECONDS = 10;
+    private static final int TIME_OUT_SECONDS = 5;
     private final Country pretendInCountry = Country.SG;
 
     @NonNull private final ObjectMapperWrapper objectMapperWrapper;

@@ -14,11 +14,11 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
-import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import java.util.List;
 import rx.Observable;
@@ -26,6 +26,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnCheckedChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.functions.Func2;
 
 public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragment
@@ -55,7 +56,9 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             @Override public void call(LiveBrokerSituationDTO situationDTO)
                             {
                                 //noinspection ConstantConditions
-                                populate((KYCAyondoForm) situationDTO.kycForm);
+                                onNext(new LiveBrokerSituationDTO(
+                                        situationDTO.broker,
+                                        populate((KYCAyondoForm) situationDTO.kycForm)));
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread()),
@@ -75,10 +78,12 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 new Func2<LiveBrokerSituationDTO, KYCAyondoFormOptionsDTO, Object>()
                 {
                     @Override
-                    public Object call(LiveBrokerSituationDTO liveBrokerSituationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
+                    public Object call(LiveBrokerSituationDTO situationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
                     {
                         //noinspection ConstantConditions
-                        populateTradingPerQuarter((KYCAyondoForm) liveBrokerSituationDTO.kycForm, kycFormOptionsDTO.tradingPerQuarterOptions);
+                        onNext(new LiveBrokerSituationDTO(situationDTO.broker,
+                                populateTradingPerQuarter((KYCAyondoForm) situationDTO.kycForm,
+                                        kycFormOptionsDTO.tradingPerQuarterOptions)));
                         return null;
                     }
                 })
@@ -86,127 +91,87 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new EmptyAction1<>(),
                         new TimberOnErrorAction1("Failed to populate AyondoStep2 spinners")));
 
-        onDestroyViewSubscriptions.add(Observable.merge(
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        WidgetObservable.input(workInFinanceButton),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO,
-                                    OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situationDTO.kycForm).setWorkedInFinance1Year(
-                                        onCheckedChangeEvent.value());
-                                return situationDTO;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        WidgetObservable.input(attendedSeminarAyondoButton),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO,
-                                    OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situationDTO.kycForm).setAttendedSeminarAyondo(onCheckedChangeEvent.value());
-                                return situationDTO;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        WidgetObservable.input(haveOtherQualificationButton),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO,
-                                    OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situationDTO.kycForm).setHaveOtherQualification(
-                                        onCheckedChangeEvent.value());
-                                return situationDTO;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        WidgetObservable.input(tradedSharesBondsButton),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO,
-                                    OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situationDTO.kycForm).setTradedSharesBonds(onCheckedChangeEvent.value());
-                                return situationDTO;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        WidgetObservable.input(tradedOtcDerivativeButton),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO,
-                                    OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situationDTO.kycForm).setTradedOtcDerivative(onCheckedChangeEvent.value());
-                                return situationDTO;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        WidgetObservable.input(tradedEtcButton),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO,
-                                    OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situationDTO.kycForm).setTradedEtc(onCheckedChangeEvent.value());
-                                return situationDTO;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        AdapterViewObservable.selects(tradingPerQuarterSpinner)
-                                .distinctUntilChanged(createSpinnerDistinctByPosition()),
-                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override
-                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent onSelectedEvent)
-                            {
-                                if (onSelectedEvent instanceof OnItemSelectedEvent)
+        onDestroyViewSubscriptions.add(Observable.combineLatest(
+                createBrokerObservable(),
+                Observable.merge(
+                        WidgetObservable.input(workInFinanceButton)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
                                 {
-                                    //noinspection ConstantConditions
-                                    ((KYCAyondoForm) situationDTO.kycForm).setTradingPerQuarter(
-                                            ((TradingPerQuarterDTO) onSelectedEvent.parent.getItemAtPosition(
-                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).tradingPerQuarter);
-                                }
-                                return situationDTO;
-                            }
-                        }))
+                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromWorkedInFinance1YearEvent(onCheckedChangeEvent);
+                                    }
+                                }),
+                        WidgetObservable.input(attendedSeminarAyondoButton)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromAttendedSeminarAyondoEvent(onCheckedChangeEvent);
+                                    }
+                                }),
+                        WidgetObservable.input(haveOtherQualificationButton)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromHaveOtherQualificationEvent(onCheckedChangeEvent);
+                                    }
+                                }),
+                        WidgetObservable.input(tradedSharesBondsButton)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromTradedSharesBondsEvent(onCheckedChangeEvent);
+                                    }
+                                }),
+                        WidgetObservable.input(tradedOtcDerivativeButton)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromTradedOtcDerivativesEvent(onCheckedChangeEvent);
+                                    }
+                                }),
+                        WidgetObservable.input(tradedEtcButton)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromTradedExchangeDerivativesEvent(onCheckedChangeEvent);
+                                    }
+                                }),
+                        AdapterViewObservable.selects(tradingPerQuarterSpinner)
+                                .distinctUntilChanged(createSpinnerDistinctByPosition())
+                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromTradingPerQuarterEvent(onSelectedEvent);
+                                    }
+                                })),
+                new Func2<LiveBrokerDTO, KYCAyondoForm, LiveBrokerSituationDTO>()
+                {
+                    @Override public LiveBrokerSituationDTO call(LiveBrokerDTO brokerDTO, KYCAyondoForm update)
+                    {
+                        return new LiveBrokerSituationDTO(brokerDTO, update);
+                    }
+                })
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
                         {
-                            @Override public void call(LiveBrokerSituationDTO situationDTO)
+                            @Override public void call(LiveBrokerSituationDTO update)
                             {
-                                onNext(situationDTO);
+                                onNext(update);
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to compound buttons")));
     }
 
-    protected void setChecked(@NonNull CompoundButton button, @Nullable Boolean checked)
+    @NonNull protected KYCAyondoForm populate(@NonNull KYCAyondoForm kycForm)
     {
-        if (checked != null)
-        {
-            button.setChecked(checked);
-        }
-    }
-
-    protected void populate(@NonNull KYCAyondoForm kycForm)
-    {
+        KYCAyondoForm update = new KYCAyondoForm();
         Boolean workedInFinance = kycForm.isWorkedInFinance1Year();
         if (workedInFinance != null)
         {
@@ -214,7 +179,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
-            kycForm.setWorkedInFinance1Year(workInFinanceButton.isChecked());
+            update.setWorkedInFinance1Year(workInFinanceButton.isChecked());
         }
 
         Boolean attendedSeminar = kycForm.isAttendedSeminarAyondo();
@@ -224,7 +189,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
-            kycForm.setAttendedSeminarAyondo(attendedSeminarAyondoButton.isChecked());
+            update.setAttendedSeminarAyondo(attendedSeminarAyondoButton.isChecked());
         }
 
         Boolean otherQualification = kycForm.isHaveOtherQualification();
@@ -234,7 +199,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
-            kycForm.setHaveOtherQualification(haveOtherQualificationButton.isChecked());
+            update.setHaveOtherQualification(haveOtherQualificationButton.isChecked());
         }
 
         Boolean tradeSharesBonds = kycForm.isTradedSharesBonds();
@@ -244,7 +209,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
-            kycForm.setTradedSharesBonds(tradedSharesBondsButton.isChecked());
+            update.setTradedSharesBonds(tradedSharesBondsButton.isChecked());
         }
 
         Boolean tradedOtc = kycForm.isTradedOtcDerivative();
@@ -254,7 +219,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
-            kycForm.setTradedOtcDerivative(tradedOtcDerivativeButton.isChecked());
+            update.setTradedOtcDerivative(tradedOtcDerivativeButton.isChecked());
         }
 
         Boolean tradedEtc = kycForm.isTradedEtc();
@@ -264,14 +229,17 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
-            kycForm.setTradedEtc(tradedEtcButton.isChecked());
+            update.setTradedEtc(tradedEtcButton.isChecked());
         }
+
+        return update;
     }
 
-    protected void populateTradingPerQuarter(
+    @NonNull protected KYCAyondoForm populateTradingPerQuarter(
             @NonNull KYCAyondoForm kycForm,
             @NonNull List<TradingPerQuarter> tradingPerQuarters)
     {
+        KYCAyondoForm update = new KYCAyondoForm();
         TradingPerQuarter savedTrading = kycForm.getTradingPerQuarter();
         Integer indexTrading = populateSpinner(tradingPerQuarterSpinner,
                 savedTrading,
@@ -290,8 +258,9 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
             if (chosenRange != null)
             {
-                kycForm.setTradingPerQuarter(chosenRange);
+                update.setTradingPerQuarter(chosenRange);
             }
         }
+        return update;
     }
 }

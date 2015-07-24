@@ -78,6 +78,7 @@ public class IdentityPromptActivity extends BaseActivity
                                 {
                                     @Override public LiveBrokerSituationDTO call(KYCFormOptionsDTO kycFormOptions)
                                     {
+                                        //noinspection ConstantConditions
                                         picasso.load(kycFormOptions.getIdentityPromptInfo().image)
                                                 .placeholder(situation.kycForm.getCountry().logoId)
                                                 .into(imgPrompt);

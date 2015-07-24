@@ -17,11 +17,11 @@ import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
-import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import java.util.List;
 import rx.Observable;
@@ -49,6 +49,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
                         getBrokerSituationObservable()
@@ -92,13 +93,18 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 }),
                         new Func2<LiveBrokerSituationDTO, KYCAyondoFormOptionsDTO, Object>()
                         {
-                            @Override public Object call(LiveBrokerSituationDTO liveBrokerSituationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
+                            @Override public Object call(LiveBrokerSituationDTO situationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
                             {
+                                KYCAyondoForm update = new KYCAyondoForm();
                                 //noinspection ConstantConditions
-                                populateAnnualIncome((KYCAyondoForm) liveBrokerSituationDTO.kycForm, kycFormOptionsDTO.annualIncomeOptions);
-                                populateNetWorth((KYCAyondoForm) liveBrokerSituationDTO.kycForm, kycFormOptionsDTO.netWorthOptions);
-                                populatePercentNetWorth((KYCAyondoForm) liveBrokerSituationDTO.kycForm, kycFormOptionsDTO.percentNetWorthOptions);
-                                populateEmploymentStatus((KYCAyondoForm) liveBrokerSituationDTO.kycForm, kycFormOptionsDTO.employmentStatusOptions);
+                                update.pickFrom(
+                                        populateAnnualIncome((KYCAyondoForm) situationDTO.kycForm, kycFormOptionsDTO.annualIncomeOptions));
+                                update.pickFrom(populateNetWorth((KYCAyondoForm) situationDTO.kycForm, kycFormOptionsDTO.netWorthOptions));
+                                update.pickFrom(populatePercentNetWorth((KYCAyondoForm) situationDTO.kycForm,
+                                        kycFormOptionsDTO.percentNetWorthOptions));
+                                update.pickFrom(populateEmploymentStatus((KYCAyondoForm) situationDTO.kycForm,
+                                        kycFormOptionsDTO.employmentStatusOptions));
+                                onNext(new LiveBrokerSituationDTO(situationDTO.broker, update));
                                 return null;
                             }
                         })
@@ -106,78 +112,42 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 new EmptyAction1<>(),
                                 new TimberOnErrorAction1("Failed to populate AyondoStep2 spinners")));
 
-        onDestroyViewSubscriptions.add(Observable.merge(
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        AdapterViewObservable.selects(annualIncomeSpinner).distinctUntilChanged(createSpinnerDistinctByPosition()),
-                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent onSelectedEvent)
-                            {
-                                if (onSelectedEvent instanceof OnItemSelectedEvent)
+        onDestroyViewSubscriptions.add(Observable.combineLatest(
+                createBrokerObservable(),
+                Observable.merge(
+                        AdapterViewObservable.selects(annualIncomeSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
+                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
                                 {
-                                    //noinspection ConstantConditions
-                                    ((KYCAyondoForm) situationDTO.kycForm).setAnnualIncomeRange(
-                                            ((AnnualIncomeDTO) onSelectedEvent.parent.getItemAtPosition(
-                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).annualIncomeRange);
-                                }
-                                return situationDTO;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        AdapterViewObservable.selects(netWorthSpinner).distinctUntilChanged(createSpinnerDistinctByPosition()),
-                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent onSelectedEvent)
-                            {
-                                if (onSelectedEvent instanceof OnItemSelectedEvent)
+                                    @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromAnnualIncomeRangeEvent(onSelectedEvent);
+                                    }
+                                }),
+                        AdapterViewObservable.selects(netWorthSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
+                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
                                 {
-                                    //noinspection ConstantConditions
-                                    ((KYCAyondoForm) situationDTO.kycForm).setNetWorthRange(
-                                            ((NetWorthDTO) onSelectedEvent.parent.getItemAtPosition(
-                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).netWorthRange);
-                                }
-                                return situationDTO;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
+                                    @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromNetWorthRangeEvent(onSelectedEvent);
+                                    }
+                                }),
                         AdapterViewObservable.selects(percentageInvestmentSpinner)
-                                .distinctUntilChanged(createSpinnerDistinctByPosition()),
-                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent onSelectedEvent)
-                            {
-                                if (onSelectedEvent instanceof OnItemSelectedEvent)
+                                .distinctUntilChanged(createSpinnerDistinctByPosition())
+                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
                                 {
-                                    //noinspection ConstantConditions
-                                    ((KYCAyondoForm) situationDTO.kycForm).setPercentNetWorthForInvestmentRange(
-                                            ((PercentNetWorthDTO) onSelectedEvent.parent.getItemAtPosition(
-                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).netWorthForInvestmentRange);
-                                }
-                                return situationDTO;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
-                        AdapterViewObservable.selects(employmentStatusSpinner).distinctUntilChanged(createSpinnerDistinctByPosition()),
-                        new Func2<LiveBrokerSituationDTO, OnSelectedEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnSelectedEvent onSelectedEvent)
-                            {
-                                if (onSelectedEvent instanceof OnItemSelectedEvent)
+                                    @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromPercentNetWorthRangeEvent(onSelectedEvent);
+                                    }
+                                }),
+                        AdapterViewObservable.selects(employmentStatusSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
+                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
                                 {
-                                    //noinspection ConstantConditions
-                                    ((KYCAyondoForm) situationDTO.kycForm).setEmploymentStatus(
-                                            ((EmploymentStatusDTO) onSelectedEvent.parent.getItemAtPosition(
-                                                    ((OnItemSelectedEvent) onSelectedEvent).position)).employmentStatus);
-                                }
-                                return situationDTO;
-                            }
-                        }),
-                Observable.combineLatest(
-                        getBrokerSituationObservable(),
+                                    @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromEmploymentStatusEvent(onSelectedEvent);
+                                    }
+                                }),
                         WidgetObservable.input(employerRegulatedCheckBox).distinctUntilChanged(
                                 new Func1<OnCheckedChangeEvent, Boolean>()
                                 {
@@ -185,31 +155,35 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     {
                                         return onCheckedChangeEvent.value();
                                     }
-                                }),
-                        new Func2<LiveBrokerSituationDTO, OnCheckedChangeEvent, LiveBrokerSituationDTO>()
-                        {
-                            @Override
-                            public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, OnCheckedChangeEvent onCheckedChangeEvent)
-                            {
-                                //noinspection ConstantConditions
-                                ((KYCAyondoForm) situationDTO.kycForm).setEmployerRegulatedFinancial(
-                                        onCheckedChangeEvent.value());
-                                return situationDTO;
-                            }
-                        }))
+                                })
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromEmployerRegulatedEvent(onCheckedChangeEvent);
+                                    }
+                                })),
+                new Func2<LiveBrokerDTO, KYCAyondoForm, LiveBrokerSituationDTO>()
+                {
+                    @Override public LiveBrokerSituationDTO call(LiveBrokerDTO liveBrokerDTO, KYCAyondoForm kycAyondoForm)
+                    {
+                        return new LiveBrokerSituationDTO(liveBrokerDTO, kycAyondoForm);
+                    }
+                })
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
                         {
-                            @Override public void call(LiveBrokerSituationDTO situationDTO)
+                            @Override public void call(LiveBrokerSituationDTO update)
                             {
-                                onNext(situationDTO);
+                                onNext(update);
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to spinner selections")));
     }
 
-    protected void populate(@NonNull KYCAyondoForm kycForm)
+    @NonNull protected KYCAyondoForm populate(@NonNull KYCAyondoForm kycForm)
     {
+        KYCAyondoForm update = new KYCAyondoForm();
         Boolean employerRegulated = kycForm.isEmployerRegulatedFinancial();
         if (employerRegulated != null)
         {
@@ -217,14 +191,16 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
-            kycForm.setEmployerRegulatedFinancial(employerRegulatedCheckBox.isChecked());
+            update.setEmployerRegulatedFinancial(employerRegulatedCheckBox.isChecked());
         }
+        return update;
     }
 
-    protected void populateAnnualIncome(
+    @NonNull protected KYCAyondoForm populateAnnualIncome(
             @NonNull KYCAyondoForm kycForm,
             @NonNull List<AnnualIncomeRange> incomeRanges)
     {
+        KYCAyondoForm update = new KYCAyondoForm();
         AnnualIncomeRange savedAnnualIncomeRange = kycForm.getAnnualIncomeRange();
         Integer indexIncome = populateSpinner(annualIncomeSpinner,
                 savedAnnualIncomeRange,
@@ -241,17 +217,16 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 chosenRange = ((AnnualIncomeDTO) annualIncomeSpinner.getSelectedItem()).annualIncomeRange;
             }
 
-            if (chosenRange != null)
-            {
-                kycForm.setAnnualIncomeRange(chosenRange);
-            }
+            update.setAnnualIncomeRange(chosenRange);
         }
+        return update;
     }
 
-    protected void populateNetWorth(
+    @NonNull protected KYCAyondoForm populateNetWorth(
             @NonNull KYCAyondoForm kycForm,
             @NonNull List<NetWorthRange> netWorthRanges)
     {
+        KYCAyondoForm update = new KYCAyondoForm();
         NetWorthRange savedNetWorthRange = kycForm.getNetWorthRange();
         Integer indexWorth = populateSpinner(netWorthSpinner,
                 savedNetWorthRange,
@@ -268,17 +243,16 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 chosenRange = ((NetWorthDTO) netWorthSpinner.getSelectedItem()).netWorthRange;
             }
 
-            if (chosenRange != null)
-            {
-                kycForm.setNetWorthRange(chosenRange);
-            }
+            update.setNetWorthRange(chosenRange);
         }
+        return update;
     }
 
-    protected void populatePercentNetWorth(
+    @NonNull protected KYCAyondoForm populatePercentNetWorth(
             @NonNull KYCAyondoForm kycForm,
             @NonNull List<PercentNetWorthForInvestmentRange> netWorthRanges)
     {
+        KYCAyondoForm update = new KYCAyondoForm();
         PercentNetWorthForInvestmentRange savedNetWorthRange = kycForm.getPercentNetWorthForInvestmentRange();
         Integer indexWorth = populateSpinner(percentageInvestmentSpinner,
                 savedNetWorthRange,
@@ -295,17 +269,16 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 chosenRange = ((PercentNetWorthDTO) percentageInvestmentSpinner.getSelectedItem()).netWorthForInvestmentRange;
             }
 
-            if (chosenRange != null)
-            {
-                kycForm.setPercentNetWorthForInvestmentRange(chosenRange);
-            }
+            update.setPercentNetWorthForInvestmentRange(chosenRange);
         }
+        return update;
     }
 
-    protected void populateEmploymentStatus(
+    @NonNull protected KYCAyondoForm populateEmploymentStatus(
             @NonNull KYCAyondoForm kycForm,
             @NonNull List<EmploymentStatus> employmentStatuses)
     {
+        KYCAyondoForm update = new KYCAyondoForm();
         EmploymentStatus savedEmploymentStatus = kycForm.getEmploymentStatus();
         Integer indexStatus = populateSpinner(employmentStatusSpinner,
                 savedEmploymentStatus,
@@ -322,10 +295,8 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 chosenStatus = ((EmploymentStatusDTO) employmentStatusSpinner.getSelectedItem()).employmentStatus;
             }
 
-            if (chosenStatus != null)
-            {
-                kycForm.setEmploymentStatus(chosenStatus);
-            }
+            update.setEmploymentStatus(chosenStatus);
         }
+        return update;
     }
 }

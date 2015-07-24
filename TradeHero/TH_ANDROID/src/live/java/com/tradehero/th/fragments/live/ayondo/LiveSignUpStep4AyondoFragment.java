@@ -34,7 +34,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
@@ -69,8 +68,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             {
                                 pickLocation(PICK_LOCATION_REQUEST_PRIMARY);
                             }
-                        })
-        );
+                        }));
 
         onDestroyViewSubscriptions.add(secondaryWidget.getPickLocationClickedObservable()
                         .subscribe(new Action1<OnClickEvent>()
@@ -79,8 +77,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             {
                                 pickLocation(PICK_LOCATION_REQUEST_SECONDARY);
                             }
-                        })
-        );
+                        }));
 
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
@@ -89,6 +86,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 {
                                     @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
                                     {
+                                        //noinspection ConstantConditions
                                         List<KYCAddress> addresses = ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getAddresses();
                                         if (addresses != null)
                                         {
@@ -129,15 +127,16 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO liveBrokerSituationDTO, List<KYCAddress> kycAddresses)
                             {
-                                ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).setAddresses(kycAddresses);
-                                return liveBrokerSituationDTO;
+                                KYCAyondoForm update = new KYCAyondoForm();
+                                update.setAddresses(kycAddresses);
+                                return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
                             }
                         })
                         .subscribe(new Action1<LiveBrokerSituationDTO>()
                         {
-                            @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                            @Override public void call(LiveBrokerSituationDTO update)
                             {
-                                onNext(liveBrokerSituationDTO);
+                                onNext(update);
                             }
                         }));
     }
