@@ -87,12 +87,12 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
             queryTradeHistory();
             queryDelegationHistory();
         } else {
-            queryTradeHistory2();
-            queryDelegationHistory2();
+            queryTradeHistoryWP();
+            queryDelegationHistoryWP();
         }
     }
 
-    private void queryDelegationHistory2() {
+    private void queryDelegationHistoryWP() {
         mProgressBar2.setVisibility(View.VISIBLE);
         mTradeServiceWrapper.getDelegationWP(mPortfolioId, new Callback<ClosedTradeDTOList>() {
             @Override
@@ -110,7 +110,7 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
         });
     }
 
-    private void queryTradeHistory2() {
+    private void queryTradeHistoryWP() {
         mProgressBar1.setVisibility(View.VISIBLE);
         mTradeServiceWrapper.getTradesWP(mPortfolioId, new Callback<ClosedTradeDTOList>() {
             @Override

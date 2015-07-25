@@ -79,7 +79,7 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
         if (competitionId == 0) {
             queryPendingDelegationHistory();
         } else {
-            queryPendingDelegationHistoryWithPortfolio();
+            queryPendingDelegationHistoryWP();
         }
     }
 
@@ -110,7 +110,7 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
         });
     }
 
-    private void queryPendingDelegationHistoryWithPortfolio() {
+    private void queryPendingDelegationHistoryWP() {
         mProgressBar.setVisibility(View.VISIBLE);
         mTradeServiceWrapper.getPendingDelegationWithPortfolio(mPortfolioId, new Callback<ClosedTradeDTOList>() {
             @Override
@@ -156,7 +156,7 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
                             if (competitionId == 0) {
                                 queryPendingDelegationHistory();
                             } else {
-                                queryPendingDelegationHistoryWithPortfolio();
+                                queryPendingDelegationHistoryWP();
                             }
                         }
 
@@ -166,7 +166,7 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
                             if (competitionId == 0) {
                                 queryPendingDelegationHistory();
                             } else {
-                                queryPendingDelegationHistoryWithPortfolio();
+                                queryPendingDelegationHistoryWP();
                             }
                         }
                     });

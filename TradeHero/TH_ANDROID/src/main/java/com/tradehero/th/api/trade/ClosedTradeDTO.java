@@ -1,6 +1,7 @@
 package com.tradehero.th.api.trade;
 
 import com.tradehero.common.persistence.DTO;
+import java.util.Date;
 
 public class ClosedTradeDTO implements DTO
 {
@@ -14,8 +15,8 @@ public class ClosedTradeDTO implements DTO
     public double price;
     public String currencyDisplay;
     public int state;// 0: 未成交,  1: 已成交,  2: 已撤
-    public String closedAtUtc;
-    public String createdAtUtc;
+    public Date closedAtUtc;
+    public Date createdAtUtc;
 
     public String business_price;
     public String business_amt;
@@ -51,8 +52,8 @@ public class ClosedTradeDTO implements DTO
                 ", price=" + price +
                 ", currencyDisplay='" + currencyDisplay + '\'' +
                 ", state=" + state +
-                ", closedAtUtc='" + closedAtUtc + '\'' +
-                ", createdAtUtc='" + createdAtUtc + '\'' +
+                ", closedAtUtc='" + closedAtUtc.toString() + '\'' +
+                ", createdAtUtc='" + createdAtUtc.toString() + '\'' +
                 ", business_price='" + business_price + '\'' +
                 ", business_amt='" + business_amt + '\'' +
                 ", business_date='" + business_date + '\'' +

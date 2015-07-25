@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.tradehero.th.R;
 import com.tradehero.th.api.trade.ClosedTradeDTO;
 import com.tradehero.th.api.trade.ClosedTradeDTOList;
+import java.text.SimpleDateFormat;
 
 public class SecurityOptMockQueryTradeAdapter extends BaseAdapter{
     private ClosedTradeDTOList mList = new ClosedTradeDTOList();
@@ -56,8 +57,8 @@ public class SecurityOptMockQueryTradeAdapter extends BaseAdapter{
         TextView timeDate = (TextView)convertView.findViewById(R.id.time_date);
         TextView timeTime = (TextView)convertView.findViewById(R.id.time_time);
         if (item.closedAtUtc != null) {
-            timeDate.setText(item.closedAtUtc.substring(0, 10).replace("-", "/"));
-            timeTime.setText(item.closedAtUtc.substring(11));
+            timeDate.setText(new SimpleDateFormat("yyyy/MM/dd").format(item.closedAtUtc));
+            timeTime.setText(new SimpleDateFormat("HH:mm:ss").format(item.closedAtUtc));
         }
 
         return convertView;
