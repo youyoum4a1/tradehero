@@ -44,4 +44,7 @@ public class Constants {
 
     //Manager Account
     public final static boolean isManager = true;
+
+    //HAITONG Environment
+    public final static boolean isInTestingEnvironment = true;
 }

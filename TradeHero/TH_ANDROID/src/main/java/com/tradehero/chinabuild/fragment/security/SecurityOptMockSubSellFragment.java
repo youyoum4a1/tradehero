@@ -368,12 +368,6 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
                         return;
                     }
                     if(isSHASHE()){
-                        if(quoteDetail!=null && quoteDetail.prec !=null){
-                            if(price > (quoteDetail.prec*1.11) || price < (quoteDetail.prec*0.89)){
-                                THToast.show("股票价格错误");
-                                return;
-                            }
-                        }
                         if(getActivity()!=null) {
                             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_START_TRADING));
                         }

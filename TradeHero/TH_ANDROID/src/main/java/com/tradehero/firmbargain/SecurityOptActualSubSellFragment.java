@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -21,22 +22,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
-import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
-import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.chinabuild.fragment.security.SecurityOptPositionMockDTO;
-import com.tradehero.chinabuild.fragment.security.SecurityOptPositionsList;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SearchSecurityActualActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.SecurityUtils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -51,6 +45,8 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
+ * Actual Security Sell Page
+ *
  * Created by palmer on 15/7/16.
  */
 public class SecurityOptActualSubSellFragment extends Fragment implements View.OnClickListener{
@@ -181,6 +177,34 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
             securityOptPositionActualAdapter = new SecurityOptPositionActualAdapter(getActivity());
         }
         positionsLV.setAdapter(securityOptPositionActualAdapter);
+        positionsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                SecurityOptPositionActualDTO securityOptPositionActualDTO = securityOptPositionActualAdapter.getItem(position);
+                if(securityOptPositionActualDTO ==null || !isSHASHE(securityOptPositionActualDTO.market_name)
+                        || TextUtils.isEmpty(securityOptPositionActualDTO.sec_code) || TextUtils.isEmpty(securityOptPositionActualDTO.sec_name)){
+                    return;
+                }
+                boolean isEmptyBefore = false;
+                if(TextUtils.isEmpty(securityExchange) && TextUtils.isEmpty(securitySymbol)){
+                    isEmptyBefore = true;
+                }
+                setExchange(securityOptPositionActualDTO.market_name);
+                securitySymbol = securityOptPositionActualDTO.sec_code;
+                securityName = securityOptPositionActualDTO.sec_name;
+                priceET.setText("");
+                decisionET.setText("");
+                securityCodeTV.setText(securitySymbol + " " + securityName);
+                clearAllSellBuy();
+                if(isEmptyBefore){
+                    quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
+                } else {
+                    quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLNoRepeatCallback());
+                }
+                enableIfNoSHASHE();
+                displaySells();
+            }
+        });
         securityCodeTV = (TextView) view.findViewById(R.id.textview_security_code);
         securityCodeTV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,6 +244,17 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         reduceOneTV.setClickable(false);
         addOneTV.setClickable(false);
         priceET.setEnabled(false);
+    }
+
+    private void enableIfNoSHASHE(){
+        decisionET.setEnabled(true);
+        oneFourIV.setClickable(true);
+        oneThirdIV.setClickable(true);
+        halfIV.setClickable(true);
+        allIV.setClickable(true);
+        reduceOneTV.setClickable(true);
+        addOneTV.setClickable(true);
+        priceET.setEnabled(true);
     }
 
     private void initSellBuyViews(View view) {
@@ -511,13 +546,21 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         getActivity().startActivity(intent);
     }
 
-    private void gotoDashboard(String strFragment, Bundle bundle) {
-        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, strFragment);
-        ActivityHelper.launchDashboard(getActivity(), bundle);
-    }
-
     private boolean isSHASHE(){
         if (securityExchange.equalsIgnoreCase("SHA") || securityExchange.equalsIgnoreCase("SHE")) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isSHASHE(String marketName){
+        if(TextUtils.isEmpty(marketName)){
+            return false;
+        }
+        if(marketName.equals("沪A")){
+            return true;
+        }
+        if(marketName.equals("深A")){
             return true;
         }
         return false;
@@ -559,6 +602,26 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
         }
     }
 
+    class RefreshBUYSELLNoRepeatCallback implements  Callback<QuoteDetail> {
+        @Override
+        public void success(QuoteDetail quoteDetail, Response response) {
+            SecurityOptActualSubSellFragment.this.quoteDetail = quoteDetail;
+            if(quoteDetail == null || quoteDetail.symb == null){
+                securitySymbol = "";
+                securityName = "";
+                securityExchange = "";
+                return;
+            }
+            if (securitySymbol.equals(quoteDetail.symb)) {
+                setSellBuyData(quoteDetail);
+            }
+        }
+
+        @Override
+        public void failure(RetrofitError error) {
+        }
+    }
+
     class RefreshBuySellHandler extends Handler {
         public void handleMessage(Message msg) {
             quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
@@ -593,6 +656,7 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                     securityOptPositionActualDTO.cost_price = helper.get(i, "cost_price", 0.0);
                     securityOptPositionActualDTO.current_amt = helper.get(i, "current_amt", 0.0);
                     securityOptPositionActualDTO.enable_amt = helper.get(i, "enable_amt", 0.0);
+                    securityOptPositionActualDTO.market_name = helper.get(i, "market_name", "");
                     securityOptPositionActualDTOs.add(securityOptPositionActualDTO);
                 }
                 securityOptPositionActualAdapter.addData(securityOptPositionActualDTOs);
@@ -643,6 +707,7 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                     securityOptPositionActualDTO.cost_price = helper.get(i, "cost_price", 0.0);
                     securityOptPositionActualDTO.current_amt = helper.get(i, "current_amt", 0.0);
                     securityOptPositionActualDTO.enable_amt = helper.get(i, "enable_amt", 0.0);
+                    securityOptPositionActualDTO.market_name = helper.get(i, "market_name", "");
                     securityOptPositionActualDTOs.add(securityOptPositionActualDTO);
                 }
                 securityOptPositionActualAdapter.addData(securityOptPositionActualDTOs);
@@ -704,12 +769,6 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
             return;
         }
         if(isSHASHE()) {
-            if (quoteDetail != null && quoteDetail.prec != null) {
-                if (price > (quoteDetail.prec * 1.11) || price < (quoteDetail.prec * 0.89)) {
-                    THToast.show("股票价格错误");
-                    return;
-                }
-            }
             if(tradeManager!=null){
                 if(getActivity()!=null) {
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_START_TRADING));
@@ -751,6 +810,44 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                 });
             }
         }
+    }
+
+    private void setExchange(String marketName){
+        if(TextUtils.isEmpty(marketName)){
+            return;
+        }
+        if(marketName.equals("沪A")){
+            securityExchange = "SHA";
+            return;
+        }
+        if(marketName.equals("深A")){
+            securityExchange = "SHE";
+            return;
+        }
+    }
+
+    private void clearAllSellBuy(){
+        buy1Price.setText("- -");
+        buy1Amount.setText("- -");
+        buy2Price.setText("- -");
+        buy2Amount.setText("- -");
+        buy3Price.setText("- -");
+        buy3Amount.setText("- -");
+        buy4Price.setText("- -");
+        buy4Amount.setText("- -");
+        buy5Price.setText("- -");
+        buy5Amount.setText("- -");
+
+        sell1Price.setText("- -");
+        sell1Amount.setText("- -");
+        sell2Price.setText("- -");
+        sell2Amount.setText("- -");
+        sell3Price.setText("- -");
+        sell3Amount.setText("- -");
+        sell4Price.setText("- -");
+        sell4Amount.setText("- -");
+        sell5Price.setText("- -");
+        sell5Amount.setText("- -");
     }
 
 }

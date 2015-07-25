@@ -124,6 +124,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#6b6b6b"
+                        android:singleLine="true"
                         android:layout_marginLeft="2dp"
                         android:text="0"
                         android:textSize="13sp"/>
@@ -144,6 +145,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#6b6b6b"
+                        android:singleLine="true"
                         android:layout_marginLeft="2dp"
                         android:text="0"
                         android:textSize="13sp"/>

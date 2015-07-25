@@ -324,7 +324,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                     }
                     int quantity = Integer.valueOf(decisionET.getText().toString());
                     double price = Double.valueOf(priceET.getText().toString());
-                    if(price <= 0){
+                    if (price <= 0) {
                         THToast.show("股票价格错误");
                         return;
                     }
@@ -340,12 +340,6 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                         }
                     }
                     if(isSHASHE()){
-                        if(quoteDetail!=null && quoteDetail.prec !=null){
-                            if(price > (quoteDetail.prec*1.11) || price < (quoteDetail.prec*0.89)){
-                                THToast.show("股票价格错误");
-                                return;
-                            }
-                        }
                         if(getActivity()!=null) {
                             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_START_TRADING));
                         }
