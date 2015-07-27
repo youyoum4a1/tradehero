@@ -15,7 +15,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.tradehero.th.R;
@@ -62,22 +61,22 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         ButterKnife.bind(this, view);
 
         onDestroyViewSubscriptions.add(primaryWidget.getPickLocationClickedObservable()
-                        .subscribe(new Action1<OnClickEvent>()
-                        {
-                            @Override public void call(OnClickEvent onClickEvent)
-                            {
-                                pickLocation(PICK_LOCATION_REQUEST_PRIMARY);
-                            }
-                        }));
+                .subscribe(new Action1<OnClickEvent>()
+                {
+                    @Override public void call(OnClickEvent onClickEvent)
+                    {
+                        pickLocation(PICK_LOCATION_REQUEST_PRIMARY);
+                    }
+                }));
 
         onDestroyViewSubscriptions.add(secondaryWidget.getPickLocationClickedObservable()
-                        .subscribe(new Action1<OnClickEvent>()
-                        {
-                            @Override public void call(OnClickEvent onClickEvent)
-                            {
-                                pickLocation(PICK_LOCATION_REQUEST_SECONDARY);
-                            }
-                        }));
+                .subscribe(new Action1<OnClickEvent>()
+                {
+                    @Override public void call(OnClickEvent onClickEvent)
+                    {
+                        pickLocation(PICK_LOCATION_REQUEST_SECONDARY);
+                    }
+                }));
 
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
@@ -93,7 +92,13 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                             if (addresses.size() > 0)
                                             {
                                                 KYCAddress address = addresses.get(0);
+
                                                 primaryWidget.setKYCAddress(address);
+                                                if (addresses.size() > 1)
+                                                {
+                                                    KYCAddress address1 = addresses.get(1);
+                                                    secondaryWidget.setKYCAddress(address1);
+                                                }
                                             }
                                         }
                                     }
@@ -127,7 +132,9 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO liveBrokerSituationDTO, List<KYCAddress> kycAddresses)
                             {
+
                                 KYCAyondoForm update = new KYCAyondoForm();
+
                                 update.setAddresses(kycAddresses);
                                 return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
                             }
@@ -165,16 +172,9 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == PICK_LOCATION_REQUEST_PRIMARY || requestCode == PICK_LOCATION_REQUEST_SECONDARY) && resultCode == Activity.RESULT_OK)
         {
-            Place place = PlacePicker.getPlace(data, getActivity());
+            LatLng latLng = PlacePicker.getPlace(data, getActivity()).getLatLng();
             Observable.combineLatest(
-                    Observable.just(place)
-                            .map(new Func1<Place, LatLng>()
-                            {
-                                @Override public LatLng call(Place place)
-                                {
-                                    return place.getLatLng();
-                                }
-                            })
+                    Observable.just(latLng)
                             .subscribeOn(Schedulers.io())
                             .map(new Func1<LatLng, List<Address>>()
                             {
@@ -211,12 +211,20 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     return new KYCAddress(add1, add2, city, postal);
                                 }
                             }),
-                    Observable.just(requestCode == PICK_LOCATION_REQUEST_PRIMARY ? primaryWidget : secondaryWidget),
+                    Observable.just(requestCode == PICK_LOCATION_REQUEST_PRIMARY ? primaryWidget : secondaryWidget)
+                            .doOnNext(new Action1<KYCAddressWidget>()
+                            {
+                                @Override public void call(KYCAddressWidget kycAddressWidget)
+                                {
+                                    kycAddressWidget.setLoading(true);
+                                }
+                            }),
                     new Func2<KYCAddress, KYCAddressWidget, Object>()
                     {
                         @Override public Object call(KYCAddress kycAddress, KYCAddressWidget kycAddressWidget)
                         {
                             kycAddressWidget.setKYCAddress(kycAddress);
+                            kycAddressWidget.setLoading(false);
                             return null;
                         }
                     }

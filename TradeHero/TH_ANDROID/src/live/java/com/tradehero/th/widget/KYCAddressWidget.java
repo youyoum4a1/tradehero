@@ -32,6 +32,7 @@ public class KYCAddressWidget extends LinearLayout
     @Bind(R.id.info_address_line1) EditText txtLine1;
     @Bind(R.id.info_address_line2) EditText txtLine2;
     @Bind(R.id.info_city) EditText txtCity;
+    @Bind(R.id.info_address_processing) View loadingView;
     @Bind(R.id.info_postal_code) EditText txtPostalCode;
     @Bind(R.id.info_pick_location) Button btnPickLocation;
     @Bind(R.id.info_clear_all) Button btnClearAll;
@@ -139,13 +140,31 @@ public class KYCAddressWidget extends LinearLayout
         btnClearAll.setOnClickListener(null);
     }
 
+    public void setLoading(boolean isLoading)
+    {
+        btnPickLocation.setEnabled(!isLoading);
+        loadingView.setVisibility(isLoading ? VISIBLE : GONE);
+    }
+
     public void setKYCAddress(KYCAddress kycAddress)
     {
-        txtLine1.setText(kycAddress.addressLine1 != null ? kycAddress.addressLine1 : "");
-        txtLine2.setText(kycAddress.addressLine2 != null ? kycAddress.addressLine2 : "");
-        txtCity.setText(kycAddress.city != null ? kycAddress.city : "");
-        txtPostalCode.setText(kycAddress.postalCode != null ? kycAddress.postalCode : "");
+        replaceText(txtLine1, kycAddress.addressLine1);
+        replaceText(txtLine2, kycAddress.addressLine2);
+        replaceText(txtCity, kycAddress.city);
+        replaceText(txtPostalCode, kycAddress.postalCode);
         checkBoxLessThanAYear.setChecked(kycAddress.lessThanAYear);
+    }
+
+    private void replaceText(EditText text, String value)
+    {
+        if (value != null && !value.equals(text.getText().toString()))
+        {
+            text.setText(value);
+        }
+        else if (value == null)
+        {
+            text.setText("");
+        }
     }
 
     public Observable<KYCAddress> getKYCAddressObservable()
