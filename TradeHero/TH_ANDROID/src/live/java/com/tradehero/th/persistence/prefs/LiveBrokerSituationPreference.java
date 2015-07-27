@@ -62,7 +62,8 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
             }
             else
             {
-                saved = new LiveBrokerSituationDTO(saved.broker, value.kycForm);
+                // TODO review when we allow more than 1 broker / country
+                saved = value;
             }
         }
         try
