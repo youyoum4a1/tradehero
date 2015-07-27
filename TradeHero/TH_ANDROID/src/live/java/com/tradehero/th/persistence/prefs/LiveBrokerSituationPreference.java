@@ -56,7 +56,14 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
         LiveBrokerSituationDTO saved = get();
         if (saved.kycForm != null && value.kycForm != null)
         {
-            saved.kycForm.pickFrom(value.kycForm);
+            if (saved.kycForm.getClass().equals(value.kycForm.getClass()))
+            {
+                saved.kycForm.pickFrom(value.kycForm);
+            }
+            else
+            {
+                saved = new LiveBrokerSituationDTO(saved.broker, value.kycForm);
+            }
         }
         try
         {
