@@ -1066,10 +1066,16 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
 
     protected class BuySellObserver implements Observer<SecurityPositionTransactionDTO>
     {
+        @NonNull private final SecurityId securityId;
+        @NonNull private final TransactionFormDTO transactionFormDTO;
         private final boolean isBuy;
 
-        public BuySellObserver(boolean isBuy)
+        public BuySellObserver(@NonNull SecurityId securityId,
+                @NonNull TransactionFormDTO transactionFormDTO,
+                boolean isBuy)
         {
+            this.securityId = securityId;
+            this.transactionFormDTO = transactionFormDTO;
             this.isBuy = isBuy;
         }
 
@@ -1108,7 +1114,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         @Override public void onError(Throwable e)
         {
             onCompleted();
-            Timber.e(e, "Reporting the error to Crashlytics");
+            Timber.e(e, "Failed to %s %s with %s", isBuy ? "buy" : "sell", securityId, transactionFormDTO);
             THException thException = new THException(e);
             THToast.show(thException);
 

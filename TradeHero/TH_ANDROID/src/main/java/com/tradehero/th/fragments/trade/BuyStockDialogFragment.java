@@ -104,7 +104,7 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
                 .observeOn(AndroidSchedulers.mainThread())
                 .finallyDo(new DismissDialogAction0(progressDialog))
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
-                .subscribe(new BuySellObserver(IS_BUY));
+                .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
     }
 
     @Nullable @Override public Double getPriceCcy(

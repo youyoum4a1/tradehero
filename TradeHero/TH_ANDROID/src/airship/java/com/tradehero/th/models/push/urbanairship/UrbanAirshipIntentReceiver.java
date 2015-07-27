@@ -29,7 +29,7 @@ public class UrbanAirshipIntentReceiver extends BaseIntentReceiver
                 extras.add(String.format("%s: %s", key, extrasBundle.get(key)));
             }
         }
-        Timber.e(new Exception("Just reporting"),
+        Timber.e(new JustReportingException("Just reporting"),
                 "UrbanAirshipIntentReceiver.onReceive intent %s, category: %s, keys: %s",
                 intent.getAction(),
                 intent.getCategories().iterator().next(),
@@ -39,38 +39,38 @@ public class UrbanAirshipIntentReceiver extends BaseIntentReceiver
 
     @Override protected void onChannelRegistrationSucceeded(Context context, String s)
     {
-        Timber.e(new Exception("Just reporting"),
+        Timber.e(new JustReportingException("Just reporting"),
                 "UrbanAirshipIntentReceiver.onChannelRegistrationSucceeded " + s);
     }
 
     @Override protected void onChannelRegistrationFailed(Context context)
     {
-        Timber.e(new Exception("Just reporting"),
+        Timber.e(new JustReportingException("Just reporting"),
                 "UrbanAirshipIntentReceiver.onChannelRegistrationFailed");
     }
 
     @Override protected void onPushReceived(Context context, PushMessage pushMessage, int i)
     {
-        Timber.e(new Exception("Just reporting"),
+        Timber.e(new JustReportingException("Just reporting"),
                 "UrbanAirshipIntentReceiver.onPushReceived i=" + i + ", message: " + pushMessage.getActionsPayload());
     }
 
     @Override protected void onBackgroundPushReceived(Context context, PushMessage pushMessage)
     {
-        Timber.e(new Exception("Just reporting"),
+        Timber.e(new JustReportingException("Just reporting"),
                 "UrbanAirshipIntentReceiver.onBackgroundPushReceived message: " + pushMessage.getActionsPayload());
     }
 
     @Override protected boolean onNotificationOpened(Context context, PushMessage pushMessage, int i)
     {
-        Timber.e(new Exception("Just reporting"),
+        Timber.e(new JustReportingException("Just reporting"),
                 "UrbanAirshipIntentReceiver.onNotificationOpened i=" + i + ", message: " + pushMessage.getActionsPayload());
         return false;
     }
 
     @Override protected boolean onNotificationActionOpened(Context context, PushMessage pushMessage, int i, String s, boolean b)
     {
-        Timber.e(new Exception("Just reporting"),
+        Timber.e(new JustReportingException("Just reporting"),
                 "UrbanAirshipIntentReceiver.onNotificationActionOpened i=" + i + ", b=" + b + ", message: " + pushMessage.getActionsPayload());
         return false;
     }
@@ -78,7 +78,7 @@ public class UrbanAirshipIntentReceiver extends BaseIntentReceiver
     @Override protected void onNotificationDismissed(Context context, PushMessage message, int notificationId)
     {
         super.onNotificationDismissed(context, message, notificationId);
-        Timber.e(new Exception("Just reporting"),
+        Timber.e(new JustReportingException("Just reporting"),
                 "UrbanAirshipIntentReceiver.onNotificationDismissed id=" + notificationId + ", message: " + message.getActionsPayload());
     }
 }
