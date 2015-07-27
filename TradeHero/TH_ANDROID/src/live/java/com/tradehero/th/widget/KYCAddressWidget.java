@@ -78,11 +78,11 @@ public class KYCAddressWidget extends LinearLayout
         }
 
         observable = Observable.combineLatest(
-                WidgetObservable.text(txtLine1, true),
-                WidgetObservable.text(txtLine2, true),
-                WidgetObservable.text(txtCity, true),
-                WidgetObservable.text(txtPostalCode, true),
-                WidgetObservable.input(checkBoxLessThanAYear, true),
+                WidgetObservable.text(txtLine1),
+                WidgetObservable.text(txtLine2),
+                WidgetObservable.text(txtCity),
+                WidgetObservable.text(txtPostalCode),
+                WidgetObservable.input(checkBoxLessThanAYear),
                 new Func5<OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnCheckedChangeEvent, KYCAddress>()
                 {
                     @Override public KYCAddress call(OnTextChangeEvent onTextChangeLine1,
