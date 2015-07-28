@@ -92,7 +92,7 @@ public class KYCAddressWidget extends LinearLayout
 
             @Override public void onClick(View v)
             {
-                txtLine1.setText("cleared");
+                txtLine1.setText("");
                 txtLine2.setText("");
                 txtCity.setText("");
                 txtPostalCode.setText("");
