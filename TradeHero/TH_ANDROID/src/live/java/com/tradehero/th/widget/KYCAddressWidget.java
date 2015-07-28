@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -29,6 +30,8 @@ import rx.functions.Func5;
 
 public class KYCAddressWidget extends LinearLayout
 {
+    public static final boolean DEFAULT_SHOW_CHECKBOX = true;
+
     @Bind(R.id.info_address_line1) EditText txtLine1;
     @Bind(R.id.info_address_line2) EditText txtLine2;
     @Bind(R.id.info_city) EditText txtCity;
@@ -37,7 +40,7 @@ public class KYCAddressWidget extends LinearLayout
     @Bind(R.id.info_pick_location) Button btnPickLocation;
     @Bind(R.id.info_clear_all) Button btnClearAll;
     @Bind(R.id.info_less_than_a_year) CheckBox checkBoxLessThanAYear;
-    private Observable<KYCAddress> observable;
+    private boolean showCheckbox = DEFAULT_SHOW_CHECKBOX;
 
     public KYCAddressWidget(Context context)
     {
@@ -64,25 +67,53 @@ public class KYCAddressWidget extends LinearLayout
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)
     {
-        setOrientation(VERTICAL);
-        LayoutInflater.from(getContext()).inflate(R.layout.address_widget_merged, this, true);
-        ButterKnife.bind(this);
-
         if (attrs != null)
         {
             TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.KYCAddressWidget, defStyleAttr, defStyleRes);
-            boolean showCheckbox = a.getBoolean(R.styleable.KYCAddressWidget_showCheckbox, true);
+            showCheckbox = a.getBoolean(R.styleable.KYCAddressWidget_showCheckbox, DEFAULT_SHOW_CHECKBOX);
             a.recycle();
-
-            checkBoxLessThanAYear.setVisibility(showCheckbox ? View.VISIBLE : View.GONE);
         }
+    }
 
-        observable = Observable.combineLatest(
-                WidgetObservable.text(txtLine1),
-                WidgetObservable.text(txtLine2),
-                WidgetObservable.text(txtCity),
-                WidgetObservable.text(txtPostalCode),
-                WidgetObservable.input(checkBoxLessThanAYear),
+    @Override protected void onFinishInflate()
+    {
+        super.onFinishInflate();
+        setOrientation(VERTICAL);
+        LayoutInflater.from(getContext()).inflate(R.layout.address_widget_merged, this, true);
+        ButterKnife.bind(this);
+        checkBoxLessThanAYear.setVisibility(showCheckbox ? View.VISIBLE : View.GONE);
+    }
+
+    @Override protected void onAttachedToWindow()
+    {
+        super.onAttachedToWindow();
+        btnClearAll.setOnClickListener(new OnClickListener()
+        {
+
+            @Override public void onClick(View v)
+            {
+                txtLine1.setText("cleared");
+                txtLine2.setText("");
+                txtCity.setText("");
+                txtPostalCode.setText("");
+            }
+        });
+    }
+
+    @Override protected void onDetachedFromWindow()
+    {
+        super.onDetachedFromWindow();
+        btnClearAll.setOnClickListener(null);
+    }
+
+    @NonNull public Observable<KYCAddress> getKYCAddressObservable()
+    {
+        return Observable.combineLatest(
+                WidgetObservable.text(txtLine1, true),
+                WidgetObservable.text(txtLine2, true),
+                WidgetObservable.text(txtCity, true),
+                WidgetObservable.text(txtPostalCode, true),
+                WidgetObservable.input(checkBoxLessThanAYear, true),
                 new Func5<OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnTextChangeEvent, OnCheckedChangeEvent, KYCAddress>()
                 {
                     @Override public KYCAddress call(OnTextChangeEvent onTextChangeLine1,
@@ -118,28 +149,6 @@ public class KYCAddressWidget extends LinearLayout
                 });
     }
 
-    @Override protected void onAttachedToWindow()
-    {
-        super.onAttachedToWindow();
-        btnClearAll.setOnClickListener(new OnClickListener()
-        {
-
-            @Override public void onClick(View v)
-            {
-                txtCity.setText("");
-                txtLine1.setText("");
-                txtLine2.setText("");
-                txtPostalCode.setText("");
-            }
-        });
-    }
-
-    @Override protected void onDetachedFromWindow()
-    {
-        super.onDetachedFromWindow();
-        btnClearAll.setOnClickListener(null);
-    }
-
     public void setLoading(boolean isLoading)
     {
         btnPickLocation.setEnabled(!isLoading);
@@ -165,11 +174,6 @@ public class KYCAddressWidget extends LinearLayout
         {
             text.setText("");
         }
-    }
-
-    public Observable<KYCAddress> getKYCAddressObservable()
-    {
-        return observable;
     }
 
     public Observable<OnClickEvent> getPickLocationClickedObservable()
