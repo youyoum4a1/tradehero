@@ -40,61 +40,61 @@
           tools:layout_width="48dp"
           />
 
-        <android.support.design.widget.TextInputLayout
+      <android.support.design.widget.TextInputLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+          android:layout_centerVertical="true"
           android:layout_toRightOf="@id/info_title"
-            app:hintTextAppearance="@style/TH.Caption"
-            >
+          app:hintTextAppearance="@style/TH.Caption"
+          >
 
-            <EditText
-                android:id="@+id/info_full_name"
-                style="@style/TH.Body"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/hint_full_name"
-                android:inputType="textPersonName|textCapWords"
-                tools:text="My Full Name"
-                />
-        </android.support.design.widget.TextInputLayout>
+        <EditText
+            android:id="@+id/info_full_name"
+            style="@style/TH.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_full_name"
+            android:inputType="textPersonName|textCapWords"
+            tools:text="My Full Name"
+            />
+      </android.support.design.widget.TextInputLayout>
 
     </RelativeLayout>
 
 
-      <android.support.design.widget.TextInputLayout
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-          app:hintTextAppearance="@style/TH.Caption"
-          >
+        app:hintTextAppearance="@style/TH.Caption"
+        >
 
-          <com.tradehero.th.widget.validation.ValidatedText
-              android:id="@+id/sign_up_email"
-              style="@style/TH.Body"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:drawableEnd="@drawable/accounts_glyph_transparent_default"
-              android:drawableRight="@drawable/accounts_glyph_transparent_default"
-              android:hint="@string/email"
+      <com.tradehero.th.widget.validation.ValidatedText
+          android:id="@+id/sign_up_email"
+          style="@style/TH.Body"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:drawableEnd="@drawable/accounts_glyph_transparent_default"
+          android:drawableRight="@drawable/accounts_glyph_transparent_default"
+          android:hint="@string/email"
 
-              android:inputType="textEmailAddress"
-              app:delayValidationByMilliSec="1500"
-              app:invalidDrawableRight="@drawable/warning_red"
+          android:inputType="textEmailAddress"
+          app:delayValidationByMilliSec="1500"
+          app:invalidDrawableRight="@drawable/warning_red"
 
-              app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
-              app:minTextLength="1"
-              app:validDrawableRight="@drawable/tick_green"
-              app:validatePattern="@string/regex_email_validator"
-              />
+          app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
+          app:minTextLength="1"
+          app:validDrawableRight="@drawable/tick_green"
+          app:validatePattern="@string/regex_email_validator"
+          />
 
-      </android.support.design.widget.TextInputLayout>
+    </android.support.design.widget.TextInputLayout>
 
 
-      <RelativeLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-          android:layout_marginTop="@dimen/margin_xsmall"
+        android:layout_marginTop="@dimen/margin_xsmall"
         android:gravity="center_vertical"
         >
 
@@ -121,7 +121,7 @@
           tools:enabled="false"
           />
 
-          <android.support.design.widget.TextInputLayout
+      <android.support.design.widget.TextInputLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
@@ -129,22 +129,22 @@
           android:layout_toLeftOf="@id/btn_verify_phone"
           android:layout_toRightOf="@id/country_code_spinner"
           android:layout_toStartOf="@id/btn_verify_phone"
-              app:hintTextAppearance="@style/TH.Caption"
-              >
+          app:hintTextAppearance="@style/TH.Caption"
+          >
 
-              <EditText
-                  android:id="@+id/number_right"
-                  style="@style/TH.Body"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:hint="@string/mobile_number"
-                  android:inputType="number|phone"
-                  />
+        <EditText
+            android:id="@+id/number_right"
+            style="@style/TH.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/mobile_number"
+            android:inputType="number|phone"
+            />
 
-          </android.support.design.widget.TextInputLayout>
+      </android.support.design.widget.TextInputLayout>
 
 
-      </RelativeLayout>
+    </RelativeLayout>
 
     <TextView
         style="@style/TH.Caption"
@@ -181,27 +181,27 @@
         android:background="?attr/selectableItemBackground"
         />
 
-      <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-          app:hintTextAppearance="@style/TH.Caption"
-          >
+        app:hintTextAppearance="@style/TH.Caption"
+        >
 
-          <EditText
-              android:id="@+id/info_dob"
-              style="@style/TH.Body"
-              android:layout_width="match_parent"
-              android:layout_height="@dimen/clickable_element_min_dimen"
-              android:background="?attr/editTextBackground"
-              android:clickable="true"
-              android:focusable="false"
-              android:focusableInTouchMode="false"
-              android:gravity="left|center_vertical"
-              android:hint="@string/date_of_birth"
-              android:textColor="?attr/editTextColor"
-              />
+      <EditText
+          android:id="@+id/info_dob"
+          style="@style/TH.Body"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          android:background="?attr/editTextBackground"
+          android:clickable="true"
+          android:focusable="false"
+          android:focusableInTouchMode="false"
+          android:gravity="left|center_vertical"
+          android:hint="@string/date_of_birth"
+          android:textColor="?attr/editTextColor"
+          />
 
-      </android.support.design.widget.TextInputLayout>
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/btn_next"
