@@ -15,7 +15,7 @@ task wrapper(type: Wrapper) {
 
 ext {
   SUPPORT_V13_VERSION = "22.1.1"
-  SUPPORT_V7_VERSION = "22.2.0"
+  SUPPORT_V7_VERSION = "22.2.1"
   PLAY_SERVICES_VERSION = "7.5.0"
   RETROFIT_VERSION = "1.9.0"
   DAGGER_VERSION = "1.2.2"
