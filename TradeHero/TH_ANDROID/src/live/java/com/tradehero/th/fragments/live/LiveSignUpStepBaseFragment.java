@@ -36,7 +36,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject protected KYCFormOptionsCache kycFormOptionsCache;
 
-    @Bind(R.id.btn_next) protected View btnNext;
+    @Bind(R.id.btn_next) @Nullable protected View btnNext;
 
     @NonNull protected PublishSubject<Boolean> prevNextSubject;
     @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;

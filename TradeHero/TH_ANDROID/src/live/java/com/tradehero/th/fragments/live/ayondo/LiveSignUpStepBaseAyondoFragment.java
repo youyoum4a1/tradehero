@@ -28,8 +28,11 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                     {
                         List<StepStatus> stepStatuses = situationDTO.kycForm == null ? null : situationDTO.kycForm.getStepStatuses();
                         StepStatus firstStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(0);
-                        // That's right, the first status decides for all Next buttons
-                        btnNext.setEnabled(firstStatus != null && firstStatus.equals(StepStatus.COMPLETE));
+                        if (btnNext != null)
+                        {
+                            // That's right, the first status decides for all Next buttons
+                            btnNext.setEnabled(firstStatus != null && firstStatus.equals(StepStatus.COMPLETE));
+                        }
                         return situationDTO.kycForm instanceof KYCAyondoForm;
                     }
                 });
