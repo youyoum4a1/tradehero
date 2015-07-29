@@ -15,6 +15,8 @@ import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedDTOAdapter;
+import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.AllowableRecipientDTOList;
 import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
@@ -24,14 +26,20 @@ import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.BasePagedListRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.social.message.AbstractPrivateMessageFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
+import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.models.social.FollowRequest;
+import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AdapterViewUtils;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import javax.inject.Inject;
+import retrofit.RetrofitError;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -48,6 +56,7 @@ public class AllRelationsFragment extends BasePagedListRxFragment<
     @Inject AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache;
     @Inject UserMessagingRelationshipCacheRx userMessagingRelationshipCache;
     @Inject protected THBillingInteractorRx userInteractorRx;
+    @Inject MessageThreadHeaderCacheRx messageThreadHeaderCache;
 
     @Bind(R.id.sending_to_header) View sendingToHeader;
 
@@ -139,11 +148,56 @@ public class AllRelationsFragment extends BasePagedListRxFragment<
         pushPrivateMessageFragment(selectedItem.user.getBaseKey());
     }
 
-    protected void pushPrivateMessageFragment(UserBaseKey clickedUser)
+    protected void pushPrivateMessageFragment(final UserBaseKey clickedUser)
+    {
+        final DismissDialogAction0 dismissProgress = new DismissDialogAction0(
+                ProgressDialogUtil.create(getActivity(), getString(R.string.loading_loading)));
+        onDestroyViewSubscriptions.add(
+                messageThreadHeaderCache.getOne(clickedUser)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnUnsubscribe(dismissProgress)
+                        .subscribe(
+                                new Action1<Pair<UserBaseKey, MessageHeaderDTO>>()
+                                {
+                                    @Override public void call(Pair<UserBaseKey, MessageHeaderDTO> pair)
+                                    {
+                                        pushPrivateMessageFragment(pair.first, pair.second);
+                                    }
+                                },
+                                new Action1<Throwable>()
+                                {
+                                    @Override public void call(Throwable throwable)
+                                    {
+                                        if (throwable instanceof RetrofitError
+                                                && ((RetrofitError) throwable).getResponse() != null
+                                                && ((RetrofitError) throwable).getResponse().getStatus() == 404)
+                                        {
+                                            pushPrivateMessageFragment(clickedUser, null);
+                                        }
+                                        else
+                                        {
+                                            Timber.e(throwable, "Failed to listen to message thread header cache in all relations");
+                                        }
+                                    }
+                                }));
+    }
+
+    protected void pushPrivateMessageFragment(@NonNull UserBaseKey clickedUser, @Nullable MessageHeaderDTO messageHeader)
     {
         Bundle args = new Bundle();
-        NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, clickedUser);
-        navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
+        AbstractPrivateMessageFragment.putCorrespondentUserBaseKey(args, clickedUser);
+        final Class<? extends AbstractPrivateMessageFragment> fragmentClass;
+        if (messageHeader == null)
+        {
+            fragmentClass = NewPrivateMessageFragment.class;
+        }
+        else
+        {
+            ReplyPrivateMessageFragment.putDiscussionKey(args, DiscussionKeyFactory.create(messageHeader));
+            fragmentClass = ReplyPrivateMessageFragment.class;
+        }
+        navigator.get().pushFragment(fragmentClass, args);
+
     }
 
     protected void handlePremiumFollowRequested(final UserBaseKey userBaseKey)
