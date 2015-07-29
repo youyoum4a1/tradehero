@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.live.ayondo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
+import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
@@ -10,6 +11,7 @@ import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnNothingSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
+import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -24,6 +26,10 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                 {
                     @Override public Boolean call(LiveBrokerSituationDTO situationDTO)
                     {
+                        List<StepStatus> stepStatuses = situationDTO.kycForm == null ? null : situationDTO.kycForm.getStepStatuses();
+                        StepStatus firstStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(0);
+                        // That's right, the first status decides for all Next buttons
+                        btnNext.setEnabled(firstStatus != null && firstStatus.equals(StepStatus.COMPLETE));
                         return situationDTO.kycForm instanceof KYCAyondoForm;
                     }
                 });

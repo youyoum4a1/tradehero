@@ -59,7 +59,9 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     @Override public void call(LiveBrokerSituationDTO situationDTO)
                                     {
                                         //noinspection ConstantConditions
-                                        populate((KYCAyondoForm) situationDTO.kycForm);
+                                        onNext(new LiveBrokerSituationDTO(
+                                                situationDTO.broker,
+                                                populate((KYCAyondoForm) situationDTO.kycForm)));
                                     }
                                 }),
                         getKYCAyondoFormOptionsObservable()

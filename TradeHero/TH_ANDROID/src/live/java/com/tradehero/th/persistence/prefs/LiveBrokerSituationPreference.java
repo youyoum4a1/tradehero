@@ -81,7 +81,7 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
     {
         if (liveBrokerSituationDTOObservable == null)
         {
-            liveBrokerSituationDTOObservable = liveBrokerSituationDTOPublishSubject.asObservable();
+            liveBrokerSituationDTOObservable = liveBrokerSituationDTOPublishSubject.distinctUntilChanged();
         }
         return liveBrokerSituationDTOObservable;
     }

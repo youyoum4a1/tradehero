@@ -67,10 +67,8 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                         {
                             LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "ayondo markets");
                             KYCAyondoForm form = new KYCAyondoForm();
-                            form.setStepStatuses(
-                                    Arrays.asList(StepStatus.UNSTARTED, StepStatus.COMPLETE, StepStatus.UNSTARTED, StepStatus.UNSTARTED,
-                                            StepStatus.UNSTARTED));
                             form.setCountry(Country.SG);
+                            form.setStepStatuses(DummyKYCAyondoUtil.getSteps(form).stepStatuses);
                             LiveBrokerSituationDTO fakeSituation = new LiveBrokerSituationDTO(ayondo, form);
 
                             liveTradingSituationDTO.brokerSituations.add(fakeSituation);
@@ -83,10 +81,19 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                     {
                         for (LiveBrokerSituationDTO situationDTO : liveTradingSituationDTO.brokerSituations)
                         {
-                            //noinspection ConstantConditions
-                            if (situationDTO.kycForm.getCountry() == null)
+                            if (situationDTO.kycForm != null)
                             {
-                                ((KYCAyondoForm) situationDTO.kycForm).setCountry(Country.SG);
+                                if (situationDTO.kycForm.getCountry() == null)
+                                {
+                                    ((KYCAyondoForm) situationDTO.kycForm).setCountry(Country.SG);
+                                }
+                                List<StepStatus> stepStatuses = situationDTO.kycForm.getStepStatuses();
+                                if (situationDTO.kycForm instanceof KYCAyondoForm
+                                        && (stepStatuses == null || stepStatuses.size() != 5))
+                                {
+                                    situationDTO.kycForm.setStepStatuses(
+                                            DummyKYCAyondoUtil.getSteps((KYCAyondoForm) situationDTO.kycForm).stepStatuses);
+                                }
                             }
                         }
                         return liveTradingSituationDTO;
@@ -103,7 +110,8 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                             {
                                 if (situationDTO.kycForm instanceof KYCAyondoForm)
                                 {
-                                    situationDTO.kycForm.setStepStatuses(DummyKYCAyondoUtil.getSteps((KYCAyondoForm) situationDTO.kycForm).stepStatuses);
+                                    situationDTO.kycForm.setStepStatuses(
+                                            DummyKYCAyondoUtil.getSteps((KYCAyondoForm) situationDTO.kycForm).stepStatuses);
                                 }
                                 else
                                 {

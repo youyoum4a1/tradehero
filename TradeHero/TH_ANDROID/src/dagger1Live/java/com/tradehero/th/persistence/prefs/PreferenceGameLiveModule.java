@@ -5,11 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.kyc.EmptyKYCForm;
+import com.tradehero.th.api.kyc.KYCForm;
+import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import dagger.Module;
 import dagger.Provides;
+import java.util.ArrayList;
 import java.util.HashSet;
 import javax.inject.Singleton;
 
@@ -27,8 +30,10 @@ public class PreferenceGameLiveModule
             ObjectMapper objectMapper, // Do not use @ForApp because it removes the Jackson visibility of methods
             @ForUser SharedPreferences sharedPreferences)
     {
+        KYCForm empty = new EmptyKYCForm();
+        empty.setStepStatuses(new ArrayList<StepStatus>());
         return new LiveBrokerSituationPreference(objectMapper, sharedPreferences, PREF_SAVED_BROKER_SITUATION, new LiveBrokerSituationDTO(
-                new LiveBrokerDTO(new LiveBrokerId(0), "Fake"), new EmptyKYCForm()));
+                new LiveBrokerDTO(new LiveBrokerId(0), "Fake"), empty));
     }
 
     @Provides @Singleton PhoneNumberVerifiedPreference providePhoneNumberAvailablePreference(

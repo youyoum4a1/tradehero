@@ -1,6 +1,7 @@
 package com.tradehero.th.api.kyc.ayondo;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import java.util.Arrays;
@@ -24,6 +25,10 @@ public class DummyKYCAyondoUtil
                 && kycForm.getEmail() != null
                 && kycForm.getMobileNumberDialingPrefix() != null
                 && kycForm.getMobileNumber() != null
+                && kycForm.getVerifiedMobileNumberDialingPrefix() != null
+                && kycForm.getVerifiedMobileNumber() != null
+                && kycForm.getMobileNumberDialingPrefix().equals(kycForm.getVerifiedMobileNumberDialingPrefix())
+                && kycForm.getMobileNumber().equals(kycForm.getVerifiedMobileNumber())
                 && kycForm.getNationality() != null
                 && kycForm.getResidency() != null
                 && kycForm.getDob() != null)
@@ -58,7 +63,11 @@ public class DummyKYCAyondoUtil
     @NonNull public static StepStatus getStep4(@NonNull KYCAyondoForm kycForm)
     {
         return (kycForm.getAddresses() != null
-                && kycForm.getAddresses().size() > 0)
+                && kycForm.getAddresses().size() > 0
+                && !TextUtils.isEmpty(kycForm.getAddresses().get(0).addressLine1)
+                && !TextUtils.isEmpty(kycForm.getAddresses().get(0).addressLine2)
+                && !TextUtils.isEmpty(kycForm.getAddresses().get(0).city)
+                && !TextUtils.isEmpty(kycForm.getAddresses().get(0).postalCode))
                 ? StepStatus.COMPLETE
                 : StepStatus.UNSTARTED;
     }

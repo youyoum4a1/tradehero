@@ -13,17 +13,19 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Checkable;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
-import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.StepStatus;
+import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -37,6 +39,7 @@ public class LiveSignUpMainFragment extends BaseFragment
     @Inject SignUpLivePagerAdapterFactory signUpLivePagerAdapterFactory;
     @Inject Toolbar toolbar;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
+    @Inject LiveServiceWrapper liveServiceWrapper;
 
     @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
     @Bind(R.id.pager) protected ViewPager viewPager;
@@ -73,6 +76,7 @@ public class LiveSignUpMainFragment extends BaseFragment
                         {
                             @Override public void call(PagerAdapter pagerAdapter)
                             {
+
                                 viewPager.setAdapter(pagerAdapter);
                                 tabLayout.setViewPager(viewPager);
                             }
@@ -81,39 +85,44 @@ public class LiveSignUpMainFragment extends BaseFragment
                         {
                             @Override public Observable<LiveBrokerSituationDTO> call(PagerAdapter pagerAdapter)
                             {
-                                return liveBrokerSituationPreference.getLiveBrokerSituationDTOObservable().cache(1);
+                                return liveBrokerSituationPreference.getLiveBrokerSituationDTOObservable()
+                                        .distinctUntilChanged();
                             }
                         })
                         .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
                         {
-                            @Override public Boolean call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                            @Override public Boolean call(LiveBrokerSituationDTO situationDTO)
                             {
-                                return liveBrokerSituationDTO.kycForm != null && liveBrokerSituationDTO.kycForm.getStepStatuses().size() > 0;
+                                return situationDTO.kycForm != null;
                             }
                         })
-                        .map(new Func1<LiveBrokerSituationDTO, KYCForm>()
+                        .throttleLast(1, TimeUnit.SECONDS)
+                        .flatMap(new Func1<LiveBrokerSituationDTO, Observable<StepStatusesDTO>>()
                         {
-                            @Override public KYCForm call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                            @Override public Observable<StepStatusesDTO> call(final LiveBrokerSituationDTO situationDTO)
                             {
-                                return liveBrokerSituationDTO.kycForm;
+                                //noinspection ConstantConditions
+                                return liveServiceWrapper.applyToLiveBroker(situationDTO.broker.id, situationDTO.kycForm)
+                                        .doOnNext(new Action1<StepStatusesDTO>()
+                                        {
+                                            @Override public void call(StepStatusesDTO stepStatusesDTO)
+                                            {
+                                                situationDTO.kycForm.setStepStatuses(stepStatusesDTO.stepStatuses);
+                                                liveBrokerSituationPreference.set(situationDTO);
+                                            }
+                                        });
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                new Action1<KYCForm>()
+                                new Action1<StepStatusesDTO>()
                                 {
-                                    @Override public void call(KYCForm kycForm)
+                                    @Override public void call(StepStatusesDTO updatedSteps)
                                     {
-                                        updatePageIndicator(kycForm.getStepStatuses());
+                                        updatePageIndicator(updatedSteps.stepStatuses);
                                     }
                                 },
-                                new Action1<Throwable>()
-                                {
-                                    @Override public void call(Throwable throwable)
-                                    {
-                                        Timber.e(throwable, "Error on updating status");
-                                    }
-                                }));
+                                new TimberOnErrorAction1("Error on updating step status")));
 
         onDestroyViewSubscriptions.add(pagerAdapterObservable
                 .flatMap(new Func1<PagerAdapter, Observable<Boolean>>()
