@@ -104,7 +104,7 @@ public class MarketRegionMapView extends FrameLayout
     {
         int eventX = (int) Math.floor(event.getX());
         int eventY = (int) Math.floor(event.getY());
-        if (mapBitmap == null || eventX >= imW || eventY >= imH)
+        if (mapBitmap == null || eventX >= imW || eventY >= imH || eventX < 0 || eventY < 0)
         {
             return false;
         }

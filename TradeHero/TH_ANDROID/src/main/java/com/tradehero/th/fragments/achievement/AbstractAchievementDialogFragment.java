@@ -30,8 +30,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.chrisbanes.colorfinder.ColorScheme;
 import com.chrisbanes.colorfinder.ColorUtils;
@@ -643,10 +643,11 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         @Override public void onAnimationUpdate(ValueAnimator valueAnimator)
         {
-            // TODO sometimes valueAnimator is null
-            // https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/547d8cad65f8dfea153a2928
-            int xp = (Integer) valueAnimator.getAnimatedValue(PROPERTY_XP_EARNED);
-            displayXpEarned(xp);
+            Integer xp = (Integer) valueAnimator.getAnimatedValue(PROPERTY_XP_EARNED);
+            if (xp != null)
+            {
+                displayXpEarned(xp);
+            }
         }
     }
 
