@@ -104,6 +104,23 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TradeHeroMainActivity.ACTIVITY_RESULT_HAITONG_TRADE) {
+            if(TradeManager.getInstance(this).isLogined()) {
+                finish();
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
+                bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+                Intent intent = new Intent(this, SecurityOptActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
+            }
+        }
+    }
+
+    @Override
     public void onDestroy(){
         stopTradingHint();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
@@ -198,7 +215,6 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
         }
 
         if(!TradeManager.getInstance(this).isLogined()){
-            finish();
             HAITONGUtils.jumpToLoginHAITONG(this);
             return;
         }

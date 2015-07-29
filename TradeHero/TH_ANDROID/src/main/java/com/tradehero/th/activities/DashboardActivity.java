@@ -27,6 +27,7 @@ import com.tradehero.th.widget.GuideView;
 
 import javax.inject.Inject;
 
+import cn.htsec.data.pkg.trade.TradeManager;
 import dagger.Lazy;
 
 public class DashboardActivity extends AppCompatActivity
