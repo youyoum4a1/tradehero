@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     >
 
@@ -54,32 +55,60 @@
       android:src="@drawable/powered_by_google_light"
       />
 
-  <EditText
-      android:id="@+id/info_address_line1"
-      style="@style/TH.LiveFormField"
+    <android.support.design.widget.TextInputLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/address_line_1"
-      />
+        android:layout_marginTop="@dimen/margin_xsmall"
+        app:hintTextAppearance="@style/TH.Caption"
+        >
 
-  <EditText
-      android:id="@+id/info_address_line2"
-      style="@style/TH.LiveFormField"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:hint="@string/address_line_2"
-      />
+        <EditText
+            android:id="@+id/info_address_line1"
+            style="@style/TH.LiveFormField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/address_line_1"
+            />
 
-  <EditText
-      android:id="@+id/info_city"
-      style="@style/TH.LiveFormField"
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/city"
-      />
+        android:layout_marginTop="@dimen/margin_xsmall"
+        app:hintTextAppearance="@style/TH.Caption"
+        >
+
+        <EditText
+            android:id="@+id/info_address_line2"
+            style="@style/TH.LiveFormField"
+            android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+            android:hint="@string/address_line_2"
+        />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        app:hintTextAppearance="@style/TH.Caption"
+        >
+
+        <EditText
+            android:id="@+id/info_city"
+            style="@style/TH.LiveFormField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+            android:hint="@string/city"
+            />
+
+    </android.support.design.widget.TextInputLayout>
 
     <TextView
         style="@style/TH.Caption"
+        android:layout_marginLeft="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
@@ -94,13 +123,21 @@
         android:background="?attr/selectableItemBackground"
       />
 
-  <EditText
-      android:id="@+id/info_postal_code"
-      style="@style/TH.LiveFormField"
+    <android.support.design.widget.TextInputLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/postal_code"
-      />
+        app:hintTextAppearance="@style/TH.Caption"
+        >
+
+        <EditText
+            android:id="@+id/info_postal_code"
+            style="@style/TH.LiveFormField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/postal_code"
+            />
+
+    </android.support.design.widget.TextInputLayout>
 
   <CheckBox
       android:id="@+id/info_less_than_a_year"
