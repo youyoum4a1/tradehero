@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.social;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,32 +9,28 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
-import butterknife.OnItemClick;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.fragment.HasSelectedItem;
+import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.PagedDTOAdapter;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.tradehero.th.api.users.AllowableRecipientDTOList;
 import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
 import com.tradehero.th.api.users.SearchAllowableRecipientListType;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
 import com.tradehero.th.billing.THBillingInteractorRx;
+import com.tradehero.th.fragments.BasePagedListRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
 import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AdapterViewUtils;
-import com.tradehero.th.utils.ProgressDialogUtil;
-import java.util.List;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -43,7 +38,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class AllRelationsFragment extends BaseFragment
+public class AllRelationsFragment extends BasePagedListRxFragment<
+        SearchAllowableRecipientListType,
+        AllowableRecipientDTO,
+        AllowableRecipientDTOList,
+        PaginatedAllowableRecipientDTO>
         implements HasSelectedItem
 {
     @Inject AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache;
@@ -51,20 +50,8 @@ public class AllRelationsFragment extends BaseFragment
     @Inject protected THBillingInteractorRx userInteractorRx;
 
     @Bind(R.id.sending_to_header) View sendingToHeader;
-    @Bind(R.id.relations_list) ListView relationsListView;
 
-    private RelationsListItemAdapter relationsListItemAdapter;
-
-    List<AllowableRecipientDTO> relationsList;
     private AllowableRecipientDTO selectedItem;
-
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        relationsListItemAdapter = new RelationsListItemAdapter(
-                activity,
-                R.layout.relations_list_item);
-    }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -75,10 +62,8 @@ public class AllRelationsFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
-        relationsListView.setAdapter(relationsListItemAdapter);
-
         sendingToHeader.setVisibility(isForReturn() ? View.GONE : View.VISIBLE);
+        requestDtos();
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -90,8 +75,8 @@ public class AllRelationsFragment extends BaseFragment
     @Override public void onStart()
     {
         super.onStart();
-        downloadRelations();
-        onStopSubscriptions.add(relationsListItemAdapter.getFollowRequestObservable()
+        onStopSubscriptions.add(((RelationsListItemAdapter) itemViewAdapter)
+                .getFollowRequestObservable()
                 .subscribe(
                         new Action1<FollowRequest>()
                         {
@@ -104,17 +89,31 @@ public class AllRelationsFragment extends BaseFragment
                 ));
     }
 
-    @Override public void onDestroyView()
+    @Override public void onResume()
     {
-        relationsListView.setAdapter(null);
-        ButterKnife.unbind(this);
-        super.onDestroyView();
+        super.onResume();
+        nearEndScrollListener.lowerEndFlag();
+        nearEndScrollListener.activateEnd();
     }
 
-    @Override public void onDetach()
+    @NonNull @Override protected PagedDTOAdapter<AllowableRecipientDTO> createItemViewAdapter()
     {
-        relationsListItemAdapter = null;
-        super.onDetach();
+        return new RelationsListItemAdapter(getActivity(), R.layout.relations_list_item);
+    }
+
+    @NonNull @Override protected DTOCacheRx<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> getCache()
+    {
+        return allowableRecipientPaginatedCache;
+    }
+
+    @Override public boolean canMakePagedDtoKey()
+    {
+        return true;
+    }
+
+    @NonNull @Override public SearchAllowableRecipientListType makePagedDtoKey(int page)
+    {
+        return new SearchAllowableRecipientListType(null, page, null);
     }
 
     @Nullable @Override public AllowableRecipientDTO getSelectedItem()
@@ -128,57 +127,22 @@ public class AllRelationsFragment extends BaseFragment
         return args != null && DashboardNavigator.getReturnFragment(args) != null;
     }
 
-    public void downloadRelations()
+    @Override protected void handleDtoClicked(AllowableRecipientDTO clicked)
     {
-        final DismissDialogAction0 dismissProgress = new DismissDialogAction0(
-                ProgressDialogUtil.create(getActivity(), getString(R.string.downloading_relations)));
-        onStopSubscriptions.add(AppObservable.bindSupportFragment(
-                this,
-                allowableRecipientPaginatedCache.get(new SearchAllowableRecipientListType(null, null, null)))
-                .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(dismissProgress)
-                .doOnUnsubscribe(dismissProgress)
-                .subscribe(
-                        new Action1<Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO>>()
-                        {
-                            @Override public void call(
-                                    Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
-                            {
-                                dismissProgress.call();
-                                AllRelationsFragment.this.onNextRecipients(pair);
-                            }
-                        },
-                        new ToastOnErrorAction1()));
-    }
-
-    protected void onNextRecipients(Pair<SearchAllowableRecipientListType, PaginatedAllowableRecipientDTO> pair)
-    {
-        relationsList = pair.second.getData();
-        relationsListItemAdapter.setNotifyOnChange(false);
-        relationsListItemAdapter.clear();
-        relationsListItemAdapter.addAll(relationsList);
-        relationsListItemAdapter.setNotifyOnChange(true);
-        relationsListItemAdapter.notifyDataSetChanged();
-    }
-
-    @SuppressWarnings("UnusedParameters")
-    @OnItemClick(R.id.relations_list)
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        selectedItem = relationsList.get(position);
+        super.handleDtoClicked(clicked);
+        selectedItem = clicked;
         if (isForReturn())
         {
             navigator.get().popFragment();
             return;
         }
-        pushPrivateMessageFragment(position);
+        pushPrivateMessageFragment(selectedItem.user.getBaseKey());
     }
 
-    protected void pushPrivateMessageFragment(int position)
+    protected void pushPrivateMessageFragment(UserBaseKey clickedUser)
     {
         Bundle args = new Bundle();
-        NewPrivateMessageFragment.putCorrespondentUserBaseKey(args,
-                relationsList.get(position).user.getBaseKey());
+        NewPrivateMessageFragment.putCorrespondentUserBaseKey(args, clickedUser);
         navigator.get().pushFragment(NewPrivateMessageFragment.class, args);
     }
 
@@ -216,7 +180,6 @@ public class AllRelationsFragment extends BaseFragment
                         if (isEmpty)
                         {
                             allowableRecipientPaginatedCache.invalidateAll();
-                            downloadRelations();
                             Timber.e("Strangely, there was no longer the relation in cache");
                         }
                     }
@@ -228,9 +191,9 @@ public class AllRelationsFragment extends BaseFragment
                     @Override public void onNext(Pair<UserBaseKey, UserMessagingRelationshipDTO> pair)
                     {
                         isEmpty = false;
-                        relationsListItemAdapter.updateItem(userFollowed, pair.second);
+                        ((RelationsListItemAdapter) itemViewAdapter).updateItem(userFollowed, pair.second);
                         AdapterViewUtils
-                                .updateSingleRowWhere(relationsListView, AllowableRecipientDTO.class,
+                                .updateSingleRowWhere(listView, AllowableRecipientDTO.class,
                                         new Predicate<AllowableRecipientDTO>()
                                         {
                                             @Override public boolean apply(AllowableRecipientDTO allowableRecipientDTO)

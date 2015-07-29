@@ -1,13 +1,14 @@
 package com.tradehero.th.api.users;
 
 import android.support.annotation.NonNull;
+import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.HasExpiration;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import java.util.Calendar;
 import java.util.Date;
 
 public class PaginatedAllowableRecipientDTO extends PaginatedDTO<AllowableRecipientDTO>
-        implements HasExpiration
+        implements HasExpiration, ContainerDTO<AllowableRecipientDTO, AllowableRecipientDTOList>
 {
     public static final int DEFAULT_LIFE_EXPECTANCY_SECONDS = 60;
 
@@ -32,5 +33,15 @@ public class PaginatedAllowableRecipientDTO extends PaginatedDTO<AllowableRecipi
         return Math.max(
                 0,
                 expirationDate.getTime() - Calendar.getInstance().getTime().getTime());
+    }
+
+    @Override public int size()
+    {
+        return getData().size();
+    }
+
+    @Override public AllowableRecipientDTOList getList()
+    {
+        return new AllowableRecipientDTOList(getData());
     }
 }

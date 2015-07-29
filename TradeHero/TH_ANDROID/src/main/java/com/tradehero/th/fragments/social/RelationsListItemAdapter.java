@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
-import com.tradehero.th.adapters.ArrayDTOAdapterNew;
+import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
 import com.tradehero.th.api.users.AllowableRecipientDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
@@ -12,7 +12,7 @@ import com.tradehero.th.models.social.FollowRequest;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class RelationsListItemAdapter extends ArrayDTOAdapterNew<AllowableRecipientDTO, RelationsListItemView>
+public class RelationsListItemAdapter extends PagedViewDTOAdapterImpl<AllowableRecipientDTO, RelationsListItemView>
 {
     @NonNull private PublishSubject<FollowRequest> followRequestBehavior;
 
