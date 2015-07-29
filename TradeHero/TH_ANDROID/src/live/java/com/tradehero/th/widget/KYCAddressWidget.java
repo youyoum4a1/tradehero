@@ -4,7 +4,9 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -13,12 +15,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCAddress;
-import java.util.concurrent.TimeUnit;
+import com.tradehero.th.api.market.Country;
+import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
+import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnCheckedChangeEvent;
@@ -33,15 +38,20 @@ public class KYCAddressWidget extends LinearLayout
 {
     public static final boolean DEFAULT_SHOW_CHECKBOX = true;
 
+    @LayoutRes private static final int LAYOUT_COUNTRY = R.layout.spinner_live_country_dropdown_item;
+    @LayoutRes private static final int LAYOUT_COUNTRY_SELECTED_FLAG = R.layout.spinner_live_country_dropdown_item_selected;
+
     @Bind(R.id.info_address_line1) EditText txtLine1;
     @Bind(R.id.info_address_line2) EditText txtLine2;
     @Bind(R.id.info_city) EditText txtCity;
+    @Bind(R.id.info_country) Spinner spinnerCountry;
     @Bind(R.id.info_address_processing) View loadingView;
     @Bind(R.id.info_postal_code) EditText txtPostalCode;
     @Bind(R.id.info_pick_location) Button btnPickLocation;
     @Bind(R.id.info_clear_all) Button btnClearAll;
     @Bind(R.id.info_less_than_a_year) CheckBox checkBoxLessThanAYear;
     private boolean showCheckbox = DEFAULT_SHOW_CHECKBOX;
+    private KYCAddress mKycAddress;
 
     public KYCAddressWidget(Context context)
     {
@@ -131,7 +141,6 @@ public class KYCAddressWidget extends LinearLayout
                                 onCheckedChangeEventYear.value());
                     }
                 })
-                .throttleLast(300, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<KYCAddress>()
                 {
@@ -159,11 +168,33 @@ public class KYCAddressWidget extends LinearLayout
 
     public void setKYCAddress(KYCAddress kycAddress)
     {
+        mKycAddress = kycAddress;
         replaceText(txtLine1, kycAddress.addressLine1);
         replaceText(txtLine2, kycAddress.addressLine2);
         replaceText(txtCity, kycAddress.city);
         replaceText(txtPostalCode, kycAddress.postalCode);
         checkBoxLessThanAYear.setChecked(kycAddress.lessThanAYear);
+    }
+
+    public void setCountries(@NonNull List<CountrySpinnerAdapter.DTO> countries, @Nullable CountryCode defaultCountry)
+    {
+        CountrySpinnerAdapter nationalityAdapter =
+                new CountrySpinnerAdapter(getContext(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+        nationalityAdapter.addAll(countries);
+        spinnerCountry.setAdapter(nationalityAdapter);
+        spinnerCountry.setEnabled(countries.size() > 1);
+        if (mKycAddress != null && mKycAddress.country != null)
+        {
+            defaultCountry = mKycAddress.country;
+        }
+        if (defaultCountry != null)
+        {
+            int position = nationalityAdapter.getPosition(new CountrySpinnerAdapter.DTO(Country.valueOf(defaultCountry.name())));
+            if (position > 0 && position < nationalityAdapter.getCount())
+            {
+                spinnerCountry.setSelection(position);
+            }
+        }
     }
 
     private void replaceText(EditText text, String value)

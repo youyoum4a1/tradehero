@@ -21,13 +21,18 @@ import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
+import com.tradehero.th.api.market.Country;
+import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.widget.KYCAddressWidget;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -35,6 +40,7 @@ import rx.android.view.OnClickEvent;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragment
@@ -80,6 +86,74 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         pickLocation(PICK_LOCATION_REQUEST_SECONDARY);
                     }
                 }));
+
+        onDestroyViewSubscriptions.add(
+                Observable.combineLatest(
+                        getBrokerSituationObservable()
+                                .observeOn(AndroidSchedulers.mainThread()),
+                        getKYCAyondoFormOptionsObservable()
+                                .observeOn(Schedulers.computation())
+                                .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
+                                {
+                                    @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
+                                    {
+                                        return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO);
+                                    }
+                                })
+                                .map(new Func1<CountryDTOForSpinner, List<CountrySpinnerAdapter.DTO>>()
+                                {
+                                    @Override public List<CountrySpinnerAdapter.DTO> call(CountryDTOForSpinner countryDTOForSpinner)
+                                    {
+                                        return countryDTOForSpinner.allowedResidencyCountryDTOs;
+                                    }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread()),
+                        Observable.just(Country.values())
+                                .map(new Func1<Country[], List<Country>>()
+                                {
+                                    @Override public List<Country> call(Country[] countries)
+                                    {
+                                        return Arrays.asList(countries);
+                                    }
+                                })
+                                .map(new Func1<List<Country>, List<CountrySpinnerAdapter.DTO>>()
+                                {
+                                    @Override public List<CountrySpinnerAdapter.DTO> call(List<Country> countries)
+                                    {
+                                        return CountrySpinnerAdapter.createDTOs(
+                                                countries, null);
+                                    }
+                                })
+                                .doOnNext(new Action1<List<CountrySpinnerAdapter.DTO>>()
+                                {
+                                    @Override public void call(List<CountrySpinnerAdapter.DTO> dtos)
+                                    {
+                                        Collections.sort(dtos, new CountrySpinnerAdapter.DTOCountryNameComparator(getActivity()));
+                                    }
+                                }),
+                        new Func3<LiveBrokerSituationDTO, List<CountrySpinnerAdapter.DTO>, List<CountrySpinnerAdapter.DTO>, Object>()
+                        {
+                            @Override public Object call(
+                                    LiveBrokerSituationDTO liveBrokerSituationDTO,
+                                    List<CountrySpinnerAdapter.DTO> primaryAddressCountries,
+                                    List<CountrySpinnerAdapter.DTO> secondaryAddressCountries
+                            )
+                            {
+                                CountryCode residency = ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getResidency();
+                                if (residency != null)
+                                {
+                                    //If residency has already been set, do not allow user to change.
+                                    primaryAddressCountries = CountrySpinnerAdapter.createDTOs(
+                                            Collections.singletonList(Country.valueOf(residency.name())), null);
+                                }
+                                primaryWidget.setCountries(primaryAddressCountries, residency);
+                                secondaryWidget.setCountries(secondaryAddressCountries, residency);
+                                return null;
+                            }
+                        }
+                ).subscribe(new EmptyAction1<>(),
+                        new TimberOnErrorAction1("Error on populating spinners"))
+        );
 
         onDestroyViewSubscriptions.add(
                 getBrokerSituationObservable()
