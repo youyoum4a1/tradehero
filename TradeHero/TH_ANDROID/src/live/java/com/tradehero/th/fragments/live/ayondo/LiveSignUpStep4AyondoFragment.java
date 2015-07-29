@@ -17,6 +17,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
+import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
@@ -223,8 +224,9 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     String add2 = addr.getAddressLine(1);
                                     String city = addr.getAdminArea();
                                     String postal = addr.getPostalCode();
+                                    CountryCode countryCode = CountryCode.getByCode(addr.getCountryCode());
 
-                                    return new KYCAddress(add1, add2, city, postal);
+                                    return new KYCAddress(add1, add2, city, postal, countryCode);
                                 }
                             }),
                     Observable.just(requestCode == PICK_LOCATION_REQUEST_PRIMARY ? primaryWidget : secondaryWidget)

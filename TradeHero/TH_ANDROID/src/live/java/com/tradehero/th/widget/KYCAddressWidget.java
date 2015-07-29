@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCAddress;
 import java.util.concurrent.TimeUnit;
@@ -125,6 +126,7 @@ public class KYCAddressWidget extends LinearLayout
                         return new KYCAddress(onTextChangeLine1.text().toString(),
                                 onTextChangeLine2.text().toString(),
                                 onTextChangeCity.text().toString(),
+                                CountryCode.SG,
                                 onTextChangePostalCode.text().toString(),
                                 onCheckedChangeEventYear.value());
                     }
