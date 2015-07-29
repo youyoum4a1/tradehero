@@ -165,7 +165,10 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        bottomViewPagerAdapter.onActivityResult(requestCode, resultCode, data);
+        if (bottomViewPagerAdapter != null)
+        {
+            bottomViewPagerAdapter.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @NonNull @Override protected Observable<PortfolioCompactDTO> getDefaultPortfolio()
