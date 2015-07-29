@@ -9,6 +9,6 @@
     android:layout_gravity="center"
     android:drawableRight="@drawable/spinner_dropdown_arrow_green"
     android:maxLines="1"
-    android:padding="@dimen/margin_small"
+    android:padding="@dimen/margin_xsmall"
     tools:text="+65"
     />
