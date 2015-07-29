@@ -382,7 +382,7 @@ public class NewsHeadlineFragment extends Fragment
 
     protected void registerUserActions()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 newsAdapter.getUserActionObservable())
                 .observeOn(AndroidSchedulers.mainThread())

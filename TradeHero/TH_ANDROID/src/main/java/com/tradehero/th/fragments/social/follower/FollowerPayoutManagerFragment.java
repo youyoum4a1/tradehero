@@ -104,7 +104,7 @@ public class FollowerPayoutManagerFragment extends DashboardFragment
 
     protected void fetchFollowerSummary()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(this, userFollowerCache.get().get(followerHeroRelationId))
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, userFollowerCache.get().get(followerHeroRelationId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createFollowerObserver()));
     }

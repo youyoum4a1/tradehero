@@ -75,7 +75,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
     @Override public void onStart()
     {
         super.onStart();
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())

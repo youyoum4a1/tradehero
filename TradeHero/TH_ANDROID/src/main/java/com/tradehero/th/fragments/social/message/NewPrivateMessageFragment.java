@@ -58,7 +58,7 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
     protected void fetchMessageThreadHeader()
     {
         unsubscribe(messageThreadHeaderFetchSubscription);
-        messageThreadHeaderFetchSubscription = AppObservable.bindFragment(
+        messageThreadHeaderFetchSubscription = AppObservable.bindSupportFragment(
                 this,
                 messageThreadHeaderCache.get(correspondentId))
                 .observeOn(AndroidSchedulers.mainThread())

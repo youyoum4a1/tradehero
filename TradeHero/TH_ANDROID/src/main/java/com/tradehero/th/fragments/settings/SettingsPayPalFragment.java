@@ -87,7 +87,7 @@ public class SettingsPayPalFragment extends BaseFragment
 
     protected void fetchUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
@@ -134,7 +134,7 @@ public class SettingsPayPalFragment extends BaseFragment
                 true);
         UpdatePayPalEmailFormDTO emailDTO = new UpdatePayPalEmailFormDTO();
         emailDTO.newPayPalEmailAddress = paypalEmailText.getText().toString();
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userServiceWrapper.updatePayPalEmailRx(currentUserId.toUserBaseKey(), emailDTO))
                 .observeOn(AndroidSchedulers.mainThread())

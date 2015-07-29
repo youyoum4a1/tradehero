@@ -76,7 +76,7 @@ public class OnBoardLastFragment extends BaseFragment
 
     public void fetchSecuritiesInfo()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 selectedSecuritiesObservable)
                 .observeOn(AndroidSchedulers.mainThread())

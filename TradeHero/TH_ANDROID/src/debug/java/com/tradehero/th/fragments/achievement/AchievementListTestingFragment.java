@@ -81,7 +81,7 @@ public class AchievementListTestingFragment extends BaseFragment
 
     protected void fetchAchievementCategories()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 achievementCategoryListCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())

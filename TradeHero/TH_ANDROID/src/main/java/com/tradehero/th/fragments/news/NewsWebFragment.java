@@ -219,7 +219,7 @@ public class NewsWebFragment extends WebViewFragment
             }
         });
 
-        subscription = AppObservable.bindFragment(this,
+        subscription = AppObservable.bindSupportFragment(this,
                 newsServiceWrapper.getSecurityNewsDetailRx(new NewsItemDTOKey(newsId))
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<NewsItemDTO>()

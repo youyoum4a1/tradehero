@@ -120,7 +120,7 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         super.onStart();
         fetchMessageThreadHeader();
-        onStopSubscriptions.add(AppObservable.bindFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, followerSummaryCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new FollowerSummaryObserver()));
     }
@@ -313,7 +313,7 @@ public class PushableTimelineFragment extends TimelineFragment
 
     protected void fetchMessageThreadHeader()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 messageThreadHeaderCache.get(shownUserBaseKey))
                 .observeOn(AndroidSchedulers.mainThread())

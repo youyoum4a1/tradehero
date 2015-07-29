@@ -115,7 +115,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     private void fetchProviderIdList()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(this, providerListCache.get(new ProviderListKey()))
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, providerListCache.get(new ProviderListKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<ProviderListKey, ProviderDTOList>>()

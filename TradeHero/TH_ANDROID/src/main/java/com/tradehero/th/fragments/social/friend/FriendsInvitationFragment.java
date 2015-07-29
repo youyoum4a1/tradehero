@@ -534,7 +534,7 @@ public class FriendsInvitationFragment extends BaseFragment
 
     private void searchSocialFriends(String query)
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userServiceWrapper.searchSocialFriendsRx(
                         currentUserId.toUserBaseKey(), null, query))

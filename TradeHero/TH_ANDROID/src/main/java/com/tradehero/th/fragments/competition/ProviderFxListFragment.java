@@ -44,7 +44,7 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
 
     private void fetchFXPrice()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesAllPriceRx()
                         .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()

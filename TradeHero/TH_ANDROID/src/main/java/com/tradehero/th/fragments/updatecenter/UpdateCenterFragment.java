@@ -131,7 +131,7 @@ public class UpdateCenterFragment extends BaseFragment
 
     private void fetchUserProfile(boolean forceUpdate)
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())

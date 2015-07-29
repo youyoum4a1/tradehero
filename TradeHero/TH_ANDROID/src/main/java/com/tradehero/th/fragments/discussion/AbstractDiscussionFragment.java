@@ -2,16 +2,15 @@ package com.tradehero.th.fragments.discussion;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
-import android.support.annotation.Nullable;
+import butterknife.ButterKnife;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
@@ -31,8 +30,8 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.widget.MultiScrollListener;
 import java.util.List;
@@ -55,7 +54,6 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     @Bind(R.id.post_comment_text) @Nullable protected EditText postCommentText;
     @Bind(R.id.mention_widget) @Nullable protected MentionActionButtonsView mentionActionButtonsView;
     @Bind(R.id.discussion_comment_widget) @Nullable protected PostCommentView postCommentView;
-    protected TextView discussionStatus;
 
     @Inject protected DiscussionCacheRx discussionCache;
     @Inject protected DiscussionListCacheRx discussionListCache;
@@ -77,9 +75,10 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
 
     @Nullable protected static DiscussionKey getDiscussionKey(@NonNull Bundle args)
     {
-        if (args.containsKey(DISCUSSION_KEY_BUNDLE_KEY))
+        Bundle discussionKeyBundle = args.getBundle(DISCUSSION_KEY_BUNDLE_KEY);
+        if (discussionKeyBundle != null)
         {
-            return DiscussionKeyFactory.fromBundle(args.getBundle(DISCUSSION_KEY_BUNDLE_KEY));
+            return DiscussionKeyFactory.fromBundle(discussionKeyBundle);
         }
         return null;
     }
@@ -235,7 +234,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
 
     protected void fetchDiscussionList()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 fetchAndCreateDTOs(createTopicDiscussionListKey()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -276,7 +275,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
             DiscussionListKey next = getNextKey(latestKey, latestDtos);
             if (next != null)
             {
-                onStopSubscriptions.add(AppObservable.bindFragment(
+                onStopSubscriptions.add(AppObservable.bindSupportFragment(
                         this,
                         fetchAndCreateDTOs(
                                 Observable.just(next)
@@ -326,7 +325,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
             @NonNull List<AbstractDiscussionCompactItemViewLinear.DTO> newestDtos)
     {
         DiscussionListKey prev = getMostRecentKey(latestKey, newestDtos);
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 fetchAndCreateDTOs(
                         Observable.just(prev)
@@ -432,7 +431,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     {
         if (discussionListAdapter != null)
         {
-            onStopSubscriptions.add(AppObservable.bindFragment(
+            onStopSubscriptions.add(AppObservable.bindSupportFragment(
                     this,
                     createViewDTO(newDiscussion))
                     .observeOn(AndroidSchedulers.mainThread())

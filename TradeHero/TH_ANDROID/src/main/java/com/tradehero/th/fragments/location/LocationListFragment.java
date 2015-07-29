@@ -112,7 +112,7 @@ public class LocationListFragment extends BaseFragment
 
     protected void fetchUserProfile()
     {
-        AppObservable.bindFragment(
+        AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
@@ -176,7 +176,7 @@ public class LocationListFragment extends BaseFragment
 
         UpdateCountryCodeFormDTO updateCountryCodeFormDTO = new UpdateCountryCodeFormDTO(countryCode);
         unsubscribe(updateCountryCodeSubscription);
-        updateCountryCodeSubscription = AppObservable.bindFragment(
+        updateCountryCodeSubscription = AppObservable.bindSupportFragment(
                 this,
                 userServiceWrapperLazy.get().updateCountryCodeRx(
                         currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))

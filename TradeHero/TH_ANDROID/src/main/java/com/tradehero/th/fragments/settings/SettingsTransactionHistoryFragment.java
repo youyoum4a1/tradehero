@@ -90,7 +90,7 @@ public class SettingsTransactionHistoryFragment extends BaseFragment
         progressDialog.setCanceledOnTouchOutside(true);
 
         UserTransactionHistoryListType key = new UserTransactionHistoryListType(currentUserId.toUserBaseKey());
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userTransactionHistoryListCache.get(key))
                 .observeOn(AndroidSchedulers.mainThread())

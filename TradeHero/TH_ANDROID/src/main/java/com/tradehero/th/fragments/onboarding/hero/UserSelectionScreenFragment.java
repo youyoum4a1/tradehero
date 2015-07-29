@@ -154,7 +154,7 @@ public class UserSelectionScreenFragment extends BaseFragment
 
     public void fetchUsersInfo()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
                         .subscribeOn(Schedulers.computation())

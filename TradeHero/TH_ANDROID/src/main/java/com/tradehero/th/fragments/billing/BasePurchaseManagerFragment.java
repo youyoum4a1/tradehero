@@ -109,7 +109,7 @@ abstract public class BasePurchaseManagerFragment extends DashboardFragment
 
     protected void fetchPortfolioCompactList()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 currentUserPortfolioCompactListObservable.get())
                 .observeOn(AndroidSchedulers.mainThread())

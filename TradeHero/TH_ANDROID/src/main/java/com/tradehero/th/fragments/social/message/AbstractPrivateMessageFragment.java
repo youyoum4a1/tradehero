@@ -200,7 +200,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     {
         this.messageHeaderId = messageHeaderId;
         unsubscribe(messageHeaderFetchSubscription);
-        messageHeaderFetchSubscription = AppObservable.bindFragment(
+        messageHeaderFetchSubscription = AppObservable.bindSupportFragment(
                 this,
                 messageHeaderCache.get(messageHeaderId))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -236,7 +236,7 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     private void fetchCorrespondentProfile()
     {
         Timber.d("fetchCorrespondentProfile");
-        onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCache.get(correspondentId))
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, userProfileCache.get(correspondentId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<UserBaseKey, UserProfileDTO>>()

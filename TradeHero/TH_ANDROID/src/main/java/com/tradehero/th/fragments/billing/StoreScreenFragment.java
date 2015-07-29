@@ -126,7 +126,7 @@ public class StoreScreenFragment extends BaseFragment
 
         fetchUserProfile();
         storeItemAdapter.clear();
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 StoreItemFactory.createAll(systemStatusCache, StoreItemFactory.WITH_FOLLOW_SYSTEM_STATUS)
                         .take(1))
@@ -169,7 +169,7 @@ public class StoreScreenFragment extends BaseFragment
 
     protected void fetchUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, userProfileCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Pair<UserBaseKey, UserProfileDTO>>()
                            {
@@ -191,7 +191,7 @@ public class StoreScreenFragment extends BaseFragment
         }
 
         //noinspection unchecked
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userInteractorRx.testAndClear())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -219,7 +219,7 @@ public class StoreScreenFragment extends BaseFragment
             else
             {
                 //noinspection unchecked
-                onStopSubscriptions.add(AppObservable.bindFragment(
+                onStopSubscriptions.add(AppObservable.bindSupportFragment(
                         this,
                         userInteractorRx.purchase(ProductIdentifierDomain.values()[productDomainIdentifierOrdinal]))
                         .observeOn(AndroidSchedulers.mainThread())
@@ -240,7 +240,7 @@ public class StoreScreenFragment extends BaseFragment
         {
             unsubscribe(purchaseSubscription);
             //noinspection unchecked
-            purchaseSubscription = AppObservable.bindFragment(
+            purchaseSubscription = AppObservable.bindSupportFragment(
                     this,
                     userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
                     .observeOn(AndroidSchedulers.mainThread())
@@ -259,7 +259,7 @@ public class StoreScreenFragment extends BaseFragment
         {
             unsubscribe(purchaseSubscription);
             //noinspection unchecked
-            purchaseSubscription = AppObservable.bindFragment(
+            purchaseSubscription = AppObservable.bindSupportFragment(
                     this,
                     userInteractorRx.restorePurchasesAndClear(true))
                     .observeOn(AndroidSchedulers.mainThread())

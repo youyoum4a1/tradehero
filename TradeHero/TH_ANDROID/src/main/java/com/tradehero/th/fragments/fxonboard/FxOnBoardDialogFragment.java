@@ -126,7 +126,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
                             }
                         },
                         new TimberOnErrorAction1("Unable to handle Forex onboard views")));
-        onStopSubscriptions.add(AppObservable.bindFragment(this, videoServiceWrapper.getFXVideosRx())
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, videoServiceWrapper.getFXVideosRx())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<VideoDTO>>()
                 {
@@ -197,7 +197,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
 
     private void enrollFXAndNotify()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get().getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())

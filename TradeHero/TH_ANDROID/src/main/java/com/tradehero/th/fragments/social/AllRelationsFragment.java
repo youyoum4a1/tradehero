@@ -132,7 +132,7 @@ public class AllRelationsFragment extends BaseFragment
     {
         final DismissDialogAction0 dismissProgress = new DismissDialogAction0(
                 ProgressDialogUtil.create(getActivity(), getString(R.string.downloading_relations)));
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 allowableRecipientPaginatedCache.get(new SearchAllowableRecipientListType(null, null, null)))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -185,7 +185,7 @@ public class AllRelationsFragment extends BaseFragment
     protected void handlePremiumFollowRequested(final UserBaseKey userBaseKey)
     {
         //noinspection unchecked,RedundantCast
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userInteractorRx.purchaseAndPremiumFollowAndClear(userBaseKey))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -203,7 +203,7 @@ public class AllRelationsFragment extends BaseFragment
 
     protected void forceUpdateLook(@NonNull final UserBaseKey userFollowed)
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userMessagingRelationshipCache.get(userFollowed))
                 .observeOn(AndroidSchedulers.mainThread())

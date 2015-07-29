@@ -74,7 +74,7 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        portfolioIdSubscription = AppObservable.bindFragment(
+        portfolioIdSubscription = AppObservable.bindSupportFragment(
                 this,
                 portfolioCompactListCache.getOne(currentUserId.toUserBaseKey()))
                         .observeOn(AndroidSchedulers.mainThread())

@@ -828,7 +828,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         DeviceUtil.dismissKeyboard(mCommentsEditText);
         //noinspection unchecked
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userInteractor.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .observeOn(AndroidSchedulers.mainThread())

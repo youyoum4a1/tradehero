@@ -263,7 +263,7 @@ public class MainCompetitionFragment extends DashboardFragment
 
     private void fetchAdapterRequisite()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(this,
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this,
                 Observable.combineLatest(
                         userProfileCache.get(currentUserId.toUserBaseKey())
                                 .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())

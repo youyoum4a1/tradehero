@@ -88,7 +88,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     //<editor-fold desc="User Profile">
     protected void fetchUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -143,7 +143,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     private void registerWeChatButton()
     {
         unsubscribeWeChatButton();
-        weChatLinkingSubscription = AppObservable.bindFragment(
+        weChatLinkingSubscription = AppObservable.bindSupportFragment(
                 this,
                 initialShareButtonState(SocialNetworkEnum.WECHAT)
                         .observeOn(AndroidSchedulers.mainThread())
@@ -183,7 +183,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     private void registerSocialButtons()
     {
         unsubscribeSocialLinkingButtons();
-        socialLinkingSubscription = AppObservable.bindFragment(
+        socialLinkingSubscription = AppObservable.bindSupportFragment(
                 this,
                 Observable.from(socialLinkingButtons) // For initial status
                         .flatMap(new Func1<SocialLinkToggleButton, Observable<?>>()

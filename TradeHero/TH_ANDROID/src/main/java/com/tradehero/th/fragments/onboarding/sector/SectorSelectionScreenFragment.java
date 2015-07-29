@@ -155,7 +155,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
 
     protected void fetchSectorInfo()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 sectorListCache.getOne(new SectorListType(DEFAULT_TOP_N_STOCKS)))
                 .retryWhen(headerView.isRetryClickedAfterFailed())

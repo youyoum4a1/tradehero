@@ -164,7 +164,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
 
     protected void listenToFilterSubject()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 filterSubject
                         .flatMap(new Func1<Pair<String, List<SocialFriendListItemDTO>>, Observable<? extends List<SocialFriendListItemDTO>>>()
@@ -352,7 +352,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
     protected void handleFollowUsers(@NonNull List<UserFriendsDTO> usersToFollow)
     {
         createFriendHandler();
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 socialFriendHandler.followFriends(usersToFollow))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -464,7 +464,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
     protected void handleInviteUsers(@NonNull List<UserFriendsDTO> usersToInvite)
     {
         createFriendHandler();
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 socialFriendHandler.inviteFriends(currentUserId.toUserBaseKey(), usersToInvite))
                 .observeOn(AndroidSchedulers.mainThread())

@@ -194,7 +194,7 @@ public class GuideAuthenticationFragment extends Fragment
         final View view = getView();
         if (view != null)
         {
-            onViewSubscriptions.add(AppObservable.bindFragment(
+            onViewSubscriptions.add(AppObservable.bindSupportFragment(
                     this,
                     Observable.just(bgRes[position])
                             .subscribeOn(Schedulers.computation())

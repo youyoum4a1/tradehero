@@ -277,7 +277,7 @@ abstract public class TimelineFragment extends DashboardFragment
     {
         subTimelineAdapter.appendTail(Arrays.asList(SubTimelineAdapterNew.DTO_LOADING));
         subTimelineAdapter.notifyDataSetChanged();
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 getTimelineObservable(new TimelineKey(TimelineSection.Timeline,
                         shownUserBaseKey,
@@ -447,14 +447,14 @@ abstract public class TimelineFragment extends DashboardFragment
 
     protected void fetchShownUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(this, userProfileCache.get().get(shownUserBaseKey))
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, userProfileCache.get().get(shownUserBaseKey))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new TimelineFragmentUserProfileCacheObserver()));
     }
 
     protected void fetchLevelDefList()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(this, levelDefListCache.getOne(new LevelDefListId()))
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(this, levelDefListCache.getOne(new LevelDefListId()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Pair<LevelDefListId, LevelDefDTOList>>()
@@ -564,7 +564,7 @@ abstract public class TimelineFragment extends DashboardFragment
 
     protected void registerUserDiscussionActions()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 subTimelineAdapter.getUserActionObservable())
                 .observeOn(AndroidSchedulers.mainThread())

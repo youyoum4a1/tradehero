@@ -222,7 +222,7 @@ public class SecurityPositionListFragment
 
     protected void fetchUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get(shownUser))
                 .subscribe(
@@ -244,7 +244,7 @@ public class SecurityPositionListFragment
 
     protected void fetchPositions()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 Observable.combineLatest(
                         securityCompactCacheRx.getOne(securityId)

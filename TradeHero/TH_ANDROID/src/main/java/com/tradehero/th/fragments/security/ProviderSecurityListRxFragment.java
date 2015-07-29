@@ -163,7 +163,7 @@ public class ProviderSecurityListRxFragment
 
     protected void fetchProviderDTO()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 providerCache.get(this.providerId)
                         .map(new PairGetSecond<ProviderId, ProviderDTO>()))

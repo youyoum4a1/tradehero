@@ -189,7 +189,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     {
         super.onStart();
         unsubscribe(levelDefSubscription);
-        levelDefSubscription = AppObservable.bindFragment(
+        levelDefSubscription = AppObservable.bindSupportFragment(
                 this,
                 levelDefListCache.get(mLevelDefListId))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -358,7 +358,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
             if (!shareTos.isEmpty())
             {
                 //If only there are other social network to share to other than WeChat.
-                AppObservable.bindFragment(
+                AppObservable.bindSupportFragment(
                         this,
                         achievementServiceWrapper.shareAchievementRx(
                                 AchievementShareFormDTOFactory.createFrom(

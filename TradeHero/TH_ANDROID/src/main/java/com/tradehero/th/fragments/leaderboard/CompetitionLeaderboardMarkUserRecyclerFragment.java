@@ -177,7 +177,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
     protected void fetchAll()
     {
         CompetitionLeaderboardId competitionLeaderboardId = new CompetitionLeaderboardId(providerId.key, competitionId.key);
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 Observable.combineLatest(
                         providerCache.get(providerId)

@@ -131,7 +131,7 @@ public class QuestListTestingFragment extends BaseFragment
     protected void attachAndFetchAchievementCategory()
     {
         arrayAdapter.clear();
-        AppObservable.bindFragment(this,
+        AppObservable.bindSupportFragment(this,
                 questBonusListCache.get(questBonusListId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createAchievementCategoryListCacheObserver());

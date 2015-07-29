@@ -106,7 +106,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     private void waitForEnrolled()
     {
         unsubscribe(waitForEnrolledSubscription);
-        waitForEnrolledSubscription = AppObservable.bindFragment(
+        waitForEnrolledSubscription = AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -134,7 +134,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
     private void fetchFXPrice()
     {
         unsubscribe(fetchFxPriceSubscription);
-        fetchFxPriceSubscription = AppObservable.bindFragment(
+        fetchFxPriceSubscription = AppObservable.bindSupportFragment(
                 this,
                 securityServiceWrapper.getFXSecuritiesAllPriceRx()
                         .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()

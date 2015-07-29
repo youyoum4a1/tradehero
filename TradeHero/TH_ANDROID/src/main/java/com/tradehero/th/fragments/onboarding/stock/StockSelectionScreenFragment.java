@@ -151,7 +151,7 @@ public class StockSelectionScreenFragment extends BaseFragment
 
     protected void fetchStockInfo()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 selectedExchangesSectorsObservable.flatMap(new Func1<ExchangeCompactSectorListDTO, Observable<SecurityCompactDTOList>>()
                 {

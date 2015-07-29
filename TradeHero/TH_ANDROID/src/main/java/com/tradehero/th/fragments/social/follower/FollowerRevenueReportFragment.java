@@ -80,7 +80,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
         super.onResume();
         followerManagerViewContainer.displayChild(FollowerManagerViewContainer.INDEX_VIEW_PROGRESS);
         fetchFollowerSummary();
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 followerManagerViewContainer.getClickedUserFollower())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -143,7 +143,7 @@ public class FollowerRevenueReportFragment extends DashboardFragment
 
     protected void fetchFollowerSummary()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 followerSummaryCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())

@@ -221,7 +221,7 @@ public class MessagesCenterNewFragment extends BaseFragment
         MessageListKey messageListKey = new MessageListKey(MessageListKey.FIRST_PAGE);
         Timber.d("refreshContent %s", messageListKey);
         onStopSubscriptions.add(
-                AppObservable.bindFragment(
+                AppObservable.bindSupportFragment(
                         this,
                         messageListCache.get().get(messageListKey))
                         .observeOn(AndroidSchedulers.mainThread())
@@ -330,7 +330,7 @@ public class MessagesCenterNewFragment extends BaseFragment
         if (nextMoreRecentMessageListKey != null)
         {
             onStopSubscriptions.add(
-                    AppObservable.bindFragment(
+                    AppObservable.bindSupportFragment(
                             this,
                             messageListCache.get().get(nextMoreRecentMessageListKey))
                             .observeOn(AndroidSchedulers.mainThread())
@@ -426,7 +426,7 @@ public class MessagesCenterNewFragment extends BaseFragment
 
     private void removeMessageOnServer(@NonNull final MessageHeaderDTO messageHeaderDTO)
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 messageServiceWrapper.get().deleteMessageRx(
                         messageHeaderDTO.getDTOKey(),
@@ -527,7 +527,7 @@ public class MessagesCenterNewFragment extends BaseFragment
     {
         Timber.d("reportMessageAllRead...");
         onStopSubscriptions.add(
-                AppObservable.bindFragment(
+                AppObservable.bindSupportFragment(
                         this,
                         messageServiceWrapper.get().readAllMessageRx(
                                 currentUserId.toUserBaseKey()))

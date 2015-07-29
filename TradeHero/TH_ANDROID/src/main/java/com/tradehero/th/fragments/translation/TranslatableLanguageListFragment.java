@@ -94,7 +94,7 @@ public class TranslatableLanguageListFragment extends BaseFragment
     protected void fetchToken()
     {
         unsubscribe(tokenFetchSubscription);
-        tokenFetchSubscription = AppObservable.bindFragment(
+        tokenFetchSubscription = AppObservable.bindSupportFragment(
                 this,
                 translationTokenCache.get(new TranslationTokenKey()))
                 .observeOn(AndroidSchedulers.mainThread())

@@ -207,7 +207,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
                     true);
             unsubscribe(discussionEditSubscription);
             Action0 dismissDialogAction0 = new DismissDialogAction0(progressDialog);
-            discussionEditSubscription = AppObservable.bindFragment(
+            discussionEditSubscription = AppObservable.bindSupportFragment(
                     this,
                     discussionServiceWrapper.createDiscussionRx(discussionFormDTO))
                     .observeOn(AndroidSchedulers.mainThread())

@@ -263,7 +263,7 @@ public class TradeListFragment extends DashboardFragment
 
     protected void fetchAll()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(this,
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this,
                 Observable.combineLatest(
                         userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
                                 .subscribeOn(Schedulers.computation())

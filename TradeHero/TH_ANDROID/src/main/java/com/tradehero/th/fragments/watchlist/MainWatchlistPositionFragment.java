@@ -295,7 +295,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
 
     protected void fetchWatchlistPositionList()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userWatchlistPositionCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, WatchlistPositionDTOList>()))

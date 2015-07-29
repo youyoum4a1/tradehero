@@ -107,7 +107,7 @@ public class AchievementListFragment extends DashboardFragment
     {
         hideEmpty();
         unsubscribe(achievementListSubscription);
-        achievementListSubscription = AppObservable.bindFragment(this,
+        achievementListSubscription = AppObservable.bindSupportFragment(this,
                 achievementCategoryListCache.get(shownUserId))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(

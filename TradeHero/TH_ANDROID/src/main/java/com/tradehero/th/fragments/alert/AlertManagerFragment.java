@@ -148,7 +148,7 @@ public class AlertManagerFragment extends BaseFragment
 
     protected void fetchSystemStatus()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 systemStatusCache.getOne(new SystemStatusKey()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -174,7 +174,7 @@ public class AlertManagerFragment extends BaseFragment
 
     protected void fetchUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -199,7 +199,7 @@ public class AlertManagerFragment extends BaseFragment
 
     protected void fetchAlertCompactList()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 alertCompactListCache.get(currentUserId.toUserBaseKey())
                         .subscribeOn(Schedulers.computation())

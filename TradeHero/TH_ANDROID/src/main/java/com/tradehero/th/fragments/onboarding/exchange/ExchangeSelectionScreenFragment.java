@@ -193,7 +193,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
 
     protected void fetchExchangeInfoAndMapClicks()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 Observable.combineLatest(
                         userProfileCache.getOne(currentUserId.toUserBaseKey()),

@@ -105,7 +105,7 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
             AchievementCategoryId achievementCategoryId = new AchievementCategoryId(
                     currentUserId.toUserBaseKey(),
                     userAchievementDTO.achievementDef.categoryId);
-            AppObservable.bindFragment(
+            AppObservable.bindSupportFragment(
                     this,
                     achievementCategoryCache.get(achievementCategoryId))
                     .observeOn(AndroidSchedulers.mainThread())

@@ -157,7 +157,7 @@ public class EmailSignUpFragment extends Fragment
     {
         super.onStart();
         onStopSubscriptions = new SubscriptionList();
-        onStopSubscriptions.add(AppObservable.bindFragment(this, profileView.getFieldsValidObservable())
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, profileView.getFieldsValidObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Boolean>()
@@ -168,7 +168,7 @@ public class EmailSignUpFragment extends Fragment
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to valid fields")));
-        onStopSubscriptions.add(AppObservable.bindFragment(this, getSignUpObservable())
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, getSignUpObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),

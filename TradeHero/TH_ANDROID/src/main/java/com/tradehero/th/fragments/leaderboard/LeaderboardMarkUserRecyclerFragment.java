@@ -275,7 +275,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
 
     protected void fetchOwnRanking()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 fetchOwnRankingInfoObservables())
                 .startWith(ownRankRequisite)

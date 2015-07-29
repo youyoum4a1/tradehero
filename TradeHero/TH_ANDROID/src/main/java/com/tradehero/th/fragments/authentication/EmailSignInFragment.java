@@ -209,13 +209,13 @@ public class EmailSignInFragment extends Fragment
     {
         super.onStart();
         onStopSubscriptions = new SubscriptionList();
-        onStopSubscriptions.add(AppObservable.bindFragment(this, emailValidator.getValidationMessageObservable())
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, emailValidator.getValidationMessageObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createValidatorObserver(email)));
-        onStopSubscriptions.add(AppObservable.bindFragment(this, passwordValidator.getValidationMessageObservable())
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, passwordValidator.getValidationMessageObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(createValidatorObserver(password)));
-        onStopSubscriptions.add(AppObservable.bindFragment(this, getFieldsValidationObservable())
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, getFieldsValidationObservable())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<Boolean>()
@@ -226,7 +226,7 @@ public class EmailSignInFragment extends Fragment
                             }
                         },
                         new TimberOnErrorAction1("Error in validation")));
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 ViewObservable.clicks(loginButton, false)
                         .flatMap(new Func1<OnClickEvent, Observable<? extends Pair<AuthData, UserProfileDTO>>>()
@@ -335,7 +335,7 @@ public class EmailSignInFragment extends Fragment
         final View forgotDialogView = LayoutInflater.from(getActivity()).inflate(R.layout.forgot_password_dialog, null);
         final ValidatedText validatedEmail = ((ValidatedText) forgotDialogView.findViewById(R.id.authentication_forgot_password_validated_email));
         validatedEmail.setText(email.getText().toString());
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 AlertDialogRxUtil.buildDefault(getActivity())
                         .setTitle(R.string.authentication_ask_for_email)

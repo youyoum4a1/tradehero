@@ -52,7 +52,7 @@ public class QuestDialogFragment extends AbstractAchievementDialogFragment
 
     private void fetchQuestBonusList()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 questBonusListCache.getOne(questBonusListId))
                 .observeOn(AndroidSchedulers.mainThread())

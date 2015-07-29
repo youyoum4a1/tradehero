@@ -155,7 +155,7 @@ public class ProviderVideoListFragment extends DashboardFragment
 
     protected void fetchProviderDTO()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 providerCache.get(this.providerId))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -188,7 +188,7 @@ public class ProviderVideoListFragment extends DashboardFragment
 
     protected void fetchVideoList()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 helpVideoListCache.getOne(new HelpVideoListKey(providerId)))
                 .observeOn(AndroidSchedulers.mainThread())

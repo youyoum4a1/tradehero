@@ -129,7 +129,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
 
     protected void fetchPositionCompactList()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 positionCompactListCache.get(securityId))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -174,7 +174,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
 
     protected void fetchQuote()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 quoteServiceWrapper.getQuoteRx(securityId)
                         .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
@@ -206,7 +206,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
 
     private void fetchKChart(@NonNull FXChartGranularity granularity)
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 securityServiceWrapper.getFXHistory(securityId, granularity)
                         .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
@@ -222,7 +222,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
 
     private void registerToPortfolio()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 portfolioCompactDTOBehavior)
                 .observeOn(AndroidSchedulers.mainThread())

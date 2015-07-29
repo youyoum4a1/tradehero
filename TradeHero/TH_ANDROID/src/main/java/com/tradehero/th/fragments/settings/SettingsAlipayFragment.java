@@ -90,7 +90,7 @@ public class SettingsAlipayFragment extends BaseFragment
 
     protected void fetchUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
@@ -138,7 +138,7 @@ public class SettingsAlipayFragment extends BaseFragment
         accountDTO.newAlipayAccount = alipayAccountText.getText().toString();
         accountDTO.userIdentityNumber = alipayAccountIDText.getText().toString();
         accountDTO.userRealName = alipayAccountRealNameText.getText().toString();
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userServiceWrapper.updateAlipayAccountRx(
                         currentUserId.toUserBaseKey(), accountDTO))

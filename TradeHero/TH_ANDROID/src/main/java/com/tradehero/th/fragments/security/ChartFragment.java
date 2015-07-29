@@ -687,7 +687,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     {
         if (securityId != null)
         {
-            onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+            onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                     this,
                     securityCompactCacheRx.get(securityId))
                     .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())

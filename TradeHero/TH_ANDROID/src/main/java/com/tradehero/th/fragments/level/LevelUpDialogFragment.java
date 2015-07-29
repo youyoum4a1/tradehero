@@ -111,7 +111,7 @@ public class LevelUpDialogFragment extends BaseDialogFragment
         mCurrentLevelDefId = getLevelId(getArguments(), BUNDLE_KEY_CURRENT);
         mNextLevelDefId = getLevelId(getArguments(), BUNDLE_KEY_NEXT);
 
-        AppObservable.bindFragment(
+        AppObservable.bindSupportFragment(
                 this,
                 Observable.merge(
                         levelDefCache.get(mCurrentLevelDefId),

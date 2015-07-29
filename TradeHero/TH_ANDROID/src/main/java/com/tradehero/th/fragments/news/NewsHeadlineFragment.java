@@ -163,7 +163,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
 
     protected void registerUserActions()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 adapter.getUserActionObservable())
                 .observeOn(AndroidSchedulers.mainThread())

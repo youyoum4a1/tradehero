@@ -109,7 +109,7 @@ public class SettingsReferralCodeFragment extends BaseFragment
 
     protected void fetchProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(this,
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -157,7 +157,7 @@ public class SettingsReferralCodeFragment extends BaseFragment
 
     protected void fetchSystemStatus()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 systemStatusCache.get(new SystemStatusKey())
                         .map(new PairGetSecond<SystemStatusKey, SystemStatusDTO>()))

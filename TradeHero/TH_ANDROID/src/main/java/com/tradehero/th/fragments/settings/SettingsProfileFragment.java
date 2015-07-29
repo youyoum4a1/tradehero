@@ -107,7 +107,7 @@ public class SettingsProfileFragment extends BaseFragment
 
     private void populateCurrentUser()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -135,7 +135,7 @@ public class SettingsProfileFragment extends BaseFragment
         }
         else
         {
-            onStopSubscriptions.add(AppObservable.bindFragment(
+            onStopSubscriptions.add(AppObservable.bindSupportFragment(
                     this,
                     getFieldsValidObservable()
                             .flatMap(new Func1<Boolean, Observable<Pair<AuthData, UserProfileDTO>>>()

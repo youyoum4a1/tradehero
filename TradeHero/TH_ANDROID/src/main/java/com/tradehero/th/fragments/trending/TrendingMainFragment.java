@@ -379,7 +379,7 @@ public class TrendingMainFragment extends DashboardFragment
                         {
                             initUserProfileObservable();
                         }
-                        onDestroyOptionsMenuSubscriptions.add(AppObservable.bindFragment(
+                        onDestroyOptionsMenuSubscriptions.add(AppObservable.bindSupportFragment(
                                 TrendingMainFragment.this,
                                 userProfileObservable)
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -484,7 +484,7 @@ public class TrendingMainFragment extends DashboardFragment
         });
 
         ExchangeListType key = new ExchangeListType();
-        onDestroyOptionsMenuSubscriptions.add(AppObservable.bindFragment(
+        onDestroyOptionsMenuSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 Observable.combineLatest(
                         exchangeCompactListCache.getOne(key)

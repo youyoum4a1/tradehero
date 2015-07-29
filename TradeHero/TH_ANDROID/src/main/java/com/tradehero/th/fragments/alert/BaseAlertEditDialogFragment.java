@@ -82,7 +82,7 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
     @OnClick(R.id.alert_menu_save)
     protected void conditionalSaveAlert(View view)
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 viewHolder.conditionalSaveAlert())
                 .observeOn(AndroidSchedulers.mainThread())

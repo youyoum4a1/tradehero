@@ -163,7 +163,7 @@ public class SendMessageFragment extends BaseFragment
 
     private void fetchCurrentUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -292,7 +292,7 @@ public class SendMessageFragment extends BaseFragment
                 getActivity().getString(R.string.broadcast_message_sending_hint),
                 true);
 
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 messageServiceWrapper.get().createMessageRx(
                         createMessageForm(text)))

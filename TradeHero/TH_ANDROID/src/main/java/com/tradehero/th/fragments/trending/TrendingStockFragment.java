@@ -220,7 +220,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchUserProfile()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))
@@ -244,7 +244,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchProviderList()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 providerListCache.get(new ProviderListKey())
                         .map(new PairGetSecond<ProviderListKey, ProviderDTOList>()))
@@ -268,7 +268,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchWatchlist()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                         this,
                         userWatchlistPositionCache.get(currentUserId.toUserBaseKey()))
                         .observeOn(AndroidSchedulers.mainThread())
@@ -299,7 +299,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     public void fetchAlertCompactList()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                         this,
                         alertCompactListCache.getSecurityMappedAlerts(currentUserId.toUserBaseKey()))
                         .observeOn(AndroidSchedulers.mainThread())
@@ -430,7 +430,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleSurveyItemOnClick()
     {
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get().get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
@@ -455,7 +455,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private void handleResetPortfolioItemOnClick()
     {
         //noinspection unchecked
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -467,7 +467,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
     protected void handleExtraCashItemOnClick()
     {
         //noinspection unchecked
-        onDestroyViewSubscriptions.add(AppObservable.bindFragment(
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userInteractorRx.purchaseAndClear(ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR))
                 .observeOn(AndroidSchedulers.mainThread())

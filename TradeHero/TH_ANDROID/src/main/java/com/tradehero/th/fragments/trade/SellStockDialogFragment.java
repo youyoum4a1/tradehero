@@ -125,7 +125,7 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
                 getActivity().getString(R.string.alert_dialog_please_wait),
                 true);
 
-        return AppObservable.bindFragment(
+        return AppObservable.bindSupportFragment(
                 this,
                 securityServiceWrapper.doTransactionRx(requisite.securityId, transactionFormDTO, IS_BUY))
                 .observeOn(AndroidSchedulers.mainThread())

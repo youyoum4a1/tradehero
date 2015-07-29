@@ -78,7 +78,7 @@ abstract public class BaseLeaderboardPagedRecyclerRxFragment<
 
     protected void fetchCurrentUserProfile()
     {
-        onStopSubscriptions.add(AppObservable.bindFragment(
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 userProfileCache.get(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()))

@@ -12,7 +12,6 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
-import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -22,17 +21,14 @@ import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.discussion.key.SecurityDiscussionKey;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
-import com.tradehero.th.fragments.discussion.DiscussionFragmentUtil;
 import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.widget.MultiScrollListener;
-import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
@@ -43,12 +39,8 @@ public class SecurityDiscussionFragment extends AbstractDiscussionFragment
 
     @Inject DiscussionListCacheRx discussionListCache;
     @Inject SecurityCompactCacheRx securityCompactCache;
-    @Inject DiscussionFragmentUtil discussionFragmentUtil;
     @Bind(R.id.security_discussion_add) View buttonAdd;
     private SecurityId securityId;
-    @Inject protected Lazy<DashboardNavigator> navigator;
-
-    @Inject @BottomTabsQuickReturnListViewListener protected Lazy<AbsListView.OnScrollListener> dashboardBottomTabsListViewScrollListener;
 
     public static void putSecurityId(Bundle args, SecurityId securityId)
     {
@@ -58,9 +50,13 @@ public class SecurityDiscussionFragment extends AbstractDiscussionFragment
     @Nullable public static SecurityId getSecurityId(Bundle args)
     {
         SecurityId extracted = null;
-        if (args != null && args.containsKey(BUNDLE_KEY_SECURITY_ID))
+        if (args != null)
         {
-            extracted = new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
+            Bundle securityIdBundle = args.getBundle(BUNDLE_KEY_SECURITY_ID);
+            if (securityIdBundle != null)
+            {
+                extracted = new SecurityId(securityIdBundle);
+            }
         }
         return extracted;
     }
@@ -106,7 +102,7 @@ public class SecurityDiscussionFragment extends AbstractDiscussionFragment
 
     @NonNull @Override protected AbsListView.OnScrollListener createListScrollListener()
     {
-        return new MultiScrollListener(super.createListScrollListener(), dashboardBottomTabsListViewScrollListener.get(),
+        return new MultiScrollListener(super.createListScrollListener(), fragmentElements.getListViewScrollListener(),
                 new QuickReturnListViewOnScrollListener.Builder(QuickReturnViewType.HEADER).header(buttonAdd)
                         .minHeaderTranslation(-getResources().getDimensionPixelSize(R.dimen.clickable_element_min_dimen))
                         .build());

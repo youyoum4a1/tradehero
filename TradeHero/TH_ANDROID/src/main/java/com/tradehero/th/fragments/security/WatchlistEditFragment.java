@@ -240,7 +240,7 @@ public class WatchlistEditFragment extends DashboardFragment
             {
                 updateObservable = watchlistServiceWrapper.createWatchlistEntryRx(watchPositionItemForm);
             }
-            onDestroyViewSubscriptions.add(AppObservable.bindFragment(this, updateObservable)
+            onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(this, updateObservable)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                     .subscribe(new WatchlistEditObserver()));
