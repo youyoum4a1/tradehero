@@ -145,29 +145,18 @@ public class KYCAyondoForm implements KYCForm
             this.agreeTermsConditions = ayondoForm.agreeTermsConditions != null ? ayondoForm.agreeTermsConditions : this.agreeTermsConditions;
             this.agreeRisksWarnings = ayondoForm.agreeRisksWarnings != null ? ayondoForm.agreeRisksWarnings : this.agreeRisksWarnings;
             this.agreeDataSharing = ayondoForm.agreeDataSharing != null ? ayondoForm.agreeDataSharing : this.agreeDataSharing;
-            if (other.getStepStatuses() != null)
-            {
-                this.stepStatuses = other.getStepStatuses();
-            }
+            this.stepStatuses = ayondoForm.stepStatuses != null ? ayondoForm.stepStatuses : this.stepStatuses;
         }
     }
 
     @Override public void setStepStatuses(@NonNull List<StepStatus> stepStatuses)
     {
-        this.stepStatuses = stepStatuses;
+        this.stepStatuses = Collections.unmodifiableList(stepStatuses);
     }
 
-    @NonNull
-    public List<StepStatus> getStepStatuses()
+    @Nullable public List<StepStatus> getStepStatuses()
     {
-        if (stepStatuses != null)
-        {
-            return Collections.unmodifiableList(stepStatuses);
-        }
-        else
-        {
-            return Collections.emptyList();
-        }
+        return stepStatuses;
     }
 
     @Nullable public Gender getGender()
@@ -548,12 +537,14 @@ public class KYCAyondoForm implements KYCForm
     }
     //</editor-fold>
 
-    @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
+    @Override public boolean equals(@Nullable Object o)
     {
+        if (o == null) return false;
+        if (o == this) return true;
         boolean same;
-        if (kycForm instanceof KYCAyondoForm)
+        if (o instanceof KYCAyondoForm)
         {
-            KYCAyondoForm ayondoForm = (KYCAyondoForm) kycForm;
+            KYCAyondoForm ayondoForm = (KYCAyondoForm) o;
             same = country == null ? ayondoForm.country == null : country.equals(ayondoForm.country);
             same &= gender == null ? ayondoForm.gender == null : gender.equals(ayondoForm.gender);
             same &= fullName == null ? ayondoForm.fullName == null : fullName.equals(ayondoForm.fullName);
@@ -621,5 +612,54 @@ public class KYCAyondoForm implements KYCForm
             same = false;
         }
         return same;
+    }
+
+    @Override public int hashCode()
+    {
+        int code = country == null ? 0 : country.hashCode();
+        code ^= gender == null ? 0 : gender.hashCode();
+        code ^= fullName == null ? 0 : fullName.hashCode();
+        code ^= email == null ? 0 : email.hashCode();
+        code ^= verifiedEmail == null ? 0 : verifiedEmail.hashCode();
+        code ^= mobileNumberDialingPrefix == null ? 0 : mobileNumberDialingPrefix.hashCode();
+        code ^= mobileNumber == null ? 0 : mobileNumber.hashCode();
+        code ^= verifiedMobileNumberDialingPrefix == null ? 0 : verifiedMobileNumberDialingPrefix.hashCode();
+        code ^= verifiedMobileNumber == null ? 0 : verifiedMobileNumber.hashCode();
+        code ^= nationality == null ? 0 : nationality.hashCode();
+        code ^= residency == null ? 0 : residency.hashCode();
+        code ^= dob == null ? 0 : dob.hashCode();
+        code ^= annualIncomeRange == null ? 0 : annualIncomeRange.hashCode();
+        code ^= netWorthRange == null ? 0 : netWorthRange.hashCode();
+        code ^= percentNetWorthForInvestmentRange == null ? 0 : percentNetWorthForInvestmentRange.hashCode();
+        code ^= employmentStatus == null ? 0 : employmentStatus.hashCode();
+        code ^= employerRegulatedFinancial == null ? 0 : employerRegulatedFinancial.hashCode();
+        code ^= workedInFinance1Year == null ? 0 : workedInFinance1Year.hashCode();
+        code ^= attendedSeminarAyondo == null ? 0 : attendedSeminarAyondo.hashCode();
+        code ^= haveOtherQualification == null ? 0 : haveOtherQualification.hashCode();
+        code ^= tradingPerQuarter == null ? 0 : tradingPerQuarter.hashCode();
+        code ^= tradedSharesBonds == null ? 0 : tradedSharesBonds.hashCode();
+        code ^= tradedOtcDerivative == null ? 0 : tradedOtcDerivative.hashCode();
+        code ^= tradedEtc == null ? 0 : tradedEtc.hashCode();
+        if (addresses != null)
+        {
+            for (KYCAddress address : addresses)
+            {
+                code ^= address.hashCode();
+            }
+        }
+        else
+        {
+            code ^= 0;
+        }
+        code ^= identityDocumentType == null ? 0 : identityDocumentType.hashCode();
+        String identityDocFile = getIdentityDocumentFileString();
+        code ^= identityDocFile == null ? 0 : identityDocFile.hashCode();
+        code ^= residenceDocumentType == null ? 0 : residenceDocumentType.hashCode();
+        String residenceDocFile = getResidenceDocumentFileString();
+        code ^= residenceDocFile == null ? 0 : residenceDocFile.hashCode();
+        code ^= agreeTermsConditions == null ? 0 : agreeTermsConditions.hashCode();
+        code ^= agreeRisksWarnings == null ? 0 : agreeRisksWarnings.hashCode();
+        code ^= agreeDataSharing == null ? 0 : agreeDataSharing.hashCode();
+        return code;
     }
 }

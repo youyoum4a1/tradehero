@@ -50,6 +50,15 @@ public class KYCAddress
         return !(postalCode != null ? !postalCode.equals(that.postalCode) : that.postalCode != null);
     }
 
+    @Override public int hashCode()
+    {
+        return (lessThanAYear  ? 0 : 1)
+                ^ (addressLine1 == null ? 0 : addressLine1.hashCode())
+                ^ (addressLine2 == null ? 0 : addressLine2.hashCode())
+                ^ (city == null ? 0 : city.hashCode())
+                ^ (postalCode == null ? 0 : postalCode.hashCode());
+    }
+
     @Override public String toString()
     {
         return "KYCAddress{" +

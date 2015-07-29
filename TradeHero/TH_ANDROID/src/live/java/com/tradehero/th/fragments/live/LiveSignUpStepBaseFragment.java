@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
@@ -34,6 +35,8 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 {
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject protected KYCFormOptionsCache kycFormOptionsCache;
+
+    @Bind(R.id.btn_next) protected View btnNext;
 
     @NonNull protected PublishSubject<Boolean> prevNextSubject;
     @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;
@@ -63,13 +66,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
      */
     @CallSuper public void onNext(@NonNull LiveBrokerSituationDTO situationDTO)
     {
-        LiveBrokerSituationDTO previous = liveBrokerSituationPreference.get();
         liveBrokerSituationPreference.set(situationDTO);
-        LiveBrokerSituationDTO next = liveBrokerSituationPreference.get();
-        if (!previous.hasSameFields(next))
-        {
-            brokerSituationSubject.onNext(next);
-        }
     }
 
     @SuppressWarnings({"unused", "NullableProblems"})
@@ -105,7 +102,9 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 
     @NonNull protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
-        return brokerSituationSubject.distinctUntilChanged();
+        return brokerSituationSubject
+                .mergeWith(liveBrokerSituationPreference.getLiveBrokerSituationDTOObservable())
+                .distinctUntilChanged();
     }
 
     @NonNull protected Observable<LiveBrokerDTO> createBrokerObservable()
@@ -118,13 +117,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                         return situationDTO.broker;
                     }
                 })
-                .distinctUntilChanged(new Func1<LiveBrokerDTO, String>()
-                {
-                    @Override public String call(LiveBrokerDTO liveBrokerDTO)
-                    {
-                        return liveBrokerDTO.id.key + liveBrokerDTO.name;
-                    }
-                });
+                .distinctUntilChanged();
     }
 
 

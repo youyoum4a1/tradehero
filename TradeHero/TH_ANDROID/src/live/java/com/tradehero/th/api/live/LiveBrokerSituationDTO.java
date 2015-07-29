@@ -19,9 +19,18 @@ public class LiveBrokerSituationDTO implements DTO
         this.kycForm = kycForm;
     }
 
-    public boolean hasSameFields(@NonNull LiveBrokerSituationDTO other)
+    @Override public int hashCode()
     {
-        return broker.hasSameFields(other.broker)
-                && (kycForm == null ? other.kycForm == null : (other.kycForm != null && kycForm.hasSameFields(other.kycForm)));
+        return broker.hashCode()
+                ^ (kycForm == null ? 0 : kycForm.hashCode());
+    }
+
+    @Override public boolean equals(Object o)
+    {
+        if (o == null) return false;
+        if (o == this) return true;
+        return o instanceof LiveBrokerSituationDTO
+                && broker.equals(((LiveBrokerSituationDTO) o).broker)
+                && (kycForm == null ? ((LiveBrokerSituationDTO) o).kycForm == null : kycForm.equals(((LiveBrokerSituationDTO) o).kycForm));
     }
 }

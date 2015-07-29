@@ -1,6 +1,7 @@
 package com.tradehero.th.api.kyc;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
@@ -34,13 +35,13 @@ public class EmptyKYCForm implements KYCForm
     {
     }
 
-    @Override public List<StepStatus> getStepStatuses()
+    @Override @Nullable public List<StepStatus> getStepStatuses()
     {
         return new ArrayList<>();
     }
 
-    @Override public boolean hasSameFields(@NonNull KYCForm kycForm)
+    @Override public boolean equals(@Nullable Object o)
     {
-        return true;
+        return o instanceof EmptyKYCForm;
     }
 }

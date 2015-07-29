@@ -5,9 +5,9 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.ScannedDocument;
-import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import java.util.List;
 
 @JsonTypeInfo(
@@ -29,7 +29,7 @@ import java.util.List;
 
     void setStepStatuses(@NonNull List<StepStatus> stepStatuses);
 
-    List<StepStatus> getStepStatuses();
+    @Nullable List<StepStatus> getStepStatuses();
 
-    boolean hasSameFields(@NonNull KYCForm kycForm);
+    boolean equals(@Nullable Object other);
 }

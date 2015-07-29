@@ -17,9 +17,17 @@ public class LiveBrokerDTO implements DTO
         this.name = name;
     }
 
-    public boolean hasSameFields(@NonNull LiveBrokerDTO other)
+    @Override public int hashCode()
     {
-        return id.equals(other.id)
-                && name.equals(other.name);
+        return id.hashCode() ^ name.hashCode();
+    }
+
+    @Override public boolean equals(Object o)
+    {
+        if (o == null) return false;
+        if (o == this) return true;
+        return o instanceof LiveBrokerDTO
+                && id.equals(((LiveBrokerDTO) o).id)
+                && name.equals(((LiveBrokerDTO) o).name);
     }
 }
