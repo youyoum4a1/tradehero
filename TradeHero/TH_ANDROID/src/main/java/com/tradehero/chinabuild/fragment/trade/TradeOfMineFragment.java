@@ -52,9 +52,7 @@ import com.tradehero.th.persistence.prefs.ShareDialogROIValueKey;
 import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
-import com.tradehero.th.utils.Constants;
 
-import cn.htsec.TradeModule;
 import cn.htsec.data.ServerManager;
 import cn.htsec.data.pkg.trade.TradeManager;
 import dagger.Lazy;
@@ -120,9 +118,6 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
 
         //下载站点列表 海通
         mTradeManager = TradeManager.getInstance(getActivity());
-        if(Constants.isInTestingEnvironment) {
-            TradeModule.debug();
-        }
         ServerManager serverManager = ServerManager.getInstance(getActivity());
         serverManager.startDownloadServerList();
 

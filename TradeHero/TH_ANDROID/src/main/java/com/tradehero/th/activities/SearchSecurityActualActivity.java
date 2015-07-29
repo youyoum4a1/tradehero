@@ -216,7 +216,7 @@ public class SearchSecurityActualActivity extends Activity {
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
         bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, securityExchange);
         bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, securitySymbol);
-        bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, 0);
+        bundle.putInt(CompetitionSecuritySearchFragment.BUNDLE_COMPETITION_ID, 0);
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
         Intent intent = new Intent(this, SecurityOptActivity.class);
         intent.putExtras(bundle);

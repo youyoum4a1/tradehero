@@ -75,7 +75,7 @@ public class SecurityOptMockSubQueryFragment extends Fragment implements View.On
     @Override
     public void onResume() {
         super.onResume();
-        competitionId = getArguments().getInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, 0);
+        competitionId = getArguments().getInt(CompetitionSecuritySearchFragment.BUNDLE_COMPETITION_ID, 0);
         if (getArguments().containsKey(SecurityOptActivity.KEY_PORTFOLIO_ID)) {
             portfolioIdObj = getPortfolioId();
             if (competitionId != 0) {

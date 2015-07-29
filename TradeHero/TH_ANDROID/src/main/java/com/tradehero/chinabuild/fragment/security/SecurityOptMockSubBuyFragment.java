@@ -36,7 +36,6 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioId;
 import com.tradehero.th.api.position.SecurityPositionDetailDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -46,8 +45,6 @@ import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 
-
-import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
@@ -149,10 +146,12 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         securitySymbol = getArguments().getString(SecurityOptActivity.KEY_SECURITY_SYMBOL, "");
         securityExchange = getArguments().getString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, "");
         securityName = getArguments().getString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, "");
-        competitionId = getArguments().getInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, 0);
+        competitionId = getArguments().getInt(CompetitionSecuritySearchFragment.BUNDLE_COMPETITION_ID, 0);
+        THLog.d("competitionId " + competitionId);
         if(getArguments().containsKey(SecurityOptActivity.KEY_PORTFOLIO_ID)) {
             portfolioIdObj = getPortfolioId();
             if (competitionId != 0) {
+                THLog.d("portfolioId " + portfolioId);
                 portfolioId = portfolioIdObj.key;
             }
         }
@@ -178,9 +177,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
             retrieveQuoteDTO();
         }
-        if (portfolioId == 0) {
+        if (portfolioId == 0 && competitionId ==0) {
             retrieveMainPositions();
-        } else {
+        } else if(portfolioId!=0 && competitionId!=0){
             retrieveCompetitionPositions();
         }
         //Retrieve user portfolio
@@ -375,6 +374,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                                 if(getActivity()!=null) {
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
                                 }
+                                if(decisionET!=null){
+                                    decisionET.setText("");
+                                }
                             }
                         });
                     } else {
@@ -418,6 +420,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                             private void onFinish(){
                                 if(getActivity()!=null) {
                                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
+                                }
+                                if(decisionET!=null){
+                                    decisionET.setText("");
                                 }
                             }
                         });
@@ -1004,11 +1009,18 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
         getActivity().finish();
         Bundle bundle = new Bundle();
         if(competitionId!=0){
-            bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
+            if(portfolioIdObj!=null) {
+                bundle.putBundle(SecurityOptActivity.KEY_PORTFOLIO_ID, portfolioIdObj.getArgs());
+            }
+            bundle.putInt(CompetitionSecuritySearchFragment.BUNDLE_COMPETITION_ID, competitionId);
+            bundle.putBoolean(CompetitionSecuritySearchFragment.BUNDLE_GO_TO_BUY_SELL_DIRECTLY, true);
+            bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
             gotoDashboard(CompetitionSecuritySearchFragment.class.getName(), bundle);
             getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         } else {
-            gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
+            bundle.putBoolean(SearchUnitFragment.BUNDLE_GO_TO_BUY_SELL_DIRECTLY, true);
+            bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+            gotoDashboard(SearchUnitFragment.class.getName(), bundle);
             getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         }
     }

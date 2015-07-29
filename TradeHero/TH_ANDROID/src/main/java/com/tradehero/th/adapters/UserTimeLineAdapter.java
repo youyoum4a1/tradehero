@@ -627,7 +627,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_SELL);
         bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, securityId.getExchange());
         bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, securityId.getSecuritySymbol());
-        bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, 0);
+        bundle.putInt(CompetitionSecuritySearchFragment.BUNDLE_COMPETITION_ID, 0);
         bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityId.getDisplayName());
         Intent intent = new Intent(context, SecurityOptActivity.class);
         intent.putExtras(bundle);

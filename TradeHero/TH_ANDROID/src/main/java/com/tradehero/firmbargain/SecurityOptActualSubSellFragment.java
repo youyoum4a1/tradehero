@@ -797,6 +797,9 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                         if(getActivity()!=null) {
                             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
                         }
+                        if(decisionET!=null){
+                            decisionET.setText("");
+                        }
                     }
 
                     @Override
@@ -804,6 +807,9 @@ public class SecurityOptActualSubSellFragment extends Fragment implements View.O
                         THToast.show(msg);
                         if(getActivity()!=null) {
                             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
+                        }
+                        if(decisionET!=null){
+                            decisionET.setText("");
                         }
                     }
 

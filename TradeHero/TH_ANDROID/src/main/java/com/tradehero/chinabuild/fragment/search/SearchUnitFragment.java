@@ -1,5 +1,6 @@
 package com.tradehero.chinabuild.fragment.search;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -29,6 +30,7 @@ import com.tradehero.chinabuild.data.CompetitionInterface;
 import com.tradehero.chinabuild.data.UserCompetitionDTOList;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
+import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionUtils;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
@@ -37,6 +39,7 @@ import com.tradehero.chinabuild.saveload.SearchResultSave;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.adapters.SearchUserListAdapter;
 import com.tradehero.th.adapters.SecuritySearchListAdapter;
@@ -79,6 +82,9 @@ import org.jetbrains.annotations.NotNull;
 public class SearchUnitFragment extends DashboardFragment
 {
     public static final String BUNDLE_DEFAULT_TAB_PAGE = "bundle_default_tab_page";
+    public static final String BUNDLE_GO_TO_BUY_SELL_DIRECTLY = "BUNDLE_GO_TO_BUY_SELL_DIRECTLY";
+    private boolean isBuySellDirectly = false;
+    private String opt_type = SecurityOptActivity.TYPE_BUY;
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     @Inject CurrentUserId currentUserId;
@@ -133,7 +139,7 @@ public class SearchUnitFragment extends DashboardFragment
     public CompetitionListAdapter adapterCompetition;
     public SearchUserListAdapter adapterUser;
 
-    boolean isFristLunch;
+    boolean isFirstLunch;
 
     private int pageSecurity = 1;
     private int pageUser = 3;
@@ -142,7 +148,7 @@ public class SearchUnitFragment extends DashboardFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        isFristLunch = true;
+        isFirstLunch = true;
         securityListTypeCacheListener = new TrendingSecurityListFetchListener();
         securityListTypeHotCacheListener = new TrendingSecurityListFetchListener();
 
@@ -153,6 +159,15 @@ public class SearchUnitFragment extends DashboardFragment
         adapterStock = new SecuritySearchListAdapter(getActivity());
         adapterCompetition = new CompetitionListAdapter(getActivity(), CompetitionUtils.COMPETITION_PAGE_SEARCH);
         adapterUser = new SearchUserListAdapter(getActivity());
+
+        if(getArguments()!=null){
+            if(getArguments().containsKey(BUNDLE_GO_TO_BUY_SELL_DIRECTLY)) {
+                isBuySellDirectly = getArguments().getBoolean(BUNDLE_GO_TO_BUY_SELL_DIRECTLY, false);
+            }
+            if(getArguments().containsKey(SecurityOptActivity.BUNDLE_FROM_TYPE)) {
+                opt_type = getArguments().getString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+            }
+        }
     }
 
     @Override
@@ -171,8 +186,7 @@ public class SearchUnitFragment extends DashboardFragment
         return view;
     }
 
-    public void initView()
-    {
+    public void initView() {
         searchStr = getString(R.string.search_search);
         searchCancelStr = getString(R.string.search_cancel);
 
@@ -184,31 +198,24 @@ public class SearchUnitFragment extends DashboardFragment
             }
         });
 
-        tvSearchInput.addTextChangedListener(new TextWatcher()
-        {
+        tvSearchInput.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
-            {
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
-            {
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
             }
 
             @Override
-            public void afterTextChanged(Editable editable)
-            {
+            public void afterTextChanged(Editable editable) {
                 String inputStr = editable.toString();
-                if (TextUtils.isEmpty(inputStr))
-                {
+                if (TextUtils.isEmpty(inputStr)) {
                     tvSearch.setText(searchCancelStr);
                     loadRecommandData();
-                }
-                else
-                {
+                } else {
                     tvSearch.setText(searchStr);
                 }
             }
@@ -219,8 +226,7 @@ public class SearchUnitFragment extends DashboardFragment
             @Override
             public boolean onEditorAction(TextView textView, int actionId, android.view.KeyEvent keyEvent)
             {
-                switch (actionId)
-                {
+                switch (actionId) {
                     case EditorInfo.IME_ACTION_SEARCH:
                         controlLoading(tabSelect, true);
                         fetchUnite(tabSelect, true);
@@ -234,15 +240,13 @@ public class SearchUnitFragment extends DashboardFragment
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         setOnclickListener();
     }
 
     @Override
-    public void onDestroyView()
-    {
+    public void onDestroyView() {
         detachSecurityHotListCache();
         detachSecurityListCache();
         detachSearchCompetition();
@@ -492,11 +496,11 @@ public class SearchUnitFragment extends DashboardFragment
         });
         loadRecommandData();
 
-        if (isFristLunch && getArguments() != null)
+        if (isFirstLunch && getArguments() != null)
         {
             int index = getArguments().getInt(BUNDLE_DEFAULT_TAB_PAGE, 0);
             pager.setCurrentItem(tabSelect = index);
-            isFristLunch = false;
+            isFirstLunch = false;
         }
     }
 
@@ -587,14 +591,26 @@ public class SearchUnitFragment extends DashboardFragment
                     SecurityCompactDTO dto = (SecurityCompactDTO) adapterStock.getItem((int) position);
                     if (dto != null)
                     {
-                        Bundle bundle = new Bundle();
-                        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, dto.getSecurityId().getArgs());
-                        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, dto.name);
-                        pushFragment(SecurityDetailFragment.class, bundle);
-                        if (isUserSearch)
-                        {
-                            SearchResultSave.saveSearchSecurity(getActivity(), dto);
-                            sendAnalytics(dto);
+                        if(isBuySellDirectly) {
+                            getActivity().finish();
+                            Bundle bundle = new Bundle();
+                            bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, opt_type);
+                            bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, dto.getSecurityId().getExchange());
+                            bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, dto.getSecurityId().getSecuritySymbol());
+                            bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, dto.name);
+                            Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+                        } else {
+                            Bundle bundle = new Bundle();
+                            bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, dto.getSecurityId().getArgs());
+                            bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, dto.name);
+                            pushFragment(SecurityDetailFragment.class, bundle);
+                            if (isUserSearch) {
+                                SearchResultSave.saveSearchSecurity(getActivity(), dto);
+                                sendAnalytics(dto);
+                            }
                         }
                     }
                 }

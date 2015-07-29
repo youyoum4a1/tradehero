@@ -258,7 +258,7 @@ public class PortfolioFragment extends DashboardFragment {
 
     public void toPlayCompetition() {
         Bundle bundle = new Bundle();
-        bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
+        bundle.putInt(CompetitionSecuritySearchFragment.BUNDLE_COMPETITION_ID, competitionId);
         pushFragment(CompetitionSecuritySearchFragment.class, bundle);
     }
 

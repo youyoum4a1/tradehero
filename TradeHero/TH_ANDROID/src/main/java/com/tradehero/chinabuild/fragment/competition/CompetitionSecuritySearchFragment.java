@@ -1,6 +1,7 @@
 package com.tradehero.chinabuild.fragment.competition;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -23,7 +23,9 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.api.security.SecurityCompactDTO;
@@ -33,12 +35,10 @@ import com.tradehero.th.api.security.key.SecurityListType;
 import com.tradehero.th.api.security.key.TrendingAllSecurityListType;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.security.SecurityCompactListCache;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 import javax.inject.Inject;
 
@@ -48,17 +48,19 @@ import javax.inject.Inject;
 public class CompetitionSecuritySearchFragment extends DashboardFragment
 {
 
-    public static final String BUNLDE_COMPETITION_ID = "bundle_competition_id";
+    public static final String BUNDLE_COMPETITION_ID = "bundle_competition_id";
+    public static final String BUNDLE_PORTFOLIO_ID = "BUNDLE_PORTFOLIO_ID";
+    public static final String BUNDLE_GO_TO_BUY_SELL_DIRECTLY = "BUNDLE_GO_TO_BUY_SELL_DIRECTLY";
     private int competitionId;
+    private boolean isBuySellDirectly = false;
+    private String opt_type = SecurityOptActivity.TYPE_BUY;
 
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeCacheListener;
     private ProgressDialog mTransactionDialog;
-    @Inject ProgressDialogUtil progressDialogUtil;
 
     @InjectView(R.id.tvSearch) TextView tvSearch;
     @InjectView(R.id.edtSearchInput) TextView tvSearchInput;
-    @InjectView(R.id.btn_search_x) Button btnSearch_x;
     @InjectView(R.id.listSearch) SecurityListView listSearch;
     @InjectView(R.id.progressbar_competition_security_search)TradeHeroProgressBar pbSearch;
     @InjectView(R.id.textview_security_searchresult) TextView tvResult;
@@ -72,24 +74,28 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
 
     private String searchStr;
     private String searchCancelStr;
-
     private String noSearchResult;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getCompetitionId();
         securityListTypeCacheListener = createSecurityListFetchListener();
         adapterSecurity = new SecurityListAdapter(getActivity(), getTradeType());
+        if(getArguments()!=null){
+            if(getArguments().containsKey(BUNDLE_GO_TO_BUY_SELL_DIRECTLY)) {
+                isBuySellDirectly = getArguments().getBoolean(BUNDLE_GO_TO_BUY_SELL_DIRECTLY, false);
+            }
+            if(getArguments().containsKey(SecurityOptActivity.BUNDLE_FROM_TYPE)) {
+                opt_type = getArguments().getString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+            }
+        }
     }
 
-    public void getCompetitionId()
-    {
+    public void getCompetitionId() {
         Bundle bundle = getArguments();
-        if (bundle != null)
-        {
-            competitionId = bundle.getInt(BUNLDE_COMPETITION_ID, 0);
+        if (bundle != null) {
+            competitionId = bundle.getInt(BUNDLE_COMPETITION_ID, 0);
         }
     }
 
@@ -100,22 +106,19 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.competition_search_layout, container, false);
         ButterKnife.inject(this, view);
         initView();
         hideActionBar();
-        if(adapterSecurity!=null && adapterSecurity.getCount() == 0)
-        {
+        if(adapterSecurity!=null && adapterSecurity.getCount() == 0) {
             fetchSecurityList();
             showLoadingProgress();
         }
         return view;
     }
 
-    private void initView()
-    {
+    private void initView() {
         currentPage = 0;
         noSearchResult = getString(R.string.search_no_result);
         initListView();
@@ -137,46 +140,32 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
             }
         });
 
-        tvSearchInput.addTextChangedListener(new TextWatcher()
-        {
+        tvSearchInput.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3)
-            {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3)
-            {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) { }
 
             @Override
-            public void afterTextChanged(Editable editable)
-            {
+            public void afterTextChanged(Editable editable) {
                 String inputStr = editable.toString();
-                if (TextUtils.isEmpty(inputStr))
-                {
+                if (TextUtils.isEmpty(inputStr)) {
                     tvSearch.setText(searchCancelStr);
-                }
-                else
-                {
+                } else {
                     tvSearch.setText(searchStr);
                 }
             }
         });
     }
 
-    private void detachSecurityListCache()
-    {
-        if (securityListTypeCacheListener != null)
-        {
+    private void detachSecurityListCache() {
+        if (securityListTypeCacheListener != null) {
             securityCompactListCache.get().unregister(securityListTypeCacheListener);
         }
     }
 
-    private void fetchSecurityList()
-    {
+    private void fetchSecurityList() {
         detachSecurityListCache();
         setTradeType(TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_COMPETITION);
         adapterSecurity.setType(getTradeType());
@@ -185,8 +174,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         securityCompactListCache.get().getOrFetchAsync(key, true);
     }
 
-    private void fetchSecuritySearchList()
-    {
+    private void fetchSecuritySearchList() {
         if (StringUtils.isNullOrEmptyOrSpaces(getSearchString())) return;
         detachSecurityListCache();
         setTradeType(TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_SEARCH);
@@ -197,52 +185,41 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     }
 
     @OnClick(R.id.btn_search_x)
-    public void onSearchXClicked()
-    {
-        Timber.d("onSearchXClicked!");
-        if (tvSearchInput != null)
-        {
+    public void onSearchXClicked() {
+        if (tvSearchInput != null) {
             tvSearchInput.setText("");
         }
     }
 
     @OnClick(R.id.tvSearch)
-    public void onSearchClicked()
-    {
-        if (TextUtils.isEmpty(getSearchString()))
-        {
+    public void onSearchClicked() {
+        if (TextUtils.isEmpty(getSearchString())) {
             popCurrentFragment();
             return;
         }
         toSearchSecurity();
     }
 
-    public String getSearchString()
-    {
+    public String getSearchString() {
         String strSearch = tvSearchInput.getText().toString();
-        if (strSearch != null && strSearch.length() > 0)
-        {
+        if (strSearch != null && strSearch.length() > 0) {
             return strSearch;
-        }
-        else
-        {
+        } else {
             return "";
         }
     }
 
-    public void toSearchSecurity()
-    {
+    public void toSearchSecurity() {
         String strSearch = tvSearchInput.getText().toString();
-        if (strSearch != null && strSearch.length() > 0)
-        {
+        if (strSearch != null && strSearch.length() > 0) {
             clearPageCount();
             showLoadingProgress();
             fetchSecuritySearchList();
         }
     }
 
-    @Override public void onDestroyView()
-    {
+    @Override
+    public void onDestroyView() {
         detachSecurityListCache();
         closeInputMethod();
         super.onDestroyView();
@@ -253,38 +230,28 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         currentPage = 0;
     }
 
-    private void initListView()
-    {
+    private void initListView() {
         currentPage = 0;
         listSearch.setMode(PullToRefreshBase.Mode.BOTH);
 
         listSearch.setAdapter(adapterSecurity);
 
-        listSearch.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        {
-            @Override public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
-                Timber.d("下拉刷新");
+        listSearch.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 clearPageCount();
-                if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_COMPETITION)
-                {
+                if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_COMPETITION) {
                     fetchSecurityList();
-                }
-                else if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_SEARCH)
-                {
+                } else if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_SEARCH) {
                     fetchSecuritySearchList();
                 }
             }
 
-            @Override public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
-                Timber.d("上拉加载更多");
-                if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_COMPETITION)
-                {
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_COMPETITION) {
                     fetchSecurityList();
-                }
-                else if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_SEARCH)
-                {
+                } else if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_SEARCH) {
                     fetchSecuritySearchList();
                 }
             }
@@ -295,9 +262,7 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
             @Override public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
             {
                 SecurityCompactDTO dto = (SecurityCompactDTO) adapterSecurity.getItem((int) position);
-                if (dto != null)
-                {
-                    Timber.d("list item clicked %s", dto.name);
+                if (dto != null) {
                     enterSecurity(dto.getSecurityId(), dto.name);
                 }
             }
@@ -305,33 +270,29 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
         listSearch.setEmptyView(tvResult);
     }
 
-    protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener()
-    {
+    protected DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> createSecurityListFetchListener() {
         return new TrendingSecurityListFetchListener();
     }
 
-    protected class TrendingSecurityListFetchListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>
-    {
-        @Override public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value)
-        {
+    protected class TrendingSecurityListFetchListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> {
+        @Override
+        public void onDTOReceived(@NotNull SecurityListType key, @NotNull SecurityCompactDTOList value) {
             tvResult.setText(noSearchResult);
             initAdapterSecurity(value, key);
             dismissLoadingProgress();
             onFinish();
         }
 
-        @Override public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error)
-        {
+        @Override
+        public void onErrorThrown(@NotNull SecurityListType key, @NotNull Throwable error) {
             tvResult.setText(noSearchResult);
             dismissLoadingProgress();
             onFinish();
         }
 
-        private void onFinish()
-        {
+        private void onFinish() {
             listSearch.onRefreshComplete();
-            if (mTransactionDialog != null)
-            {
+            if (mTransactionDialog != null) {
                 mTransactionDialog.dismiss();
             }
         }
@@ -348,43 +309,50 @@ public class CompetitionSecuritySearchFragment extends DashboardFragment
     }
 
     //</editor-fold>
-    private void initAdapterSecurity(SecurityCompactDTOList list, SecurityListType key)
-    {
-        if (key.getPage() == PagedLeaderboardKey.FIRST_PAGE)
-        {
+    private void initAdapterSecurity(SecurityCompactDTOList list, SecurityListType key) {
+        if (key.getPage() == PagedLeaderboardKey.FIRST_PAGE) {
             currentPage = 0;
             adapterSecurity.setSecurityList(list);
-
-        }
-        else
-        {
+        } else {
             adapterSecurity.addItems(list);
         }
 
-        if (list != null && list.size() > 0)
-        {
+        if (list != null && list.size() > 0) {
             currentPage += 1;
         }
 
         adapterSecurity.notifyDataSetChanged();
-        if (adapterSecurity.getCount() > 0)
-        {
+        if (adapterSecurity.getCount() > 0) {
             tvResult.setVisibility(View.GONE);
-        }
-        else
-        {
+        } else {
             tvResult.setVisibility(View.VISIBLE);
         }
     }
 
     //进入比赛相关的股票详情，带入competitionID
-    public void enterSecurity(SecurityId securityId, String securityName)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
-        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
-        bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
-        pushFragment(SecurityDetailFragment.class, bundle);
+    public void enterSecurity(SecurityId securityId, String securityName){
+        if(isBuySellDirectly) {
+            getActivity().finish();
+            Bundle bundle = new Bundle();
+            if(getArguments().containsKey(SecurityOptActivity.KEY_PORTFOLIO_ID)) {
+                bundle.putBundle(SecurityOptActivity.KEY_PORTFOLIO_ID, getArguments().getBundle(SecurityOptActivity.KEY_PORTFOLIO_ID));
+            }
+            bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, opt_type);
+            bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, securityId.getExchange());
+            bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, securityId.getSecuritySymbol());
+            bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+            bundle.putInt(CompetitionSecuritySearchFragment.BUNDLE_COMPETITION_ID, competitionId);
+            Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, securityId.getArgs());
+            bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, securityName);
+            bundle.putInt(SecurityDetailFragment.BUNDLE_KEY_COMPETITION_ID_BUNDLE, competitionId);
+            pushFragment(SecurityDetailFragment.class, bundle);
+        }
     }
 
     private void showLoadingProgress() {

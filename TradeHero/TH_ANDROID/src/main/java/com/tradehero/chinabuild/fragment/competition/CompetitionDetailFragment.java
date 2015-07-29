@@ -473,7 +473,7 @@ public class CompetitionDetailFragment extends Fragment
             return;
         }
         Bundle bundle = new Bundle();
-        bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, userCompetitionDTO.id);
+        bundle.putInt(CompetitionSecuritySearchFragment.BUNDLE_COMPETITION_ID, userCompetitionDTO.id);
         pushFragment(CompetitionSecuritySearchFragment.class, bundle);
         analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.BUTTON_COMPETITION_DETAIL_GOTO));
     }

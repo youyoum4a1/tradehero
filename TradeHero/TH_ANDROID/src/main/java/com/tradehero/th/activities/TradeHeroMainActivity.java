@@ -57,10 +57,12 @@ import com.tradehero.th.persistence.prefs.BindGuestUser;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 
+import cn.htsec.TradeModule;
 import cn.htsec.data.pkg.trade.TradeManager;
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -173,6 +175,10 @@ public class TradeHeroMainActivity extends AppCompatActivity {
         //Download TradeHero Version
         gotoDownloadAppInfo();
         ShareDialogFragment.isDialogShowing = true;
+
+        if(Constants.isInHAITONGTestingEnvironment) {
+            TradeModule.debug();
+        }
 
         //show guest user dialog
         UserProfileDTO userProfileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());

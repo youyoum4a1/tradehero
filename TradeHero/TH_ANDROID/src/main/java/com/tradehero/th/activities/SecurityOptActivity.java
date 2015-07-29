@@ -10,7 +10,6 @@ import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -18,14 +17,12 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.firmbargain.HAITONGUtils;
 import com.tradehero.firmbargain.SecurityOptActualFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 
-import cn.htsec.TradeModule;
 import cn.htsec.data.pkg.trade.TradeManager;
 
 /**
@@ -166,7 +163,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     }
 
     private void initArguments(){
-        competitionId = getIntent().getIntExtra(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID , 0);
+        competitionId = getIntent().getIntExtra(CompetitionSecuritySearchFragment.BUNDLE_COMPETITION_ID, 0);
         isForActual = getIntent().getBooleanExtra(KEY_IS_FOR_ACTUAL, false);
         if(getIntent().hasExtra(KEY_SECURITY_EXCHANGE)) {
             securityExchange = getIntent().getStringExtra(KEY_SECURITY_EXCHANGE);
@@ -223,10 +220,17 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
         Bundle bundle = new Bundle();
         if(isMock) {
             if (competitionId != 0) {
-                bundle.putInt(CompetitionSecuritySearchFragment.BUNLDE_COMPETITION_ID, competitionId);
+                if(getIntent().getExtras().containsKey(SecurityOptActivity.KEY_PORTFOLIO_ID)) {
+                    bundle.putBundle(SecurityOptActivity.KEY_PORTFOLIO_ID, getIntent().getExtras().getBundle(SecurityOptActivity.KEY_PORTFOLIO_ID));
+                }
+                bundle.putBoolean(CompetitionSecuritySearchFragment.BUNDLE_GO_TO_BUY_SELL_DIRECTLY, true);
+                bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+                bundle.putInt(CompetitionSecuritySearchFragment.BUNDLE_COMPETITION_ID, competitionId);
                 gotoDashboard(CompetitionSecuritySearchFragment.class.getName(), bundle);
                 overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
             } else {
+                bundle.putBoolean(CompetitionSecuritySearchFragment.BUNDLE_GO_TO_BUY_SELL_DIRECTLY, true);
+                bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
                 gotoDashboard(SearchUnitFragment.class.getName(), bundle);
                 overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
             }

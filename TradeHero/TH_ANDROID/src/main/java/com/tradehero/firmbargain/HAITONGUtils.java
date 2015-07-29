@@ -42,4 +42,8 @@ public class HAITONGUtils {
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
     }
+
+    public final static void bankTransfer(Activity activity){
+
+    }
 }

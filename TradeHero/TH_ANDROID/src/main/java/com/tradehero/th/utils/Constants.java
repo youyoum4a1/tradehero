@@ -46,5 +46,5 @@ public class Constants {
     public final static boolean isManager = true;
 
     //HAITONG Environment
-    public final static boolean isInTestingEnvironment = true;
+    public final static boolean isInHAITONGTestingEnvironment = true;
 }
