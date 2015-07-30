@@ -118,7 +118,7 @@
         android:layout_width="match_parent"
         android:layout_height="55dp"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/btn_background_cancel_delegation">
+        android:background="@drawable/btn_background_actual_cancel_delegation">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
