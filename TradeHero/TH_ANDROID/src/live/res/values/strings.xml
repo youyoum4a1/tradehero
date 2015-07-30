@@ -99,7 +99,7 @@
   <string name="live_agree_to_data_sharing_agreement">Data Sharing Agreement</string>
   <string name="live_agree_read_it">Read</string>
 
-  <string name="live_username_invalid">\'%1$s\' is not a valid. Must be 5 – 20 alphanumeric characters</string>
+  <string name="live_username_invalid">\'%1$s\' is not valid. Must be 5 – 20 alphanumeric characters</string>
   <string name="live_username_not_available">\'%1$s\' is not available</string>
 
 </resources>
