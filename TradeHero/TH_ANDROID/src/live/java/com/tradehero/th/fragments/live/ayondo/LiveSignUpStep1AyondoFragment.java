@@ -24,6 +24,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.market.Country;
@@ -46,6 +47,8 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.rx.view.CustomWidgetObservable;
+import com.tradehero.th.rx.view.OnFocusChangeEvent;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
@@ -250,13 +253,69 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         })
         );
 
-        //Some kind of a note for validating display name
-        //Observable.combineLatest(
-        //    nameObservable,
-        //    nameObservable.throttle
-        //        .flatMap(name -> serverValidation(name)),
-        //        (name, valid) -> Pair)
-        //    .filter
+        onDestroyViewSubscriptions.add(Observable.combineLatest(
+                WidgetObservable.text(userName),
+                CustomWidgetObservable.focus(userName)
+                        .filter(new Func1<OnFocusChangeEvent, Boolean>()
+                        {
+                            @Override public Boolean call(OnFocusChangeEvent onFocusChangeEvent)
+                            {
+                                return onFocusChangeEvent.view instanceof EditText && !onFocusChangeEvent.hasFocus;
+                            }
+                        })
+                        .map(new Func1<OnFocusChangeEvent, EditText>()
+                        {
+                            @Override public EditText call(OnFocusChangeEvent onFocusChangeEvent)
+                            {
+                                return (EditText) onFocusChangeEvent.view;
+                            }
+                        })
+                        .flatMap(new Func1<EditText, Observable<UsernameValidationResultDTO>>()
+                        {
+                            @Override public Observable<UsernameValidationResultDTO> call(EditText editText)
+                            {
+                                return liveServiceWrapper.validateUserName(editText.getText().toString());
+                            }
+                        }),
+                new Func2<OnTextChangeEvent, UsernameValidationResultDTO, Pair<String, UsernameValidationResultDTO>>()
+                {
+                    @Override public Pair<String, UsernameValidationResultDTO> call(OnTextChangeEvent onTextChangeEvent,
+                            UsernameValidationResultDTO usernameValidationResultDTO)
+                    {
+                        return Pair.create(onTextChangeEvent.text().toString(), usernameValidationResultDTO);
+                    }
+                })
+                .filter(new Func1<Pair<String, UsernameValidationResultDTO>, Boolean>()
+                {
+                    @Override public Boolean call(Pair<String, UsernameValidationResultDTO> pair)
+                    {
+                        return pair.first.equals(userName.getText().toString());
+                    }
+                })
+                .subscribe(new Action1<Pair<String, UsernameValidationResultDTO>>()
+                {
+                    @Override public void call(Pair<String, UsernameValidationResultDTO> stringValidationPair)
+                    {
+                        UsernameValidationResultDTO resultDTO = stringValidationPair.second;
+                        String username = stringValidationPair.first;
+                        String errorText = null;
+                        if (!resultDTO.isValid)
+                        {
+                            errorText = getString(R.string.live_username_invalid, username);
+                        }
+                        else if (!resultDTO.isAvailable)
+                        {
+                            errorText = getString(R.string.live_username_invalid, username);
+                        }
+                        userName.setError(errorText);
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        userName.setError(throwable.getMessage());
+                    }
+                }));
 
         // Maybe move this until we get the KYCForm, and use the KYCForm to fetch the list of country of residence.
         onDestroyViewSubscriptions.add(Observable.combineLatest(
