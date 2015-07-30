@@ -93,14 +93,8 @@
           style="@style/TH.Body"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:drawableEnd="@drawable/accounts_glyph_transparent_default"
-          android:drawableRight="@drawable/accounts_glyph_transparent_default"
           android:hint="@string/email"
-
           android:inputType="textEmailAddress"
-          app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
-          app:minTextLength="1"
-          app:validatePattern="@string/regex_email_validator"
           />
 
     </android.support.design.widget.TextInputLayout>
