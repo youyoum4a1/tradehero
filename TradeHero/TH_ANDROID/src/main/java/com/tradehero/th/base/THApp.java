@@ -3,6 +3,7 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.multidex.MultiDexApplication;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
@@ -25,7 +26,7 @@ import javax.inject.Inject;
 import rx.functions.Action1;
 import timber.log.Timber;
 
-public class THApp extends DexOrNotApp
+public class THApp extends MultiDexApplication
         implements ExInjector
 {
     private static final int MEMORY_CACHE_SIZE = 2 * 1024 * 1024;

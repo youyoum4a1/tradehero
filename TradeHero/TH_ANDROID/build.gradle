@@ -80,6 +80,9 @@ android {
     minSdkVersion 14
     targetSdkVersion 22
 
+    // Enabling multidex support.
+    multiDexEnabled true
+
     versionCode project.ext.versionBuild
     versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
 
@@ -143,9 +146,6 @@ android {
 
     live {
       flavorDimension "liveOrNot"
-
-      // Enabling multidex support.
-      multiDexEnabled true
     }
 
     airship {
@@ -614,7 +614,7 @@ dependencies {
   compile "com.android.support:design:${SUPPORT_V7_VERSION}"
   releaseCompile "com.android.support:cardview-v7:${SUPPORT_V7_VERSION}" // For UrbanAirship proguarding
   liveCompile "com.android.support:cardview-v7:${SUPPORT_V7_VERSION}" // For Jumio
-  liveCompile 'com.android.support:multidex:1.0.1'
+  compile 'com.android.support:multidex:1.0.1'
 
   //provided 'proguard:annotations:4.6'
   compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {
