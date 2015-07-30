@@ -20,7 +20,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
@@ -52,9 +51,6 @@ import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.widget.validation.TextValidator;
-import com.tradehero.th.widget.validation.ValidatedText;
-import com.tradehero.th.widget.validation.ValidationMessage;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -62,6 +58,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
@@ -92,8 +89,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.info_username) TextView userName;
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.info_full_name) TextView fullName;
-    @Bind(R.id.sign_up_email) ValidatedText email;
-    TextValidator emailValidator;
+    @Bind(R.id.sign_up_email) EditText email;
     @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
     @Bind(R.id.number_right) EditText phoneNumber;
     @Bind(R.id.info_dob) TextView dob;
@@ -112,6 +108,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Nullable private String expectedCode;
     @Nullable private BehaviorSubject<SMSSentConfirmationDTO> confirmationSubject;
     private Subscription confirmationSubscription;
+    private Pattern emailPattern;
+    private String emailInvalidMessage;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -208,27 +206,50 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction1("Failed to listen to title, full name, email, nationality o residency spinners, or dob")));
 
-        emailValidator = email.getValidator();
-        email.setOnFocusChangeListener(emailValidator);
-        email.addTextChangedListener(emailValidator);
-        onDestroyViewSubscriptions.add(emailValidator.getValidationMessageObservable()
-                .subscribe(
-                        new Action1<ValidationMessage>()
+        emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
+        emailInvalidMessage = getString(R.string.validation_incorrect_pattern_email);
+        onDestroyViewSubscriptions.add(
+                WidgetObservable.text(email)
+                        .filter(new Func1<OnTextChangeEvent, Boolean>()
                         {
-                            @Nullable private String previousMessage;
-
-                            @Override public void call(ValidationMessage validationMessage)
+                            @Override public Boolean call(OnTextChangeEvent onTextChangeEvent)
                             {
-                                email.setStatus(validationMessage.getValidStatus());
-                                String message = validationMessage.getMessage();
-                                if (message != null && !TextUtils.isEmpty(message) && !message.equals(previousMessage))
-                                {
-                                    THToast.show(validationMessage.getMessage());
-                                }
-                                previousMessage = message;
+                                return !TextUtils.isEmpty(onTextChangeEvent.text());
                             }
-                        },
-                        new TimberOnErrorAction1("Failed to listen to email validation")));
+                        })
+                        .map(new Func1<OnTextChangeEvent, String>()
+                        {
+                            @Override public String call(OnTextChangeEvent onTextChangeEvent)
+                            {
+                                if (!emailPattern.matcher(onTextChangeEvent.text()).matches())
+                                {
+                                    return emailInvalidMessage;
+                                }
+                                return null;
+                            }
+                        })
+                        .subscribe(new Action1<String>()
+                        {
+                            @Override public void call(@Nullable String errorMessage)
+                            {
+                                email.setError(errorMessage);
+                            }
+                        }, new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                Timber.e(throwable, "Failed to validate email");
+                            }
+                        })
+        );
+
+        //Some kind of a note for validating display name
+        //Observable.combineLatest(
+        //    nameObservable,
+        //    nameObservable.throttle
+        //        .flatMap(name -> serverValidation(name)),
+        //        (name, valid) -> Pair)
+        //    .filter
 
         // Maybe move this until we get the KYCForm, and use the KYCForm to fetch the list of country of residence.
         onDestroyViewSubscriptions.add(Observable.combineLatest(
@@ -490,9 +511,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Override public void onDestroyView()
     {
-        email.removeTextChangedListener(emailValidator);
-        email.setOnFocusChangeListener(null);
-        emailValidator = null;
         ButterKnife.unbind(this);
         super.onDestroyView();
     }

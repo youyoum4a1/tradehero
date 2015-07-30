@@ -85,9 +85,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:hintTextAppearance="@style/TH.Caption"
+        app:errorEnabled="true"
         >
 
-      <com.tradehero.th.widget.validation.ValidatedText
+      <EditText
           android:id="@+id/sign_up_email"
           style="@style/TH.Body"
           android:layout_width="match_parent"
@@ -97,12 +98,8 @@
           android:hint="@string/email"
 
           android:inputType="textEmailAddress"
-          app:delayValidationByMilliSec="1500"
-          app:invalidDrawableRight="@drawable/warning_red"
-
           app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
           app:minTextLength="1"
-          app:validDrawableRight="@drawable/tick_green"
           app:validatePattern="@string/regex_email_validator"
           />
 
