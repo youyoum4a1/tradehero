@@ -101,7 +101,7 @@ public class KYCAyondoForm implements KYCForm
         if (other instanceof KYCAyondoForm)
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) other;
-            this.userName = ayondoForm.getUserName() != null ? ayondoForm.getUserName() : this.fullName;
+            this.userName = ayondoForm.getUserName() != null ? ayondoForm.getUserName() : this.userName;
             this.gender = ayondoForm.gender != null ? ayondoForm.gender : this.gender;
             this.fullName = ayondoForm.getFullName() != null ? ayondoForm.getFullName() : this.fullName;
             this.email = ayondoForm.getEmail() != null ? ayondoForm.getEmail() : this.email;

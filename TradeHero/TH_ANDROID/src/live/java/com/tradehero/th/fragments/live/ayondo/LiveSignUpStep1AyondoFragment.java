@@ -279,6 +279,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return onTextChangeEvent.text().toString();
                             }
                         })
+                        .startWith(getBrokerSituationObservable()
+                                .map(new Func1<LiveBrokerSituationDTO, String>()
+                                {
+                                    @Override public String call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                                    {
+                                        return ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getUserName();
+                                    }
+                                })
+                        )
                         .flatMap(new Func1<String, Observable<UsernameValidationResultDTO>>()
                         {
                             @Override public Observable<UsernameValidationResultDTO> call(String name)
@@ -601,6 +610,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     protected void populate(@NonNull KYCAyondoForm kycForm)
     {
+        String userNameText = kycForm.getUserName();
+        if (userName != null && userNameText != null && !userNameText.equals(userName.getText().toString()))
+        {
+            userName.setText(userNameText);
+        }
+
         String fullNameText = kycForm.getFullName();
         if (fullName != null && fullNameText != null && !fullNameText.equals(fullName.getText().toString()))
         {
