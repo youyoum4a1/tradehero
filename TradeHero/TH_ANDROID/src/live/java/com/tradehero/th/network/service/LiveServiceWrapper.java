@@ -6,6 +6,7 @@ import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
 import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
+import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
@@ -92,5 +93,10 @@ public class LiveServiceWrapper
         return Observable.just(new PhoneNumberVerifiedStatusDTO(
                 phoneNumber,
                 phoneNumberVerifiedPreference.get().contains(phoneNumber)));
+    }
+
+    public Observable<UsernameValidationResultDTO> validateUserName(String username)
+    {
+        return liveServiceRx.validateUserName(username);
     }
 }
