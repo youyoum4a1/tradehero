@@ -18,6 +18,7 @@ import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.Gender;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
+import com.tradehero.th.models.fastfill.ScanReference;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.utils.DateUtils;
 import java.io.File;
@@ -32,6 +33,7 @@ public class KYCAyondoForm implements KYCForm
     public static final String DATE_FORMAT_AYONDO = "dd-MM-yyyy";
 
     @Nullable private Country country;
+    @Nullable private ScanReference scanReference;
     @Nullable private String userName;
     @Nullable private Gender gender;
     @Nullable private String fullName;
@@ -76,6 +78,8 @@ public class KYCAyondoForm implements KYCForm
 
     @Override public void pickFrom(@NonNull ScannedDocument scannedDocument)
     {
+        this.scanReference = scannedDocument.getScanReference();
+
         String fullName = scannedDocument.getFullName();
         if (fullName != null)
         {
@@ -101,6 +105,7 @@ public class KYCAyondoForm implements KYCForm
         if (other instanceof KYCAyondoForm)
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) other;
+            this.scanReference = ayondoForm.scanReference != null ? ayondoForm.scanReference : this.scanReference;
             this.userName = ayondoForm.getUserName() != null ? ayondoForm.getUserName() : this.userName;
             this.gender = ayondoForm.gender != null ? ayondoForm.gender : this.gender;
             this.fullName = ayondoForm.getFullName() != null ? ayondoForm.getFullName() : this.fullName;
@@ -159,6 +164,16 @@ public class KYCAyondoForm implements KYCForm
     @Nullable public List<StepStatus> getStepStatuses()
     {
         return stepStatuses;
+    }
+
+    @Override @Nullable public ScanReference getScanReference()
+    {
+        return scanReference;
+    }
+
+    public void setScanReference(@Nullable ScanReference scanReference)
+    {
+        this.scanReference = scanReference;
     }
 
     @Nullable public String getUserName()
@@ -558,6 +573,7 @@ public class KYCAyondoForm implements KYCForm
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) o;
             same = country == null ? ayondoForm.country == null : country.equals(ayondoForm.country);
+            same &= scanReference == null ? ayondoForm.scanReference == null : scanReference.equals(ayondoForm.scanReference);
             same &= userName == null ? ayondoForm.userName == null : userName.equals(ayondoForm.userName);
             same &= gender == null ? ayondoForm.gender == null : gender.equals(ayondoForm.gender);
             same &= fullName == null ? ayondoForm.fullName == null : fullName.equals(ayondoForm.fullName);
@@ -630,6 +646,7 @@ public class KYCAyondoForm implements KYCForm
     @Override public int hashCode()
     {
         int code = country == null ? 0 : country.hashCode();
+        code ^= scanReference == null ? 0 : scanReference.hashCode();
         code ^= userName == null ? 0 : userName.hashCode();
         code ^= gender == null ? 0 : gender.hashCode();
         code ^= fullName == null ? 0 : fullName.hashCode();
@@ -668,9 +685,11 @@ public class KYCAyondoForm implements KYCForm
         code ^= identityDocumentType == null ? 0 : identityDocumentType.hashCode();
         String identityDocFile = getIdentityDocumentFileString();
         code ^= identityDocFile == null ? 0 : identityDocFile.hashCode();
+        // Do not hash clearIdentityDocumentFile
         code ^= residenceDocumentType == null ? 0 : residenceDocumentType.hashCode();
         String residenceDocFile = getResidenceDocumentFileString();
         code ^= residenceDocFile == null ? 0 : residenceDocFile.hashCode();
+        // Do not hash clearResidenceDocumentFile
         code ^= agreeTermsConditions == null ? 0 : agreeTermsConditions.hashCode();
         code ^= agreeRisksWarnings == null ? 0 : agreeRisksWarnings.hashCode();
         code ^= agreeDataSharing == null ? 0 : agreeDataSharing.hashCode();

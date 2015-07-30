@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.models.fastfill.ScanReference;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import java.util.List;
 
@@ -22,6 +23,8 @@ import java.util.List;
     @StringRes int getBrokerName();
 
     @Nullable Country getCountry();
+
+    @Nullable ScanReference getScanReference();
 
     void pickFrom(@NonNull ScannedDocument scannedDocument);
 

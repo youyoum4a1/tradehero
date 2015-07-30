@@ -103,6 +103,7 @@ public class NetverifyFastFillUtil implements FastFillUtil
         {
             netverifySDK.setPreselectedDocumentType(documentTypeMap.get(documentType));
         }
+        netverifySDK.setRequireVerification(true);
         this.netverifySDK = netverifySDK;
         activity.startActivityForResult(netverifySDK.getIntent(), NET_VERIFY_REQUEST_CODE);
     }

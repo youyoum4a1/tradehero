@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.models.fastfill.ScanReference;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,11 @@ public class EmptyKYCForm implements KYCForm
     @NonNull @Override public Country getCountry()
     {
         return Country.SG;
+    }
+
+    @Nullable @Override public ScanReference getScanReference()
+    {
+        return null;
     }
 
     @Override public void pickFrom(@NonNull ScannedDocument scannedDocument)
