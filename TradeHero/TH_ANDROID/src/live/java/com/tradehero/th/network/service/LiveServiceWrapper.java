@@ -95,8 +95,18 @@ public class LiveServiceWrapper
                 phoneNumberVerifiedPreference.get().contains(phoneNumber)));
     }
 
-    public Observable<UsernameValidationResultDTO> validateUserName(String username)
+    public Observable<UsernameValidationResultDTO> validateUserName(final String username)
     {
-        return liveServiceRx.validateUserName(username);
+        return liveServiceRx.validateUserName(username)
+                .map(new Func1<UsernameValidationResultDTO, UsernameValidationResultDTO>()
+                {
+                    @Override public UsernameValidationResultDTO call(UsernameValidationResultDTO resultDTO)
+                    {
+                        return new UsernameValidationResultDTO(
+                                username,
+                                resultDTO.isValid,
+                                resultDTO.isAvailable);
+                    }
+                });
     }
 }

@@ -286,6 +286,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return liveServiceWrapper.validateUserName(name);
                             }
                         })
+                        .filter(new Func1<UsernameValidationResultDTO, Boolean>()
+                        {
+                            @Override public Boolean call(UsernameValidationResultDTO resultDTO)
+                            {
+                                return resultDTO.username != null && resultDTO.username.equals(userName.getText().toString());
+                            }
+                        })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<UsernameValidationResultDTO>()
                         {
@@ -294,11 +301,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 String errorText = null;
                                 if (!resultDTO.isValid)
                                 {
-                                    errorText = getString(R.string.live_username_invalid);
+                                    errorText = getString(R.string.live_username_invalid, resultDTO.username);
                                 }
                                 else if (!resultDTO.isAvailable)
                                 {
-                                    errorText = getString(R.string.live_username_not_available);
+                                    errorText = getString(R.string.live_username_not_available, resultDTO.username);
                                 }
                                 userName.setError(errorText);
                             }
