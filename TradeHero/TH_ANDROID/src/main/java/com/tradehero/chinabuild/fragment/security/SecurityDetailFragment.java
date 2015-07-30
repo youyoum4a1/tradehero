@@ -44,8 +44,8 @@ import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.adapters.PositionTradeListAdapter;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -234,7 +234,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
 
     private Callback<QuoteDetail> quoteDetailCallback;
     private Callback<QuoteDTO> quoteCallback;
-    private Callback<List<QuoteTick>> timeListCallback;
     private Callback<List<KLineItem>> kLinesListCallback;
     private int quoteErrors;
 
@@ -663,6 +662,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         detachSecurityCompactCache();
         quoteServiceWrapper.stopQuoteDetailTask();
         quoteServiceWrapper.stopSecurityCompactTask();
+        quoteServiceWrapper.stopQuoteTicksTask();
+        quoteServiceWrapper.stopQuoteTask();
 
         super.onPause();
     }
@@ -1327,17 +1328,14 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
         quoteServiceWrapper.getRepeatingQuoteDetails(securityId, quoteDetailCallback);
 
         //time list
-        if (timeListCallback == null) {
-            timeListCallback = new Callback<List<QuoteTick>>(){
-                @Override public void success(List<QuoteTick> quoteTicks, Response response){
-                    timeListView.setTimesList(quoteTicks);
-                }
+        quoteServiceWrapper.getQuoteTicks(securityId, new Callback<List<QuoteTick>>() {
+            @Override public void success(List<QuoteTick> quoteTicks, Response response) {
+                timeListView.setTimesList(quoteTicks);
+            }
 
-                @Override public void failure(RetrofitError error){
-                }
-            };
-        }
-        quoteServiceWrapper.getQuoteTicks(securityId, timeListCallback);
+            @Override public void failure(RetrofitError error){
+            }
+        });
     }
 
     private void askKLines(SecurityId securityId)
