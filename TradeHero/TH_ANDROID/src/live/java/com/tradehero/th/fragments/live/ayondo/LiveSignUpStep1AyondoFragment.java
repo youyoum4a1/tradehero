@@ -210,6 +210,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         emailInvalidMessage = getString(R.string.validation_incorrect_pattern_email);
         onDestroyViewSubscriptions.add(
                 WidgetObservable.text(email)
+                        .distinctUntilChanged(new Func1<OnTextChangeEvent, CharSequence>()
+                        {
+                            @Override public CharSequence call(OnTextChangeEvent onTextChangeEvent)
+                            {
+                                return onTextChangeEvent.text();
+                            }
+                        })
                         .filter(new Func1<OnTextChangeEvent, Boolean>()
                         {
                             @Override public Boolean call(OnTextChangeEvent onTextChangeEvent)
