@@ -6,8 +6,8 @@ import android.text.TextUtils;
 import com.jumio.netverify.sdk.NetverifyDocumentData;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.models.fastfill.Gender;
-import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
+import com.tradehero.th.models.fastfill.ScannedDocument;
 import java.util.Date;
 
 public class NetverifyScannedDocument implements ScannedDocument
@@ -45,7 +45,18 @@ public class NetverifyScannedDocument implements ScannedDocument
     {
         String firstName = getFirstName();
         String lastName = getLastName();
-        return TextUtils.concat(firstName + " ", lastName).toString().trim();
+        if (firstName == null)
+        {
+            return lastName;
+        }
+        else if (lastName == null)
+        {
+            return firstName;
+        }
+        else
+        {
+            return TextUtils.concat(firstName, " ", lastName).toString().trim();
+        }
     }
 
     @Override @Nullable public Gender getGender()
