@@ -38,6 +38,7 @@ import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.common.widget.dialog.THDialog;
@@ -1109,6 +1110,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
         discussReportDTO.reportType = position;
         discussReportDTO.discussionId = dto.id;
+        THLog.d("discussReportDTO.discussionType " + discussReportDTO.discussionType + " discussReportDTO.reportType " + discussReportDTO.reportType + " discussReportDTO.discussionId " + discussReportDTO.discussionId);
         discussionServiceWrapper.get().reportTimeLineItem(discussReportDTO, new Callback<Response>() {
             @Override
             public void success(Response response, Response response2) {

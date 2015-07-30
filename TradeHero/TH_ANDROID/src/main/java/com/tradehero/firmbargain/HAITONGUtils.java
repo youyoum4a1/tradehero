@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.cairh.app.sjkh.MainActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.TradeHeroMainActivity;
+import com.tradehero.th.utils.Constants;
 
 import cn.htsec.TradeModule;
 
@@ -25,7 +26,11 @@ public class HAITONGUtils {
         //用户唯一标识
         bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
         //渠道
-        bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
+        if(Constants.isInHAITONGTestingEnvironment) {
+            bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
+        }else {
+            bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "mowhse");
+        }
         //设置在线时间(秒)
         intent.putExtras(bundle);
         activity.startActivityForResult(intent, TradeHeroMainActivity.ACTIVITY_RESULT_HAITONG_TRADE);

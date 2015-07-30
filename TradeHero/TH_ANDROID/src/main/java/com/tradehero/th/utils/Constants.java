@@ -43,7 +43,7 @@ public class Constants {
     public final static int NOTIFICATION_ID = 90001;
 
     //Manager Account
-    public final static boolean isManager = true;
+    public final static boolean isManager = false;
 
     //HAITONG Environment
     public final static boolean isInHAITONGTestingEnvironment = true;
