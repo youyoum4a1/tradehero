@@ -32,6 +32,7 @@ public class KYCAyondoForm implements KYCForm
     public static final String DATE_FORMAT_AYONDO = "dd-MM-yyyy";
 
     @Nullable private Country country;
+    @Nullable private String userName;
     @Nullable private Gender gender;
     @Nullable private String fullName;
     @Nullable private String email;
@@ -100,6 +101,7 @@ public class KYCAyondoForm implements KYCForm
         if (other instanceof KYCAyondoForm)
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) other;
+            this.userName = ayondoForm.getUserName() != null ? ayondoForm.getUserName() : this.fullName;
             this.gender = ayondoForm.gender != null ? ayondoForm.gender : this.gender;
             this.fullName = ayondoForm.getFullName() != null ? ayondoForm.getFullName() : this.fullName;
             this.email = ayondoForm.getEmail() != null ? ayondoForm.getEmail() : this.email;
@@ -157,6 +159,16 @@ public class KYCAyondoForm implements KYCForm
     @Nullable public List<StepStatus> getStepStatuses()
     {
         return stepStatuses;
+    }
+
+    @Nullable public String getUserName()
+    {
+        return userName;
+    }
+
+    public void setUserName(@Nullable String userName)
+    {
+        this.userName = userName;
     }
 
     @Nullable public Gender getGender()
@@ -546,6 +558,7 @@ public class KYCAyondoForm implements KYCForm
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) o;
             same = country == null ? ayondoForm.country == null : country.equals(ayondoForm.country);
+            same &= userName == null ? ayondoForm.userName == null : userName.equals(ayondoForm.userName);
             same &= gender == null ? ayondoForm.gender == null : gender.equals(ayondoForm.gender);
             same &= fullName == null ? ayondoForm.fullName == null : fullName.equals(ayondoForm.fullName);
             same &= email == null ? ayondoForm.email == null : email.equals(ayondoForm.email);
@@ -617,6 +630,7 @@ public class KYCAyondoForm implements KYCForm
     @Override public int hashCode()
     {
         int code = country == null ? 0 : country.hashCode();
+        code ^= userName == null ? 0 : userName.hashCode();
         code ^= gender == null ? 0 : gender.hashCode();
         code ^= fullName == null ? 0 : fullName.hashCode();
         code ^= email == null ? 0 : email.hashCode();

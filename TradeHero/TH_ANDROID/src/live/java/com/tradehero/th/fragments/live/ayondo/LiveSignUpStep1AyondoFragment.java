@@ -89,6 +89,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @LayoutRes private static final int LAYOUT_PHONE_SELECTED_FLAG = R.layout.spinner_live_phone_country_dropdown_item_selected;
     private static final int REQUEST_PICK_DATE = 2805;
 
+    @Bind(R.id.info_username) TextView userName;
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.info_full_name) TextView fullName;
     @Bind(R.id.sign_up_email) ValidatedText email;
@@ -131,6 +132,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 createBrokerObservable(),
                 Observable.merge(
+                        WidgetObservable.text(userName)
+                                .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(
+                                            OnTextChangeEvent userNameEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromUserNameEvent(userNameEvent);
+                                    }
+                                }),
                         WidgetObservable.text(fullName)
                                 .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
                                 {

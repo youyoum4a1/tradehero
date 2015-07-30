@@ -24,6 +24,13 @@ public class KYCAyondoFormFactory
         return created;
     }
 
+    @NonNull public static KYCAyondoForm fromUserNameEvent(@NonNull OnTextChangeEvent userNameEvent)
+    {
+        KYCAyondoForm created = new KYCAyondoForm();
+        created.setUserName(userNameEvent.text().toString());
+        return created;
+    }
+
     @NonNull public static KYCAyondoForm fromFullNameEvent(@NonNull OnTextChangeEvent fullNameEvent)
     {
         KYCAyondoForm created = new KYCAyondoForm();

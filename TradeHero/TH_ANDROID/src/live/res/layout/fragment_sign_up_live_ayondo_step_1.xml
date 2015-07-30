@@ -21,6 +21,24 @@
         android:text="@string/basic_information"
         />
 
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintTextAppearance="@style/TH.Caption"
+        >
+
+      <EditText
+          android:id="@+id/info_username"
+          style="@style/TH.Body"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/hint_username"
+          android:inputType="textPersonName|textCapWords"
+          tools:text="My User Name"
+          />
+
+    </android.support.design.widget.TextInputLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
