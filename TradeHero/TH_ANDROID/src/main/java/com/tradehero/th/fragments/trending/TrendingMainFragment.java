@@ -54,8 +54,8 @@ import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
 import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -157,6 +157,11 @@ public class TrendingMainFragment extends DashboardFragment
             return null;
         }
         return new ExchangeIntegerId(args.getBundle(KEY_EXCHANGE_ID));
+    }
+
+    @NonNull public static String getTradeFxPath()
+    {
+        return "trending-fx/trade-fx";
     }
 
     @Override public void onAttach(Activity activity)
@@ -607,9 +612,8 @@ public class TrendingMainFragment extends DashboardFragment
                     selectedFxPageIndex = null;
                 }
             }
-            else if (actionBarOwnerMixin != null && activity != null)
+            else if (stockFxSwitcher != null)
             {
-                lastType = TrendingTabType.FX;
                 stockFxSwitcher.setIsOn(true, false);
             }
         }

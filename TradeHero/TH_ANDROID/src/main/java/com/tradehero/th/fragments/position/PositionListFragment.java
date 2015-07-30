@@ -59,6 +59,7 @@ import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
@@ -321,12 +322,15 @@ public class PositionListFragment
 
         if (portfolioDTO == null || portfolioDTO.providerId == null)
         {
-            if (portfolioDTO != null && portfolioDTO.assetClass != null)
+            if (portfolioDTO != null && portfolioDTO.assetClass != null
+                    && portfolioDTO.assetClass.equals(AssetClass.FX))
             {
-                TrendingMainFragment.putAssetClass(args, portfolioDTO.assetClass);
-                TrendingMainFragment.setLastType(portfolioDTO.assetClass);
+                thRouter.open(TrendingMainFragment.getTradeFxPath());
             }
-            navigator.get().pushFragment(TrendingMainFragment.class, args);
+            else
+            {
+                navigator.get().goToTab(RootFragmentType.TRENDING);
+            }
         }
         else
         {
