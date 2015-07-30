@@ -10,6 +10,7 @@ import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.utils.Constants;
 
 import cn.htsec.TradeModule;
+import cn.htsec.data.pkg.trade.TradeManager;
 
 /**
  * Created by palmer on 15/7/18.
@@ -39,6 +40,9 @@ public class HAITONGUtils {
 
     //到海通开户界面
     public final static void openAnAccount(Activity activity){
+        if(activity == null){
+            return;
+        }
         Intent intent = new Intent();
         intent.putExtra("type", 0);//开户 ，开户传此
 //		intent.putExtra("channel", "渠道短连接");// 开户时可以传此参数
@@ -49,6 +53,18 @@ public class HAITONGUtils {
     }
 
     public final static void bankTransfer(Activity activity){
-
+        if(activity == null){
+            return;
+        }
+        if(TradeManager.getInstance(activity).isLogined()) {
+            Intent intent = new Intent(activity, TradeModule.class);
+            Bundle bundle = new Bundle();
+            //银证转账界面
+            bundle.putString(TradeModule.EXTRA_KEY_PAGETYPE, TradeModule.PAGETYPE_TRANSFER);
+            intent.putExtras(bundle);
+            activity.startActivity(intent);
+        } else {
+            jumpToLoginHAITONG(activity);
+        }
     }
 }
