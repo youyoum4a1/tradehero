@@ -11,8 +11,8 @@ public class UsernameValidationResultDTO
 
     public UsernameValidationResultDTO(
             @JsonProperty("username") String username,
-            @JsonProperty("isValid") boolean isValid,
-            @JsonProperty("isAvailable") boolean isAvailable)
+            @JsonProperty("IsValid") boolean isValid,
+            @JsonProperty("IsAvailable") boolean isAvailable)
     {
         this.username = username;
         this.isValid = isValid;
