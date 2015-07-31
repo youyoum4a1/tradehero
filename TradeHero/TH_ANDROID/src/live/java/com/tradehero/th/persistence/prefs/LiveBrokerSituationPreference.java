@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.AbstractPreference;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import java.io.IOException;
 import javax.inject.Singleton;
@@ -68,6 +69,7 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
         }
         try
         {
+            Timber.d("saved fullname: %s", ((KYCAyondoForm) saved.kycForm).getFullName());
             preference.edit().putString(key, objectMapper.writeValueAsString(saved)).apply();
             liveBrokerSituationDTOPublishSubject.onNext(saved);
         } catch (JsonProcessingException e)
@@ -81,7 +83,7 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
     {
         if (liveBrokerSituationDTOObservable == null)
         {
-            liveBrokerSituationDTOObservable = liveBrokerSituationDTOPublishSubject.distinctUntilChanged();
+            liveBrokerSituationDTOObservable = liveBrokerSituationDTOPublishSubject.startWith(get()).distinctUntilChanged();
         }
         return liveBrokerSituationDTOObservable;
     }

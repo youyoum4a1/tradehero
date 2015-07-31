@@ -28,6 +28,7 @@ import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.observables.ConnectableObservable;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 
@@ -40,7 +41,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 
     @NonNull protected PublishSubject<Boolean> prevNextSubject;
     @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;
-    @Nullable private Observable<LiveBrokerSituationDTO> brokerSituationObservable;
+    @Nullable private ConnectableObservable<LiveBrokerSituationDTO> brokerSituationObservable;
     @Nullable private Observable<KYCFormOptionsDTO> kycOptionsObservable;
 
     public LiveSignUpStepBaseFragment()
@@ -52,12 +53,11 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        brokerSituationSubject.onNext(liveBrokerSituationPreference.get());
+        //brokerSituationSubject.onNext(liveBrokerSituationPreference.get());
     }
 
     @Override public void onDestroy()
     {
-        this.brokerSituationSubject.onCompleted(); // To clear all the .cache(1)
         super.onDestroy();
     }
 
@@ -89,15 +89,22 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         return prevNextSubject.asObservable();
     }
 
-    @NonNull public Observable<LiveBrokerSituationDTO> getBrokerSituationObservable()
+    @NonNull public ConnectableObservable<LiveBrokerSituationDTO> getBrokerSituationObservable()
     {
-        Observable<LiveBrokerSituationDTO> copy = brokerSituationObservable;
+        ConnectableObservable<LiveBrokerSituationDTO> copy = brokerSituationObservable;
         if (copy == null)
         {
-            copy = createBrokerSituationObservable().share().cache(1);
+            copy = createBrokerSituationObservable().publish();
             brokerSituationObservable = copy;
         }
         return copy;
+    }
+
+    @Override public void onDestroyView()
+    {
+        brokerSituationObservable = null;
+        kycOptionsObservable = null;
+        super.onDestroyView();
     }
 
     @NonNull protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
@@ -116,17 +123,15 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                     {
                         return situationDTO.broker;
                     }
-                })
-                .distinctUntilChanged();
+                });
     }
-
 
     @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptionsObservable()
     {
         Observable<KYCFormOptionsDTO> copy = kycOptionsObservable;
         if (copy == null)
         {
-            copy = createKYCFormOptionsObservable().share().cache(1);
+            copy = createKYCFormOptionsObservable();
             kycOptionsObservable = copy;
         }
         return copy;

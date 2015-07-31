@@ -36,4 +36,16 @@ public class KYCFormUtil
         }
         return modified;
     }
+
+    public static KYCForm from(KYCForm other)
+    {
+        if (other instanceof KYCAyondoForm)
+        {
+            return new KYCAyondoForm();
+        }
+        else
+        {
+            return new EmptyKYCForm();
+        }
+    }
 }

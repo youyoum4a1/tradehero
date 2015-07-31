@@ -38,4 +38,17 @@ class CountryDTOForSpinner
         Collections.sort(allowedNationalityCountryDTOs, dtoComparator);
         this.allowedNationalityCountryDTOs = Collections.unmodifiableList(allowedNationalityCountryDTOs);
     }
+
+    @Override public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof CountryDTOForSpinner)) return false;
+
+        CountryDTOForSpinner that = (CountryDTOForSpinner) o;
+
+        if (!genders.equals(that.genders)) return false;
+        if (!allowedMobilePhoneCountryDTOs.equals(that.allowedMobilePhoneCountryDTOs)) return false;
+        if (!allowedResidencyCountryDTOs.equals(that.allowedResidencyCountryDTOs)) return false;
+        return allowedNationalityCountryDTOs.equals(that.allowedNationalityCountryDTOs);
+    }
 }

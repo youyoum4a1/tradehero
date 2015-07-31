@@ -17,6 +17,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
+import com.tradehero.th.api.kyc.KYCForm;
+import com.tradehero.th.api.kyc.KYCFormUtil;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
@@ -76,7 +78,6 @@ public class LiveSignUpMainFragment extends BaseFragment
                         {
                             @Override public void call(PagerAdapter pagerAdapter)
                             {
-
                                 viewPager.setAdapter(pagerAdapter);
                                 tabLayout.setViewPager(viewPager);
                             }
@@ -85,8 +86,7 @@ public class LiveSignUpMainFragment extends BaseFragment
                         {
                             @Override public Observable<LiveBrokerSituationDTO> call(PagerAdapter pagerAdapter)
                             {
-                                return liveBrokerSituationPreference.getLiveBrokerSituationDTOObservable()
-                                        .distinctUntilChanged();
+                                return liveBrokerSituationPreference.getLiveBrokerSituationDTOObservable();
                             }
                         })
                         .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
@@ -107,10 +107,12 @@ public class LiveSignUpMainFragment extends BaseFragment
                                         {
                                             @Override public void call(StepStatusesDTO stepStatusesDTO)
                                             {
-                                                situationDTO.kycForm.setStepStatuses(stepStatusesDTO.stepStatuses);
-                                                liveBrokerSituationPreference.set(situationDTO);
+                                                KYCForm form = KYCFormUtil.from(situationDTO.kycForm);
+                                                form.setStepStatuses(stepStatusesDTO.stepStatuses);
+                                                liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(situationDTO.broker, form));
                                             }
-                                        });
+                                        })
+                                        ;
                             }
                         })
                         .observeOn(AndroidSchedulers.mainThread())
