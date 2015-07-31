@@ -8,6 +8,7 @@ import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
@@ -16,19 +17,17 @@ public interface LiveServiceRx
     @GET("/liveTradingSituation")
     Observable<LiveTradingSituationDTO> getLiveTradingSituation();
 
-    @POST("/applyBroker/ayondo")
+    @POST("/applyBroker/{liveBrokerId}")
     Observable<StepStatusesDTO> applyLiveBroker(
-            //@Path("liveBrokerId")
-            int brokerId,
+            @Path("liveBrokerId") int brokerId,
             @Body KYCForm kycForm);
 
     @GET("/kycFormOptions/{liveBrokerId}")
     Observable<KYCFormOptionsDTO> getKYCFormOptions(
-            //@Path("liveBrokerId")
-            int brokerId);
+            @Path("liveBrokerId") int brokerId);
 
-    //@GET("/kyc/{liveBrokerId}/checkusername")
-    @GET("/kyc/ayondo/checkusername")
+    @GET("/kyc/{liveBrokerId}/checkusername")
     Observable<UsernameValidationResultDTO> validateUserName(
+            @Path("liveBrokerId") int brokerId,
             @Query("username") String username);
 }

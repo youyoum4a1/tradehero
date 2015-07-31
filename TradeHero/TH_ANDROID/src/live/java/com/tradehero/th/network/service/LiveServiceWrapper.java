@@ -8,8 +8,10 @@ import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
+import com.tradehero.th.api.live.LiveBrokerKnowledge;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
+import com.tradehero.th.network.service.ayondo.LiveServiceAyondoRx;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
 import javax.inject.Inject;
@@ -19,15 +21,18 @@ import rx.functions.Func1;
 public class LiveServiceWrapper
 {
     @NonNull private final LiveServiceRx liveServiceRx;
+    @NonNull private final LiveServiceAyondoRx liveServiceAyondoRx;
     @NonNull private final LiveBrokerSituationPreference liveBrokerSituationPreference;
     @NonNull private final PhoneNumberVerifiedPreference phoneNumberVerifiedPreference;
 
     @Inject public LiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
+            @NonNull LiveServiceAyondoRx liveServiceAyondoRx,
             @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference,
             @NonNull PhoneNumberVerifiedPreference phoneNumberVerifiedPreference)
     {
         this.liveServiceRx = liveServiceRx;
+        this.liveServiceAyondoRx = liveServiceAyondoRx;
         this.liveBrokerSituationPreference = liveBrokerSituationPreference;
         this.phoneNumberVerifiedPreference = phoneNumberVerifiedPreference;
     }
@@ -41,6 +46,10 @@ public class LiveServiceWrapper
             @NonNull LiveBrokerId brokerId,
             @NonNull KYCForm kycForm)
     {
+        if (brokerId.key.equals(LiveBrokerKnowledge.BROKER_ID_AYONDO))
+        {
+            return liveServiceAyondoRx.applyLiveBroker(kycForm);
+        }
         return liveServiceRx.applyLiveBroker(brokerId.key, kycForm);
     }
 
@@ -95,18 +104,22 @@ public class LiveServiceWrapper
                 phoneNumberVerifiedPreference.get().contains(phoneNumber)));
     }
 
-    public Observable<UsernameValidationResultDTO> validateUserName(final String username)
+    public Observable<UsernameValidationResultDTO> validateUserName(
+            @NonNull LiveBrokerId brokerId,
+            @NonNull final String username)
     {
-        return liveServiceRx.validateUserName(username)
-                .map(new Func1<UsernameValidationResultDTO, UsernameValidationResultDTO>()
-                {
-                    @Override public UsernameValidationResultDTO call(UsernameValidationResultDTO resultDTO)
-                    {
-                        return new UsernameValidationResultDTO(
-                                username,
-                                resultDTO.isValid,
-                                resultDTO.isAvailable);
-                    }
-                });
+        return (brokerId.key.equals(LiveBrokerKnowledge.BROKER_ID_AYONDO)
+                ? liveServiceAyondoRx.validateUserName(username)
+                : liveServiceRx.validateUserName(brokerId.key, username))
+                        .map(new Func1<UsernameValidationResultDTO, UsernameValidationResultDTO>()
+                        {
+                            @Override public UsernameValidationResultDTO call(UsernameValidationResultDTO resultDTO)
+                            {
+                                return new UsernameValidationResultDTO(
+                                        username,
+                                        resultDTO.isValid,
+                                        resultDTO.isAvailable);
+                            }
+                        });
     }
 }

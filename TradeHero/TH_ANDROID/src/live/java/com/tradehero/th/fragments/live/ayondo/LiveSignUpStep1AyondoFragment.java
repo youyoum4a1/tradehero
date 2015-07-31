@@ -254,45 +254,55 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         );
 
         onDestroyViewSubscriptions.add(
-                CustomWidgetObservable.focus(userName)
-                        .filter(new Func1<OnFocusChangeEvent, Boolean>()
-                        {
-                            @Override public Boolean call(OnFocusChangeEvent onFocusChangeEvent)
-                            {
-                                return onFocusChangeEvent.view instanceof EditText
-                                        && !onFocusChangeEvent.hasFocus
-                                        && !TextUtils.isEmpty(((EditText) onFocusChangeEvent.view).getText());
-                            }
-                        })
-                        .withLatestFrom(WidgetObservable.text(userName)
-                                .doOnNext(new Action1<OnTextChangeEvent>()
+                Observable.combineLatest(
+                        createBrokerObservable(),
+                        CustomWidgetObservable.focus(userName)
+                                .filter(new Func1<OnFocusChangeEvent, Boolean>()
                                 {
-                                    @Override public void call(OnTextChangeEvent onTextChangeEvent)
+                                    @Override public Boolean call(OnFocusChangeEvent onFocusChangeEvent)
                                     {
-                                        onTextChangeEvent.view().setError(null);
+                                        return onFocusChangeEvent.view instanceof EditText
+                                                && !onFocusChangeEvent.hasFocus
+                                                && !TextUtils.isEmpty(((EditText) onFocusChangeEvent.view).getText());
                                     }
                                 })
-                                , new Func2<OnFocusChangeEvent, OnTextChangeEvent, String>()
+                                .withLatestFrom(WidgetObservable.text(userName)
+                                                .doOnNext(new Action1<OnTextChangeEvent>()
+                                                {
+                                                    @Override public void call(OnTextChangeEvent onTextChangeEvent)
+                                                    {
+                                                        onTextChangeEvent.view().setError(null);
+                                                    }
+                                                }),
+                                        new Func2<OnFocusChangeEvent, OnTextChangeEvent, String>()
+                                        {
+                                            @Override public String call(OnFocusChangeEvent onFocusChangeEvent, OnTextChangeEvent onTextChangeEvent)
+                                            {
+                                                return onTextChangeEvent.text().toString();
+                                            }
+                                        })
+                                .startWith(getBrokerSituationObservable()
+                                                .map(new Func1<LiveBrokerSituationDTO, String>()
+                                                {
+                                                    @Override public String call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                                                    {
+                                                        //noinspection ConstantConditions
+                                                        return ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getUserName();
+                                                    }
+                                                })
+                                ),
+                        new Func2<LiveBrokerDTO, String, Pair<LiveBrokerDTO, String>>()
                         {
-                            @Override public String call(OnFocusChangeEvent onFocusChangeEvent, OnTextChangeEvent onTextChangeEvent)
+                            @Override public Pair<LiveBrokerDTO, String> call(LiveBrokerDTO liveBrokerDTO, String userName)
                             {
-                                return onTextChangeEvent.text().toString();
+                                return Pair.create(liveBrokerDTO, userName);
                             }
                         })
-                        .startWith(getBrokerSituationObservable()
-                                .map(new Func1<LiveBrokerSituationDTO, String>()
-                                {
-                                    @Override public String call(LiveBrokerSituationDTO liveBrokerSituationDTO)
-                                    {
-                                        return ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getUserName();
-                                    }
-                                })
-                        )
-                        .flatMap(new Func1<String, Observable<UsernameValidationResultDTO>>()
+                        .flatMap(new Func1<Pair<LiveBrokerDTO, String>, Observable<UsernameValidationResultDTO>>()
                         {
-                            @Override public Observable<UsernameValidationResultDTO> call(String name)
+                            @Override public Observable<UsernameValidationResultDTO> call(Pair<LiveBrokerDTO, String> userNamePair)
                             {
-                                return liveServiceWrapper.validateUserName(name);
+                                return liveServiceWrapper.validateUserName(userNamePair.first.id, userNamePair.second);
                             }
                         })
                         .filter(new Func1<UsernameValidationResultDTO, Boolean>()

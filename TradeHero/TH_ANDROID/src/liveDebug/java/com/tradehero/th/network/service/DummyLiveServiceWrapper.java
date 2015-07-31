@@ -25,6 +25,7 @@ import com.tradehero.th.api.market.Country;
 import com.tradehero.th.models.fastfill.Gender;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
+import com.tradehero.th.network.service.ayondo.LiveServiceAyondoRx;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
 import java.io.IOException;
@@ -48,11 +49,12 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
 
     @Inject public DummyLiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
+            @NonNull LiveServiceAyondoRx liveServiceAyondoRx,
             @NonNull LiveBrokerSituationPreference liveBrokerSituationPreference,
             @NonNull ObjectMapperWrapper objectMapperWrapper,
             @NonNull PhoneNumberVerifiedPreference phoneNumberVerifiedPreference)
     {
-        super(liveServiceRx, liveBrokerSituationPreference, phoneNumberVerifiedPreference);
+        super(liveServiceRx, liveServiceAyondoRx, liveBrokerSituationPreference, phoneNumberVerifiedPreference);
         this.objectMapperWrapper = objectMapperWrapper;
     }
 
