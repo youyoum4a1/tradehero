@@ -2,8 +2,8 @@ package com.tradehero.th.billing.samsung.inventory;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.sec.android.iap.lib.helper.SamsungIapHelper;
-import com.sec.android.iap.lib.vo.ItemVo;
+import com.samsung.android.sdk.iap.lib.helper.SamsungIapHelper;
+import com.samsung.android.sdk.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.common.billing.samsung.SamsungSKU;

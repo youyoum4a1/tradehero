@@ -1,6 +1,6 @@
 package com.tradehero.common.billing.samsung.exception;
 
-import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.samsung.android.sdk.iap.lib.helper.SamsungIapHelper;
 
 public class SamsungPaymentCancelledException extends SamsungOneCodeException
 {

@@ -2,7 +2,7 @@ package com.tradehero.th.billing.samsung.purchasefetch;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.sec.android.iap.lib.vo.InboxVo;
+import com.samsung.android.sdk.iap.lib.vo.InboxVo;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.purchasefetch.BaseSamsungPurchaseFetcherRx;

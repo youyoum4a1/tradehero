@@ -1,6 +1,6 @@
 package com.tradehero.common.billing.samsung;
 
-import com.sec.android.iap.lib.vo.ItemVo;
+import com.samsung.android.sdk.iap.lib.vo.ItemVo;
 
 abstract public class BaseSamsungProductDetail<SamsungSKUType extends SamsungSKU>
     extends ItemVo

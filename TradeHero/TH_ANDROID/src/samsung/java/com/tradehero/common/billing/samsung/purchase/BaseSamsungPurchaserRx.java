@@ -2,7 +2,7 @@ package com.tradehero.common.billing.samsung.purchase;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.sec.android.iap.lib.vo.PurchaseVo;
+import com.samsung.android.sdk.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;

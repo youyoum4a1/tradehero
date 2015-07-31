@@ -122,6 +122,7 @@ android {
       flavorDimension "marketSegment"
       buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
     }
+
     china {
       flavorDimension "marketSegment"
 
@@ -130,9 +131,13 @@ android {
       // TODO handle the different kinds
       // http://stackoverflow.com/questions/9035356/how-can-i-transform-a-properties-file-during-a-gradle-build
     }
+
     samsung {
       flavorDimension "marketSegment"
+
+      minSdkVersion 15 // Dictated by IAP v3.0
     }
+
     amazon {
       flavorDimension "marketSegment"
       proguardFile 'proguard/proguard-android-amazon.txt'
@@ -592,7 +597,7 @@ dependencies {
   // for qq
   releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])
 
-  samsungCompile 'com.sec.android.iap:library:2.0@aar'
+  samsungCompile 'com.sec.android.iap:library:3.0@aar'
   // TODO confirm on a hardware that it is "provided" and not "compile"
   amazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   //  testAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'

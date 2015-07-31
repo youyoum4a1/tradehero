@@ -2,7 +2,7 @@ package com.tradehero.th.billing.samsung;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.sec.android.iap.lib.vo.PurchaseVo;
+import com.samsung.android.sdk.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.SamsungPurchase;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;

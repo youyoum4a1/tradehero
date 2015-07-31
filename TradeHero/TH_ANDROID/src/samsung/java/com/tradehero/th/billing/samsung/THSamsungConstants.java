@@ -1,6 +1,6 @@
 package com.tradehero.th.billing.samsung;
 
-import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.samsung.android.sdk.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.samsung.SamsungConstants;
 import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.th.billing.THBillingConstants;

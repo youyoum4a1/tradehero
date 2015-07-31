@@ -3,7 +3,7 @@ package com.tradehero.common.billing.samsung.inventory;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Pair;
-import com.sec.android.iap.lib.vo.ItemVo;
+import com.samsung.android.sdk.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;

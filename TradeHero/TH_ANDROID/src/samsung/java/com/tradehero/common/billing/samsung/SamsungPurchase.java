@@ -1,8 +1,8 @@
 package com.tradehero.common.billing.samsung;
 
 import android.support.annotation.NonNull;
-import com.sec.android.iap.lib.vo.InboxVo;
-import com.sec.android.iap.lib.vo.PurchaseVo;
+import com.samsung.android.sdk.iap.lib.vo.InboxVo;
+import com.samsung.android.sdk.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.ProductPurchase;
 
 abstract public class SamsungPurchase<

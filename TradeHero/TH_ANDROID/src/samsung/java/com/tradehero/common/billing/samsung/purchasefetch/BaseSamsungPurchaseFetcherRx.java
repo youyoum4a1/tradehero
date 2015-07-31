@@ -3,7 +3,7 @@ package com.tradehero.common.billing.samsung.purchasefetch;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Pair;
-import com.sec.android.iap.lib.vo.InboxVo;
+import com.samsung.android.sdk.iap.lib.vo.InboxVo;
 import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;

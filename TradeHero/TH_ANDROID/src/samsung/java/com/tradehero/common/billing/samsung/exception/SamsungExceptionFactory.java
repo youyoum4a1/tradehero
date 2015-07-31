@@ -1,8 +1,8 @@
 package com.tradehero.common.billing.samsung.exception;
 
 import android.support.annotation.Nullable;
-import com.sec.android.iap.lib.helper.SamsungIapHelper;
-import com.sec.android.iap.lib.vo.ErrorVo;
+import com.samsung.android.sdk.iap.lib.helper.SamsungIapHelper;
+import com.samsung.android.sdk.iap.lib.vo.ErrorVo;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.samsung.SamsungConstants;
 

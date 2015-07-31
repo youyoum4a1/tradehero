@@ -2,7 +2,7 @@ package com.tradehero.common.billing.samsung;
 
 import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sec.android.iap.lib.helper.SamsungIapHelper;
+import com.samsung.android.sdk.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.persistence.AbstractStringDTOKey;
 

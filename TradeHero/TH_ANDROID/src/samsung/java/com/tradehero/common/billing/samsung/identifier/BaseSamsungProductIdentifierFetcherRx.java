@@ -3,7 +3,7 @@ package com.tradehero.common.billing.samsung.identifier;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Pair;
-import com.sec.android.iap.lib.vo.ItemVo;
+import com.samsung.android.sdk.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
 import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
