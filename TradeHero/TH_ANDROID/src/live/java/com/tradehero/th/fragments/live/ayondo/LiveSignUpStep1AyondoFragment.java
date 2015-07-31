@@ -252,6 +252,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         onDestroyViewSubscriptions.add(
                 CustomWidgetObservable.focus(userName)
+                        .distinctUntilChanged(new Func1<OnFocusChangeEvent, Boolean>()
+                        {
+                            @Override public Boolean call(OnFocusChangeEvent onFocusChangeEvent)
+                            {
+                                return onFocusChangeEvent.hasFocus;
+                            }
+                        })
                         .filter(new Func1<OnFocusChangeEvent, Boolean>()
                         {
                             @Override public Boolean call(OnFocusChangeEvent onFocusChangeEvent)
