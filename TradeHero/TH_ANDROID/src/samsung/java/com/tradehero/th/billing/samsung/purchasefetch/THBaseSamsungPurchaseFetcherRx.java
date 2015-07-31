@@ -42,13 +42,12 @@ public class THBaseSamsungPurchaseFetcherRx
     {
         return Collections.singletonList(new InboxListQueryGroup(FIRST_ITEM_NUM,
                 Integer.MAX_VALUE,
-                THSamsungConstants.IAP_ITEM_GROUP_ID,
                 FIRST_DATE,
                 THSamsungConstants.getTodayStringForInbox()));
     }
 
-    @NonNull @Override protected THSamsungPurchase createPurchase(@NonNull String groupId, @NonNull InboxVo inboxVo)
+    @NonNull @Override protected THSamsungPurchase createPurchase(@NonNull InboxVo inboxVo)
     {
-        return new THSamsungPurchase(groupId, inboxVo.getJsonString(), defaultPortfolioId);
+        return new THSamsungPurchase(inboxVo.getJsonString(), defaultPortfolioId);
     }
 }

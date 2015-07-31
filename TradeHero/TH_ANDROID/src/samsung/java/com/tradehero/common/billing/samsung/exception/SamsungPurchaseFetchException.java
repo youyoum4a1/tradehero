@@ -5,19 +5,15 @@ import com.samsung.android.sdk.iap.lib.vo.ErrorVo;
 
 public class SamsungPurchaseFetchException extends SamsungVoException
 {
-    @NonNull public final String groupId;
-
     //<editor-fold desc="Constructors">
-    public SamsungPurchaseFetchException(@NonNull ErrorVo errorVo, @NonNull String groupId)
+    public SamsungPurchaseFetchException(@NonNull ErrorVo errorVo)
     {
         super(errorVo);
-        this.groupId = groupId;
     }
 
-    public SamsungPurchaseFetchException(String message, @NonNull ErrorVo errorVo, @NonNull String groupId)
+    public SamsungPurchaseFetchException(String message, @NonNull ErrorVo errorVo)
     {
         super(message, errorVo);
-        this.groupId = groupId;
     }
     //</editor-fold>
 }

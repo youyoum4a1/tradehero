@@ -53,14 +53,14 @@ abstract public class BaseSamsungPurchaseFetcherRx<
                                     {
                                         return new PurchaseFetchResult<>(
                                                 getRequestCode(),
-                                                createPurchase(pair.first.groupId, inboxVo));
+                                                createPurchase(inboxVo));
                                     }
                                 });
                     }
                 });
     }
 
-    @NonNull abstract protected SamsungPurchaseType createPurchase(@NonNull String groupId, @NonNull InboxVo inboxVo);
+    @NonNull abstract protected SamsungPurchaseType createPurchase(@NonNull InboxVo inboxVo);
 
     @NonNull abstract protected List<InboxListQueryGroup> getInboxListQueryGroups();
 }

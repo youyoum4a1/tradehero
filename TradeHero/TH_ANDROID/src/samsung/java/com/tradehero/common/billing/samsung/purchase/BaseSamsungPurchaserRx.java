@@ -60,7 +60,6 @@ abstract public class BaseSamsungPurchaserRx<
                 new PurchaseQueryPackage(
                         context,
                         mode,
-                        sku.groupId,
                         sku.itemId,
                         showSucessDialog))
                 .map(new Func1<PurchaseVo, PurchaseResult<SamsungSKUType, SamsungPurchaseOrderType, SamsungOrderIdType, SamsungPurchaseType>>()

@@ -22,22 +22,22 @@ public class THSamsungPurchase
     @NonNull private OwnedPortfolioId applicablePortfolioId;
 
     //<editor-fold desc="Constructors">
-    public THSamsungPurchase(String groupId, String _jsonString, @NonNull OwnedPortfolioId applicablePortfolioId)
+    public THSamsungPurchase(String _jsonString, @NonNull OwnedPortfolioId applicablePortfolioId)
     {
-        super(groupId, _jsonString);
+        super(_jsonString);
         this.applicablePortfolioId = applicablePortfolioId;
     }
 
-    public THSamsungPurchase(String groupId, PurchaseVo toCopyFrom, @NonNull OwnedPortfolioId applicablePortfolioId)
+    public THSamsungPurchase(PurchaseVo toCopyFrom, @NonNull OwnedPortfolioId applicablePortfolioId)
     {
-        super(groupId, toCopyFrom);
+        super(toCopyFrom);
         this.applicablePortfolioId = applicablePortfolioId;
     }
     //</editor-fold>
 
     @Override @NonNull public SamsungSKU getProductIdentifier()
     {
-        return new SamsungSKU(getGroupId(), getItemId());
+        return new SamsungSKU(getItemId());
     }
 
     @Override @NonNull public THSamsungOrderId getOrderId()

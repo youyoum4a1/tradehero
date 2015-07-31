@@ -6,23 +6,20 @@ public class BaseListQueryGroup
 {
     @NonNull public final Integer startNum;
     @NonNull public final Integer endNum;
-    @NonNull public final String groupId;
 
     //<editor-fold desc="Constructors">
     public BaseListQueryGroup(
             @NonNull Integer startNum,
-            @NonNull Integer endNum,
-            @NonNull String groupId)
+            @NonNull Integer endNum)
     {
         this.startNum = startNum;
         this.endNum = endNum;
-        this.groupId = groupId;
     }
     //</editor-fold>
 
     @Override public int hashCode()
     {
-        return startNum.hashCode() ^ endNum.hashCode() ^ groupId.hashCode();
+        return startNum.hashCode() ^ endNum.hashCode();
     }
 
     @Override public boolean equals(Object other)
@@ -35,7 +32,6 @@ public class BaseListQueryGroup
     protected boolean equals(@NonNull BaseListQueryGroup other)
     {
         return other.startNum.equals(startNum)
-                && other.endNum.equals(endNum)
-                && other.groupId.equals(groupId);
+                && other.endNum.equals(endNum);
     }
 }

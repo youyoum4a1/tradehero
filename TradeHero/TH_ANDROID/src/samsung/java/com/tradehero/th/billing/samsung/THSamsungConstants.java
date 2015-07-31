@@ -2,7 +2,6 @@ package com.tradehero.th.billing.samsung;
 
 import com.samsung.android.sdk.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.samsung.SamsungConstants;
-import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.th.billing.THBillingConstants;
 import com.tradehero.th.utils.Constants;
 import java.text.SimpleDateFormat;
@@ -20,13 +19,6 @@ public class THSamsungConstants
     public static String getTodayStringForInbox()
     {
         return new SimpleDateFormat(THSamsungConstants.INBOX_SIMPLE_DATE_FORMAT).format(new Date());
-    }
-
-    // All IAP items on the Samsung store are grouped under this GroupId.
-    public static final String IAP_ITEM_GROUP_ID = "100000104349";
-    public static SamsungItemGroup getItemGroupId()
-    {
-        return new SamsungItemGroup(IAP_ITEM_GROUP_ID);
     }
 
     // Below are the codes as they are understood on Samsung Store

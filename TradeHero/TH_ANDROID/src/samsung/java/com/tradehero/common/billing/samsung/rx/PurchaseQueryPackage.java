@@ -6,7 +6,6 @@ import com.tradehero.common.billing.samsung.SamsungBillingMode;
 
 public class PurchaseQueryPackage extends SamsungQueryPackage
 {
-    @NonNull public final String groupId;
     @NonNull public final String itemId;
     public final boolean showSuccessDialog;
 
@@ -14,12 +13,10 @@ public class PurchaseQueryPackage extends SamsungQueryPackage
     public PurchaseQueryPackage(
             @NonNull Context context,
             @SamsungBillingMode int mode,
-            @NonNull String groupId,
             @NonNull String itemId,
             boolean showSuccessDialog)
     {
         super(context, mode);
-        this.groupId = groupId;
         this.itemId = itemId;
         this.showSuccessDialog = showSuccessDialog;
     }
@@ -30,7 +27,6 @@ public class PurchaseQueryPackage extends SamsungQueryPackage
         Context context = weakContext.get();
         return (context == null ? 0 : context.hashCode())
                 ^ Integer.valueOf(mode).hashCode()
-                ^ groupId.hashCode()
                 ^ itemId.hashCode()
                 ^ (showSuccessDialog ? 1 : 0);
     }
@@ -51,7 +47,6 @@ public class PurchaseQueryPackage extends SamsungQueryPackage
 
         return (context == null ? otherContext == null : context.equals(otherContext))
                 && (mode == ((PurchaseQueryPackage) o).mode)
-                && (groupId.equals(((PurchaseQueryPackage) o).groupId))
                 && (itemId.equals(((PurchaseQueryPackage) o).itemId))
                 && (showSuccessDialog == ((PurchaseQueryPackage) o).showSuccessDialog);
     }

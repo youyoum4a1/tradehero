@@ -4,28 +4,30 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductIdentifier;
 
 public class SamsungSKU
-        extends SamsungItemGroup
         implements ProductIdentifier
 {
     @NonNull public final String itemId;
 
     //<editor-fold desc="Constructors">
-    public SamsungSKU(@NonNull String groupId, @NonNull String itemId)
+    public SamsungSKU(@NonNull String itemId)
     {
-        super(groupId);
+        super();
         this.itemId = itemId;
         checkIsValid();
     }
     //</editor-fold>
 
-    public boolean isValid()
+    protected void checkIsValid()
     {
-        return super.isValid() && !itemId.isEmpty();
+        if (!isValid())
+        {
+            throw new IllegalArgumentException("One element is null or empty");
+        }
     }
 
-    public SamsungItemGroup getGroupId()
+    public boolean isValid()
     {
-        return new SamsungItemGroup(groupId);
+        return !itemId.isEmpty();
     }
 
     @Override public int hashCode()
@@ -33,19 +35,22 @@ public class SamsungSKU
         return super.hashCode() ^ itemId.hashCode();
     }
 
-    @Override public boolean equals(SamsungItemGroup other)
+    @Override public boolean equals(Object other)
     {
-        return super.equals(other) &&
+        return other != null &&
+                getClass().equals(other.getClass()) &&
                 equals((SamsungSKU) other);
     }
 
     public boolean equals(SamsungSKU other)
     {
-        return super.equals(other) && itemId.equals(other.itemId);
+        return (other != null)
+                && getClass().equals(other.getClass())
+                && itemId.equals(other.itemId);
     }
 
     @Override public String toString()
     {
-        return String.format("{groupId:%s, itemId:%s}", groupId, itemId);
+        return String.format("{itemId:%s}", itemId);
     }
 }

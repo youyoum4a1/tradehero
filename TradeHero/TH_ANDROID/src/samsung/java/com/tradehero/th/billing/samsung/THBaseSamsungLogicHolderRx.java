@@ -133,7 +133,6 @@ public class THBaseSamsungLogicHolderRx
     {
         return Collections.singletonList(
                 new SamsungSKU(
-                        THSamsungConstants.IAP_ITEM_GROUP_ID,
                         "Fake"));
     }
 }

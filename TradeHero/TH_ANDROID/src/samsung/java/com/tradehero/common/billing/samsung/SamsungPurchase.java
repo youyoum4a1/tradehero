@@ -13,30 +13,20 @@ abstract public class SamsungPurchase<
         SamsungSKUType,
         SamsungOrderIdType>
 {
-    @NonNull protected final String groupId;
-
     //<editor-fold desc="Constructors">
-    public SamsungPurchase(@NonNull String groupId, @NonNull String _jsonString)
+    public SamsungPurchase(@NonNull String _jsonString)
     {
         super(_jsonString);
-        this.groupId = groupId;
     }
 
-    public SamsungPurchase(@NonNull String groupId, @NonNull PurchaseVo toCopyFrom)
+    public SamsungPurchase(@NonNull PurchaseVo toCopyFrom)
     {
         super(toCopyFrom.getJsonString());
-        this.groupId = groupId;
     }
 
-    public SamsungPurchase(@NonNull String groupId, @NonNull InboxVo toCopyFrom)
+    public SamsungPurchase(@NonNull InboxVo toCopyFrom)
     {
         super(toCopyFrom.getJsonString());
-        this.groupId = groupId;
     }
     //</editor-fold>
-
-    @NonNull public String getGroupId()
-    {
-        return groupId;
-    }
 }

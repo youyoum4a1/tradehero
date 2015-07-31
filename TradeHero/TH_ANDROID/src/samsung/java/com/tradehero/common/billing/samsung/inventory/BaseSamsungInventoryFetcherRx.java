@@ -7,7 +7,6 @@ import com.samsung.android.sdk.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;
-import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.common.billing.samsung.SamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
@@ -91,9 +90,7 @@ abstract public class BaseSamsungInventoryFetcherRx<
         SamsungProductDetailType detail;
         for (ItemVo itemVo : pair.second)
         {
-            detail = createSamsungProductDetail(
-                    new SamsungItemGroup(pair.first.groupId),
-                    itemVo);
+            detail = createSamsungProductDetail(itemVo);
             created.put(
                     detail.getProductIdentifier(),
                     detail);
@@ -102,6 +99,5 @@ abstract public class BaseSamsungInventoryFetcherRx<
     }
 
     @NonNull abstract protected SamsungProductDetailType createSamsungProductDetail(
-            @NonNull SamsungItemGroup samsungItemGroup,
             @NonNull ItemVo itemVo);
 }

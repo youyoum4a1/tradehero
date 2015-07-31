@@ -9,7 +9,6 @@ import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.identifier.BaseSamsungProductIdentifierFetcherRx;
 import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
-import com.tradehero.th.billing.samsung.THSamsungConstants;
 import java.util.Collections;
 import java.util.List;
 
@@ -40,8 +39,7 @@ public class THBaseSamsungProductIdentifierFetcherRx
                 new ItemListQueryGroup(
                         FIRST_ITEM_NUM,
                         Integer.MAX_VALUE,
-                        SamsungIapHelper.ITEM_TYPE_ALL,
-                        THSamsungConstants.IAP_ITEM_GROUP_ID));
+                        SamsungIapHelper.ITEM_TYPE_ALL));
     }
 
     @Override @NonNull protected SamsungSKUListKey createSamsungListKey(String itemType)
@@ -49,9 +47,9 @@ public class THBaseSamsungProductIdentifierFetcherRx
         return new SamsungSKUListKey(itemType);
     }
 
-    @Override @NonNull protected SamsungSKU createSamsungSku(String groupId, String itemId)
+    @Override @NonNull protected SamsungSKU createSamsungSku(String itemId)
     {
-        return new SamsungSKU(groupId, itemId);
+        return new SamsungSKU(itemId);
     }
 
     @Override @NonNull protected SamsungSKUList createSamsungSKUList()

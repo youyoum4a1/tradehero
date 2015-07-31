@@ -70,7 +70,7 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
             {
                 samsungSKUs.put(key, createSamsungSKUList());
             }
-            samsungSKUs.get(key).add(createSamsungSku(pair.first.groupId, itemVo.getItemId()));
+            samsungSKUs.get(key).add(createSamsungSku(itemVo.getItemId()));
         }
         return Observable.just(new ProductIdentifierListResult<>(
                 BaseSamsungProductIdentifierFetcherRx.this.getRequestCode(),
@@ -81,7 +81,7 @@ abstract public class BaseSamsungProductIdentifierFetcherRx<
 
     @NonNull abstract protected SamsungSKUListKeyType createSamsungListKey(String itemType);
 
-    @NonNull abstract protected SamsungSKUType createSamsungSku(String groupId, String itemId);
+    @NonNull abstract protected SamsungSKUType createSamsungSku(String itemId);
 
     @NonNull abstract protected SamsungSKUListType createSamsungSKUList();
 }

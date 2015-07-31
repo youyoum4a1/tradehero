@@ -10,11 +10,10 @@ public class InboxListQueryGroup extends BaseListQueryGroup
     public InboxListQueryGroup(
             @NonNull Integer startNum,
             @NonNull Integer endNum,
-            @NonNull String groupId,
             @NonNull String startDate,
             @NonNull String endDate)
     {
-        super(startNum, endNum, groupId);
+        super(startNum, endNum);
         this.startDate = startDate;
         this.endDate = endDate;
     }

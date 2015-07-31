@@ -162,7 +162,6 @@ public class SamsungIapHelperFacade
                 {
                     SamsungIapHelper.getInstance(context, itemListQueryPackage.mode)
                             .getItemList(
-                                    itemListQueryPackage.itemListQueryGroup.groupId,
                                     itemListQueryPackage.itemListQueryGroup.startNum,
                                     itemListQueryPackage.itemListQueryGroup.endNum,
                                     itemListQueryPackage.itemListQueryGroup.itemType,
@@ -180,7 +179,6 @@ public class SamsungIapHelperFacade
                                             {
                                                 subscriber.onError(new SamsungItemListException(
                                                         errorVo,
-                                                        itemListQueryPackage.itemListQueryGroup.groupId,
                                                         itemListQueryPackage.mode));
                                             }
                                         }
@@ -254,7 +252,6 @@ public class SamsungIapHelperFacade
                 {
                     SamsungIapHelper.getInstance(context, inboxListQueryPackage.mode)
                             .getItemInboxList(
-                                    inboxListQueryPackage.inboxListQueryGroup.groupId,
                                     inboxListQueryPackage.inboxListQueryGroup.startNum,
                                     inboxListQueryPackage.inboxListQueryGroup.endNum,
                                     inboxListQueryPackage.inboxListQueryGroup.startDate,
@@ -270,9 +267,7 @@ public class SamsungIapHelperFacade
                                             }
                                             else
                                             {
-                                                subscriber.onError(new SamsungPurchaseFetchException(
-                                                        errorVo,
-                                                        inboxListQueryPackage.inboxListQueryGroup.groupId));
+                                                subscriber.onError(new SamsungPurchaseFetchException(errorVo));
                                             }
                                         }
                                     });
@@ -316,7 +311,6 @@ public class SamsungIapHelperFacade
                 {
                     SamsungIapHelper.getInstance(context, purchaseQueryPackage.mode)
                             .startPayment(
-                                    purchaseQueryPackage.groupId,
                                     purchaseQueryPackage.itemId,
                                     purchaseQueryPackage.showSuccessDialog,
                                     new OnPaymentListener()
@@ -332,7 +326,6 @@ public class SamsungIapHelperFacade
                                             {
                                                 subscriber.onError(new SamsungPurchaseException(
                                                         errorVo,
-                                                        purchaseQueryPackage.groupId,
                                                         purchaseQueryPackage.itemId,
                                                         purchaseQueryPackage.showSuccessDialog));
                                             }

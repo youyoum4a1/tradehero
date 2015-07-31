@@ -10,10 +10,9 @@ public class ItemListQueryGroup extends BaseListQueryGroup
     public ItemListQueryGroup(
             int startNum,
             int endNum,
-            @NonNull String itemType,
-            @NonNull String groupId)
+            @NonNull String itemType)
     {
-        super(startNum, endNum, groupId);
+        super(startNum, endNum);
         this.itemType = itemType;
     }
     //</editor-fold>

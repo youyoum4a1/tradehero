@@ -33,7 +33,7 @@ public class THBaseSamsungPurchaserRx
     @Override @NonNull protected THSamsungPurchase createSamsungPurchase(@NonNull PurchaseVo purchaseVo)
     {
         THSamsungPurchase created =
-                new THSamsungPurchase(purchaseOrder.getProductIdentifier().groupId, purchaseVo, purchaseOrder.getApplicablePortfolioId());
+                new THSamsungPurchase(purchaseVo, purchaseOrder.getApplicablePortfolioId());
         if (getPurchaseOrder().getUserToFollow() != null)
         {
             created.setUserToFollow(getPurchaseOrder().getUserToFollow());

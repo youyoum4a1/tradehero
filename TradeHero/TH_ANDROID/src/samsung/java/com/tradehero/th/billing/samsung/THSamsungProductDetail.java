@@ -3,7 +3,6 @@ package com.tradehero.th.billing.samsung;
 import android.support.annotation.NonNull;
 import com.samsung.android.sdk.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.BaseSamsungProductDetail;
-import com.tradehero.common.billing.samsung.SamsungItemGroup;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.th.R;
 import com.tradehero.th.billing.ProductIdentifierDomain;
@@ -19,25 +18,25 @@ public class THSamsungProductDetail
     public ProductIdentifierDomain domain;
 
     //<editor-fold desc="Constructors">
-    public THSamsungProductDetail(SamsungItemGroup samsungItemGroup)
+    public THSamsungProductDetail()
     {
-        super(samsungItemGroup);
+        super();
     }
 
-    public THSamsungProductDetail(SamsungItemGroup samsungItemGroup, String _jsonString)
+    public THSamsungProductDetail(String _jsonString)
     {
-        super(samsungItemGroup, _jsonString);
+        super(_jsonString);
     }
 
-    public THSamsungProductDetail(SamsungItemGroup samsungItemGroup, ItemVo itemVo)
+    public THSamsungProductDetail(ItemVo itemVo)
     {
-        super(samsungItemGroup, itemVo);
+        super(itemVo);
     }
     //</editor-fold>
 
     @NonNull @Override public SamsungSKU getProductIdentifier()
     {
-        return new SamsungSKU(samsungItemGroup.groupId, getItemId());
+        return new SamsungSKU(getItemId());
     }
 
     @Override public int getIconResId()
