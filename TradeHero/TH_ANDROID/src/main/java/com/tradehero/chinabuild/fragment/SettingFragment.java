@@ -38,6 +38,8 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
+
+import cn.htsec.data.pkg.trade.TradeManager;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -120,9 +122,7 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
                 }
                 break;
             case R.id.settings_logout:
-                THUser.clearCurrentUser();
-                ActivityHelper.presentFromActivity(getActivity(), AuthenticationActivity.class);
-                getActivity().finish();
+                logout();
                 break;
             case R.id.settings_about:
                 pushFragment(SettingsAboutUsFragment.class, new Bundle());
@@ -214,6 +214,15 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
             THSharePreferenceManager.setNotificationStatus(context, true);
             mNotificationTB.setBackgroundResource(R.drawable.setting_notifications_on);
             PushManager.getInstance().turnOnPush(context);
+        }
+    }
+
+    private void logout(){
+        THUser.clearCurrentUser();
+        ActivityHelper.presentFromActivity(getActivity(), AuthenticationActivity.class);
+        getActivity().finish();
+        if(TradeManager.getInstance(getActivity()).isLogined()){
+            TradeManager.getInstance(getActivity()).logout();
         }
     }
 
