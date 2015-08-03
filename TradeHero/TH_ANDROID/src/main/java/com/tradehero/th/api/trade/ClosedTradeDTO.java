@@ -52,8 +52,8 @@ public class ClosedTradeDTO implements DTO
                 ", price=" + price +
                 ", currencyDisplay='" + currencyDisplay + '\'' +
                 ", state=" + state +
-                ", closedAtUtc='" + closedAtUtc.toString() + '\'' +
-                ", createdAtUtc='" + createdAtUtc.toString() + '\'' +
+//                ", closedAtUtc='" + closedAtUtc.toString() + '\'' +
+//                ", createdAtUtc='" + createdAtUtc.toString() + '\'' +
                 ", business_price='" + business_price + '\'' +
                 ", business_amt='" + business_amt + '\'' +
                 ", business_date='" + business_date + '\'' +
