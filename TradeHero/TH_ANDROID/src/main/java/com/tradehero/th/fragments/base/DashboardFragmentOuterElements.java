@@ -34,6 +34,11 @@ public class DashboardFragmentOuterElements implements FragmentOuterElements
         this.dashboardBottomTabsListViewScrollListener = dashboardBottomTabsListViewScrollListener;
         this.dashboardBottomTabScrollViewScrollListener = dashboardBottomTabScrollViewScrollListener;
         this.dashboardBottomTabRecyclerViewScrollListener = dashboardBottomTabRecyclerViewScrollListener;
+        //noinspection ConstantConditions
+        if (dashboardTabHost == null)
+        {
+            throw new NullPointerException("You cannot give a null DashboardTabHost");
+        }
         this.dashboardTabHost = dashboardTabHost;
     }
 
@@ -54,6 +59,11 @@ public class DashboardFragmentOuterElements implements FragmentOuterElements
 
     @NonNull @Override public MovableBottom getMovableBottom()
     {
+        //noinspection ConstantConditions
+        if (dashboardTabHost == null)
+        {
+            throw new NullPointerException("DashboardTabHost was null");
+        }
         return dashboardTabHost;
     }
 

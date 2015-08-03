@@ -11,6 +11,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.fastfill.FastFillUtil;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.widget.GoLiveWidget;
 import javax.inject.Inject;
 import rx.Observable;
@@ -53,15 +54,17 @@ public class BaseLiveFragmentUtil
                         return fastFillAvailable;
                     }
                 })
-                .subscribe(new Action1<Boolean>()
-                {
-                    @Override public void call(Boolean fastFillAvailable)
-                    {
-                        navigator.launchActivity(fastFillAvailable
-                                ? IdentityPromptActivity.class
-                                : SignUpLiveActivity.class);
-                    }
-                });
+                .subscribe(
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean fastFillAvailable)
+                            {
+                                navigator.launchActivity(fastFillAvailable
+                                        ? IdentityPromptActivity.class
+                                        : SignUpLiveActivity.class);
+                            }
+                        },
+                        new TimberOnErrorAction1("Failed to listen to liveWidget in BaseLiveFragmentUtil"));
     }
 
     public static void setDarkBackgroundColor(boolean isLive, View... views)

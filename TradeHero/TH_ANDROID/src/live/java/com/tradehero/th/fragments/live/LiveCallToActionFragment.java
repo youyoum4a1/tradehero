@@ -19,6 +19,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.network.service.LiveServiceWrapper;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -54,17 +55,19 @@ public class LiveCallToActionFragment extends DashboardFragment
                 getBrokerSituationToUse()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<LiveBrokerSituationDTO>()
-                        {
-                            @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
-                            {
-                                if (liveBrokerSituationDTO.kycForm != null)
+                        .subscribe(
+                                new Action1<LiveBrokerSituationDTO>()
                                 {
-                                    liveDescription.setText(KYCFormUtil.getCallToActionText(liveBrokerSituationDTO.kycForm));
-                                    livePoweredBy.setText(liveBrokerSituationDTO.kycForm.getBrokerName());
-                                }
-                            }
-                        }));
+                                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                                    {
+                                        if (liveBrokerSituationDTO.kycForm != null)
+                                        {
+                                            liveDescription.setText(KYCFormUtil.getCallToActionText(liveBrokerSituationDTO.kycForm));
+                                            livePoweredBy.setText(liveBrokerSituationDTO.kycForm.getBrokerName());
+                                        }
+                                    }
+                                },
+                                new TimberOnErrorAction1("Failed to listen to brokerSituationToUse in LiveCallToActionFragment")));
     }
 
     @Override public void onStart()
@@ -78,15 +81,17 @@ public class LiveCallToActionFragment extends DashboardFragment
                         return fastFill.isAvailable(getActivity()).distinctUntilChanged().take(1);
                     }
                 })
-                .subscribe(new Action1<Boolean>()
-                {
-                    @Override public void call(Boolean fastFillAvailable)
-                    {
-                        navigator.launchActivity(fastFillAvailable
-                                ? IdentityPromptActivity.class
-                                : SignUpLiveActivity.class);
-                    }
-                }));
+                .subscribe(
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean fastFillAvailable)
+                            {
+                                navigator.launchActivity(fastFillAvailable
+                                        ? IdentityPromptActivity.class
+                                        : SignUpLiveActivity.class);
+                            }
+                        },
+                        new TimberOnErrorAction1("Failed to listen to goLiveButton in LiveCallToActionFragment")));
     }
 
     @Override public void onDestroyView()

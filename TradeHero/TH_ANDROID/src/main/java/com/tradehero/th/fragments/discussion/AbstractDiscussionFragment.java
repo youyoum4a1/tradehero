@@ -443,8 +443,9 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
                                     discussionListAdapter.appendTail(dto);
                                     discussionListAdapter.notifyDataSetChanged();
                                 }
-                            }
-                    ));
+                            },
+                            new TimberOnErrorAction1("Failed to add comment " + newDiscussion +
+                                    " in " + AbstractDiscussionFragment.this.getClass().getSimpleName())));
         }
     }
 

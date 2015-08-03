@@ -20,8 +20,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.android.internal.util.Predicate;
@@ -61,8 +61,9 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.StringUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -910,7 +911,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             else
             {
                 AlertDialogBuySellRxUtil.informBuySellOrderWasNull(getActivity())
-                        .subscribe(Actions.empty());
+                        .subscribe(
+                                Actions.empty(),
+                                new EmptyAction1<Throwable>());
             }
         }
     }
@@ -1084,7 +1087,9 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             if (securityPositionDetailDTO == null)
             {
                 AlertDialogBuySellRxUtil.informBuySellOrderReturnedNull(getActivity())
-                        .subscribe(Actions.empty());
+                        .subscribe(
+                                Actions.empty(),
+                                new EmptyAction1<Throwable>());
                 return;
             }
 

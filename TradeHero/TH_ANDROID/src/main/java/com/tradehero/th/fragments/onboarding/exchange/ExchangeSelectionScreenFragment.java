@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.utils.THToast;
@@ -52,6 +52,7 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 public class ExchangeSelectionScreenFragment extends BaseFragment
 {
@@ -297,6 +298,10 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
         if (item.equals(MAP_ITEM_DTO))
         {
             // Nothing to do, the map was clicked
+        }
+        else if (!(item instanceof SelectableExchangeDTO))
+        {
+            Timber.e(new ClassCastException(), "Unexpected type: " + item);
         }
         else
         {

@@ -28,6 +28,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.push.PushConstants;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
@@ -278,25 +279,27 @@ public class AdminSettingsFragment extends BasePreferenceFragment
                 .setCancelable(true)
                 .setCanceledOnTouchOutside(true)
                 .build()
-                .subscribe(new Action1<OnDialogClickEvent>()
-                {
-                    @Override public void call(OnDialogClickEvent event)
-                    {
-                        if (event.isPositive())
+                .subscribe(
+                        new Action1<OnDialogClickEvent>()
                         {
-                            Editable value = input.getText();
-                            int notificationId = 0;
-                            try
+                            @Override public void call(OnDialogClickEvent event)
                             {
-                                notificationId = Integer.parseInt(value.toString());
-                            } catch (NumberFormatException ex)
-                            {
-                                THToast.show("Not a number");
+                                if (event.isPositive())
+                                {
+                                    Editable value = input.getText();
+                                    int notificationId = 0;
+                                    try
+                                    {
+                                        notificationId = Integer.parseInt(value.toString());
+                                    } catch (NumberFormatException ex)
+                                    {
+                                        THToast.show("Not a number");
+                                    }
+                                    sendFakePushNotification(notificationId);
+                                }
                             }
-                            sendFakePushNotification(notificationId);
-                        }
-                    }
-                });
+                        },
+                        new TimberOnErrorAction1("Failed to ask for notificationId"));
         return true;
     }
 

@@ -10,6 +10,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trending.TileType;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.widget.OffOnViewSwitcher;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 import javax.inject.Inject;
@@ -76,13 +77,15 @@ public class LiveActivityUtil
                                         return event.isOn;
                                     }
                                 })
-                        .subscribe(new Action1<OffOnViewSwitcherEvent>()
-                        {
-                            @Override public void call(OffOnViewSwitcherEvent event)
-                            {
-                                onLiveTradingChanged(event);
-                            }
-                        }));
+                        .subscribe(
+                                new Action1<OffOnViewSwitcherEvent>()
+                                {
+                                    @Override public void call(OffOnViewSwitcherEvent event)
+                                    {
+                                        onLiveTradingChanged(event);
+                                    }
+                                },
+                                new TimberOnErrorAction1("Failed to listen to liveSwitcher in LiveActivityUtil")));
 
         for (Fragment f : activity.getSupportFragmentManager().getFragments())
         {

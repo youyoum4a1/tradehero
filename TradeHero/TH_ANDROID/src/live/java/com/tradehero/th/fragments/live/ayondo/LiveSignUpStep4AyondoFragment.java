@@ -30,6 +30,7 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.widget.KYCAddressWidget;
 import java.io.IOException;
+import java.lang.Throwable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -320,7 +321,9 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             return null;
                         }
                     }
-            ).subscribe(new EmptyAction1<>());
+            ).subscribe(
+                    new EmptyAction1<>(),
+                    new EmptyAction1<Throwable>());
         }
     }
 }

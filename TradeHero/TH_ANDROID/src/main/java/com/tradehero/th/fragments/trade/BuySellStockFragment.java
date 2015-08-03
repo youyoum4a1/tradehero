@@ -129,8 +129,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                                         securityCompactDTO,
                                         null, null));
                             }
-                        }, new TimberOnErrorAction1("Failed to fetch list of watch list items"))
-        );
+                        }, new TimberOnErrorAction1("Failed to fetch list of watch list items")));
         actionBar.setCustomView(actionBarLayout);
     }
 

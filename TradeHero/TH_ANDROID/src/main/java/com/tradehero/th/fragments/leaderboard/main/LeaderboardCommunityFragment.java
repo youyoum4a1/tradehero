@@ -42,6 +42,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
 import com.tradehero.th.persistence.prefs.PreferenceModule;
 import com.tradehero.th.persistence.prefs.THPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -212,26 +213,28 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         setActionBarTitle("");
         stockFxSwitcher = (OffOnViewSwitcher) view.findViewById(R.id.switch_stock_fx);
         onDestroyOptionsMenuSubscriptions.add(stockFxSwitcher.getSwitchObservable()
-                .subscribe(new Action1<OffOnViewSwitcherEvent>()
-                {
-                    @Override public void call(OffOnViewSwitcherEvent event)
-                    {
-                        LeaderboardType type;
-                        if (!event.isOn)
+                .subscribe(
+                        new Action1<OffOnViewSwitcherEvent>()
                         {
-                            type = LeaderboardType.STOCKS;
-                        }
-                        else
-                        {
-                            type = LeaderboardType.FX;
-                        }
-                        if (type != leaderboardType)
-                        {
-                            leaderboardType = type;
-                            setUpViewPager();
-                        }
-                    }
-                }));
+                            @Override public void call(OffOnViewSwitcherEvent event)
+                            {
+                                LeaderboardType type;
+                                if (!event.isOn)
+                                {
+                                    type = LeaderboardType.STOCKS;
+                                }
+                                else
+                                {
+                                    type = LeaderboardType.FX;
+                                }
+                                if (type != leaderboardType)
+                                {
+                                    leaderboardType = type;
+                                    setUpViewPager();
+                                }
+                            }
+                        },
+                        new TimberOnErrorAction1("Failed to listen to stockFxSwitcher in LeaderboardCommunityFragment")));
         stockFxSwitcher.setIsOn(leaderboardType.equals(LeaderboardType.FX), false);
         actionBarOwnerMixin.setCustomView(view);
     }

@@ -60,6 +60,7 @@ import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.DateUtils;
@@ -343,14 +344,16 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                             return Pair.create(securityIdAlertCompactDTOMap, watchlistPositionDTOs);
                         }
                     })
-                    .subscribe(new Action1<Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList>>()
-                    {
-                        @Override public void call(Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList> pair)
-                        {
-                            stockIsWatched(pair.second);
-                            stockIsOnAlert(pair.first);
-                        }
-                    }));
+                    .subscribe(
+                            new Action1<Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList>>()
+                            {
+                                @Override public void call(Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList> pair)
+                                {
+                                    stockIsWatched(pair.second);
+                                    stockIsOnAlert(pair.first);
+                                }
+                            },
+                            new TimberOnErrorAction1("Failed to listen to alerts and watchlist on chart fragment")));
         }
     }
 
@@ -476,13 +479,15 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                     })
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<Pair<SecurityCompactDTO, QuoteDTO>>()
-                    {
-                        @Override public void call(Pair<SecurityCompactDTO, QuoteDTO> securityCompactDTOQuoteDTOPair)
-                        {
-                            displayBuySellPrice(securityCompactDTOQuoteDTOPair.first, securityCompactDTOQuoteDTOPair.second);
-                        }
-                    });
+                    .subscribe(
+                            new Action1<Pair<SecurityCompactDTO, QuoteDTO>>()
+                            {
+                                @Override public void call(Pair<SecurityCompactDTO, QuoteDTO> securityCompactDTOQuoteDTOPair)
+                                {
+                                    displayBuySellPrice(securityCompactDTOQuoteDTOPair.first, securityCompactDTOQuoteDTOPair.second);
+                                }
+                            },
+                            new TimberOnErrorAction1("Failed to combine quote and security in ChartFragment"));
         }
     }
 

@@ -12,6 +12,7 @@ import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.MarketRegion;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.onboarding.OnBoardHeaderLinearView;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import java.util.Collection;
 import java.util.Set;
 import rx.Observable;
@@ -86,8 +87,8 @@ public class MarketRegionSwitcherView extends OnBoardHeaderLinearView
                             switcher.setDisplayedChild(INDEX_CHILD_BUTTON);
                         }
                     }
-                }
-        ));
+                },
+                new TimberOnErrorAction1("Failed to listen to mapViewSwitch in MarketRegionSwitcherView")));
         childSubscriptions.add(buttonView.getMarketRegionClickedObservable().subscribe(clickedMarketRegionSubject));
     }
 

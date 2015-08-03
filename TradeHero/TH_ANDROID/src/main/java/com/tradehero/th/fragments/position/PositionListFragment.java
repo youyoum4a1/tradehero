@@ -403,8 +403,10 @@ public class PositionListFragment
 
         onStopSubscriptions.add(
                 Observable.combineLatest(
-                        positionItemAdapter.getUserActionObservable(),
-                        portfolioCompactListCache.getOne(currentUserId.toUserBaseKey()),
+                        positionItemAdapter.getUserActionObservable()
+                                .observeOn(AndroidSchedulers.mainThread()),
+                        portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
+                                .observeOn(AndroidSchedulers.mainThread()),
                         new Func2<PositionPartialTopView.CloseUserAction, Pair<UserBaseKey, PortfolioCompactDTOList>, PositionPartialTopView.CloseUserAction>()
                         {
                             @Override public PositionPartialTopView.CloseUserAction call(PositionPartialTopView.CloseUserAction userAction,
@@ -930,7 +932,7 @@ public class PositionListFragment
 
     private void linkPortfolioHeaderView(UserProfileDTO userProfileDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
     {
-        if (portfolioHeaderView == null)
+        if (portfolioHeaderView == null || inflatedView == null)
         {
             // portfolio header
             int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);

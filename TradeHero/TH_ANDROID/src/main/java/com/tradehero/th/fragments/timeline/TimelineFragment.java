@@ -479,7 +479,7 @@ abstract public class TimelineFragment extends DashboardFragment
                 {
                     pushWatchlistPositionFragment();
                 }
-                else
+                else if (displayablePortfolioDTO.ownedPortfolioId != null)
                 {
                     pushPositionListFragment(displayablePortfolioDTO.ownedPortfolioId, displayablePortfolioDTO.portfolioDTO);
                 }
@@ -495,7 +495,7 @@ abstract public class TimelineFragment extends DashboardFragment
         }
     }
 
-    private void pushPositionListFragment(OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioDTO portfolioDTO)
+    private void pushPositionListFragment(@NonNull OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioDTO portfolioDTO)
     {
         Bundle args = new Bundle();
 
