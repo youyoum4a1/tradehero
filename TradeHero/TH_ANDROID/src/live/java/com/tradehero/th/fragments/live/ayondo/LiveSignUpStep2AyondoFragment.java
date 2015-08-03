@@ -181,6 +181,10 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to spinner selections")));
+
+        getKYCAyondoFormOptionsObservable().connect();
+        getKYCFormOptionsObservable().connect();
+        getBrokerSituationObservable().connect();
     }
 
     @NonNull protected KYCAyondoForm populate(@NonNull KYCAyondoForm kycForm)

@@ -24,6 +24,7 @@ import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnCheckedChangeEvent;
@@ -52,6 +53,7 @@ public class KYCAddressWidget extends LinearLayout
     @Bind(R.id.info_less_than_a_year) CheckBox checkBoxLessThanAYear;
     private boolean showCheckbox = DEFAULT_SHOW_CHECKBOX;
     private KYCAddress mKycAddress;
+    private CountrySpinnerAdapter nationalityAdapter;
 
     public KYCAddressWidget(Context context)
     {
@@ -93,6 +95,9 @@ public class KYCAddressWidget extends LinearLayout
         LayoutInflater.from(getContext()).inflate(R.layout.address_widget_merged, this, true);
         ButterKnife.bind(this);
         checkBoxLessThanAYear.setVisibility(showCheckbox ? View.VISIBLE : View.GONE);
+
+        nationalityAdapter = new CountrySpinnerAdapter(getContext(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+        spinnerCountry.setAdapter(nationalityAdapter);
     }
 
     @Override protected void onAttachedToWindow()
@@ -133,12 +138,13 @@ public class KYCAddressWidget extends LinearLayout
                             OnTextChangeEvent onTextChangePostalCode,
                             OnCheckedChangeEvent onCheckedChangeEventYear)
                     {
-                        return new KYCAddress(onTextChangeLine1.text().toString(),
+                        KYCAddress address = new KYCAddress(onTextChangeLine1.text().toString(),
                                 onTextChangeLine2.text().toString(),
                                 onTextChangeCity.text().toString(),
                                 CountryCode.SG,
                                 onTextChangePostalCode.text().toString(),
                                 onCheckedChangeEventYear.value());
+                        return address;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -157,7 +163,8 @@ public class KYCAddressWidget extends LinearLayout
                             checkBoxLessThanAYear.setChecked(false);
                         }
                     }
-                });
+                })
+                .throttleLast(1, TimeUnit.SECONDS);
     }
 
     public void setLoading(boolean isLoading)
@@ -173,23 +180,30 @@ public class KYCAddressWidget extends LinearLayout
         replaceText(txtLine2, kycAddress.addressLine2);
         replaceText(txtCity, kycAddress.city);
         replaceText(txtPostalCode, kycAddress.postalCode);
+        setSelectedCountry(mKycAddress.country);
         checkBoxLessThanAYear.setChecked(kycAddress.lessThanAYear);
     }
 
     public void setCountries(@NonNull List<CountrySpinnerAdapter.DTO> countries, @Nullable CountryCode defaultCountry)
     {
-        CountrySpinnerAdapter nationalityAdapter =
-                new CountrySpinnerAdapter(getContext(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+        if (nationalityAdapter.getCount() > 0)
+        {
+            nationalityAdapter.clear();
+        }
         nationalityAdapter.addAll(countries);
-        spinnerCountry.setAdapter(nationalityAdapter);
         spinnerCountry.setEnabled(countries.size() > 1);
         if (mKycAddress != null && mKycAddress.country != null)
         {
             defaultCountry = mKycAddress.country;
         }
-        if (defaultCountry != null)
+        setSelectedCountry(defaultCountry);
+    }
+
+    private void setSelectedCountry(@Nullable CountryCode countryCode)
+    {
+        if (countryCode != null)
         {
-            int position = nationalityAdapter.getPosition(new CountrySpinnerAdapter.DTO(Country.valueOf(defaultCountry.name())));
+            int position = nationalityAdapter.getPosition(new CountrySpinnerAdapter.DTO(Country.valueOf(countryCode.name())));
             if (position > 0 && position < nationalityAdapter.getCount())
             {
                 spinnerCountry.setSelection(position);

@@ -338,6 +338,10 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to url clicks")));
+
+        getKYCAyondoFormOptionsObservable().connect();
+        getKYCFormOptionsObservable().connect();
+        getBrokerSituationObservable().connect();
     }
 
     @NonNull private Observable<Bitmap> pickDocument(@StringRes int dialogTitle, @NonNull final ImageRequesterUtil imageRequesterUtil)

@@ -10,6 +10,7 @@ import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import java.io.IOException;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Func0;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -69,7 +70,7 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
         }
         try
         {
-            Timber.d("saved fullname: %s", ((KYCAyondoForm) saved.kycForm).getFullName());
+            Timber.d("saved address: %s", ((KYCAyondoForm) saved.kycForm).getAddresses());
             preference.edit().putString(key, objectMapper.writeValueAsString(saved)).apply();
             liveBrokerSituationDTOPublishSubject.onNext(saved);
         } catch (JsonProcessingException e)
@@ -83,7 +84,15 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
     {
         if (liveBrokerSituationDTOObservable == null)
         {
-            liveBrokerSituationDTOObservable = liveBrokerSituationDTOPublishSubject.startWith(get()).distinctUntilChanged();
+            liveBrokerSituationDTOObservable = liveBrokerSituationDTOPublishSubject
+                    .startWith(Observable.defer(new Func0<Observable<LiveBrokerSituationDTO>>()
+                    {
+                        @Override public Observable<LiveBrokerSituationDTO> call()
+                        {
+                            return Observable.just(get());
+                        }
+                    }))
+                    .distinctUntilChanged();
         }
         return liveBrokerSituationDTOObservable;
     }

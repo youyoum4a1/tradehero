@@ -41,7 +41,6 @@ import rx.android.view.OnClickEvent;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragment
@@ -90,8 +89,6 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
-                        getBrokerSituationObservable()
-                                .observeOn(AndroidSchedulers.mainThread()),
                         getKYCAyondoFormOptionsObservable()
                                 .observeOn(Schedulers.computation())
                                 .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
@@ -131,46 +128,28 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     {
                                         Collections.sort(dtos, new CountrySpinnerAdapter.DTOCountryNameComparator(getActivity()));
                                     }
-                                }),
-                        new Func3<LiveBrokerSituationDTO, List<CountrySpinnerAdapter.DTO>, List<CountrySpinnerAdapter.DTO>, Object>()
+                                })
+                                .observeOn(AndroidSchedulers.mainThread()),
+                        new Func2<List<CountrySpinnerAdapter.DTO>, List<CountrySpinnerAdapter.DTO>, Object>()
                         {
-                            @Override public Object call(
-                                    LiveBrokerSituationDTO liveBrokerSituationDTO,
-                                    List<CountrySpinnerAdapter.DTO> primaryAddressCountries,
-                                    List<CountrySpinnerAdapter.DTO> secondaryAddressCountries
-                            )
+                            @Override
+                            public Object call(List<CountrySpinnerAdapter.DTO> primaryCountries, List<CountrySpinnerAdapter.DTO> secondaryCountries)
                             {
-                                CountryCode residency = ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getResidency();
-                                if (residency != null)
-                                {
-                                    //If residency has already been set, do not allow user to change.
-                                    primaryAddressCountries = CountrySpinnerAdapter.createDTOs(
-                                            Collections.singletonList(Country.valueOf(residency.name())), null);
-                                }
-                                primaryWidget.setCountries(primaryAddressCountries, residency);
-                                secondaryWidget.setCountries(secondaryAddressCountries, residency);
+                                primaryWidget.setCountries(primaryCountries, null);
+                                secondaryWidget.setCountries(secondaryCountries, null);
                                 return null;
                             }
-                        }
-                ).subscribe(new EmptyAction1<>(),
-                        new TimberOnErrorAction1("Error on populating spinners"))
-        );
-
-        onDestroyViewSubscriptions.add(
-                getBrokerSituationObservable()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .map(new Func1<LiveBrokerSituationDTO, LiveBrokerDTO>()
+                        })
+                        .withLatestFrom(getBrokerSituationObservable(), new Func2<Object, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
                         {
-                            @Override public LiveBrokerDTO call(LiveBrokerSituationDTO situationDTO)
+                            @Override public LiveBrokerSituationDTO call(Object o, LiveBrokerSituationDTO liveBrokerSituationDTO)
                             {
-                                //noinspection ConstantConditions
-                                List<KYCAddress> addresses = ((KYCAyondoForm) situationDTO.kycForm).getAddresses();
+                                List<KYCAddress> addresses = ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getAddresses();
                                 if (addresses != null)
                                 {
                                     if (addresses.size() > 0)
                                     {
                                         KYCAddress address = addresses.get(0);
-
                                         primaryWidget.setKYCAddress(address);
                                         if (addresses.size() > 1)
                                         {
@@ -179,65 +158,68 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         }
                                     }
                                 }
-                                return situationDTO.broker;
+                                return null;
                             }
                         })
-                        .distinctUntilChanged(new Func1<LiveBrokerDTO, String>()
-                        {
-                            @Override public String call(LiveBrokerDTO liveBrokerDTO)
-                            {
-                                return liveBrokerDTO.id + ":" + liveBrokerDTO.name;
-                            }
-                        })
-                        .flatMap(new Func1<LiveBrokerDTO, Observable<LiveBrokerSituationDTO>>()
-                        {
-                            @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerDTO liveBrokerDTO)
-                            {
-                                return Observable.combineLatest(
-                                        primaryWidget.getKYCAddressObservable()
-                                                .doOnNext(new Action1<KYCAddress>()
-                                                {
-                                                    @Override public void call(KYCAddress kycAddress)
-                                                    {
-                                                        int visibility = kycAddress.lessThanAYear ? View.VISIBLE : View.GONE;
-                                                        secondaryAddressWidget.setVisibility(visibility);
-                                                        secondaryWidget.setVisibility(visibility);
-                                                    }
-                                                }),
-                                        secondaryWidget.getKYCAddressObservable(),
-                                        new Func2<KYCAddress, KYCAddress, List<KYCAddress>>()
-                                        {
-                                            @Override public List<KYCAddress> call(KYCAddress primaryAddress, KYCAddress secondaryAddress)
-                                            {
-                                                ArrayList<KYCAddress> addresses = new ArrayList<>(2);
-                                                addresses.add(primaryAddress);
-                                                if (primaryAddress.lessThanAYear)
-                                                {
-                                                    addresses.add(secondaryAddress);
-                                                }
-                                                return addresses;
-                                            }
-                                        })
-                                        .map(new Func1<List<KYCAddress>, LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public LiveBrokerSituationDTO call(List<KYCAddress> kycAddresses)
-                                            {
-                                                KYCAyondoForm update = new KYCAyondoForm();
-                                                update.setAddresses(kycAddresses);
-                                                return new LiveBrokerSituationDTO(liveBrokerDTO, update);
-                                            }
-                                        });
-                            }
-                        })
-                        .subscribe(
-                                new Action1<LiveBrokerSituationDTO>()
+                        .subscribe(new EmptyAction1<>(), new TimberOnErrorAction1("Failed to load countries"))
+
+        );
+
+        onDestroyViewSubscriptions.add(
+                Observable.combineLatest(
+                        primaryWidget.getKYCAddressObservable()
+                                .doOnNext(new Action1<KYCAddress>()
                                 {
-                                    @Override public void call(LiveBrokerSituationDTO update)
+                                    @Override public void call(KYCAddress kycAddress)
                                     {
-                                        onNext(update);
+                                        int visibility = kycAddress.lessThanAYear ? View.VISIBLE : View.GONE;
+                                        secondaryAddressWidget.setVisibility(visibility);
+                                        secondaryWidget.setVisibility(visibility);
                                     }
-                                },
-                                new TimberOnErrorAction1("Failed to set or listen to address widget")));
+                                }),
+                        secondaryWidget.getKYCAddressObservable(),
+                        new Func2<KYCAddress, KYCAddress, List<KYCAddress>>()
+                        {
+                            @Override public List<KYCAddress> call(KYCAddress primaryAddress, KYCAddress secondaryAddress)
+                            {
+                                ArrayList<KYCAddress> addresses = new ArrayList<>(2);
+                                addresses.add(primaryAddress);
+                                if (primaryAddress.lessThanAYear)
+                                {
+                                    addresses.add(secondaryAddress);
+                                }
+                                return addresses;
+                            }
+                        })
+                        .withLatestFrom(getBrokerSituationObservable().map(new Func1<LiveBrokerSituationDTO, LiveBrokerDTO>()
+                                {
+                                    @Override public LiveBrokerDTO call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                                    {
+                                        return liveBrokerSituationDTO.broker;
+                                    }
+                                }),
+                                new Func2<List<KYCAddress>, LiveBrokerDTO, LiveBrokerSituationDTO>()
+                                {
+                                    @Override
+                                    public LiveBrokerSituationDTO call(List<KYCAddress> kycAddresses, LiveBrokerDTO brokerDTO)
+                                    {
+                                        KYCAyondoForm update = new KYCAyondoForm();
+                                        update.setAddresses(kycAddresses);
+                                        return new LiveBrokerSituationDTO(brokerDTO, update);
+                                    }
+                                })
+                        .subscribe(new Action1<LiveBrokerSituationDTO>()
+                        {
+                            @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                            {
+                                onNext(liveBrokerSituationDTO);
+                            }
+                        }, new TimberOnErrorAction1("Failed in saving updated address"))
+        );
+
+        getKYCAyondoFormOptionsObservable().connect();
+        getKYCFormOptionsObservable().connect();
+        getBrokerSituationObservable().connect();
     }
 
     public void pickLocation(int requestCode)

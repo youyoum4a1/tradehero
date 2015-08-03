@@ -167,6 +167,10 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to compound buttons")));
+
+        getKYCAyondoFormOptionsObservable().connect();
+        getKYCFormOptionsObservable().connect();
+        getBrokerSituationObservable().connect();
     }
 
     @NonNull protected KYCAyondoForm populate(@NonNull KYCAyondoForm kycForm)

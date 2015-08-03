@@ -42,7 +42,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @NonNull protected PublishSubject<Boolean> prevNextSubject;
     @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;
     @Nullable private ConnectableObservable<LiveBrokerSituationDTO> brokerSituationObservable;
-    @Nullable private Observable<KYCFormOptionsDTO> kycOptionsObservable;
+    @Nullable private ConnectableObservable<KYCFormOptionsDTO> kycOptionsObservable;
 
     public LiveSignUpStepBaseFragment()
     {
@@ -126,12 +126,12 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                 });
     }
 
-    @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptionsObservable()
+    @NonNull public ConnectableObservable<KYCFormOptionsDTO> getKYCFormOptionsObservable()
     {
-        Observable<KYCFormOptionsDTO> copy = kycOptionsObservable;
+        ConnectableObservable<KYCFormOptionsDTO> copy = kycOptionsObservable;
         if (copy == null)
         {
-            copy = createKYCFormOptionsObservable();
+            copy = createKYCFormOptionsObservable().publish();
             kycOptionsObservable = copy;
         }
         return copy;

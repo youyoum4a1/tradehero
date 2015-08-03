@@ -106,7 +106,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject PhoneNumberVerifiedPreference phoneNumberVerifiedPreference;
 
-    private Observable<CountryDTOForSpinner> countryDTOSpinnerObservable;
     private Random randomiser;
     @Nullable private String expectedCode;
     @Nullable private BehaviorSubject<SMSSentConfirmationDTO> confirmationSubject;
@@ -342,8 +341,16 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         onDestroyViewSubscriptions.add(Observable.combineLatest(
                 getBrokerSituationObservable()
                         .observeOn(AndroidSchedulers.mainThread()),
-                getCountryDTOSpinnerObservable()
-                        .take(1)
+                getKYCAyondoFormOptionsObservable()
+                        .observeOn(Schedulers.computation())
+                        .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
+                        {
+                            @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
+                            {
+                                return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO);
+                            }
+                        })
+                        .distinctUntilChanged()
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<CountryDTOForSpinner>()
                         {
@@ -375,7 +382,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         }),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
-                        .take(1)
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                         .observeOn(AndroidSchedulers.mainThread()),
                 new Func3<LiveBrokerSituationDTO, CountryDTOForSpinner, UserProfileDTO, LiveBrokerSituationDTO>()
@@ -384,7 +390,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             CountryDTOForSpinner options,
                             UserProfileDTO currentUserProfile)
                     {
-                        Timber.d("populate fullName: %s", ((KYCAyondoForm) situation.kycForm).getFullName());
                         ////noinspection ConstantConditions
                         populate((KYCAyondoForm) situation.kycForm);
                         populateGender((KYCAyondoForm) situation.kycForm, options.genders);
@@ -535,6 +540,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             this.expectedCode = savedInstanceState.getString(KEY_EXPECTED_CODE, this.expectedCode);
         }
+
+        getKYCAyondoFormOptionsObservable().connect();
+        getKYCFormOptionsObservable().connect();
         getBrokerSituationObservable().connect();
     }
 
@@ -621,30 +629,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             dob.setText(dobText);
         }
-    }
-
-    @NonNull protected Observable<CountryDTOForSpinner> getCountryDTOSpinnerObservable()
-    {
-        Observable<CountryDTOForSpinner> copy = countryDTOSpinnerObservable;
-        if (copy == null)
-        {
-            copy = createCountryDTOSpinnerObservable().share().distinctUntilChanged();
-            countryDTOSpinnerObservable = copy;
-        }
-        return copy;
-    }
-
-    @NonNull protected Observable<CountryDTOForSpinner> createCountryDTOSpinnerObservable()
-    {
-        return getKYCAyondoFormOptionsObservable()
-                .observeOn(Schedulers.computation())
-                .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
-                {
-                    @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
-                    {
-                        return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO);
-                    }
-                });
     }
 
     protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, int countryCode, @NonNull String typedNumber)

@@ -14,10 +14,11 @@ import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;
+import rx.observables.ConnectableObservable;
 
 abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBaseFragment
 {
-    @Nullable private Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsObservable;
+    @Nullable private ConnectableObservable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsObservable;
 
     @NonNull protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
@@ -38,12 +39,18 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                 });
     }
 
-    @NonNull public Observable<KYCAyondoFormOptionsDTO> getKYCAyondoFormOptionsObservable()
+    @Override public void onDestroyView()
     {
-        Observable<KYCAyondoFormOptionsDTO> copy = kycAyondoFormOptionsObservable;
+        kycAyondoFormOptionsObservable = null;
+        super.onDestroyView();
+    }
+
+    @NonNull public ConnectableObservable<KYCAyondoFormOptionsDTO> getKYCAyondoFormOptionsObservable()
+    {
+        ConnectableObservable<KYCAyondoFormOptionsDTO> copy = kycAyondoFormOptionsObservable;
         if (copy == null)
         {
-            copy = createKYCAyondoFormOptionsObservable().share().cache(1);
+            copy = createKYCAyondoFormOptionsObservable().publish();
             kycAyondoFormOptionsObservable = copy;
         }
         return copy;
