@@ -19,6 +19,7 @@ public class THSharePreferenceManager {
     private final static String TH_SP_SHARE_ENDPOINT = "th_sp_share_endpoint";
     private final static String TH_SP_GETUI = "th_sp_getui";
     private final static String TH_SP_STOCK_LEARNING = "th_sp_stock_learning";
+    private final static String TH_SP_ACTUAL = "th_sp_actual";
 
     //The latest version
     public final static String KEY_APP_NEW_VERSION_DOWNLOAD_URL = "key_app_new_version_download_url";
@@ -43,13 +44,16 @@ public class THSharePreferenceManager {
     //Novice
     public final static String RECOMMEND_STOCK_GOD = "recommend_stock_god";
 
+    //Actual Trade
+    public final static String KEY_FIRST_TIME_ENTER_ACTUAL_PAGE = "key_first_time_enter_actual_page";
+
     public static AppInfoDTO getAppVersionInfo(Context context) {
         if (context == null) {
             return null;
         }
         String url = "";
-        boolean suggestUpdate = false;
-        boolean forceUpdate = false;
+        boolean suggestUpdate;
+        boolean forceUpdate;
         SharedPreferences sp = context.getSharedPreferences(TH_SP_NAME, Context.MODE_PRIVATE);
         url = sp.getString(KEY_APP_NEW_VERSION_DOWNLOAD_URL, "");
         suggestUpdate = sp.getBoolean(KEY_APP_SUGGEST_UPDATE, false);
@@ -83,7 +87,7 @@ public class THSharePreferenceManager {
         return isOn;
     }
 
-    public static void setNotificaitonsStatus(Context context, boolean notificationsStatus) {
+    public static void setNotificationStatus(Context context, boolean notificationsStatus) {
         if (context == null) {
             return;
         }
@@ -312,5 +316,15 @@ public class THSharePreferenceManager {
     public static long getQuestionUpdateTime(Context context, int user_id) {
         SharedPreferences sp = context.getSharedPreferences(TH_SP_STOCK_LEARNING, Context.MODE_PRIVATE);
         return sp.getLong(KEY_STOCK_LEARNING_QUESTION_UPDATE + user_id, -1);
+    }
+
+    public static boolean isFirstTimeEnteredActualOptPage(Context context, int user_id){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_ACTUAL, Context.MODE_PRIVATE);
+        return sp.getBoolean(KEY_FIRST_TIME_ENTER_ACTUAL_PAGE + user_id, false);
+    }
+
+    public static void setEnteredActualPageStatus(Context context, int user_id, boolean isEntered){
+        SharedPreferences sp = context.getSharedPreferences(TH_SP_ACTUAL, Context.MODE_PRIVATE);
+        sp.edit().putBoolean(KEY_FIRST_TIME_ENTER_ACTUAL_PAGE + user_id, isEntered).commit();
     }
 }

@@ -9,14 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
@@ -40,7 +36,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.Application;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
@@ -80,18 +75,9 @@ public class SettingMineFragment extends AbsBaseFragment implements View.OnClick
     private LoginSuggestDialogFragment dialogFragment;
     private FragmentManager fm;
 
-    @InjectView(R.id.rlMeDynamic) RelativeLayout rlMeDynamic;
-    @InjectView(R.id.rlMeMessageCenter) RelativeLayout rlMeMessageCenter;
     @InjectView(R.id.textview_me_notification_count) TextView tvMeNotificationCount;
-    @InjectView(R.id.rlMeInviteFriends) RelativeLayout rlMeInviteFriends;
-    @InjectView(R.id.rlMeSetting) RelativeLayout rlMeSetting;
     @InjectView(R.id.imageview_me_new_version)ImageView ivNewVersion;
 
-    @InjectView(R.id.llItemAllAmount) LinearLayout llItemAllAmount;
-    @InjectView(R.id.llItemAllHero) LinearLayout llItemAllHero;
-    @InjectView(R.id.llItemAllFans) LinearLayout llItemAllFans;
-
-    @InjectView(R.id.me_layout) RelativeLayout mMeLayout;
     @InjectView(R.id.imgMeHead) ImageView imgMeHead;
     @InjectView(R.id.tvMeName) TextView tvMeName;
     @InjectView(R.id.tvAllAmount) TextView tvAllAmount;

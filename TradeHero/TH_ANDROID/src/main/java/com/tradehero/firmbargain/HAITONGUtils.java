@@ -27,11 +27,7 @@ public class HAITONGUtils {
         //用户唯一标识
         bundle.putString(TradeModule.EXTRA_KEY_USERID, "");
         //渠道
-        if(Constants.isInHAITONGTestingEnvironment) {
-            bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "htbab81aca544e305a");
-        }else {
-            bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "mowhse");
-        }
+        bundle.putString(TradeModule.EXTRA_KEY_CHANNEL, "ht6c4bb1384e63c92d");
         //设置在线时间(秒)
         intent.putExtras(bundle);
         activity.startActivityForResult(intent, TradeHeroMainActivity.ACTIVITY_RESULT_HAITONG_TRADE);

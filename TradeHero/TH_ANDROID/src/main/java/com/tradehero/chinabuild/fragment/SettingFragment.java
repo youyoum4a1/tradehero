@@ -207,11 +207,11 @@ public class SettingFragment extends DashboardFragment implements View.OnClickLi
             return;
         }
         if(THSharePreferenceManager.isNotificationsOn(context)){
-            THSharePreferenceManager.setNotificaitonsStatus(context, false);
+            THSharePreferenceManager.setNotificationStatus(context, false);
             mNotificationTB.setBackgroundResource(R.drawable.setting_notificaitons_off);
             PushManager.getInstance().turnOffPush(context);
         }else{
-            THSharePreferenceManager.setNotificaitonsStatus(context, true);
+            THSharePreferenceManager.setNotificationStatus(context, true);
             mNotificationTB.setBackgroundResource(R.drawable.setting_notifications_on);
             PushManager.getInstance().turnOnPush(context);
         }

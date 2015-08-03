@@ -1,5 +1,7 @@
 package com.tradehero.firmbargain;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,9 +11,11 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailSubViewPager;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubBuyFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubDelegationFragment;
@@ -20,8 +24,12 @@ import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubSellFragment
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.utils.DaggerUtils;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import cn.htsec.TradeModule;
 import cn.htsec.data.pkg.trade.OnlineListener;
@@ -53,6 +61,12 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
 
     private TradeManager tradeManager;
 
+    //First Enter Actual, show Bank Transfer Dialog
+    private Dialog bankTransferHintDialog;
+    @Inject CurrentUserId currentUserId;
+    private TextView dlgConfirmTV;
+    private TextView dlgCancelTV;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +75,12 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
         black_color = getResources().getColor(R.color.black);
 
         fragmentManager = getChildFragmentManager();
+    }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        DaggerUtils.inject(this);
     }
 
     @Override
@@ -85,6 +104,13 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
         });
 
         return view;
+    }
+
+    public void onResume(){
+        super.onResume();
+        if(!THSharePreferenceManager.isFirstTimeEnteredActualOptPage(getActivity(), currentUserId.get())){
+            showBankTransferHintDialog();
+        }
     }
 
     private void initViews(View view) {
@@ -277,6 +303,40 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
             if(type.equals(SecurityOptActivity.TYPE_SEARCH)){
                 index = 3;
             }
+        }
+    }
+
+    private void showBankTransferHintDialog(){
+        if(bankTransferHintDialog == null){
+            bankTransferHintDialog = new Dialog(getActivity());
+            bankTransferHintDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            bankTransferHintDialog.setCanceledOnTouchOutside(false);
+            bankTransferHintDialog.setCancelable(false);
+            bankTransferHintDialog.setContentView(R.layout.dialog_security_opt_bank_transfer_hint);
+            dlgCancelTV = (TextView)bankTransferHintDialog.findViewById(R.id.dialog_cancel);
+            dlgConfirmTV = (TextView)bankTransferHintDialog.findViewById(R.id.dialog_confirm);
+            dlgConfirmTV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(bankTransferHintDialog != null && getActivity() != null){
+                        bankTransferHintDialog.dismiss();
+                        THSharePreferenceManager.setEnteredActualPageStatus(getActivity(), currentUserId.get(), true);
+                        HAITONGUtils.bankTransfer(getActivity());
+                    }
+                }
+            });
+            dlgCancelTV.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(bankTransferHintDialog != null && getActivity() != null){
+                        bankTransferHintDialog.dismiss();
+                        THSharePreferenceManager.setEnteredActualPageStatus(getActivity(), currentUserId.get(), true);
+                    }
+                }
+            });
+        }
+        if(!bankTransferHintDialog.isShowing()){
+            bankTransferHintDialog.show();
         }
     }
 }

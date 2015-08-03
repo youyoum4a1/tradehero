@@ -86,6 +86,7 @@ import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.CacheHelper;
+import com.tradehero.firmbargain.SecurityOptActualFragment;
 import com.tradehero.firmbargain.SecurityOptActualSubBuyFragment;
 import com.tradehero.firmbargain.SecurityOptActualSubSellFragment;
 import com.tradehero.firmbargain.SecurityOptActualSubDelegationFragment;
@@ -329,7 +330,8 @@ import javax.inject.Singleton;
                         //Security Opt Actual
                         SearchSecurityActualActivity.class,
                         SecurityOptActualSubBuyFragment.class,
-                        SecurityOptActualSubSellFragment.class
+                        SecurityOptActualSubSellFragment.class,
+                        SecurityOptActualFragment.class
                         //Security Opt Actual
 
                         //China Build End
