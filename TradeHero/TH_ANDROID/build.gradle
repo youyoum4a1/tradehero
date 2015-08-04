@@ -80,9 +80,6 @@ android {
     minSdkVersion 14
     targetSdkVersion 22
 
-    // Enabling multidex support.
-    multiDexEnabled true
-
     versionCode project.ext.versionBuild
     versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
 
@@ -121,6 +118,9 @@ android {
     googleplay {
       flavorDimension "marketSegment"
       buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
+
+      // Enabling multidex support.
+      multiDexEnabled true
     }
 
     china {
@@ -134,6 +134,9 @@ android {
 
     samsung {
       flavorDimension "marketSegment"
+
+      // Enabling multidex support.
+      multiDexEnabled true
 
       minSdkVersion 15 // Dictated by IAP v3.0
     }
