@@ -41,4 +41,25 @@ public class KYCAyondoFormUtil
         }
         return modified;
     }
+
+    public static boolean isValidToCreateAccount(@NonNull KYCAyondoForm form)
+    {
+        return form.getUserName() != null
+                && form.getFirstName() != null
+                && form.getLastName() != null
+                && form.getMiddleName() != null
+                && form.getAyondoGender() != null
+                && form.getEmail() != null
+                && form.getNationality() != null
+                && form.getDob() != null
+                && form.isWorkedInFinance1Year() != null
+                && form.isAttendedSeminarAyondo() != null
+                && form.isHaveOtherQualification() != null
+                && form.getAnnualIncomeRange() != null
+                && form.getNetWorthRange() != null
+                && form.getTradingPerQuarter() != null
+                && form.getPercentNetWorthForInvestmentRange() != null
+                && form.getEmploymentStatus() != null
+                && form.isEmployerRegulatedFinancial() != null;
+    }
 }

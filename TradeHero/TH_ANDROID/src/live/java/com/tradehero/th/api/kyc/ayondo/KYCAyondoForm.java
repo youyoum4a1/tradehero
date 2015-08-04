@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
@@ -34,27 +35,30 @@ public class KYCAyondoForm implements KYCForm
 
     @Nullable private Country country;
     @Nullable private ScanReference scanReference;
-    @Nullable private String userName;
-    @Nullable private Gender gender;
-    @Nullable private String fullName;
-    @Nullable private String email;
+    @JsonProperty("UserName") @Nullable private String userName;
+    @JsonProperty("Gender") @Nullable private AyondoGender ayondoGender;
+    @Deprecated @Nullable private String fullName;
+    @JsonProperty("FirstName") @Nullable private String firstName;
+    @JsonProperty("LastName") @Nullable private String lastName;
+    @JsonProperty("MiddleName") @Nullable private String middleName;
+    @JsonProperty("Email") @Nullable private String email;
     @Nullable private String verifiedEmail;
     @Nullable private Integer mobileNumberDialingPrefix;
     @Nullable private String mobileNumber;
     @Nullable private Integer verifiedMobileNumberDialingPrefix;
     @Nullable private String verifiedMobileNumber;
-    @Nullable private CountryCode nationality;
+    @JsonProperty("Nationality") @Nullable private CountryCode nationality;
     @Nullable private CountryCode residency;
-    @Nullable private String dob;
-    @Nullable private AnnualIncomeRange annualIncomeRange;
-    @Nullable private NetWorthRange netWorthRange;
-    @Nullable private PercentNetWorthForInvestmentRange percentNetWorthForInvestmentRange;
-    @Nullable private EmploymentStatus employmentStatus;
-    @Nullable private Boolean employerRegulatedFinancial;
-    @Nullable private Boolean workedInFinance1Year;
-    @Nullable private Boolean attendedSeminarAyondo;
-    @Nullable private Boolean haveOtherQualification;
-    @Nullable private TradingPerQuarter tradingPerQuarter;
+    @JsonProperty("DateOfBirth") @Nullable private String dob;
+    @JsonProperty("AnnualIncome") @Nullable private AnnualIncomeRange annualIncomeRange;
+    @JsonProperty("NetWorth") @Nullable private NetWorthRange netWorthRange;
+    @JsonProperty("InvestmentPortfolio") @Nullable private PercentNetWorthForInvestmentRange percentNetWorthForInvestmentRange;
+    @JsonProperty("EmploymentStatus") @Nullable private EmploymentStatus employmentStatus;
+    @JsonProperty("IsEmployerRegulated") @Nullable private Boolean employerRegulatedFinancial;
+    @JsonProperty("HasProfessionalExperience")@Nullable private Boolean workedInFinance1Year;
+    @JsonProperty("HasAttendedTraining") @Nullable private Boolean attendedSeminarAyondo;
+    @JsonProperty("HasOtherQualification") @Nullable private Boolean haveOtherQualification;
+    @JsonProperty("NumberOfMarginTrades") @Nullable private TradingPerQuarter tradingPerQuarter;
     @Nullable private Boolean tradedSharesBonds;
     @Nullable private Boolean tradedOtcDerivative;
     @Nullable private Boolean tradedEtc;
@@ -79,6 +83,24 @@ public class KYCAyondoForm implements KYCForm
     @Override public void pickFrom(@NonNull ScannedDocument scannedDocument)
     {
         this.scanReference = scannedDocument.getScanReference();
+
+        String firstName = scannedDocument.getFirstName();
+        if (firstName != null)
+        {
+            this.firstName = firstName;
+        }
+
+        String lastName = scannedDocument.getLastName();
+        if (lastName != null)
+        {
+            this.lastName = lastName;
+        }
+
+        String middleName = scannedDocument.getMiddleName();
+        if (middleName != null)
+        {
+            this.middleName = middleName;
+        }
 
         String fullName = scannedDocument.getFullName();
         if (fullName != null)
@@ -107,8 +129,11 @@ public class KYCAyondoForm implements KYCForm
             KYCAyondoForm ayondoForm = (KYCAyondoForm) other;
             this.scanReference = ayondoForm.scanReference != null ? ayondoForm.scanReference : this.scanReference;
             this.userName = ayondoForm.getUserName() != null ? ayondoForm.getUserName() : this.userName;
-            this.gender = ayondoForm.gender != null ? ayondoForm.gender : this.gender;
+            this.ayondoGender = ayondoForm.ayondoGender != null ? ayondoForm.ayondoGender : this.ayondoGender;
             this.fullName = ayondoForm.getFullName() != null ? ayondoForm.getFullName() : this.fullName;
+            this.firstName = ayondoForm.firstName != null ? ayondoForm.firstName : this.firstName;
+            this.lastName = ayondoForm.lastName != null ? ayondoForm.lastName : this.lastName;
+            this.middleName = ayondoForm.middleName != null ? ayondoForm.middleName : this.middleName;
             this.email = ayondoForm.getEmail() != null ? ayondoForm.getEmail() : this.email;
             this.verifiedEmail = ayondoForm.getVerifiedEmail() != null ? ayondoForm.getVerifiedEmail() : this.verifiedEmail;
             this.mobileNumberDialingPrefix =
@@ -186,14 +211,24 @@ public class KYCAyondoForm implements KYCForm
         this.userName = userName;
     }
 
+    @Nullable public AyondoGender getAyondoGender()
+    {
+        return ayondoGender;
+    }
+
+    public void setAyondoGender(@Nullable AyondoGender ayondoGender)
+    {
+        this.ayondoGender = ayondoGender;
+    }
+
     @Nullable public Gender getGender()
     {
-        return gender;
+        return ayondoGender == null ? null : ayondoGender.gender;
     }
 
     public void setGender(@Nullable Gender gender)
     {
-        this.gender = gender;
+        this.ayondoGender = gender == null ? null : AyondoGender.getAyondoGender(gender);
     }
 
     @Nullable @Override public Country getCountry()
@@ -206,14 +241,44 @@ public class KYCAyondoForm implements KYCForm
         this.country = country;
     }
 
-    @Nullable public String getFullName()
+    @Deprecated @Nullable public String getFullName()
     {
         return fullName;
     }
 
-    public void setFullName(@Nullable String fullName)
+    @Deprecated public void setFullName(@Nullable String fullName)
     {
         this.fullName = fullName;
+    }
+
+    @Nullable public String getFirstName()
+    {
+        return firstName;
+    }
+
+    public void setFirstName(@Nullable String firstName)
+    {
+        this.firstName = firstName;
+    }
+
+    @Nullable public String getLastName()
+    {
+        return lastName;
+    }
+
+    public void setLastName(@Nullable String lastName)
+    {
+        this.lastName = lastName;
+    }
+
+    @Nullable public String getMiddleName()
+    {
+        return middleName;
+    }
+
+    public void setMiddleName(@Nullable String middleName)
+    {
+        this.middleName = middleName;
     }
 
     @Nullable public String getEmail()
@@ -575,8 +640,11 @@ public class KYCAyondoForm implements KYCForm
             same = country == null ? ayondoForm.country == null : country.equals(ayondoForm.country);
             same &= scanReference == null ? ayondoForm.scanReference == null : scanReference.equals(ayondoForm.scanReference);
             same &= userName == null ? ayondoForm.userName == null : userName.equals(ayondoForm.userName);
-            same &= gender == null ? ayondoForm.gender == null : gender.equals(ayondoForm.gender);
+            same &= ayondoGender == null ? ayondoForm.ayondoGender == null : ayondoGender.equals(ayondoForm.ayondoGender);
             same &= fullName == null ? ayondoForm.fullName == null : fullName.equals(ayondoForm.fullName);
+            same &= firstName == null ? ayondoForm.firstName == null : firstName.equals(ayondoForm.firstName);
+            same &= lastName == null ? ayondoForm.lastName == null : lastName.equals(ayondoForm.lastName);
+            same &= middleName == null ? ayondoForm.middleName == null : middleName.equals(ayondoForm.middleName);
             same &= email == null ? ayondoForm.email == null : email.equals(ayondoForm.email);
             same &= verifiedEmail == null
                     ? ayondoForm.verifiedEmail == null
@@ -648,8 +716,11 @@ public class KYCAyondoForm implements KYCForm
         int code = country == null ? 0 : country.hashCode();
         code ^= scanReference == null ? 0 : scanReference.hashCode();
         code ^= userName == null ? 0 : userName.hashCode();
-        code ^= gender == null ? 0 : gender.hashCode();
+        code ^= ayondoGender == null ? 0 : ayondoGender.hashCode();
         code ^= fullName == null ? 0 : fullName.hashCode();
+        code ^= firstName == null ? 0 : firstName.hashCode();
+        code ^= lastName == null ? 0 : lastName.hashCode();
+        code ^= middleName == null ? 0 : middleName.hashCode();
         code ^= email == null ? 0 : email.hashCode();
         code ^= verifiedEmail == null ? 0 : verifiedEmail.hashCode();
         code ^= mobileNumberDialingPrefix == null ? 0 : mobileNumberDialingPrefix.hashCode();
