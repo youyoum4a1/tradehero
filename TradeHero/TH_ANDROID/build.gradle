@@ -470,7 +470,7 @@ dependencies {
 
   samsungCompile 'com.sec.android.iap:library:3.0@aar'
   // TODO confirm on a hardware that it is "provided" and not "compile"
-  amazonCompile 'com.amazon:in-app-purchasing:2.0.0'
+  amazonCompile 'com.amazon:in-app-purchasing:2.0.61'
   //  testAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   // This does not work as we would hope. Second "setProperty" wins
   //def fbproj = project(':facebook-android-sdk:facebook')
