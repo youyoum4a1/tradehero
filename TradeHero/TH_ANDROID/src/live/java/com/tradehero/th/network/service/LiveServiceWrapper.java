@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
+import com.tradehero.th.api.kyc.LiveAvailabilityDTO;
 import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
@@ -35,6 +36,13 @@ public class LiveServiceWrapper
         this.liveServiceAyondoRx = liveServiceAyondoRx;
         this.liveBrokerSituationPreference = liveBrokerSituationPreference;
         this.phoneNumberVerifiedPreference = phoneNumberVerifiedPreference;
+    }
+
+    @NonNull public Observable<LiveAvailabilityDTO> getAvailability()
+    {
+        return liveServiceAyondoRx.getAvailability()
+                .cast(LiveAvailabilityDTO.class);
+        // .merge() with other specific ones when time comes
     }
 
     @NonNull public Observable<LiveTradingSituationDTO> getLiveTradingSituation()

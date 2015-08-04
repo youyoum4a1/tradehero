@@ -11,11 +11,11 @@ import java.util.Map;
 
 public enum AnnualIncomeRange
 {
-    LESS15KUSD(R.string.annual_income_less_than_15_k_usd, 1),
-    FROM15KUSDTO40KUSD(R.string.annual_income_from_15_k_to_40_k_usd, 2),
-    FROM40KUSDTO70KUSD(R.string.annual_income_from_40_k_to_70_k_usd, 3),
-    FROM70KUSDTO100KUSD(R.string.annual_income_from_70_k_to_100_k_usd, 4),
-    MORETHAN100KUSD(R.string.annual_income_more_than_100_k_usd, 5),;
+    LESS15KUSD(R.string.annual_income_less_than_15_k_usd, 0),
+    FROM15KUSDTO40KUSD(R.string.annual_income_from_15_k_to_40_k_usd, 15),
+    FROM40KUSDTO70KUSD(R.string.annual_income_from_40_k_to_70_k_usd, 40),
+    FROM70KUSDTO100KUSD(R.string.annual_income_from_70_k_to_100_k_usd, 70),
+    MORETHAN100KUSD(R.string.annual_income_more_than_100_k_usd, 100),;
 
     private static final Map<Integer, AnnualIncomeRange> filedAnnualIncomeRanges;
 

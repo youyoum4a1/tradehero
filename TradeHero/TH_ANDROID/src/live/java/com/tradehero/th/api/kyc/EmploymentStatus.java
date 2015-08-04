@@ -11,25 +11,26 @@ import java.util.Map;
 
 public enum EmploymentStatus
 {
-    EMPLOYED(R.string.employment_status_employed, 1),
-    SELFEMPLOYED(R.string.employment_status_self_employed, 2),
-    UNEMPLOYED(R.string.employment_status_unemployed, 3),
-    RETIRED(R.string.employment_status_retired, 4),
-    STUDENT(R.string.employment_status_student, 5),;
+    EMPLOYED(R.string.employment_status_employed, "Employed"),
+    SELFEMPLOYED(R.string.employment_status_self_employed, "Self-Employed"),
+    UNEMPLOYED(R.string.employment_status_unemployed, "Unemployed"),
+    RETIRED(R.string.employment_status_retired, "Retired"),
+    STUDENT(R.string.employment_status_student, "Student"),
+    OTHER(R.string.employment_status_other, "Other");
 
-    private static final Map<Integer, EmploymentStatus> filedEmploymentStatuses;
+    private static final Map<String, EmploymentStatus> filedEmploymentStatuses;
 
     @StringRes public final int dropDownText;
-    private final int fromServer;
+    @NonNull private final String fromServer;
 
-    EmploymentStatus(@StringRes int dropDownText, int fromServer)
+    EmploymentStatus(@StringRes int dropDownText, @NonNull String fromServer)
     {
         this.dropDownText = dropDownText;
         this.fromServer = fromServer;
     }
 
     @SuppressWarnings("unused")
-    @JsonCreator @NonNull static EmploymentStatus getEmploymentStatus(int fromServer)
+    @JsonCreator @NonNull static EmploymentStatus getEmploymentStatus(@NonNull String fromServer)
     {
         EmploymentStatus candidate = filedEmploymentStatuses.get(fromServer);
         if (candidate == null)
@@ -41,7 +42,7 @@ public enum EmploymentStatus
 
     static
     {
-        Map<Integer, EmploymentStatus> map = new HashMap<>();
+        Map<String, EmploymentStatus> map = new HashMap<>();
         for (EmploymentStatus candidate : values())
         {
             if (map.get(candidate.fromServer) != null)
@@ -54,7 +55,7 @@ public enum EmploymentStatus
     }
 
     @SuppressWarnings("unused")
-    @JsonValue int getFromServerCode()
+    @JsonValue @NonNull String getFromServerCode()
     {
         return fromServer;
     }

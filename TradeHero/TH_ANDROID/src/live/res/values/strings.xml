@@ -70,6 +70,7 @@
   <string name="employment_status_unemployed">Unemployed</string>
   <string name="employment_status_retired">Retired</string>
   <string name="employment_status_student">Student</string>
+  <string name="employment_status_other">Other</string>
 
   <string name="trading_per_quarter_none">None at all</string>
   <string name="trading_per_quarter_1_to_5">1 – 5 times</string>
@@ -84,7 +85,7 @@
   <string name="proof_identity_caption">Proof of Identity</string>
   <string name="identity_document_type_passport">Passport</string>
   <string name="identity_document_type_driver_license">Driver\'s License</string>
-  <string name="identity_document_type_driver_id_card">Identity Card</string>
+  <string name="identity_document_type_id_card">Identity Card</string>
   <string name="identity_document_pick_title">For your Proof of Identity Document, Pick:</string>
   <string name="proof_residence_caption">Proof of Residence</string>
   <string name="residence_document_type_utility_bill">A bill: water, electricity, phone or gas</string>

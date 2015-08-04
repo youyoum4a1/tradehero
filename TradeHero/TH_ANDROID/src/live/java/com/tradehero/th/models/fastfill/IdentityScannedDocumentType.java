@@ -13,7 +13,7 @@ public enum IdentityScannedDocumentType
 {
     PASSPORT(R.string.identity_document_type_passport, 1),
     DRIVER_LICENSE(R.string.identity_document_type_driver_license, 2),
-    IDENTITY_CARD(R.string.identity_document_type_driver_id_card, 3),
+    IDENTITY_CARD(R.string.identity_document_type_id_card, 3),
     ;
 
     public static final Map<Integer, IdentityScannedDocumentType> filedIdentityScannedDocumentTypes;

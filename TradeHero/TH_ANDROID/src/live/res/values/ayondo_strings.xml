@@ -9,4 +9,7 @@
   <string name="experience_financial_seminars_ayondo">Previously attended training seminars or gained knowledge of Ayondo\'s products.</string>
   <string name="experience_financial_qualifications_ayondo">Have other relevant qualifications that you consider would assist your understanding of our services.</string>
 
+  <string name="product_type_cfd">CFD</string>
+  <string name="product_type_spread_betting">SpreadBetting</string>
+
 </resources>
