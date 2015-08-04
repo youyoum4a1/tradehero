@@ -1,8 +1,13 @@
 package com.tradehero.chinabuild.fragment.security;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +40,17 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
     private int mPortfolioId = 0;
     private int competitionId = 0;
     private PortfolioId portfolioIdObj;
-    @Inject
-    TradeServiceWrapper mTradeServiceWrapper;
+    @Inject TradeServiceWrapper mTradeServiceWrapper;
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(SecurityOptActivity.INTENT_END_TRADING)) {
+                queryPendingDelegationHistory();
+            }
+        }
+    };
+    private IntentFilter intentFilter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -81,8 +95,17 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
         } else {
             queryPendingDelegationHistoryWP();
         }
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(SecurityOptActivity.INTENT_END_TRADING);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver, intentFilter);
     }
 
+    @Override
+    public void onPause() {
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
+        super.onPause();
+    }
 
     private void queryPendingDelegationHistory() {
         mProgressBar.setVisibility(View.VISIBLE);

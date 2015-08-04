@@ -1,9 +1,13 @@
 package com.tradehero.firmbargain;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +23,11 @@ import cn.htsec.data.pkg.trade.TradeManager;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockActualDelegationAdapter;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.trade.ClosedTradeDTO;
 import com.tradehero.th.api.trade.ClosedTradeDTOList;
-import com.tradehero.th.network.service.TradeServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
-import javax.inject.Inject;
 import timber.log.Timber;
 
 public class SecurityOptActualSubDelegationFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemClickListener {
@@ -33,11 +36,18 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
     private SecurityOptMockActualDelegationAdapter mListViewAdapter;
     private LinearLayout mNoItemLayout;
     private int mSelectedPosition = -1;
-    @Inject
-    TradeServiceWrapper mTradeServiceWrapper;
     private TradeManager mTradeManager;
     private ProgressBar mProgressBar;
-    private Handler mHandler = new Handler();
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(SecurityOptActivity.INTENT_END_TRADING)) {
+                queryPendingDelegationHistory();
+            }
+        }
+    };
+    private IntentFilter intentFilter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -71,6 +81,15 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
     public void onResume() {
         super.onResume();
         queryPendingDelegationHistory();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(SecurityOptActivity.INTENT_END_TRADING);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    @Override
+    public void onPause() {
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(broadcastReceiver);
+        super.onPause();
     }
 
     private void queryPendingDelegationHistory() {
