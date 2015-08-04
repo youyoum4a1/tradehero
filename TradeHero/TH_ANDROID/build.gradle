@@ -123,15 +123,6 @@ android {
       multiDexEnabled true
     }
 
-    china {
-      flavorDimension "marketSegment"
-
-      // change for different branch (baidu, tencent...)
-      buildConfigField "int", "TAPSTREAM_VERSION", "1"
-      // TODO handle the different kinds
-      // http://stackoverflow.com/questions/9035356/how-can-i-transform-a-properties-file-during-a-gradle-build
-    }
-
     samsung {
       flavorDimension "marketSegment"
 
@@ -161,10 +152,6 @@ android {
     }
 
     noPush {
-      flavorDimension "pushProvider"
-    }
-
-    baidu {
       flavorDimension "pushProvider"
     }
   }
@@ -259,18 +246,6 @@ android {
       }
     }
 
-    googleplayGameBaiduDebug {
-      java {
-        srcDir 'src/googleplayDebug/java'
-      }
-    }
-
-    googleplayLiveBaiduDebug {
-      java {
-        srcDir 'src/googleplayDebug/java'
-      }
-    }
-
     googleplayGameNoPushRelease {
       java {
         srcDir 'src/googleplayRelease/java'
@@ -302,60 +277,6 @@ android {
         srcDir 'src/googleplayRelease/java'
         srcDir 'src/liveRelease/java'
         srcDir 'src/dagger1LiveRelease/java'
-      }
-    }
-
-    googleplayGameBaiduRelease {
-      java {
-        srcDir 'src/googleplayRelease/java'
-      }
-    }
-
-    googleplayLiveBaiduRelease {
-      java {
-        srcDir 'src/googleplayRelease/java'
-        srcDir 'src/dagger1LiveRelease/java'
-      }
-    }
-
-    china {
-    }
-
-    chinaNoPushDebug {
-      java {
-        srcDir 'src/chinaDebug/java'
-      }
-    }
-
-    chinaAirshipDebug {
-      java {
-        srcDir 'src/chinaDebug/java'
-        srcDir 'src/chinaAirship/java'
-      }
-    }
-
-    chinaBaiduDebug {
-      java {
-        srcDir 'src/chinaDebug/java'
-      }
-    }
-
-    chinaNoPushRelease {
-      java {
-        srcDir 'src/chinaRelease/java'
-      }
-    }
-
-    chinaAirshipRelease {
-      java {
-        srcDir 'src/chinaRelease/java'
-        srcDir 'src/chinaAirship/java'
-      }
-    }
-
-    chinBaiduRelease {
-      java {
-        srcDir 'src/chinaRelease/java'
       }
     }
 
@@ -409,19 +330,6 @@ android {
       }
     }
 
-    samsungGameBaiduDebug {
-      java {
-        srcDir 'src/samsungDebug/java'
-      }
-    }
-
-    samsungLiveBaiduDebug {
-      java {
-        srcDir 'src/samsungDebug/java'
-        srcDir 'src/dagger1LiveDebug/java'
-      }
-    }
-
     samsungGameNoPushRelease {
       java {
         srcDir 'src/samsungRelease/java'
@@ -448,19 +356,6 @@ android {
       manifest {
         srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml' // Reuse until there is something special for Samsung
       }
-      java {
-        srcDir 'src/samsungRelease/java'
-        srcDir 'src/dagger1LiveRelease/java'
-      }
-    }
-
-    samsungGameBaiduRelease {
-      java {
-        srcDir 'src/samsungRelease/java'
-      }
-    }
-
-    samsungLiveBaiduRelease {
       java {
         srcDir 'src/samsungRelease/java'
         srcDir 'src/dagger1LiveRelease/java'
@@ -517,19 +412,6 @@ android {
       }
     }
 
-    amazonGameBaiduDebug {
-      java {
-        srcDir 'src/amazonDebug/java'
-      }
-    }
-
-    amazonLiveBaiduDebug {
-      java {
-        srcDir 'src/amazonDebug/java'
-        srcDir 'src/dagger1LiveDebug/java'
-      }
-    }
-
     amazonGameNoPushRelease {
       java {
         srcDir 'src/amazonRelease/java'
@@ -550,19 +432,6 @@ android {
     }
 
     amazonLiveAirshipRelease {
-      java {
-        srcDir 'src/amazonRelease/java'
-        srcDir 'src/dagger1LiveRelease/java'
-      }
-    }
-
-    amazonGameBaiduRelease {
-      java {
-        srcDir 'src/amazonRelease/java'
-      }
-    }
-
-    amazonLiveBaiduRelease {
       java {
         srcDir 'src/amazonRelease/java'
         srcDir 'src/dagger1LiveRelease/java'
@@ -589,7 +458,6 @@ dependencies {
   testCompile "junit:junit:${JUNIT_VERSION}"
 
   compile fileTree(dir: 'libs', include: ['*.jar'])
-  baiduCompile fileTree(dir: 'libs/baidu', include: ['*.jar'])
   releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
 
   compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
