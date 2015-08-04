@@ -29,7 +29,6 @@ your app must degrade gracefully if ADM is unavailable. -->
         <action android:name="com.amazon.device.messaging.intent.REGISTRATION"/>
         <action android:name="com.amazon.device.messaging.intent.RECEIVE"/>
         <category android:name="${applicationId}"/>
-        <category android:name="com.tradehero.th"/>
       </intent-filter>
 
     </receiver>
