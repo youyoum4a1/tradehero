@@ -33,12 +33,8 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
 import com.tradehero.th.fragments.live.DatePickerDialogFragment;
 import com.tradehero.th.fragments.live.VerifyCodeDigitView;
+import com.tradehero.th.fragments.live.VerifyPhoneDialogFragment;
 import com.tradehero.th.models.fastfill.Gender;
-import com.tradehero.th.models.sms.SMSId;
-import com.tradehero.th.models.sms.SMSRequestFactory;
-import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
-import com.tradehero.th.models.sms.SMSServiceWrapper;
-import com.tradehero.th.models.sms.empty.EmptySMSSentConfirmationDTO;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -58,8 +54,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import rx.Observable;
@@ -75,18 +69,17 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
-import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
-    private static final long DEFAULT_POLL_INTERVAL_MILLISEC = 1000;
-    private static final String KEY_EXPECTED_CODE = LiveSignUpStep1AyondoFragment.class.getName() + ".mExpectedCode";
     @LayoutRes private static final int LAYOUT_COUNTRY = R.layout.spinner_live_country_dropdown_item;
     @LayoutRes private static final int LAYOUT_COUNTRY_SELECTED_FLAG = R.layout.spinner_live_country_dropdown_item_selected;
     @LayoutRes private static final int LAYOUT_PHONE_COUNTRY = R.layout.spinner_live_phone_country_dropdown_item;
     @LayoutRes private static final int LAYOUT_PHONE_SELECTED_FLAG = R.layout.spinner_live_phone_country_dropdown_item_selected;
     private static final int REQUEST_PICK_DATE = 2805;
+    private static final int REQUEST_VERIFY_PHONE_NUMBER_CODE = 2808;
 
     @Bind(R.id.info_username) TextView userName;
     @Bind(R.id.info_title) Spinner title;
@@ -101,21 +94,17 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject SMSServiceWrapper smsServiceWrapper;
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject PhoneNumberVerifiedPreference phoneNumberVerifiedPreference;
 
-    private Random randomiser;
-    @Nullable private String mExpectedCode;
-    @Nullable private BehaviorSubject<SMSSentConfirmationDTO> mConfirmationSubject;
-    private Subscription confirmationSubscription;
     private Pattern emailPattern;
     private String emailInvalidMessage;
+    private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.randomiser = new Random(System.nanoTime());
+        verifiedPublishSubject = PublishSubject.create();
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -126,10 +115,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        if (savedInstanceState != null)
-        {
-            this.mExpectedCode = savedInstanceState.getString(KEY_EXPECTED_CODE, this.mExpectedCode);
-        }
     }
 
     @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
@@ -568,7 +553,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 }, new TimberOnErrorAction1("Failed to listen to DOB clicks")));
 
-        ViewObservable.clicks(buttonVerifyPhone)
+        subscriptions.add(ViewObservable.clicks(buttonVerifyPhone)
                 .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnClickEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
                 {
                     @Override public LiveBrokerSituationDTO call(OnClickEvent onClickEvent, LiveBrokerSituationDTO liveBrokerSituationDTO)
@@ -582,85 +567,39 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         final int phoneCountryCode = ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
                         final String phoneNumberInt = phoneNumber.getText().toString();
-                        final String phoneNumberText = "+" + phoneCountryCode + phoneNumberInt;
-                        String expectedCode = String.format("%04d", Math.abs(randomiser.nextInt() % 10000));
-                        mExpectedCode = expectedCode;
-                        VerifyCodeDigitView verifyCodeDigitView =
-                                (VerifyCodeDigitView) LayoutInflater.from(getActivity()).inflate(R.layout.verify_phone_number, null);
-
-                        final BehaviorSubject<SMSSentConfirmationDTO> confirmationSubject = BehaviorSubject.create();
-                        mConfirmationSubject = confirmationSubject;
-
-                        unsubscribe(confirmationSubscription);
-                        confirmationSubscription = createSendSMSObservable(phoneNumberText, expectedCode)
-                                .subscribe(
-                                        new Action1<SMSSentConfirmationDTO>()
-                                        {
-                                            @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
-                                            {
-                                                confirmationSubject.onNext(smsSentConfirmationDTO);
-                                            }
-                                        },
-                                        new TimberOnErrorAction1("Failed to get confirmation from sms"));
 
                         offerToEnterCode(
                                 phoneCountryCode,
-                                phoneNumberInt,
-                                phoneNumberText,
-                                expectedCode,
-                                verifyCodeDigitView,
-                                confirmationSubject,
-                                liveBrokerSituationDTO
+                                phoneNumberInt
                         );
                     }
-                }, new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable throwable)
-                    {
+                }, new TimberOnErrorAction1("Failed to present verify phone dialog")));
 
+        subscriptions.add(verifiedPublishSubject.withLatestFrom(liveBrokerSituationDTOObservable,
+                new Func2<Pair<Integer, String>, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                {
+                    @Override
+                    public LiveBrokerSituationDTO call(Pair<Integer, String> verifiedPhonePair, LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        KYCAyondoForm update = new KYCAyondoForm();
+                        update.setVerifiedMobileNumberDialingPrefix(verifiedPhonePair.first);
+                        update.setVerifiedMobileNumber(verifiedPhonePair.second);
+                        //noinspection ConstantConditions
+                        liveBrokerSituationDTO.kycForm.pickFrom(update);
+                        phoneNumberVerifiedPreference.addVerifiedNumber(verifiedPhonePair.second);
+                        populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, verifiedPhonePair.first, verifiedPhonePair.second);
+                        return null;
                     }
-                });
+                }).subscribe(
+                new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        onNext(liveBrokerSituationDTO);
+                    }
+                }, new TimberOnErrorAction1("")));
 
         return subscriptions;
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
-        onStopSubscriptions.add(
-                getLiveBrokerSituationObservable()
-                        .subscribe(new Action1<LiveBrokerSituationDTO>()
-                        {
-                            @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
-                            {
-                                if (mExpectedCode != null && mConfirmationSubject != null)
-                                {
-                                    final int phoneCountryCode =
-                                            ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
-                                    final String phoneNumberInt = phoneNumber.getText().toString();
-                                    final String phoneNumberText = "+" + phoneCountryCode + phoneNumberInt;
-                                    final VerifyCodeDigitView verifyCodeDigitView =
-                                            (VerifyCodeDigitView) LayoutInflater.from(getActivity()).inflate(R.layout.verify_phone_number, null);
-                                    offerToEnterCode(
-                                            phoneCountryCode,
-                                            phoneNumberInt,
-                                            phoneNumberText,
-                                            mExpectedCode,
-                                            verifyCodeDigitView,
-                                            mConfirmationSubject,
-                                            liveBrokerSituationDTO);
-                                }
-                            }
-                        }, new TimberOnErrorAction1("Failed on redisplaying dialog")));
-    }
-
-    @Override public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        if (mExpectedCode != null)
-        {
-            outState.putString(KEY_EXPECTED_CODE, mExpectedCode);
-        }
     }
 
     @Override public void onDestroyView()
@@ -671,9 +610,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Override public void onDestroy()
     {
-        mConfirmationSubject = null;
-        unsubscribe(confirmationSubscription);
         super.onDestroy();
+        verifiedPublishSubject = null;
     }
 
     @Override public void onNext(@NonNull LiveBrokerSituationDTO situationDTO)
@@ -910,180 +848,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     protected void offerToEnterCode(
             final int phoneCountryCode,
-            final String phoneNumberInt,
-            @NonNull final String phoneNumberText,
-            @NonNull final String expectedCode,
-            @NonNull final VerifyCodeDigitView verifyCodeDigitView,
-            @NonNull Observable<SMSSentConfirmationDTO> smsSentConfirmationDTOObservable,
-            final LiveBrokerSituationDTO liveBrokerSituationDTO)
+            final String phoneNumberInt)
     {
-        this.mExpectedCode = expectedCode;
-        final BehaviorSubject<AlertDialog> verifyDialogSubject = BehaviorSubject.create();
-        final Observable<VerifyCodeDigitView.UserAction> userActionObservable =
-                displayVerifyDialog(verifyCodeDigitView, verifyDialogSubject).share();
-        onStopSubscriptions.add(
-                Observable.combineLatest(
-                        verifyDialogSubject,
-                        updateVerifyView(smsSentConfirmationDTOObservable, phoneNumberText, expectedCode, verifyCodeDigitView)
-                                .compose(new Observable.Transformer<SMSSentConfirmationDTO, VerifyCodeDigitView.UserAction>()
-                                {
-                                    @Override public Observable<VerifyCodeDigitView.UserAction> call(
-                                            Observable<SMSSentConfirmationDTO> smsSentConfirmationDTOObservable)
-                                    {
-                                        onStopSubscriptions.add(smsSentConfirmationDTOObservable
-                                                .subscribe(
-                                                        new EmptyAction1<SMSSentConfirmationDTO>(),
-                                                        new TimberOnErrorAction1("Failed to collect SMS confirmation")));
-                                        return userActionObservable;
-                                    }
-                                }),
-                        new Func2<AlertDialog, VerifyCodeDigitView.UserAction, VerifyCodeDigitView.UserAction>()
-                        {
-                            @Override
-                            public VerifyCodeDigitView.UserAction call(AlertDialog alertDialog,
-                                    VerifyCodeDigitView.UserAction userAction)
-                            {
-                                if (userAction instanceof VerifyCodeDigitView.UserActionResend)
-                                {
-                                    onStopSubscriptions.add(createSendSMSObservable(phoneNumberText, expectedCode)
-                                            .subscribe(
-                                                    new Action1<SMSSentConfirmationDTO>()
-                                                    {
-                                                        @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
-                                                        {
-                                                            Observer<SMSSentConfirmationDTO> copy = mConfirmationSubject;
-                                                            if (copy != null)
-                                                            {
-                                                                copy.onNext(smsSentConfirmationDTO);
-                                                            }
-                                                        }
-                                                    },
-                                                    new TimberOnErrorAction1("Failed to get confirmation from sms")));
-                                }
-                                else if (userAction instanceof VerifyCodeDigitView.UserActionVerify)
-                                {
-                                    if (((VerifyCodeDigitView.UserActionVerify) userAction).code.equals(expectedCode))
-                                    {
-                                        KYCAyondoForm update = new KYCAyondoForm();
-                                        LiveSignUpStep1AyondoFragment.this.mExpectedCode = null;
-                                        LiveSignUpStep1AyondoFragment.this.mConfirmationSubject = null;
-                                        update.setVerifiedMobileNumberDialingPrefix(phoneCountryCode);
-                                        update.setVerifiedMobileNumber(phoneNumberInt);
-                                        //noinspection ConstantConditions
-                                        liveBrokerSituationDTO.kycForm.pickFrom(update);
-                                        phoneNumberVerifiedPreference.addVerifiedNumber(phoneNumberText);
-                                        populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, phoneCountryCode, phoneNumberInt);
-                                        alertDialog.dismiss();
-                                        onNext(new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update));
-                                    }
-                                    else
-                                    {
-                                        onStopSubscriptions.add(AlertDialogRxUtil.build(getActivity())
-                                                .setMessage(R.string.sms_verification_not_match)
-                                                .setPositiveButton(R.string.ok)
-                                                .build()
-                                                .subscribe(
-                                                        new EmptyAction1<OnDialogClickEvent>(),
-                                                        new TimberOnErrorAction1("Failed to prompt user to start sms verification again")));
-                                    }
-                                }
-                                else if (userAction instanceof VerifyCodeDigitView.UserActionDismiss)
-                                {
-                                    LiveSignUpStep1AyondoFragment.this.mConfirmationSubject = null;
-                                    LiveSignUpStep1AyondoFragment.this.mExpectedCode = null;
-                                    alertDialog.dismiss();
-                                }
-                                return userAction;
-                            }
-                        })
-                        .subscribe(
-                                new EmptyAction1<VerifyCodeDigitView.UserAction>(),
-                                new TimberOnErrorAction1("Failed to send SMS")
-                                {
-                                    @Override public void call(Throwable throwable)
-                                    {
-                                        super.call(throwable);
-                                        buttonVerifyPhone.setEnabled(true);
-                                        buttonVerifyPhone.setText(R.string.verify);
-                                    }
-                                }));
-    }
-
-    @NonNull protected Observable<SMSSentConfirmationDTO> updateVerifyView(
-            @NonNull Observable<SMSSentConfirmationDTO> smsSentConfirmationDTOObservable,
-            @NonNull final String phoneNumberText,
-            @NonNull final String expectedCode,
-            @NonNull final VerifyCodeDigitView verifyCodeDigitView)
-    {
-        return smsSentConfirmationDTOObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<SMSSentConfirmationDTO>()
-                {
-                    @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
-                    {
-                        verifyCodeDigitView.display(new VerifyCodeDigitView.Requisite(phoneNumberText, expectedCode, smsSentConfirmationDTO));
-                    }
-                });
-    }
-
-    @NonNull protected Observable<SMSSentConfirmationDTO> createSendSMSObservable(
-            @NonNull final String phoneNumberText,
-            @NonNull String expectedCode)
-    {
-        return smsServiceWrapper.sendMessage(
-                SMSRequestFactory.create(
-                        phoneNumberText,
-                        getString(R.string.sms_verification_sms_content, expectedCode)))
-                .flatMap(new Func1<SMSSentConfirmationDTO, Observable<SMSSentConfirmationDTO>>()
-                {
-                    @Override public Observable<SMSSentConfirmationDTO> call(SMSSentConfirmationDTO smsSentConfirmationDTO)
-                    {
-                        return createRepeatableSMSConfirmation(smsSentConfirmationDTO.getSMSId())
-                                .startWith(smsSentConfirmationDTO);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends SMSSentConfirmationDTO>>()
-                {
-                    @Override public Observable<? extends SMSSentConfirmationDTO> call(final Throwable throwable)
-                    {
-                        String message = throwable.getMessage();
-                        if (TextUtils.isEmpty(message))
-                        {
-                            message = getString(R.string.sms_verification_send_fail);
-                        }
-                        return AlertDialogRxUtil.build(getActivity())
-                                .setTitle(R.string.sms_verification_send_fail_title)
-                                .setMessage(message)
-                                .setNegativeButton(R.string.ok)
-                                .build()
-                                .flatMap(new Func1<OnDialogClickEvent, Observable<SMSSentConfirmationDTO>>()
-                                {
-                                    @Override public Observable<SMSSentConfirmationDTO> call(OnDialogClickEvent clickEvent)
-                                    {
-                                        return Observable.error(throwable);
-                                    }
-                                });
-                    }
-                })
-                .startWith(new EmptySMSSentConfirmationDTO(phoneNumberText, "Fake", R.string.sms_verification_button_empty_submitting));
-    }
-
-    @NonNull protected Observable<SMSSentConfirmationDTO> createRepeatableSMSConfirmation(@NonNull final SMSId smsId)
-    {
-        return smsServiceWrapper.getMessageStatus(smsId)
-                .delaySubscription(DEFAULT_POLL_INTERVAL_MILLISEC, TimeUnit.MILLISECONDS)
-                .flatMap(new Func1<SMSSentConfirmationDTO, Observable<SMSSentConfirmationDTO>>()
-                {
-                    @Override public Observable<SMSSentConfirmationDTO> call(SMSSentConfirmationDTO smsSentConfirmationDTO)
-                    {
-                        if (smsSentConfirmationDTO.isFinalStatus())
-                        {
-                            return Observable.just(smsSentConfirmationDTO);
-                        }
-                        return createRepeatableSMSConfirmation(smsId);
-                    }
-                });
+        VerifyPhoneDialogFragment.show(REQUEST_VERIFY_PHONE_NUMBER_CODE, this, phoneCountryCode, phoneNumberInt);
     }
 
     @NonNull protected Observable<VerifyCodeDigitView.UserAction> displayVerifyDialog(
@@ -1112,6 +879,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             Calendar c = DatePickerDialogFragment.getCalendarFromIntent(data);
             dob.setText(DateUtils.getDisplayableDate(getResources(), c.getTime(), R.string.info_date_format));
+        }
+        else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER_CODE && resultCode == Activity.RESULT_OK)
+        {
+            Pair<Integer, String> verifiedPhoneNumberPair = VerifyPhoneDialogFragment.getVerifiedFromIntent(data);
+            if (verifiedPhoneNumberPair != null)
+            {
+                verifiedPublishSubject.onNext(verifiedPhoneNumberPair);
+            }
         }
     }
 }

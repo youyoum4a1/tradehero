@@ -14,7 +14,8 @@ import dagger.Module;
                 LiveSignUpMainFragment.class,
                 TrendingLiveFragmentUtil.class,
                 BaseLiveFragmentUtil.class,
-                DatePickerDialogFragment.class
+                DatePickerDialogFragment.class,
+                VerifyPhoneDialogFragment.class
         },
         library = true,
         complete = false
