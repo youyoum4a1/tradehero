@@ -17,6 +17,7 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
@@ -29,19 +30,27 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
     @NonNull protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
         return super.createBrokerSituationObservable()
-                .observeOn(AndroidSchedulers.mainThread())
                 .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
                 {
                     @Override public Boolean call(LiveBrokerSituationDTO situationDTO)
                     {
+                        return situationDTO.kycForm instanceof KYCAyondoForm;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO situationDTO)
+                    {
                         List<StepStatus> stepStatuses = situationDTO.kycForm == null ? null : situationDTO.kycForm.getStepStatuses();
+                        //We only check against the first status to enable/disable next button for all steps
+                        //The other statuses are being ignored.
                         StepStatus firstStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(0);
                         if (btnNext != null)
                         {
                             // That's right, the first status decides for all Next buttons
                             btnNext.setEnabled(firstStatus != null && firstStatus.equals(StepStatus.COMPLETE));
                         }
-                        return situationDTO.kycForm instanceof KYCAyondoForm;
                     }
                 })
                 .observeOn(Schedulers.io());
