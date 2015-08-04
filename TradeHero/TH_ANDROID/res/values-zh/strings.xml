@@ -235,4 +235,5 @@
     <string name="trading_hint_a">通讯中.&#160;</string>
     <string name="trading_hint_b">通讯中..&#160;&#160;</string>
     <string name="trading_hint_c">通讯中...</string>
+    <string name="stock_bank_transfer">银证转账</string>
 </resources>

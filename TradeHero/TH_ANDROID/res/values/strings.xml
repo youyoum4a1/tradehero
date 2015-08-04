@@ -607,5 +607,6 @@
 
     <!-- HAITONG SDK -->
     <string name="action_settings">Settings</string>
+    <string name="stock_bank_transfer">stock-bank transaction</string>
     <!-- HAITONG SDK -->
 </resources>

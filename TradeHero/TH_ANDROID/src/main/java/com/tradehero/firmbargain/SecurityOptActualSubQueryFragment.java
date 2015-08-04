@@ -2,6 +2,7 @@ package com.tradehero.firmbargain;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import cn.htsec.TradeModule;
 import cn.htsec.data.pkg.trade.IPackageProxy;
 import cn.htsec.data.pkg.trade.TradeDataHelper;
 import cn.htsec.data.pkg.trade.TradeInterface;
@@ -36,6 +38,7 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
     private LinearLayout mTitleLayout;
     private ProgressBar mProgressBar1;
     private ProgressBar mProgressBar2;
+    private TextView mStockBankTransferButton;
     private SecurityOptMockActualQueryTradeAdapter mListViewAdapter1;
     private SecurityOptMockActualQueryDelegationAdapter mListViewAdapter2;
     @Inject
@@ -77,6 +80,8 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
         mTitleLayout.setOnClickListener(this);
         mProgressBar1 = (ProgressBar) view.findViewById(R.id.loading);
         mProgressBar2 = (ProgressBar) view.findViewById(R.id.loading2);
+        mStockBankTransferButton = (TextView) view.findViewById(R.id.stock_bank_transfer);
+        mStockBankTransferButton.setOnClickListener(this);
     }
 
     @Override
@@ -271,6 +276,14 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
                 mListViewAdapter1.setShowMore(mIsShowMore);
                 mListViewAdapter1.notifyDataSetChanged();
                 mBelowLayout.setVisibility(mIsShowMore ? View.GONE : View.VISIBLE);
+                break;
+            case R.id.stock_bank_transfer:
+                Intent intent = new Intent(getActivity(), TradeModule.class);
+                Bundle bundle = new Bundle();
+                //银证转账界面
+                bundle.putString(TradeModule.EXTRA_KEY_PAGETYPE, TradeModule.PAGETYPE_TRANSFER);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
         }
     }
