@@ -41,7 +41,7 @@ public class HAITONGUtils {
         }
         Intent intent = new Intent();
         intent.putExtra("type", 0);//开户 ，开户传此
-//		intent.putExtra("channel", "渠道短连接");// 开户时可以传此参数
+		intent.putExtra("channel", "mowhse");// 开户时可以传此参数
 //		intent.putExtra("mobileNo", "手机号");// 开户时可以传此参数，有就传 没有不传
         intent.setClass(activity, com.cairh.app.sjkh.MainActivity.class);
         activity.startActivity(intent);
