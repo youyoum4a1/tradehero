@@ -134,14 +134,14 @@
           android:layout_height="wrap_content"
           android:layout_centerVertical="true"
           android:layout_toEndOf="@id/country_code_spinner"
-          android:layout_toLeftOf="@id/btn_verify_phone"
           android:layout_toRightOf="@id/country_code_spinner"
+          android:layout_toLeftOf="@id/btn_verify_phone"
           android:layout_toStartOf="@id/btn_verify_phone"
           app:hintTextAppearance="@style/TH.Caption"
           >
 
         <EditText
-            android:id="@+id/number_right"
+            android:id="@+id/info_phone_number"
             style="@style/TH.Body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

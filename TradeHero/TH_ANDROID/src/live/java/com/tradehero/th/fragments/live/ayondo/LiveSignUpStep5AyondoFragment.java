@@ -15,7 +15,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
@@ -38,8 +37,10 @@ import com.tradehero.th.widget.DocumentActionWidgetObservable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnCheckedChangeEvent;
 import rx.android.view.OnClickEvent;
@@ -73,16 +74,15 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return inflater.inflate(R.layout.fragment_sign_up_live_ayondo_step_5, container, false);
     }
 
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    @Override protected List<Subscription> onInitAyondoSubscription(final Observable<LiveBrokerDTO> brokerDTOObservable,
+            Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable,
+            Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
-
-        final Observable<LiveBrokerDTO> brokerDTOObservable = createBrokerObservable();
+        List<Subscription> subscriptions = new ArrayList<>();
 
         onDestroyViewSubscriptions.add(
                 Observable.combineLatest(
-                        getKYCAyondoFormOptionsObservable().observeOn(AndroidSchedulers.mainThread())
+                        kycAyondoFormOptionsDTOObservable.observeOn(AndroidSchedulers.mainThread())
                                 .doOnNext(new Action1<KYCAyondoFormOptionsDTO>()
                                 {
                                     @Override public void call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
@@ -98,7 +98,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         residenceDocumentTypeSpinner.setAdapter(residenceDocumentTypeAdapter);
                                     }
                                 }),
-                        getBrokerSituationObservable().observeOn(AndroidSchedulers.mainThread()),
+                        liveBrokerSituationDTOObservable.observeOn(AndroidSchedulers.mainThread()),
                         new Func2<KYCAyondoFormOptionsDTO, LiveBrokerSituationDTO, Object>()
                         {
                             @Override
@@ -183,7 +183,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction1("Failed to listen to spinner updates and agreement checkboxes")));
 
-        onDestroyViewSubscriptions.add(getBrokerSituationObservable()
+        onDestroyViewSubscriptions.add(liveBrokerSituationDTOObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
@@ -282,6 +282,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.ACTION);
                             }
                         })
+                        .observeOn(AndroidSchedulers.mainThread())
                         .flatMap(new Func1<DocumentActionWidgetAction, Observable<Bitmap>>()
                         {
                             @Override public Observable<Bitmap> call(DocumentActionWidgetAction ignored)
@@ -314,7 +315,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 },
                                 new TimberOnErrorAction1("Failed to ask for and get residence document bitmap")));
 
-        onDestroyViewSubscriptions.add(getKYCAyondoFormOptionsObservable()
+        onDestroyViewSubscriptions.add(kycAyondoFormOptionsDTOObservable
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<KYCAyondoFormOptionsDTO, Observable<String>>()
                 {
                     @Override public Observable<String> call(KYCAyondoFormOptionsDTO optionsDTO)
@@ -338,10 +340,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to url clicks")));
-
-        getKYCAyondoFormOptionsObservable().connect();
-        getKYCFormOptionsObservable().connect();
-        getBrokerSituationObservable().connect();
+        return subscriptions;
     }
 
     @NonNull private Observable<Bitmap> pickDocument(@StringRes int dialogTitle, @NonNull final ImageRequesterUtil imageRequesterUtil)

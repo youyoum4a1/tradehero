@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.live;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
@@ -24,9 +26,11 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.persistence.kyc.KYCFormOptionsCache;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.utils.GraphicUtil;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Subscription;
 import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
 import rx.subjects.BehaviorSubject;
@@ -43,6 +47,8 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;
     @Nullable private ConnectableObservable<LiveBrokerSituationDTO> brokerSituationObservable;
     @Nullable private ConnectableObservable<KYCFormOptionsDTO> kycOptionsObservable;
+    private Subscription kycOptionsSubscription;
+    private Subscription brokerSituationSubscription;
 
     public LiveSignUpStepBaseFragment()
     {
@@ -53,7 +59,6 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        //brokerSituationSubject.onNext(liveBrokerSituationPreference.get());
     }
 
     @Override public void onDestroy()
@@ -89,15 +94,72 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         return prevNextSubject.asObservable();
     }
 
-    @NonNull public ConnectableObservable<LiveBrokerSituationDTO> getBrokerSituationObservable()
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
-        ConnectableObservable<LiveBrokerSituationDTO> copy = brokerSituationObservable;
-        if (copy == null)
+        super.onViewCreated(view, savedInstanceState);
+
+        ButterKnife.bind(this, view);
+
+        brokerSituationObservable = createBrokerSituationObservable().publish();
+        Observable<LiveBrokerDTO> brokerObservable = createBrokerObservable(brokerSituationObservable);
+        kycOptionsObservable = createKYCFormOptionsObservable(brokerSituationObservable).publish();
+
+        List<Subscription> list = onInitSubscription(brokerObservable, brokerSituationObservable, kycOptionsObservable);
+        if (!list.isEmpty())
         {
-            copy = createBrokerSituationObservable().publish();
-            brokerSituationObservable = copy;
+            for (Subscription sub :
+                    list)
+            {
+                onDestroyViewSubscriptions.add(sub);
+            }
         }
-        return copy;
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        onConnectObservables();
+    }
+
+    @Override public void onPause()
+    {
+        super.onPause();
+        onDisconnectObservables();
+    }
+
+    @CallSuper protected void onConnectObservables()
+    {
+        if (kycOptionsObservable != null)
+        {
+            kycOptionsSubscription = kycOptionsObservable.connect();
+        }
+        if (brokerSituationObservable != null)
+        {
+            brokerSituationSubscription = brokerSituationObservable.connect();
+        }
+    }
+
+    @CallSuper protected void onDisconnectObservables()
+    {
+        if(kycOptionsSubscription != null)
+        {
+            kycOptionsSubscription.unsubscribe();
+        }
+        if(brokerSituationSubscription != null)
+        {
+            brokerSituationSubscription.unsubscribe();
+        }
+    }
+
+    @NonNull protected List<Subscription> onInitSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
+            Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable, Observable<KYCFormOptionsDTO> kycFormOptionsDTOObservable)
+    {
+        return Collections.emptyList();
+    }
+
+    protected Observable<LiveBrokerSituationDTO> getLiveBrokerSituationObservable()
+    {
+        return brokerSituationObservable;
     }
 
     @Override public void onDestroyView()
@@ -114,32 +176,20 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                 .distinctUntilChanged();
     }
 
-    @NonNull protected Observable<LiveBrokerDTO> createBrokerObservable()
+    private Observable<LiveBrokerDTO> createBrokerObservable(Observable<LiveBrokerSituationDTO> brokerSituationObservable)
     {
-        return getBrokerSituationObservable()
-                .map(new Func1<LiveBrokerSituationDTO, LiveBrokerDTO>()
-                {
-                    @Override public LiveBrokerDTO call(LiveBrokerSituationDTO situationDTO)
-                    {
-                        return situationDTO.broker;
-                    }
-                });
-    }
-
-    @NonNull public ConnectableObservable<KYCFormOptionsDTO> getKYCFormOptionsObservable()
-    {
-        ConnectableObservable<KYCFormOptionsDTO> copy = kycOptionsObservable;
-        if (copy == null)
+        return brokerSituationObservable.map(new Func1<LiveBrokerSituationDTO, LiveBrokerDTO>()
         {
-            copy = createKYCFormOptionsObservable().publish();
-            kycOptionsObservable = copy;
-        }
-        return copy;
+            @Override public LiveBrokerDTO call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+            {
+                return liveBrokerSituationDTO.broker;
+            }
+        });
     }
 
-    @NonNull protected Observable<KYCFormOptionsDTO> createKYCFormOptionsObservable()
+    @NonNull protected Observable<KYCFormOptionsDTO> createKYCFormOptionsObservable(Observable<LiveBrokerSituationDTO> brokerSituationObservable)
     {
-        return getBrokerSituationObservable()
+        return brokerSituationObservable
                 .distinctUntilChanged(new Func1<LiveBrokerSituationDTO, LiveBrokerId>()
                 {
                     @Override public LiveBrokerId call(LiveBrokerSituationDTO situationDTO)

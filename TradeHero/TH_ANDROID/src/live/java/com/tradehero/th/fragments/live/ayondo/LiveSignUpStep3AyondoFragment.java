@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
@@ -20,8 +19,10 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
+import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnCheckedChangeEvent;
 import rx.android.widget.WidgetObservable;
@@ -44,13 +45,15 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return inflater.inflate(R.layout.fragment_sign_up_live_ayondo_step_3, container, false);
     }
 
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
+            Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable,
+            Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        List<Subscription> subscriptions = new ArrayList<>();
 
-        onDestroyViewSubscriptions.add(Observable.combineLatest(
-                getBrokerSituationObservable()
+        subscriptions.add(Observable.combineLatest(
+                liveBrokerSituationDTOObservable
+                        .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<LiveBrokerSituationDTO>()
                         {
                             @Override public void call(LiveBrokerSituationDTO situationDTO)
@@ -60,9 +63,8 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         situationDTO.broker,
                                         populate((KYCAyondoForm) situationDTO.kycForm)));
                             }
-                        })
-                        .observeOn(AndroidSchedulers.mainThread()),
-                getKYCAyondoFormOptionsObservable()
+                        }),
+                kycAyondoFormOptionsDTOObservable
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<KYCAyondoFormOptionsDTO>()
                         {
@@ -91,8 +93,8 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new EmptyAction1<>(),
                         new TimberOnErrorAction1("Failed to populate AyondoStep2 spinners")));
 
-        onDestroyViewSubscriptions.add(Observable.combineLatest(
-                createBrokerObservable(),
+        subscriptions.add(Observable.combineLatest(
+                brokerDTOObservable,
                 Observable.merge(
                         WidgetObservable.input(workInFinanceButton)
                                 .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
@@ -167,10 +169,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to compound buttons")));
-
-        getKYCAyondoFormOptionsObservable().connect();
-        getKYCFormOptionsObservable().connect();
-        getBrokerSituationObservable().connect();
+        return subscriptions;
     }
 
     @NonNull protected KYCAyondoForm populate(@NonNull KYCAyondoForm kycForm)

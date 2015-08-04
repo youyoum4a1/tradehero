@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
 import rx.functions.Action1;
@@ -64,12 +65,13 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         mGeocoder = new Geocoder(getActivity());
     }
 
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
+            Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable,
+            Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        List<Subscription> subscriptions = new ArrayList<>();
 
-        onDestroyViewSubscriptions.add(primaryWidget.getPickLocationClickedObservable()
+        subscriptions.add(primaryWidget.getPickLocationClickedObservable()
                 .subscribe(new Action1<OnClickEvent>()
                 {
                     @Override public void call(OnClickEvent onClickEvent)
@@ -78,7 +80,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 }));
 
-        onDestroyViewSubscriptions.add(secondaryWidget.getPickLocationClickedObservable()
+        subscriptions.add(secondaryWidget.getPickLocationClickedObservable()
                 .subscribe(new Action1<OnClickEvent>()
                 {
                     @Override public void call(OnClickEvent onClickEvent)
@@ -87,9 +89,9 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 }));
 
-        onDestroyViewSubscriptions.add(
+        subscriptions.add(
                 Observable.combineLatest(
-                        getKYCAyondoFormOptionsObservable()
+                        kycAyondoFormOptionsDTOObservable
                                 .observeOn(Schedulers.computation())
                                 .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
                                 {
@@ -140,7 +142,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return null;
                             }
                         })
-                        .withLatestFrom(getBrokerSituationObservable(), new Func2<Object, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                        .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<Object, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
                         {
                             @Override public LiveBrokerSituationDTO call(Object o, LiveBrokerSituationDTO liveBrokerSituationDTO)
                             {
@@ -165,7 +167,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         );
 
-        onDestroyViewSubscriptions.add(
+        subscriptions.add(
                 Observable.combineLatest(
                         primaryWidget.getKYCAddressObservable()
                                 .doOnNext(new Action1<KYCAddress>()
@@ -191,7 +193,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return addresses;
                             }
                         })
-                        .withLatestFrom(getBrokerSituationObservable().map(new Func1<LiveBrokerSituationDTO, LiveBrokerDTO>()
+                        .withLatestFrom(liveBrokerSituationDTOObservable.map(new Func1<LiveBrokerSituationDTO, LiveBrokerDTO>()
                                 {
                                     @Override public LiveBrokerDTO call(LiveBrokerSituationDTO liveBrokerSituationDTO)
                                     {
@@ -216,10 +218,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         }, new TimberOnErrorAction1("Failed in saving updated address"))
         );
-
-        getKYCAyondoFormOptionsObservable().connect();
-        getKYCFormOptionsObservable().connect();
-        getBrokerSituationObservable().connect();
+        return subscriptions;
     }
 
     public void pickLocation(int requestCode)
