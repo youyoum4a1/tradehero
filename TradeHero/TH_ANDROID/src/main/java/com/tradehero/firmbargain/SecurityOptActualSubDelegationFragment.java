@@ -236,6 +236,7 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
 
 //                    mTvResult.setText(sb.toString());
                     Timber.d("lyl "+sb.toString());
+                    mSelectedPosition = -1;
                     queryPendingDelegationHistory();
                 }
 

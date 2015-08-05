@@ -176,6 +176,7 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
                         @Override
                         public void success(Response response, Response response2) {
                             THToast.show(getString(R.string.cancel_delegation_success));
+                            mSelectedPosition = -1;
                             if (competitionId == 0) {
                                 queryPendingDelegationHistory();
                             } else {
@@ -186,6 +187,7 @@ public class SecurityOptMockSubDelegationFragment extends Fragment implements Vi
                         @Override
                         public void failure(RetrofitError error) {
                             THToast.show(getString(R.string.cancel_delegation_fail));
+                            mSelectedPosition = -1;
                             if (competitionId == 0) {
                                 queryPendingDelegationHistory();
                             } else {
