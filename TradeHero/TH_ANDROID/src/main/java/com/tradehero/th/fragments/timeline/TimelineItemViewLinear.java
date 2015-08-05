@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.PopupMenu;
+import com.squareup.picasso.Picasso;
 import com.tradehero.common.rx.PopupMenuItemClickOperator;
 import com.tradehero.th.R;
 import com.tradehero.th.api.alert.AlertId;
@@ -24,6 +25,7 @@ import com.tradehero.th.models.discussion.SecurityUserAction;
 import com.tradehero.th.models.discussion.UpdateStockAlertUserAction;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.utils.SecurityUtils;
+import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -32,6 +34,7 @@ import rx.subjects.PublishSubject;
 
 public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLinear
 {
+    @Inject protected Picasso picasso;
     @NonNull private final PublishSubject<UserDiscussionAction> userActionSubject;
 
     //<editor-fold desc="Constructors">
@@ -44,7 +47,7 @@ public class TimelineItemViewLinear extends AbstractDiscussionCompactItemViewLin
 
     @NonNull @Override protected TimelineItemViewHolder createViewHolder()
     {
-        return new TimelineItemViewHolder();
+        return new TimelineItemViewHolder(picasso);
     }
 
     @NonNull @Override public Observable<UserDiscussionAction> getUserActionObservable()

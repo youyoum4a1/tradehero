@@ -2,8 +2,6 @@ package com.tradehero.th.utils;
 
 import android.content.Context;
 import android.os.Environment;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.tradehero.th.R;
 
 public class ImageUtils
 {
@@ -24,16 +22,4 @@ public class ImageUtils
             return context.getFilesDir().getPath();
         }
     }
-
-    public static DisplayImageOptions getAvatarImageLoaderOptions(){
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .showImageOnLoading(R.drawable.superman_facebook)
-                .showImageForEmptyUri(R.drawable.superman_facebook)
-                .showImageOnFail(R.drawable.superman_facebook)
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
-        return options;
-    }
-
 }

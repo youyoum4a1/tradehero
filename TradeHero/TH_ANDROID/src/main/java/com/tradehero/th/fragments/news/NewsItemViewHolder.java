@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.news;
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -12,7 +13,7 @@ import android.widget.LinearLayout;
 import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
-import android.support.annotation.Nullable;
+import com.squareup.picasso.Picasso;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.text.ClickableTagProcessor;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -49,9 +50,9 @@ public class NewsItemViewHolder extends
     @NonNull protected SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
 
     //<editor-fold desc="Constructors">
-    public NewsItemViewHolder(@NonNull Context context)
+    public NewsItemViewHolder(@NonNull Context context, @NonNull Picasso picasso)
     {
-        super();
+        super(picasso);
         simpleSecurityItemViewAdapter = new SimpleSecurityItemViewAdapter(
                 context, R.layout.trending_security_item);
     }

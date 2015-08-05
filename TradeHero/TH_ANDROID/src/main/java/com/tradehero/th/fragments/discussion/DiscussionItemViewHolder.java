@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -9,9 +10,9 @@ public class DiscussionItemViewHolder
         extends AbstractDiscussionItemViewHolder
 {
     //<editor-fold desc="Constructors">
-    public DiscussionItemViewHolder()
+    public DiscussionItemViewHolder(@NonNull Picasso picasso)
     {
-        super();
+        super(picasso);
     }
     //</editor-fold>
 

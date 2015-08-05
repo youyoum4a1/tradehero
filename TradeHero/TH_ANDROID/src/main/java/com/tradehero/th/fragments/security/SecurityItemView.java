@@ -2,15 +2,15 @@ package com.tradehero.th.fragments.security;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
-import android.support.annotation.Nullable;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import butterknife.ButterKnife;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -23,11 +23,13 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
 import java.util.Map;
+import javax.inject.Inject;
 import timber.log.Timber;
 
 public class SecurityItemView extends RelativeLayout
         implements DTOView<SecurityCompactDTO>
 {
+    @Inject protected Picasso picasso;
     @Bind(R.id.stock_logo) ImageView stockLogo;
     @Bind(R.id.ic_market_close) @Nullable ImageView marketCloseIcon;
     @Bind(R.id.stock_name) TextView stockName;
@@ -316,7 +318,8 @@ public class SecurityItemView extends RelativeLayout
 
         if (isMyUrlOk())
         {
-            ImageLoader.getInstance().displayImage(securityCompactDTO.imageBlobUrl, stockLogo);
+            picasso.load(securityCompactDTO.imageBlobUrl)
+                    .into(stockLogo);
         }
         else
         {

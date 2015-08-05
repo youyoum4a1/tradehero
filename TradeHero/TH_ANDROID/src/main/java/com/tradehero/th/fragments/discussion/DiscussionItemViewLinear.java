@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.api.discussion.DiscussionDTO;
+import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class DiscussionItemViewLinear
         extends AbstractDiscussionCompactItemViewLinear
 {
+    @Inject protected Picasso picasso;
+
     //<editor-fold desc="Constructors">
     public DiscussionItemViewLinear(Context context, AttributeSet attrs)
     {
@@ -19,7 +23,7 @@ public class DiscussionItemViewLinear
 
     @NonNull @Override protected DiscussionItemViewHolder createViewHolder()
     {
-        return new DiscussionItemViewHolder();
+        return new DiscussionItemViewHolder(picasso);
     }
 
     public static class Requisite extends AbstractDiscussionCompactItemViewLinear.Requisite

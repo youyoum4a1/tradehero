@@ -3,24 +3,14 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.activities.ActivityBuildTypeUtil;
 import com.tradehero.th.inject.BaseInjector;
 import com.tradehero.th.inject.ExInjector;
 import com.tradehero.th.models.level.UserXPAchievementHandler;
 import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.utils.ImageUtils;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.ObjectGraph;
-import java.io.File;
 import javax.inject.Inject;
 import rx.functions.Action1;
 import timber.log.Timber;
@@ -67,27 +57,6 @@ public class THApp extends BaseApplication
                                 Timber.e(throwable, "Failed to initialise PushNotificationManager");
                             }
                         });
-
-        DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .build();
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                .defaultDisplayImageOptions(defaultOptions)
-                .threadPoolSize(3)
-                .threadPriority(Thread.NORM_PRIORITY - 2)
-                .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new UsingFreqLimitedMemoryCache(MEMORY_CACHE_SIZE))
-                .memoryCacheSize(MEMORY_CACHE_SIZE)
-                .diskCacheSize(DISK_CACHE_SIZE)
-                .diskCacheFileNameGenerator(new Md5FileNameGenerator())
-                .tasksProcessingOrder(QueueProcessingType.LIFO)
-                .diskCacheFileCount(300)
-                .diskCache(new UnlimitedDiscCache(new File(ImageUtils.getImageStoragePath(this))))
-                .imageDownloader(new BaseImageDownloader(this, 5 * 1000, 30 * 1000))
-                .build();
-
-        ImageLoader.getInstance().init(config);
 
         THLog.showDeveloperKeyHash(this);
     }

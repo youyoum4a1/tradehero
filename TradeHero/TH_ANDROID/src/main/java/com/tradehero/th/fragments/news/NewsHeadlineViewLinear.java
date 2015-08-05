@@ -5,13 +5,16 @@ import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLinear
 {
+    @Inject protected Picasso picasso;
     //<editor-fold desc="Constructors">
     public NewsHeadlineViewLinear(Context context, AttributeSet attrs)
     {
@@ -21,7 +24,7 @@ public class NewsHeadlineViewLinear extends AbstractDiscussionCompactItemViewLin
 
     @NonNull @Override protected NewsItemCompactViewHolder createViewHolder()
     {
-        return new NewsItemCompactViewHolder();
+        return new NewsItemCompactViewHolder(picasso);
     }
 
     public void setNewsBackgroundResource(@DrawableRes int resId)

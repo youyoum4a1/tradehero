@@ -7,16 +7,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import butterknife.ButterKnife;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.education.VideoDTO;
 import com.tradehero.th.inject.HierarchyInjector;
+import javax.inject.Inject;
 
 public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
 {
+    @Inject Picasso picasso;
     @Bind(R.id.video_thumbnail) ImageView thumbnail;
     @Bind(R.id.video_title) TextView title;
     @Bind(R.id.video_padlock) View padlock;
@@ -36,7 +38,8 @@ public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
     @Override public void display(@NonNull VideoDTO dto)
     {
         title.setText(dto.name);
-        ImageLoader.getInstance().displayImage(dto.thumbnail, thumbnail);
+        picasso.load(dto.thumbnail)
+                .into(thumbnail);
         if (dto.locked)
         {
             padlock.setVisibility(View.VISIBLE);

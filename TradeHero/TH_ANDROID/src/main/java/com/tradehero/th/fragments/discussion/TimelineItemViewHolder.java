@@ -2,12 +2,12 @@ package com.tradehero.th.fragments.discussion;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import butterknife.Bind;
 import butterknife.OnClick;
-import android.support.annotation.Nullable;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.graphics.AbstractSequentialTransformation;
 import com.tradehero.common.graphics.ScaleKeepRatioTransformation;
@@ -32,9 +32,9 @@ public class TimelineItemViewHolder
     @Bind(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
     //<editor-fold desc="Constructors">
-    public TimelineItemViewHolder()
+    public TimelineItemViewHolder(@NonNull Picasso picasso)
     {
-        super();
+        super(picasso);
     }
     // </editor-fold>
 
@@ -66,7 +66,8 @@ public class TimelineItemViewHolder
         {
             vendorImage.setContentDescription(dto.vendorImageDescription);
             vendorImage.setVisibility(dto.vendorImageVisibility);
-            ImageLoader.getInstance().displayImage(dto.vendorImageUrl, vendorImage);
+            picasso.load(dto.vendorImageUrl)
+                    .into(vendorImage);
         }
         if (watchlistIndicator != null)
         {
