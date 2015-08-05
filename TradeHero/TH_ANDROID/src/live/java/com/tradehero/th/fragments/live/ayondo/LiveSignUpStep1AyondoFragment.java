@@ -407,15 +407,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     }
                                 })
                                 .cast(OnItemSelectedEvent.class),
-                        WidgetObservable.text(phoneNumber)
-                                .doOnNext(new Action1<OnTextChangeEvent>()
-                                {
-                                    @Override public void call(OnTextChangeEvent onTextChangeEvent)
-                                    {
-                                        Timber.d("typed: %s", onTextChangeEvent.text().toString());
-                                    }
-                                })
-                        ,
+                        WidgetObservable.text(phoneNumber),
                         new Func2<OnItemSelectedEvent, OnTextChangeEvent, Pair<Integer, String>>()
                         {
                             @Override public Pair<Integer, String> call(OnItemSelectedEvent onSelectedEvent, OnTextChangeEvent onTextChangeEvent)
@@ -454,7 +446,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     final Pair<Integer, String> phoneNumberPair)
                             {
                                 String numberText = VerifyPhoneDialogFragment.getFormattedPhoneNumber(phoneNumberPair.first, phoneNumberPair.second);
-                                Timber.d("checked number: %s", numberText);
                                 return liveServiceWrapper.getPhoneNumberVerifiedStatus(numberText)
                                         .map(new Func1<PhoneNumberVerifiedStatusDTO, PhoneNumberAndVerifiedDTO>()
                                         {
@@ -475,8 +466,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     @Override public LiveBrokerSituationDTO call(PhoneNumberAndVerifiedDTO phoneNumberAndVerifiedDTO,
                                             LiveBrokerSituationDTO liveBrokerSituationDTO)
                                     {
-                                        Timber.d("number: %s", phoneNumberAndVerifiedDTO.typedNumber);
-
                                         KYCAyondoForm update = new KYCAyondoForm();
                                         int dialingPrefix = phoneNumberAndVerifiedDTO.dialingPrefix;
                                         String newNumber = phoneNumberAndVerifiedDTO.typedNumber;

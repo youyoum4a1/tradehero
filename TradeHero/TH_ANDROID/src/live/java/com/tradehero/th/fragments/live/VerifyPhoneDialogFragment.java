@@ -44,7 +44,6 @@ import rx.functions.Func2;
 import rx.functions.Func4;
 import rx.internal.util.SubscriptionList;
 import rx.subjects.BehaviorSubject;
-import timber.log.Timber;
 
 public class VerifyPhoneDialogFragment extends BaseDialogFragment
 {
@@ -149,14 +148,6 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
 
         onDestroyViewSubscriptions.add(
                 mSMSConfirmationSubject
-                        .doOnNext(new Action1<SMSSentConfirmationDTO>()
-                        {
-                            @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
-                            {
-                                Timber.d("Sms confirmation received: %s for %s", getString(smsSentConfirmationDTO.getStatusStringRes()),
-                                        smsSentConfirmationDTO.getTo());
-                            }
-                        })
                         .subscribe(new Action1<SMSSentConfirmationDTO>()
                                    {
                                        @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
@@ -251,14 +242,6 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                     }
                 })
                 .startWith(new EmptySMSSentConfirmationDTO(mFormattedNumber, "Fake", R.string.sms_verification_button_empty_submitting))
-                .doOnNext(new Action1<SMSSentConfirmationDTO>()
-                {
-                    @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
-                    {
-                        Timber.d("Sms confirmation emitted: %s for %s", getString(smsSentConfirmationDTO.getStatusStringRes()),
-                                smsSentConfirmationDTO.getTo());
-                    }
-                })
                 .subscribe(new Action1<SMSSentConfirmationDTO>()
                            {
                                @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
@@ -297,7 +280,6 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
 
     private void validateAgainstExpected(String toBeValidated)
     {
-        Timber.d("comparing expected: %s with actual: %s", mExpectedCode, toBeValidated);
         if (toBeValidated.equals(mExpectedCode))
         {
             dismissWithResult();

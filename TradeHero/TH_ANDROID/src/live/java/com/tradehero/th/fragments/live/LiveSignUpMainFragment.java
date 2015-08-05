@@ -34,7 +34,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
-import timber.log.Timber;
 
 public class LiveSignUpMainFragment extends BaseFragment
 {
@@ -154,7 +153,6 @@ public class LiveSignUpMainFragment extends BaseFragment
     @Override public void onDestroyView()
     {
         super.onDestroyView();
-        Timber.d("on destroy view");
     }
 
     private void updatePageIndicator(List<StepStatus> stepStatusList)
