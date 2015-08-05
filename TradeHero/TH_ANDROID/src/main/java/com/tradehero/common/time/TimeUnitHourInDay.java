@@ -1,6 +1,6 @@
 package com.tradehero.common.time;
 
-public class TimeUnitHourInDay extends TimeUnitHour
+abstract public class TimeUnitHourInDay extends TimeUnitHour
 {
     public static final long MAX_HOUR_IN_DAY = 23;
 

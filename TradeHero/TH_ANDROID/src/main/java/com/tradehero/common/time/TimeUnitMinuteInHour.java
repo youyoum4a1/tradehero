@@ -1,6 +1,6 @@
 package com.tradehero.common.time;
 
-public class TimeUnitMinuteInHour extends TimeUnitMinute
+abstract public class TimeUnitMinuteInHour extends TimeUnitMinute
 {
     public static final long MAX_MINUTE_IN_HOUR = 59;
 

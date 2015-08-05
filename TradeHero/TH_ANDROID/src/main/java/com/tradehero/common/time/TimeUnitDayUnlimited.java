@@ -1,6 +1,6 @@
 package com.tradehero.common.time;
 
-public class TimeUnitDayUnlimited extends TimeUnitDay
+abstract public class TimeUnitDayUnlimited extends TimeUnitDay
 {
     public TimeUnitDayUnlimited()
     {

@@ -1,32 +1,40 @@
 package com.tradehero.common.log;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
+import android.util.Log;
 import com.crashlytics.android.Crashlytics;
+import java.util.HashMap;
+import java.util.Map;
 import timber.log.Timber;
 
-public class CrashReportingTree extends Timber.HollowTree
+public class CrashReportingTree extends Timber.Tree
 {
-    @Override public void e(@NonNull Throwable cause, @Nullable String message, Object... args)
+    private final Map<Integer, String> priorities;
+
+    public CrashReportingTree()
     {
-        if (message == null || TextUtils.isEmpty(message))
+        this.priorities = new HashMap<>();
+        priorities.put(Log.VERBOSE, "Verbose");
+        priorities.put(Log.DEBUG, "Debug");
+        priorities.put(Log.INFO, "Info");
+        priorities.put(Log.WARN, "Warn");
+        priorities.put(Log.ERROR, "Error");
+        priorities.put(Log.ASSERT, "Assert");
+    }
+
+    @Override protected void log(int priority, String tag, String message, Throwable cause)
+    {
+        if (cause == null)
         {
-            Crashlytics.logException(cause);
+            Crashlytics.log(priority, tag, message);
         }
         else
         {
-            Crashlytics.logException(new Exception(
-                    getConcatMessage(cause, message, args),
-                    cause));
-        }
-    }
-
-    @NonNull public String getConcatMessage(@NonNull Throwable cause, @NonNull String message, Object... args)
-    {
-        return String.format(
-                "Message: %s%nCause: %s",
-                String.format(message, args),
-                cause.getMessage());
+            String priorityString = priorities.get(priority);
+            if (priorityString == null)
+            {
+                priorityString = "" + priority;
+            }
+            Crashlytics.logException(new CrashlyticsReportException(priorityString, tag, message, cause));
+        };
     }
 }

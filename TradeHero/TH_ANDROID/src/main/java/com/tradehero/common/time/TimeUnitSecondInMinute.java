@@ -1,6 +1,6 @@
 package com.tradehero.common.time;
 
-public class TimeUnitSecondInMinute extends TimeUnitSecond
+abstract public class TimeUnitSecondInMinute extends TimeUnitSecond
 {
     public static final long MAX_SECOND_IN_MINUTE = 59;
 
