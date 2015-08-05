@@ -11,7 +11,7 @@ import java.util.Map;
 
 public enum AnnualIncomeRange
 {
-    EMPTY(R.string.employment_status_empty, -1),
+    EMPTY(R.string.annual_income_empty, -1),
     LESS15KUSD(R.string.annual_income_less_than_15_k_usd, 0),
     FROM15KUSDTO40KUSD(R.string.annual_income_from_15_k_to_40_k_usd, 15),
     FROM40KUSDTO70KUSD(R.string.annual_income_from_40_k_to_70_k_usd, 40),
