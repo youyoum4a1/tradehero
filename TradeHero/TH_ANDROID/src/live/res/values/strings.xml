@@ -47,12 +47,14 @@
   <string name="live_title_mr">Mr.</string>
   <string name="live_title_ms">Ms.</string>
 
+  <string name="annual_income_empty">…</string>
   <string name="annual_income_less_than_15_k_usd">Less than US$ 15,000</string>
   <string name="annual_income_from_15_k_to_40_k_usd">US$ 15,000 - US$ 40,000</string>
   <string name="annual_income_from_40_k_to_70_k_usd">US$ 40,001 - US$ 70,000</string>
   <string name="annual_income_from_70_k_to_100_k_usd">US$ 70,001 - US$ 100,000</string>
   <string name="annual_income_more_than_100_k_usd">More than US$ 100,000</string>
 
+  <string name="net_worth_empty">…</string>
   <string name="net_worth_less_than_15_k_usd">Less than US$ 15,000</string>
   <string name="net_worth_from_15_k_to_40_k_usd">US$ 15,000 - US$ 40,000</string>
   <string name="net_worth_from_40_k_to_70_k_usd">US$ 40,001 - US$ 70,000</string>
@@ -60,11 +62,13 @@
   <string name="net_worth_from_100_k_to_500_k_usd">US$ 100,001 - US$ 500,000</string>
   <string name="net_worth_more_than_500_k_usd">More than US$ 500,000</string>
 
+  <string name="percent_net_worth_invest_empty">…</string>
   <string name="percent_net_worth_invest_less_than_25_p">Less than 25%</string>
   <string name="percent_net_worth_invest_from_25_p_to_50_p">25 – 50%</string>
   <string name="percent_net_worth_invest_from_51_p_to_75_p">51 – 75%</string>
   <string name="percent_net_worth_invest_from_more_than_75p">More than 75%</string>
 
+  <string name="employment_status_empty">…</string>
   <string name="employment_status_employed">Employed</string>
   <string name="employment_status_self_employed">Self-Employed</string>
   <string name="employment_status_unemployed">Unemployed</string>
@@ -72,6 +76,7 @@
   <string name="employment_status_student">Student</string>
   <string name="employment_status_other">Other</string>
 
+  <string name="trading_per_quarter_empty">…</string>
   <string name="trading_per_quarter_none">None at all</string>
   <string name="trading_per_quarter_1_to_5">1 – 5 times</string>
   <string name="trading_per_quarter_6_to_10">6 – 10 times</string>

@@ -2,8 +2,12 @@ package com.tradehero.th.api.kyc.ayondo;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import com.tradehero.th.api.kyc.EmploymentStatus;
+import com.tradehero.th.api.kyc.NetWorthRange;
+import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
+import com.tradehero.th.api.kyc.TradingPerQuarter;
 import java.util.Arrays;
 
 public class DummyKYCAyondoUtil
@@ -40,8 +44,11 @@ public class DummyKYCAyondoUtil
     {
         return (kycForm.getAnnualIncomeRange() != null
                 && kycForm.getNetWorthRange() != null
+                && !kycForm.getNetWorthRange().equals(NetWorthRange.EMPTY)
                 && kycForm.getPercentNetWorthForInvestmentRange() != null
+                && !kycForm.getPercentNetWorthForInvestmentRange().equals(PercentNetWorthForInvestmentRange.EMPTY)
                 && kycForm.getEmploymentStatus() != null
+                && !kycForm.getEmploymentStatus().equals(EmploymentStatus.EMPTY)
                 && kycForm.isEmployerRegulatedFinancial() != null)
                 ? StepStatus.COMPLETE
                 : StepStatus.UNSTARTED;
@@ -53,6 +60,7 @@ public class DummyKYCAyondoUtil
                 && kycForm.isAttendedSeminarAyondo() != null
                 && kycForm.isHaveOtherQualification() != null
                 && kycForm.getTradingPerQuarter() != null
+                && !kycForm.getTradingPerQuarter().equals(TradingPerQuarter.EMPTY)
                 && kycForm.isTradedSharesBonds() != null
                 && kycForm.isTradedOtcDerivative() != null
                 && kycForm.isTradedEtc() != null)

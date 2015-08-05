@@ -11,6 +11,7 @@ import java.util.Map;
 
 public enum NetWorthRange
 {
+    EMPTY(R.string.net_worth_empty, -1),
     LESS15KUSD(R.string.net_worth_less_than_15_k_usd, 0),
     FROM15KUSDTO40KUSD(R.string.net_worth_from_15_k_to_40_k_usd, 15),
     FROM40KUSDTO70KUSD(R.string.net_worth_from_40_k_to_70_k_usd, 40),

@@ -15,6 +15,7 @@ import java.util.Map;
 
 public enum TradingPerQuarter
 {
+    EMPTY(R.string.trading_per_quarter_empty, -1),
     NONE(R.string.trading_per_quarter_none, 1),
     ONE_TO_FIVE(R.string.trading_per_quarter_1_to_5, 2),
     SIX_TO_TEN(R.string.trading_per_quarter_6_to_10, 3),
