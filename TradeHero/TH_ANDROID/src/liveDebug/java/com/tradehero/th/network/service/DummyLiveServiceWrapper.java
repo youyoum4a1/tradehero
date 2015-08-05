@@ -184,9 +184,9 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                 KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(
                                         createIdentityPromptInfo(),
                                         Arrays.asList(Gender.values()),
-                                        Arrays.asList(Country.SG, Country.AU, Country.GB),
+                                        Collections.singletonList(Country.SG),
                                         nationalities,
-                                        Arrays.asList(Country.SG, Country.AU, Country.GB),
+                                        Collections.singletonList(Country.SG),
                                         Arrays.asList(AnnualIncomeRange.values()),
                                         Arrays.asList(NetWorthRange.values()),
                                         Arrays.asList(PercentNetWorthForInvestmentRange.values()),

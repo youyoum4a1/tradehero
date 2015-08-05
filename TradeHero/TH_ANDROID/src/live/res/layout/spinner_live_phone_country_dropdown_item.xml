@@ -8,7 +8,6 @@
     android:gravity="start"
     android:orientation="horizontal"
     android:padding="@dimen/margin_small"
-    android:duplicateParentState="true"
     >
 
   <ImageView
@@ -32,7 +31,6 @@
       android:layout_gravity="center"
       android:maxLines="1"
       tools:text="+65"
-      android:duplicateParentState="true"
       />
 
   <TextView
@@ -43,7 +41,6 @@
       android:layout_gravity="center"
       android:maxLines="1"
       tools:text="Singapore"
-      android:duplicateParentState="true"
       />
 
 </LinearLayout>
