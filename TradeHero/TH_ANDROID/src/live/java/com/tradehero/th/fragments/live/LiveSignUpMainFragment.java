@@ -26,6 +26,7 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.widget.LiveRewardWidget;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -44,6 +45,7 @@ public class LiveSignUpMainFragment extends BaseFragment
 
     @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
     @Bind(R.id.pager) protected ViewPager viewPager;
+    @Bind(R.id.live_reward_widget) protected LiveRewardWidget liveRewardWidget;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -159,12 +161,16 @@ public class LiveSignUpMainFragment extends BaseFragment
     {
         int childCount = tabLayout.getTabStrip().getChildCount();
         int stepSize = stepStatusList.size();
+        int completeCount = 0;
         for (int i = 0; i < childCount && i < stepSize; i++)
         {
             Checkable textView = (Checkable) tabLayout.getTabStrip().getChildAt(i);
             StepStatus step = stepStatusList.get(i);
-            textView.setChecked(step.equals(StepStatus.COMPLETE));
+            boolean isComplete = step.equals(StepStatus.COMPLETE);
+            textView.setChecked(isComplete);
+            completeCount += isComplete ? 1 : 0;
         }
+        liveRewardWidget.setRewardStep(completeCount);
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

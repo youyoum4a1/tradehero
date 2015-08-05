@@ -10,8 +10,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.tradehero.th.R;
 
 public class LiveRewardWidget extends LinearLayout
@@ -56,11 +56,23 @@ public class LiveRewardWidget extends LinearLayout
         {
             TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.LiveRewardWidget, 0, 0);
             int rewardStepCount = a.getInteger(R.styleable.LiveRewardWidget_rewardStep, 0);
-            for (int i = 0; i < views.length && i < rewardStepCount; i++)
+            setRewardStep(rewardStepCount);
+            a.recycle();
+        }
+    }
+
+    public void setRewardStep(int rewardStepCount)
+    {
+        for (int i = 0; i < views.length; i++)
+        {
+            if (i < rewardStepCount)
             {
                 views[i].setAlpha(1.0f);
             }
-            a.recycle();
+            else
+            {
+                views[i].setAlpha(0.3f);
+            }
         }
     }
 
