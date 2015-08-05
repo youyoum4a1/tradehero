@@ -146,6 +146,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public LiveBrokerSituationDTO call(Object o, LiveBrokerSituationDTO liveBrokerSituationDTO)
                             {
+                                //noinspection ConstantConditions
                                 List<KYCAddress> addresses = ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getAddresses();
                                 if (addresses != null)
                                 {
@@ -170,6 +171,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         subscriptions.add(
                 Observable.combineLatest(
                         primaryWidget.getKYCAddressObservable()
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .doOnNext(new Action1<KYCAddress>()
                                 {
                                     @Override public void call(KYCAddress kycAddress)
@@ -279,10 +281,10 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     String add1 = addr.getAddressLine(0);
                                     String add2 = addr.getAddressLine(1);
                                     String city = addr.getAdminArea();
-                                    String postal = addr.getPostalCode();
                                     CountryCode countryCode = CountryCode.getByCode(addr.getCountryCode());
+                                    String postal = addr.getPostalCode();
 
-                                    return new KYCAddress(add1, add2, city, postal, countryCode);
+                                    return new KYCAddress(add1, add2, city, countryCode, postal);
                                 }
                             }),
                     Observable.just(requestCode == PICK_LOCATION_REQUEST_PRIMARY ? primaryWidget : secondaryWidget)

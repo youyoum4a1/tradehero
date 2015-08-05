@@ -1,8 +1,11 @@
 package com.tradehero.th.api.kyc.ayondo;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.users.UserProfileDTO;
+import java.util.List;
 
 public class KYCAyondoFormUtil
 {
@@ -14,7 +17,7 @@ public class KYCAyondoFormUtil
     public static boolean fillInBlanks(@NonNull KYCAyondoForm kycForm, @NonNull UserProfileDTO currentUserProfile)
     {
         boolean modified = false;
-        if(TextUtils.isEmpty(kycForm.getUserName()) && !TextUtils.isEmpty(currentUserProfile.displayName))
+        if (TextUtils.isEmpty(kycForm.getUserName()) && !TextUtils.isEmpty(currentUserProfile.displayName))
         {
             kycForm.setUserName(currentUserProfile.displayName);
             modified = true;
@@ -50,6 +53,7 @@ public class KYCAyondoFormUtil
                 && form.getMiddleName() != null
                 && form.getAyondoGender() != null
                 && form.getEmail() != null
+                && form.getMobileNumber() != null
                 && form.getNationality() != null
                 && form.getDob() != null
                 && form.isWorkedInFinance1Year() != null
@@ -57,9 +61,31 @@ public class KYCAyondoFormUtil
                 && form.isHaveOtherQualification() != null
                 && form.getAnnualIncomeRange() != null
                 && form.getNetWorthRange() != null
-                && form.getTradingPerQuarter() != null
                 && form.getPercentNetWorthForInvestmentRange() != null
                 && form.getEmploymentStatus() != null
-                && form.isEmployerRegulatedFinancial() != null;
+                && form.isEmployerRegulatedFinancial() != null
+                && form.getTradingPerQuarter() != null
+                && form.getIdentityDocumentType() != null
+                && form.getIdentificationNumber() != null
+                && areAddressValid(form.getAddresses())
+                ;
+    }
+
+    public static boolean areAddressValid(@Nullable List<KYCAddress> addresses)
+    {
+        boolean valid = addresses != null;
+        if (valid)
+        {
+            for (KYCAddress address : addresses)
+            {
+                valid &= address != null
+                        && address.city != null
+                        && address.country != null
+                        && address.addressLine1 != null
+                        && address.addressLine2 != null
+                        && address.postalCode != null;
+            }
+        }
+        return valid;
     }
 }

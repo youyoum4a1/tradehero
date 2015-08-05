@@ -19,7 +19,8 @@ public class KYCAddress
             @Nullable String addressLine1,
             @Nullable String addressLine2,
             @Nullable String city,
-            @Nullable String postalCode, CountryCode country)
+            @Nullable CountryCode country,
+            @Nullable String postalCode)
     {
         this(addressLine1, addressLine2, city, country, postalCode, DEFAULT_LESS_THAN_A_YEAR);
     }

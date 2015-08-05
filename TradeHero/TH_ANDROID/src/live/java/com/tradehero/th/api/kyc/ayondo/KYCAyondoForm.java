@@ -24,6 +24,7 @@ import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.utils.DateUtils;
 import java.io.File;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +45,7 @@ public class KYCAyondoForm implements KYCForm
     @JsonProperty("Email") @Nullable private String email;
     @Nullable private String verifiedEmail;
     @Nullable private Integer mobileNumberDialingPrefix;
-    @Nullable private String mobileNumber;
+    @JsonProperty("PhonePrimary") @Nullable private String mobileNumber;
     @Nullable private Integer verifiedMobileNumberDialingPrefix;
     @Nullable private String verifiedMobileNumber;
     @JsonProperty("Nationality") @Nullable private CountryCode nationality;
@@ -55,15 +56,25 @@ public class KYCAyondoForm implements KYCForm
     @JsonProperty("InvestmentPortfolio") @Nullable private PercentNetWorthForInvestmentRange percentNetWorthForInvestmentRange;
     @JsonProperty("EmploymentStatus") @Nullable private EmploymentStatus employmentStatus;
     @JsonProperty("IsEmployerRegulated") @Nullable private Boolean employerRegulatedFinancial;
-    @JsonProperty("HasProfessionalExperience")@Nullable private Boolean workedInFinance1Year;
+    @JsonProperty("HasProfessionalExperience") @Nullable private Boolean workedInFinance1Year;
     @JsonProperty("HasAttendedTraining") @Nullable private Boolean attendedSeminarAyondo;
     @JsonProperty("HasOtherQualification") @Nullable private Boolean haveOtherQualification;
     @JsonProperty("NumberOfMarginTrades") @Nullable private TradingPerQuarter tradingPerQuarter;
     @Nullable private Boolean tradedSharesBonds;
     @Nullable private Boolean tradedOtcDerivative;
     @Nullable private Boolean tradedEtc;
-    @Nullable private List<KYCAddress> addresses;
-    @Nullable private IdentityScannedDocumentType identityDocumentType;
+    @JsonProperty("AddressCity") @Nullable private String addressCity;
+    @JsonProperty("AddressCountry") @Nullable private CountryCode addressCountry;
+    @JsonProperty("AddressLine1") @Nullable private String addressLine1;
+    @JsonProperty("AddressLine2") @Nullable private String addressLine2;
+    @JsonProperty("AddressZip") @Nullable private String addressZip;
+    @JsonProperty("PreviousAddressCity") @Nullable private String previousAddressCity;
+    @JsonProperty("PreviousAddressCountry") @Nullable private CountryCode previousAddressCountry;
+    @JsonProperty("PreviousAddressLine1") @Nullable private String previousAddressLine1;
+    @JsonProperty("PreviousAddressLine2") @Nullable private String previousAddressLine2;
+    @JsonProperty("PreviousAddressZip") @Nullable private String previousAddressZip;
+    @JsonProperty("IdentificationDocument") @Nullable private AyondoIdentityDocumentType identificationDocument;
+    @JsonProperty("IdentificationNumber") @Nullable private String identificationNumber;
     @Nullable private File identityDocumentFile;
     @Nullable @JsonIgnore private Boolean clearIdentityDocumentFile;
     @Nullable private ResidenceScannedDocumentType residenceDocumentType;
@@ -153,22 +164,35 @@ public class KYCAyondoForm implements KYCForm
                     ? ayondoForm.getPercentNetWorthForInvestmentRange()
                     : this.percentNetWorthForInvestmentRange;
             this.employmentStatus = ayondoForm.getEmploymentStatus() != null ? ayondoForm.getEmploymentStatus() : this.employmentStatus;
-            this.employerRegulatedFinancial = ayondoForm.isEmployerRegulatedFinancial() != null ? ayondoForm.isEmployerRegulatedFinancial() : this.employerRegulatedFinancial;
+            this.employerRegulatedFinancial =
+                    ayondoForm.isEmployerRegulatedFinancial() != null ? ayondoForm.isEmployerRegulatedFinancial() : this.employerRegulatedFinancial;
             this.workedInFinance1Year = ayondoForm.isWorkedInFinance1Year() != null ? ayondoForm.isWorkedInFinance1Year() : this.workedInFinance1Year;
-            this.attendedSeminarAyondo = ayondoForm.isAttendedSeminarAyondo() != null ? ayondoForm.isAttendedSeminarAyondo() : this.attendedSeminarAyondo;
-            this.haveOtherQualification = ayondoForm.isHaveOtherQualification() != null ? ayondoForm.isHaveOtherQualification() : this.haveOtherQualification;
+            this.attendedSeminarAyondo =
+                    ayondoForm.isAttendedSeminarAyondo() != null ? ayondoForm.isAttendedSeminarAyondo() : this.attendedSeminarAyondo;
+            this.haveOtherQualification =
+                    ayondoForm.isHaveOtherQualification() != null ? ayondoForm.isHaveOtherQualification() : this.haveOtherQualification;
             this.tradingPerQuarter = ayondoForm.getTradingPerQuarter() != null ? ayondoForm.getTradingPerQuarter() : this.tradingPerQuarter;
             this.tradedSharesBonds = ayondoForm.isTradedSharesBonds() != null ? ayondoForm.isTradedSharesBonds() : this.tradedSharesBonds;
             this.tradedOtcDerivative = ayondoForm.isTradedOtcDerivative() != null ? ayondoForm.isTradedOtcDerivative() : this.tradedOtcDerivative;
             this.tradedEtc = ayondoForm.isTradedEtc() != null ? ayondoForm.isTradedEtc() : this.tradedEtc;
-            this.addresses = ayondoForm.getAddresses() != null ? ayondoForm.getAddresses() : this.addresses;
-            this.identityDocumentType = ayondoForm.getIdentityDocumentType() != null ? ayondoForm.getIdentityDocumentType() : this.identityDocumentType;
+            this.addressCity = ayondoForm.addressCity != null ? ayondoForm.addressCity : this.addressCity;
+            this.addressCountry = ayondoForm.addressCountry != null ? ayondoForm.addressCountry : this.addressCountry;
+            this.addressLine1 = ayondoForm.addressLine1 != null ? ayondoForm.addressLine1 : this.addressLine1;
+            this.addressLine2 = ayondoForm.addressLine2 != null ? ayondoForm.addressLine2 : this.addressLine2;
+            this.addressZip = ayondoForm.addressZip != null ? ayondoForm.addressZip : this.addressZip;
+            this.previousAddressCity = ayondoForm.previousAddressCity != null ? ayondoForm.previousAddressCity : this.previousAddressCity;
+            this.previousAddressCountry = ayondoForm.previousAddressCountry != null ? ayondoForm.previousAddressCountry : this.previousAddressCountry;
+            this.previousAddressLine1 = ayondoForm.previousAddressLine1 != null ? ayondoForm.previousAddressLine1 : this.previousAddressLine1;
+            this.previousAddressLine2 = ayondoForm.previousAddressLine2 != null ? ayondoForm.previousAddressLine2 : this.previousAddressLine2;
+            this.previousAddressZip = ayondoForm.previousAddressZip != null ? ayondoForm.addressZip : this.addressZip;
+            this.identificationDocument = ayondoForm.identificationDocument != null ? ayondoForm.identificationDocument : this.identificationDocument;
             this.identityDocumentFile = ayondoForm.identityDocumentFile != null ? ayondoForm.identityDocumentFile : this.identityDocumentFile;
             if (ayondoForm.clearIdentityDocumentFile != null && ayondoForm.clearIdentityDocumentFile)
             {
                 this.identityDocumentFile = null;
             }
-            this.residenceDocumentType = ayondoForm.getResidenceDocumentType() != null ? ayondoForm.getResidenceDocumentType() : this.residenceDocumentType;
+            this.residenceDocumentType =
+                    ayondoForm.getResidenceDocumentType() != null ? ayondoForm.getResidenceDocumentType() : this.residenceDocumentType;
             this.residenceDocumentFile = ayondoForm.residenceDocumentFile != null ? ayondoForm.residenceDocumentFile : this.residenceDocumentFile;
             if (ayondoForm.clearResidenceDocumentFile != null && ayondoForm.clearResidenceDocumentFile)
             {
@@ -506,24 +530,118 @@ public class KYCAyondoForm implements KYCForm
     //<editor-fold desc="Addresses">
     @Nullable public List<KYCAddress> getAddresses()
     {
-        return addresses;
+        if (addressCity == null
+                && addressCountry == null
+                && addressLine1 == null
+                && addressLine2 == null
+                && addressZip == null)
+        {
+            return null;
+        }
+        boolean hasSecondAddress = previousAddressCity == null
+                && previousAddressCountry == null
+                && previousAddressLine1 == null
+                && previousAddressLine2 == null
+                && previousAddressZip == null;
+        KYCAddress address1 = new KYCAddress(addressLine1, addressLine2, addressCity, addressCountry, addressZip, hasSecondAddress);
+        if (!hasSecondAddress)
+        {
+            return Collections.singletonList(address1);
+        }
+        KYCAddress address2 =
+                new KYCAddress(previousAddressLine1, previousAddressLine2, previousAddressCity, previousAddressCountry, previousAddressZip);
+        return Collections.unmodifiableList(Arrays.asList(address1, address2));
     }
 
     public void setAddresses(@Nullable List<KYCAddress> addresses)
     {
-        this.addresses = addresses;
+        if (addresses == null || addresses.size() == 0)
+        {
+            setFirstAddress(null);
+            setSecondAddress(null);
+        }
+        else
+        {
+            setFirstAddress(addresses.get(0));
+            if (addresses.size() >= 2)
+            {
+                setSecondAddress(addresses.get(1));
+            }
+        }
+    }
+
+    protected void setFirstAddress(@Nullable KYCAddress address)
+    {
+        if (address == null)
+        {
+            addressCity = null;
+            addressCountry = null;
+            addressLine1 = null;
+            addressLine2 = null;
+            addressZip = null;
+        }
+        else
+        {
+            addressCity = address.city;
+            addressCountry = address.country;
+            addressLine1 = address.addressLine1;
+            addressLine2 = address.addressLine2;
+            addressZip = address.postalCode;
+        }
+    }
+
+    protected void setSecondAddress(@Nullable KYCAddress address)
+    {
+        if (address == null)
+        {
+            previousAddressCity = null;
+            previousAddressCountry = null;
+            previousAddressLine1 = null;
+            previousAddressLine2 = null;
+            previousAddressZip = null;
+        }
+        else
+        {
+            previousAddressCity = address.city;
+            previousAddressCountry = address.country;
+            previousAddressLine1 = address.addressLine1;
+            previousAddressLine2 = address.addressLine2;
+            previousAddressZip = address.postalCode;
+        }
     }
     //</editor-fold>
 
     //<editor-fold desc="Identity Document File">
-    @Nullable public IdentityScannedDocumentType getIdentityDocumentType()
+    @Nullable public AyondoIdentityDocumentType getIdentificationDocument()
     {
-        return identityDocumentType;
+        return identificationDocument;
     }
 
-    public void setIdentityDocumentType(@Nullable IdentityScannedDocumentType identityDocumentType)
+    public void setIdentificationDocument(@Nullable AyondoIdentityDocumentType identificationDocument)
     {
-        this.identityDocumentType = identityDocumentType;
+        this.identificationDocument = identificationDocument;
+    }
+
+    @Nullable public IdentityScannedDocumentType getIdentityDocumentType()
+    {
+        return identificationDocument == null ? null : identificationDocument.scannedDocumentType;
+    }
+
+    public void setIdentityDocumentType(@Nullable IdentityScannedDocumentType identityScannedDocumentType)
+    {
+        this.identificationDocument = identityScannedDocumentType == null
+                ? null
+                : AyondoIdentityDocumentType.getAyondoIdentityDocumentType(identityScannedDocumentType);
+    }
+
+    @Nullable public String getIdentificationNumber()
+    {
+        return identificationNumber;
+    }
+
+    public void setIdentificationNumber(@Nullable String identificationNumber)
+    {
+        this.identificationNumber = identificationNumber;
     }
 
     @Nullable @JsonIgnore public File getIdentityDocumentFile()
@@ -668,30 +786,43 @@ public class KYCAyondoForm implements KYCForm
                     ? ayondoForm.percentNetWorthForInvestmentRange == null
                     : percentNetWorthForInvestmentRange.equals(ayondoForm.percentNetWorthForInvestmentRange);
             same &= employmentStatus == null ? ayondoForm.employmentStatus == null : employmentStatus.equals(ayondoForm.employmentStatus);
-            same &= employerRegulatedFinancial == null ? ayondoForm.employerRegulatedFinancial == null : employerRegulatedFinancial.equals(ayondoForm.employerRegulatedFinancial);
-            same &= workedInFinance1Year == null ? ayondoForm.workedInFinance1Year == null : workedInFinance1Year.equals(ayondoForm.workedInFinance1Year);
-            same &= attendedSeminarAyondo == null ? ayondoForm.attendedSeminarAyondo == null : attendedSeminarAyondo.equals(ayondoForm.attendedSeminarAyondo);
-            same &= haveOtherQualification == null ? ayondoForm.haveOtherQualification == null : haveOtherQualification.equals(ayondoForm.haveOtherQualification);
+            same &= employerRegulatedFinancial == null ? ayondoForm.employerRegulatedFinancial == null
+                    : employerRegulatedFinancial.equals(ayondoForm.employerRegulatedFinancial);
+            same &= workedInFinance1Year == null ? ayondoForm.workedInFinance1Year == null
+                    : workedInFinance1Year.equals(ayondoForm.workedInFinance1Year);
+            same &= attendedSeminarAyondo == null ? ayondoForm.attendedSeminarAyondo == null
+                    : attendedSeminarAyondo.equals(ayondoForm.attendedSeminarAyondo);
+            same &= haveOtherQualification == null ? ayondoForm.haveOtherQualification == null
+                    : haveOtherQualification.equals(ayondoForm.haveOtherQualification);
             same &= tradingPerQuarter == null ? ayondoForm.tradingPerQuarter == null : tradingPerQuarter.equals(ayondoForm.tradingPerQuarter);
             same &= tradedSharesBonds == null ? ayondoForm.tradedSharesBonds == null : tradedSharesBonds.equals(ayondoForm.tradedSharesBonds);
             same &= tradedOtcDerivative == null ? ayondoForm.tradedOtcDerivative == null : tradedOtcDerivative.equals(ayondoForm.tradedOtcDerivative);
             same &= tradedEtc == null ? ayondoForm.tradedEtc == null : tradedEtc.equals(ayondoForm.tradedEtc);
-            same &= addresses == null ? ayondoForm.addresses == null : addresses.equals(ayondoForm.addresses);
-            if (same && addresses != null && ayondoForm.getAddresses() != null)
-            {
-                for (int index = 0; index < addresses.size(); index++)
-                {
-                    same &= addresses.get(index).equals(ayondoForm.getAddresses().get(index));
-                }
-            }
-            same &= identityDocumentType == null ? ayondoForm.identityDocumentType
-                    == null : identityDocumentType.equals(ayondoForm.identityDocumentType);
-            same &= identityDocumentFile == null ? ayondoForm.identityDocumentFile == null : identityDocumentFile.equals(ayondoForm.identityDocumentFile);
+            same &= addressCity == null ? ayondoForm.addressCity == null : addressCity.equals(ayondoForm.addressCity);
+            same &= addressCountry == null ? ayondoForm.addressCountry == null : addressCountry.equals(ayondoForm.addressCountry);
+            same &= addressLine1 == null ? ayondoForm.addressLine1 == null : addressLine1.equals(ayondoForm.addressLine1);
+            same &= addressLine2 == null ? ayondoForm.addressLine2 == null : addressLine2.equals(ayondoForm.addressLine2);
+            same &= addressZip == null ? ayondoForm.addressZip == null : addressZip.equals(ayondoForm.addressZip);
+            same &= previousAddressCity == null ? ayondoForm.previousAddressCity == null : previousAddressCity.equals(ayondoForm.previousAddressCity);
+            same &= previousAddressCountry == null ? ayondoForm.previousAddressCountry == null
+                    : previousAddressCountry.equals(ayondoForm.previousAddressCountry);
+            same &= previousAddressLine1 == null ? ayondoForm.previousAddressLine1 == null
+                    : previousAddressLine1.equals(ayondoForm.previousAddressLine1);
+            same &= previousAddressLine2 == null ? ayondoForm.previousAddressLine2 == null
+                    : previousAddressLine2.equals(ayondoForm.previousAddressLine2);
+            same &= previousAddressZip == null ? ayondoForm.previousAddressZip == null : previousAddressZip.equals(ayondoForm.previousAddressZip);
+            same &= identificationDocument == null ? ayondoForm.identificationDocument == null
+                    : identificationDocument.equals(ayondoForm.identificationDocument);
+            same &= identityDocumentFile == null ? ayondoForm.identityDocumentFile == null
+                    : identityDocumentFile.equals(ayondoForm.identityDocumentFile);
             // Do not compare clearIdentityDocumentFile
-            same &= residenceDocumentType == null ? ayondoForm.residenceDocumentType == null : residenceDocumentType.equals(ayondoForm.residenceDocumentType);
-            same &= residenceDocumentFile == null ? ayondoForm.residenceDocumentFile == null : residenceDocumentFile.equals(ayondoForm.residenceDocumentFile);
+            same &= residenceDocumentType == null ? ayondoForm.residenceDocumentType == null
+                    : residenceDocumentType.equals(ayondoForm.residenceDocumentType);
+            same &= residenceDocumentFile == null ? ayondoForm.residenceDocumentFile == null
+                    : residenceDocumentFile.equals(ayondoForm.residenceDocumentFile);
             // Do not compare clearResidenceDocumentFile
-            same &= agreeTermsConditions == null ? ayondoForm.agreeTermsConditions == null : agreeTermsConditions.equals(ayondoForm.agreeTermsConditions);
+            same &= agreeTermsConditions == null ? ayondoForm.agreeTermsConditions == null
+                    : agreeTermsConditions.equals(ayondoForm.agreeTermsConditions);
             same &= agreeRisksWarnings == null ? ayondoForm.agreeRisksWarnings == null : agreeRisksWarnings.equals(ayondoForm.agreeRisksWarnings);
             same &= agreeDataSharing == null ? ayondoForm.agreeDataSharing == null : agreeDataSharing.equals(ayondoForm.agreeDataSharing);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
@@ -742,18 +873,17 @@ public class KYCAyondoForm implements KYCForm
         code ^= tradedSharesBonds == null ? 0 : tradedSharesBonds.hashCode();
         code ^= tradedOtcDerivative == null ? 0 : tradedOtcDerivative.hashCode();
         code ^= tradedEtc == null ? 0 : tradedEtc.hashCode();
-        if (addresses != null)
-        {
-            for (KYCAddress address : addresses)
-            {
-                code ^= address.hashCode();
-            }
-        }
-        else
-        {
-            code ^= 0;
-        }
-        code ^= identityDocumentType == null ? 0 : identityDocumentType.hashCode();
+        code ^= addressCity == null ? 0 : addressCity.hashCode();
+        code ^= addressCountry == null ? 0 : addressCountry.hashCode();
+        code ^= addressLine1 == null ? 0 : addressLine1.hashCode();
+        code ^= addressLine2 == null ? 0 : addressLine2.hashCode();
+        code ^= addressZip == null ? 0 : addressZip.hashCode();
+        code ^= previousAddressCity == null ? 0 : previousAddressCity.hashCode();
+        code ^= previousAddressCountry == null ? 0 : previousAddressCountry.hashCode();
+        code ^= previousAddressLine1 == null ? 0 : previousAddressLine1.hashCode();
+        code ^= previousAddressLine2 == null ? 0 : previousAddressLine2.hashCode();
+        code ^= previousAddressZip == null ? 0 : previousAddressZip.hashCode();
+        code ^= identificationDocument == null ? 0 : identificationDocument.hashCode();
         String identityDocFile = getIdentityDocumentFileString();
         code ^= identityDocFile == null ? 0 : identityDocFile.hashCode();
         // Do not hash clearIdentityDocumentFile
