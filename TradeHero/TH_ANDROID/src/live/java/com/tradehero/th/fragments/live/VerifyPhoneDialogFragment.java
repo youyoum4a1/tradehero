@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
@@ -31,6 +32,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
@@ -41,6 +43,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func4;
 import rx.internal.util.SubscriptionList;
+import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
 public class VerifyPhoneDialogFragment extends BaseDialogFragment
@@ -66,10 +69,14 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     @Bind(R.id.sms_sent_description) TextView sentDescription;
     @Bind(R.id.sms_sent_status) TextView sentStatus;
 
+    private BehaviorSubject<SMSSentConfirmationDTO> mSMSConfirmationSubject;
+
     private int mDialingPrefix;
     private String mExpectedCode;
     private String mPhoneNumber;
     private SubscriptionList onDestroyViewSubscriptions;
+    private String mFormattedNumber;
+    private Subscription smsSubscription;
 
     private static VerifyPhoneDialogFragment newInstance(int dialingPrefix, String phoneNumber)
     {
@@ -114,6 +121,10 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         mExpectedCode = bundle.getString(KEY_BUNDLE_EXPECTED);
         mDialingPrefix = bundle.getInt(KEY_BUNDLE_DIALING_PREFIX);
         mPhoneNumber = bundle.getString(KEY_BUNDLE_PHONE_NUMBER);
+        mFormattedNumber = "+" + mDialingPrefix + mPhoneNumber;
+
+        mSMSConfirmationSubject = BehaviorSubject.create();
+        smsSubscription = createSMSSubscription();
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -126,62 +137,34 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        String formattedNumber = "+" + mDialingPrefix + mPhoneNumber;
-        sentDescription.setText(getResources().getString(R.string.sms_verification_description, formattedNumber));
+        sentDescription.setText(getResources().getString(R.string.sms_verification_description, mFormattedNumber));
 
         onDestroyViewSubscriptions = new SubscriptionList();
 
         onDestroyViewSubscriptions.add(
-                smsServiceWrapper.sendMessage(
-                        SMSRequestFactory.create(
-                                formattedNumber,
-                                getString(R.string.sms_verification_sms_content, mExpectedCode)))
-                        .flatMap(new Func1<SMSSentConfirmationDTO, Observable<SMSSentConfirmationDTO>>()
+                mSMSConfirmationSubject
+                        .doOnNext(new Action1<SMSSentConfirmationDTO>()
                         {
-                            @Override public Observable<SMSSentConfirmationDTO> call(SMSSentConfirmationDTO smsSentConfirmationDTO)
+                            @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
                             {
-                                return createRepeatableSMSConfirmation(smsSentConfirmationDTO.getSMSId())
-                                        .startWith(smsSentConfirmationDTO);
+                                Timber.d("Sms confirmation received: %s for %s", getString(smsSentConfirmationDTO.getStatusStringRes()),
+                                        smsSentConfirmationDTO.getTo());
                             }
                         })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .onErrorResumeNext(new Func1<Throwable, Observable<? extends SMSSentConfirmationDTO>>()
-                        {
-                            @Override public Observable<? extends SMSSentConfirmationDTO> call(final Throwable throwable)
-                            {
-                                String message = throwable.getMessage();
-                                if (TextUtils.isEmpty(message))
-                                {
-                                    message = getString(R.string.sms_verification_send_fail);
-                                }
-                                return AlertDialogRxUtil.build(getActivity())
-                                        .setTitle(R.string.sms_verification_send_fail_title)
-                                        .setMessage(message)
-                                        .setNegativeButton(R.string.ok)
-                                        .build()
-                                        .flatMap(new Func1<OnDialogClickEvent, Observable<SMSSentConfirmationDTO>>()
-                                        {
-                                            @Override public Observable<SMSSentConfirmationDTO> call(OnDialogClickEvent clickEvent)
-                                            {
-                                                return Observable.error(throwable);
-                                            }
-                                        });
-                            }
-                        })
-                        .startWith(new EmptySMSSentConfirmationDTO(formattedNumber, "Fake", R.string.sms_verification_button_empty_submitting))
                         .subscribe(new Action1<SMSSentConfirmationDTO>()
                                    {
                                        @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
                                        {
                                            sentStatus.setText(getResources().getString(
                                                    R.string.sms_verification_status,
-                                                   getResources().getString(smsSentConfirmationDTO.getStatusStringRes())));
+                                                   getResources().getString(
+                                                           smsSentConfirmationDTO.getStatusStringRes())));
 
                                            buttonResend.setEnabled(smsSentConfirmationDTO.isFinalStatus());
                                        }
                                    },
-                                new TimberOnErrorAction1(""))
-        );
+                                new TimberOnErrorAction1("Failed on listening to sms update")
+                        ));
 
         onDestroyViewSubscriptions.add(
                 getTypedCodeObservable(codeViews)
@@ -221,6 +204,89 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                             }
                         })
         );
+    }
+
+    protected Subscription createSMSSubscription()
+    {
+        return smsServiceWrapper.sendMessage(
+                SMSRequestFactory.create(
+                        mFormattedNumber,
+                        getString(R.string.sms_verification_sms_content, mExpectedCode)))
+                .flatMap(new Func1<SMSSentConfirmationDTO, Observable<SMSSentConfirmationDTO>>()
+                {
+                    @Override public Observable<SMSSentConfirmationDTO> call(SMSSentConfirmationDTO smsSentConfirmationDTO)
+                    {
+                        return createRepeatableSMSConfirmation(smsSentConfirmationDTO.getSMSId())
+                                .startWith(smsSentConfirmationDTO);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorResumeNext(new Func1<Throwable, Observable<? extends SMSSentConfirmationDTO>>()
+                {
+                    @Override public Observable<? extends SMSSentConfirmationDTO> call(final Throwable throwable)
+                    {
+                        String message = throwable.getMessage();
+                        if (TextUtils.isEmpty(message))
+                        {
+                            message = getString(R.string.sms_verification_send_fail);
+                        }
+                        return AlertDialogRxUtil.build(getActivity())
+                                .setTitle(R.string.sms_verification_send_fail_title)
+                                .setMessage(message)
+                                .setNegativeButton(R.string.ok)
+                                .build()
+                                .flatMap(new Func1<OnDialogClickEvent, Observable<SMSSentConfirmationDTO>>()
+                                {
+                                    @Override public Observable<SMSSentConfirmationDTO> call(OnDialogClickEvent clickEvent)
+                                    {
+                                        return Observable.error(throwable);
+                                    }
+                                });
+                    }
+                })
+                .startWith(new EmptySMSSentConfirmationDTO(mFormattedNumber, "Fake", R.string.sms_verification_button_empty_submitting))
+                .doOnNext(new Action1<SMSSentConfirmationDTO>()
+                {
+                    @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
+                    {
+                        Timber.d("Sms confirmation emitted: %s for %s", getString(smsSentConfirmationDTO.getStatusStringRes()),
+                                smsSentConfirmationDTO.getTo());
+                    }
+                })
+                .subscribe(new Action1<SMSSentConfirmationDTO>()
+                           {
+                               @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
+                               {
+                                   mSMSConfirmationSubject.onNext(smsSentConfirmationDTO);
+                               }
+                           },
+                        new TimberOnErrorAction1("Failed on sending sms message"));
+    }
+
+    @Override public void onDestroy()
+    {
+        smsSubscription.unsubscribe();
+        super.onDestroy();
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(R.id.btn_send_code)
+    protected void onResendClicked(View button)
+    {
+        buttonResend.setEnabled(false);
+        if (smsSubscription != null)
+        {
+            smsSubscription.unsubscribe();
+        }
+
+        smsSubscription = createSMSSubscription();
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(android.R.id.closeButton)
+    protected void onCloseClicked(View button)
+    {
+        dismiss();
     }
 
     private void validateAgainstExpected(String toBeValidated)
@@ -280,7 +346,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                 }
             }
         };
-    }§
+    }
 
     @Override public void onDestroyView()
     {
