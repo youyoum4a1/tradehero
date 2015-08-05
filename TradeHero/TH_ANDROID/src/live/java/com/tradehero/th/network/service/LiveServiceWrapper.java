@@ -130,4 +130,9 @@ public class LiveServiceWrapper
                             }
                         });
     }
+
+    public void submitPhoneNumberVerifiedStatus(String formattedPhoneNumber)
+    {
+        phoneNumberVerifiedPreference.addVerifiedNumber(formattedPhoneNumber);
+    }
 }

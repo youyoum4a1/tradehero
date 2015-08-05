@@ -7,7 +7,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,22 +31,17 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
 import com.tradehero.th.fragments.live.DatePickerDialogFragment;
-import com.tradehero.th.fragments.live.VerifyCodeDigitView;
 import com.tradehero.th.fragments.live.VerifyPhoneDialogFragment;
 import com.tradehero.th.models.fastfill.Gender;
 import com.tradehero.th.network.service.LiveServiceWrapper;
-import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.CustomWidgetObservable;
 import com.tradehero.th.rx.view.OnFocusChangeEvent;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
-import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DateUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -57,7 +51,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import rx.Observable;
-import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
@@ -95,7 +88,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
-    @Inject PhoneNumberVerifiedPreference phoneNumberVerifiedPreference;
 
     private Pattern emailPattern;
     private String emailInvalidMessage;
@@ -459,7 +451,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             @Override public Observable<PhoneNumberAndVerifiedDTO> call(
                                     final Pair<Integer, String> phoneNumberPair)
                             {
-                                String numberText = "+" + phoneNumberPair.first + phoneNumberPair.second;
+                                String numberText = VerifyPhoneDialogFragment.getFormattedPhoneNumber(phoneNumberPair.first, phoneNumberPair.second);
                                 Timber.d("checked number: %s", numberText);
                                 return liveServiceWrapper.getPhoneNumberVerifiedStatus(numberText)
                                         .map(new Func1<PhoneNumberVerifiedStatusDTO, PhoneNumberAndVerifiedDTO>()
@@ -586,7 +578,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         update.setVerifiedMobileNumber(verifiedPhonePair.second);
                         //noinspection ConstantConditions
                         liveBrokerSituationDTO.kycForm.pickFrom(update);
-                        phoneNumberVerifiedPreference.addVerifiedNumber(verifiedPhonePair.second);
+                        liveServiceWrapper.submitPhoneNumberVerifiedStatus(
+                                VerifyPhoneDialogFragment.getFormattedPhoneNumber(verifiedPhonePair.first, verifiedPhonePair.second));
                         populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, verifiedPhonePair.first, verifiedPhonePair.second);
                         return null;
                     }
@@ -851,25 +844,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             final String phoneNumberInt)
     {
         VerifyPhoneDialogFragment.show(REQUEST_VERIFY_PHONE_NUMBER_CODE, this, phoneCountryCode, phoneNumberInt);
-    }
-
-    @NonNull protected Observable<VerifyCodeDigitView.UserAction> displayVerifyDialog(
-            @NonNull final VerifyCodeDigitView verifyView,
-            @NonNull final Observer<AlertDialog> verifyDialogObserver)
-    {
-        onStopSubscriptions.add(AlertDialogRxUtil.build(getActivity())
-                .setView(verifyView)
-                .setAlertDialogObserver(verifyDialogObserver)
-                .build()
-                .subscribe(new Action1<OnDialogClickEvent>()
-                           {
-                               @Override public void call(OnDialogClickEvent clickEvent)
-                               {
-                                   Timber.d("ClickEvent " + clickEvent);
-                               }
-                           },
-                        new TimberAndToastOnErrorAction1("Failed to listen to VerifyView")));
-        return verifyView.getUserActionObservable();
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

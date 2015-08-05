@@ -78,6 +78,12 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     private String mFormattedNumber;
     private Subscription smsSubscription;
 
+    public static String getFormattedPhoneNumber(int dialingPrefix, String phoneNumber)
+    {
+        //TODO perhaps, move this to a helper class
+        return "+" + dialingPrefix + phoneNumber;
+    }
+
     private static VerifyPhoneDialogFragment newInstance(int dialingPrefix, String phoneNumber)
     {
         String expectedCode = String.format("%04d", Math.abs(new Random(System.nanoTime()).nextInt() % 10000));
@@ -121,7 +127,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         mExpectedCode = bundle.getString(KEY_BUNDLE_EXPECTED);
         mDialingPrefix = bundle.getInt(KEY_BUNDLE_DIALING_PREFIX);
         mPhoneNumber = bundle.getString(KEY_BUNDLE_PHONE_NUMBER);
-        mFormattedNumber = "+" + mDialingPrefix + mPhoneNumber;
+        mFormattedNumber = getFormattedPhoneNumber(mDialingPrefix, mPhoneNumber);
 
         mSMSConfirmationSubject = BehaviorSubject.create();
         smsSubscription = createSMSSubscription();
