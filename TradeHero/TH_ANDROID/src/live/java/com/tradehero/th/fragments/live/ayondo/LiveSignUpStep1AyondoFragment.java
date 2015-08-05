@@ -48,6 +48,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import rx.Observable;
@@ -288,6 +289,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     }
                                 })
                         .distinctUntilChanged()
+                        .throttleLast(1, TimeUnit.SECONDS)
                         .flatMap(new Func1<Pair<LiveBrokerDTO, String>, Observable<UsernameValidationResultDTO>>()
                         {
                             @Override public Observable<UsernameValidationResultDTO> call(Pair<LiveBrokerDTO, String> userNamePair)
