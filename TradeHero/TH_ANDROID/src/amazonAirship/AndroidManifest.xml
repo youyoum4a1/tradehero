@@ -5,7 +5,7 @@
   <!-- REQUIRED PERMISSIONS for ADM -->
   <uses-permission android:name="com.amazon.device.messaging.permission.RECEIVE"/>
 
-  <permission android:name="com.tradehero.th.permission.RECEIVE_ADM_MESSAGE"
+  <permission android:name="${applicationId}.permission.RECEIVE_ADM_MESSAGE"
       android:protectionLevel="signature"/>
   <uses-permission android:name="${applicationId}.permission.RECEIVE_ADM_MESSAGE"/>
   <!-- The two elements above ensure that only this application can receive the messages and registration result -->

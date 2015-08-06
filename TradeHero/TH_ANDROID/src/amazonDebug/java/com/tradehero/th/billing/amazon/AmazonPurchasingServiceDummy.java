@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.amazon.device.iap.PurchasingListener;
-import com.amazon.device.iap.internal.model.PriceBuilder;
 import com.amazon.device.iap.internal.model.ProductBuilder;
 import com.amazon.device.iap.internal.model.ProductDataResponseBuilder;
 import com.amazon.device.iap.internal.model.PurchaseResponseBuilder;
@@ -23,9 +22,7 @@ import com.amazon.device.iap.model.UserData;
 import com.amazon.device.iap.model.UserDataResponse;
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.th.api.users.CurrentUserId;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -121,45 +118,44 @@ import javax.inject.Singleton;
                 .setDescription("Description of " + sku)
                 .setTitle("Title of " + sku)
                 .setSmallIconUrl("Nothing");
-        PriceBuilder priceBuilder = new PriceBuilder()
-                .setCurrency(Currency.getInstance("USD"));
+        float price = 0;
         switch (sku)
         {
             case THAmazonConstants.EXTRA_CASH_T0_KEY:
                 builder.setProductType(ProductType.CONSUMABLE)
                         .setTitle("TH $10K")
                         .setDescription("Additional 10,000 Virtual Dollars");
-                priceBuilder.setValue(new BigDecimal(0.99f));
+                price = 0.99f;
                 break;
             case THAmazonConstants.EXTRA_CASH_T1_KEY:
                 builder.setProductType(ProductType.CONSUMABLE)
                         .setTitle("TH $50K")
                         .setDescription("Additional 50,000 Virtual Dollars");
-                priceBuilder.setValue(new BigDecimal(2.99f));
+                price = 2.99f;
                 break;
             case THAmazonConstants.EXTRA_CASH_T2_KEY:
                 builder.setProductType(ProductType.CONSUMABLE)
                         .setTitle("TH $100K")
                         .setDescription("Additional 100,000 Virtual Dollars");
-                priceBuilder.setValue(new BigDecimal(4.99f));
+                price = 4.99f;
                 break;
             case THAmazonConstants.CREDIT_1:
                 builder.setProductType(ProductType.CONSUMABLE)
                         .setTitle("1 Premium Follow Credit")
                         .setDescription("Follow your hero trades in real time");
-                priceBuilder.setValue(new BigDecimal(1.99f));
+                price = 1.99f;
                 break;
             case THAmazonConstants.CREDIT_10:
                 builder.setProductType(ProductType.CONSUMABLE)
                         .setTitle("10 Premium Follow Credits")
                         .setDescription("Follow your heroes trades in real time");
-                priceBuilder.setValue(new BigDecimal(19.99f));
+                price = 19.99f;
                 break;
             case THAmazonConstants.CREDIT_20:
                 builder.setProductType(ProductType.CONSUMABLE)
                         .setTitle("20 Premium Follow Credits")
                         .setDescription("Follow your heroes trades in real time");
-                priceBuilder.setValue(new BigDecimal(39.99f));
+                price = 39.99f;
                 break;
             case THAmazonConstants.ALERT_1:
             case THAmazonConstants.ALERT_5:
@@ -167,17 +163,17 @@ import javax.inject.Singleton;
                 builder.setProductType(ProductType.SUBSCRIPTION)
                         .setTitle("TH $10K")
                         .setDescription("Additional 10,000 Virtual Dollars");
-                priceBuilder.setValue(new BigDecimal(0f));
+                price = 0;
                 break;
             case THAmazonConstants.RESET_PORTFOLIO_0:
                 builder.setProductType(ProductType.CONSUMABLE)
                         .setTitle("Reset Portfolio")
                         .setDescription("Reset your Portfolio, and start anew");
-                priceBuilder.setValue(new BigDecimal(1.99f));
+                price = 1.99f;
                 break;
         }
         return builder
-                .setPrice(priceBuilder.build())
+                .setPrice(String.format("%.2f USD", price))
                 .build();
     }
 

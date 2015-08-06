@@ -102,6 +102,9 @@ android {
       // versionNameSuffix interferes with the version the server receives
       applicationIdSuffix '.dev'
       versionNameSuffix '-dev'
+
+      // Enabling multidex support.
+      multiDexEnabled true
     }
     release {
       minifyEnabled true
