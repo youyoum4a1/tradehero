@@ -537,7 +537,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         Calendar selected = null;
                         if (!TextUtils.isEmpty(dob.getText()))
                         {
-                            Date d = DateUtils.parseString(getResources(), dob.getText().toString(), R.string.info_date_format);
+                            Date d = DateUtils.parseString(dob.getText().toString(), KYCAyondoForm.DATE_FORMAT_AYONDO);
                             if (d != null)
                             {
                                 selected = Calendar.getInstance();
@@ -870,7 +870,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (requestCode == REQUEST_PICK_DATE && resultCode == Activity.RESULT_OK)
         {
             Calendar c = DatePickerDialogFragment.getCalendarFromIntent(data);
-            dob.setText(DateUtils.getDisplayableDate(getResources(), c.getTime(), R.string.info_date_format));
+            dob.setText(DateUtils.getDisplayableDate(c.getTime(), KYCAyondoForm.DATE_FORMAT_AYONDO));
         }
         else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER_CODE && resultCode == Activity.RESULT_OK)
         {
