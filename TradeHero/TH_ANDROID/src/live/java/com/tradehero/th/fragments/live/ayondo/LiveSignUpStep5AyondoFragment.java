@@ -226,24 +226,27 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.ACTION);
                             }
                         })
-                        .flatMap(new Func1<DocumentActionWidgetAction, Observable<Bitmap>>()
+                        .withLatestFrom(brokerDTOObservable, new Func2<DocumentActionWidgetAction, LiveBrokerDTO, LiveBrokerDTO>()
                         {
-                            @Override public Observable<Bitmap> call(DocumentActionWidgetAction ignored)
+                            @Override public LiveBrokerDTO call(DocumentActionWidgetAction documentActionWidgetAction, LiveBrokerDTO brokerDTO)
                             {
-                                final ImageRequesterUtil imageRequesterUtil = new ImageRequesterUtil(null, null, null, null);
-                                LiveSignUpStep5AyondoFragment.this.imageRequesterUtil = imageRequesterUtil;
-                                return Observable.combineLatest(
-                                        brokerDTOObservable,
-                                        pickDocument(R.string.identity_document_pick_title, imageRequesterUtil)
-                                                .take(1),
-                                        new Func2<LiveBrokerDTO, Bitmap, Bitmap>()
+                                LiveSignUpStep5AyondoFragment.this.imageRequesterUtil = new ImageRequesterUtil(null, null, null, null);
+                                return brokerDTO;
+                            }
+                        })
+                        .flatMap(new Func1<LiveBrokerDTO, Observable<Bitmap>>()
+                        {
+                            @Override public Observable<Bitmap> call(final LiveBrokerDTO liveBrokerDTO)
+                            {
+                                return pickDocument(R.string.identity_document_pick_title, imageRequesterUtil)
+                                        .take(1)
+                                        .doOnNext(new Action1<Bitmap>()
                                         {
-                                            @Override public Bitmap call(LiveBrokerDTO brokerDTO, Bitmap bitmap)
+                                            @Override public void call(Bitmap bitmap)
                                             {
                                                 KYCAyondoForm update = new KYCAyondoForm();
                                                 update.setIdentityDocumentFile(imageRequesterUtil.getCroppedPhotoFile());
-                                                onNext(new LiveBrokerSituationDTO(brokerDTO, update));
-                                                return bitmap;
+                                                onNext(new LiveBrokerSituationDTO(liveBrokerDTO, update));
                                             }
                                         });
                             }
@@ -283,25 +286,28 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.ACTION);
                             }
                         })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .flatMap(new Func1<DocumentActionWidgetAction, Observable<Bitmap>>()
+                        .withLatestFrom(brokerDTOObservable, new Func2<DocumentActionWidgetAction, LiveBrokerDTO, LiveBrokerDTO>()
                         {
-                            @Override public Observable<Bitmap> call(DocumentActionWidgetAction ignored)
+                            @Override public LiveBrokerDTO call(DocumentActionWidgetAction documentActionWidgetAction, LiveBrokerDTO brokerDTO)
                             {
-                                final ImageRequesterUtil imageRequesterUtil = new ImageRequesterUtil(null, null, null, null);
-                                LiveSignUpStep5AyondoFragment.this.imageRequesterUtil = imageRequesterUtil;
-                                return Observable.combineLatest(
-                                        brokerDTOObservable,
-                                        pickDocument(R.string.residence_document_pick_title, imageRequesterUtil)
-                                                .take(1),
-                                        new Func2<LiveBrokerDTO, Bitmap, Bitmap>()
+                                LiveSignUpStep5AyondoFragment.this.imageRequesterUtil = new ImageRequesterUtil(null, null, null, null);
+                                return brokerDTO;
+                            }
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .flatMap(new Func1<LiveBrokerDTO, Observable<Bitmap>>()
+                        {
+                            @Override public Observable<Bitmap> call(final LiveBrokerDTO liveBrokerDTO)
+                            {
+                                return pickDocument(R.string.identity_document_pick_title, imageRequesterUtil)
+                                        .take(1)
+                                        .doOnNext(new Action1<Bitmap>()
                                         {
-                                            @Override public Bitmap call(LiveBrokerDTO brokerDTO, Bitmap bitmap)
+                                            @Override public void call(Bitmap bitmap)
                                             {
                                                 KYCAyondoForm update = new KYCAyondoForm();
                                                 update.setResidenceDocumentFile(imageRequesterUtil.getCroppedPhotoFile());
-                                                onNext(new LiveBrokerSituationDTO(brokerDTO, update));
-                                                return bitmap;
+                                                onNext(new LiveBrokerSituationDTO(liveBrokerDTO, update));
                                             }
                                         });
                             }
