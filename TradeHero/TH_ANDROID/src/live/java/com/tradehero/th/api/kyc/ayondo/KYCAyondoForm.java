@@ -834,7 +834,7 @@ public class KYCAyondoForm implements KYCForm
             }
             else
             {
-                same &= leveragedProducts == null && ayondoForm.leveragedProducts == null;
+                same &= (leveragedProducts == null && (ayondoForm.leveragedProducts == null || ayondoForm.leveragedProducts.isEmpty()));
             }
             same &= addressCity == null ? ayondoForm.addressCity == null : addressCity.equals(ayondoForm.addressCity);
             same &= addressCountry == null ? ayondoForm.addressCountry == null : addressCountry.equals(ayondoForm.addressCountry);
