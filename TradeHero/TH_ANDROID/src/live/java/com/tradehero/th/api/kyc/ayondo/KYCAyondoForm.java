@@ -44,7 +44,7 @@ public class KYCAyondoForm implements KYCForm
     @JsonProperty("MiddleName") @Nullable private String middleName;
     @JsonProperty("Email") @Nullable private String email;
     @Nullable private String verifiedEmail;
-    @Nullable private Integer mobileNumberDialingPrefix;
+    @JsonProperty("PhonePrimaryCountryCode") @Nullable private Country phonePrimaryCountryCode;
     @JsonProperty("PhonePrimary") @Nullable private String mobileNumber;
     @Nullable private Integer verifiedMobileNumberDialingPrefix;
     @Nullable private String verifiedMobileNumber;
@@ -60,9 +60,7 @@ public class KYCAyondoForm implements KYCForm
     @JsonProperty("HasAttendedTraining") @Nullable private Boolean attendedSeminarAyondo;
     @JsonProperty("HasOtherQualification") @Nullable private Boolean haveOtherQualification;
     @JsonProperty("NumberOfMarginTrades") @Nullable private TradingPerQuarter tradingPerQuarter;
-    @Nullable private Boolean tradedSharesBonds;
-    @Nullable private Boolean tradedOtcDerivative;
-    @Nullable private Boolean tradedEtc;
+    @JsonProperty("LeveragedProducts") @Nullable private AyondoLeveragedProductList leveragedProducts;
     @JsonProperty("AddressCity") @Nullable private String addressCity;
     @JsonProperty("AddressCountry") @Nullable private CountryCode addressCountry;
     @JsonProperty("AddressLine1") @Nullable private String addressLine1;
@@ -147,8 +145,8 @@ public class KYCAyondoForm implements KYCForm
             this.middleName = ayondoForm.middleName != null ? ayondoForm.middleName : this.middleName;
             this.email = ayondoForm.getEmail() != null ? ayondoForm.getEmail() : this.email;
             this.verifiedEmail = ayondoForm.getVerifiedEmail() != null ? ayondoForm.getVerifiedEmail() : this.verifiedEmail;
-            this.mobileNumberDialingPrefix =
-                    ayondoForm.getMobileNumberDialingPrefix() != null ? ayondoForm.getMobileNumberDialingPrefix() : this.mobileNumberDialingPrefix;
+            this.phonePrimaryCountryCode =
+                    ayondoForm.phonePrimaryCountryCode != null ? ayondoForm.phonePrimaryCountryCode : this.phonePrimaryCountryCode;
             this.mobileNumber = ayondoForm.getMobileNumber() != null ? ayondoForm.getMobileNumber() : this.mobileNumber;
             this.verifiedMobileNumberDialingPrefix =
                     ayondoForm.getVerifiedMobileNumberDialingPrefix() != null ? ayondoForm.getVerifiedMobileNumberDialingPrefix()
@@ -172,9 +170,7 @@ public class KYCAyondoForm implements KYCForm
             this.haveOtherQualification =
                     ayondoForm.isHaveOtherQualification() != null ? ayondoForm.isHaveOtherQualification() : this.haveOtherQualification;
             this.tradingPerQuarter = ayondoForm.getTradingPerQuarter() != null ? ayondoForm.getTradingPerQuarter() : this.tradingPerQuarter;
-            this.tradedSharesBonds = ayondoForm.isTradedSharesBonds() != null ? ayondoForm.isTradedSharesBonds() : this.tradedSharesBonds;
-            this.tradedOtcDerivative = ayondoForm.isTradedOtcDerivative() != null ? ayondoForm.isTradedOtcDerivative() : this.tradedOtcDerivative;
-            this.tradedEtc = ayondoForm.isTradedEtc() != null ? ayondoForm.isTradedEtc() : this.tradedEtc;
+            this.leveragedProducts = ayondoForm.leveragedProducts != null ? ayondoForm.leveragedProducts : this.leveragedProducts;
             this.addressCity = ayondoForm.addressCity != null ? ayondoForm.addressCity : this.addressCity;
             this.addressCountry = ayondoForm.addressCountry != null ? ayondoForm.addressCountry : this.addressCountry;
             this.addressLine1 = ayondoForm.addressLine1 != null ? ayondoForm.addressLine1 : this.addressLine1;
@@ -326,14 +322,14 @@ public class KYCAyondoForm implements KYCForm
     }
 
     //<editor-fold desc="Phone Number">
-    @Nullable public Integer getMobileNumberDialingPrefix()
+    @Nullable public Country getPhonePrimaryCountryCode()
     {
-        return mobileNumberDialingPrefix;
+        return phonePrimaryCountryCode;
     }
 
-    public void setMobileNumberDialingPrefix(@Nullable Integer mobileNumberDialingPrefix)
+    public void setPhonePrimaryCountryCode(@Nullable Country phonePrimaryCountryCode)
     {
-        this.mobileNumberDialingPrefix = mobileNumberDialingPrefix;
+        this.phonePrimaryCountryCode = phonePrimaryCountryCode;
     }
 
     @Nullable public String getMobileNumber()
@@ -498,32 +494,48 @@ public class KYCAyondoForm implements KYCForm
 
     @Nullable public Boolean isTradedSharesBonds()
     {
-        return tradedSharesBonds;
+        return leveragedProducts != null && leveragedProducts.contains(AyondoLeveragedProduct.SHARE_AND_BOND);
     }
 
     public void setTradedSharesBonds(@Nullable Boolean tradedSharesBonds)
     {
-        this.tradedSharesBonds = tradedSharesBonds;
+        setLeveragedProduct(AyondoLeveragedProduct.SHARE_AND_BOND, tradedSharesBonds != null && tradedSharesBonds);
     }
 
     @Nullable public Boolean isTradedOtcDerivative()
     {
-        return tradedOtcDerivative;
+        return leveragedProducts != null && leveragedProducts.contains(AyondoLeveragedProduct.OTC_DERIVATE);
     }
 
     public void setTradedOtcDerivative(@Nullable Boolean tradedOtcDerivative)
     {
-        this.tradedOtcDerivative = tradedOtcDerivative;
+        setLeveragedProduct(AyondoLeveragedProduct.OTC_DERIVATE, tradedOtcDerivative != null && tradedOtcDerivative);
     }
 
     @Nullable public Boolean isTradedEtc()
     {
-        return tradedEtc;
+        return leveragedProducts != null && leveragedProducts.contains(AyondoLeveragedProduct.EXCHANGE_TRADED_DERIVATIVE);
     }
 
     public void setTradedEtc(@Nullable Boolean tradedEtc)
     {
-        this.tradedEtc = tradedEtc;
+        setLeveragedProduct(AyondoLeveragedProduct.EXCHANGE_TRADED_DERIVATIVE, tradedEtc != null && tradedEtc);
+    }
+
+    private synchronized void setLeveragedProduct(@NonNull AyondoLeveragedProduct product, boolean yes)
+    {
+        if (leveragedProducts == null)
+        {
+            leveragedProducts = new AyondoLeveragedProductList(null);
+        }
+        if (yes && !leveragedProducts.contains(product))
+        {
+            leveragedProducts.add(product);
+        }
+        else if (!yes)
+        {
+            leveragedProducts.remove(product);
+        }
     }
     //</editor-fold>
 
@@ -767,9 +779,9 @@ public class KYCAyondoForm implements KYCForm
             same &= verifiedEmail == null
                     ? ayondoForm.verifiedEmail == null
                     : verifiedEmail.equals(ayondoForm.verifiedEmail);
-            same &= mobileNumberDialingPrefix == null
-                    ? ayondoForm.mobileNumberDialingPrefix == null
-                    : mobileNumberDialingPrefix.equals(ayondoForm.mobileNumberDialingPrefix);
+            same &= phonePrimaryCountryCode == null
+                    ? ayondoForm.phonePrimaryCountryCode == null
+                    : phonePrimaryCountryCode.equals(ayondoForm.phonePrimaryCountryCode);
             same &= mobileNumber == null ? ayondoForm.mobileNumber == null : mobileNumber.equals(ayondoForm.mobileNumber);
             same &= verifiedMobileNumberDialingPrefix == null
                     ? ayondoForm.verifiedMobileNumberDialingPrefix == null
@@ -795,9 +807,22 @@ public class KYCAyondoForm implements KYCForm
             same &= haveOtherQualification == null ? ayondoForm.haveOtherQualification == null
                     : haveOtherQualification.equals(ayondoForm.haveOtherQualification);
             same &= tradingPerQuarter == null ? ayondoForm.tradingPerQuarter == null : tradingPerQuarter.equals(ayondoForm.tradingPerQuarter);
-            same &= tradedSharesBonds == null ? ayondoForm.tradedSharesBonds == null : tradedSharesBonds.equals(ayondoForm.tradedSharesBonds);
-            same &= tradedOtcDerivative == null ? ayondoForm.tradedOtcDerivative == null : tradedOtcDerivative.equals(ayondoForm.tradedOtcDerivative);
-            same &= tradedEtc == null ? ayondoForm.tradedEtc == null : tradedEtc.equals(ayondoForm.tradedEtc);
+            if (same && leveragedProducts != null && ayondoForm.leveragedProducts != null)
+            {
+                //noinspection ConstantConditions
+                same &= leveragedProducts.size() == ayondoForm.leveragedProducts.size();
+                if (same)
+                {
+                    for (int index = 0; index < leveragedProducts.size(); index++)
+                    {
+                        same &= leveragedProducts.get(index).equals(ayondoForm.leveragedProducts.get(index));
+                    }
+                }
+            }
+            else
+            {
+                same &= leveragedProducts == null && ayondoForm.leveragedProducts == null;
+            }
             same &= addressCity == null ? ayondoForm.addressCity == null : addressCity.equals(ayondoForm.addressCity);
             same &= addressCountry == null ? ayondoForm.addressCountry == null : addressCountry.equals(ayondoForm.addressCountry);
             same &= addressLine1 == null ? ayondoForm.addressLine1 == null : addressLine1.equals(ayondoForm.addressLine1);
@@ -854,7 +879,7 @@ public class KYCAyondoForm implements KYCForm
         code ^= middleName == null ? 0 : middleName.hashCode();
         code ^= email == null ? 0 : email.hashCode();
         code ^= verifiedEmail == null ? 0 : verifiedEmail.hashCode();
-        code ^= mobileNumberDialingPrefix == null ? 0 : mobileNumberDialingPrefix.hashCode();
+        code ^= phonePrimaryCountryCode == null ? 0 : phonePrimaryCountryCode.hashCode();
         code ^= mobileNumber == null ? 0 : mobileNumber.hashCode();
         code ^= verifiedMobileNumberDialingPrefix == null ? 0 : verifiedMobileNumberDialingPrefix.hashCode();
         code ^= verifiedMobileNumber == null ? 0 : verifiedMobileNumber.hashCode();
@@ -870,9 +895,17 @@ public class KYCAyondoForm implements KYCForm
         code ^= attendedSeminarAyondo == null ? 0 : attendedSeminarAyondo.hashCode();
         code ^= haveOtherQualification == null ? 0 : haveOtherQualification.hashCode();
         code ^= tradingPerQuarter == null ? 0 : tradingPerQuarter.hashCode();
-        code ^= tradedSharesBonds == null ? 0 : tradedSharesBonds.hashCode();
-        code ^= tradedOtcDerivative == null ? 0 : tradedOtcDerivative.hashCode();
-        code ^= tradedEtc == null ? 0 : tradedEtc.hashCode();
+        if (leveragedProducts != null)
+        {
+            for (AyondoLeveragedProduct product : leveragedProducts)
+            {
+                code ^= product.hashCode();
+            }
+        }
+        else
+        {
+            code ^= 0;
+        }
         code ^= addressCity == null ? 0 : addressCity.hashCode();
         code ^= addressCountry == null ? 0 : addressCountry.hashCode();
         code ^= addressLine1 == null ? 0 : addressLine1.hashCode();

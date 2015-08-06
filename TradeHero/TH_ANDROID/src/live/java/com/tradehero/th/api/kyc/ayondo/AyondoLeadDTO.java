@@ -8,11 +8,9 @@ import java.util.UUID;
 public class AyondoLeadDTO extends AyondoLeadAddressDTO
 {
     @JsonProperty("Guid") @Nullable private UUID uid;
-    @JsonProperty("PhonePrimaryCountryCode") @Nullable private Country phonePrimaryCountryCode;
     @JsonProperty("Currency") @Nullable private String currency;
     @JsonProperty("IsTestRecord") @Nullable private Boolean isTestRecord;
     @JsonProperty("Language") @Nullable private Country language;
-    @JsonProperty("LeveragedProducts") @Nullable private AyondoLeveragedProductList leveragedProducts;
     @JsonProperty("Password") @Nullable private String password;
     @JsonProperty("ProductType") @Nullable private AyondoProductType productType;
     @JsonProperty("SubscribeOffers") @Nullable private Boolean subscribeOffers;
@@ -30,16 +28,6 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
     public void setUid(@Nullable UUID uid)
     {
         this.uid = uid;
-    }
-
-    @Nullable public Country getPhonePrimaryCountryCode()
-    {
-        return phonePrimaryCountryCode;
-    }
-
-    public void setPhonePrimaryCountryCode(@Nullable Country phonePrimaryCountryCode)
-    {
-        this.phonePrimaryCountryCode = phonePrimaryCountryCode;
     }
 
     @Nullable public String getCurrency()
@@ -70,16 +58,6 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
     public void setLanguage(@Nullable Country language)
     {
         this.language = language;
-    }
-
-    @Nullable public AyondoLeveragedProductList getLeveragedProducts()
-    {
-        return leveragedProducts;
-    }
-
-    public void setLeveragedProducts(@Nullable AyondoLeveragedProductList leveragedProducts)
-    {
-        this.leveragedProducts = leveragedProducts;
     }
 
     @Nullable public String getPassword()
@@ -124,11 +102,9 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
 
     public boolean isValidToCreateAccount()
     {
-        return phonePrimaryCountryCode != null
-                && currency != null
+        return currency != null
                 // No need to text isTestRecord
                 // TODO decide if we test language
-                && leveragedProducts != null
                 && password != null
                 && subscribeOffers != null
                 && subscribeTradeNotifications != null;

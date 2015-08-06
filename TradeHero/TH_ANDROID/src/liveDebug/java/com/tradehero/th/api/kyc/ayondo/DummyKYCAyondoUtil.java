@@ -8,6 +8,7 @@ import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
+import com.tradehero.th.api.live.CountryUtil;
 import java.util.Arrays;
 
 public class DummyKYCAyondoUtil
@@ -27,11 +28,12 @@ public class DummyKYCAyondoUtil
         return (kycForm.getGender() != null
                 && kycForm.getFullName() != null
                 && kycForm.getEmail() != null
-                && kycForm.getMobileNumberDialingPrefix() != null
+                && kycForm.getPhonePrimaryCountryCode() != null
                 && kycForm.getMobileNumber() != null
                 && kycForm.getVerifiedMobileNumberDialingPrefix() != null
                 && kycForm.getVerifiedMobileNumber() != null
-                && kycForm.getMobileNumberDialingPrefix().equals(kycForm.getVerifiedMobileNumberDialingPrefix())
+                && Integer.valueOf(CountryUtil.getPhoneCodePlusLeadingDigits(kycForm.getPhonePrimaryCountryCode()))
+                .equals(kycForm.getVerifiedMobileNumberDialingPrefix())
                 && kycForm.getMobileNumber().equals(kycForm.getVerifiedMobileNumber())
                 && kycForm.getNationality() != null
                 && kycForm.getResidency() != null

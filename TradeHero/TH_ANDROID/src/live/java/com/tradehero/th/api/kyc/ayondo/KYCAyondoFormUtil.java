@@ -65,6 +65,7 @@ public class KYCAyondoFormUtil
                 && form.getEmploymentStatus() != null
                 && form.isEmployerRegulatedFinancial() != null
                 && form.getTradingPerQuarter() != null
+                // We do not check for leveraged product trading experience
                 && form.getIdentityDocumentType() != null
                 && form.getIdentificationNumber() != null
                 && areAddressValid(form.getAddresses())

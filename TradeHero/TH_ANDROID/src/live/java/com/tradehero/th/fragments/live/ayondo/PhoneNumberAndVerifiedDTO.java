@@ -1,19 +1,19 @@
 package com.tradehero.th.fragments.live.ayondo;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.market.Country;
 
-class PhoneNumberAndVerifiedDTO
+class PhoneNumberAndVerifiedDTO extends PhoneNumberDTO
 {
-    public final int dialingPrefix;
-    @NonNull public final String typedNumber;
     public final boolean verified;
 
-    public PhoneNumberAndVerifiedDTO(int dialingPrefix,
+    public PhoneNumberAndVerifiedDTO(
+            @NonNull Country dialingCountry,
+            int dialingPrefix,
             @NonNull String typedNumber,
             boolean verified)
     {
-        this.dialingPrefix = dialingPrefix;
-        this.typedNumber = typedNumber;
+        super(dialingCountry, dialingPrefix, typedNumber);
         this.verified = verified;
     }
 }

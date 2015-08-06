@@ -24,6 +24,7 @@ import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
+import com.tradehero.th.api.live.CountryUtil;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.market.Country;
@@ -409,44 +410,46 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 })
                                 .cast(OnItemSelectedEvent.class),
                         WidgetObservable.text(phoneNumber),
-                        new Func2<OnItemSelectedEvent, OnTextChangeEvent, Pair<Integer, String>>()
+                        new Func2<OnItemSelectedEvent, OnTextChangeEvent, PhoneNumberDTO>()
                         {
-                            @Override public Pair<Integer, String> call(OnItemSelectedEvent onSelectedEvent, OnTextChangeEvent onTextChangeEvent)
+                            @Override public PhoneNumberDTO call(OnItemSelectedEvent onSelectedEvent, OnTextChangeEvent onTextChangeEvent)
                             {
-                                return Pair.create(
-                                        ((CountrySpinnerAdapter.DTO) onSelectedEvent.parent.getItemAtPosition(
-                                                onSelectedEvent.position)).phoneCountryCode,
+                                CountrySpinnerAdapter.DTO selectedDTO = (CountrySpinnerAdapter.DTO) onSelectedEvent.parent.getItemAtPosition(
+                                        onSelectedEvent.position);
+                                return new PhoneNumberDTO(
+                                        selectedDTO.country,
+                                        selectedDTO.phoneCountryCode,
                                         onTextChangeEvent.text().toString());
                             }
                         })
-                        .doOnNext(new Action1<Pair<Integer, String>>()
+                        .doOnNext(new Action1<PhoneNumberDTO>()
                         {
-                            @Override public void call(Pair<Integer, String> integerStringPair)
+                            @Override public void call(PhoneNumberDTO ignored)
                             {
                                 buttonVerifyPhone.setEnabled(false);
                             }
                         })
-                        .filter(new Func1<Pair<Integer, String>, Boolean>()
+                        .filter(new Func1<PhoneNumberDTO, Boolean>()
                         {
-                            @Override public Boolean call(Pair<Integer, String> integerStringPair)
+                            @Override public Boolean call(PhoneNumberDTO numberDTO)
                             {
-                                return integerStringPair.first > 0 && !TextUtils.isEmpty(integerStringPair.second);
+                                return numberDTO.dialingPrefix > 0 && !TextUtils.isEmpty(numberDTO.typedNumber);
                             }
                         })
-                        .doOnNext(new Action1<Pair<Integer, String>>()
+                        .doOnNext(new Action1<PhoneNumberDTO>()
                         {
-                            @Override public void call(Pair<Integer, String> integerStringPair)
+                            @Override public void call(PhoneNumberDTO ignored)
                             {
                                 buttonVerifyPhone.setEnabled(true);
                             }
                         })
                         .distinctUntilChanged()
-                        .flatMap(new Func1<Pair<Integer, String>, Observable<PhoneNumberAndVerifiedDTO>>()
+                        .flatMap(new Func1<PhoneNumberDTO, Observable<PhoneNumberAndVerifiedDTO>>()
                         {
                             @Override public Observable<PhoneNumberAndVerifiedDTO> call(
-                                    final Pair<Integer, String> phoneNumberPair)
+                                    final PhoneNumberDTO numberDTO)
                             {
-                                String numberText = VerifyPhoneDialogFragment.getFormattedPhoneNumber(phoneNumberPair.first, phoneNumberPair.second);
+                                String numberText = VerifyPhoneDialogFragment.getFormattedPhoneNumber(numberDTO.dialingPrefix, numberDTO.typedNumber);
                                 return liveServiceWrapper.getPhoneNumberVerifiedStatus(numberText)
                                         .map(new Func1<PhoneNumberVerifiedStatusDTO, PhoneNumberAndVerifiedDTO>()
                                         {
@@ -454,8 +457,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                     PhoneNumberVerifiedStatusDTO verifiedStatusDTO)
                                             {
                                                 return new PhoneNumberAndVerifiedDTO(
-                                                        phoneNumberPair.first,
-                                                        phoneNumberPair.second,
+                                                        numberDTO.dialingCountry,
+                                                        numberDTO.dialingPrefix,
+                                                        numberDTO.typedNumber,
                                                         verifiedStatusDTO.verified);
                                             }
                                         });
@@ -479,7 +483,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         liveBrokerSituationDTO.kycForm.pickFrom(update);
                                         //noinspection ConstantConditions
                                         populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, dialingPrefix, newNumber);
-                                        update.setMobileNumberDialingPrefix(dialingPrefix);
+                                        update.setPhonePrimaryCountryCode(phoneNumberAndVerifiedDTO.dialingCountry);
                                         update.setMobileNumber(newNumber);
 
                                         return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
@@ -689,7 +693,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull UserProfileDTO currentUserProfile,
             @NonNull List<CountrySpinnerAdapter.DTO> liveCountryDTOs)
     {
-        Integer savedMobileNumberDialingPrefix = kycForm.getMobileNumberDialingPrefix();
+        Integer savedMobileNumberDialingPrefix = CountryUtil.getPhoneCodePlusLeadingDigits(kycForm.getPhonePrimaryCountryCode());
         final List<CountrySpinnerAdapter.DTO> candidates;
         if (savedMobileNumberDialingPrefix != null)
         {
@@ -717,7 +721,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
             if (chosenDTO != null)
             {
-                update.setMobileNumberDialingPrefix(chosenDTO.phoneCountryCode);
+                update.setPhonePrimaryCountryCode(chosenDTO.country);
             }
         }
         return update;
