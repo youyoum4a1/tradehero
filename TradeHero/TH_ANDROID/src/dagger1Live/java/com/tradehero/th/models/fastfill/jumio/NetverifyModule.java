@@ -1,10 +1,19 @@
 package com.tradehero.th.models.fastfill.jumio;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.picasso.LruCache;
+import com.squareup.picasso.OkHttpDownloader;
+import com.squareup.picasso.Picasso;
 import com.tradehero.common.log.RetrofitErrorHandlerLogger;
+import com.tradehero.th.models.fastfill.DocumentCheckService;
+import com.tradehero.th.models.fastfill.ForDocumentChecker;
+import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.dagger.ForPicasso;
 import dagger.Module;
 import dagger.Provides;
 import retrofit.Endpoints;
-import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 
 @Module(
@@ -19,15 +28,7 @@ public class NetverifyModule
     {
         return builder
                 .setEndpoint(Endpoints.newFixedEndpoint(NetverifyConstants.NETVERIFY_END_POINT))
-                .setRequestInterceptor(new RequestInterceptor()
-                {
-                    @Override public void intercept(RequestFacade request)
-                    {
-                        request.addHeader("Authorization", NetverifyConstants.NETVERIFY_AUTH_HEADER);
-                        request.addHeader("Accept", "application/json");
-                        request.addHeader("User-Agent", NetverifyConstants.NETVERIFY_USER_AGENT);
-                    }
-                })
+                .setRequestInterceptor(new NetverifyRetrofitRequestInterceptor())
                 .setErrorHandler(errorHandlerLogger)
                 .build();
     }
@@ -36,5 +37,23 @@ public class NetverifyModule
             RetrofitErrorHandlerLogger errorHandlerLogger)
     {
         return createNetverifyRestAdapter(builder, errorHandlerLogger).create(NetverifyServiceRx.class);
+    }
+
+    @Provides @ForDocumentChecker Picasso provideNetverifyPicasso(Context context, @ForPicasso LruCache lruFileCache, OkHttpClient okHttpClient)
+    {
+        OkHttpClient netverifyClient = okHttpClient.clone();
+        netverifyClient.interceptors().add(new NetverifyPicassoRequestInterceptor());
+        Picasso mPicasso = new Picasso.Builder(context)
+                .downloader(new OkHttpDownloader(netverifyClient))
+                .memoryCache(lruFileCache)
+                .build();
+        mPicasso.setIndicatorsEnabled(Constants.PICASSO_DEBUG);
+        mPicasso.setLoggingEnabled(Constants.PICASSO_DEBUG);
+        return mPicasso;
+    }
+
+    @Provides DocumentCheckService provideNetverifyDocumentCheckService(@NonNull NetverifyServiceWrapper netverifyServiceWrapper)
+    {
+        return netverifyServiceWrapper;
     }
 }

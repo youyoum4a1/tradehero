@@ -3,8 +3,9 @@ package com.tradehero.th.models.fastfill.jumio;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tradehero.th.models.fastfill.ScanImageKey;
 
-public class NetverifyScanImageKey
+public class NetverifyScanImageKey implements ScanImageKey
 {
     @NonNull private final NetverifyScanReference scanReference;
     @NonNull private final NetverifyImageClassifier classifier;
@@ -20,7 +21,7 @@ public class NetverifyScanImageKey
         this.maskHint = maskHint;
     }
 
-    @NonNull public NetverifyScanReference getScanReference()
+    @NonNull @Override public NetverifyScanReference getScanReference()
     {
         return scanReference;
     }

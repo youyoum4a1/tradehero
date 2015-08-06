@@ -2,9 +2,11 @@ package com.tradehero.th.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tradehero.th.models.fastfill.DocumentCheckStatus;
+import com.tradehero.th.models.fastfill.ScanStatus;
 import java.util.Date;
 
-public class NetverifyScanStatus
+public class NetverifyScanStatus implements ScanStatus
 {
     @NonNull private final Date timestamp;
     @NonNull private final NetverifyScanReference scanReference;
@@ -20,18 +22,23 @@ public class NetverifyScanStatus
         this.status = status;
     }
 
-    @NonNull public Date getTimestamp()
+    @NonNull @Override public Date getTimestamp()
     {
         return timestamp;
     }
 
-    @NonNull public NetverifyScanReference getScanReference()
+    @NonNull @Override public NetverifyScanReference getScanReference()
     {
         return scanReference;
     }
 
-    @NonNull public NetverifyStatus getStatus()
+    @NonNull public NetverifyStatus getNetverifyStatus()
     {
         return status;
+    }
+
+    @NonNull @Override public DocumentCheckStatus getCheckStatus()
+    {
+        return status.checkStatus;
     }
 }
