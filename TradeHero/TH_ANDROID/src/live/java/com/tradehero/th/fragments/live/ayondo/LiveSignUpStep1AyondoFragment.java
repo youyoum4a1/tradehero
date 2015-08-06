@@ -708,7 +708,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull UserProfileDTO currentUserProfile,
             @NonNull List<CountrySpinnerAdapter.DTO> liveCountryDTOs)
     {
-        Integer savedMobileNumberDialingPrefix = CountryUtil.getPhoneCodePlusLeadingDigits(kycForm.getPhonePrimaryCountryCode());
+        Integer savedMobileNumberDialingPrefix = null;
+        if (kycForm.getPhonePrimaryCountryCode() != null)
+        {
+            savedMobileNumberDialingPrefix = CountryUtil.getPhoneCodePlusLeadingDigits(kycForm.getPhonePrimaryCountryCode());
+        }
         final List<CountrySpinnerAdapter.DTO> candidates;
         if (savedMobileNumberDialingPrefix != null)
         {
