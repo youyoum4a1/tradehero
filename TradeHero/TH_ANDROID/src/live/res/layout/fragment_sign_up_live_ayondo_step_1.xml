@@ -39,6 +39,23 @@
 
     </android.support.design.widget.TextInputLayout>
 
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintTextAppearance="@style/TH.Caption"
+        >
+
+      <EditText
+          android:id="@+id/info_password"
+          style="@style/TH.Body"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:hint="@string/hint_password"
+          android:inputType="textPassword"
+          />
+
+    </android.support.design.widget.TextInputLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

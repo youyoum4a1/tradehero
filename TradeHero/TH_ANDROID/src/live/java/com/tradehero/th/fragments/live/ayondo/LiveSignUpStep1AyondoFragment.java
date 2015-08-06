@@ -78,6 +78,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final int REQUEST_VERIFY_PHONE_NUMBER_CODE = 2808;
 
     @Bind(R.id.info_username) TextView userName;
+    @Bind(R.id.info_password) TextView password;
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.info_full_name) TextView fullName;
     @Bind(R.id.sign_up_email) EditText email;
@@ -128,6 +129,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return KYCAyondoFormFactory.fromUserNameEvent(userNameEvent);
                             }
                         }),
+                WidgetObservable.text(password)
+                .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
+                {
+                    @Override public KYCAyondoForm call(OnTextChangeEvent passwordEvent)
+                    {
+                        return KYCAyondoFormFactory.fromPasswordEvent(passwordEvent);
+                    }
+                }),
                 WidgetObservable.text(fullName)
                         .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
                         {
@@ -192,7 +201,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 onNext(update);
                             }
                         },
-                        new TimberOnErrorAction1("Failed to listen to title, full name, email, nationality o residency spinners, or dob")));
+                        new TimberOnErrorAction1("Failed to listen to user name, password, full name, email, nationality o residency spinners, or dob")));
 
         emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
         emailInvalidMessage = getString(R.string.validation_incorrect_pattern_email);
@@ -620,6 +629,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (userName != null && userNameText != null && !userNameText.equals(userName.getText().toString()))
         {
             userName.setText(userNameText);
+        }
+
+        String passwordText = kycForm.getPassword();
+        if (password != null && passwordText != null && !passwordText.equals(password.getText().toString()))
+        {
+            password.setText(passwordText);
         }
 
         String fullNameText = kycForm.getFullName();

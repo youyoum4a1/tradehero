@@ -335,6 +335,7 @@
   <string name="hint_full_name">Full Name</string>
   <string name="previous_address">Previous Address</string>
   <string name="country">Country</string>
-  <string name="hint_username">Username</string>
+  <string name="hint_username">Username to be created</string>
+  <string name="hint_password">Password</string>
 
 </resources>
