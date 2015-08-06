@@ -1,11 +1,14 @@
 package com.tradehero.chinabuild.fragment.web;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -45,6 +48,15 @@ public class WebViewFragment extends DashboardFragment {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
+            }
+        });
+        webViewSimple.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype,
+                                        long contentLength) {
+                Uri uri = Uri.parse(url);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
             }
         });
         webViewSimple.getSettings().setJavaScriptEnabled(true);

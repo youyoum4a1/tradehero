@@ -33,6 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:layout_marginTop="20dp"
+                android:visibility="gone"
                 android:orientation="horizontal">
                 <Button
                     android:id="@+id/security_open_account"
