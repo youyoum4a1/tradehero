@@ -23,8 +23,8 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.models.fastfill.FastFillExceptionUtil;
 import com.tradehero.th.models.fastfill.FastFillUtil;
-import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
+import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.kyc.KYCFormOptionsCache;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
@@ -70,7 +70,7 @@ public class IdentityPromptActivity extends BaseActivity
                     @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
                     {
                         //noinspection ConstantConditions
-                        livePoweredBy.setText(situation.kycForm.getBrokerName());
+                        livePoweredBy.setText(situation.kycForm.getBrokerNameResId());
                         return kycFormOptionsCache.getOne(new KYCFormOptionsId(situation.broker.id))
                                 .map(new PairGetSecond<KYCFormOptionsId, KYCFormOptionsDTO>())
                                 .observeOn(AndroidSchedulers.mainThread())

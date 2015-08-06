@@ -20,7 +20,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = KYCAyondoForm.class, name = KYCAyondoForm.KEY_AYONDO_TYPE),
 }) public interface KYCForm
 {
-    @StringRes int getBrokerName();
+    @StringRes int getBrokerNameResId();
 
     @Nullable Country getCountry();
 

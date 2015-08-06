@@ -85,7 +85,7 @@ public class KYCAyondoForm implements KYCForm
 
     private List<StepStatus> stepStatuses;
 
-    @Override @StringRes public int getBrokerName()
+    @Override @StringRes public int getBrokerNameResId()
     {
         return R.string.broker_name_ayondo;
     }

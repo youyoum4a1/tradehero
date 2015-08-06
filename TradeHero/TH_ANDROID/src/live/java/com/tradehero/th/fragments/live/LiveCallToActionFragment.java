@@ -63,7 +63,7 @@ public class LiveCallToActionFragment extends DashboardFragment
                                         if (liveBrokerSituationDTO.kycForm != null)
                                         {
                                             liveDescription.setText(KYCFormUtil.getCallToActionText(liveBrokerSituationDTO.kycForm));
-                                            livePoweredBy.setText(liveBrokerSituationDTO.kycForm.getBrokerName());
+                                            livePoweredBy.setText(liveBrokerSituationDTO.kycForm.getBrokerNameResId());
                                         }
                                     }
                                 },

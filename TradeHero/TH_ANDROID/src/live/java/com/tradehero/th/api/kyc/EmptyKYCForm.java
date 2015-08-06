@@ -14,7 +14,7 @@ public class EmptyKYCForm implements KYCForm
 {
     public static final String KEY_EMPTY_TYPE = "EMPTY";
 
-    @Override @StringRes public int getBrokerName()
+    @Override @StringRes public int getBrokerNameResId()
     {
         return R.string.broker_name_none;
     }
