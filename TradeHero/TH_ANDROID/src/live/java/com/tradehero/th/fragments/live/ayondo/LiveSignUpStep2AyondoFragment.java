@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.live.ayondo;
 
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -186,6 +187,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return subscriptions;
     }
 
+    @MainThread
     @NonNull protected KYCAyondoForm populate(@NonNull KYCAyondoForm kycForm)
     {
         KYCAyondoForm update = new KYCAyondoForm();
@@ -201,6 +203,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return update;
     }
 
+    @MainThread
     @NonNull protected KYCAyondoForm populateAnnualIncome(
             @NonNull KYCAyondoForm kycForm,
             @NonNull List<AnnualIncomeRange> incomeRanges)
@@ -227,6 +230,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return update;
     }
 
+    @MainThread
     @NonNull protected KYCAyondoForm populateNetWorth(
             @NonNull KYCAyondoForm kycForm,
             @NonNull List<NetWorthRange> netWorthRanges)
@@ -253,6 +257,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return update;
     }
 
+    @MainThread
     @NonNull protected KYCAyondoForm populatePercentNetWorth(
             @NonNull KYCAyondoForm kycForm,
             @NonNull List<PercentNetWorthForInvestmentRange> netWorthRanges)
@@ -279,6 +284,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return update;
     }
 
+    @MainThread
     @NonNull protected KYCAyondoForm populateEmploymentStatus(
             @NonNull KYCAyondoForm kycForm,
             @NonNull List<EmploymentStatus> employmentStatuses)

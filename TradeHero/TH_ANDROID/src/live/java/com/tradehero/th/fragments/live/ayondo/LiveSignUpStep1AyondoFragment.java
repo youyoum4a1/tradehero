@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
@@ -608,6 +609,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         // TODO
     }
 
+    @MainThread
     protected void populate(@NonNull KYCAyondoForm kycForm)
     {
         String userNameText = kycForm.getUserName();
@@ -641,6 +643,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
     }
 
+    @MainThread
     protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, int countryCode, @NonNull String typedNumber)
     {
         if (buttonVerifyPhone != null)
@@ -652,6 +655,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
     }
 
+    @MainThread
     @NonNull protected KYCAyondoForm populateGender(
             @NonNull final KYCAyondoForm kycForm,
             @NonNull List<Gender> genders)
@@ -679,6 +683,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return update;
     }
 
+    @MainThread
     @NonNull protected KYCAyondoForm populateMobileCountryCode(
             @NonNull final KYCAyondoForm kycForm,
             @NonNull UserProfileDTO currentUserProfile,
@@ -718,6 +723,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return update;
     }
 
+    @MainThread
     @NonNull protected KYCAyondoForm populateNationality(
             @NonNull final KYCAyondoForm kycForm,
             @NonNull UserProfileDTO currentUserProfile,
@@ -764,6 +770,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return update;
     }
 
+    @MainThread
     @NonNull protected KYCAyondoForm populateResidency(
             @NonNull final KYCAyondoForm kycForm,
             @NonNull UserProfileDTO currentUserProfile,
@@ -830,6 +837,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return defaultOnes;
     }
 
+    @MainThread
     protected void offerToEnterCode(
             final int phoneCountryCode,
             final String phoneNumberInt)

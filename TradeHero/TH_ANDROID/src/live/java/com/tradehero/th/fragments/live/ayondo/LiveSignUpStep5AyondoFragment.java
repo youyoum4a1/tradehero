@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -386,6 +387,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
     }
 
+    @MainThread
     @NonNull private KYCAyondoForm populate(@NonNull KYCAyondoForm kycForm)
     {
         KYCAyondoForm update = new KYCAyondoForm();
@@ -422,6 +424,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return update;
     }
 
+    @MainThread
     @NonNull private KYCAyondoForm populateIdentityDocumentType(@NonNull KYCAyondoForm kycForm,
             @NonNull List<IdentityScannedDocumentType> identityScannedDocumentTypes)
     {
@@ -450,6 +453,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return update;
     }
 
+    @MainThread
     @NonNull private KYCAyondoForm populateResidenceDocumentType(@NonNull KYCAyondoForm kycForm,
             @NonNull List<ResidenceScannedDocumentType> residenceScannedDocumentTypes)
     {
@@ -478,6 +482,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return update;
     }
 
+    @MainThread
     private void populate(@Nullable DocumentActionWidget widget, @Nullable File imageFile)
     {
         if (widget != null && imageFile != null)
