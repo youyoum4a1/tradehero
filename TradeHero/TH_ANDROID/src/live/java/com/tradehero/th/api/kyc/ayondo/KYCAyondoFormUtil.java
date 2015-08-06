@@ -70,6 +70,8 @@ public class KYCAyondoFormUtil
                 && form.getIdentityDocumentType() != null
                 && form.getIdentificationNumber() != null
                 && areAddressValid(form.getAddresses())
+                && form.isSubscribeOffers() != null
+                && form.isSubscribeTradeNotifications() != null
                 ;
     }
 

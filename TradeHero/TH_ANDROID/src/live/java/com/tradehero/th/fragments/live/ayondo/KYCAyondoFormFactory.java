@@ -242,4 +242,18 @@ public class KYCAyondoFormFactory
         created.setAgreeDataSharing(dataSharingEvent.value());
         return created;
     }
+
+    @NonNull public static KYCAyondoForm fromSubscribeOffers(@NonNull OnCheckedChangeEvent subscribeOffersEvent)
+    {
+        KYCAyondoForm created = new KYCAyondoForm();
+        created.setSubscribeOffers(subscribeOffersEvent.value());
+        return created;
+    }
+
+    @NonNull public static KYCAyondoForm fromSubscribeTradeNotifications(@NonNull OnCheckedChangeEvent subscribeTradeNotifications)
+    {
+        KYCAyondoForm created = new KYCAyondoForm();
+        created.setSubscribeTradeNotifications(subscribeTradeNotifications.value());
+        return created;
+    }
 }

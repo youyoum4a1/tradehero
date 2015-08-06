@@ -11,10 +11,7 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
     @JsonProperty("Currency") @Nullable private String currency;
     @JsonProperty("IsTestRecord") @Nullable private Boolean isTestRecord;
     @JsonProperty("Language") @Nullable private Country language;
-    @JsonProperty("Password") @Nullable private String password;
     @JsonProperty("ProductType") @Nullable private AyondoProductType productType;
-    @JsonProperty("SubscribeOffers") @Nullable private Boolean subscribeOffers;
-    @JsonProperty("SubscribeTradeNotifications") @Nullable private Boolean subscribeTradeNotifications;
 
     public AyondoLeadDTO()
     {
@@ -60,16 +57,6 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
         this.language = language;
     }
 
-    @Nullable public String getPassword()
-    {
-        return password;
-    }
-
-    public void setPassword(@Nullable String password)
-    {
-        this.password = password;
-    }
-
     @Nullable public AyondoProductType getProductType()
     {
         return productType;
@@ -80,33 +67,11 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
         this.productType = productType;
     }
 
-    @Nullable public Boolean getSubscribeOffers()
-    {
-        return subscribeOffers;
-    }
-
-    public void setSubscribeOffers(@Nullable Boolean subscribeOffers)
-    {
-        this.subscribeOffers = subscribeOffers;
-    }
-
-    @Nullable public Boolean getSubscribeTradeNotifications()
-    {
-        return subscribeTradeNotifications;
-    }
-
-    public void setSubscribeTradeNotifications(@Nullable Boolean subscribeTradeNotifications)
-    {
-        this.subscribeTradeNotifications = subscribeTradeNotifications;
-    }
-
     public boolean isValidToCreateAccount()
     {
         return currency != null
                 // No need to text isTestRecord
                 // TODO decide if we test language
-                && password != null
-                && subscribeOffers != null
-                && subscribeTradeNotifications != null;
+                ;
     }
 }

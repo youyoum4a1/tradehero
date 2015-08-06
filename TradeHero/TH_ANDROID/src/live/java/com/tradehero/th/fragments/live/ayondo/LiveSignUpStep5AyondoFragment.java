@@ -67,6 +67,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.agree_risk_warning) View riskWarning;
     @Bind(R.id.cb_agree_data_sharing) CheckBox dataSharingCheckBox;
     @Bind(R.id.agree_data_sharing) View dataSharing;
+    @Bind(R.id.cb_subscribe_offers) CheckBox subscribeOffersCheckBox;
+    @Bind(R.id.cb_subscribe_trade_notifications) CheckBox subscribeTradeNotificationsCheckBox;
 
     private ImageRequesterUtil imageRequesterUtil;
 
@@ -165,6 +167,22 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
                                     {
                                         return KYCAyondoFormFactory.fromAgreeDataSharingEvent(onCheckedChangeEvent);
+                                    }
+                                }),
+                        WidgetObservable.input(subscribeOffersCheckBox)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromSubscribeOffers(onCheckedChangeEvent);
+                                    }
+                                }),
+                        WidgetObservable.input(subscribeTradeNotificationsCheckBox)
+                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromSubscribeTradeNotifications(onCheckedChangeEvent);
                                     }
                                 })),
                 new Func2<LiveBrokerDTO, KYCAyondoForm, LiveBrokerSituationDTO>()
@@ -425,6 +443,26 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         else
         {
             update.setAgreeDataSharing(dataSharingCheckBox.isChecked());
+        }
+
+        Boolean subscribeOffers = kycForm.isSubscribeOffers();
+        if (subscribeOffers != null)
+        {
+            subscribeOffersCheckBox.setChecked(subscribeOffers);
+        }
+        else
+        {
+            update.setSubscribeOffers(subscribeOffersCheckBox.isChecked());
+        }
+
+        Boolean subscribeTradeNotifications = kycForm.isSubscribeTradeNotifications();
+        if (subscribeTradeNotifications != null)
+        {
+            subscribeTradeNotificationsCheckBox.setChecked(subscribeTradeNotifications);
+        }
+        else
+        {
+            update.setSubscribeTradeNotifications(subscribeTradeNotificationsCheckBox.isChecked());
         }
 
         return update;

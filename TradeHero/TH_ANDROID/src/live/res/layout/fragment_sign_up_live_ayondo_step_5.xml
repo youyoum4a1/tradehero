@@ -93,7 +93,6 @@
           android:layout_height="wrap_content"
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:paddingLeft="@dimen/margin_xsmall"
-          android:paddingRight="@dimen/margin_xsmall"
           android:text="@string/empty"
           android:theme="@style/TradeHero.Live.Form"
           />
@@ -124,7 +123,6 @@
           android:layout_height="wrap_content"
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:paddingLeft="@dimen/margin_xsmall"
-          android:paddingRight="@dimen/margin_xsmall"
           android:text="@string/empty"
           android:theme="@style/TradeHero.Live.Form"
           />
@@ -155,7 +153,6 @@
           android:layout_height="wrap_content"
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:paddingLeft="@dimen/margin_xsmall"
-          android:paddingRight="@dimen/margin_xsmall"
           android:text="@string/empty"
           android:theme="@style/TradeHero.Live.Form"
           />
@@ -172,6 +169,34 @@
           />
 
     </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/cb_subscribe_offers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TH.Button.Small"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:paddingLeft="@dimen/margin_xsmall"
+        android:paddingRight="@dimen/margin_xsmall"
+        android:text="@string/live_subscribe_offers"
+        android:theme="@style/TradeHero.Live.Form"
+        android:gravity="center_vertical"
+        android:layout_gravity="left"
+        />
+
+    <CheckBox
+        android:id="@+id/cb_subscribe_trade_notifications"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TH.Button.Small"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:paddingLeft="@dimen/margin_xsmall"
+        android:paddingRight="@dimen/margin_xsmall"
+        android:text="@string/live_subscribe_trade_notifications"
+        android:theme="@style/TradeHero.Live.Form"
+        android:gravity="center_vertical"
+        android:layout_gravity="left"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -82,6 +82,8 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean agreeTermsConditions;
     @Nullable private Boolean agreeRisksWarnings;
     @Nullable private Boolean agreeDataSharing;
+    @JsonProperty("SubscribeOffers") @Nullable private Boolean subscribeOffers;
+    @JsonProperty("SubscribeTradeNotifications") @Nullable private Boolean subscribeTradeNotifications;
 
     private List<StepStatus> stepStatuses;
 
@@ -768,6 +770,26 @@ public class KYCAyondoForm implements KYCForm
     public void setAgreeDataSharing(@Nullable Boolean agreeDataSharing)
     {
         this.agreeDataSharing = agreeDataSharing;
+    }
+
+    @Nullable public Boolean isSubscribeOffers()
+    {
+        return subscribeOffers;
+    }
+
+    public void setSubscribeOffers(@Nullable Boolean subscribeOffers)
+    {
+        this.subscribeOffers = subscribeOffers;
+    }
+
+    @Nullable public Boolean isSubscribeTradeNotifications()
+    {
+        return subscribeTradeNotifications;
+    }
+
+    public void setSubscribeTradeNotifications(@Nullable Boolean subscribeTradeNotifications)
+    {
+        this.subscribeTradeNotifications = subscribeTradeNotifications;
     }
     //</editor-fold>
 
