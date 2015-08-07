@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.tradehero.firmbargain.DataUtils;
 import com.tradehero.th.R;
 
 import java.text.DecimalFormat;
@@ -75,10 +76,11 @@ public class SecurityOptPositionMockAdapter extends BaseAdapter{
         holder.totalAccount.setText(String.valueOf(securityOptPositionDTO.shares));
         holder.availableAccount.setText(String.valueOf(securityOptPositionDTO.sellableShares));
         holder.code.setText(securityOptPositionDTO.symbol);
-        int benefit = (int)(securityOptPositionDTO.unrealizedPLRefCcy);
+        double benefit = securityOptPositionDTO.unrealizedPLRefCcy;
         double percentage = securityOptPositionDTO.unrealizedPLRefCcy / (securityOptPositionDTO.averagePriceRefCcy * securityOptPositionDTO.shares);
         DecimalFormat df = new DecimalFormat("#0.00");
-        holder.benefit.setText(securityOptPositionDTO.currencyDisplay + String.valueOf(benefit));
+        double fixRate = securityOptPositionDTO.fxRate;
+        holder.benefit.setText(securityOptPositionDTO.currencyDisplay + DataUtils.keepInteger(benefit/fixRate));
         holder.percentageBenefit.setText(df.format(percentage * 100) + "%");
         if(securityOptPositionDTO.unrealizedPLRefCcy >= 0){
             holder.benefit.setTextColor(color_up);
@@ -88,8 +90,8 @@ public class SecurityOptPositionMockAdapter extends BaseAdapter{
             holder.percentageBenefit.setTextColor(color_down);
         }
         int base = (int)(securityOptPositionDTO.averagePriceRefCcy * securityOptPositionDTO.shares);
-        holder.base.setText(securityOptPositionDTO.currencyDisplay + String.valueOf(base));
-        holder.basePrice.setText(securityOptPositionDTO.currencyDisplay + df.format(securityOptPositionDTO.averagePriceRefCcy));
+        holder.base.setText(securityOptPositionDTO.currencyDisplay + DataUtils.keepInteger(base / fixRate));
+        holder.basePrice.setText(securityOptPositionDTO.currencyDisplay + DataUtils.keepTwoDecimal(securityOptPositionDTO.averagePriceRefCcy/fixRate));
         return convertView;
     }
 
