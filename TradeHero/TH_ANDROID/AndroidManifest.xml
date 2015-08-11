@@ -299,7 +299,6 @@
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
-                <!-- <data android:scheme="CRHSJKH4HT" /> -->
                 <data android:scheme="CRHSJKH" />
             </intent-filter>
         </activity>

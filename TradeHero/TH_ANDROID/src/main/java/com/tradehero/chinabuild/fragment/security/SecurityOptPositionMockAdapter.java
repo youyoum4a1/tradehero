@@ -77,7 +77,7 @@ public class SecurityOptPositionMockAdapter extends BaseAdapter{
         holder.availableAccount.setText(String.valueOf(securityOptPositionDTO.sellableShares));
         holder.code.setText(securityOptPositionDTO.symbol);
         double benefit = securityOptPositionDTO.unrealizedPLRefCcy;
-        double percentage = securityOptPositionDTO.unrealizedPLRefCcy / (securityOptPositionDTO.averagePriceRefCcy * securityOptPositionDTO.shares);
+        double percentage = securityOptPositionDTO.roi;
         DecimalFormat df = new DecimalFormat("#0.00");
         double fixRate = securityOptPositionDTO.fxRate;
         holder.benefit.setText(securityOptPositionDTO.currencyDisplay + DataUtils.keepInteger(benefit/fixRate));
