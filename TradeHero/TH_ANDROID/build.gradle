@@ -278,8 +278,11 @@ android {
       }
       java {
         srcDir 'src/googleplayRelease/java'
-        srcDir 'src/liveRelease/java'
-        srcDir 'src/dagger1LiveRelease/java'
+        //HACK just to make a test build
+        //        srcDir 'src/liveRelease/java'
+        //        srcDir 'src/dagger1LiveRelease/java'
+        srcDir 'src/liveDebug/java'
+        srcDir 'src/dagger1LiveDebug/java'
       }
     }
 
