@@ -97,13 +97,14 @@ public class LiveSignUpMainFragment extends BaseFragment
                                 return situationDTO.kycForm != null;
                             }
                         })
-                        .throttleLast(1, TimeUnit.SECONDS)
+                        .throttleLast(3, TimeUnit.SECONDS)
                         .flatMap(new Func1<LiveBrokerSituationDTO, Observable<StepStatusesDTO>>()
                         {
                             @Override public Observable<StepStatusesDTO> call(final LiveBrokerSituationDTO situationDTO)
                             {
                                 //noinspection ConstantConditions
                                 return liveServiceWrapper.applyToLiveBroker(situationDTO.broker.id, situationDTO.kycForm)
+                                        .distinctUntilChanged()
                                         .doOnNext(new Action1<StepStatusesDTO>()
                                         {
                                             @Override public void call(StepStatusesDTO stepStatusesDTO)

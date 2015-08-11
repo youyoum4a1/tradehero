@@ -130,13 +130,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         }),
                 WidgetObservable.text(password)
-                .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
-                {
-                    @Override public KYCAyondoForm call(OnTextChangeEvent passwordEvent)
-                    {
-                        return KYCAyondoFormFactory.fromPasswordEvent(passwordEvent);
-                    }
-                }),
+                        .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
+                        {
+                            @Override public KYCAyondoForm call(OnTextChangeEvent passwordEvent)
+                            {
+                                return KYCAyondoFormFactory.fromPasswordEvent(passwordEvent);
+                            }
+                        }),
                 WidgetObservable.text(fullName)
                         .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
                         {
@@ -201,7 +201,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 onNext(update);
                             }
                         },
-                        new TimberOnErrorAction1("Failed to listen to user name, password, full name, email, nationality o residency spinners, or dob")));
+                        new TimberOnErrorAction1(
+                                "Failed to listen to user name, password, full name, email, nationality o residency spinners, or dob")));
 
         emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
         emailInvalidMessage = getString(R.string.validation_incorrect_pattern_email);
@@ -266,6 +267,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         })
                         .withLatestFrom(WidgetObservable.text(userName)
+                                        .throttleLast(1, TimeUnit.SECONDS)
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .doOnNext(new Action1<OnTextChangeEvent>()
                                         {
@@ -299,8 +301,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         return Pair.create(liveBrokerDTO, s);
                                     }
                                 })
-                        .distinctUntilChanged()
-                        .throttleLast(1, TimeUnit.SECONDS)
+                        .throttleLast(2, TimeUnit.SECONDS)
+                        .distinctUntilChanged(new Func1<Pair<LiveBrokerDTO,String>, String>()
+                        {
+                            @Override public String call(Pair<LiveBrokerDTO, String> liveBrokerDTOStringPair)
+                            {
+                                return liveBrokerDTOStringPair.second;
+                            }
+                        })
                         .flatMap(new Func1<Pair<LiveBrokerDTO, String>, Observable<UsernameValidationResultDTO>>()
                         {
                             @Override public Observable<UsernameValidationResultDTO> call(Pair<LiveBrokerDTO, String> userNamePair)
@@ -343,6 +351,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         subscriptions.add(Observable.combineLatest(
                 liveBrokerSituationDTOObservable
+                        .take(1)
                         .observeOn(AndroidSchedulers.mainThread()),
                 kycAyondoFormOptionsDTOObservable
                         .observeOn(Schedulers.computation())
