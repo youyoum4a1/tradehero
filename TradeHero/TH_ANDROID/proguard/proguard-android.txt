@@ -55,10 +55,23 @@
     ** **();
     *;
     final ** **();
-    @com.fasterxml.jackson.annotation.@JsonValue ** **();
-    @com.fasterxml.jackson.annotation.@JsonValue final ** **();
-    @com.fasterxml.jackson.annotation.@JsonValue @android.support.annotation.NonNull ** **();
-    @com.fasterxml.jackson.annotation.@JsonValue @android.support.annotation.NonNull final ** **();
+    @com.fasterxml.jackson.annotation.JsonValue ** **();
+    @com.fasterxml.jackson.annotation.JsonValue public ** **(**);
+    @com.fasterxml.jackson.annotation.JsonValue final ** **();
+    @com.fasterxml.jackson.annotation.JsonValue @android.support.annotation.NonNull ** **();
+    @com.fasterxml.jackson.annotation.JsonValue @android.support.annotation.NonNull final ** **();
+}
+
+-keepclassmembers class * {
+    @com.fasterxml.jackson.annotation.JsonCreator public static ** **(**);
+    @com.fasterxml.jackson.annotation.JsonCreator static ** **(**);
+    @com.fasterxml.jackson.annotation.JsonCreator public ** **(**);
+    @com.fasterxml.jackson.annotation.JsonCreator ** **(**);
+    @com.fasterxml.jackson.annotation.JsonValue ** **();
+    @com.fasterxml.jackson.annotation.JsonValue public ** **(**);
+    @com.fasterxml.jackson.annotation.JsonValue final ** **();
+    @com.fasterxml.jackson.annotation.JsonValue @android.support.annotation.NonNull ** **();
+    @com.fasterxml.jackson.annotation.JsonValue @android.support.annotation.NonNull final ** **();
 }
 
 -keep class * implements android.os.Parcelable {
