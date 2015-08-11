@@ -157,8 +157,11 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         @Override public void onAnimationUpdate(@NonNull ValueAnimator valueAnimator)
         {
             super.onAnimationUpdate(valueAnimator);
-            float value = (Float) valueAnimator.getAnimatedValue(PROPERTY_DOLLARS_EARNED);
-            displayDollarsEarned(value);
+            Float value = (Float) valueAnimator.getAnimatedValue(PROPERTY_DOLLARS_EARNED);
+            if (value != null)
+            {
+                displayDollarsEarned(value);
+            }
         }
     }
 }
