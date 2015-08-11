@@ -50,6 +50,8 @@
     public static ** valueOf(java.lang.String);
     @com.fasterxml.jackson.annotation.JsonCreator public static ** **(**);
     @com.fasterxml.jackson.annotation.JsonCreator static ** **(**);
+    @com.fasterxml.jackson.annotation.JsonCreator public ** **(**);
+    @com.fasterxml.jackson.annotation.JsonCreator ** **(**);
     ** **();
     *;
     final ** **();
