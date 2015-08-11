@@ -163,6 +163,8 @@ public class ImageRequesterUtil implements ActivityResultRequester
         activity.startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
     }
 
+    //TODO Maybe make this static, such that Bitmap from netVerify can be stored in the same file
+    //And return the fileName
     private boolean saveBitmapToFile(@NonNull ContextWrapper contextWrapper, @NonNull Bitmap bitmap)
     {
         croppedPhotoFile = createImageFile(contextWrapper);
