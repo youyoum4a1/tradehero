@@ -27,7 +27,6 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.view.DismissDialogAction0;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -137,7 +136,7 @@ public class LocationListFragment extends BaseFragment
             {
                 Country currentCountry = Country.valueOf(userProfileDTO.countryCode);
                 mListAdapter.setCurrentCountry(currentCountry);
-                listView.smoothScrollToPosition(mListAdapter.getPosition(new ListedLocationDTO(currentCountry)));
+                listView.setSelection(mListAdapter.getPosition(new ListedLocationDTO(currentCountry)));
             } catch (IllegalArgumentException e)
             {
                 Timber.e(e, "Does not have country code for ", userProfileDTO.countryCode);
@@ -181,7 +180,13 @@ public class LocationListFragment extends BaseFragment
                 userServiceWrapperLazy.get().updateCountryCodeRx(
                         currentUserId.toUserBaseKey(), updateCountryCodeFormDTO))
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new DismissDialogAction0(progressDialog))
+                .doOnNext(new Action1<UpdateCountryCodeDTO>()
+                {
+                    @Override public void call(UpdateCountryCodeDTO updateCountryCodeDTO)
+                    {
+                        progressDialog.dismiss();
+                    }
+                })
                 .subscribe(
                         new Action1<UpdateCountryCodeDTO>()
                         {
