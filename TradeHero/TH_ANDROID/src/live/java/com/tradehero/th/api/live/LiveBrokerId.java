@@ -25,7 +25,7 @@ public class LiveBrokerId implements DTOKey
         return other instanceof LiveBrokerId && ((LiveBrokerId) other).key.equals(key);
     }
 
-    @JsonValue int getKey()
+    @JsonValue public int getKey()
     {
         return key;
     }

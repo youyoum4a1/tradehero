@@ -115,4 +115,27 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     {
         return identityDocumentTypes;
     }
+
+    @Override public String toString()
+    {
+        return "KYCAyondoFormOptionsDTO{" +
+                "identityPromptInfo=" + identityPromptInfo +
+                ", genders=" + genders +
+                ", allowedMobilePhoneCountries=" + allowedMobilePhoneCountries +
+                ", allowedNationalityCountries=" + allowedNationalityCountries +
+                ", allowedResidencyCountries=" + allowedResidencyCountries +
+                ", annualIncomeOptions=" + annualIncomeOptions +
+                ", netWorthOptions=" + netWorthOptions +
+                ", percentNetWorthOptions=" + percentNetWorthOptions +
+                ", employmentStatusOptions=" + employmentStatusOptions +
+                ", tradingPerQuarterOptions=" + tradingPerQuarterOptions +
+                ", maxAddressRequired=" + maxAddressRequired +
+                ", identityDocumentTypes=" + identityDocumentTypes +
+                ", residenceDocumentTypes=" + residenceDocumentTypes +
+                ", termsConditionsUrl='" + termsConditionsUrl + '\'' +
+                ", riskWarningDisclaimerUrl='" + riskWarningDisclaimerUrl + '\'' +
+                ", dataSharingAgreementUrl='" + dataSharingAgreementUrl + '\'' +
+                ", minAge=" + minAge +
+                '}';
+    }
 }

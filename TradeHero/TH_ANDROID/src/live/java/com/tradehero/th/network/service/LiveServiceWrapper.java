@@ -17,6 +17,7 @@ import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Func0;
 import rx.functions.Func1;
 
 public class LiveServiceWrapper
@@ -97,7 +98,13 @@ public class LiveServiceWrapper
                         return savedSituation;
                     }
                 })
-                .startWith(liveBrokerSituationPreference.get());
+                .startWith(Observable.defer(new Func0<Observable<LiveBrokerSituationDTO>>()
+                {
+                    @Override public Observable<LiveBrokerSituationDTO> call()
+                    {
+                        return Observable.just(liveBrokerSituationPreference.get());
+                    }
+                }));
     }
 
     @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)

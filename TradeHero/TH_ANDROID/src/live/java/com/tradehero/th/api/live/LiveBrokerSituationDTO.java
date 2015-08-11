@@ -33,4 +33,12 @@ public class LiveBrokerSituationDTO implements DTO
                 && broker.equals(((LiveBrokerSituationDTO) o).broker)
                 && (kycForm == null ? ((LiveBrokerSituationDTO) o).kycForm == null : kycForm.equals(((LiveBrokerSituationDTO) o).kycForm));
     }
+
+    @Override public String toString()
+    {
+        return "LiveBrokerSituationDTO{" +
+                "broker=" + broker +
+                ", kycForm=" + kycForm +
+                '}';
+    }
 }

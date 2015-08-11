@@ -69,7 +69,8 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
         }
         try
         {
-            preference.edit().putString(key, objectMapper.writeValueAsString(saved)).apply();
+            String serialised = objectMapper.writeValueAsString(saved);
+            preference.edit().putString(key, serialised).apply();
             liveBrokerSituationDTOPublishSubject.onNext(saved);
         } catch (JsonProcessingException e)
         {

@@ -65,12 +65,19 @@ public class IdentityPromptActivity extends BaseActivity
         ButterKnife.bind(IdentityPromptActivity.this);
         fastFillSubscription = getBrokerSituation()
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO situationDTO)
+                    {
+                        String text = getString(situationDTO.kycForm.getBrokerNameResId());
+                        livePoweredBy.setText(text);
+                    }
+                })
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
                 {
                     @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
                     {
                         //noinspection ConstantConditions
-                        livePoweredBy.setText(situation.kycForm.getBrokerNameResId());
                         return kycFormOptionsCache.getOne(new KYCFormOptionsId(situation.broker.id))
                                 .map(new PairGetSecond<KYCFormOptionsId, KYCFormOptionsDTO>())
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -90,7 +97,6 @@ public class IdentityPromptActivity extends BaseActivity
                                 });
                     }
                 })
-                .take(1)
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
                 {
                     @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situationToUse)

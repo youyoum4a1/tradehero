@@ -965,4 +965,59 @@ public class KYCAyondoForm implements KYCForm
         code ^= agreeDataSharing == null ? 0 : agreeDataSharing.hashCode();
         return code;
     }
+
+    @Override public String toString()
+    {
+        return "KYCAyondoForm{" +
+                "country=" + country +
+                ", scanReference=" + scanReference +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", ayondoGender=" + ayondoGender +
+                ", fullName='" + fullName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", email='" + email + '\'' +
+                ", verifiedEmail='" + verifiedEmail + '\'' +
+                ", phonePrimaryCountryCode=" + phonePrimaryCountryCode +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                ", verifiedMobileNumberDialingPrefix=" + verifiedMobileNumberDialingPrefix +
+                ", verifiedMobileNumber='" + verifiedMobileNumber + '\'' +
+                ", nationality=" + nationality +
+                ", residency=" + residency +
+                ", dob='" + dob + '\'' +
+                ", annualIncomeRange=" + annualIncomeRange +
+                ", netWorthRange=" + netWorthRange +
+                ", percentNetWorthForInvestmentRange=" + percentNetWorthForInvestmentRange +
+                ", employmentStatus=" + employmentStatus +
+                ", employerRegulatedFinancial=" + employerRegulatedFinancial +
+                ", workedInFinance1Year=" + workedInFinance1Year +
+                ", attendedSeminarAyondo=" + attendedSeminarAyondo +
+                ", haveOtherQualification=" + haveOtherQualification +
+                ", tradingPerQuarter=" + tradingPerQuarter +
+                ", leveragedProducts=" + leveragedProducts +
+                ", addressCity='" + addressCity + '\'' +
+                ", addressCountry=" + addressCountry +
+                ", addressLine1='" + addressLine1 + '\'' +
+                ", addressLine2='" + addressLine2 + '\'' +
+                ", addressZip='" + addressZip + '\'' +
+                ", previousAddressCity='" + previousAddressCity + '\'' +
+                ", previousAddressCountry=" + previousAddressCountry +
+                ", previousAddressLine1='" + previousAddressLine1 + '\'' +
+                ", previousAddressLine2='" + previousAddressLine2 + '\'' +
+                ", previousAddressZip='" + previousAddressZip + '\'' +
+                ", identificationDocument=" + identificationDocument +
+                ", identificationNumber='" + identificationNumber + '\'' +
+                ", identityDocumentFile=" + identityDocumentFile +
+                ", clearIdentityDocumentFile=" + clearIdentityDocumentFile +
+                ", residenceDocumentType=" + residenceDocumentType +
+                ", residenceDocumentFile=" + residenceDocumentFile +
+                ", clearResidenceDocumentFile=" + clearResidenceDocumentFile +
+                ", agreeTermsConditions=" + agreeTermsConditions +
+                ", agreeRisksWarnings=" + agreeRisksWarnings +
+                ", agreeDataSharing=" + agreeDataSharing +
+                ", stepStatuses=" + stepStatuses +
+                '}';
+    }
 }

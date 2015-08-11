@@ -28,7 +28,6 @@ import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
 import com.tradehero.th.network.service.ayondo.LiveServiceAyondoRx;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,11 +37,11 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import timber.log.Timber;
 
 public class DummyLiveServiceWrapper extends LiveServiceWrapper
 {
     private static final int TIME_OUT_SECONDS = 5;
+    private static final int OPTIONS_TIME_OUT_SECONDS = 1;
     private final Country pretendInCountry = Country.SG;
 
     @NonNull private final ObjectMapperWrapper objectMapperWrapper;
@@ -115,12 +114,6 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                                     situationDTO.kycForm.setStepStatuses(
                                             DummyKYCAyondoUtil.getSteps((KYCAyondoForm) situationDTO.kycForm).stepStatuses);
                                 }
-                                else
-                                {
-                                    situationDTO.kycForm.setStepStatuses(
-                                            Arrays.asList(StepStatus.UNSTARTED, StepStatus.COMPLETE, StepStatus.UNSTARTED, StepStatus.UNSTARTED,
-                                                    StepStatus.UNSTARTED));
-                                }
                             }
                         }
                     }
@@ -133,10 +126,8 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                             {
                                 LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "ayondo markets");
                                 KYCAyondoForm form = new KYCAyondoForm();
-                                form.setStepStatuses(
-                                        Arrays.asList(StepStatus.UNSTARTED, StepStatus.COMPLETE, StepStatus.UNSTARTED, StepStatus.UNSTARTED,
-                                                StepStatus.UNSTARTED));
                                 form.setCountry(Country.SG);
+                                form.setStepStatuses(DummyKYCAyondoUtil.getSteps(form).stepStatuses);
                                 LiveBrokerSituationDTO fakeSituation = new LiveBrokerSituationDTO(ayondo, form);
                                 return Observable.just(new LiveTradingSituationDTO(Collections.singletonList(fakeSituation)));
                             }
@@ -162,23 +153,15 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                 });
     }
 
-    @NonNull @Override public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)
+    @NonNull @Override public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull final KYCFormOptionsId optionsId)
     {
         return super.getKYCFormOptions(optionsId)
-                .timeout(TIME_OUT_SECONDS, TimeUnit.SECONDS)
+                .timeout(OPTIONS_TIME_OUT_SECONDS, TimeUnit.SECONDS)
                 .onErrorResumeNext(
                         new Func1<Throwable, Observable<? extends KYCFormOptionsDTO>>()
                         {
                             @Override public Observable<? extends KYCFormOptionsDTO> call(Throwable throwable)
                             {
-                                try
-                                {
-                                    return Observable.just(objectMapperWrapper.readValue(DummyAyondoData.KYC_OPTIONS, KYCAyondoFormOptionsDTO.class));
-                                } catch (IOException e)
-                                {
-                                    Timber.e(e, "Failed to deserialise dummy Options");
-                                }
-
                                 List<Country> nationalities = new ArrayList<>(Arrays.asList(Country.values()));
                                 nationalities.removeAll(createNoBusinessNationalities());
                                 KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(

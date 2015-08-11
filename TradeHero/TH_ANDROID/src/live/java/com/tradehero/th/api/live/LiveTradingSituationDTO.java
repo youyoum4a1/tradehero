@@ -14,4 +14,11 @@ public class LiveTradingSituationDTO implements DTO
     {
         this.brokerSituations = brokerSituations;
     }
+
+    @Override public String toString()
+    {
+        return "LiveTradingSituationDTO{" +
+                "brokerSituations=" + brokerSituations +
+                '}';
+    }
 }
