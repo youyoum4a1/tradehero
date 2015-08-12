@@ -50,6 +50,6 @@ interface SessionServiceRx
 
     //<editor-fold desc="Logout">
     @POST("/logout")
-    Observable<UserProfileDTO> logout();
+    Observable<UserProfileDTO> logout(@Body String emptyBody); //HACK, retrofit POST expects a BODY
     //</editor-fold>
 }

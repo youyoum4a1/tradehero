@@ -141,7 +141,7 @@ import timber.log.Timber;
     //<editor-fold desc="Logout">
     @NonNull public Observable<UserProfileDTO> logoutRx()
     {
-        return sessionServiceRx.logout()
+        return sessionServiceRx.logout("")
                 .doOnNext(new DTOProcessorLogout(
                         dtoCacheUtil,
                         (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE)));
