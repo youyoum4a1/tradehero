@@ -48,7 +48,6 @@ public class KYCAyondoFormUtil
     public static boolean isValidToCreateAccount(@NonNull KYCAyondoForm form)
     {
         return form.getUserName() != null
-                && form.getPassword() != null
                 && form.getFirstName() != null
                 && form.getLastName() != null
                 && form.getMiddleName() != null

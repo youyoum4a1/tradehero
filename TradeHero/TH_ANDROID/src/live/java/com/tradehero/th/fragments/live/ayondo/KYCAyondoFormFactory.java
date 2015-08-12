@@ -31,13 +31,6 @@ public class KYCAyondoFormFactory
         return created;
     }
 
-    @NonNull public static KYCAyondoForm fromPasswordEvent(@NonNull OnTextChangeEvent passwordEvent)
-    {
-        KYCAyondoForm created = new KYCAyondoForm();
-        created.setPassword(passwordEvent.text().toString());
-        return created;
-    }
-
     @NonNull public static KYCAyondoForm fromFullNameEvent(@NonNull OnTextChangeEvent fullNameEvent)
     {
         KYCAyondoForm created = new KYCAyondoForm();
