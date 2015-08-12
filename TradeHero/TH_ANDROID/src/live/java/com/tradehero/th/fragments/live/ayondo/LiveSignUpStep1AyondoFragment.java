@@ -23,7 +23,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
-import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.tradehero.th.api.live.CountryUtil;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
@@ -39,8 +38,6 @@ import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.view.CustomWidgetObservable;
-import com.tradehero.th.rx.view.OnFocusChangeEvent;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
@@ -50,7 +47,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import rx.Observable;
@@ -77,7 +73,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final int REQUEST_PICK_DATE = 2805;
     private static final int REQUEST_VERIFY_PHONE_NUMBER_CODE = 2808;
 
-    @Bind(R.id.info_username) TextView userName;
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.info_full_name) TextView fullName;
     @Bind(R.id.sign_up_email) EditText email;
@@ -119,15 +114,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         List<Subscription> subscriptions = new ArrayList<>();
 
         subscriptions.add(Observable.merge(
-                WidgetObservable.text(userName)
-                        .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
-                        {
-                            @Override public KYCAyondoForm call(
-                                    OnTextChangeEvent userNameEvent)
-                            {
-                                return KYCAyondoFormFactory.fromUserNameEvent(userNameEvent);
-                            }
-                        }),
                 WidgetObservable.text(fullName)
                         .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
                         {
@@ -235,107 +221,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             @Override public void call(Throwable throwable)
                             {
                                 Timber.e(throwable, "Failed to validate email");
-                            }
-                        })
-        );
-
-        subscriptions.add(
-                CustomWidgetObservable.focus(userName)
-                        .distinctUntilChanged(new Func1<OnFocusChangeEvent, Boolean>()
-                        {
-                            @Override public Boolean call(OnFocusChangeEvent onFocusChangeEvent)
-                            {
-                                return onFocusChangeEvent.hasFocus;
-                            }
-                        })
-                        .filter(new Func1<OnFocusChangeEvent, Boolean>()
-                        {
-                            @Override public Boolean call(OnFocusChangeEvent onFocusChangeEvent)
-                            {
-                                return onFocusChangeEvent.view instanceof EditText
-                                        && !onFocusChangeEvent.hasFocus
-                                        && !TextUtils.isEmpty(((EditText) onFocusChangeEvent.view).getText());
-                            }
-                        })
-                        .withLatestFrom(WidgetObservable.text(userName)
-                                        .throttleLast(1, TimeUnit.SECONDS)
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .doOnNext(new Action1<OnTextChangeEvent>()
-                                        {
-                                            @Override public void call(OnTextChangeEvent onTextChangeEvent)
-                                            {
-                                                onTextChangeEvent.view().setError(null);
-                                            }
-                                        }),
-                                new Func2<OnFocusChangeEvent, OnTextChangeEvent, String>()
-                                {
-                                    @Override public String call(OnFocusChangeEvent onFocusChangeEvent, OnTextChangeEvent onTextChangeEvent)
-                                    {
-                                        return onTextChangeEvent.text().toString();
-                                    }
-                                })
-                        .startWith(liveBrokerSituationDTOObservable
-                                .map(new Func1<LiveBrokerSituationDTO, String>()
-                                {
-                                    @Override public String call(LiveBrokerSituationDTO liveBrokerSituationDTO)
-                                    {
-                                        //noinspection ConstantConditions
-                                        return ((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getUserName();
-                                    }
-                                }))
-                        .observeOn(Schedulers.io())
-                        .withLatestFrom(brokerDTOObservable,
-                                new Func2<String, LiveBrokerDTO, Pair<LiveBrokerDTO, String>>()
-                                {
-                                    @Override public Pair<LiveBrokerDTO, String> call(String s, LiveBrokerDTO liveBrokerDTO)
-                                    {
-                                        return Pair.create(liveBrokerDTO, s);
-                                    }
-                                })
-                        .throttleLast(2, TimeUnit.SECONDS)
-                        .distinctUntilChanged(new Func1<Pair<LiveBrokerDTO,String>, String>()
-                        {
-                            @Override public String call(Pair<LiveBrokerDTO, String> liveBrokerDTOStringPair)
-                            {
-                                return liveBrokerDTOStringPair.second;
-                            }
-                        })
-                        .flatMap(new Func1<Pair<LiveBrokerDTO, String>, Observable<UsernameValidationResultDTO>>()
-                        {
-                            @Override public Observable<UsernameValidationResultDTO> call(Pair<LiveBrokerDTO, String> userNamePair)
-                            {
-                                return liveServiceWrapper.validateUserName(userNamePair.first.id, userNamePair.second);
-                            }
-                        })
-                        .filter(new Func1<UsernameValidationResultDTO, Boolean>()
-                        {
-                            @Override public Boolean call(UsernameValidationResultDTO resultDTO)
-                            {
-                                return resultDTO.username != null && resultDTO.username.equals(userName.getText().toString());
-                            }
-                        })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<UsernameValidationResultDTO>()
-                        {
-                            @Override public void call(UsernameValidationResultDTO resultDTO)
-                            {
-                                String errorText = null;
-                                if (!resultDTO.isValid)
-                                {
-                                    errorText = getString(R.string.live_username_invalid, resultDTO.username);
-                                }
-                                else if (!resultDTO.isAvailable)
-                                {
-                                    errorText = getString(R.string.live_username_not_available, resultDTO.username);
-                                }
-                                userName.setError(errorText);
-                            }
-                        }, new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable throwable)
-                            {
-                                Timber.e(throwable, "error on validating username");
-                                userName.setError(throwable.getMessage());
                             }
                         })
         );
@@ -625,12 +510,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @MainThread
     protected void populate(@NonNull KYCAyondoForm kycForm)
     {
-        String userNameText = kycForm.getUserName();
-        if (userName != null && userNameText != null && !userNameText.equals(userName.getText().toString()))
-        {
-            userName.setText(userNameText);
-        }
-
         String fullNameText = kycForm.getFullName();
         if (fullName != null && fullNameText != null && !fullNameText.equals(fullName.getText().toString()))
         {

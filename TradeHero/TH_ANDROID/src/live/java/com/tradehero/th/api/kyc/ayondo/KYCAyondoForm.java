@@ -36,7 +36,6 @@ public class KYCAyondoForm implements KYCForm
 
     @Nullable private Country country;
     @Nullable private ScanReference scanReference;
-    @JsonProperty("UserName") @Nullable private String userName;
     @JsonProperty("Gender") @Nullable private AyondoGender ayondoGender;
     @Deprecated @Nullable private String fullName;
     @JsonProperty("FirstName") @Nullable private String firstName;
@@ -145,7 +144,6 @@ public class KYCAyondoForm implements KYCForm
         {
             KYCAyondoForm ayondoForm = (KYCAyondoForm) other;
             this.scanReference = ayondoForm.scanReference != null ? ayondoForm.scanReference : this.scanReference;
-            this.userName = ayondoForm.getUserName() != null ? ayondoForm.getUserName() : this.userName;
             this.ayondoGender = ayondoForm.ayondoGender != null ? ayondoForm.ayondoGender : this.ayondoGender;
             this.fullName = ayondoForm.getFullName() != null ? ayondoForm.getFullName() : this.fullName;
             this.firstName = ayondoForm.firstName != null ? ayondoForm.firstName : this.firstName;
@@ -227,16 +225,6 @@ public class KYCAyondoForm implements KYCForm
     public void setScanReference(@Nullable ScanReference scanReference)
     {
         this.scanReference = scanReference;
-    }
-
-    @Nullable public String getUserName()
-    {
-        return userName;
-    }
-
-    public void setUserName(@Nullable String userName)
-    {
-        this.userName = userName;
     }
 
     @Nullable public AyondoGender getAyondoGender()
@@ -797,7 +785,6 @@ public class KYCAyondoForm implements KYCForm
             KYCAyondoForm ayondoForm = (KYCAyondoForm) o;
             same = country == null ? ayondoForm.country == null : country.equals(ayondoForm.country);
             same &= scanReference == null ? ayondoForm.scanReference == null : scanReference.equals(ayondoForm.scanReference);
-            same &= userName == null ? ayondoForm.userName == null : userName.equals(ayondoForm.userName);
             same &= ayondoGender == null ? ayondoForm.ayondoGender == null : ayondoGender.equals(ayondoForm.ayondoGender);
             same &= fullName == null ? ayondoForm.fullName == null : fullName.equals(ayondoForm.fullName);
             same &= firstName == null ? ayondoForm.firstName == null : firstName.equals(ayondoForm.firstName);
@@ -899,7 +886,6 @@ public class KYCAyondoForm implements KYCForm
     {
         int code = country == null ? 0 : country.hashCode();
         code ^= scanReference == null ? 0 : scanReference.hashCode();
-        code ^= userName == null ? 0 : userName.hashCode();
         code ^= ayondoGender == null ? 0 : ayondoGender.hashCode();
         code ^= fullName == null ? 0 : fullName.hashCode();
         code ^= firstName == null ? 0 : firstName.hashCode();
@@ -963,7 +949,6 @@ public class KYCAyondoForm implements KYCForm
         return "KYCAyondoForm{" +
                 "country=" + country +
                 ", scanReference=" + scanReference +
-                ", userName='" + userName + '\'' +
                 ", ayondoGender=" + ayondoGender +
                 ", fullName='" + fullName + '\'' +
                 ", firstName='" + firstName + '\'' +
