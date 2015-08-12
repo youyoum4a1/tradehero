@@ -337,5 +337,6 @@
   <string name="country">Country</string>
   <string name="hint_username">Username to be created</string>
   <string name="hint_password">Password</string>
+  <string name="title">Title</string>
 
 </resources>

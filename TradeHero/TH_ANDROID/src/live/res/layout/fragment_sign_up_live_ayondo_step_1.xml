@@ -63,6 +63,13 @@
         android:orientation="horizontal"
         >
 
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/title"
+          style="@style/TH.Caption"
+          android:layout_marginLeft="4dp"/>
+
       <Spinner
           android:id="@+id/info_title"
           style="@style/TH.Spinner"
@@ -78,6 +85,7 @@
       <android.support.design.widget.TextInputLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
+          android:layout_marginTop="4dp"
           android:layout_alignParentRight="true"
           android:layout_centerVertical="true"
           android:layout_toRightOf="@id/info_title"
