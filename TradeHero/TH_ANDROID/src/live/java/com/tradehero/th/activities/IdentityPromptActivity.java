@@ -51,10 +51,10 @@ public class IdentityPromptActivity extends BaseActivity
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
 
-    @Bind(R.id.identity_prompt_passport) View yesButton;
+    @Bind(R.id.identity_prompt_passport) View scanPassport;
     @Bind(R.id.live_powered_by) TextView livePoweredBy;
     @Bind(R.id.identity_prompt_image_specific) ImageView imgPrompt;
-    @Bind(R.id.identity_prompt_specific) TextView txtPrompt;
+    @Bind(R.id.identity_prompt_specific) TextView scanSpecificId;
 
     private Subscription fastFillSubscription;
 
@@ -89,9 +89,9 @@ public class IdentityPromptActivity extends BaseActivity
                                         picasso.load(kycFormOptions.getIdentityPromptInfo().image)
                                                 .placeholder(situation.kycForm.getCountry().logoId)
                                                 .into(imgPrompt);
-                                        txtPrompt.setText(kycFormOptions.getIdentityPromptInfo().prompt);
+                                        scanSpecificId.setText(kycFormOptions.getIdentityPromptInfo().prompt);
                                         imgPrompt.setVisibility(View.VISIBLE);
-                                        txtPrompt.setVisibility(View.VISIBLE);
+                                        scanSpecificId.setVisibility(View.VISIBLE);
                                         return situation;
                                     }
                                 });
@@ -103,9 +103,9 @@ public class IdentityPromptActivity extends BaseActivity
                     @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situationToUse)
                     {
                         return Observable.merge(
-                                ViewObservable.clicks(yesButton)
+                                ViewObservable.clicks(scanPassport)
                                         .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(IdentityScannedDocumentType.PASSPORT)),
-                                ViewObservable.clicks(txtPrompt)
+                                ViewObservable.clicks(scanSpecificId)
                                         .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(null)))
                                 .flatMap(
                                         new Func1<IdentityScannedDocumentType, Observable<ScannedDocument>>()
