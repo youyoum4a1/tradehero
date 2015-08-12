@@ -97,6 +97,7 @@ public class IdentityPromptActivity extends BaseActivity
                                 });
                     }
                 })
+                .take(1)
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
                 {
                     @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situationToUse)
@@ -112,8 +113,7 @@ public class IdentityPromptActivity extends BaseActivity
                                             @Override public Observable<ScannedDocument> call(@Nullable
                                             IdentityScannedDocumentType identityScannedDocumentType)
                                             {
-                                                Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable()
-                                                        .cache(1);
+                                                Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable();
                                                 fastFillUtil.fastFill(IdentityPromptActivity.this, identityScannedDocumentType);
                                                 return documentObservable;
                                             }

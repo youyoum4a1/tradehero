@@ -138,7 +138,10 @@ public class NetverifyFastFillUtil implements FastFillUtil
                         data.getStringExtra(NetverifySDK.RESULT_DATA_SCAN_REFERENCE),
                         data.getIntExtra(NetverifySDK.RESULT_DATA_ERROR_CODE, 0)));
             }
-            this.netverifySDK.destroy();
+            if(this.netverifySDK != null)
+            {
+                this.netverifySDK.destroy();
+            }
         }
     }
 
