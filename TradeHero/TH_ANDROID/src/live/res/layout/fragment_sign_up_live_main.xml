@@ -15,7 +15,7 @@
       android:layout_height="wrap_content"
       />
 
-  <android.support.v4.view.ViewPager
+  <com.tradehero.common.widget.NonSwipeableViewPager
       android:id="@+id/pager"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
