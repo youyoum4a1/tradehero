@@ -43,6 +43,7 @@
           android:layout_alignParentBottom="true"
           android:background="?attr/selectableItemBackground"
           android:minHeight="@dimen/clickable_element_min_dimen"
+          android:minWidth="@dimen/clickable_element_min_dimen"
           tools:layout_height="48dp"
           tools:layout_width="48dp"
           />
