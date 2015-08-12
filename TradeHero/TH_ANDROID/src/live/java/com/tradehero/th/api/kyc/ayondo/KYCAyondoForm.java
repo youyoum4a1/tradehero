@@ -96,6 +96,12 @@ public class KYCAyondoForm implements KYCForm
     {
         this.scanReference = scannedDocument.getScanReference();
 
+        Gender gender = scannedDocument.getGender();
+        if(gender != null)
+        {
+            this.setGender(gender);
+        }
+
         String firstName = scannedDocument.getFirstName();
         if (firstName != null)
         {
