@@ -178,6 +178,12 @@ public class IdentityPromptActivity extends BaseActivity
         fastFillUtil.onActivityResult(this, requestCode, resultCode, data);
     }
 
+    @OnClick(android.R.id.closeButton)
+    public void onCloseClicked()
+    {
+        onBackPressed();
+    }
+
     @SuppressWarnings("unused")
     @OnClick(R.id.identity_prompt_no)
     public void onNoClicked(View view)
