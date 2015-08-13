@@ -52,19 +52,10 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         List<Subscription> subscriptions = new ArrayList<>();
 
-        subscriptions.add(Observable.combineLatest(
+        subscriptions.add(Observable.zip(
                 liveBrokerSituationDTOObservable
                         .observeOn(AndroidSchedulers.mainThread())
-                        .doOnNext(new Action1<LiveBrokerSituationDTO>()
-                        {
-                            @Override public void call(LiveBrokerSituationDTO situationDTO)
-                            {
-                                //noinspection ConstantConditions
-                                onNext(new LiveBrokerSituationDTO(
-                                        situationDTO.broker,
-                                        populate((KYCAyondoForm) situationDTO.kycForm)));
-                            }
-                        }),
+                        .take(1),
                 kycAyondoFormOptionsDTOObservable
                         .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<KYCAyondoFormOptionsDTO>()
@@ -84,9 +75,9 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     public Object call(LiveBrokerSituationDTO situationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
                     {
                         //noinspection ConstantConditions
-                        onNext(new LiveBrokerSituationDTO(situationDTO.broker,
-                                populateTradingPerQuarter((KYCAyondoForm) situationDTO.kycForm,
-                                        kycFormOptionsDTO.tradingPerQuarterOptions)));
+                        populateTradingPerQuarter((KYCAyondoForm) situationDTO.kycForm,
+                                kycFormOptionsDTO.tradingPerQuarterOptions);
+                        populate(((KYCAyondoForm) situationDTO.kycForm));
                         return null;
                     }
                 })
