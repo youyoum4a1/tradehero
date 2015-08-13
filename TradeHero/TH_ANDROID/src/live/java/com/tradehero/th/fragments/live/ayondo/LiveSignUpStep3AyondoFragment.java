@@ -30,6 +30,7 @@ import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.functions.Func3;
 
 public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
@@ -112,28 +113,19 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         return KYCAyondoFormFactory.fromHaveOtherQualificationEvent(onCheckedChangeEvent);
                                     }
                                 }),
-                        WidgetObservable.input(tradedSharesBondsButton)
-                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                        Observable.combineLatest(
+                                WidgetObservable.input(tradedSharesBondsButton, true),
+                                WidgetObservable.input(tradedOtcDerivativeButton, true),
+                                WidgetObservable.input(tradedEtcButton, true),
+                                new Func3<OnCheckedChangeEvent, OnCheckedChangeEvent, OnCheckedChangeEvent, KYCAyondoForm>()
                                 {
-                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+
+                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onTradedSharesBondsCheckedChangeEvent,
+                                            OnCheckedChangeEvent onTradedOtcDerivativeCheckedChangeEvent,
+                                            OnCheckedChangeEvent onTradedEtcCheckedChangeEvent)
                                     {
-                                        return KYCAyondoFormFactory.fromTradedSharesBondsEvent(onCheckedChangeEvent);
-                                    }
-                                }),
-                        WidgetObservable.input(tradedOtcDerivativeButton)
-                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
-                                {
-                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
-                                    {
-                                        return KYCAyondoFormFactory.fromTradedOtcDerivativesEvent(onCheckedChangeEvent);
-                                    }
-                                }),
-                        WidgetObservable.input(tradedEtcButton)
-                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
-                                {
-                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
-                                    {
-                                        return KYCAyondoFormFactory.fromTradedExchangeDerivativesEvent(onCheckedChangeEvent);
+
+                                        return KYCAyondoFormFactory.fromProductsTradedEvent(onTradedSharesBondsCheckedChangeEvent, onTradedOtcDerivativeCheckedChangeEvent, onTradedEtcCheckedChangeEvent);
                                     }
                                 }),
                         AdapterViewObservable.selects(tradingPerQuarterSpinner)
@@ -199,34 +191,13 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         Boolean tradeSharesBonds = kycForm.isTradedSharesBonds();
-        if (tradeSharesBonds != null)
-        {
-            tradedSharesBondsButton.setChecked(tradeSharesBonds);
-        }
-        else
-        {
-            update.setTradedSharesBonds(tradedSharesBondsButton.isChecked());
-        }
+        tradedSharesBondsButton.setChecked(tradeSharesBonds != null ? tradeSharesBonds : false);
 
         Boolean tradedOtc = kycForm.isTradedOtcDerivative();
-        if (tradedOtc != null)
-        {
-            tradedOtcDerivativeButton.setChecked(tradedOtc);
-        }
-        else
-        {
-            update.setTradedOtcDerivative(tradedOtcDerivativeButton.isChecked());
-        }
+        tradedOtcDerivativeButton.setChecked(tradedOtc != null ? tradedOtc : false);
 
         Boolean tradedEtc = kycForm.isTradedEtc();
-        if (tradedEtc != null)
-        {
-            tradedEtcButton.setChecked(tradedEtc);
-        }
-        else
-        {
-            update.setTradedEtc(tradedEtcButton.isChecked());
-        }
+        tradedEtcButton.setChecked(tradedEtc != null ? tradedEtc : false);
 
         return update;
     }

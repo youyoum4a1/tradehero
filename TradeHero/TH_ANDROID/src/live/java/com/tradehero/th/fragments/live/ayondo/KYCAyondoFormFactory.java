@@ -151,23 +151,13 @@ public class KYCAyondoFormFactory
         return created;
     }
 
-    @NonNull public static KYCAyondoForm fromTradedSharesBondsEvent(@NonNull OnCheckedChangeEvent tradedSharesEvent)
+    @NonNull public static KYCAyondoForm fromProductsTradedEvent(@NonNull OnCheckedChangeEvent tradedSharesEvent,
+            @NonNull OnCheckedChangeEvent tradedOtcDerivativesEvent,
+            @NonNull OnCheckedChangeEvent tradedExchangeEvent)
     {
         KYCAyondoForm created = new KYCAyondoForm();
         created.setTradedSharesBonds(tradedSharesEvent.value());
-        return created;
-    }
-
-    @NonNull public static KYCAyondoForm fromTradedOtcDerivativesEvent(@NonNull OnCheckedChangeEvent tradedOtcDerivativesEvent)
-    {
-        KYCAyondoForm created = new KYCAyondoForm();
         created.setTradedOtcDerivative(tradedOtcDerivativesEvent.value());
-        return created;
-    }
-
-    @NonNull public static KYCAyondoForm fromTradedExchangeDerivativesEvent(@NonNull OnCheckedChangeEvent tradedExchangeEvent)
-    {
-        KYCAyondoForm created = new KYCAyondoForm();
         created.setTradedEtc(tradedExchangeEvent.value());
         return created;
     }

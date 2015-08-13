@@ -522,7 +522,7 @@ public class KYCAyondoForm implements KYCForm
     {
         if (leveragedProducts == null)
         {
-            leveragedProducts = new AyondoLeveragedProductList(null);
+            leveragedProducts = AyondoLeveragedProductList.createAyondoLeveragedProductList(null);
         }
         if (yes && !leveragedProducts.contains(product))
         {
@@ -911,7 +911,7 @@ public class KYCAyondoForm implements KYCForm
         code ^= tradingPerQuarter == null ? 0 : tradingPerQuarter.hashCode();
         if (leveragedProducts != null)
         {
-            for (AyondoLeveragedProduct product : leveragedProducts)
+            for (AyondoLeveragedProduct product : leveragedProducts.products)
             {
                 code ^= product.hashCode();
             }
