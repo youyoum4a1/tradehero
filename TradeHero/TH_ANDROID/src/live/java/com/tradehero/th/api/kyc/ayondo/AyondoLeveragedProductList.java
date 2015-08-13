@@ -9,8 +9,14 @@ import com.tradehero.th.utils.StringUtils;
 
 public class AyondoLeveragedProductList extends BaseArrayList<AyondoLeveragedProduct>
 {
+    public AyondoLeveragedProductList()
+    {
+        super();
+    }
+
     @JsonCreator public AyondoLeveragedProductList(@Nullable String concatenated)
     {
+        super();
         if (concatenated != null)
         {
             String[] split = concatenated.split(",");
