@@ -1,5 +1,7 @@
 package com.tradehero.th.models.sms;
 
-public interface SMSId
+import com.tradehero.common.persistence.DTOKey;
+
+public interface SMSId extends DTOKey
 {
 }
