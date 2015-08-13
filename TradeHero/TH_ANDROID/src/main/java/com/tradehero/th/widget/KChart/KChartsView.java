@@ -360,7 +360,11 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 			paint.setTextSize(DEFAULT_AXIS_TITLE_SIZE);
             paint.setStrokeWidth(2);
             paint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+			if(lineEntity.getLineData() == null){
+				return;
+			}
 			if (mDataStartIndext < lineEntity.getLineData().size()) {
+
                 canvas.drawText(lineEntity.getTitle() + "=" + new DecimalFormat("#.##").format(lineEntity.getLineData().get(
                                         mDataStartIndext)), 2 + MATitleWidth * j, DEFAULT_AXIS_TITLE_SIZE, paint);
 			}
@@ -398,8 +402,11 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
             x = dataSpacing * i;
             // 绘制下部表内数据线
             Long buy = fenshiData.getVol();
+			if(buy == null){
+				return;
+			}
             paint.setStrokeWidth(3);
-            if (fenshiData.getOpen() == null || fenshiData.getOpen() == null || fenshiData.getClose() >= fenshiData.getOpen())
+            if (fenshiData.getOpen() == null || fenshiData.getOpen() == null || fenshiData.getClose() ==null || fenshiData.getClose() >= fenshiData.getOpen())
             {
                 paint.setColor(COLOR_RED);
             }
@@ -669,6 +676,9 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 		}
 
 		for (MALineEntity lineEntity : MALineData) {
+			if(lineEntity.getLineData()==null){
+				return;
+			}
 			for (int i = mDataStartIndext; i < lineEntity.getLineData().size()
 					&& i < mShowDataNum + mDataStartIndext; i++) {
 				mMinPrice = mMinPrice < lineEntity.getLineData().get(i) ? mMinPrice : lineEntity
@@ -726,6 +736,9 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
         for (int i = 0; i < entityList.size() - days; i++) {
             double sum = 0;
             for (int j = 0; j < days; j++) {
+				if(entityList.get(i+j)==null || entityList.get(i+j).getClose() == null){
+					return null;
+				}
                 sum += entityList.get(i + j).getClose();
             }
             MAValues.add(sum / (double)days);
