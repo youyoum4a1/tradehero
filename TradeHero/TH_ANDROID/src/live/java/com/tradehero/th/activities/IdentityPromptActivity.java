@@ -63,6 +63,9 @@ public class IdentityPromptActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity_prompt);
         ButterKnife.bind(IdentityPromptActivity.this);
+
+        final Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable();
+
         fastFillSubscription = getBrokerSituation()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<LiveBrokerSituationDTO>()
@@ -113,7 +116,6 @@ public class IdentityPromptActivity extends BaseActivity
                                             @Override public Observable<ScannedDocument> call(@Nullable
                                             IdentityScannedDocumentType identityScannedDocumentType)
                                             {
-                                                Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable();
                                                 fastFillUtil.fastFill(IdentityPromptActivity.this, identityScannedDocumentType);
                                                 return documentObservable;
                                             }

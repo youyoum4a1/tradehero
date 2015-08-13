@@ -14,8 +14,8 @@ import com.jumio.netverify.sdk.enums.NVDocumentType;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.fastfill.FastFillUtil;
-import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
+import com.tradehero.th.models.fastfill.ScannedDocument;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;
@@ -133,10 +133,7 @@ public class NetverifyFastFillUtil implements FastFillUtil
             }
             else if (resultCode == NetverifySDK.RESULT_CODE_CANCEL)
             {
-                scannedDocumentSubject.onError(new FastFillNetverifyError(
-                        data.getStringExtra(NetverifySDK.RESULT_DATA_ERROR_MESSAGE),
-                        data.getStringExtra(NetverifySDK.RESULT_DATA_SCAN_REFERENCE),
-                        data.getIntExtra(NetverifySDK.RESULT_DATA_ERROR_CODE, 0)));
+                //Consecutive scan will fail if we have onError
             }
             if(this.netverifySDK != null)
             {
