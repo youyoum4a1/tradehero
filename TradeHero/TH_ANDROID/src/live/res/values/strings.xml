@@ -14,7 +14,7 @@
 
   <string name="live_identity_prompt">Which of these documents do you have with you?</string>
   <string name="live_identity_prompt_au">Do you have your Australian Passport with you?</string>
-  <string name="live_identity_prompt_sg">Do you have your NRIC/Passport/Driver\'s License with you?</string>
+  <string name="live_identity_prompt_sg">Do you have your NRIC/Passport with you?</string>
 
   <string name="live_identity_prompt_hint">This will help you to auto-fill some information</string>
   <string name="yes">Yes</string>

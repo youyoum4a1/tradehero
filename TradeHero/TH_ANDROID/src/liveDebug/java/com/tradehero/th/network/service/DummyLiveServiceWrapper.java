@@ -200,7 +200,7 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
         {
             identityPromptInfo = new IdentityPromptInfoDTO(
                     "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-sg.png",
-                    "Singapore NRIC/ Driver's License");
+                    "Singapore NRIC");
         }
         else
         {
