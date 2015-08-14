@@ -16,6 +16,7 @@ import android.widget.Checkable;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormUtil;
@@ -25,6 +26,7 @@ import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
+import com.tradehero.th.persistence.prefs.ShowCallToActionFragmentPreference;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.widget.LiveRewardWidget;
 import java.util.List;
@@ -42,6 +44,7 @@ public class LiveSignUpMainFragment extends BaseFragment
     @Inject Toolbar toolbar;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject LiveServiceWrapper liveServiceWrapper;
+    @Inject @ShowCallToActionFragmentPreference BooleanPreference showCallToActionFragment;
 
     @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
     @Bind(R.id.pager) protected ViewPager viewPager;
@@ -63,6 +66,7 @@ public class LiveSignUpMainFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        showCallToActionFragment.set(false);
 
         tabLayout.setCustomTabView(R.layout.th_sign_up_tab_indicator, android.R.id.title);
         tabLayout.setDistributeEvenly(true);

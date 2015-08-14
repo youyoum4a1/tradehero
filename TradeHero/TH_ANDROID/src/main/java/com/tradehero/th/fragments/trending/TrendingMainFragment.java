@@ -283,6 +283,7 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onResume();
         thRouter.inject(this, getArguments());
+        trendingLiveFragmentUtil.onResume();
     }
 
     @Override public boolean shouldShowLiveTradingToggle()

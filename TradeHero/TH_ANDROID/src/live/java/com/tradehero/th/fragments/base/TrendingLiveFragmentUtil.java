@@ -8,20 +8,12 @@ import android.widget.FrameLayout;
 import butterknife.Bind;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.IdentityPromptActivity;
-import com.tradehero.th.activities.SignUpLiveActivity;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.live.LiveCallToActionFragment;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.fastfill.FastFillUtil;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.prefs.ShowCallToActionFragmentPreference;
 import javax.inject.Inject;
-import rx.Observable;
 import rx.Subscription;
-import rx.android.view.OnClickEvent;
-import rx.android.view.ViewObservable;
 import rx.functions.Action1;
-import rx.functions.Func2;
 
 public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
 {
@@ -30,6 +22,7 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
     @Nullable private LiveCallToActionFragment callToActionFragment;
 
     @Inject @ShowCallToActionFragmentPreference BooleanPreference showCallToActionFragment;
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
 
     private Subscription laterClickedSubscription;
 
@@ -45,22 +38,18 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
             if (showCallToActionFragment.get())
             {
                 setCallToActionFragmentVisible();
+                showCallToActionBubbleGone();
             }
             else
             {
                 showCallToActionBubbleVisible();
+                setCallToActionFragmentGone();
             }
         }
         else
         {
-            if (showCallToActionFragment.get())
-            {
-                setCallToActionFragmentGone();
-            }
-            else
-            {
-                showCallToActionBubbleGone();
-            }
+            setCallToActionFragmentGone();
+            showCallToActionBubbleGone();
         }
     }
 
@@ -93,7 +82,6 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
         if (callToActionFragment != null && callToActionFragment.isAdded())
         {
             fragment.getChildFragmentManager().beginTransaction().remove(callToActionFragment).commit();
-            showCallToActionFragment.set(false); //Only display fragment once, the next one should be a bubble
         }
         if (laterClickedSubscription != null)
         {
@@ -101,5 +89,17 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
         }
         liveFragmentContainer.setVisibility(View.GONE);
         pager.setVisibility(View.VISIBLE);
+    }
+
+    @Override protected void showCallToActionBubbleGone()
+    {
+        super.showCallToActionBubbleGone();
+        showCallToActionFragment.set(true);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        setCallToAction(isLiveTrading.get());
     }
 }

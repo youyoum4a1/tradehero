@@ -118,4 +118,9 @@ public class BaseLiveFragmentUtil
         ButterKnife.unbind(this);
         fragment = null;
     }
+
+    public void onResume()
+    {
+        //Do nothing
+    }
 }
