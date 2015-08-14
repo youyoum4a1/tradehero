@@ -5,10 +5,11 @@ import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.utils.StringUtils;
 import java.util.ArrayList;
 
-public class AyondoLeveragedProductList
+public class AyondoLeveragedProductList implements DTO
 {
     @JsonIgnore public ArrayList<AyondoLeveragedProduct> products = new ArrayList<>(3);
 
