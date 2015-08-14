@@ -30,6 +30,7 @@ import com.tradehero.th.persistence.kyc.KYCFormOptionsCache;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ReplaceWithFunc1;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
@@ -76,7 +77,7 @@ public class IdentityPromptActivity extends BaseActivity
         setContentView(R.layout.activity_identity_prompt);
         ButterKnife.bind(IdentityPromptActivity.this);
 
-        final Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable();
+        final Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable().throttleLast(300, TimeUnit.MILLISECONDS); //HACK
 
         fastFillSubscription = getBrokerSituation()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -104,7 +105,7 @@ public class IdentityPromptActivity extends BaseActivity
                                     public LiveBrokerSituationDTO call(KYCFormOptionsDTO kycFormOptions)
                                     {
                                         //noinspection ConstantConditions
-                                        if(situation.kycForm.getCountry() != null)
+                                        if (situation.kycForm.getCountry() != null)
                                         {
                                             picasso.load(kycFormOptions.getIdentityPromptInfo().image)
                                                     .placeholder(situation.kycForm.getCountry().logoId)
