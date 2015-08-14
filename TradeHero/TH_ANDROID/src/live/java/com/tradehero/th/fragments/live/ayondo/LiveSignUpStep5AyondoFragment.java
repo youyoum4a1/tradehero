@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 import butterknife.Bind;
@@ -69,6 +70,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.agree_data_sharing) View dataSharing;
     @Bind(R.id.cb_subscribe_offers) CheckBox subscribeOffersCheckBox;
     @Bind(R.id.cb_subscribe_trade_notifications) CheckBox subscribeTradeNotificationsCheckBox;
+    @Bind(R.id.btn_create) Button btnCreate;
 
     private ImageRequesterUtil imageRequesterUtil;
 
@@ -83,7 +85,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         List<Subscription> subscriptions = new ArrayList<>();
 
-        onDestroyViewSubscriptions.add(
+        subscriptions.add(
                 Observable.combineLatest(
                         kycAyondoFormOptionsDTOObservable.observeOn(AndroidSchedulers.mainThread())
                                 .doOnNext(new Action1<KYCAyondoFormOptionsDTO>()
@@ -121,7 +123,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 new EmptyAction1<>(),
                                 new TimberOnErrorAction1("Failed to populate identity document type spinner")));
 
-        onDestroyViewSubscriptions.add(Observable.combineLatest(
+        subscriptions.add(Observable.combineLatest(
                 brokerDTOObservable,
                 Observable.merge(
                         AdapterViewObservable.selects(identityDocumentTypeSpinner)
@@ -202,7 +204,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction1("Failed to listen to spinner updates and agreement checkboxes")));
 
-        onDestroyViewSubscriptions.add(liveBrokerSituationDTOObservable
+        subscriptions.add(liveBrokerSituationDTOObservable
+                .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
@@ -219,7 +222,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction1("Failed to prepare files from KYC")));
 
-        onDestroyViewSubscriptions.add(
+        subscriptions.add(
                 Observable.combineLatest(
                         brokerDTOObservable,
                         DocumentActionWidgetObservable.actions(documentActionIdentity),
@@ -279,7 +282,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 },
                                 new TimberOnErrorAction1("Failed to ask for and get identity document bitmap")));
 
-        onDestroyViewSubscriptions.add(
+        subscriptions.add(
                 Observable.combineLatest(
                         brokerDTOObservable,
                         DocumentActionWidgetObservable.actions(documentActionResidence),
@@ -340,7 +343,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 },
                                 new TimberOnErrorAction1("Failed to ask for and get residence document bitmap")));
 
-        onDestroyViewSubscriptions.add(kycAyondoFormOptionsDTOObservable
+        subscriptions.add(kycAyondoFormOptionsDTOObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<KYCAyondoFormOptionsDTO, Observable<String>>()
                 {
@@ -365,6 +368,33 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to url clicks")));
+
+        subscriptions.add(liveBrokerSituationDTOObservable
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(new Func1<LiveBrokerSituationDTO, KYCAyondoForm>()
+                        {
+                            @Override public KYCAyondoForm call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                            {
+                                return ((KYCAyondoForm) liveBrokerSituationDTO.kycForm);
+                            }
+                        })
+                        .subscribe(new Action1<KYCAyondoForm>()
+                        {
+                            @Override public void call(KYCAyondoForm kycAyondoForm)
+                            {
+                                boolean enabled;
+
+                                enabled = kycAyondoForm.isAgreeDataSharing() != null && kycAyondoForm.isAgreeDataSharing();
+                                enabled &= kycAyondoForm.isAgreeTermsConditions() != null && kycAyondoForm.isAgreeTermsConditions();
+                                enabled &= kycAyondoForm.isAgreeRisksWarnings() != null && kycAyondoForm.isAgreeRisksWarnings();
+                                enabled &= kycAyondoForm.getIdentityDocumentFile() != null;
+                                enabled &= kycAyondoForm.getResidenceDocumentFile() != null;
+
+                                btnCreate.setEnabled(enabled);
+
+                            }
+                        }, new TimberOnErrorAction1("Failed to update create button"))
+        );
         return subscriptions;
     }
 
@@ -537,7 +567,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 inputStream = new FileInputStream(imageFile);
                 Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                 widget.setPreviewBitmap(bitmap);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Timber.e(e, "Failed to load " + imageFile);
             } finally
@@ -547,7 +578,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     try
                     {
                         inputStream.close();
-                    } catch (IOException e)
+                    }
+                    catch (IOException e)
                     {
                         Timber.e(e, "When closing inputStream of " + imageFile);
                     }
