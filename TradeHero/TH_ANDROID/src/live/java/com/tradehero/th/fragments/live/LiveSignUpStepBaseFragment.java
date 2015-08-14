@@ -85,9 +85,12 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                 break;
             case R.id.btn_next:
                 prevNextSubject.onNext(true);
+                onNextPressed();
                 break;
         }
     }
+
+    protected abstract void onNextPressed();
 
     @NonNull public Observable<Boolean> getPrevNextObservabel()
     {

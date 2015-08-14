@@ -1,12 +1,14 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
+import com.tradehero.th.api.kyc.BrokerApplicationDTO;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
 import com.tradehero.th.api.kyc.LiveAvailabilityDTO;
 import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
+import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerKnowledge;
@@ -126,20 +128,33 @@ public class LiveServiceWrapper
         return (brokerId.key.equals(LiveBrokerKnowledge.BROKER_ID_AYONDO)
                 ? liveServiceAyondoRx.validateUserName(username)
                 : liveServiceRx.validateUserName(brokerId.key, username))
-                        .map(new Func1<UsernameValidationResultDTO, UsernameValidationResultDTO>()
-                        {
-                            @Override public UsernameValidationResultDTO call(UsernameValidationResultDTO resultDTO)
-                            {
-                                return new UsernameValidationResultDTO(
-                                        username,
-                                        resultDTO.isValid,
-                                        resultDTO.isAvailable);
-                            }
-                        });
+                .map(new Func1<UsernameValidationResultDTO, UsernameValidationResultDTO>()
+                {
+                    @Override public UsernameValidationResultDTO call(UsernameValidationResultDTO resultDTO)
+                    {
+                        return new UsernameValidationResultDTO(
+                                username,
+                                resultDTO.isValid,
+                                resultDTO.isAvailable);
+                    }
+                });
     }
 
     public void submitPhoneNumberVerifiedStatus(String formattedPhoneNumber)
     {
         phoneNumberVerifiedPreference.addVerifiedNumber(formattedPhoneNumber);
+    }
+
+    public Observable<BrokerApplicationDTO> createOrUpdateLead(KYCForm kycForm)
+    {
+        if (kycForm instanceof KYCAyondoForm)
+        {
+            return liveServiceAyondoRx.createOrUpdateLead(kycForm);
+        }
+        else
+        {
+            //TODO when we have multiple brokers
+            return Observable.just(null);
+        }
     }
 }

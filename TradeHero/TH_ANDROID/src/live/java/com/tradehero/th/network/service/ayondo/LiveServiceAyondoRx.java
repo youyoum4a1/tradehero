@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service.ayondo;
 
+import com.tradehero.th.api.kyc.BrokerApplicationDTO;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoAccountCreationDTO;
@@ -26,4 +27,7 @@ public interface LiveServiceAyondoRx
     @GET("/kyc/ayondo/checkusername")
     Observable<UsernameValidationResultDTO> validateUserName(
             @Query("username") String username);
+
+    @POST("/kyc/ayondo/createOrUpdateLead")
+    Observable<BrokerApplicationDTO> createOrUpdateLead(@Body KYCForm kycForm);
 }

@@ -4,6 +4,7 @@ import dagger.Module;
 
 @Module(
         injects = {
+                LiveSignUpStepBaseAyondoFragment.class,
                 LiveSignUpStep1AyondoFragment.class,
                 LiveSignUpStep2AyondoFragment.class,
                 LiveSignUpStep3AyondoFragment.class,

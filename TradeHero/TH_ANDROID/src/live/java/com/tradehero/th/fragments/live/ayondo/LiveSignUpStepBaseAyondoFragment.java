@@ -2,6 +2,8 @@ package com.tradehero.th.fragments.live.ayondo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.th.api.kyc.BrokerApplicationDTO;
+import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
@@ -9,11 +11,14 @@ import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.live.LiveSignUpStepBaseFragment;
+import com.tradehero.th.network.service.LiveServiceWrapper;
+import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnNothingSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import java.util.Collections;
 import java.util.List;
+import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -21,9 +26,13 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBaseFragment
 {
+    @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
+    @Inject LiveServiceWrapper liveServiceWrapper;
+
     @Nullable private ConnectableObservable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsObservable;
     private Subscription kycAyondoFormOptionsSubscription;
 
@@ -126,5 +135,26 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                 throw new IllegalArgumentException("Unhandled argument " + onSelectedEvent);
             }
         };
+    }
+
+    @Override protected void onNextPressed()
+    {
+        //Send form to server to create lead
+        KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
+        onDestroySubscriptions.add(
+                liveServiceWrapper.createOrUpdateLead(kycForm)
+                        .subscribe(new Action1<BrokerApplicationDTO>()
+                        {
+                            @Override public void call(BrokerApplicationDTO brokerApplicationDTO)
+                            {
+                                Timber.d("broker application %s: ", brokerApplicationDTO);
+                            }
+                        }, new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                Timber.e(throwable, "Error in creating lead");
+                            }
+                        }));
     }
 }
