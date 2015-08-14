@@ -3,8 +3,9 @@ package com.tradehero.th.models.sms.twilio;
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.tradehero.common.persistence.DTOKey;
 
-public class TwilioAccountSid
+public class TwilioAccountSid implements DTOKey
 {
     @NonNull public final String id;
 
