@@ -129,7 +129,7 @@ public class IdentityPromptActivity extends BaseActivity
                                 ViewObservable.clicks(scanPassport)
                                         .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(IdentityScannedDocumentType.PASSPORT)),
                                 ViewObservable.clicks(scanSpecificId)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(null)))
+                                        .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(IdentityScannedDocumentType.IDENTITY_CARD)))
                                 .flatMap(
                                         new Func1<IdentityScannedDocumentType, Observable<ScannedDocument>>()
                                         {
