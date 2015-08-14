@@ -76,7 +76,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final int REQUEST_VERIFY_PHONE_NUMBER_CODE = 2808;
 
     @Bind(R.id.info_title) Spinner title;
-    @Bind(R.id.info_full_name) TextView fullName;
+    @Bind(R.id.info_first_name) TextView firstName;
+    @Bind(R.id.info_last_name) TextView lastName;
     @Bind(R.id.sign_up_email) EditText email;
     @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
     @Bind(R.id.info_phone_number) EditText phoneNumber;
@@ -116,13 +117,22 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         List<Subscription> subscriptions = new ArrayList<>();
 
         subscriptions.add(Observable.merge(
-                WidgetObservable.text(fullName)
+                WidgetObservable.text(firstName)
                         .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
                         {
                             @Override public KYCAyondoForm call(
                                     OnTextChangeEvent fullNameEvent)
                             {
-                                return KYCAyondoFormFactory.fromFullNameEvent(fullNameEvent);
+                                return KYCAyondoFormFactory.fromFirstNameEvent(fullNameEvent);
+                            }
+                        }),
+                WidgetObservable.text(lastName)
+                        .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
+                        {
+                            @Override public KYCAyondoForm call(
+                                    OnTextChangeEvent fullNameEvent)
+                            {
+                                return KYCAyondoFormFactory.fromLastNameEvent(fullNameEvent);
                             }
                         }),
                 WidgetObservable.text(email)
@@ -512,10 +522,16 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @MainThread
     protected void populate(@NonNull KYCAyondoForm kycForm)
     {
-        String fullNameText = kycForm.getFullName();
-        if (fullName != null && fullNameText != null && !fullNameText.equals(fullName.getText().toString()))
+        String firstNameText = kycForm.getFirstName();
+        if (firstName != null && firstNameText != null && !firstNameText.equals(firstName.getText().toString()))
         {
-            fullName.setText(fullNameText);
+            firstName.setText(firstNameText);
+        }
+
+        String lastNameText = kycForm.getLastName();
+        if (lastName != null && lastNameText != null && !lastNameText.equals(lastName.getText().toString()))
+        {
+            lastName.setText(lastNameText);
         }
 
         String emailText = kycForm.getEmail();

@@ -26,7 +26,8 @@ public class DummyKYCAyondoUtil
     @NonNull public static StepStatus getStep1(@NonNull KYCAyondoForm kycForm)
     {
         return (kycForm.getGender() != null
-                && kycForm.getFullName() != null
+                && kycForm.getFirstName() != null
+                && kycForm.getLastName() != null
                 && kycForm.getEmail() != null
                 && kycForm.getPhonePrimaryCountryCode() != null
                 && kycForm.getMobileNumber() != null

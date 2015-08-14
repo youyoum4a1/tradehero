@@ -32,12 +32,12 @@ import java.util.List;
 public class KYCAyondoForm implements KYCForm
 {
     public static final String KEY_AYONDO_TYPE = "AYD";
-    public static final String DATE_FORMAT_AYONDO = "dd-MM-yyyy";
+    public static final String DATE_FORMAT_AYONDO = "yyyy-MM-dd";
 
     @Nullable private Country country;
     @Nullable private ScanReference scanReference;
     @JsonProperty("Gender") @Nullable private AyondoGender ayondoGender;
-    @Deprecated @Nullable private String fullName;
+    @JsonIgnore @Deprecated @Nullable private String fullName;
     @JsonProperty("FirstName") @Nullable private String firstName;
     @JsonProperty("LastName") @Nullable private String lastName;
     @JsonProperty("MiddleName") @Nullable private String middleName;
@@ -82,6 +82,10 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean agreeDataSharing;
     @JsonProperty("SubscribeOffers") @Nullable private Boolean subscribeOffers;
     @JsonProperty("SubscribeTradeNotifications") @Nullable private Boolean subscribeTradeNotifications;
+
+    //TODO Hardcoded for now
+    @JsonProperty("Language") private final String language = "EN";
+    @JsonProperty("Currency") private final String currency = "USD";
 
     private List<StepStatus> stepStatuses;
 
@@ -145,7 +149,6 @@ public class KYCAyondoForm implements KYCForm
             KYCAyondoForm ayondoForm = (KYCAyondoForm) other;
             this.scanReference = ayondoForm.scanReference != null ? ayondoForm.scanReference : this.scanReference;
             this.ayondoGender = ayondoForm.ayondoGender != null ? ayondoForm.ayondoGender : this.ayondoGender;
-            this.fullName = ayondoForm.getFullName() != null ? ayondoForm.getFullName() : this.fullName;
             this.firstName = ayondoForm.firstName != null ? ayondoForm.firstName : this.firstName;
             this.lastName = ayondoForm.lastName != null ? ayondoForm.lastName : this.lastName;
             this.middleName = ayondoForm.middleName != null ? ayondoForm.middleName : this.middleName;

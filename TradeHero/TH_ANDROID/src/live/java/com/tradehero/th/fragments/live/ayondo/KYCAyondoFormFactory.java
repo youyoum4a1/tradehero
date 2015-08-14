@@ -24,10 +24,25 @@ public class KYCAyondoFormFactory
         return created;
     }
 
+    @Deprecated
     @NonNull public static KYCAyondoForm fromFullNameEvent(@NonNull OnTextChangeEvent fullNameEvent)
     {
         KYCAyondoForm created = new KYCAyondoForm();
         created.setFullName(fullNameEvent.text().toString());
+        return created;
+    }
+
+    @NonNull public static KYCAyondoForm fromFirstNameEvent(OnTextChangeEvent firstNameEvent)
+    {
+        KYCAyondoForm created = new KYCAyondoForm();
+        created.setFirstName(firstNameEvent.text().toString());
+        return created;
+    }
+
+    @NonNull public static KYCAyondoForm fromLastNameEvent(@NonNull OnTextChangeEvent lastNameEvent)
+    {
+        KYCAyondoForm created = new KYCAyondoForm();
+        created.setLastName(lastNameEvent.text().toString());
         return created;
     }
 
