@@ -86,6 +86,7 @@ public class KYCAyondoForm implements KYCForm
     //TODO Hardcoded for now
     @JsonProperty("Language") private final String language = "EN";
     @JsonProperty("Currency") private final String currency = "USD";
+    @JsonProperty("WhiteLabel") private final String whiteLabel = "AyondoMarketsTH";
 
     private List<StepStatus> stepStatuses;
 
