@@ -66,6 +66,8 @@ import timber.log.Timber;
 
 public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
+    private static final int PHONE_NUM_MIN_LENGTH = 7;
+
     @LayoutRes private static final int LAYOUT_COUNTRY = R.layout.spinner_live_country_dropdown_item;
     @LayoutRes private static final int LAYOUT_COUNTRY_SELECTED_FLAG = R.layout.spinner_live_country_dropdown_item_selected;
     @LayoutRes private static final int LAYOUT_PHONE_COUNTRY = R.layout.spinner_live_phone_country_dropdown_item;
@@ -327,7 +329,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public Boolean call(PhoneNumberDTO numberDTO)
                             {
-                                return numberDTO.dialingPrefix > 0 && !TextUtils.isEmpty(numberDTO.typedNumber);
+                                return numberDTO.dialingPrefix > 0 && numberDTO.typedNumber.length() > PHONE_NUM_MIN_LENGTH;
                             }
                         })
                         .doOnNext(new Action1<PhoneNumberDTO>()
