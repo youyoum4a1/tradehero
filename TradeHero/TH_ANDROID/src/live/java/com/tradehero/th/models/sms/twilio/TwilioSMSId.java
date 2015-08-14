@@ -9,7 +9,12 @@ public class TwilioSMSId implements SMSId
 {
     @NonNull public final String id;
 
-    @JsonCreator public TwilioSMSId(@NonNull String id)
+    @JsonCreator public static TwilioSMSId create(@NonNull String id)
+    {
+        return new TwilioSMSId(id);
+    }
+
+    public TwilioSMSId(String id)
     {
         this.id = id;
     }

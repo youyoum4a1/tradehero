@@ -9,7 +9,12 @@ public class TwilioAccountSid implements DTOKey
 {
     @NonNull public final String id;
 
-    @JsonCreator public TwilioAccountSid(@NonNull String id)
+    @JsonCreator public static TwilioAccountSid create(@NonNull String id)
+    {
+        return new TwilioAccountSid(id);
+    }
+
+    public TwilioAccountSid(@NonNull String id)
     {
         this.id = id;
     }
