@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.th.api.kyc.BrokerDocumentUploadResponseDTO;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
@@ -7,9 +8,12 @@ import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import retrofit.mime.TypedOutput;
 import rx.Observable;
 
 public interface LiveServiceRx
@@ -30,4 +34,9 @@ public interface LiveServiceRx
     Observable<UsernameValidationResultDTO> validateUserName(
             @Path("liveBrokerId") int brokerId,
             @Query("username") String username);
+
+    @Multipart @POST("/documentsUpload")
+    Observable<BrokerDocumentUploadResponseDTO> uploadDocument(
+            @Part("image") TypedOutput image
+    );
 }

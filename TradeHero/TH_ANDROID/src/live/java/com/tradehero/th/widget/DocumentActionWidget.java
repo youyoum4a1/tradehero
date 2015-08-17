@@ -15,16 +15,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.tradehero.th.R;
 
-public class DocumentActionWidget extends RelativeLayout
+public class DocumentActionWidget extends RelativeLayout implements Target
 {
     @Bind(R.id.document_action) Button btnAction;
     @Bind(R.id.document_clear) ImageButton btnClear;
     @Bind(R.id.document_preview) ImageView imgPreview;
+    @Bind(R.id.document_progress) ProgressBar progressBar;
 
     @Nullable private View.OnClickListener clearOnClickListener;
 
@@ -111,6 +115,18 @@ public class DocumentActionWidget extends RelativeLayout
         hideAction();
     }
 
+    public void setLoading(boolean isLoading)
+    {
+        if (isLoading)
+        {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void hideAction()
     {
         btnAction.setVisibility(View.GONE);
@@ -123,5 +139,20 @@ public class DocumentActionWidget extends RelativeLayout
         btnAction.setVisibility(View.VISIBLE);
         btnClear.setVisibility(View.GONE);
         imgPreview.setVisibility(View.GONE);
+    }
+
+    @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
+    {
+        setPreviewBitmap(bitmap);
+    }
+
+    @Override public void onBitmapFailed(Drawable errorDrawable)
+    {
+        setPreviewDrawable(errorDrawable);
+    }
+
+    @Override public void onPrepareLoad(Drawable placeHolderDrawable)
+    {
+        setPreviewDrawable(placeHolderDrawable);
     }
 }

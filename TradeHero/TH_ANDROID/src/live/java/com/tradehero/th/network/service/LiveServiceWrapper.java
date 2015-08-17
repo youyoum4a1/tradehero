@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.kyc.BrokerApplicationDTO;
+import com.tradehero.th.api.kyc.BrokerDocumentUploadResponseDTO;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
@@ -17,6 +18,8 @@ import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.network.service.ayondo.LiveServiceAyondoRx;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
+import com.tradehero.th.utils.GraphicUtil;
+import java.io.File;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func0;
@@ -156,5 +159,10 @@ public class LiveServiceWrapper
             //TODO when we have multiple brokers
             return Observable.just(null);
         }
+    }
+
+    public Observable<BrokerDocumentUploadResponseDTO> uploadDocument(File f)
+    {
+        return liveServiceRx.uploadDocument(GraphicUtil.fromFile(f));
     }
 }

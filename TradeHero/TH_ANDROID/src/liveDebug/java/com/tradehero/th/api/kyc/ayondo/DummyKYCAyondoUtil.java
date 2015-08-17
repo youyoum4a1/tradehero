@@ -86,9 +86,9 @@ public class DummyKYCAyondoUtil
     @NonNull public static StepStatus getStep5(@NonNull KYCAyondoForm kycForm)
     {
         return (kycForm.getIdentityDocumentType() != null
-                && kycForm.getIdentityDocumentFile() != null
+                && kycForm.getIdentityDocumentUrl() != null
                 && kycForm.getResidenceDocumentType() != null
-                && kycForm.getResidenceDocumentFile() != null
+                && kycForm.getResidenceDocumentUrl() != null
                 && kycForm.isAgreeTermsConditions() != null
                 && kycForm.isAgreeRisksWarnings() != null
                 && kycForm.isAgreeDataSharing() != null)
