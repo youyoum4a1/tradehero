@@ -166,9 +166,10 @@ public class LiveActivityUtil
 
     public void onTrendingTileClicked(TileType tileType)
     {
-        if (tileType.equals(TileType.LiveToggle))
-        {
-            switchLive(true, true);
-        }
+        //Disable live toggling for now
+        //if (tileType.equals(TileType.LiveToggle))
+        //{
+        //    switchLive(true, true);
+        //}
     }
 }
