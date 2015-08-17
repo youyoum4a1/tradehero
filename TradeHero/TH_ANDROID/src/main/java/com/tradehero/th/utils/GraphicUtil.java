@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import com.tradehero.common.graphics.RotateTransformation;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
+import com.tradehero.th.models.graphics.BitmapTypedOutput;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -444,5 +445,11 @@ public class GraphicUtil
         propertyValuesHolders.add(pvhRotate);
 
         return propertyValuesHolders;
+    }
+
+    public static BitmapTypedOutput fromFile(@NonNull File f)
+    {
+        Bitmap bitmap = BitmapFactory.decodeFile(f.getAbsolutePath());
+        return new BitmapTypedOutput(BitmapTypedOutput.TYPE_JPEG, bitmap, f.getAbsolutePath(), 75);
     }
 }

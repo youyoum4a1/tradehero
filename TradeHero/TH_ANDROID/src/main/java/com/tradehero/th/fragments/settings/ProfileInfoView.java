@@ -33,6 +33,7 @@ import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
+import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.widget.validation.DisplayNameValidatedText;
 import com.tradehero.th.widget.validation.DisplayNameValidator;
 import com.tradehero.th.widget.validation.MatchingPasswordText;
@@ -216,8 +217,7 @@ public class ProfileInfoView extends LinearLayout
         {
             try
             {
-                Bitmap bitmap = BitmapFactory.decodeFile(croppedPhotoFile.getAbsolutePath());
-                created = new BitmapTypedOutput(BitmapTypedOutput.TYPE_JPEG, bitmap, croppedPhotoFile.getAbsolutePath(), 75);
+                created = GraphicUtil.fromFile(croppedPhotoFile);
             }
             catch (OutOfMemoryError e)
             {
