@@ -154,7 +154,6 @@ public class KYCAddressWidget extends LinearLayout
                     {
                         boolean enabled =
                                 !(TextUtils.isEmpty(txtLine1.getText())
-                                        || TextUtils.isEmpty(txtLine2.getText())
                                         || TextUtils.isEmpty(txtCity.getText())
                                         || TextUtils.isEmpty(txtPostalCode.getText()));
                         checkBoxLessThanAYear.setEnabled(enabled);
