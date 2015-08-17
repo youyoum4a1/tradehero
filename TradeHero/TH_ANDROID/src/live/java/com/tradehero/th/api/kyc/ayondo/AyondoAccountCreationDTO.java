@@ -2,12 +2,11 @@ package com.tradehero.th.api.kyc.ayondo;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.UUID;
 
 public class AyondoAccountCreationDTO extends AyondoLeadDTO
 {
-    @JsonProperty("AddressCheckGuid") @Nullable private UUID addressCheckUid;
-    @JsonProperty("IdentityCheckGuid") @Nullable private UUID identityCheckUid;
+    @JsonProperty("AddressCheckGuid") @Nullable private String addressCheckUid;
+    @JsonProperty("IdentityCheckGuid") @Nullable private String identityCheckUid;
     @JsonProperty("ProofOfIdType") @Nullable private String proofOfIdType;
     @JsonProperty("ProofOfIdImageUrl") @Nullable private String proofOfIdImageUrl;
     @JsonProperty("ProofOfAddressType") @Nullable private String proofOfAddressType;
@@ -17,22 +16,22 @@ public class AyondoAccountCreationDTO extends AyondoLeadDTO
     {
     }
 
-    @Nullable public UUID getAddressCheckUid()
+    @Nullable public String getAddressCheckUid()
     {
         return addressCheckUid;
     }
 
-    public void setAddressCheckUid(@Nullable UUID addressCheckUid)
+    public void setAddressCheckUid(@Nullable String addressCheckUid)
     {
         this.addressCheckUid = addressCheckUid;
     }
 
-    @Nullable public UUID getIdentityCheckUid()
+    @Nullable public String getIdentityCheckUid()
     {
         return identityCheckUid;
     }
 
-    public void setIdentityCheckUid(@Nullable UUID identityCheckUid)
+    public void setIdentityCheckUid(@Nullable String identityCheckUid)
     {
         this.identityCheckUid = identityCheckUid;
     }

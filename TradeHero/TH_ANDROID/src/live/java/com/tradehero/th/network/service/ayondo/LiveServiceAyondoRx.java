@@ -4,9 +4,13 @@ import com.tradehero.th.api.kyc.BrokerApplicationDTO;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoAccountCreationDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoAddressCheckDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoLeadAddressDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoLiveAvailabilityDTO;
 import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
 import retrofit.http.Body;
+import retrofit.http.Field;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
@@ -30,4 +34,12 @@ public interface LiveServiceAyondoRx
 
     @POST("/kyc/ayondo/createOrUpdateLead")
     Observable<BrokerApplicationDTO> createOrUpdateLead(@Body KYCForm kycForm);
+
+    @POST("/kyc/ayondo/checkidentity")
+    Observable<AyondoAddressCheckDTO> checkNeedIdentity(
+            @Field("identity") AyondoLeadUserIdentityDTO ayondoLeadUserIdentityDTO);
+
+    @POST("/kyc/ayondo/checkaddress")
+    Observable<AyondoAddressCheckDTO> checkNeedResidency(
+            @Field("address") AyondoLeadAddressDTO ayondoLeadAddressDTO);
 }
