@@ -168,6 +168,7 @@ public class IdentityPromptActivity extends BaseActivity
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .take(1)
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
                         {
