@@ -13,4 +13,12 @@ public class AyondoAddressCheckDTO implements DTO
         this.guid = guid;
         this.isProofOfAddressRequired = isProofOfAddressRequired;
     }
+
+    @Override public String toString()
+    {
+        return "AyondoAddressCheckDTO{" +
+                "guid='" + guid + '\'' +
+                ", isProofOfAddressRequired=" + isProofOfAddressRequired +
+                '}';
+    }
 }

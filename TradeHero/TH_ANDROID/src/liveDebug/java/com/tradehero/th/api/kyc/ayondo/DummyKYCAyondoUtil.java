@@ -76,7 +76,6 @@ public class DummyKYCAyondoUtil
         return (kycForm.getAddresses() != null
                 && kycForm.getAddresses().size() > 0
                 && !TextUtils.isEmpty(kycForm.getAddresses().get(0).addressLine1)
-                && !TextUtils.isEmpty(kycForm.getAddresses().get(0).addressLine2)
                 && !TextUtils.isEmpty(kycForm.getAddresses().get(0).city)
                 && !TextUtils.isEmpty(kycForm.getAddresses().get(0).postalCode))
                 ? StepStatus.COMPLETE

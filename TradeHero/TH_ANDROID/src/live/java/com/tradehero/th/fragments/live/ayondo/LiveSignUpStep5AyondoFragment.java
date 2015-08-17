@@ -214,8 +214,28 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new TimberOnErrorAction1("Failed to listen to spinner updates and agreement checkboxes")));
 
         subscriptions.add(liveBrokerSituationDTOObservable
-                .take(1)
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        //Update the documents needed
+                        KYCAyondoForm kycForm = (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
+                        Boolean needIdentityDocument = kycForm.getNeedIdentityDocument();
+                        if (needIdentityDocument != null)
+                        {
+                            identityContainer.setVisibility(needIdentityDocument ? View.VISIBLE : View.GONE);
+                        }
+
+                        Boolean needResidencyDocument = kycForm.getNeedResidencyDocument();
+                        if (needResidencyDocument != null)
+                        {
+                            residencyContainer.setVisibility(
+                                    needResidencyDocument ? View.VISIBLE : View.GONE);
+                        }
+                    }
+                })
+                .take(1)
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
                         {
@@ -575,19 +595,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         else
         {
             update.setSubscribeTradeNotifications(subscribeTradeNotificationsCheckBox.isChecked());
-        }
-
-        Boolean needIdentityDocument = kycForm.getNeedIdentityDocument();
-        if (needIdentityDocument != null)
-        {
-            identityContainer.setVisibility(needIdentityDocument ? View.VISIBLE : View.GONE);
-        }
-
-        Boolean needResidencyDocument = kycForm.getNeedResidencyDocument();
-        if (needResidencyDocument != null)
-        {
-            residencyContainer.setVisibility(
-                    needResidencyDocument ? View.VISIBLE : View.GONE);
         }
 
         return update;
