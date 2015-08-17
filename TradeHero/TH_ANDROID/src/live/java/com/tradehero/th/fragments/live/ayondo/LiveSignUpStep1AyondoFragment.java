@@ -47,6 +47,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import rx.Observable;
@@ -92,6 +93,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     private Pattern emailPattern;
     private String emailInvalidMessage;
+    private String expectedCode;
     private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -466,6 +468,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 phoneCountryCode,
                                 phoneNumberInt
                         );
+
+                        buttonVerifyPhone.setText(R.string.enter_code);
                     }
                 }, new TimberOnErrorAction1("Failed to present verify phone dialog")));
 
@@ -651,7 +655,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             {
                 candidates = CountrySpinnerAdapter.getFilterByCountry(liveCountryDTOs,
                         Collections.singletonList(Enum.valueOf(Country.class, savedNationality.getAlpha2())));
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 candidates = new ArrayList<>();
             }
@@ -698,7 +703,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             {
                 candidates = CountrySpinnerAdapter.getFilterByCountry(liveCountryDTOs,
                         Collections.singletonList(Enum.valueOf(Country.class, savedResidency.getAlpha2())));
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 candidates = new ArrayList<>();
             }
@@ -756,7 +762,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             final int phoneCountryCode,
             final String phoneNumberInt)
     {
-        VerifyPhoneDialogFragment.show(REQUEST_VERIFY_PHONE_NUMBER_CODE, this, phoneCountryCode, phoneNumberInt);
+        if (expectedCode == null)
+        {
+            expectedCode = String.format("%04d", Math.abs(new Random(System.nanoTime()).nextInt() % 10000));
+        }
+
+        VerifyPhoneDialogFragment.show(REQUEST_VERIFY_PHONE_NUMBER_CODE, this, phoneCountryCode, phoneNumberInt, expectedCode);
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

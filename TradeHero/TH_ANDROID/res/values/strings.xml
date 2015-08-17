@@ -338,5 +338,7 @@
   <string name="title">Title</string>
   <string name="hint_first_name">First Name</string>
   <string name="hint_last_name">Last Name</string>
+  <string name="enter_code">Enter Code</string>
+  <string name="sms_verification_button_empty_checking">Checking</string>
 
 </resources>

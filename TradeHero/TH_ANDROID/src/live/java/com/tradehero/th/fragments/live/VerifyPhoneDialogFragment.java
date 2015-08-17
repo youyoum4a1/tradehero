@@ -16,19 +16,21 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.tradehero.th.models.sms.ForSMSId;
 import com.tradehero.th.models.sms.SMSId;
 import com.tradehero.th.models.sms.SMSRequestFactory;
 import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
 import com.tradehero.th.models.sms.SMSServiceWrapper;
 import com.tradehero.th.models.sms.empty.EmptySMSSentConfirmationDTO;
+import com.tradehero.th.models.sms.twilio.TwilioSMSId;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
-import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
@@ -50,12 +52,14 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     private static final String KEY_BUNDLE_EXPECTED = VerifyPhoneDialogFragment.class.getName() + ".expectedCode";
     private static final String KEY_BUNDLE_DIALING_PREFIX = VerifyPhoneDialogFragment.class.getName() + ".dialingPrefix";
     private static final String KEY_BUNDLE_PHONE_NUMBER = VerifyPhoneDialogFragment.class.getName() + ".phoneNumber";
+    private static final String KEY_BUNDLE_IS_SEND_SMS = VerifyPhoneDialogFragment.class.getName() + ".isSendSMS";
 
     private static final String BUNDLE_KEY_VERIFIED_NUMBER = VerifyPhoneDialogFragment.class.getName() + ".verifiedNumber";
 
     private static final long DEFAULT_POLL_INTERVAL_MILLISEC = 1000;
 
     @Inject SMSServiceWrapper smsServiceWrapper;
+    @Inject @ForSMSId StringPreference smsIdPreference;
 
     @Bind({
             R.id.verify_code_1,
@@ -83,10 +87,10 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         return "+" + dialingPrefix + phoneNumber;
     }
 
-    private static VerifyPhoneDialogFragment newInstance(int dialingPrefix, String phoneNumber)
+    private static VerifyPhoneDialogFragment newInstance(int dialingPrefix, String phoneNumber, String expectedCode)
     {
-        String expectedCode = String.format("%04d", Math.abs(new Random(System.nanoTime()).nextInt() % 10000));
         Bundle b = new Bundle();
+        String tryCode = b.getString(KEY_BUNDLE_EXPECTED);
         b.putString(KEY_BUNDLE_EXPECTED, expectedCode);
         b.putInt(KEY_BUNDLE_DIALING_PREFIX, dialingPrefix);
         b.putString(KEY_BUNDLE_PHONE_NUMBER, phoneNumber);
@@ -95,9 +99,9 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         return fragment;
     }
 
-    public static VerifyPhoneDialogFragment show(int requestCode, Fragment targetFragment, int dialingPrefix, String phoneNumber)
+    public static VerifyPhoneDialogFragment show(int requestCode, Fragment targetFragment, int dialingPrefix, String phoneNumber, String expectedCode)
     {
-        VerifyPhoneDialogFragment vdf = newInstance(dialingPrefix, phoneNumber);
+        VerifyPhoneDialogFragment vdf = newInstance(dialingPrefix, phoneNumber, expectedCode);
         vdf.setTargetFragment(targetFragment, requestCode);
         vdf.show(targetFragment.getChildFragmentManager(), vdf.getClass().getName());
         return vdf;
@@ -129,7 +133,12 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         mFormattedNumber = getFormattedPhoneNumber(mDialingPrefix, mPhoneNumber);
 
         mSMSConfirmationSubject = BehaviorSubject.create();
-        smsSubscription = createSMSSubscription();
+
+        smsSubscription = getSmsSubscription();
+        if(smsSubscription == null)
+        {
+            smsSubscription = createSMSSubscription();
+        }
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -209,6 +218,16 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                 SMSRequestFactory.create(
                         mFormattedNumber,
                         getString(R.string.sms_verification_sms_content, mExpectedCode)))
+                .doOnNext(new Action1<SMSSentConfirmationDTO>()
+                {
+                    @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
+                    {
+                        if(smsSentConfirmationDTO.getSMSId() instanceof TwilioSMSId)
+                        {
+                            smsIdPreference.set(((TwilioSMSId) smsSentConfirmationDTO.getSMSId()).id);
+                        }
+                    }
+                })
                 .flatMap(new Func1<SMSSentConfirmationDTO, Observable<SMSSentConfirmationDTO>>()
                 {
                     @Override public Observable<SMSSentConfirmationDTO> call(SMSSentConfirmationDTO smsSentConfirmationDTO)
@@ -250,6 +269,53 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                                }
                            },
                         new TimberOnErrorAction1("Failed on sending sms message"));
+    }
+
+    @Nullable protected Subscription getSmsSubscription()
+    {
+        String id = smsIdPreference.get();
+        //TODO make sure it's Twilio's SMS ID
+        if(!TextUtils.isEmpty(id))
+        {
+            return createRepeatableSMSConfirmation(new TwilioSMSId(id))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .onErrorResumeNext(new Func1<Throwable, Observable<? extends SMSSentConfirmationDTO>>()
+                    {
+                        @Override public Observable<? extends SMSSentConfirmationDTO> call(final Throwable throwable)
+                        {
+                            String message = throwable.getMessage();
+                            if (TextUtils.isEmpty(message))
+                            {
+                                message = getString(R.string.sms_verification_send_fail);
+                            }
+                            return AlertDialogRxUtil.build(getActivity())
+                                    .setTitle(R.string.sms_verification_send_fail_title)
+                                    .setMessage(message)
+                                    .setNegativeButton(R.string.ok)
+                                    .build()
+                                    .flatMap(new Func1<OnDialogClickEvent, Observable<SMSSentConfirmationDTO>>()
+                                    {
+                                        @Override public Observable<SMSSentConfirmationDTO> call(OnDialogClickEvent clickEvent)
+                                        {
+                                            return Observable.error(throwable);
+                                        }
+                                    });
+                        }
+                    })
+                    .startWith(new EmptySMSSentConfirmationDTO(mFormattedNumber, "Fake", R.string.sms_verification_button_empty_checking))
+                    .subscribe(new Action1<SMSSentConfirmationDTO>()
+                               {
+                                   @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
+                                   {
+                                       mSMSConfirmationSubject.onNext(smsSentConfirmationDTO);
+                                   }
+                               },
+                            new TimberOnErrorAction1("Failed on sending sms message"));
+        }
+        else
+        {
+            return null;
+        }
     }
 
     @Override public void onDestroy()
