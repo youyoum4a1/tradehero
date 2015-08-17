@@ -12,6 +12,7 @@ import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoAddressCheckDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoIDCheckDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoLeadAddressDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoLeadDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
@@ -157,7 +158,7 @@ public class LiveServiceWrapper
         if (kycForm instanceof KYCAyondoForm)
         {
             //TODO change to specific class
-            return liveServiceAyondoRx.createOrUpdateLead(kycForm);
+            return liveServiceAyondoRx.createOrUpdateLead(new AyondoLeadDTO((KYCAyondoForm) kycForm));
         }
         else
         {
