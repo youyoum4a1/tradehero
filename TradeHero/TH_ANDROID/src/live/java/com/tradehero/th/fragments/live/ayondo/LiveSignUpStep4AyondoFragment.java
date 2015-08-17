@@ -97,6 +97,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         subscriptions.add(
                 Observable.combineLatest(
                         liveBrokerSituationDTOObservable
+                                .take(1)
                                 .observeOn(Schedulers.computation())
                                 .map(new Func1<LiveBrokerSituationDTO, List<CountrySpinnerAdapter.DTO>>()
                                 {
@@ -143,7 +144,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return null;
                             }
                         })
-                        .withLatestFrom(liveBrokerSituationDTOObservable.take(1), new Func2<Object, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                        .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<Object, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
                         {
                             @Override public LiveBrokerSituationDTO call(Object o, LiveBrokerSituationDTO liveBrokerSituationDTO)
                             {
