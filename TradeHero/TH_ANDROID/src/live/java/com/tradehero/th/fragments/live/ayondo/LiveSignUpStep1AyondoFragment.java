@@ -483,7 +483,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         liveServiceWrapper.submitPhoneNumberVerifiedStatus(
                                 VerifyPhoneDialogFragment.getFormattedPhoneNumber(verifiedPhonePair.first, verifiedPhonePair.second));
                         populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, verifiedPhonePair.first, verifiedPhonePair.second);
-                        return null;
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
                     }
                 }).subscribe(
                 new Action1<LiveBrokerSituationDTO>()
