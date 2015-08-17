@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import butterknife.Bind;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.LiveActivityUtil;
 import com.tradehero.th.fragments.live.LiveCallToActionFragment;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.prefs.ShowCallToActionFragmentPreference;
@@ -23,6 +24,7 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
 
     @Inject @ShowCallToActionFragmentPreference BooleanPreference showCallToActionFragment;
     @Inject @IsLiveTrading BooleanPreference isLiveTrading;
+    @Inject LiveActivityUtil liveActivityUtil;
 
     private Subscription laterClickedSubscription;
 
@@ -66,7 +68,8 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
         {
             @Override public void call(View view)
             {
-                setCallToActionFragmentGone();
+                //setCallToActionFragmentGone();
+                liveActivityUtil.switchLive(false);
             }
         });
 
