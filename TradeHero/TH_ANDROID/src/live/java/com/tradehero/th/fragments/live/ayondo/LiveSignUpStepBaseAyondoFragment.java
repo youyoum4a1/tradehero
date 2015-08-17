@@ -30,7 +30,7 @@ import timber.log.Timber;
 
 abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBaseFragment
 {
-    @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
+    @Inject protected LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject LiveServiceWrapper liveServiceWrapper;
 
     @Nullable private ConnectableObservable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsObservable;

@@ -19,6 +19,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.neovisionaries.i18n.CountryCode;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
@@ -31,7 +32,6 @@ import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.widget.KYCAddressWidget;
 import java.io.IOException;
-import java.lang.Throwable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,6 +43,7 @@ import rx.android.view.OnClickEvent;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.functions.Func3;
 import rx.schedulers.Schedulers;
 
 public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragment
@@ -66,7 +67,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         mGeocoder = new Geocoder(getActivity());
     }
 
-    @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
+    @Override protected List<Subscription> onInitAyondoSubscription(final Observable<LiveBrokerDTO> brokerDTOObservable,
             Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable,
             Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
@@ -92,20 +93,16 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         subscriptions.add(
                 Observable.combineLatest(
-                        kycAyondoFormOptionsDTOObservable
+                        liveBrokerSituationDTOObservable
                                 .observeOn(Schedulers.computation())
-                                .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
+                                .map(new Func1<LiveBrokerSituationDTO, List<CountrySpinnerAdapter.DTO>>()
                                 {
-                                    @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
+                                    @Override public List<CountrySpinnerAdapter.DTO> call(LiveBrokerSituationDTO brokerSituationDTO)
                                     {
-                                        return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO);
-                                    }
-                                })
-                                .map(new Func1<CountryDTOForSpinner, List<CountrySpinnerAdapter.DTO>>()
-                                {
-                                    @Override public List<CountrySpinnerAdapter.DTO> call(CountryDTOForSpinner countryDTOForSpinner)
-                                    {
-                                        return countryDTOForSpinner.allowedResidencyCountryDTOs;
+                                        return CountrySpinnerAdapter.createDTOs(
+                                                Collections.singletonList(
+                                                        Country.valueOf(((KYCAyondoForm) brokerSituationDTO.kycForm).getResidency().getAlpha2())),
+                                                null);
                                     }
                                 })
                                 .observeOn(AndroidSchedulers.mainThread()),
@@ -232,7 +229,8 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             Context context = getActivity().getApplicationContext();
             getParentFragment().startActivityForResult(builder.build(context), requestCode);
-        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e)
+        }
+        catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e)
         {
             e.printStackTrace();
         }
@@ -260,7 +258,8 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     try
                                     {
                                         return mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                                    } catch (IOException e)
+                                    }
+                                    catch (IOException e)
                                     {
                                         throw new RuntimeException(e);
                                     }
@@ -281,8 +280,8 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     Address addr = addresses.get(0);
 
                                     String add1 = addr.getAddressLine(0);
-                                    String add2 = addr.getAddressLine(1);
-                                    String city = addr.getAdminArea();
+                                    String add2 = addr.getAddressLine(1).replace(addr.getPostalCode(), "").replace(addr.getCountryName(), "");
+                                    String city = (addr.getAdminArea() != null) ? addr.getAdminArea() : addr.getCountryName();
                                     CountryCode countryCode = CountryCode.getByCode(addr.getCountryCode());
                                     String postal = addr.getPostalCode();
 
@@ -297,12 +296,20 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     kycAddressWidget.setLoading(true);
                                 }
                             }),
-                    new Func2<KYCAddress, KYCAddressWidget, Object>()
+                    Observable.just(liveBrokerSituationPreference.get()),
+                    new Func3<KYCAddress, KYCAddressWidget, LiveBrokerSituationDTO, Object>()
                     {
-                        @Override public Object call(KYCAddress kycAddress, KYCAddressWidget kycAddressWidget)
+                        @Override
+                        public Object call(KYCAddress kycAddress, KYCAddressWidget kycAddressWidget, LiveBrokerSituationDTO liveBrokerSituationDTO)
                         {
-                            kycAddressWidget.setKYCAddress(kycAddress);
+                            if (((KYCAyondoForm)liveBrokerSituationDTO.kycForm).getResidency() == kycAddress.country) {
+                                kycAddressWidget.setKYCAddress(kycAddress);
+                            } else {
+                                THToast.show("Please pick nearby location within your country.");
+                            }
+
                             kycAddressWidget.setLoading(false);
+
                             return null;
                         }
                     }
