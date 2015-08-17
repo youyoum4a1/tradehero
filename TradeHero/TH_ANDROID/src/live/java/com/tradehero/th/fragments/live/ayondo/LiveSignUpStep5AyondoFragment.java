@@ -20,6 +20,8 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.BrokerDocumentUploadResponseDTO;
+import com.tradehero.th.api.kyc.StepStatus;
+import com.tradehero.th.api.kyc.ayondo.DummyKYCAyondoUtil;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
@@ -63,6 +65,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Bind(R.id.identity_document_type) Spinner identityDocumentTypeSpinner;
     @Bind(R.id.residence_document_type) Spinner residenceDocumentTypeSpinner;
+    @Bind(R.id.info_identity_container) ViewGroup identityContainer;
+    @Bind(R.id.info_residency_container) ViewGroup residencyContainer;
     @Bind(R.id.document_action_identity) DocumentActionWidget documentActionIdentity;
     @Bind(R.id.document_action_residence) DocumentActionWidget documentActionResidence;
     @Bind(R.id.cb_agree_terms_conditions) CheckBox termsConditionsCheckBox;
@@ -467,13 +471,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public void call(KYCAyondoForm kycAyondoForm)
                             {
-                                boolean enabled;
-
-                                enabled = kycAyondoForm.isAgreeDataSharing() != null && kycAyondoForm.isAgreeDataSharing();
-                                enabled &= kycAyondoForm.isAgreeTermsConditions() != null && kycAyondoForm.isAgreeTermsConditions();
-                                enabled &= kycAyondoForm.isAgreeRisksWarnings() != null && kycAyondoForm.isAgreeRisksWarnings();
-                                enabled &= kycAyondoForm.getIdentityDocumentUrl() != null;
-                                enabled &= kycAyondoForm.getResidenceDocumentUrl() != null;
+                                boolean enabled = DummyKYCAyondoUtil.getStep5(kycAyondoForm).equals(StepStatus.COMPLETE);
 
                                 btnCreate.setEnabled(enabled);
                             }
@@ -577,6 +575,19 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         else
         {
             update.setSubscribeTradeNotifications(subscribeTradeNotificationsCheckBox.isChecked());
+        }
+
+        Boolean needIdentityDocument = kycForm.getNeedIdentityDocument();
+        if (needIdentityDocument != null)
+        {
+            identityContainer.setVisibility(needIdentityDocument ? View.VISIBLE : View.GONE);
+        }
+
+        Boolean needResidencyDocument = kycForm.getNeedResidencyDocument();
+        if (needResidencyDocument != null)
+        {
+            residencyContainer.setVisibility(
+                    needResidencyDocument ? View.VISIBLE : View.GONE);
         }
 
         return update;

@@ -78,6 +78,8 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean agreeTermsConditions;
     @Nullable private Boolean agreeRisksWarnings;
     @Nullable private Boolean agreeDataSharing;
+    @Nullable @JsonIgnore private Boolean needIdentityDocument;
+    @Nullable @JsonIgnore private Boolean needResidencyDocument;
     @JsonProperty("SubscribeOffers") @Nullable private Boolean subscribeOffers;
     @JsonProperty("SubscribeTradeNotifications") @Nullable private Boolean subscribeTradeNotifications;
 
@@ -205,6 +207,8 @@ public class KYCAyondoForm implements KYCForm
             this.agreeTermsConditions = ayondoForm.agreeTermsConditions != null ? ayondoForm.agreeTermsConditions : this.agreeTermsConditions;
             this.agreeRisksWarnings = ayondoForm.agreeRisksWarnings != null ? ayondoForm.agreeRisksWarnings : this.agreeRisksWarnings;
             this.agreeDataSharing = ayondoForm.agreeDataSharing != null ? ayondoForm.agreeDataSharing : this.agreeDataSharing;
+            this.needIdentityDocument = ayondoForm.needIdentityDocument != null ? ayondoForm.needIdentityDocument : this.needIdentityDocument;
+            this.needResidencyDocument = ayondoForm.needResidencyDocument != null ? ayondoForm.needResidencyDocument : this.needResidencyDocument;
             this.stepStatuses = ayondoForm.stepStatuses != null ? ayondoForm.stepStatuses : this.stepStatuses;
         }
     }
@@ -749,6 +753,26 @@ public class KYCAyondoForm implements KYCForm
     }
     //</editor-fold>
 
+    @Nullable public Boolean getNeedIdentityDocument()
+    {
+        return needIdentityDocument;
+    }
+
+    public void setNeedIdentityDocument(@Nullable Boolean needIdentityDocument)
+    {
+        this.needIdentityDocument = needIdentityDocument;
+    }
+
+    @Nullable public Boolean getNeedResidencyDocument()
+    {
+        return needResidencyDocument;
+    }
+
+    public void setNeedResidencyDocument(@Nullable Boolean needResidencyDocument)
+    {
+        this.needResidencyDocument = needResidencyDocument;
+    }
+
     @Override public boolean equals(@Nullable Object o)
     {
         if (o == null) return false;
@@ -839,6 +863,8 @@ public class KYCAyondoForm implements KYCForm
                     : agreeTermsConditions.equals(ayondoForm.agreeTermsConditions);
             same &= agreeRisksWarnings == null ? ayondoForm.agreeRisksWarnings == null : agreeRisksWarnings.equals(ayondoForm.agreeRisksWarnings);
             same &= agreeDataSharing == null ? ayondoForm.agreeDataSharing == null : agreeDataSharing.equals(ayondoForm.agreeDataSharing);
+            same &= needIdentityDocument == null? ayondoForm.needIdentityDocument == null : needIdentityDocument.equals(ayondoForm.needIdentityDocument);
+            same &= needResidencyDocument == null? ayondoForm.needResidencyDocument == null : needResidencyDocument.equals(ayondoForm.needResidencyDocument);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
                     : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
@@ -913,6 +939,8 @@ public class KYCAyondoForm implements KYCForm
         code ^= agreeTermsConditions == null ? 0 : agreeTermsConditions.hashCode();
         code ^= agreeRisksWarnings == null ? 0 : agreeRisksWarnings.hashCode();
         code ^= agreeDataSharing == null ? 0 : agreeDataSharing.hashCode();
+        code ^= needIdentityDocument == null ? 0 : needIdentityDocument.hashCode();
+        code ^= needResidencyDocument == null ? 0 : needResidencyDocument.hashCode();
         return code;
     }
 
@@ -965,6 +993,8 @@ public class KYCAyondoForm implements KYCForm
                 ", agreeTermsConditions=" + agreeTermsConditions +
                 ", agreeRisksWarnings=" + agreeRisksWarnings +
                 ", agreeDataSharing=" + agreeDataSharing +
+                ", needIdentityDocument=" + needIdentityDocument +
+                ", needResidencyDocument=" + needResidencyDocument +
                 ", stepStatuses=" + stepStatuses +
                 '}';
     }

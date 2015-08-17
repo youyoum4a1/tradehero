@@ -85,13 +85,11 @@ public class DummyKYCAyondoUtil
 
     @NonNull public static StepStatus getStep5(@NonNull KYCAyondoForm kycForm)
     {
-        return (kycForm.getIdentityDocumentType() != null
-                && kycForm.getIdentityDocumentUrl() != null
-                && kycForm.getResidenceDocumentType() != null
-                && kycForm.getResidenceDocumentUrl() != null
-                && kycForm.isAgreeTermsConditions() != null
-                && kycForm.isAgreeRisksWarnings() != null
-                && kycForm.isAgreeDataSharing() != null)
+        return (!(kycForm.getNeedIdentityDocument() != null && kycForm.getNeedIdentityDocument()) || (kycForm.getIdentityDocumentType() != null && kycForm.getIdentityDocumentUrl() != null))
+                && ((!(kycForm.getNeedResidencyDocument() != null && kycForm.getNeedResidencyDocument()) || (kycForm.getResidenceDocumentType() != null && kycForm.getResidenceDocumentUrl() != null))
+                && (kycForm.isAgreeTermsConditions() != null && kycForm.isAgreeTermsConditions().equals(true))
+                && (kycForm.isAgreeRisksWarnings() != null && kycForm.isAgreeRisksWarnings().equals(true))
+                && (kycForm.isAgreeDataSharing() != null && kycForm.isAgreeDataSharing().equals(true)))
                 ? StepStatus.COMPLETE
                 : StepStatus.UNSTARTED;
     }
