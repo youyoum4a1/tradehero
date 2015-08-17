@@ -76,7 +76,6 @@ public class DummyKYCAyondoUtil
         return (kycForm.getAddresses() != null
                 && kycForm.getAddresses().size() > 0
                 && !TextUtils.isEmpty(kycForm.getAddresses().get(0).addressLine1)
-                && !TextUtils.isEmpty(kycForm.getAddresses().get(0).addressLine2)
                 && !TextUtils.isEmpty(kycForm.getAddresses().get(0).city)
                 && !TextUtils.isEmpty(kycForm.getAddresses().get(0).postalCode))
                 ? StepStatus.COMPLETE
@@ -85,13 +84,11 @@ public class DummyKYCAyondoUtil
 
     @NonNull public static StepStatus getStep5(@NonNull KYCAyondoForm kycForm)
     {
-        return (kycForm.getIdentityDocumentType() != null
-                && kycForm.getIdentityDocumentFile() != null
-                && kycForm.getResidenceDocumentType() != null
-                && kycForm.getResidenceDocumentFile() != null
-                && kycForm.isAgreeTermsConditions() != null
-                && kycForm.isAgreeRisksWarnings() != null
-                && kycForm.isAgreeDataSharing() != null)
+        return (!(kycForm.getNeedIdentityDocument() != null && kycForm.getNeedIdentityDocument()) || (kycForm.getIdentityDocumentType() != null && kycForm.getIdentityDocumentUrl() != null))
+                && ((!(kycForm.getNeedResidencyDocument() != null && kycForm.getNeedResidencyDocument()) || (kycForm.getResidenceDocumentType() != null && kycForm.getResidenceDocumentUrl() != null))
+                && (kycForm.isAgreeTermsConditions() != null && kycForm.isAgreeTermsConditions().equals(true))
+                && (kycForm.isAgreeRisksWarnings() != null && kycForm.isAgreeRisksWarnings().equals(true))
+                && (kycForm.isAgreeDataSharing() != null && kycForm.isAgreeDataSharing().equals(true)))
                 ? StepStatus.COMPLETE
                 : StepStatus.UNSTARTED;
     }

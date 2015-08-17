@@ -22,6 +22,8 @@ import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCAddress;
+import com.tradehero.th.api.kyc.StepStatus;
+import com.tradehero.th.api.kyc.ayondo.AyondoAddressCheckDTO;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
@@ -45,6 +47,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
@@ -94,6 +97,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         subscriptions.add(
                 Observable.combineLatest(
                         liveBrokerSituationDTOObservable
+                                .take(1)
                                 .observeOn(Schedulers.computation())
                                 .map(new Func1<LiveBrokerSituationDTO, List<CountrySpinnerAdapter.DTO>>()
                                 {
@@ -221,6 +225,33 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         return subscriptions;
     }
 
+    @Override protected void onNextButtonEnabled(List<StepStatus> stepStatuses)
+    {
+        StepStatus fourthStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(3);
+        if (btnNext != null)
+        {
+            btnNext.setEnabled((fourthStatus != null && StepStatus.COMPLETE.equals(fourthStatus)));
+        }
+    }
+
+    @Override protected void onNextPressed(KYCAyondoForm kycAyondoForm)
+    {
+        super.onNextPressed(kycAyondoForm);
+        onDestroySubscriptions.add(liveServiceWrapper.checkNeedResidencyDocument(kycAyondoForm).subscribe(new Action1<AyondoAddressCheckDTO>()
+        {
+            @Override public void call(AyondoAddressCheckDTO ayondoAddressCheckDTO)
+            {
+                Timber.d("address needed %s", ayondoAddressCheckDTO);
+            }
+        }, new Action1<Throwable>()
+        {
+            @Override public void call(Throwable throwable)
+            {
+                Timber.e(throwable, "error in checking need of proof of residency");
+            }
+        }));
+    }
+
     @MainThread
     public void pickLocation(int requestCode)
     {
@@ -229,8 +260,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             Context context = getActivity().getApplicationContext();
             getParentFragment().startActivityForResult(builder.build(context), requestCode);
-        }
-        catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e)
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e)
         {
             e.printStackTrace();
         }
@@ -258,8 +288,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     try
                                     {
                                         return mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                                    }
-                                    catch (IOException e)
+                                    } catch (IOException e)
                                     {
                                         throw new RuntimeException(e);
                                     }
@@ -302,9 +331,12 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         @Override
                         public Object call(KYCAddress kycAddress, KYCAddressWidget kycAddressWidget, LiveBrokerSituationDTO liveBrokerSituationDTO)
                         {
-                            if (((KYCAyondoForm)liveBrokerSituationDTO.kycForm).getResidency() == kycAddress.country) {
+                            if (((KYCAyondoForm) liveBrokerSituationDTO.kycForm).getResidency() == kycAddress.country)
+                            {
                                 kycAddressWidget.setKYCAddress(kycAddress);
-                            } else {
+                            }
+                            else
+                            {
                                 THToast.show("Please pick nearby location within your country.");
                             }
 

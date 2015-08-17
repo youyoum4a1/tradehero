@@ -22,8 +22,6 @@ import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
 import com.tradehero.th.models.fastfill.ScanReference;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.utils.DateUtils;
-import java.io.File;
-import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -72,14 +70,22 @@ public class KYCAyondoForm implements KYCForm
     @JsonProperty("PreviousAddressZip") @Nullable private String previousAddressZip;
     @JsonProperty("IdentificationDocument") @Nullable private AyondoIdentityDocumentType identificationDocument;
     @JsonProperty("IdentificationNumber") @Nullable private String identificationNumber;
-    @Nullable private File identityDocumentFile;
-    @Nullable @JsonIgnore private Boolean clearIdentityDocumentFile;
+    @Nullable private String identityDocumentUrl;
+    @Nullable @JsonIgnore private Boolean clearIdentityDocumentUrl;
     @Nullable private ResidenceScannedDocumentType residenceDocumentType;
-    @Nullable private File residenceDocumentFile;
-    @Nullable @JsonIgnore private Boolean clearResidenceDocumentFile;
+    @Nullable private String residenceDocumentUrl;
+    @Nullable @JsonIgnore private Boolean clearResidenceDocumentUrl;
     @Nullable private Boolean agreeTermsConditions;
     @Nullable private Boolean agreeRisksWarnings;
     @Nullable private Boolean agreeDataSharing;
+    @Nullable private Boolean needIdentityDocument;
+    @Nullable private Boolean needResidencyDocument;
+
+    @JsonProperty("Guid") @Nullable private String guid;
+    @JsonProperty("AddressCheckGuid") @Nullable private String addressCheckUid;
+    @JsonProperty("IdentityCheckGuid") @Nullable private String identityCheckUid;
+    @JsonProperty("LeadGuid") @Nullable private String leadGuid;
+
     @JsonProperty("SubscribeOffers") @Nullable private Boolean subscribeOffers;
     @JsonProperty("SubscribeTradeNotifications") @Nullable private Boolean subscribeTradeNotifications;
 
@@ -100,7 +106,7 @@ public class KYCAyondoForm implements KYCForm
         this.scanReference = scannedDocument.getScanReference();
 
         Gender gender = scannedDocument.getGender();
-        if(gender != null)
+        if (gender != null)
         {
             this.setGender(gender);
         }
@@ -192,21 +198,27 @@ public class KYCAyondoForm implements KYCForm
             this.previousAddressLine2 = ayondoForm.previousAddressLine2 != null ? ayondoForm.previousAddressLine2 : this.previousAddressLine2;
             this.previousAddressZip = ayondoForm.previousAddressZip != null ? ayondoForm.addressZip : this.addressZip;
             this.identificationDocument = ayondoForm.identificationDocument != null ? ayondoForm.identificationDocument : this.identificationDocument;
-            this.identityDocumentFile = ayondoForm.identityDocumentFile != null ? ayondoForm.identityDocumentFile : this.identityDocumentFile;
-            if (ayondoForm.clearIdentityDocumentFile != null && ayondoForm.clearIdentityDocumentFile)
+            this.identityDocumentUrl = ayondoForm.identityDocumentUrl != null ? ayondoForm.identityDocumentUrl : this.identityDocumentUrl;
+            if (ayondoForm.clearIdentityDocumentUrl != null && ayondoForm.clearIdentityDocumentUrl)
             {
-                this.identityDocumentFile = null;
+                this.identityDocumentUrl = null;
             }
             this.residenceDocumentType =
                     ayondoForm.getResidenceDocumentType() != null ? ayondoForm.getResidenceDocumentType() : this.residenceDocumentType;
-            this.residenceDocumentFile = ayondoForm.residenceDocumentFile != null ? ayondoForm.residenceDocumentFile : this.residenceDocumentFile;
-            if (ayondoForm.clearResidenceDocumentFile != null && ayondoForm.clearResidenceDocumentFile)
+            this.residenceDocumentUrl = ayondoForm.residenceDocumentUrl != null ? ayondoForm.residenceDocumentUrl : this.residenceDocumentUrl;
+            if (ayondoForm.clearResidenceDocumentUrl != null && ayondoForm.clearResidenceDocumentUrl)
             {
-                this.residenceDocumentFile = null;
+                this.residenceDocumentUrl = null;
             }
             this.agreeTermsConditions = ayondoForm.agreeTermsConditions != null ? ayondoForm.agreeTermsConditions : this.agreeTermsConditions;
             this.agreeRisksWarnings = ayondoForm.agreeRisksWarnings != null ? ayondoForm.agreeRisksWarnings : this.agreeRisksWarnings;
             this.agreeDataSharing = ayondoForm.agreeDataSharing != null ? ayondoForm.agreeDataSharing : this.agreeDataSharing;
+            this.needIdentityDocument = ayondoForm.needIdentityDocument != null ? ayondoForm.needIdentityDocument : this.needIdentityDocument;
+            this.needResidencyDocument = ayondoForm.needResidencyDocument != null ? ayondoForm.needResidencyDocument : this.needResidencyDocument;
+            this.guid = ayondoForm.guid != null ? ayondoForm.guid : this.guid;
+            this.addressCheckUid = ayondoForm.addressCheckUid != null ? ayondoForm.addressCheckUid : this.addressCheckUid;
+            this.identityCheckUid = ayondoForm.identityCheckUid != null ? ayondoForm.identityCheckUid : this.identityCheckUid;
+            this.leadGuid = ayondoForm.leadGuid != null ? ayondoForm.leadGuid : this.leadGuid;
             this.stepStatuses = ayondoForm.stepStatuses != null ? ayondoForm.stepStatuses : this.stepStatuses;
         }
     }
@@ -482,6 +494,12 @@ public class KYCAyondoForm implements KYCForm
     //</editor-fold>
 
     //<editor-fold desc="Experience">
+
+    @Nullable @JsonIgnore AyondoLeveragedProductList getLeveragedProductList()
+    {
+        return leveragedProducts;
+    }
+
     @Nullable public TradingPerQuarter getTradingPerQuarter()
     {
         return tradingPerQuarter;
@@ -656,33 +674,19 @@ public class KYCAyondoForm implements KYCForm
         this.identificationNumber = identificationNumber;
     }
 
-    @Nullable @JsonIgnore public File getIdentityDocumentFile()
+    public void setIdentityDocumentUrl(@NonNull String documentUrl)
     {
-        return identityDocumentFile;
+        this.identityDocumentUrl = documentUrl;
     }
 
-    @Nullable public String getIdentityDocumentFileString()
+    public String getIdentityDocumentUrl()
     {
-        return identityDocumentFile == null
-                ? null
-                : identityDocumentFile.toURI().toString();
+        return this.identityDocumentUrl;
     }
 
-    @JsonIgnore public void setIdentityDocumentFile(@Nullable File identityDocumentFile)
+    public void setClearIdentityDocumentUrl(@Nullable Boolean clearIdentityDocumentUrl)
     {
-        this.identityDocumentFile = identityDocumentFile;
-    }
-
-    public void setIdentityDocumentFileString(@Nullable String identityDocumentFileString)
-    {
-        this.identityDocumentFile = identityDocumentFileString == null
-                ? null
-                : new File(URI.create(identityDocumentFileString));
-    }
-
-    public void setClearIdentityDocumentFile(@Nullable Boolean clearIdentityDocumentFile)
-    {
-        this.clearIdentityDocumentFile = clearIdentityDocumentFile;
+        this.clearIdentityDocumentUrl = clearIdentityDocumentUrl;
     }
     //</editor-fold>
 
@@ -697,33 +701,19 @@ public class KYCAyondoForm implements KYCForm
         this.residenceDocumentType = residenceDocumentType;
     }
 
-    @Nullable @JsonIgnore public File getResidenceDocumentFile()
+    @Nullable @JsonIgnore public String getResidenceDocumentUrl()
     {
-        return residenceDocumentFile;
+        return residenceDocumentUrl;
     }
 
-    @Nullable public String getResidenceDocumentFileString()
+    @JsonIgnore public void setResidenceDocumentUrl(@Nullable String residenceDocumentUrl)
     {
-        return residenceDocumentFile == null
-                ? null
-                : residenceDocumentFile.toURI().toString();
+        this.residenceDocumentUrl = residenceDocumentUrl;
     }
 
-    @JsonIgnore public void setResidenceDocumentFile(@Nullable File residenceDocumentFile)
+    public void setClearResidenceDocumentUrl(@Nullable Boolean clearResidenceDocumentUrl)
     {
-        this.residenceDocumentFile = residenceDocumentFile;
-    }
-
-    public void setResidenceDocumentFileString(@Nullable String residenceDocumentFileString)
-    {
-        this.residenceDocumentFile = residenceDocumentFileString == null
-                ? null
-                : new File(URI.create(residenceDocumentFileString));
-    }
-
-    public void setClearResidenceDocumentFile(@Nullable Boolean clearResidenceDocumentFile)
-    {
-        this.clearResidenceDocumentFile = clearResidenceDocumentFile;
+        this.clearResidenceDocumentUrl = clearResidenceDocumentUrl;
     }
     //</editor-fold>
 
@@ -778,6 +768,91 @@ public class KYCAyondoForm implements KYCForm
         this.subscribeTradeNotifications = subscribeTradeNotifications;
     }
     //</editor-fold>
+
+    @Nullable public Boolean getNeedIdentityDocument()
+    {
+        return needIdentityDocument;
+    }
+
+    public void setNeedIdentityDocument(@Nullable Boolean needIdentityDocument)
+    {
+        this.needIdentityDocument = needIdentityDocument;
+    }
+
+    @Nullable public Boolean getNeedResidencyDocument()
+    {
+        return needResidencyDocument;
+    }
+
+    public void setNeedResidencyDocument(@Nullable Boolean needResidencyDocument)
+    {
+        this.needResidencyDocument = needResidencyDocument;
+    }
+
+    public String getLanguage()
+    {
+        return language;
+    }
+
+    public String getCurrency()
+    {
+        return currency;
+    }
+
+    public AyondoProductType getProductType()
+    {
+        return AyondoProductType.CFD;
+    }
+
+    public Boolean isTestRecord()
+    {
+        return true;
+    }
+
+    public String getWhiteLabel()
+    {
+        return whiteLabel;
+    }
+
+    public void setGuid(String guid)
+    {
+        this.guid = guid;
+    }
+
+    public void setAddressCheckUid(String addressCheckUid)
+    {
+        this.addressCheckUid = addressCheckUid;
+    }
+
+    public void setIdentityCheckUid(String identityCheckUid)
+    {
+        this.identityCheckUid = identityCheckUid;
+    }
+
+    public void setLeadGuid(String leadGuid)
+    {
+        this.leadGuid = leadGuid;
+    }
+
+    public String getGuid()
+    {
+        return guid;
+    }
+
+    public String getAddressCheckUid()
+    {
+        return addressCheckUid;
+    }
+
+    public String getIdentityCheckUid()
+    {
+        return identityCheckUid;
+    }
+
+    public String getLeadGuid()
+    {
+        return leadGuid;
+    }
 
     @Override public boolean equals(@Nullable Object o)
     {
@@ -857,18 +932,26 @@ public class KYCAyondoForm implements KYCForm
             same &= previousAddressZip == null ? ayondoForm.previousAddressZip == null : previousAddressZip.equals(ayondoForm.previousAddressZip);
             same &= identificationDocument == null ? ayondoForm.identificationDocument == null
                     : identificationDocument.equals(ayondoForm.identificationDocument);
-            same &= identityDocumentFile == null ? ayondoForm.identityDocumentFile == null
-                    : identityDocumentFile.equals(ayondoForm.identityDocumentFile);
-            // Do not compare clearIdentityDocumentFile
+            same &= identityDocumentUrl == null ? ayondoForm.identityDocumentUrl == null
+                    : identityDocumentUrl.equals(ayondoForm.identityDocumentUrl);
+            // Do not compare clearIdentityDocumentUrl
             same &= residenceDocumentType == null ? ayondoForm.residenceDocumentType == null
                     : residenceDocumentType.equals(ayondoForm.residenceDocumentType);
-            same &= residenceDocumentFile == null ? ayondoForm.residenceDocumentFile == null
-                    : residenceDocumentFile.equals(ayondoForm.residenceDocumentFile);
+            same &= residenceDocumentUrl == null ? ayondoForm.residenceDocumentUrl == null
+                    : residenceDocumentUrl.equals(ayondoForm.residenceDocumentUrl);
             // Do not compare clearResidenceDocumentFile
             same &= agreeTermsConditions == null ? ayondoForm.agreeTermsConditions == null
                     : agreeTermsConditions.equals(ayondoForm.agreeTermsConditions);
             same &= agreeRisksWarnings == null ? ayondoForm.agreeRisksWarnings == null : agreeRisksWarnings.equals(ayondoForm.agreeRisksWarnings);
             same &= agreeDataSharing == null ? ayondoForm.agreeDataSharing == null : agreeDataSharing.equals(ayondoForm.agreeDataSharing);
+            same &= needIdentityDocument == null ? ayondoForm.needIdentityDocument == null
+                    : needIdentityDocument.equals(ayondoForm.needIdentityDocument);
+            same &= needResidencyDocument == null ? ayondoForm.needResidencyDocument == null
+                    : needResidencyDocument.equals(ayondoForm.needResidencyDocument);
+            same &= guid == null ? ayondoForm.guid == null : guid.equals(ayondoForm.guid);
+            same &= addressCheckUid == null ? ayondoForm.addressCheckUid == null : addressCheckUid.equals(ayondoForm.addressCheckUid);
+            same &= identityCheckUid == null ? ayondoForm.identityCheckUid == null : identityCheckUid.equals(ayondoForm.identityCheckUid);
+            same &= leadGuid == null ? ayondoForm.leadGuid == null : leadGuid.equals(ayondoForm.leadGuid);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
                     : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
@@ -935,16 +1018,20 @@ public class KYCAyondoForm implements KYCForm
         code ^= previousAddressLine2 == null ? 0 : previousAddressLine2.hashCode();
         code ^= previousAddressZip == null ? 0 : previousAddressZip.hashCode();
         code ^= identificationDocument == null ? 0 : identificationDocument.hashCode();
-        String identityDocFile = getIdentityDocumentFileString();
-        code ^= identityDocFile == null ? 0 : identityDocFile.hashCode();
-        // Do not hash clearIdentityDocumentFile
+        code ^= identityDocumentUrl == null ? 0 : identityDocumentUrl.hashCode();
+        // Do not hash clearIdentityDocumentUrl
         code ^= residenceDocumentType == null ? 0 : residenceDocumentType.hashCode();
-        String residenceDocFile = getResidenceDocumentFileString();
-        code ^= residenceDocFile == null ? 0 : residenceDocFile.hashCode();
-        // Do not hash clearResidenceDocumentFile
+        code ^= residenceDocumentUrl == null ? 0 : residenceDocumentUrl.hashCode();
+        // Do not hash clearResidenceDocumentUrl
         code ^= agreeTermsConditions == null ? 0 : agreeTermsConditions.hashCode();
         code ^= agreeRisksWarnings == null ? 0 : agreeRisksWarnings.hashCode();
         code ^= agreeDataSharing == null ? 0 : agreeDataSharing.hashCode();
+        code ^= needIdentityDocument == null ? 0 : needIdentityDocument.hashCode();
+        code ^= needResidencyDocument == null ? 0 : needResidencyDocument.hashCode();
+        code ^= guid == null ? 0 : guid.hashCode();
+        code ^= addressCheckUid == null ? 0 : addressCheckUid.hashCode();
+        code ^= identityCheckUid == null ? 0 : identityCheckUid.hashCode();
+        code ^= leadGuid == null ? 0 : leadGuid.hashCode();
         return code;
     }
 
@@ -989,14 +1076,20 @@ public class KYCAyondoForm implements KYCForm
                 ", previousAddressZip='" + previousAddressZip + '\'' +
                 ", identificationDocument=" + identificationDocument +
                 ", identificationNumber='" + identificationNumber + '\'' +
-                ", identityDocumentFile=" + identityDocumentFile +
-                ", clearIdentityDocumentFile=" + clearIdentityDocumentFile +
+                ", identityDocumentUrl=" + identityDocumentUrl +
+                ", clearIdentityDocumentUrl=" + clearIdentityDocumentUrl +
                 ", residenceDocumentType=" + residenceDocumentType +
-                ", residenceDocumentFile=" + residenceDocumentFile +
-                ", clearResidenceDocumentFile=" + clearResidenceDocumentFile +
+                ", residenceDocumentUrl=" + residenceDocumentUrl +
+                ", clearResidenceDocumentUrl=" + clearResidenceDocumentUrl +
                 ", agreeTermsConditions=" + agreeTermsConditions +
                 ", agreeRisksWarnings=" + agreeRisksWarnings +
                 ", agreeDataSharing=" + agreeDataSharing +
+                ", needIdentityDocument=" + needIdentityDocument +
+                ", needResidencyDocument=" + needResidencyDocument +
+                ", guid=" + guid +
+                ", addressCheckUid=" + addressCheckUid +
+                ", identityCheckUid=" + identityCheckUid +
+                ", leadGuid=" + leadGuid +
                 ", stepStatuses=" + stepStatuses +
                 '}';
     }

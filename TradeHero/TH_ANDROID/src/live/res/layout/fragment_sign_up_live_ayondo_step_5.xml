@@ -21,54 +21,72 @@
         android:text="@string/required_document"
         />
 
-    <TextView
-        style="@style/TH.Caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:text="@string/proof_identity_caption"
-        />
-
-    <Spinner
-        android:id="@+id/identity_document_type"
-        style="@style/TH.Spinner"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/clickable_element_min_dimen"
-        />
-
-    <com.tradehero.th.widget.DocumentActionWidget
-        android:id="@+id/document_action_identity"
+    <LinearLayout
+        android:id="@+id/info_identity_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_file_file_upload"
-        android:drawableStart="@drawable/ic_file_file_upload"
-        android:text="@string/tap_to_upload"
-        />
+        android:orientation="vertical"
+        >
 
-    <TextView
-        style="@style/TH.Caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:text="@string/proof_residence_caption"
-        />
+      <TextView
+          style="@style/TH.Caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:text="@string/proof_identity_caption"
+          />
 
-    <Spinner
-        android:id="@+id/residence_document_type"
-        style="@style/TH.Spinner"
+      <Spinner
+          android:id="@+id/identity_document_type"
+          style="@style/TH.Spinner"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          />
+
+      <com.tradehero.th.widget.DocumentActionWidget
+          android:id="@+id/document_action_identity"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/ic_file_file_upload"
+          android:drawableStart="@drawable/ic_file_file_upload"
+          android:text="@string/tap_to_upload"
+          />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/info_residency_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/clickable_element_min_dimen"
-        android:layout_marginTop="@dimen/margin_xsmall"
-        />
-
-    <com.tradehero.th.widget.DocumentActionWidget
-        android:id="@+id/document_action_residence"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/ic_file_file_upload"
-        android:drawableStart="@drawable/ic_file_file_upload"
-        android:text="@string/tap_to_upload"
-        />
+        android:orientation="vertical"
+        >
+
+      <TextView
+          style="@style/TH.Caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:text="@string/proof_residence_caption"
+          />
+
+      <Spinner
+          android:id="@+id/residence_document_type"
+          style="@style/TH.Spinner"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          android:layout_marginTop="@dimen/margin_xsmall"
+          />
+
+      <com.tradehero.th.widget.DocumentActionWidget
+          android:id="@+id/document_action_residence"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/ic_file_file_upload"
+          android:drawableStart="@drawable/ic_file_file_upload"
+          android:text="@string/tap_to_upload"
+          />
+
+    </LinearLayout>
 
     <TextView
         style="@style/TH.Subhead"
@@ -172,30 +190,30 @@
 
     <CheckBox
         android:id="@+id/cb_subscribe_offers"
+        style="@style/TH.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TH.Button.Small"
+        android:layout_gravity="left"
+        android:gravity="center_vertical"
         android:minHeight="@dimen/clickable_element_min_dimen"
         android:paddingLeft="@dimen/margin_xsmall"
         android:paddingRight="@dimen/margin_xsmall"
         android:text="@string/live_subscribe_offers"
         android:theme="@style/TradeHero.Live.Form"
-        android:gravity="center_vertical"
-        android:layout_gravity="left"
         />
 
     <CheckBox
         android:id="@+id/cb_subscribe_trade_notifications"
+        style="@style/TH.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TH.Button.Small"
+        android:layout_gravity="left"
+        android:gravity="center_vertical"
         android:minHeight="@dimen/clickable_element_min_dimen"
         android:paddingLeft="@dimen/margin_xsmall"
         android:paddingRight="@dimen/margin_xsmall"
         android:text="@string/live_subscribe_trade_notifications"
         android:theme="@style/TradeHero.Live.Form"
-        android:gravity="center_vertical"
-        android:layout_gravity="left"
         />
 
     <RelativeLayout

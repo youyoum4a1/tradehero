@@ -2,12 +2,18 @@ package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.kyc.BrokerApplicationDTO;
+import com.tradehero.th.api.kyc.BrokerDocumentUploadResponseDTO;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
 import com.tradehero.th.api.kyc.LiveAvailabilityDTO;
 import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoAddressCheckDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoIDCheckDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoLeadAddressDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoLeadDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.tradehero.th.api.live.LiveBrokerId;
@@ -17,6 +23,8 @@ import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.network.service.ayondo.LiveServiceAyondoRx;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
+import com.tradehero.th.utils.GraphicUtil;
+import java.io.File;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func0;
@@ -149,12 +157,28 @@ public class LiveServiceWrapper
     {
         if (kycForm instanceof KYCAyondoForm)
         {
-            return liveServiceAyondoRx.createOrUpdateLead(kycForm);
+            //TODO change to specific class
+            return liveServiceAyondoRx.createOrUpdateLead(new AyondoLeadDTO((KYCAyondoForm) kycForm));
         }
         else
         {
             //TODO when we have multiple brokers
             return Observable.just(null);
         }
+    }
+
+    public Observable<BrokerDocumentUploadResponseDTO> uploadDocument(File f)
+    {
+        return liveServiceRx.uploadDocument(GraphicUtil.fromFile(f));
+    }
+
+    public Observable<AyondoIDCheckDTO> checkNeedIdentityDocument(KYCAyondoForm kycAyondoForm)
+    {
+        return liveServiceAyondoRx.checkNeedIdentity(new AyondoLeadUserIdentityDTO(kycAyondoForm));
+    }
+
+    public Observable<AyondoAddressCheckDTO> checkNeedResidencyDocument(KYCAyondoForm kycAyondoForm)
+    {
+        return liveServiceAyondoRx.checkNeedResidency(new AyondoLeadAddressDTO(kycAyondoForm));
     }
 }

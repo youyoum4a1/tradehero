@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.live.ayondo;
 
+import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.kyc.BrokerApplicationDTO;
@@ -52,17 +53,23 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                     @Override public void call(LiveBrokerSituationDTO situationDTO)
                     {
                         List<StepStatus> stepStatuses = situationDTO.kycForm == null ? null : situationDTO.kycForm.getStepStatuses();
-                        //We only check against the first status to enable/disable next button for all steps
-                        //The other statuses are being ignored.
-                        StepStatus firstStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(0);
-                        if (btnNext != null)
-                        {
-                            // That's right, the first status decides for all Next buttons
-                            btnNext.setEnabled(firstStatus != null && firstStatus.equals(StepStatus.COMPLETE));
-                        }
+                        onNextButtonEnabled(stepStatuses);
                     }
                 })
                 .observeOn(Schedulers.io());
+    }
+
+    @MainThread
+    protected void onNextButtonEnabled(List<StepStatus> stepStatuses)
+    {
+        //We only check against the first status to enable/disable next button for all steps
+        //The other statuses are being ignored.
+        StepStatus firstStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(0);
+        if (btnNext != null)
+        {
+            // That's right, the first status decides for all Next buttons
+            btnNext.setEnabled(firstStatus != null && firstStatus.equals(StepStatus.COMPLETE));
+        }
     }
 
     @Override public void onDestroyView()
@@ -137,12 +144,17 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
         };
     }
 
-    @Override protected void onNextPressed()
+    @Override protected final void onNextPressed()
     {
         //Send form to server to create lead
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
+        onNextPressed((KYCAyondoForm) kycForm);
+    }
+
+    protected void onNextPressed(KYCAyondoForm kycAyondoForm)
+    {
         onDestroySubscriptions.add(
-                liveServiceWrapper.createOrUpdateLead(kycForm)
+                liveServiceWrapper.createOrUpdateLead(kycAyondoForm)
                         .subscribe(new Action1<BrokerApplicationDTO>()
                         {
                             @Override public void call(BrokerApplicationDTO brokerApplicationDTO)

@@ -2,76 +2,65 @@ package com.tradehero.th.api.kyc.ayondo;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.tradehero.th.api.kyc.AnnualIncomeRange;
+import com.tradehero.th.api.kyc.EmploymentStatus;
+import com.tradehero.th.api.kyc.NetWorthRange;
+import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
+import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.market.Country;
-import java.util.UUID;
 
 public class AyondoLeadDTO extends AyondoLeadAddressDTO
 {
-    @JsonProperty("Guid") @Nullable private UUID uid;
-    @JsonProperty("Currency") @Nullable private String currency;
-    @JsonProperty("IsTestRecord") @Nullable private Boolean isTestRecord;
-    @JsonProperty("Language") @Nullable private Country language;
-    @JsonProperty("ProductType") @Nullable private AyondoProductType productType;
+    @JsonProperty("PhonePrimaryCountryCode") @Nullable public final Country phonePrimaryCountryCode;
 
-    public AyondoLeadDTO()
-    {
-    }
+    @JsonProperty("AnnualIncome") @Nullable public final AnnualIncomeRange annualIncomeRange;
+    @JsonProperty("NetWorth") @Nullable public final NetWorthRange netWorthRange;
+    @JsonProperty("InvestmentPortfolio") @Nullable public final PercentNetWorthForInvestmentRange percentNetWorthForInvestmentRange;
+    @JsonProperty("EmploymentStatus") @Nullable public final EmploymentStatus employmentStatus;
+    @JsonProperty("IsEmployerRegulated") @Nullable public final Boolean employerRegulatedFinancial;
 
-    @Nullable public UUID getUid()
-    {
-        return uid;
-    }
+    @JsonProperty("HasProfessionalExperience") @Nullable public final Boolean workedInFinance1Year;
+    @JsonProperty("HasAttendedTraining") @Nullable public final Boolean attendedSeminarAyondo;
+    @JsonProperty("HasOtherQualification") @Nullable public final Boolean haveOtherQualification;
 
-    public void setUid(@Nullable UUID uid)
-    {
-        this.uid = uid;
-    }
+    @JsonProperty("LeveragedProducts") @Nullable public final AyondoLeveragedProductList leveragedProducts;
+    @JsonProperty("NumberOfMarginTrades") @Nullable public final TradingPerQuarter tradingPerQuarter;
 
-    @Nullable public String getCurrency()
-    {
-        return currency;
-    }
+    @JsonProperty("Email") @Nullable public final String email;
+    @JsonProperty("Language") @Nullable public final String language;
+    @JsonProperty("Currency") @Nullable public final String currency;
+    @JsonProperty("ProductType") @Nullable public final AyondoProductType productType;
 
-    public void setCurrency(@Nullable String currency)
-    {
-        this.currency = currency;
-    }
+    @JsonProperty("SubscribeOffers") @Nullable public final Boolean subscribeOffers;
+    @JsonProperty("SubscribeTradeNotifications") @Nullable public final Boolean subscribeTradeNotifications;
 
-    @Nullable public Boolean getIsTestRecord()
-    {
-        return isTestRecord;
-    }
+    @JsonProperty("Guid") @Nullable public final String guid;
 
-    public void setIsTestRecord(@Nullable Boolean isTestRecord)
-    {
-        this.isTestRecord = isTestRecord;
-    }
+    @JsonProperty("IsTestRecord") @Nullable public final Boolean isTestRecord;
+    @JsonProperty("WhiteLabel") public final String whiteLabel;
 
-    @Nullable public Country getLanguage()
+    public AyondoLeadDTO(KYCAyondoForm kycAyondoForm)
     {
-        return language;
-    }
-
-    public void setLanguage(@Nullable Country language)
-    {
-        this.language = language;
-    }
-
-    @Nullable public AyondoProductType getProductType()
-    {
-        return productType;
-    }
-
-    public void setProductType(@Nullable AyondoProductType productType)
-    {
-        this.productType = productType;
-    }
-
-    public boolean isValidToCreateAccount()
-    {
-        return currency != null
-                // No need to text isTestRecord
-                // TODO decide if we test language
-                ;
+        super(kycAyondoForm);
+        this.phonePrimaryCountryCode = kycAyondoForm.getPhonePrimaryCountryCode();
+        this.annualIncomeRange = kycAyondoForm.getAnnualIncomeRange();
+        this.netWorthRange = kycAyondoForm.getNetWorthRange();
+        this.percentNetWorthForInvestmentRange = kycAyondoForm.getPercentNetWorthForInvestmentRange();
+        this.employmentStatus = kycAyondoForm.getEmploymentStatus();
+        this.employerRegulatedFinancial = kycAyondoForm.isEmployerRegulatedFinancial();
+        this.workedInFinance1Year = kycAyondoForm.isWorkedInFinance1Year();
+        this.attendedSeminarAyondo = kycAyondoForm.isAttendedSeminarAyondo();
+        this.haveOtherQualification = kycAyondoForm.isHaveOtherQualification();
+        this.leveragedProducts = kycAyondoForm.getLeveragedProductList();
+        this.tradingPerQuarter = kycAyondoForm.getTradingPerQuarter();
+        this.email = kycAyondoForm.getEmail();
+        this.language = kycAyondoForm.getLanguage();
+        this.currency = kycAyondoForm.getCurrency();
+        this.productType = kycAyondoForm.getProductType();
+        this.subscribeOffers = kycAyondoForm.isSubscribeOffers();
+        this.subscribeTradeNotifications = kycAyondoForm.isSubscribeTradeNotifications();
+        this.guid = kycAyondoForm.getGuid();
+        this.isTestRecord = kycAyondoForm.isTestRecord();
+        this.whiteLabel = kycAyondoForm.getWhiteLabel();
     }
 }
