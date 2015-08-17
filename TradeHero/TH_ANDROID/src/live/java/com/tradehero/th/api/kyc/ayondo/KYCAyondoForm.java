@@ -78,8 +78,14 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean agreeTermsConditions;
     @Nullable private Boolean agreeRisksWarnings;
     @Nullable private Boolean agreeDataSharing;
-    @Nullable @JsonIgnore private Boolean needIdentityDocument;
-    @Nullable @JsonIgnore private Boolean needResidencyDocument;
+    @Nullable private Boolean needIdentityDocument;
+    @Nullable private Boolean needResidencyDocument;
+
+    @JsonProperty("Guid") @Nullable private String guid;
+    @JsonProperty("AddressCheckGuid") @Nullable private String addressCheckUid;
+    @JsonProperty("IdentityCheckGuid") @Nullable private String identityCheckUid;
+    @JsonProperty("LeadGuid") @Nullable private String leadGuid;
+
     @JsonProperty("SubscribeOffers") @Nullable private Boolean subscribeOffers;
     @JsonProperty("SubscribeTradeNotifications") @Nullable private Boolean subscribeTradeNotifications;
 
@@ -209,6 +215,10 @@ public class KYCAyondoForm implements KYCForm
             this.agreeDataSharing = ayondoForm.agreeDataSharing != null ? ayondoForm.agreeDataSharing : this.agreeDataSharing;
             this.needIdentityDocument = ayondoForm.needIdentityDocument != null ? ayondoForm.needIdentityDocument : this.needIdentityDocument;
             this.needResidencyDocument = ayondoForm.needResidencyDocument != null ? ayondoForm.needResidencyDocument : this.needResidencyDocument;
+            this.guid = ayondoForm.guid != null ? ayondoForm.guid : this.guid;
+            this.addressCheckUid = ayondoForm.addressCheckUid != null ? ayondoForm.addressCheckUid : this.addressCheckUid;
+            this.identityCheckUid = ayondoForm.identityCheckUid != null ? ayondoForm.identityCheckUid : this.identityCheckUid;
+            this.leadGuid = ayondoForm.leadGuid != null ? ayondoForm.leadGuid : this.leadGuid;
             this.stepStatuses = ayondoForm.stepStatuses != null ? ayondoForm.stepStatuses : this.stepStatuses;
         }
     }
@@ -484,6 +494,12 @@ public class KYCAyondoForm implements KYCForm
     //</editor-fold>
 
     //<editor-fold desc="Experience">
+
+    @Nullable @JsonIgnore AyondoLeveragedProductList getLeveragedProductList()
+    {
+        return leveragedProducts;
+    }
+
     @Nullable public TradingPerQuarter getTradingPerQuarter()
     {
         return tradingPerQuarter;
@@ -773,6 +789,71 @@ public class KYCAyondoForm implements KYCForm
         this.needResidencyDocument = needResidencyDocument;
     }
 
+    public String getLanguage()
+    {
+        return language;
+    }
+
+    public String getCurrency()
+    {
+        return currency;
+    }
+
+    public AyondoProductType getProductType()
+    {
+        return AyondoProductType.CFD;
+    }
+
+    public Boolean isTestRecord()
+    {
+        return true;
+    }
+
+    public String getWhiteLabel()
+    {
+        return whiteLabel;
+    }
+
+    public void setGuid(String guid)
+    {
+        this.guid = guid;
+    }
+
+    public void setAddressCheckUid(String addressCheckUid)
+    {
+        this.addressCheckUid = addressCheckUid;
+    }
+
+    public void setIdentityCheckUid(String identityCheckUid)
+    {
+        this.identityCheckUid = identityCheckUid;
+    }
+
+    public void setLeadGuid(String leadGuid)
+    {
+        this.leadGuid = leadGuid;
+    }
+
+    public String getGuid()
+    {
+        return guid;
+    }
+
+    public String getAddressCheckUid()
+    {
+        return addressCheckUid;
+    }
+
+    public String getIdentityCheckUid()
+    {
+        return identityCheckUid;
+    }
+
+    public String getLeadGuid()
+    {
+        return leadGuid;
+    }
+
     @Override public boolean equals(@Nullable Object o)
     {
         if (o == null) return false;
@@ -863,8 +944,14 @@ public class KYCAyondoForm implements KYCForm
                     : agreeTermsConditions.equals(ayondoForm.agreeTermsConditions);
             same &= agreeRisksWarnings == null ? ayondoForm.agreeRisksWarnings == null : agreeRisksWarnings.equals(ayondoForm.agreeRisksWarnings);
             same &= agreeDataSharing == null ? ayondoForm.agreeDataSharing == null : agreeDataSharing.equals(ayondoForm.agreeDataSharing);
-            same &= needIdentityDocument == null? ayondoForm.needIdentityDocument == null : needIdentityDocument.equals(ayondoForm.needIdentityDocument);
-            same &= needResidencyDocument == null? ayondoForm.needResidencyDocument == null : needResidencyDocument.equals(ayondoForm.needResidencyDocument);
+            same &= needIdentityDocument == null ? ayondoForm.needIdentityDocument == null
+                    : needIdentityDocument.equals(ayondoForm.needIdentityDocument);
+            same &= needResidencyDocument == null ? ayondoForm.needResidencyDocument == null
+                    : needResidencyDocument.equals(ayondoForm.needResidencyDocument);
+            same &= guid == null ? ayondoForm.guid == null : guid.equals(ayondoForm.guid);
+            same &= addressCheckUid == null ? ayondoForm.addressCheckUid == null : addressCheckUid.equals(ayondoForm.addressCheckUid);
+            same &= identityCheckUid == null ? ayondoForm.identityCheckUid == null : identityCheckUid.equals(ayondoForm.identityCheckUid);
+            same &= leadGuid == null ? ayondoForm.leadGuid == null : leadGuid.equals(ayondoForm.leadGuid);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
                     : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
@@ -941,6 +1028,10 @@ public class KYCAyondoForm implements KYCForm
         code ^= agreeDataSharing == null ? 0 : agreeDataSharing.hashCode();
         code ^= needIdentityDocument == null ? 0 : needIdentityDocument.hashCode();
         code ^= needResidencyDocument == null ? 0 : needResidencyDocument.hashCode();
+        code ^= guid == null ? 0 : guid.hashCode();
+        code ^= addressCheckUid == null ? 0 : addressCheckUid.hashCode();
+        code ^= identityCheckUid == null ? 0 : identityCheckUid.hashCode();
+        code ^= leadGuid == null ? 0 : leadGuid.hashCode();
         return code;
     }
 
@@ -995,6 +1086,10 @@ public class KYCAyondoForm implements KYCForm
                 ", agreeDataSharing=" + agreeDataSharing +
                 ", needIdentityDocument=" + needIdentityDocument +
                 ", needResidencyDocument=" + needResidencyDocument +
+                ", guid=" + guid +
+                ", addressCheckUid=" + addressCheckUid +
+                ", identityCheckUid=" + identityCheckUid +
+                ", leadGuid=" + leadGuid +
                 ", stepStatuses=" + stepStatuses +
                 '}';
     }

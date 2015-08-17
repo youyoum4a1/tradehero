@@ -6,20 +6,28 @@ import com.neovisionaries.i18n.CountryCode;
 
 public class AyondoLeadUserIdentityDTO
 {
-    @JsonProperty("DateOfBirth") @Nullable private String dob;
+    @JsonProperty("DateOfBirth") @Nullable public final String dob;
 
-    @JsonProperty("FirstName") @Nullable private String firstName;
-    @JsonProperty("LastName") @Nullable private String lastName;
-    @JsonProperty("MiddleName") @Nullable private String middleName;
+    @JsonProperty("FirstName") @Nullable public final String firstName;
+    @JsonProperty("LastName") @Nullable public final String lastName;
+    @JsonProperty("MiddleName") @Nullable public final String middleName;
 
-    @JsonProperty("Gender") @Nullable private AyondoGender ayondoGender;
+    @JsonProperty("Gender") @Nullable public final AyondoGender ayondoGender;
 
-    @JsonProperty("Nationality") @Nullable private CountryCode nationality;
+    @JsonProperty("Nationality") @Nullable public final CountryCode nationality;
 
-    @JsonProperty("IdentificationDocument") @Nullable private AyondoIdentityDocumentType identificationDocument;
-    @JsonProperty("IdentificationNumber") @Nullable private String identificationNumber;
+    @JsonProperty("IdentificationDocument") @Nullable public final AyondoIdentityDocumentType identificationDocument;
+    @JsonProperty("IdentificationNumber") @Nullable public final String identificationNumber;
 
-    public AyondoLeadUserIdentityDTO()
+    public AyondoLeadUserIdentityDTO(KYCAyondoForm kycAyondoForm)
     {
+        this.dob = kycAyondoForm.getDob();
+        this.firstName = kycAyondoForm.getFirstName();
+        this.middleName = kycAyondoForm.getMiddleName();
+        this.lastName = kycAyondoForm.getLastName();
+        this.ayondoGender = kycAyondoForm.getAyondoGender();
+        this.nationality = kycAyondoForm.getNationality();
+        this.identificationDocument = kycAyondoForm.getIdentificationDocument();
+        this.identificationNumber = kycAyondoForm.getIdentificationNumber();
     }
 }
