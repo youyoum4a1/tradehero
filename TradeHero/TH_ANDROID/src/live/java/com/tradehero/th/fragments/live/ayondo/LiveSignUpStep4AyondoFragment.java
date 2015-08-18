@@ -337,7 +337,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                             else
                             {
-                                THToast.show("Please pick nearby location within your country.");
+                                THToast.show(R.string.pick_location_within_country);
                             }
 
                             kycAddressWidget.setLoading(false);
