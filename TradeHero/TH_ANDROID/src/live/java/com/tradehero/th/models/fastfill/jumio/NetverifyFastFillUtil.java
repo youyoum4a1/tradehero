@@ -11,6 +11,7 @@ import com.jumio.mobile.sdk.enums.JumioDataCenter;
 import com.jumio.netverify.sdk.NetverifyDocumentData;
 import com.jumio.netverify.sdk.NetverifySDK;
 import com.jumio.netverify.sdk.enums.NVDocumentType;
+import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.fastfill.FastFillUtil;
@@ -59,7 +60,8 @@ public class NetverifyFastFillUtil implements FastFillUtil
                 netverifySDK = NetverifySDK.create(activity, NetverifyConstants.NET_VERIFY_MERCHANT_API_TOKEN,
                         NetverifyConstants.NET_VERIFY_ACTIVE_API_SECRET, DATA_CENTER);
                 netverifySDK.setCustomerId(currentUserId.get().toString());
-            } catch (ResourceNotFoundException | PlatformNotSupportedException e)
+            }
+            catch (ResourceNotFoundException | PlatformNotSupportedException e)
             {
                 Timber.e(e, "Failed to initialise NetverifySDK");
                 throw new IllegalArgumentException("Failed to initialise NetverifySDK");
@@ -99,10 +101,28 @@ public class NetverifyFastFillUtil implements FastFillUtil
 
     public void fastFill(@NonNull Activity activity, @NonNull NetverifySDK netverifySDK, @Nullable IdentityScannedDocumentType documentType)
     {
+        fastFill(activity, netverifySDK, documentType, null);
+    }
+
+    @Override public void fastFill(@NonNull Activity activity, @Nullable IdentityScannedDocumentType documentType, @Nullable
+    CountryCode countryCode)
+    {
+        fastFill(activity, getNetverifySDK(activity), documentType, countryCode);
+    }
+
+    public void fastFill(@NonNull Activity activity, @NonNull NetverifySDK netverifySDK, @Nullable IdentityScannedDocumentType documentType, @Nullable
+    CountryCode country)
+    {
         if (documentType != null)
         {
             netverifySDK.setPreselectedDocumentType(documentTypeMap.get(documentType));
         }
+
+        if (country != null)
+        {
+            netverifySDK.setPreselectedCountry(country.getAlpha3());
+        }
+
         netverifySDK.setRequireVerification(true);
         this.netverifySDK = netverifySDK;
         activity.startActivityForResult(netverifySDK.getIntent(), NET_VERIFY_REQUEST_CODE);
@@ -135,7 +155,7 @@ public class NetverifyFastFillUtil implements FastFillUtil
             {
                 //Consecutive scan will fail if we have onError
             }
-            if(this.netverifySDK != null)
+            if (this.netverifySDK != null)
             {
                 this.netverifySDK.destroy();
             }

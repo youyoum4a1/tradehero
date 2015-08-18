@@ -3,13 +3,13 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.neovisionaries.i18n.CountryCode;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
@@ -77,7 +77,8 @@ public class IdentityPromptActivity extends BaseActivity
         setContentView(R.layout.activity_identity_prompt);
         ButterKnife.bind(IdentityPromptActivity.this);
 
-        final Observable<ScannedDocument> documentObservable = fastFillUtil.getScannedDocumentObservable().throttleLast(300, TimeUnit.MILLISECONDS); //HACK
+        final Observable<ScannedDocument> documentObservable =
+                fastFillUtil.getScannedDocumentObservable().throttleLast(300, TimeUnit.MILLISECONDS); //HACK
 
         fastFillSubscription = getBrokerSituation()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -129,15 +130,23 @@ public class IdentityPromptActivity extends BaseActivity
                                 ViewObservable.clicks(scanPassport)
                                         .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(IdentityScannedDocumentType.PASSPORT)),
                                 ViewObservable.clicks(scanSpecificId)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(IdentityScannedDocumentType.IDENTITY_CARD)))
+                                        .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(
+                                                IdentityScannedDocumentType.IDENTITY_CARD)))
                                 .flatMap(
                                         new Func1<IdentityScannedDocumentType, Observable<ScannedDocument>>()
                                         {
                                             @Override
-                                            public Observable<ScannedDocument> call(@Nullable
-                                            IdentityScannedDocumentType identityScannedDocumentType)
+                                            public Observable<ScannedDocument> call(IdentityScannedDocumentType identityScannedDocumentType)
                                             {
-                                                fastFillUtil.fastFill(IdentityPromptActivity.this, identityScannedDocumentType);
+                                                CountryCode code = null;
+                                                if (identityScannedDocumentType.equals(IdentityScannedDocumentType.IDENTITY_CARD)
+                                                        && situationToUse.kycForm.getCountry() != null)
+                                                {
+                                                    code = CountryCode.getByCode(situationToUse.kycForm.getCountry().toString());
+                                                }
+
+                                                fastFillUtil.fastFill(IdentityPromptActivity.this, identityScannedDocumentType, code);
+
                                                 return documentObservable;
                                             }
                                         })
