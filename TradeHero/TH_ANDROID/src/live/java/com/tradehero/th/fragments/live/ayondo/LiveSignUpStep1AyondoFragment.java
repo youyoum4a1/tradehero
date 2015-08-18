@@ -75,6 +75,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @LayoutRes private static final int LAYOUT_PHONE_SELECTED_FLAG = R.layout.spinner_live_phone_country_dropdown_item_selected;
     private static final int REQUEST_PICK_DATE = 2805;
     private static final int REQUEST_VERIFY_PHONE_NUMBER_CODE = 2808;
+    private static final String KEY_EXPECTED_SMS_CODE = LiveSignUpStep1AyondoFragment.class.getName() + ".expectedCode";
 
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.info_first_name) TextView firstName;
@@ -100,6 +101,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onCreate(savedInstanceState);
         verifiedPublishSubject = PublishSubject.create();
+        if(savedInstanceState != null)
+        {
+            expectedCode = savedInstanceState.getString(KEY_EXPECTED_SMS_CODE, null);
+        }
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -511,6 +516,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onDestroy();
         verifiedPublishSubject = null;
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_EXPECTED_SMS_CODE, expectedCode);
     }
 
     @Override public void onNext(@NonNull LiveBrokerSituationDTO situationDTO)
