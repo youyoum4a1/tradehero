@@ -3,6 +3,7 @@ package com.tradehero.th.api.kyc.ayondo;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import com.tradehero.th.api.kyc.EmploymentStatus;
+import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.StepStatus;
@@ -73,19 +74,42 @@ public class DummyKYCAyondoUtil
 
     @NonNull public static StepStatus getStep4(@NonNull KYCAyondoForm kycForm)
     {
-        return (kycForm.getAddresses() != null
-                && kycForm.getAddresses().size() > 0
-                && !TextUtils.isEmpty(kycForm.getAddresses().get(0).addressLine1)
-                && !TextUtils.isEmpty(kycForm.getAddresses().get(0).city)
-                && !TextUtils.isEmpty(kycForm.getAddresses().get(0).postalCode))
-                ? StepStatus.COMPLETE
-                : StepStatus.UNSTARTED;
+        StepStatus stepStatus = StepStatus.UNSTARTED;
+        if (kycForm.getAddresses() != null)
+        {
+            if (kycForm.getAddresses().size() > 0)
+            {
+                KYCAddress address1 = kycForm.getAddresses().get(0);
+                boolean complete = !TextUtils.isEmpty(address1.addressLine1)
+                        && !TextUtils.isEmpty(address1.city)
+                        && !TextUtils.isEmpty(address1.postalCode);
+
+                if (address1.lessThanAYear)
+                {
+                    if (kycForm.getAddresses().size() > 1)
+                    {
+                        KYCAddress address2 = kycForm.getAddresses().get(1);
+                        complete &= !TextUtils.isEmpty(address2.addressLine1)
+                                && !TextUtils.isEmpty(address2.city)
+                                && !TextUtils.isEmpty(address2.postalCode);
+                    }
+                    else
+                    {
+                        complete = false;
+                    }
+                }
+                stepStatus = complete ? StepStatus.COMPLETE : StepStatus.UNSTARTED;
+            }
+        }
+        return stepStatus;
     }
 
     @NonNull public static StepStatus getStep5(@NonNull KYCAyondoForm kycForm)
     {
-        return (!(kycForm.getNeedIdentityDocument() != null && kycForm.getNeedIdentityDocument()) || (kycForm.getIdentityDocumentType() != null && kycForm.getIdentityDocumentUrl() != null))
-                && ((!(kycForm.getNeedResidencyDocument() != null && kycForm.getNeedResidencyDocument()) || (kycForm.getResidenceDocumentType() != null && kycForm.getResidenceDocumentUrl() != null))
+        return (!(kycForm.getNeedIdentityDocument() != null && kycForm.getNeedIdentityDocument()) || (kycForm.getIdentityDocumentType() != null
+                && kycForm.getIdentityDocumentUrl() != null))
+                && ((!(kycForm.getNeedResidencyDocument() != null && kycForm.getNeedResidencyDocument()) || (kycForm.getResidenceDocumentType()
+                != null && kycForm.getResidenceDocumentUrl() != null))
                 && (kycForm.isAgreeTermsConditions() != null && kycForm.isAgreeTermsConditions().equals(true))
                 && (kycForm.isAgreeRisksWarnings() != null && kycForm.isAgreeRisksWarnings().equals(true))
                 && (kycForm.isAgreeDataSharing() != null && kycForm.isAgreeDataSharing().equals(true)))

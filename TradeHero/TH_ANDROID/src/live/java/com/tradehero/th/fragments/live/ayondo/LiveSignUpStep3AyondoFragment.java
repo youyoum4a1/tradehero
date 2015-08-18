@@ -87,7 +87,8 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new TimberOnErrorAction1("Failed to populate AyondoStep2 spinners")));
 
         subscriptions.add(Observable.combineLatest(
-                brokerDTOObservable,
+                brokerDTOObservable
+                .take(1),
                 Observable.merge(
                         WidgetObservable.input(workInFinanceButton)
                                 .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()

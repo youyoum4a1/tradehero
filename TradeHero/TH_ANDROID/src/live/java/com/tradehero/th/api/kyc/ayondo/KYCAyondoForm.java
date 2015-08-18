@@ -63,6 +63,7 @@ public class KYCAyondoForm implements KYCForm
     @JsonProperty("AddressLine1") @Nullable private String addressLine1;
     @JsonProperty("AddressLine2") @Nullable private String addressLine2;
     @JsonProperty("AddressZip") @Nullable private String addressZip;
+    @Nullable private Boolean addressLessThanAYear;
     @JsonProperty("PreviousAddressCity") @Nullable private String previousAddressCity;
     @JsonProperty("PreviousAddressCountry") @Nullable private CountryCode previousAddressCountry;
     @JsonProperty("PreviousAddressLine1") @Nullable private String previousAddressLine1;
@@ -198,6 +199,7 @@ public class KYCAyondoForm implements KYCForm
             this.addressLine1 = ayondoForm.addressLine1 != null ? ayondoForm.addressLine1 : this.addressLine1;
             this.addressLine2 = ayondoForm.addressLine2 != null ? ayondoForm.addressLine2 : this.addressLine2;
             this.addressZip = ayondoForm.addressZip != null ? ayondoForm.addressZip : this.addressZip;
+            this.addressLessThanAYear = ayondoForm.addressLessThanAYear != null ? ayondoForm.addressLessThanAYear : this.addressLessThanAYear;
             this.previousAddressCity = ayondoForm.previousAddressCity != null ? ayondoForm.previousAddressCity : this.previousAddressCity;
             this.previousAddressCountry = ayondoForm.previousAddressCountry != null ? ayondoForm.previousAddressCountry : this.previousAddressCountry;
             this.previousAddressLine1 = ayondoForm.previousAddressLine1 != null ? ayondoForm.previousAddressLine1 : this.previousAddressLine1;
@@ -579,7 +581,7 @@ public class KYCAyondoForm implements KYCForm
                 && previousAddressLine1 == null
                 && previousAddressLine2 == null
                 && previousAddressZip == null;
-        KYCAddress address1 = new KYCAddress(addressLine1, addressLine2, addressCity, addressCountry, addressZip, hasSecondAddress);
+        KYCAddress address1 = new KYCAddress(addressLine1, addressLine2, addressCity, addressCountry, addressZip, (addressLessThanAYear != null && addressLessThanAYear.equals(true)));
         if (!hasSecondAddress)
         {
             return Collections.singletonList(address1);
@@ -615,6 +617,7 @@ public class KYCAyondoForm implements KYCForm
             addressLine1 = null;
             addressLine2 = null;
             addressZip = null;
+            addressLessThanAYear = null;
         }
         else
         {
@@ -623,6 +626,7 @@ public class KYCAyondoForm implements KYCForm
             addressLine1 = address.addressLine1;
             addressLine2 = address.addressLine2;
             addressZip = address.postalCode;
+            addressLessThanAYear = address.lessThanAYear;
         }
     }
 
@@ -928,6 +932,7 @@ public class KYCAyondoForm implements KYCForm
             same &= addressLine1 == null ? ayondoForm.addressLine1 == null : addressLine1.equals(ayondoForm.addressLine1);
             same &= addressLine2 == null ? ayondoForm.addressLine2 == null : addressLine2.equals(ayondoForm.addressLine2);
             same &= addressZip == null ? ayondoForm.addressZip == null : addressZip.equals(ayondoForm.addressZip);
+            same &= addressLessThanAYear == null ? ayondoForm.addressLessThanAYear == null : addressLessThanAYear.equals(ayondoForm.addressLessThanAYear);
             same &= previousAddressCity == null ? ayondoForm.previousAddressCity == null : previousAddressCity.equals(ayondoForm.previousAddressCity);
             same &= previousAddressCountry == null ? ayondoForm.previousAddressCountry == null
                     : previousAddressCountry.equals(ayondoForm.previousAddressCountry);
@@ -1018,6 +1023,7 @@ public class KYCAyondoForm implements KYCForm
         code ^= addressLine1 == null ? 0 : addressLine1.hashCode();
         code ^= addressLine2 == null ? 0 : addressLine2.hashCode();
         code ^= addressZip == null ? 0 : addressZip.hashCode();
+        code ^= addressLessThanAYear == null ? 0 : addressLessThanAYear.hashCode();
         code ^= previousAddressCity == null ? 0 : previousAddressCity.hashCode();
         code ^= previousAddressCountry == null ? 0 : previousAddressCountry.hashCode();
         code ^= previousAddressLine1 == null ? 0 : previousAddressLine1.hashCode();
@@ -1075,6 +1081,7 @@ public class KYCAyondoForm implements KYCForm
                 ", addressLine1='" + addressLine1 + '\'' +
                 ", addressLine2='" + addressLine2 + '\'' +
                 ", addressZip='" + addressZip + '\'' +
+                ", addressLessThanAYear='" + addressLessThanAYear + '\'' +
                 ", previousAddressCity='" + previousAddressCity + '\'' +
                 ", previousAddressCountry=" + previousAddressCountry +
                 ", previousAddressLine1='" + previousAddressLine1 + '\'' +
