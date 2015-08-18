@@ -95,8 +95,10 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         List<Subscription> subscriptions = new ArrayList<>();
 
         subscriptions.add(
-                Observable.combineLatest(
-                        kycAyondoFormOptionsDTOObservable.observeOn(AndroidSchedulers.mainThread())
+                Observable.zip(
+                        kycAyondoFormOptionsDTOObservable
+                                .take(1)
+                                .observeOn(AndroidSchedulers.mainThread())
                                 .doOnNext(new Action1<KYCAyondoFormOptionsDTO>()
                                 {
                                     @Override public void call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
@@ -132,8 +134,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 new EmptyAction1<>(),
                                 new TimberOnErrorAction1("Failed to populate identity document type spinner")));
 
-        subscriptions.add(Observable.combineLatest(
-                brokerDTOObservable,
+        subscriptions.add(
                 Observable.merge(
                         AdapterViewObservable.selects(identityDocumentTypeSpinner)
                                 .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
@@ -195,23 +196,24 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     {
                                         return KYCAyondoFormFactory.fromSubscribeTradeNotifications(onCheckedChangeEvent);
                                     }
-                                })),
-                new Func2<LiveBrokerDTO, KYCAyondoForm, LiveBrokerSituationDTO>()
-                {
-                    @Override public LiveBrokerSituationDTO call(LiveBrokerDTO brokerDTO, KYCAyondoForm update)
-                    {
-                        return new LiveBrokerSituationDTO(brokerDTO, update);
-                    }
-                })
-                .subscribe(
-                        new Action1<LiveBrokerSituationDTO>()
+                                }))
+                        .withLatestFrom(brokerDTOObservable, new Func2<KYCAyondoForm, LiveBrokerDTO, LiveBrokerSituationDTO>()
                         {
-                            @Override public void call(LiveBrokerSituationDTO update)
+                            @Override public LiveBrokerSituationDTO call(KYCAyondoForm update, LiveBrokerDTO brokerDTO)
                             {
-                                onNext(update);
+                                return new LiveBrokerSituationDTO(brokerDTO, update);
                             }
-                        },
-                        new TimberOnErrorAction1("Failed to listen to spinner updates and agreement checkboxes")));
+                        })
+                        .subscribe(
+                                new Action1<LiveBrokerSituationDTO>()
+                                {
+                                    @Override public void call(LiveBrokerSituationDTO update)
+                                    {
+                                        onNext(update);
+                                    }
+                                },
+                                new TimberOnErrorAction1("Failed to listen to spinner updates and agreement checkboxes"))
+        );
 
         subscriptions.add(liveBrokerSituationDTOObservable
                 .observeOn(AndroidSchedulers.mainThread())
@@ -251,13 +253,11 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new TimberOnErrorAction1("Failed to prepare files from KYC")));
 
         subscriptions.add(
-                Observable.combineLatest(
-                        brokerDTOObservable,
-                        DocumentActionWidgetObservable.actions(documentActionIdentity),
-                        new Func2<LiveBrokerDTO, DocumentActionWidgetAction, DocumentActionWidgetAction>()
+                DocumentActionWidgetObservable.actions(documentActionIdentity)
+                        .withLatestFrom(brokerDTOObservable, new Func2<DocumentActionWidgetAction, LiveBrokerDTO, DocumentActionWidgetAction>()
                         {
-                            @Override public DocumentActionWidgetAction call(LiveBrokerDTO brokerDTO,
-                                    DocumentActionWidgetAction documentActionWidgetAction)
+                            @Override
+                            public DocumentActionWidgetAction call(DocumentActionWidgetAction documentActionWidgetAction, LiveBrokerDTO brokerDTO)
                             {
                                 if (documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.CLEAR))
                                 {
@@ -352,13 +352,11 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 new TimberOnErrorAction1("Failed to ask for and get identity document bitmap")));
 
         subscriptions.add(
-                Observable.combineLatest(
-                        brokerDTOObservable,
-                        DocumentActionWidgetObservable.actions(documentActionResidence),
-                        new Func2<LiveBrokerDTO, DocumentActionWidgetAction, DocumentActionWidgetAction>()
+                DocumentActionWidgetObservable.actions(documentActionResidence)
+                        .withLatestFrom(brokerDTOObservable, new Func2<DocumentActionWidgetAction, LiveBrokerDTO, DocumentActionWidgetAction>()
                         {
-                            @Override public DocumentActionWidgetAction call(LiveBrokerDTO brokerDTO,
-                                    DocumentActionWidgetAction documentActionWidgetAction)
+                            @Override
+                            public DocumentActionWidgetAction call(DocumentActionWidgetAction documentActionWidgetAction, LiveBrokerDTO brokerDTO)
                             {
                                 if (documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.CLEAR))
                                 {
