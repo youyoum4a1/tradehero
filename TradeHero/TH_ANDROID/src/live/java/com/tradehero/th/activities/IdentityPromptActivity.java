@@ -186,7 +186,7 @@ public class IdentityPromptActivity extends BaseActivity
                                 Timber.e(throwable, "Error when FastFill");
                                 if (!FastFillExceptionUtil.canRetry(throwable))
                                 {
-                                    THToast.show(R.string.fast_fill_not_available);
+                                    THToast.show(R.string.unable_to_capture_value_from_image);
                                     goToSignUp();
                                 }
                             }
