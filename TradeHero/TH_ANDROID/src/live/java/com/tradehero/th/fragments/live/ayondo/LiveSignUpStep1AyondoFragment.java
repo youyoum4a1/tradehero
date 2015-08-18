@@ -101,7 +101,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onCreate(savedInstanceState);
         verifiedPublishSubject = PublishSubject.create();
-        if(savedInstanceState != null)
+        if (savedInstanceState != null)
         {
             expectedCode = savedInstanceState.getString(KEY_EXPECTED_SMS_CODE, null);
         }

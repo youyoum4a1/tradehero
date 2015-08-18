@@ -52,7 +52,6 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     private static final String KEY_BUNDLE_EXPECTED = VerifyPhoneDialogFragment.class.getName() + ".expectedCode";
     private static final String KEY_BUNDLE_DIALING_PREFIX = VerifyPhoneDialogFragment.class.getName() + ".dialingPrefix";
     private static final String KEY_BUNDLE_PHONE_NUMBER = VerifyPhoneDialogFragment.class.getName() + ".phoneNumber";
-    private static final String KEY_BUNDLE_IS_SEND_SMS = VerifyPhoneDialogFragment.class.getName() + ".isSendSMS";
 
     private static final String BUNDLE_KEY_VERIFIED_NUMBER = VerifyPhoneDialogFragment.class.getName() + ".verifiedNumber";
 
@@ -90,7 +89,6 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     private static VerifyPhoneDialogFragment newInstance(int dialingPrefix, String phoneNumber, String expectedCode)
     {
         Bundle b = new Bundle();
-        String tryCode = b.getString(KEY_BUNDLE_EXPECTED);
         b.putString(KEY_BUNDLE_EXPECTED, expectedCode);
         b.putInt(KEY_BUNDLE_DIALING_PREFIX, dialingPrefix);
         b.putString(KEY_BUNDLE_PHONE_NUMBER, phoneNumber);
@@ -135,7 +133,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         mSMSConfirmationSubject = BehaviorSubject.create();
 
         smsSubscription = getSmsSubscription();
-        if(smsSubscription == null)
+        if (smsSubscription == null)
         {
             smsSubscription = createSMSSubscription();
         }
@@ -222,7 +220,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                 {
                     @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
                     {
-                        if(smsSentConfirmationDTO.getSMSId() instanceof TwilioSMSId)
+                        if (smsSentConfirmationDTO.getSMSId() instanceof TwilioSMSId)
                         {
                             smsIdPreference.set(((TwilioSMSId) smsSentConfirmationDTO.getSMSId()).id);
                         }
@@ -275,7 +273,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     {
         String id = smsIdPreference.get();
         //TODO make sure it's Twilio's SMS ID
-        if(!TextUtils.isEmpty(id))
+        if (!TextUtils.isEmpty(id))
         {
             return createRepeatableSMSConfirmation(new TwilioSMSId(id))
                     .observeOn(AndroidSchedulers.mainThread())
