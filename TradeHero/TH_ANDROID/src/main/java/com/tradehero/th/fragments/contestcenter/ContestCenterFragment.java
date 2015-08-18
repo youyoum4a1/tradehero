@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.contestcenter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,10 +12,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.th.R;
+import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import javax.inject.Inject;
 
@@ -24,6 +26,8 @@ public class ContestCenterFragment extends DashboardFragment
 
     @Bind(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
     @Bind(R.id.pager) ViewPager viewPager;
+
+    private BaseLiveFragmentUtil liveFragmentUtil;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -35,14 +39,28 @@ public class ContestCenterFragment extends DashboardFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_tabbed, container, false);
+        View view = inflater.inflate(R.layout.fragment_contest_center, container, false);
         ButterKnife.bind(this, view);
         initViews();
         return view;
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        liveFragmentUtil.onResume();
+    }
+
+    @Override public void onLiveTradingChanged(boolean isLive)
+    {
+        super.onLiveTradingChanged(isLive);
+        liveFragmentUtil.setCallToAction(isLive);
+    }
+
     @Override public void onDestroyView()
     {
+        liveFragmentUtil.onDestroyView();
+        liveFragmentUtil = null;
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
@@ -55,6 +73,12 @@ public class ContestCenterFragment extends DashboardFragment
         pagerSlidingTabLayout.setDistributeEvenly(true);
         pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabLayout.setViewPager(viewPager);
+    }
+
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
     }
 
     private class ContestCenterPagerAdapter extends FragmentPagerAdapter

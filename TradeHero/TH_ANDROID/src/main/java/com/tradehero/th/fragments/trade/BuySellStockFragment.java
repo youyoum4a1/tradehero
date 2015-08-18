@@ -141,9 +141,9 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
-        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, mSlidingTabLayout);
-        BaseLiveFragmentUtil.setBackgroundColor(isLive, stockDetailHeader);
-        BaseLiveFragmentUtil.setSelectableBackground(isLive, buyBtn, sellBtn);
+        //BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, mSlidingTabLayout);
+        //BaseLiveFragmentUtil.setBackgroundColor(isLive, stockDetailHeader);
+        //BaseLiveFragmentUtil.setSelectableBackground(isLive, buyBtn, sellBtn);
         baseLiveFragmentUtil.setCallToAction(isLive);
     }
 

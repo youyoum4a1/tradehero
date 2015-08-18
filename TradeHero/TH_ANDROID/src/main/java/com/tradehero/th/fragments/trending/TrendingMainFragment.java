@@ -288,14 +288,14 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public boolean shouldShowLiveTradingToggle()
     {
-        return lastType.equals(TrendingTabType.STOCK);
+        return false;
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
-        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
-        trendingLiveFragmentUtil.setCallToAction(isLive);
+        //BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
+        //trendingLiveFragmentUtil.setCallToAction(isLive);
     }
 
     @Override public void onDestroyOptionsMenu()

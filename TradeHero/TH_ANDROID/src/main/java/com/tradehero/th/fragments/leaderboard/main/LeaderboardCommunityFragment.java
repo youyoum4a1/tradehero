@@ -30,6 +30,7 @@ import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
 import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserRecyclerFragment;
 import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserRecyclerFragment;
@@ -85,6 +86,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     @Nullable protected Subscription leaderboardDefListFetchSubscription;
     private OffOnViewSwitcher stockFxSwitcher;
+    private BaseLiveFragmentUtil liveFragmentUtil;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -95,6 +97,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
     }
 
     private void setUpViewPager()
@@ -175,6 +178,13 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         }
         // We came back into view so we have to forget the web fragment
         detachWebFragment();
+        liveFragmentUtil.onResume();
+    }
+
+    @Override public void onLiveTradingChanged(boolean isLive)
+    {
+        super.onLiveTradingChanged(isLive);
+        liveFragmentUtil.setCallToAction(isLive);
     }
 
     @Override public void onStop()
@@ -187,6 +197,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
+        liveFragmentUtil.onDestroyView();
+        liveFragmentUtil = null;
         ButterKnife.unbind(this);
         super.onDestroyView();
     }

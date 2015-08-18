@@ -12,8 +12,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
 import com.tradehero.metrics.Analytics;
@@ -34,6 +34,7 @@ import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
+import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
@@ -51,8 +52,8 @@ import com.tradehero.th.persistence.level.LevelDefListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.timeline.TimelineCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
@@ -125,6 +126,7 @@ abstract public class TimelineFragment extends DashboardFragment
     @NonNull public TabType currentTab = TabType.PORTFOLIO_LIST;
     protected boolean mIsOtherProfile = false;
     private boolean cancelRefreshingOnResume;
+    private BaseLiveFragmentUtil liveFragmentUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -182,6 +184,7 @@ abstract public class TimelineFragment extends DashboardFragment
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         registerButtonClicks();
         fetchLevelDefList();
+        liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -252,6 +255,13 @@ abstract public class TimelineFragment extends DashboardFragment
             swipeRefreshContainer.setRefreshing(false);
             cancelRefreshingOnResume = false;
         }
+        liveFragmentUtil.onResume();
+    }
+
+    @Override public void onLiveTradingChanged(boolean isLive)
+    {
+        super.onLiveTradingChanged(isLive);
+        liveFragmentUtil.setCallToAction(isLive);
     }
 
     protected void loadLatestTimeline()
@@ -339,6 +349,8 @@ abstract public class TimelineFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        liveFragmentUtil.onDestroyView();
+        liveFragmentUtil = null;
         displayablePortfolioFetchAssistant = null;
         this.userProfileView = null;
         this.timelineListView.setOnItemClickListener(null);

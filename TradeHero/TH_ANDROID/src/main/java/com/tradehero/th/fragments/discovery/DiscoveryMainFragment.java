@@ -12,14 +12,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
+import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -42,6 +43,8 @@ public class DiscoveryMainFragment extends DashboardFragment
     private DiscoveryPagerAdapter discoveryPagerAdapter;
     private long beginTime;
     private int oldPageItem;
+
+    private BaseLiveFragmentUtil liveFragmentUtil;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -104,6 +107,19 @@ public class DiscoveryMainFragment extends DashboardFragment
             tabViewPager.setCurrentItem(tabIndex);
             tabIndex = null;
         }
+        liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+        liveFragmentUtil.onResume();
+    }
+
+    @Override public void onLiveTradingChanged(boolean isLive)
+    {
+        super.onLiveTradingChanged(isLive);
+        liveFragmentUtil.setCallToAction(isLive);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -114,6 +130,8 @@ public class DiscoveryMainFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
+        liveFragmentUtil.onDestroyView();
+        liveFragmentUtil = null;
         reportAnalytics();
         tabViewPager.setAdapter(null);
         ButterKnife.unbind(this);

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.tradehero.common.widget.BetterViewAnimator
+    android:id="@+id/community_screen"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/community_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
@@ -16,31 +15,39 @@
       android:layout_gravity="center"
       />
 
-  <!--<se.emilsjolander.stickylistheaders.StickyListHeadersListView
-      android:id="@+id/leaderboard_community_list"
-      android:layout_height="wrap_content"
-      android:layout_width="match_parent"
-      app:hasStickyHeaders="false"
-      android:paddingBottom="@dimen/dashboard_tabhost_height"
-      android:clipToPadding="false"
-      />-->
-  <LinearLayout
+  <RelativeLayout
       android:id="@+id/lb_pager_wrapper"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      >
+
     <com.android.common.SlidingTabLayout
         android:id="@+id/tabs"
+        style="@style/TradeHero.TabContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TradeHero.TabContainer"/>
+        />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tabs"
         tools:background="@android:color/holo_red_dark"
         />
-  </LinearLayout>
+
+    <include
+        layout="@layout/live_call_to_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/size_10"
+        tools:visibility="visible"
+        />
+
+  </RelativeLayout>
 
 
   <TextView

@@ -1,33 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/timeline_list_view_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     >
-  <android.support.v4.widget.SwipeRefreshLayout
+
+  <android.support.v4.widget.SwipeRefreshLayout android:id="@+id/swipe_container"
       xmlns:android="http://schemas.android.com/apk/res/android"
-      android:id="@+id/swipe_container"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent"
+      >
 
     <se.emilsjolander.stickylistheaders.StickyListHeadersListView
         android:id="@+id/timeline_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:listSelector="@color/transparent"
         android:cacheColorHint="#00000000"
+        android:clipToPadding="false"
         android:divider="@color/transparent"
         android:dividerHeight="1dp"
         android:fadingEdge="vertical"
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="true"
-        android:smoothScrollbar="true"
-        android:clipToPadding="false"
+        android:listSelector="@color/transparent"
         android:paddingBottom="@dimen/dashboard_tabhost_height"
+        android:smoothScrollbar="true"
         />
 
   </android.support.v4.widget.SwipeRefreshLayout>
@@ -36,31 +38,42 @@
       android:id="@+id/follow_message_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:minHeight="@dimen/clickable_element_min_dimen"
-      android:measureWithLargestChild="true"
-      android:orientation="horizontal"
       android:layout_alignParentBottom="true"
       android:alpha="0.95"
+      android:measureWithLargestChild="true"
+      android:minHeight="@dimen/clickable_element_min_dimen"
+      android:orientation="horizontal"
       >
 
     <Button
         android:id="@+id/follow_button"
-        android:background="@drawable/basic_green_selector"
-        android:text="@string/follow"
         style="@style/TH.Button.Timeline.Follow"
-        android:visibility="gone"
+        android:background="@drawable/basic_green_selector"
         android:enabled="false"
+        android:text="@string/follow"
+        android:visibility="gone"
         />
 
     <Button
         android:id="@+id/message_button"
-        android:background="@drawable/basic_blue_selector"
-        android:text="@string/message"
         style="@style/TH.Button.Timeline.Message"
-        android:visibility="gone"
+        android:background="@drawable/basic_blue_selector"
         android:enabled="false"
+        android:text="@string/message"
+        android:visibility="gone"
         />
 
   </LinearLayout>
+
+  <include
+      layout="@layout/live_call_to_action"
+      tools:visibility="visible"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:layout_marginBottom="@dimen/size_10"
+      />
+
 
 </RelativeLayout>

@@ -93,14 +93,15 @@ public class BaseLiveFragmentUtil
 
     public void setCallToAction(boolean isLive)
     {
-        if (isLive)
-        {
-            showCallToActionBubbleVisible();
-        }
-        else
-        {
-            showCallToActionBubbleGone();
-        }
+        //if (isLive)
+        //{
+        //    showCallToActionBubbleGone();
+        //}
+        //else
+        //{
+        //
+        //}
+        showCallToActionBubbleVisible();
     }
 
     protected void showCallToActionBubbleVisible()

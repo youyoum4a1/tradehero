@@ -4,11 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     >
 
   <com.android.common.SlidingTabLayout
-      android:id="@+id/tabs"
+      android:id="@+id/android_tabs"
       style="@style/TradeHero.TabContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -16,7 +15,7 @@
 
   <android.support.v4.view.ViewPager
       android:id="@+id/pager"
-      android:layout_below="@id/tabs"
+      android:layout_below="@id/android_tabs"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       tools:background="@android:color/holo_red_dark"

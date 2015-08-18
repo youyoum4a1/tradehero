@@ -113,6 +113,11 @@ public class LiveActivityUtil
             }
         }
 
+        //changeBarColor(event);
+    }
+
+    private void changeBarColor(OffOnViewSwitcherEvent event)
+    {
         activity.getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(activity.getResources().getColor(event.isOn ? R.color.tradehero_red : R.color.tradehero_blue)));
 

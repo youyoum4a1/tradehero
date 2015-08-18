@@ -35,24 +35,25 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
 
     @Override public void setCallToAction(boolean isLive)
     {
-        if (isLive)
-        {
-            if (showCallToActionFragment.get())
-            {
-                setCallToActionFragmentVisible();
-                showCallToActionBubbleGone();
-            }
-            else
-            {
-                showCallToActionBubbleVisible();
-                setCallToActionFragmentGone();
-            }
-        }
-        else
-        {
-            setCallToActionFragmentGone();
-            showCallToActionBubbleGone();
-        }
+        super.setCallToAction(isLive);
+        //if (isLive)
+        //{
+        //    if (showCallToActionFragment.get())
+        //    {
+        //        setCallToActionFragmentVisible();
+        //        showCallToActionBubbleGone();
+        //    }
+        //    else
+        //    {
+        //        showCallToActionBubbleVisible();
+        //        setCallToActionFragmentGone();
+        //    }
+        //}
+        //else
+        //{
+        //    setCallToActionFragmentGone();
+        //    showCallToActionBubbleGone();
+        //}
     }
 
     private void setCallToActionFragmentVisible()
