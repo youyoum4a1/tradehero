@@ -172,9 +172,9 @@ public class LiveServiceWrapper
         return liveServiceRx.uploadDocument(GraphicUtil.fromFile(f));
     }
 
-    public Observable<AyondoIDCheckDTO> checkNeedIdentityDocument(KYCAyondoForm kycAyondoForm)
+    public Observable<AyondoIDCheckDTO> checkNeedIdentityDocument(AyondoLeadUserIdentityDTO ayondoLeadUserIdentityDTO)
     {
-        return liveServiceAyondoRx.checkNeedIdentity(new AyondoLeadUserIdentityDTO(kycAyondoForm));
+        return liveServiceAyondoRx.checkNeedIdentity(ayondoLeadUserIdentityDTO);
     }
 
     public Observable<AyondoAddressCheckDTO> checkNeedResidencyDocument(KYCAyondoForm kycAyondoForm)

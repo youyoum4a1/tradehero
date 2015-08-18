@@ -30,4 +30,21 @@ public class AyondoLeadUserIdentityDTO
         this.identificationDocument = kycAyondoForm.getIdentificationDocument();
         this.identificationNumber = kycAyondoForm.getIdentificationNumber();
     }
+
+    @Override public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof AyondoLeadUserIdentityDTO)) return false;
+
+        AyondoLeadUserIdentityDTO that = (AyondoLeadUserIdentityDTO) o;
+
+        if (dob != null ? !dob.equals(that.dob) : that.dob != null) return false;
+        if (firstName != null ? !firstName.equals(that.firstName) : that.firstName != null) return false;
+        if (lastName != null ? !lastName.equals(that.lastName) : that.lastName != null) return false;
+        if (middleName != null ? !middleName.equals(that.middleName) : that.middleName != null) return false;
+        if (ayondoGender != that.ayondoGender) return false;
+        if (nationality != that.nationality) return false;
+        if (identificationDocument != that.identificationDocument) return false;
+        return !(identificationNumber != null ? !identificationNumber.equals(that.identificationNumber) : that.identificationNumber != null);
+    }
 }

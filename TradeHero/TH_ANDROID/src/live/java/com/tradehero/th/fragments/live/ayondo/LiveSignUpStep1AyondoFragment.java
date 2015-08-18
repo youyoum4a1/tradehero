@@ -21,6 +21,8 @@ import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoIDCheckDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.CountryUtil;
@@ -48,6 +50,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import rx.Observable;
@@ -505,6 +508,55 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         onNext(liveBrokerSituationDTO);
                     }
                 }, new TimberOnErrorAction1("")));
+
+        subscriptions.add(liveBrokerSituationDTOObservable
+                .map(new Func1<LiveBrokerSituationDTO, KYCAyondoForm>()
+                {
+                    @Override public KYCAyondoForm call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        return (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
+                    }
+                })
+                .filter(new Func1<KYCAyondoForm, Boolean>()
+                {
+                    @Override public Boolean call(KYCAyondoForm kycAyondoForm)
+                    {
+                        return kycAyondoForm.getScanReference() != null;
+                    }
+                })
+                .throttleLast(3, TimeUnit.SECONDS)
+                .map(new Func1<KYCAyondoForm, AyondoLeadUserIdentityDTO>()
+                {
+                    @Override public AyondoLeadUserIdentityDTO call(KYCAyondoForm kycAyondoForm)
+                    {
+                        return new AyondoLeadUserIdentityDTO(kycAyondoForm);
+                    }
+                })
+                .distinctUntilChanged()
+                .flatMap(new Func1<AyondoLeadUserIdentityDTO, Observable<AyondoIDCheckDTO>>()
+                {
+                    @Override public Observable<AyondoIDCheckDTO> call(AyondoLeadUserIdentityDTO ayondoLeadUserIdentityDTO)
+                    {
+                        return liveServiceWrapper.checkNeedIdentityDocument(ayondoLeadUserIdentityDTO);
+                    }
+                })
+                .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<AyondoIDCheckDTO, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                {
+                    @Override public LiveBrokerSituationDTO call(AyondoIDCheckDTO ayondoIDCheckDTO, LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        KYCAyondoForm update = new KYCAyondoForm();
+                        update.setNeedIdentityDocument(ayondoIDCheckDTO.isProofOfIdentificationRequired);
+                        update.setIdentityCheckUid(ayondoIDCheckDTO.guid);
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
+                    }
+                })
+                .subscribe(new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        onNext(liveBrokerSituationDTO);
+                    }
+                }, new TimberOnErrorAction1("Error on checking poof of identity is required")));
 
         return subscriptions;
     }

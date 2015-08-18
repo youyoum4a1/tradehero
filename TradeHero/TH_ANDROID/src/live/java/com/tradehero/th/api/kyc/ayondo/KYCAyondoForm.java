@@ -141,6 +141,12 @@ public class KYCAyondoForm implements KYCForm
             this.nationality = issuingCountry;
         }
 
+        String identificationNumber = scannedDocument.getIdNumber();
+        if(identificationNumber != null)
+        {
+            this.identificationNumber = identificationNumber;
+        }
+
         Date dob = scannedDocument.getDob();
         if (dob != null)
         {
