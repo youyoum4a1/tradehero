@@ -17,7 +17,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormUtil;
@@ -25,7 +24,6 @@ import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.models.sms.ForSMSId;
 import com.tradehero.th.network.service.LiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.prefs.ShowCallToActionFragmentPreference;
@@ -47,7 +45,6 @@ public class LiveSignUpMainFragment extends BaseFragment
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject @ShowCallToActionFragmentPreference BooleanPreference showCallToActionFragment;
-    @Inject @ForSMSId StringPreference smsIdPreference;
 
     @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
     @Bind(R.id.pager) protected ViewPager viewPager;
@@ -163,12 +160,6 @@ public class LiveSignUpMainFragment extends BaseFragment
     @Override public void onDestroyView()
     {
         super.onDestroyView();
-    }
-
-    @Override public void onDestroy()
-    {
-        smsIdPreference.set("");
-        super.onDestroy();
     }
 
     private void updatePageIndicator(List<StepStatus> stepStatusList)

@@ -16,11 +16,10 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseDialogFragment;
-import com.tradehero.th.models.sms.ForSMSId;
+import com.tradehero.th.fragments.live.ayondo.LiveSignUpStep1AyondoFragment;
 import com.tradehero.th.models.sms.SMSId;
 import com.tradehero.th.models.sms.SMSRequestFactory;
 import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
@@ -58,7 +57,6 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     private static final long DEFAULT_POLL_INTERVAL_MILLISEC = 1000;
 
     @Inject SMSServiceWrapper smsServiceWrapper;
-    @Inject @ForSMSId StringPreference smsIdPreference;
 
     @Bind({
             R.id.verify_code_1,
@@ -132,7 +130,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
 
         mSMSConfirmationSubject = BehaviorSubject.create();
 
-        smsSubscription = getSmsSubscription();
+        smsSubscription = getSMSSubscription();
         if (smsSubscription == null)
         {
             smsSubscription = createSMSSubscription();
@@ -222,7 +220,13 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                     {
                         if (smsSentConfirmationDTO.getSMSId() instanceof TwilioSMSId)
                         {
-                            smsIdPreference.set(((TwilioSMSId) smsSentConfirmationDTO.getSMSId()).id);
+                            LiveSignUpStep1AyondoFragment liveSignUpStep1AyondoFragment;
+
+                            if (getParentFragment() instanceof LiveSignUpStep1AyondoFragment)
+                            {
+                                liveSignUpStep1AyondoFragment = (LiveSignUpStep1AyondoFragment) getParentFragment();
+                                liveSignUpStep1AyondoFragment.setSmsId(((TwilioSMSId) smsSentConfirmationDTO.getSMSId()).id);
+                            }
                         }
                     }
                 })
@@ -269,9 +273,16 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                         new TimberOnErrorAction1("Failed on sending sms message"));
     }
 
-    @Nullable protected Subscription getSmsSubscription()
+    @Nullable protected Subscription getSMSSubscription()
     {
-        String id = smsIdPreference.get();
+        String id = null;
+
+        if (getParentFragment() instanceof LiveSignUpStep1AyondoFragment)
+        {
+            LiveSignUpStep1AyondoFragment liveSignUpStep1AyondoFragment = (LiveSignUpStep1AyondoFragment) getParentFragment();
+            id = liveSignUpStep1AyondoFragment.getSmsId();
+        }
+
         //TODO make sure it's Twilio's SMS ID
         if (!TextUtils.isEmpty(id))
         {
@@ -308,7 +319,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                                        mSMSConfirmationSubject.onNext(smsSentConfirmationDTO);
                                    }
                                },
-                            new TimberOnErrorAction1("Failed on sending sms message"));
+                            new TimberOnErrorAction1("Failed on checking sms message status"));
         }
         else
         {

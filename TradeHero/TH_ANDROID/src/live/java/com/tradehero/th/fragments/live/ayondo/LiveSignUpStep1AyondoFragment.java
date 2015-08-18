@@ -76,6 +76,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final int REQUEST_PICK_DATE = 2805;
     private static final int REQUEST_VERIFY_PHONE_NUMBER_CODE = 2808;
     private static final String KEY_EXPECTED_SMS_CODE = LiveSignUpStep1AyondoFragment.class.getName() + ".expectedCode";
+    private static final String KEY_SMS_ID = LiveSignUpStep1AyondoFragment.class.getName() + ".smsId";
 
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.info_first_name) TextView firstName;
@@ -95,6 +96,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private Pattern emailPattern;
     private String emailInvalidMessage;
     private String expectedCode;
+    private String smsId;
     private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -104,6 +106,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (savedInstanceState != null)
         {
             expectedCode = savedInstanceState.getString(KEY_EXPECTED_SMS_CODE, null);
+            smsId = savedInstanceState.getString(KEY_SMS_ID, null);
         }
     }
 
@@ -522,6 +525,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_EXPECTED_SMS_CODE, expectedCode);
+        outState.putString(KEY_SMS_ID, smsId);
     }
 
     @Override public void onNext(@NonNull LiveBrokerSituationDTO situationDTO)
@@ -797,5 +801,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 verifiedPublishSubject.onNext(verifiedPhoneNumberPair);
             }
         }
+    }
+
+    public String getSmsId()
+    {
+        return smsId;
+    }
+
+    public void setSmsId(String smsId)
+    {
+        this.smsId = smsId;
     }
 }
