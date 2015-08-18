@@ -86,9 +86,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new EmptyAction1<>(),
                         new TimberOnErrorAction1("Failed to populate AyondoStep2 spinners")));
 
-        subscriptions.add(Observable.combineLatest(
-                brokerDTOObservable
-                .take(1),
+        subscriptions.add(
                 Observable.merge(
                         WidgetObservable.input(workInFinanceButton)
                                 .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
@@ -137,10 +135,10 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     {
                                         return KYCAyondoFormFactory.fromTradingPerQuarterEvent(onSelectedEvent);
                                     }
-                                })),
-                new Func2<LiveBrokerDTO, KYCAyondoForm, LiveBrokerSituationDTO>()
+                                }))
+                .withLatestFrom(brokerDTOObservable, new Func2<KYCAyondoForm, LiveBrokerDTO, LiveBrokerSituationDTO>()
                 {
-                    @Override public LiveBrokerSituationDTO call(LiveBrokerDTO brokerDTO, KYCAyondoForm update)
+                    @Override public LiveBrokerSituationDTO call(KYCAyondoForm update, LiveBrokerDTO brokerDTO)
                     {
                         return new LiveBrokerSituationDTO(brokerDTO, update);
                     }
@@ -153,7 +151,8 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 onNext(update);
                             }
                         },
-                        new TimberOnErrorAction1("Failed to listen to compound buttons")));
+                        new TimberOnErrorAction1("Failed to listen to compound buttons"))
+        );
         return subscriptions;
     }
 
