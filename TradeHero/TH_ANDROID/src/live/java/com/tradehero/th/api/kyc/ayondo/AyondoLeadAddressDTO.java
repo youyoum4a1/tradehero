@@ -67,4 +67,25 @@ public class AyondoLeadAddressDTO extends AyondoLeadUserIdentityDTO
         }
         this.mobileNumber = kycAyondoForm.getVerifiedMobileNumber();
     }
+
+    @Override public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof AyondoLeadAddressDTO)) return false;
+        if (!super.equals(o)) return false;
+
+        AyondoLeadAddressDTO that = (AyondoLeadAddressDTO) o;
+
+        if (addressCity != null ? !addressCity.equals(that.addressCity) : that.addressCity != null) return false;
+        if (addressCountry != that.addressCountry) return false;
+        if (addressLine1 != null ? !addressLine1.equals(that.addressLine1) : that.addressLine1 != null) return false;
+        if (addressLine2 != null ? !addressLine2.equals(that.addressLine2) : that.addressLine2 != null) return false;
+        if (addressZip != null ? !addressZip.equals(that.addressZip) : that.addressZip != null) return false;
+        if (mobileNumber != null ? !mobileNumber.equals(that.mobileNumber) : that.mobileNumber != null) return false;
+        if (previousAddressCity != null ? !previousAddressCity.equals(that.previousAddressCity) : that.previousAddressCity != null) return false;
+        if (previousAddressCountry != that.previousAddressCountry) return false;
+        if (previousAddressLine1 != null ? !previousAddressLine1.equals(that.previousAddressLine1) : that.previousAddressLine1 != null) return false;
+        if (previousAddressLine2 != null ? !previousAddressLine2.equals(that.previousAddressLine2) : that.previousAddressLine2 != null) return false;
+        return !(previousAddressZip != null ? !previousAddressZip.equals(that.previousAddressZip) : that.previousAddressZip != null);
+    }
 }

@@ -63,4 +63,48 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
         this.isTestRecord = kycAyondoForm.isTestRecord();
         this.whiteLabel = kycAyondoForm.getWhiteLabel();
     }
+
+    @Override public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (!(o instanceof AyondoLeadDTO)) return false;
+        if (!super.equals(o)) return false;
+
+        AyondoLeadDTO that = (AyondoLeadDTO) o;
+
+        if (phonePrimaryCountryCode != that.phonePrimaryCountryCode) return false;
+        if (annualIncomeRange != that.annualIncomeRange) return false;
+        if (netWorthRange != that.netWorthRange) return false;
+        if (percentNetWorthForInvestmentRange != that.percentNetWorthForInvestmentRange) return false;
+        if (employmentStatus != that.employmentStatus) return false;
+        if (employerRegulatedFinancial != null ? !employerRegulatedFinancial.equals(that.employerRegulatedFinancial)
+                : that.employerRegulatedFinancial != null)
+        {
+            return false;
+        }
+        if (workedInFinance1Year != null ? !workedInFinance1Year.equals(that.workedInFinance1Year) : that.workedInFinance1Year != null) return false;
+        if (attendedSeminarAyondo != null ? !attendedSeminarAyondo.equals(that.attendedSeminarAyondo) : that.attendedSeminarAyondo != null)
+        {
+            return false;
+        }
+        if (haveOtherQualification != null ? !haveOtherQualification.equals(that.haveOtherQualification) : that.haveOtherQualification != null)
+        {
+            return false;
+        }
+        if (leveragedProducts != null ? !leveragedProducts.equals(that.leveragedProducts) : that.leveragedProducts != null) return false;
+        if (tradingPerQuarter != that.tradingPerQuarter) return false;
+        if (email != null ? !email.equals(that.email) : that.email != null) return false;
+        if (language != null ? !language.equals(that.language) : that.language != null) return false;
+        if (currency != null ? !currency.equals(that.currency) : that.currency != null) return false;
+        if (productType != that.productType) return false;
+        if (subscribeOffers != null ? !subscribeOffers.equals(that.subscribeOffers) : that.subscribeOffers != null) return false;
+        if (subscribeTradeNotifications != null ? !subscribeTradeNotifications.equals(that.subscribeTradeNotifications)
+                : that.subscribeTradeNotifications != null)
+        {
+            return false;
+        }
+        if (guid != null ? !guid.equals(that.guid) : that.guid != null) return false;
+        if (isTestRecord != null ? !isTestRecord.equals(that.isTestRecord) : that.isTestRecord != null) return false;
+        return !(whiteLabel != null ? !whiteLabel.equals(that.whiteLabel) : that.whiteLabel != null);
+    }
 }

@@ -248,6 +248,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         return new AyondoLeadAddressDTO(kycAyondoForm);
                     }
                 })
+                .distinctUntilChanged()
                 .flatMap(new Func1<AyondoLeadAddressDTO, Observable<AyondoAddressCheckDTO>>()
                 {
                     @Override public Observable<AyondoAddressCheckDTO> call(AyondoLeadAddressDTO ayondoLeadAddressDTO)
