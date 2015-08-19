@@ -286,6 +286,6 @@ public interface UserServiceRx
     //<editor-fold desc="Create FX Portfolio">
     @POST("/users/{userId}/portfolios/createFX")
     Observable<PortfolioDTO> createFXPortfolioRx(
-            @Path("userId") int userId);
+            @Path("userId") int userId, @Body String emptyString);
     //</editor-fold>
 }

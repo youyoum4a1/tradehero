@@ -509,7 +509,7 @@ import rx.functions.Func1;
     //<editor-fold desc="Create FX Portfolio">
     @NonNull public Observable<PortfolioDTO> createFXPortfolioRx(@NonNull final UserBaseKey userBaseKey)
     {
-        return userServiceRx.createFXPortfolioRx(userBaseKey.getUserId())
+        return userServiceRx.createFXPortfolioRx(userBaseKey.getUserId(), "")
                 .map(new Func1<PortfolioDTO, PortfolioDTO>()
                 {
                     @Override public PortfolioDTO call(PortfolioDTO createdFXPortfolioDTO)
