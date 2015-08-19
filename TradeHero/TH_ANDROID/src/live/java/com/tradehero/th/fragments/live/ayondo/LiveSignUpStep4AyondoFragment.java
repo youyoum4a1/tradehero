@@ -24,6 +24,8 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.ayondo.AyondoAddressCheckDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoLeadAddressDTO;
+import com.tradehero.th.api.kyc.ayondo.DummyKYCAyondoUtil;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -47,7 +50,6 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
@@ -222,6 +224,56 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         }, new TimberOnErrorAction1("Failed in saving updated address"))
         );
+
+        subscriptions.add(liveBrokerSituationDTOObservable
+                .map(new Func1<LiveBrokerSituationDTO, KYCAyondoForm>()
+                {
+                    @Override public KYCAyondoForm call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        return (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
+                    }
+                })
+                .throttleLast(3, TimeUnit.SECONDS)
+                .filter(new Func1<KYCAyondoForm, Boolean>()
+                {
+                    @Override public Boolean call(KYCAyondoForm kycAyondoForm)
+                    {
+                        return DummyKYCAyondoUtil.getStep4(kycAyondoForm).equals(StepStatus.COMPLETE);
+                    }
+                })
+                .map(new Func1<KYCAyondoForm, AyondoLeadAddressDTO>()
+                {
+                    @Override public AyondoLeadAddressDTO call(KYCAyondoForm kycAyondoForm)
+                    {
+                        return new AyondoLeadAddressDTO(kycAyondoForm);
+                    }
+                })
+                .flatMap(new Func1<AyondoLeadAddressDTO, Observable<AyondoAddressCheckDTO>>()
+                {
+                    @Override public Observable<AyondoAddressCheckDTO> call(AyondoLeadAddressDTO ayondoLeadAddressDTO)
+                    {
+                        return liveServiceWrapper.checkNeedResidencyDocument(ayondoLeadAddressDTO);
+                    }
+                })
+                .withLatestFrom(brokerDTOObservable, new Func2<AyondoAddressCheckDTO, LiveBrokerDTO, LiveBrokerSituationDTO>()
+                {
+                    @Override
+                    public LiveBrokerSituationDTO call(AyondoAddressCheckDTO ayondoAddressCheckDTO, LiveBrokerDTO brokerDTO)
+                    {
+                        KYCAyondoForm update = new KYCAyondoForm();
+                        update.setNeedResidencyDocument(ayondoAddressCheckDTO.isProofOfAddressRequired);
+                        update.setAddressCheckUid(ayondoAddressCheckDTO.guid);
+                        return new LiveBrokerSituationDTO(brokerDTO, update);
+                    }
+                })
+                .subscribe(new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        onNext(liveBrokerSituationDTO);
+                    }
+                }, new TimberOnErrorAction1("Error on checking proof of residency is required")));
+
         return subscriptions;
     }
 
@@ -234,24 +286,6 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
     }
 
-    @Override protected void onNextPressed(KYCAyondoForm kycAyondoForm)
-    {
-        super.onNextPressed(kycAyondoForm);
-        onDestroySubscriptions.add(liveServiceWrapper.checkNeedResidencyDocument(kycAyondoForm).subscribe(new Action1<AyondoAddressCheckDTO>()
-        {
-            @Override public void call(AyondoAddressCheckDTO ayondoAddressCheckDTO)
-            {
-                Timber.d("address needed %s", ayondoAddressCheckDTO);
-            }
-        }, new Action1<Throwable>()
-        {
-            @Override public void call(Throwable throwable)
-            {
-                Timber.e(throwable, "error in checking need of proof of residency");
-            }
-        }));
-    }
-
     @MainThread
     public void pickLocation(int requestCode)
     {
@@ -260,7 +294,8 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             Context context = getActivity().getApplicationContext();
             getParentFragment().startActivityForResult(builder.build(context), requestCode);
-        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e)
+        }
+        catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e)
         {
             e.printStackTrace();
         }
@@ -288,7 +323,8 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     try
                                     {
                                         return mGeocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                                    } catch (IOException e)
+                                    }
+                                    catch (IOException e)
                                     {
                                         throw new RuntimeException(e);
                                     }

@@ -177,8 +177,8 @@ public class LiveServiceWrapper
         return liveServiceAyondoRx.checkNeedIdentity(ayondoLeadUserIdentityDTO);
     }
 
-    public Observable<AyondoAddressCheckDTO> checkNeedResidencyDocument(KYCAyondoForm kycAyondoForm)
+    public Observable<AyondoAddressCheckDTO> checkNeedResidencyDocument(AyondoLeadAddressDTO ayondoLeadAddressDTO)
     {
-        return liveServiceAyondoRx.checkNeedResidency(new AyondoLeadAddressDTO(kycAyondoForm));
+        return liveServiceAyondoRx.checkNeedResidency(ayondoLeadAddressDTO);
     }
 }
