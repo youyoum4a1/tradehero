@@ -5,14 +5,12 @@ import com.tradehero.common.persistence.DTO;
 
 public class AyondoAddressCheckDTO implements DTO
 {
-    public final String guid;
-    public final boolean isProofOfAddressRequired;
+    @JsonProperty("AddressCheckGuid") public String guid;
+    @JsonProperty("isProofOfAddressRequired") public boolean isProofOfAddressRequired;
 
-    public AyondoAddressCheckDTO(@JsonProperty("AddressCheckGuid") String guid,
-            @JsonProperty("isProofOfAddressRequired") boolean isProofOfAddressRequired)
+    public AyondoAddressCheckDTO()
     {
-        this.guid = guid;
-        this.isProofOfAddressRequired = isProofOfAddressRequired;
+        super();
     }
 
     @Override public String toString()

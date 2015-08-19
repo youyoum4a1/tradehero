@@ -4,13 +4,11 @@ import com.tradehero.common.persistence.DTO;
 
 public class AyondoIDCheckDTO implements DTO
 {
-    public final String guid;
-    public final boolean isProofOfIdentificationRequired;
+    public String guid;
+    public boolean isProofOfIdentificationRequired;
 
-    public AyondoIDCheckDTO(String guid,
-            boolean isProofOfIdentificationRequired)
+    public AyondoIDCheckDTO()
     {
-        this.guid = guid;
-        this.isProofOfIdentificationRequired = isProofOfIdentificationRequired;
+        super();
     }
 }

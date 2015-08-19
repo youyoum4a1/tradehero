@@ -5,11 +5,10 @@ import com.tradehero.common.persistence.DTO;
 
 public class BrokerDocumentUploadResponseDTO implements DTO
 {
-    public final String url;
+    @JsonProperty("guid") public String url;
 
-    public BrokerDocumentUploadResponseDTO(
-            @JsonProperty("guid") String url)
+    public BrokerDocumentUploadResponseDTO()
     {
-        this.url = url;
+        super();
     }
 }
