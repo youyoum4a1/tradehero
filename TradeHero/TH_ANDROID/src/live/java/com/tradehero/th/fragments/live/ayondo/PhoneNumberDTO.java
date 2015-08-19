@@ -29,4 +29,13 @@ class PhoneNumberDTO
         if (dialingCountry != that.dialingCountry) return false;
         return typedNumber.equals(that.typedNumber);
     }
+
+    @Override public String toString()
+    {
+        return "PhoneNumberDTO{" +
+                "dialingCountry=" + dialingCountry +
+                ", dialingPrefix=" + dialingPrefix +
+                ", typedNumber='" + typedNumber + '\'' +
+                '}';
+    }
 }

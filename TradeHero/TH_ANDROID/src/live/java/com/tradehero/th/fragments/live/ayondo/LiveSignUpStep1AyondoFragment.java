@@ -357,16 +357,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         })
                         .doOnNext(new Action1<PhoneNumberDTO>()
                         {
-                            @Override public void call(PhoneNumberDTO ignored)
+                            @Override public void call(PhoneNumberDTO phoneNumberDTO)
                             {
                                 buttonVerifyPhone.setEnabled(false);
-                            }
-                        })
-                        .filter(new Func1<PhoneNumberDTO, Boolean>()
-                        {
-                            @Override public Boolean call(PhoneNumberDTO numberDTO)
-                            {
-                                return numberDTO.dialingPrefix > 0 && numberDTO.typedNumber.length() > PHONE_NUM_MIN_LENGTH;
+                                if (isValidPhoneNumber(phoneNumberDTO))
+                                {
+                                    buttonVerifyPhone.setBackgroundResource(R.drawable.basic_green_selector);
+                                    buttonVerifyPhone.setEnabled(true);
+                                }
                             }
                         })
                         .distinctUntilChanged()
@@ -417,7 +415,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         //noinspection ConstantConditions
                                         liveBrokerSituationDTO.kycForm.pickFrom(update);
                                         //noinspection ConstantConditions
-                                        populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, dialingPrefix, newNumber);
+                                        populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, phoneNumberAndVerifiedDTO);
                                         update.setPhonePrimaryCountryCode(phoneNumberAndVerifiedDTO.dialingCountry);
                                         update.setMobileNumber(newNumber);
 
@@ -505,7 +503,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         liveBrokerSituationDTO.kycForm.pickFrom(update);
                         liveServiceWrapper.submitPhoneNumberVerifiedStatus(
                                 VerifyPhoneDialogFragment.getFormattedPhoneNumber(verifiedPhonePair.first, verifiedPhonePair.second));
-                        populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, verifiedPhonePair.first, verifiedPhonePair.second);
+                        buttonVerifyPhone.setEnabled(false);
+                        buttonVerifyPhone.setText(R.string.verified);
                         return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
                     }
                 }).subscribe(
@@ -567,6 +566,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 }, new TimberOnErrorAction1("Error on checking poof of identity is required")));
 
         return subscriptions;
+    }
+
+    private boolean isValidPhoneNumber(PhoneNumberDTO phoneNumberDTO)
+    {
+        return phoneNumberDTO.dialingPrefix > 0 && phoneNumberDTO.typedNumber.length() > PHONE_NUM_MIN_LENGTH;
     }
 
     @Override public void onDestroyView()
@@ -633,13 +637,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
 
     @MainThread
-    protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, int countryCode, @NonNull String typedNumber)
+    protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, PhoneNumberDTO phoneNumberDTO)
     {
         if (buttonVerifyPhone != null)
         {
-            boolean verified = Integer.valueOf(countryCode).equals(kycForm.getVerifiedMobileNumberDialingPrefix())
-                    && typedNumber.equals(kycForm.getVerifiedMobileNumber());
-            buttonVerifyPhone.setEnabled(!verified && !TextUtils.isEmpty(typedNumber));
+            boolean verified = Integer.valueOf(phoneNumberDTO.dialingPrefix).equals(kycForm.getVerifiedMobileNumberDialingPrefix())
+                    && phoneNumberDTO.typedNumber.equals(kycForm.getVerifiedMobileNumber());
+            buttonVerifyPhone.setEnabled(!verified && isValidPhoneNumber(phoneNumberDTO));
             buttonVerifyPhone.setText(verified ? R.string.verified : R.string.verify);
         }
     }
@@ -848,6 +852,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
             VerifyPhoneDialogFragment.show(REQUEST_VERIFY_PHONE_NUMBER_CODE, this, phoneCountryCode, phoneNumberInt, expectedCode);
             buttonVerifyPhone.setText(R.string.enter_code);
+            buttonVerifyPhone.setBackgroundResource(R.drawable.basic_red_selector);
         }
     }
 
