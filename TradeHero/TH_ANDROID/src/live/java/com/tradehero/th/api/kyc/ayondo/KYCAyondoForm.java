@@ -576,12 +576,8 @@ public class KYCAyondoForm implements KYCForm
         {
             return null;
         }
-        boolean hasSecondAddress = previousAddressCity == null
-                && previousAddressCountry == null
-                && previousAddressLine1 == null
-                && previousAddressLine2 == null
-                && previousAddressZip == null;
-        KYCAddress address1 = new KYCAddress(addressLine1, addressLine2, addressCity, addressCountry, addressZip, (addressLessThanAYear != null && addressLessThanAYear.equals(true)));
+        boolean hasSecondAddress = addressLessThanAYear != null && addressLessThanAYear.equals(true);
+        KYCAddress address1 = new KYCAddress(addressLine1, addressLine2, addressCity, addressCountry, addressZip, hasSecondAddress);
         if (!hasSecondAddress)
         {
             return Collections.singletonList(address1);
