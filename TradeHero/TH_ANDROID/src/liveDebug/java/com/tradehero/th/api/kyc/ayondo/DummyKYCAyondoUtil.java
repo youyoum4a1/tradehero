@@ -106,7 +106,7 @@ public class DummyKYCAyondoUtil
 
     @NonNull public static StepStatus getStep5(@NonNull KYCAyondoForm kycForm)
     {
-        return (!(kycForm.getNeedIdentityDocument() != null && kycForm.getNeedIdentityDocument()) || (kycForm.getIdentityDocumentType() != null
+        return ((kycForm.getScanReference() != null) || (kycForm.getIdentityDocumentType() != null
                 && kycForm.getIdentityDocumentUrl() != null))
                 && ((!(kycForm.getNeedResidencyDocument() != null && kycForm.getNeedResidencyDocument()) || (kycForm.getResidenceDocumentType()
                 != null && kycForm.getResidenceDocumentUrl() != null))
