@@ -17,4 +17,16 @@ class PhoneNumberDTO
         this.typedNumber = typedNumber;
         this.dialingPrefix = dialingPrefix;
     }
+
+    @Override public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PhoneNumberDTO that = (PhoneNumberDTO) o;
+
+        if (dialingPrefix != that.dialingPrefix) return false;
+        if (dialingCountry != that.dialingCountry) return false;
+        return typedNumber.equals(that.typedNumber);
+    }
 }

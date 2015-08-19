@@ -9,9 +9,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -121,6 +123,18 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        phoneNumber.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                if (actionId == EditorInfo.IME_ACTION_DONE && buttonVerifyPhone.isEnabled())
+                {
+                    offerToEnterCode();
+                }
+
+                return false;
+            }
+        });
     }
 
     @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
@@ -355,14 +369,16 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return numberDTO.dialingPrefix > 0 && numberDTO.typedNumber.length() > PHONE_NUM_MIN_LENGTH;
                             }
                         })
+                        .distinctUntilChanged()
                         .doOnNext(new Action1<PhoneNumberDTO>()
                         {
-                            @Override public void call(PhoneNumberDTO ignored)
+                            @Override public void call(PhoneNumberDTO phoneNumberDTO)
                             {
                                 buttonVerifyPhone.setEnabled(true);
+                                smsId = null;
+                                expectedCode = null;
                             }
                         })
-                        .distinctUntilChanged()
                         .flatMap(new Func1<PhoneNumberDTO, Observable<PhoneNumberAndVerifiedDTO>>()
                         {
                             @Override public Observable<PhoneNumberAndVerifiedDTO> call(
@@ -472,15 +488,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 {
                     @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
                     {
-                        final int phoneCountryCode = ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
-                        final String phoneNumberInt = phoneNumber.getText().toString();
-
-                        offerToEnterCode(
-                                phoneCountryCode,
-                                phoneNumberInt
-                        );
-
-                        buttonVerifyPhone.setText(R.string.enter_code);
+                        offerToEnterCode();
                     }
                 }, new TimberOnErrorAction1("Failed to present verify phone dialog")));
 
@@ -825,16 +833,22 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
 
     @MainThread
-    protected void offerToEnterCode(
-            final int phoneCountryCode,
-            final String phoneNumberInt)
+    protected void offerToEnterCode()
     {
-        if (expectedCode == null)
-        {
-            expectedCode = String.format("%04d", Math.abs(new Random(System.nanoTime()).nextInt() % 10000));
-        }
+        final int phoneCountryCode =
+                ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
+        final String phoneNumberInt = phoneNumber.getText().toString();
 
-        VerifyPhoneDialogFragment.show(REQUEST_VERIFY_PHONE_NUMBER_CODE, this, phoneCountryCode, phoneNumberInt, expectedCode);
+        if (phoneCountryCode > 0 && phoneNumberInt.length() > PHONE_NUM_MIN_LENGTH)
+        {
+            if (expectedCode == null)
+            {
+                expectedCode = String.format("%04d", Math.abs(new Random(System.nanoTime()).nextInt() % 10000));
+            }
+
+            VerifyPhoneDialogFragment.show(REQUEST_VERIFY_PHONE_NUMBER_CODE, this, phoneCountryCode, phoneNumberInt, expectedCode);
+            buttonVerifyPhone.setText(R.string.enter_code);
+        }
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
