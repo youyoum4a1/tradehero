@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
@@ -207,7 +207,7 @@ public class StockSelectionScreenFragment extends BaseFragment
     @OnItemClick(android.R.id.list)
     protected void onSecurityClicked(AdapterView<?> parent, View view, int position, long id)
     {
-        SelectableSecurityDTO dto = (SelectableSecurityDTO) parent.getItemAtPosition(position);
+        SelectableSecurityDTO dto = stockAdapter.getItem(position);
         if (!dto.selected && selectedStocks.size() >= MAX_SELECTABLE_SECURITIES)
         {
             THToast.show(getString(R.string.on_board_stock_selected_max, MAX_SELECTABLE_SECURITIES));
