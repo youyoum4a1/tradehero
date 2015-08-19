@@ -9,6 +9,7 @@ import com.tradehero.th.api.kyc.KYCFormOptionsId;
 import com.tradehero.th.api.kyc.LiveAvailabilityDTO;
 import com.tradehero.th.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoAccountCreationDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoAddressCheckDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoIDCheckDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoLeadAddressDTO;
@@ -180,5 +181,18 @@ public class LiveServiceWrapper
     public Observable<AyondoAddressCheckDTO> checkNeedResidencyDocument(AyondoLeadAddressDTO ayondoLeadAddressDTO)
     {
         return liveServiceAyondoRx.checkNeedResidency(ayondoLeadAddressDTO);
+    }
+
+    public Observable<BrokerApplicationDTO> submitApplication(KYCForm kycForm)
+    {
+        if (kycForm instanceof KYCAyondoForm)
+        {
+            return liveServiceAyondoRx.submitApplication(new AyondoAccountCreationDTO((KYCAyondoForm) kycForm));
+        }
+        else
+        {
+            //TODO when we have multiple brokers
+            return Observable.just(null);
+        }
     }
 }

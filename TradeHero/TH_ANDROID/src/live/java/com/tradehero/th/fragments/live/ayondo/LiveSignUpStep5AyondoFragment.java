@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.live.ayondo;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -19,9 +20,9 @@ import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.kyc.BrokerApplicationDTO;
 import com.tradehero.th.api.kyc.BrokerDocumentUploadResponseDTO;
 import com.tradehero.th.api.kyc.StepStatus;
-import com.tradehero.th.api.kyc.ayondo.DummyKYCAyondoUtil;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
@@ -38,6 +39,7 @@ import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
+import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.widget.DocumentActionWidget;
 import com.tradehero.th.widget.DocumentActionWidgetAction;
 import com.tradehero.th.widget.DocumentActionWidgetActionType;
@@ -83,6 +85,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private ImageRequesterUtil imageRequesterUtil;
 
     @Inject Picasso picasso;
+    private ProgressDialog progressDialog;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -539,26 +542,62 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction1("Failed to listen to url clicks")));
 
-        subscriptions.add(liveBrokerSituationDTOObservable
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .map(new Func1<LiveBrokerSituationDTO, KYCAyondoForm>()
-                        {
-                            @Override public KYCAyondoForm call(LiveBrokerSituationDTO liveBrokerSituationDTO)
-                            {
-                                return ((KYCAyondoForm) liveBrokerSituationDTO.kycForm);
-                            }
-                        })
-                        .subscribe(new Action1<KYCAyondoForm>()
-                        {
-                            @Override public void call(KYCAyondoForm kycAyondoForm)
-                            {
-                                boolean enabled = DummyKYCAyondoUtil.getStep5(kycAyondoForm).equals(StepStatus.COMPLETE);
+        subscriptions.add(ViewObservable.clicks(btnCreate)
+                .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnClickEvent, LiveBrokerSituationDTO, KYCAyondoForm>()
+                {
+                    @Override public KYCAyondoForm call(OnClickEvent onClickEvent, LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        return (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
+                    }
+                })
+                .doOnNext(new Action1<KYCAyondoForm>()
+                {
+                    @Override public void call(KYCAyondoForm kycAyondoForm)
+                    {
+                        //Progress dialog
+                        progressDialog = ProgressDialogUtil.create(getActivity(), R.string.processing);
+                    }
+                })
+                .flatMap(new Func1<KYCAyondoForm, Observable<BrokerApplicationDTO>>()
+                {
+                    @Override public Observable<BrokerApplicationDTO> call(KYCAyondoForm kycAyondoForm)
+                    {
+                        return liveServiceWrapper.submitApplication(kycAyondoForm);
+                    }
+                })
+                .finallyDo(new Action0()
+                {
+                    @Override public void call()
+                    {
+                        //Dismiss dialog
+                        progressDialog.dismiss();
+                    }
+                })
+                .subscribe(new Action1<BrokerApplicationDTO>()
+                {
+                    @Override public void call(BrokerApplicationDTO brokerApplicationDTO)
+                    {
+                        THToast.show("success");
+                        getActivity().finish();
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        THToast.show(new THException(throwable));
+                    }
+                }));
 
-                                btnCreate.setEnabled(enabled);
-                            }
-                        }, new TimberOnErrorAction1("Failed to update create button"))
-        );
         return subscriptions;
+    }
+
+    @Override protected void onNextButtonEnabled(List<StepStatus> stepStatuses)
+    {
+        StepStatus fifthStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(4);
+        if (btnCreate != null)
+        {
+            btnCreate.setEnabled((fifthStatus != null && StepStatus.COMPLETE.equals(fifthStatus)));
+        }
     }
 
     @NonNull private Observable<Bitmap> pickDocument(@StringRes int dialogTitle, @NonNull final ImageRequesterUtil imageRequesterUtil)
@@ -593,6 +632,12 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         return imageRequesterUtil.getBitmapObservable();
                     }
                 });
+    }
+
+    @Override public void onDestroyView()
+    {
+        progressDialog = null;
+        super.onDestroyView();
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

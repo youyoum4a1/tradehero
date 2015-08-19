@@ -711,12 +711,12 @@ public class KYCAyondoForm implements KYCForm
         this.residenceDocumentType = residenceDocumentType;
     }
 
-    @Nullable @JsonIgnore public String getResidenceDocumentUrl()
+    @Nullable public String getResidenceDocumentUrl()
     {
         return residenceDocumentUrl;
     }
 
-    @JsonIgnore public void setResidenceDocumentUrl(@Nullable String residenceDocumentUrl)
+    public void setResidenceDocumentUrl(@Nullable String residenceDocumentUrl)
     {
         this.residenceDocumentUrl = residenceDocumentUrl;
     }

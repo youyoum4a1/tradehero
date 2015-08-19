@@ -43,4 +43,7 @@ public interface LiveServiceAyondoRx
     @POST("/kyc/ayondo/checkaddress")
     Observable<AyondoAddressCheckDTO> checkNeedResidency(
             @Body AyondoLeadAddressDTO ayondoLeadAddressDTO);
+
+    @POST("/kyc/ayondo/createAccount")
+    Observable<BrokerApplicationDTO> submitApplication(@Body AyondoAccountCreationDTO ayondoAccountCreationDTO);
 }
