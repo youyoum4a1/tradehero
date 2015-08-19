@@ -69,8 +69,6 @@ public class DummyLiveServiceWrapper extends LiveServiceWrapper
                             LiveBrokerDTO ayondo = new LiveBrokerDTO(new LiveBrokerId(1), "ayondo markets");
                             KYCAyondoForm form = new KYCAyondoForm();
                             form.setCountry(Country.SG);
-                            form.setNeedIdentityDocument(true);
-                            form.setNeedResidencyDocument(true);
                             form.setStepStatuses(DummyKYCAyondoUtil.getSteps(form).stepStatuses);
                             LiveBrokerSituationDTO fakeSituation = new LiveBrokerSituationDTO(ayondo, form);
 

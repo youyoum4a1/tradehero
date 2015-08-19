@@ -30,6 +30,7 @@ import com.tradehero.th.fragments.settings.ImageRequesterUtil;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
+import com.tradehero.th.models.fastfill.ScanReference;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
@@ -217,26 +218,88 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         subscriptions.add(liveBrokerSituationDTOObservable
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<LiveBrokerSituationDTO>()
+                .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
                 {
-                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    @Override public Boolean call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        return liveBrokerSituationDTO.kycForm != null && liveBrokerSituationDTO.kycForm instanceof KYCAyondoForm;
+                    }
+                })
+                .map(new Func1<LiveBrokerSituationDTO, KYCAyondoForm>()
+                {
+                    @Override public KYCAyondoForm call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        return (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
+                    }
+                })
+                .distinctUntilChanged(new Func1<KYCAyondoForm, ScanReference>()
+                {
+                    @Override public ScanReference call(KYCAyondoForm kycAyondoForm)
+                    {
+                        return kycAyondoForm.getScanReference();
+                    }
+                })
+                .map(new Func1<KYCAyondoForm, ScanReference>()
+                {
+                    @Override public ScanReference call(KYCAyondoForm kycAyondoForm)
+                    {
+                        return kycAyondoForm.getScanReference();
+                    }
+                })
+                .subscribe(new Action1<ScanReference>()
+                {
+                    @Override public void call(ScanReference scanReference)
                     {
                         //Update the documents needed
-                        KYCAyondoForm kycForm = (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
-                        Boolean needIdentityDocument = kycForm.getNeedIdentityDocument();
-                        if (needIdentityDocument != null)
-                        {
-                            identityContainer.setVisibility(needIdentityDocument ? View.VISIBLE : View.GONE);
-                        }
+                        identityContainer.setVisibility(scanReference != null ? View.GONE : View.VISIBLE);
+                    }
+                }, new TimberOnErrorAction1("Failed to update identity document visibility")));
 
-                        Boolean needResidencyDocument = kycForm.getNeedResidencyDocument();
+        subscriptions.add(liveBrokerSituationDTOObservable
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
+                {
+                    @Override public Boolean call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        return liveBrokerSituationDTO.kycForm != null && liveBrokerSituationDTO.kycForm instanceof KYCAyondoForm;
+                    }
+                })
+                .map(new Func1<LiveBrokerSituationDTO, KYCAyondoForm>()
+                {
+                    @Override public KYCAyondoForm call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        return (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
+                    }
+                })
+                .distinctUntilChanged(new Func1<KYCAyondoForm, Boolean>()
+                {
+                    @Override public Boolean call(KYCAyondoForm kycAyondoForm)
+                    {
+                        return kycAyondoForm.getNeedResidencyDocument();
+                    }
+                })
+                .map(new Func1<KYCAyondoForm, Boolean>()
+                {
+                    @Override public Boolean call(KYCAyondoForm kycAyondoForm)
+                    {
+                        return kycAyondoForm.getNeedResidencyDocument();
+                    }
+                })
+                .subscribe(new Action1<Boolean>()
+                {
+                    @Override public void call(Boolean needResidencyDocument)
+                    {
+                        //Update the documents needed
                         if (needResidencyDocument != null)
                         {
                             residencyContainer.setVisibility(
                                     needResidencyDocument ? View.VISIBLE : View.GONE);
                         }
                     }
-                })
+                }, new TimberOnErrorAction1("Failed to update residency document visibility")));
+
+        subscriptions.add(liveBrokerSituationDTOObservable
+                .observeOn(AndroidSchedulers.mainThread())
                 .take(1)
                 .subscribe(
                         new Action1<LiveBrokerSituationDTO>()
