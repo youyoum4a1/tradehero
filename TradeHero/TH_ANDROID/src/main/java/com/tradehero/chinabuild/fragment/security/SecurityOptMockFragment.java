@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -78,6 +79,11 @@ public class SecurityOptMockFragment extends Fragment implements View.OnClickLis
     @Override
     public void onClick(View view) {
         int viewId = view.getId();
+        if (getActivity().getCurrentFocus() != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+
         switch (viewId) {
             case R.id.btnTabBuy:
                 if (index == 0) {
