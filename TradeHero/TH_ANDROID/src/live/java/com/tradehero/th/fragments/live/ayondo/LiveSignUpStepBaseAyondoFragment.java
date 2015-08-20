@@ -52,11 +52,20 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                 {
                     @Override public void call(LiveBrokerSituationDTO situationDTO)
                     {
-                        List<StepStatus> stepStatuses = situationDTO.kycForm == null ? null : situationDTO.kycForm.getStepStatuses();
-                        onNextButtonEnabled(stepStatuses);
+                        if (situationDTO.kycForm != null && situationDTO.kycForm instanceof KYCAyondoForm)
+                        {
+                            onNextButtonEnabled(((KYCAyondoForm) situationDTO.kycForm));
+                        }
                     }
                 })
                 .observeOn(Schedulers.io());
+    }
+
+    @MainThread
+    protected void onNextButtonEnabled(KYCAyondoForm kycForm)
+    {
+        List<StepStatus> stepStatuses = kycForm.getStepStatuses();
+        onNextButtonEnabled(stepStatuses);
     }
 
     @MainThread

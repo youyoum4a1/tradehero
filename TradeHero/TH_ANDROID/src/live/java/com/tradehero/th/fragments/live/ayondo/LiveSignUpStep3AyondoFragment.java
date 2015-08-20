@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.Spinner;
 import butterknife.Bind;
 import com.tradehero.th.R;
+import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
@@ -45,6 +46,15 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_sign_up_live_ayondo_step_3, container, false);
+    }
+
+    @Override protected void onNextButtonEnabled(List<StepStatus> stepStatuses)
+    {
+        StepStatus thirdStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(2);
+        if (btnNext != null)
+        {
+            btnNext.setEnabled(thirdStatus != null && thirdStatus.equals(StepStatus.COMPLETE));
+        }
     }
 
     @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,

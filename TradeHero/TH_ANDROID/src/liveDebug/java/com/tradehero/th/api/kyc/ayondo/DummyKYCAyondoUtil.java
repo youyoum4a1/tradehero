@@ -52,22 +52,15 @@ public class DummyKYCAyondoUtil
                 && kycForm.getPercentNetWorthForInvestmentRange() != null
                 && !kycForm.getPercentNetWorthForInvestmentRange().equals(PercentNetWorthForInvestmentRange.EMPTY)
                 && kycForm.getEmploymentStatus() != null
-                && !kycForm.getEmploymentStatus().equals(EmploymentStatus.EMPTY)
-                && kycForm.isEmployerRegulatedFinancial() != null)
+                && !kycForm.getEmploymentStatus().equals(EmploymentStatus.EMPTY))
                 ? StepStatus.COMPLETE
                 : StepStatus.UNSTARTED;
     }
 
     @NonNull public static StepStatus getStep3(@NonNull KYCAyondoForm kycForm)
     {
-        return (kycForm.isWorkedInFinance1Year() != null
-                && kycForm.isAttendedSeminarAyondo() != null
-                && kycForm.isHaveOtherQualification() != null
-                && kycForm.getTradingPerQuarter() != null
-                && !kycForm.getTradingPerQuarter().equals(TradingPerQuarter.EMPTY)
-                && kycForm.isTradedSharesBonds() != null
-                && kycForm.isTradedOtcDerivative() != null
-                && kycForm.isTradedEtc() != null)
+        return (kycForm.getTradingPerQuarter() != null
+                && !kycForm.getTradingPerQuarter().equals(TradingPerQuarter.EMPTY))
                 ? StepStatus.COMPLETE
                 : StepStatus.UNSTARTED;
     }

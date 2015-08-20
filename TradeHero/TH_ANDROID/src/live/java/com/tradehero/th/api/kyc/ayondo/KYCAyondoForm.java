@@ -871,7 +871,6 @@ public class KYCAyondoForm implements KYCForm
             same = country == null ? ayondoForm.country == null : country.equals(ayondoForm.country);
             same &= scanReference == null ? ayondoForm.scanReference == null : scanReference.equals(ayondoForm.scanReference);
             same &= ayondoGender == null ? ayondoForm.ayondoGender == null : ayondoGender.equals(ayondoForm.ayondoGender);
-            same &= fullName == null ? ayondoForm.fullName == null : fullName.equals(ayondoForm.fullName);
             same &= firstName == null ? ayondoForm.firstName == null : firstName.equals(ayondoForm.firstName);
             same &= lastName == null ? ayondoForm.lastName == null : lastName.equals(ayondoForm.lastName);
             same &= middleName == null ? ayondoForm.middleName == null : middleName.equals(ayondoForm.middleName);
@@ -981,7 +980,6 @@ public class KYCAyondoForm implements KYCForm
         int code = country == null ? 0 : country.hashCode();
         code ^= scanReference == null ? 0 : scanReference.hashCode();
         code ^= ayondoGender == null ? 0 : ayondoGender.hashCode();
-        code ^= fullName == null ? 0 : fullName.hashCode();
         code ^= firstName == null ? 0 : firstName.hashCode();
         code ^= lastName == null ? 0 : lastName.hashCode();
         code ^= middleName == null ? 0 : middleName.hashCode();
@@ -1049,7 +1047,6 @@ public class KYCAyondoForm implements KYCForm
                 "country=" + country +
                 ", scanReference=" + scanReference +
                 ", ayondoGender=" + ayondoGender +
-                ", fullName='" + fullName + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +

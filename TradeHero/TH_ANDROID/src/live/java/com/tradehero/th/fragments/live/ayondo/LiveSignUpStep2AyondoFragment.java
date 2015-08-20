@@ -15,6 +15,7 @@ import com.tradehero.th.api.kyc.AnnualIncomeRange;
 import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
+import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
@@ -45,6 +46,15 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_sign_up_live_ayondo_step_2, container, false);
+    }
+
+    @Override protected void onNextButtonEnabled(List<StepStatus> stepStatuses)
+    {
+        StepStatus secondStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(1);
+        if (btnNext != null)
+        {
+            btnNext.setEnabled(secondStatus != null && secondStatus.equals(StepStatus.COMPLETE));
+        }
     }
 
     @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
