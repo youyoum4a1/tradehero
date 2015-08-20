@@ -5,6 +5,7 @@ import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoAccountCreationDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoAddressCheckDTO;
+import com.tradehero.th.api.kyc.ayondo.AyondoCurrentApplicationDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoIDCheckDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoLeadAddressDTO;
 import com.tradehero.th.api.kyc.ayondo.AyondoLeadDTO;
@@ -23,7 +24,7 @@ public interface LiveServiceAyondoRx
     Observable<AyondoLiveAvailabilityDTO> getAvailability();
 
     @GET("/kyc/ayondo/currentapplication")
-    Observable<AyondoAccountCreationDTO> getCurrentApplication();
+    Observable<AyondoCurrentApplicationDTO> getCurrentApplication();
 
     @POST("/applyBroker/ayondo")
     Observable<StepStatusesDTO> applyLiveBroker(
