@@ -10,7 +10,7 @@ import dagger.Provides;
 )
 public class RetrofitLiveProtectedBuildTypeModule
 {
-    @Provides LiveServiceWrapper provideLiveServiceWrapper(DummyLiveServiceWrapper liveServiceWrapper)
+    @Provides LiveServiceWrapper provideLiveServiceWrapper(DummyAyondoLiveServiceWrapper liveServiceWrapper)
     {
         return liveServiceWrapper;
     }

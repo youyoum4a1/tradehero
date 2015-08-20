@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.IdentityPromptActivity;
 import com.tradehero.th.activities.SignUpLiveActivity;
@@ -11,6 +12,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.fastfill.FastFillUtil;
+import com.tradehero.th.persistence.prefs.LiveAvailability;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.widget.GoLiveWidget;
 import javax.inject.Inject;
@@ -27,6 +29,7 @@ public class BaseLiveFragmentUtil
 
     @Inject DashboardNavigator navigator;
     @Inject FastFillUtil fastFill;
+    @Inject @LiveAvailability BooleanPreference liveAvailability;
 
     public static BaseLiveFragmentUtil createFor(Fragment fragment, View view)
     {
@@ -93,15 +96,10 @@ public class BaseLiveFragmentUtil
 
     public void setCallToAction(boolean isLive)
     {
-        //if (isLive)
-        //{
-        //    showCallToActionBubbleGone();
-        //}
-        //else
-        //{
-        //
-        //}
-        showCallToActionBubbleVisible();
+        if(liveAvailability.get())
+        {
+            showCallToActionBubbleVisible();
+        }
     }
 
     protected void showCallToActionBubbleVisible()

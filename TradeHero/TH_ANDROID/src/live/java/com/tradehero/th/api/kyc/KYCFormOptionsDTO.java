@@ -19,7 +19,5 @@ import java.util.List;
 })
 public interface KYCFormOptionsDTO extends DTO
 {
-    @NonNull IdentityPromptInfoDTO getIdentityPromptInfo();
-
     @NonNull List<IdentityScannedDocumentType> getIdentityDocumentTypes();
 }

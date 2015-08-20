@@ -14,9 +14,9 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
-import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
-import com.tradehero.th.api.kyc.KYCFormOptionsId;
+import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
 import com.tradehero.th.api.kyc.KYCFormUtil;
+import com.tradehero.th.api.kyc.LiveAvailabilityDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -26,7 +26,6 @@ import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.network.service.LiveServiceWrapper;
-import com.tradehero.th.persistence.kyc.KYCFormOptionsCache;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ReplaceWithFunc1;
@@ -48,8 +47,6 @@ public class IdentityPromptActivity extends BaseActivity
     FastFillUtil fastFillUtil;
     @Inject
     LiveBrokerSituationPreference liveBrokerSituationPreference;
-    @Inject
-    KYCFormOptionsCache kycFormOptionsCache;
     @Inject
     CurrentUserId currentUserId;
     @Inject
@@ -97,24 +94,31 @@ public class IdentityPromptActivity extends BaseActivity
                     public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
                     {
                         //noinspection ConstantConditions
-                        return kycFormOptionsCache.getOne(new KYCFormOptionsId(situation.broker.id))
-                                .map(new PairGetSecond<KYCFormOptionsId, KYCFormOptionsDTO>())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .map(new Func1<KYCFormOptionsDTO, LiveBrokerSituationDTO>()
+                        return liveServiceWrapper.getAvailability()
+                                .flatMap(new Func1<LiveAvailabilityDTO, Observable<IdentityPromptInfoDTO>>()
                                 {
-                                    @Override
-                                    public LiveBrokerSituationDTO call(KYCFormOptionsDTO kycFormOptions)
+                                    @Override public Observable<IdentityPromptInfoDTO> call(LiveAvailabilityDTO liveAvailabilityDTO)
                                     {
-                                        //noinspection ConstantConditions
-                                        if (situation.kycForm.getCountry() != null)
-                                        {
-                                            picasso.load(kycFormOptions.getIdentityPromptInfo().image)
-                                                    .placeholder(situation.kycForm.getCountry().logoId)
-                                                    .into(imgPrompt);
-                                            scanSpecificId.setText(kycFormOptions.getIdentityPromptInfo().prompt);
-                                            imgPrompt.setVisibility(View.VISIBLE);
-                                            scanSpecificId.setVisibility(View.VISIBLE);
-                                        }
+                                        return liveServiceWrapper.getIdentityPromptInfo(liveAvailabilityDTO.getRequestorCountry());
+                                    }
+                                })
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(new Action1<IdentityPromptInfoDTO>()
+                                {
+                                    @Override public void call(IdentityPromptInfoDTO identityPromptInfoDTO)
+                                    {
+                                        picasso.load(identityPromptInfoDTO.image)
+                                                .placeholder(identityPromptInfoDTO.country.logoId)
+                                                .into(imgPrompt);
+                                        scanSpecificId.setText(identityPromptInfoDTO.prompt);
+                                        imgPrompt.setVisibility(View.VISIBLE);
+                                        scanSpecificId.setVisibility(View.VISIBLE);
+                                    }
+                                })
+                                .map(new Func1<IdentityPromptInfoDTO, LiveBrokerSituationDTO>()
+                                {
+                                    @Override public LiveBrokerSituationDTO call(IdentityPromptInfoDTO ignored)
+                                    {
                                         return situation;
                                     }
                                 });

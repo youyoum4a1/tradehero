@@ -25,6 +25,7 @@ public class PreferenceGameLiveModule
     private static final String PREF_SAVED_BROKER_SITUATION = "PREF_SAVED_BROKER_SITUATION";
     private static final String PREF_SAVED_VERIFIED_PHONE_NUMBERS = "PREF_SAVED_VERIFIED_PHONE_NUMBERS";
     private static final String PREF_SHOW_CALL_TO_ACTION = "PREF_SHOW_CALL_TO_ACTION";
+    private static final String PREF_LIVE_AVAILABILITY = "PREF_LIVE_AVAILABILITY";
 
     @Provides @Singleton LiveBrokerSituationPreference provideLiveBrokerSituationPreference(
             ObjectMapper objectMapper, // Do not use @ForApp because it removes the Jackson visibility of methods
@@ -42,8 +43,14 @@ public class PreferenceGameLiveModule
         return new PhoneNumberVerifiedPreference(sharedPreferences, PREF_SAVED_VERIFIED_PHONE_NUMBERS, new HashSet<String>());
     }
 
-    @Provides @Singleton @ShowCallToActionFragmentPreference BooleanPreference provideShowCallToActionPreference(@ForUser SharedPreferences sharedPreferences)
+    @Provides @Singleton @ShowCallToActionFragmentPreference BooleanPreference provideShowCallToActionPreference(
+            @ForUser SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_SHOW_CALL_TO_ACTION, true);
+    }
+
+    @Provides @Singleton @LiveAvailability BooleanPreference provideLiveAvailibilityPreference(@ForUser SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_LIVE_AVAILABILITY, false);
     }
 }

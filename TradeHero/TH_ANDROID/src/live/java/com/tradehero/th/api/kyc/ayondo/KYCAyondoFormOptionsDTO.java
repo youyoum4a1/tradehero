@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
 import com.tradehero.th.api.kyc.EmploymentStatus;
-import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
@@ -22,7 +21,6 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
 {
     public static final String KEY_AYONDO_TYPE = "AYD";
 
-    @NonNull public final IdentityPromptInfoDTO identityPromptInfo;
     @NonNull public final List<Gender> genders;
     @NonNull public final List<Country> allowedMobilePhoneCountries;
     @NonNull public final List<Country> allowedNationalityCountries;
@@ -41,7 +39,6 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     public final int minAge;
 
     public KYCAyondoFormOptionsDTO(
-            @JsonProperty("identityPromptInfo") @NonNull IdentityPromptInfoDTO identityPromptInfo,
             @JsonProperty("genders") @Nullable List<Gender> genders,
             @JsonProperty("allowedMobilePhoneCountries") @Nullable List<Country> allowedMobilePhoneCountries,
             @JsonProperty("allowedNationalityCountries") @Nullable List<Country> allowedNationalityCountries,
@@ -59,7 +56,6 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("dataSharingAgreementUrl") @NonNull String dataSharingAgreementUrl,
             @JsonProperty("minAge") int minAge)
     {
-        this.identityPromptInfo = identityPromptInfo;
         if (genders == null)
         {
             this.genders = Collections.unmodifiableList(Arrays.asList(Gender.values()));
@@ -106,11 +102,6 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         this.minAge = minAge;
     }
 
-    @NonNull @Override public IdentityPromptInfoDTO getIdentityPromptInfo()
-    {
-        return identityPromptInfo;
-    }
-
     @NonNull public List<IdentityScannedDocumentType> getIdentityDocumentTypes()
     {
         return identityDocumentTypes;
@@ -119,8 +110,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @Override public String toString()
     {
         return "KYCAyondoFormOptionsDTO{" +
-                "identityPromptInfo=" + identityPromptInfo +
-                ", genders=" + genders +
+                "genders=" + genders +
                 ", allowedMobilePhoneCountries=" + allowedMobilePhoneCountries +
                 ", allowedNationalityCountries=" + allowedNationalityCountries +
                 ", allowedResidencyCountries=" + allowedResidencyCountries +

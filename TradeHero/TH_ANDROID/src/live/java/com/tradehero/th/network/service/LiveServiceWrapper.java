@@ -3,6 +3,7 @@ package com.tradehero.th.network.service;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.kyc.BrokerApplicationDTO;
 import com.tradehero.th.api.kyc.BrokerDocumentUploadResponseDTO;
+import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
 import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
@@ -21,6 +22,7 @@ import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerKnowledge;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
+import com.tradehero.th.api.market.Country;
 import com.tradehero.th.network.service.ayondo.LiveServiceAyondoRx;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.prefs.PhoneNumberVerifiedPreference;
@@ -59,6 +61,7 @@ public class LiveServiceWrapper
 
     @NonNull public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
     {
+        //Generic calls for multi brokers
         return liveServiceRx.getLiveTradingSituation();
     }
 
@@ -121,6 +124,11 @@ public class LiveServiceWrapper
     @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)
     {
         return liveServiceRx.getKYCFormOptions(optionsId.brokerId.key);
+    }
+
+    @NonNull public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(@NonNull Country country)
+    {
+        return Observable.just(new IdentityPromptInfoDTO(Country.SG, "fake", "Wait until we support more countries"));
     }
 
     @NonNull public Observable<PhoneNumberVerifiedStatusDTO> getPhoneNumberVerifiedStatus(@NonNull String phoneNumber)

@@ -10,6 +10,7 @@ import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsId;
+import com.tradehero.th.api.kyc.LiveAvailabilityDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -28,6 +29,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.prefs.IsOnBoardShown;
+import com.tradehero.th.persistence.prefs.LiveAvailability;
 import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
 import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
@@ -47,6 +49,7 @@ public class DTOCacheUtilLiveImpl extends DTOCacheUtilImpl
     //<editor-fold desc="Caches">
     protected final Lazy<LiveServiceWrapper> liveServiceWrapper;
     protected final Lazy<KYCFormOptionsCache> kycFormOptionsCache;
+    @NonNull private final Lazy<BooleanPreference> liveAvailabilityPreference;
     //</editor-fold>
 
     //<editor-fold desc="Constructors">
@@ -75,7 +78,8 @@ public class DTOCacheUtilLiveImpl extends DTOCacheUtilImpl
             @NonNull BroadcastUtils broadcastUtils,
             @NonNull Context context,
             @NonNull Lazy<LiveServiceWrapper> liveServiceWrapper,
-            @NonNull Lazy<KYCFormOptionsCache> kycFormOptionsCache)
+            @NonNull Lazy<KYCFormOptionsCache> kycFormOptionsCache,
+            @NonNull @LiveAvailability Lazy<BooleanPreference> liveAvailabilityPreference)
     {
         super(currentUserId,
                 alertCompactListCache,
@@ -102,6 +106,7 @@ public class DTOCacheUtilLiveImpl extends DTOCacheUtilImpl
                 context);
         this.liveServiceWrapper = liveServiceWrapper;
         this.kycFormOptionsCache = kycFormOptionsCache;
+        this.liveAvailabilityPreference = liveAvailabilityPreference;
     }
     //</editor-fold>
 
@@ -109,6 +114,19 @@ public class DTOCacheUtilLiveImpl extends DTOCacheUtilImpl
     {
         super.prefetchesUponLogin(profile);
         prefetchLiveBrokerSituation();
+        prefetchLiveAvailability();
+    }
+
+    private void prefetchLiveAvailability()
+    {
+        liveServiceWrapper.get().getAvailability()
+                .subscribe(new Action1<LiveAvailabilityDTO>()
+                {
+                    @Override public void call(LiveAvailabilityDTO liveAvailabilityDTO)
+                    {
+                        liveAvailabilityPreference.get().set(liveAvailabilityDTO.isAvailable());
+                    }
+                }, new TimberOnErrorAction1("Error on fetching live availability"));
     }
 
     public void prefetchLiveBrokerSituation()
