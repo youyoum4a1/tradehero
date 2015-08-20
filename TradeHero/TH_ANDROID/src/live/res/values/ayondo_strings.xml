@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="broker_name_ayondo">ayondo Market</string>
+  <string name="broker_name_ayondo">ayondo markets</string>
 
   <string name="live_call_to_action_string_ayondo">You are only 5 steps away from your own TradeHero LIVE account!\nGo LIVE now and get US$ 100.00 to start.</string>
   <string name="employment_regulated_by_authority_ayondo">Employer is regulated by a financial authority.</string>
