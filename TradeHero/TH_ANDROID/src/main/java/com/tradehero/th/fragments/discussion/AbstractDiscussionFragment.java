@@ -124,6 +124,11 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
             params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, fragmentElements.getMovableBottom().getHeight());
             postCommentView.setLayoutParams(params);
         }
+
+        if (mentionActionButtonsView != null)
+        {
+            mentionActionButtonsView.setReturnFragmentName(getClass().getName());
+        }
     }
 
     @Override public void onStart()
