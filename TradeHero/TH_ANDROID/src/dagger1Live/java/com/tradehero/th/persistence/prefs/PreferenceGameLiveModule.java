@@ -2,6 +2,7 @@ package com.tradehero.th.persistence.prefs;
 
 import android.content.SharedPreferences;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.api.kyc.EmptyKYCForm;
@@ -49,7 +50,7 @@ public class PreferenceGameLiveModule
         return new BooleanPreference(sharedPreferences, PREF_SHOW_CALL_TO_ACTION, true);
     }
 
-    @Provides @Singleton @LiveAvailability BooleanPreference provideLiveAvailibilityPreference(@ForUser SharedPreferences sharedPreferences)
+    @Provides @Singleton @LiveAvailability BooleanPreference provideLiveAvailibilityPreference(@ForApp SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_LIVE_AVAILABILITY, false);
     }
