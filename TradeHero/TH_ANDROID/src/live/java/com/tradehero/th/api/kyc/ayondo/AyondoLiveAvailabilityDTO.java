@@ -8,7 +8,7 @@ import com.tradehero.th.api.market.Country;
 public class AyondoLiveAvailabilityDTO implements LiveAvailabilityDTO
 {
     @JsonProperty("requestorIp") private String requestorIp;
-    @JsonProperty("requestorCoutry") private Country requestorCountry;
+    @JsonProperty("requestorCountry") private Country requestorCountry;
     @JsonProperty("isAvailable") private boolean isAvailable;
 
     public AyondoLiveAvailabilityDTO()
