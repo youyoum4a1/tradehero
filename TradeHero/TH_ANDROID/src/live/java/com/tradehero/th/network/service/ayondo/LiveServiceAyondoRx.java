@@ -19,7 +19,7 @@ import rx.Observable;
 
 public interface LiveServiceAyondoRx
 {
-    @GET("/kyc/ayondo/available")
+    @GET("/kyc/ayondo/availability")
     Observable<AyondoLiveAvailabilityDTO> getAvailability();
 
     @GET("/kyc/ayondo/currentapplication")
