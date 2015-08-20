@@ -107,12 +107,20 @@ public class IdentityPromptActivity extends BaseActivity
                                 {
                                     @Override public void call(IdentityPromptInfoDTO identityPromptInfoDTO)
                                     {
-                                        picasso.load(identityPromptInfoDTO.image)
-                                                .placeholder(identityPromptInfoDTO.country.logoId)
-                                                .into(imgPrompt);
-                                        scanSpecificId.setText(identityPromptInfoDTO.prompt);
-                                        imgPrompt.setVisibility(View.VISIBLE);
-                                        scanSpecificId.setVisibility(View.VISIBLE);
+                                        if (identityPromptInfoDTO != null)
+                                        {
+                                            picasso.load(identityPromptInfoDTO.image)
+                                                    .placeholder(identityPromptInfoDTO.country.logoId)
+                                                    .into(imgPrompt);
+                                            scanSpecificId.setText(identityPromptInfoDTO.prompt);
+                                            imgPrompt.setVisibility(View.VISIBLE);
+                                            scanSpecificId.setVisibility(View.VISIBLE);
+                                        }
+                                        else
+                                        {
+                                            imgPrompt.setVisibility(View.GONE);
+                                            scanSpecificId.setVisibility(View.GONE);
+                                        }
                                     }
                                 })
                                 .map(new Func1<IdentityPromptInfoDTO, LiveBrokerSituationDTO>()

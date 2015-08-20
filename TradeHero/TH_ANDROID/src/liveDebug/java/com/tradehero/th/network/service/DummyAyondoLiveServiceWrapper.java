@@ -130,7 +130,7 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
         }
         else
         {
-            throw new IllegalArgumentException("Unhandled country " + country);
+            return Observable.just(null);
         }
         return Observable.just(identityPromptInfo);
     }
