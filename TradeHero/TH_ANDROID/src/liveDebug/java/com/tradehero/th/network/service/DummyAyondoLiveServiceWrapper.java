@@ -40,6 +40,7 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
 {
     private static final int AYONDO_LIVE_BROKER_ID = 1;
     private static final String AYONDO_LIVE_BROKER_NAME = "ayondo markets";
+    private static final int AYONDO_MINIMUM_AGE = 21;
 
     @Inject public DummyAyondoLiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
@@ -106,7 +107,7 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
                 DummyAyondoData.TERMS_CONDITIONS_URL,
                 DummyAyondoData.RISK_WARNING_DISCLAIMER_URL,
                 DummyAyondoData.DATA_SHARING_AGREEMENT_URL,
-                21);
+                AYONDO_MINIMUM_AGE);
         return Observable.just(options);
     }
 
