@@ -66,6 +66,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         subscriptions.add(
                 Observable.combineLatest(
                         liveBrokerSituationDTOObservable
+                                .take(1)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnNext(new Action1<LiveBrokerSituationDTO>()
                                 {
@@ -124,73 +125,70 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 new EmptyAction1<>(),
                                 new TimberOnErrorAction1("Failed to populate AyondoStep2 spinners")));
 
-        subscriptions.add(Observable.combineLatest(
-                brokerDTOObservable,
-                Observable.merge(
-                        AdapterViewObservable.selects(annualIncomeSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
-                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
-                                {
-                                    @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
-                                    {
-                                        return KYCAyondoFormFactory.fromAnnualIncomeRangeEvent(onSelectedEvent);
-                                    }
-                                }),
-                        AdapterViewObservable.selects(netWorthSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
-                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
-                                {
-                                    @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
-                                    {
-                                        return KYCAyondoFormFactory.fromNetWorthRangeEvent(onSelectedEvent);
-                                    }
-                                }),
-                        AdapterViewObservable.selects(percentageInvestmentSpinner)
-                                .distinctUntilChanged(createSpinnerDistinctByPosition())
-                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
-                                {
-                                    @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
-                                    {
-                                        return KYCAyondoFormFactory.fromPercentNetWorthRangeEvent(onSelectedEvent);
-                                    }
-                                }),
-                        AdapterViewObservable.selects(employmentStatusSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
-                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
-                                {
-                                    @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
-                                    {
-                                        return KYCAyondoFormFactory.fromEmploymentStatusEvent(onSelectedEvent);
-                                    }
-                                }),
-                        WidgetObservable.input(employerRegulatedCheckBox).distinctUntilChanged(
-                                new Func1<OnCheckedChangeEvent, Boolean>()
-                                {
-                                    @Override public Boolean call(OnCheckedChangeEvent onCheckedChangeEvent)
-                                    {
-                                        return onCheckedChangeEvent.value();
-                                    }
-                                })
-                                .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
-                                {
-                                    @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
-                                    {
-                                        return KYCAyondoFormFactory.fromEmployerRegulatedEvent(onCheckedChangeEvent);
-                                    }
-                                })),
-                new Func2<LiveBrokerDTO, KYCAyondoForm, LiveBrokerSituationDTO>()
-                {
-                    @Override public LiveBrokerSituationDTO call(LiveBrokerDTO liveBrokerDTO, KYCAyondoForm kycAyondoForm)
-                    {
-                        return new LiveBrokerSituationDTO(liveBrokerDTO, kycAyondoForm);
-                    }
-                })
-                .subscribe(
-                        new Action1<LiveBrokerSituationDTO>()
+        subscriptions.add(Observable.merge(
+                AdapterViewObservable.selects(annualIncomeSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
+                        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
                         {
-                            @Override public void call(LiveBrokerSituationDTO update)
+                            @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
                             {
-                                onNext(update);
+                                return KYCAyondoFormFactory.fromAnnualIncomeRangeEvent(onSelectedEvent);
                             }
-                        },
-                        new TimberOnErrorAction1("Failed to listen to spinner selections")));
+                        }),
+                AdapterViewObservable.selects(netWorthSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
+                        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
+                        {
+                            @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
+                            {
+                                return KYCAyondoFormFactory.fromNetWorthRangeEvent(onSelectedEvent);
+                            }
+                        }),
+                AdapterViewObservable.selects(percentageInvestmentSpinner)
+                        .distinctUntilChanged(createSpinnerDistinctByPosition())
+                        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
+                        {
+                            @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
+                            {
+                                return KYCAyondoFormFactory.fromPercentNetWorthRangeEvent(onSelectedEvent);
+                            }
+                        }),
+                AdapterViewObservable.selects(employmentStatusSpinner).distinctUntilChanged(createSpinnerDistinctByPosition())
+                        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
+                        {
+                            @Override public KYCAyondoForm call(OnSelectedEvent onSelectedEvent)
+                            {
+                                return KYCAyondoFormFactory.fromEmploymentStatusEvent(onSelectedEvent);
+                            }
+                        }),
+                WidgetObservable.input(employerRegulatedCheckBox).distinctUntilChanged(
+                        new Func1<OnCheckedChangeEvent, Boolean>()
+                        {
+                            @Override public Boolean call(OnCheckedChangeEvent onCheckedChangeEvent)
+                            {
+                                return onCheckedChangeEvent.value();
+                            }
+                        })
+                        .map(new Func1<OnCheckedChangeEvent, KYCAyondoForm>()
+                        {
+                            @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
+                            {
+                                return KYCAyondoFormFactory.fromEmployerRegulatedEvent(onCheckedChangeEvent);
+                            }
+                        })).withLatestFrom(brokerDTOObservable, new Func2<KYCAyondoForm, LiveBrokerDTO, LiveBrokerSituationDTO>()
+        {
+            @Override public LiveBrokerSituationDTO call(KYCAyondoForm kycAyondoForm, LiveBrokerDTO liveBrokerDTO)
+            {
+                return new LiveBrokerSituationDTO(liveBrokerDTO, kycAyondoForm);
+            }
+        }).subscribe(
+                new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO update)
+                    {
+                        onNext(update);
+                    }
+                },
+                new TimberOnErrorAction1("Failed to listen to spinner selections")));
+
         return subscriptions;
     }
 
