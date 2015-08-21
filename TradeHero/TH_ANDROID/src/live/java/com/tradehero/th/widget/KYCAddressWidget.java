@@ -7,7 +7,6 @@ import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +31,6 @@ import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
-import rx.functions.Action1;
 import rx.functions.Func5;
 
 public class KYCAddressWidget extends LinearLayout
@@ -148,21 +146,6 @@ public class KYCAddressWidget extends LinearLayout
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<KYCAddress>()
-                {
-                    @Override public void call(KYCAddress kycAddress)
-                    {
-                        boolean enabled =
-                                !(TextUtils.isEmpty(txtLine1.getText())
-                                        || TextUtils.isEmpty(txtCity.getText())
-                                        || TextUtils.isEmpty(txtPostalCode.getText()));
-                        checkBoxLessThanAYear.setEnabled(enabled);
-                        if (!enabled)
-                        {
-                            checkBoxLessThanAYear.setChecked(false);
-                        }
-                    }
-                })
                 .throttleLast(1, TimeUnit.SECONDS);
     }
 
