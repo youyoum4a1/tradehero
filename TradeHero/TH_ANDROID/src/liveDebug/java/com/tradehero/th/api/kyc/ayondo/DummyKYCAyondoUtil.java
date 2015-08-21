@@ -2,6 +2,7 @@ package com.tradehero.th.api.kyc.ayondo;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import com.tradehero.th.api.kyc.AnnualIncomeRange;
 import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.kyc.NetWorthRange;
@@ -47,6 +48,7 @@ public class DummyKYCAyondoUtil
     @NonNull public static StepStatus getStep2(@NonNull KYCAyondoForm kycForm)
     {
         return (kycForm.getAnnualIncomeRange() != null
+                && !kycForm.getAnnualIncomeRange().equals(AnnualIncomeRange.EMPTY)
                 && kycForm.getNetWorthRange() != null
                 && !kycForm.getNetWorthRange().equals(NetWorthRange.EMPTY)
                 && kycForm.getPercentNetWorthForInvestmentRange() != null
