@@ -13,7 +13,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.th.R;
@@ -41,6 +40,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject protected KYCFormOptionsCache kycFormOptionsCache;
 
+    @Bind(R.id.btn_prev) @Nullable protected View btnPrev;
     @Bind(R.id.btn_next) @Nullable protected View btnNext;
 
     @NonNull protected PublishSubject<Boolean> prevNextSubject;
@@ -73,24 +73,6 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     {
         liveBrokerSituationPreference.set(situationDTO);
     }
-
-    @SuppressWarnings({"unused", "NullableProblems"})
-    @OnClick({R.id.btn_prev, R.id.btn_next}) @Nullable
-    protected void onButtonClicked(View clicked)
-    {
-        switch (clicked.getId())
-        {
-            case R.id.btn_prev:
-                prevNextSubject.onNext(false);
-                break;
-            case R.id.btn_next:
-                prevNextSubject.onNext(true);
-                onNextPressed();
-                break;
-        }
-    }
-
-    protected abstract void onNextPressed();
 
     @NonNull public Observable<Boolean> getPrevNextObservabel()
     {

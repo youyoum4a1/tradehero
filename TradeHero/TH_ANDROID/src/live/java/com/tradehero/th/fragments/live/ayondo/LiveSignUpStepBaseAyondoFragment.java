@@ -4,7 +4,6 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.th.api.kyc.BrokerApplicationDTO;
-import com.tradehero.th.api.kyc.KYCForm;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
@@ -23,8 +22,11 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.observables.ConnectableObservable;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -91,6 +93,51 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
     @Override protected final List<Subscription> onInitSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
             Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable, Observable<KYCFormOptionsDTO> kycFormOptionsDTOObservable)
     {
+        onDestroySubscriptions.add(Observable.merge(
+                (btnNext != null ? ViewObservable.clicks(btnNext) : Observable.<OnClickEvent>empty())
+                        .doOnNext(new Action1<OnClickEvent>()
+                        {
+                            @Override public void call(OnClickEvent onClickEvent)
+                            {
+                                prevNextSubject.onNext(true);
+                            }
+                        }),
+                (btnPrev != null ? ViewObservable.clicks(btnPrev) : Observable.<OnClickEvent>empty())
+                        .doOnNext(new Action1<OnClickEvent>()
+                        {
+                            @Override public void call(OnClickEvent onClickEvent)
+                            {
+                                prevNextSubject.onNext(false);
+                            }
+                        }))
+                .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnClickEvent, LiveBrokerSituationDTO, KYCAyondoForm>()
+                {
+                    @Override public KYCAyondoForm call(OnClickEvent onClickEvent, LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        return (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
+                    }
+                })
+                .flatMap(new Func1<KYCAyondoForm, Observable<BrokerApplicationDTO>>()
+                {
+                    @Override public Observable<BrokerApplicationDTO> call(KYCAyondoForm kycAyondoForm)
+                    {
+                        return liveServiceWrapper.createOrUpdateLead(kycAyondoForm);
+                    }
+                })
+                .subscribe(new Action1<BrokerApplicationDTO>()
+                {
+                    @Override public void call(BrokerApplicationDTO brokerApplicationDTO)
+                    {
+                        Timber.d("broker application %s: ", brokerApplicationDTO);
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        Timber.e(throwable, "Error in creating lead");
+                    }
+                }));
+
         kycAyondoFormOptionsObservable = createKYCAyondoFormOptionsObservable(kycFormOptionsDTOObservable).publish();
         return this.onInitAyondoSubscription(brokerDTOObservable, liveBrokerSituationDTOObservable, kycAyondoFormOptionsObservable);
     }
@@ -153,29 +200,4 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
         };
     }
 
-    @Override protected final void onNextPressed()
-    {
-        //Send form to server to create lead
-        KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
-        onNextPressed((KYCAyondoForm) kycForm);
-    }
-
-    protected void onNextPressed(KYCAyondoForm kycAyondoForm)
-    {
-        onDestroySubscriptions.add(
-                liveServiceWrapper.createOrUpdateLead(kycAyondoForm)
-                        .subscribe(new Action1<BrokerApplicationDTO>()
-                        {
-                            @Override public void call(BrokerApplicationDTO brokerApplicationDTO)
-                            {
-                                Timber.d("broker application %s: ", brokerApplicationDTO);
-                            }
-                        }, new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable throwable)
-                            {
-                                Timber.e(throwable, "Error in creating lead");
-                            }
-                        }));
-    }
 }
