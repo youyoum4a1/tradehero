@@ -67,7 +67,8 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
                         kycAyondoForm.setCountry(liveAvailabilityDTO.getRequestorCountry());
                         kycAyondoForm.setStepStatuses(DummyKYCAyondoUtil.getSteps(kycAyondoForm).stepStatuses);
                         LiveBrokerSituationDTO brokerSituationDTO =
-                                new LiveBrokerSituationDTO(new LiveBrokerDTO(new LiveBrokerId(AYONDO_LIVE_BROKER_ID), AYONDO_LIVE_BROKER_NAME), kycAyondoForm);
+                                new LiveBrokerSituationDTO(new LiveBrokerDTO(new LiveBrokerId(AYONDO_LIVE_BROKER_ID), AYONDO_LIVE_BROKER_NAME),
+                                        kycAyondoForm);
                         return new LiveTradingSituationDTO(Collections.singletonList(brokerSituationDTO));
                     }
                 });
@@ -114,14 +115,7 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
     @NonNull @Override public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(@NonNull Country country)
     {
         IdentityPromptInfoDTO identityPromptInfo;
-        if (country.equals(Country.AU))
-        {
-            identityPromptInfo = new IdentityPromptInfoDTO(
-                    country,
-                    "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/static/icn-au.png",
-                    "Do you have your Passport with you?");
-        }
-        else if (country.equals(Country.SG))
+        if (country.equals(Country.SG))
         {
             identityPromptInfo = new IdentityPromptInfoDTO(
                     country,
