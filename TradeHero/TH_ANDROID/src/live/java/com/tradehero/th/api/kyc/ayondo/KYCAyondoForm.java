@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
@@ -34,43 +33,42 @@ public class KYCAyondoForm implements KYCForm
 
     @Nullable private Country country;
     @Nullable private ScanReference scanReference;
-    @JsonProperty("Gender") @Nullable private AyondoGender ayondoGender;
+    @Nullable private AyondoGender ayondoGender;
     @JsonIgnore @Deprecated @Nullable private String fullName;
-    @JsonProperty("FirstName") @Nullable private String firstName;
-    @JsonProperty("LastName") @Nullable private String lastName;
-    @JsonProperty("MiddleName") @Nullable private String middleName;
-    @JsonProperty("Email") @Nullable private String email;
-    @Nullable private String verifiedEmail;
-    @JsonProperty("PhonePrimaryCountryCode") @Nullable private Country phonePrimaryCountryCode;
-    @JsonProperty("PhonePrimary") @Nullable private String mobileNumber;
+    @Nullable private String firstName;
+    @Nullable private String lastName;
+    @Nullable private String middleName;
+    @Nullable private String email;
+    @Nullable private Country phonePrimaryCountryCode;
+    @Nullable private String mobileNumber;
     @Nullable private Integer verifiedMobileNumberDialingPrefix;
     @Nullable private String verifiedMobileNumber;
-    @JsonProperty("Nationality") @Nullable private CountryCode nationality;
+    @Nullable private CountryCode nationality;
     @Nullable private CountryCode residency;
-    @JsonProperty("DateOfBirth") @Nullable private String dob;
-    @JsonProperty("AnnualIncome") @Nullable private AnnualIncomeRange annualIncomeRange;
-    @JsonProperty("NetWorth") @Nullable private NetWorthRange netWorthRange;
-    @JsonProperty("InvestmentPortfolio") @Nullable private PercentNetWorthForInvestmentRange percentNetWorthForInvestmentRange;
-    @JsonProperty("EmploymentStatus") @Nullable private EmploymentStatus employmentStatus;
-    @JsonProperty("IsEmployerRegulated") @Nullable private Boolean employerRegulatedFinancial;
-    @JsonProperty("HasProfessionalExperience") @Nullable private Boolean workedInFinance1Year;
-    @JsonProperty("HasAttendedTraining") @Nullable private Boolean attendedSeminarAyondo;
-    @JsonProperty("HasOtherQualification") @Nullable private Boolean haveOtherQualification;
-    @JsonProperty("NumberOfMarginTrades") @Nullable private TradingPerQuarter tradingPerQuarter;
-    @JsonProperty("LeveragedProducts") @Nullable private AyondoLeveragedProductList leveragedProducts;
-    @JsonProperty("AddressCity") @Nullable private String addressCity;
-    @JsonProperty("AddressCountry") @Nullable private CountryCode addressCountry;
-    @JsonProperty("AddressLine1") @Nullable private String addressLine1;
-    @JsonProperty("AddressLine2") @Nullable private String addressLine2;
-    @JsonProperty("AddressZip") @Nullable private String addressZip;
+    @Nullable private String dob;
+    @Nullable private AnnualIncomeRange annualIncomeRange;
+    @Nullable private NetWorthRange netWorthRange;
+    @Nullable private PercentNetWorthForInvestmentRange percentNetWorthForInvestmentRange;
+    @Nullable private EmploymentStatus employmentStatus;
+    @Nullable private Boolean employerRegulatedFinancial;
+    @Nullable private Boolean workedInFinance1Year;
+    @Nullable private Boolean attendedSeminarAyondo;
+    @Nullable private Boolean haveOtherQualification;
+    @Nullable private TradingPerQuarter tradingPerQuarter;
+    @Nullable private AyondoLeveragedProductList leveragedProducts;
+    @Nullable private String addressCity;
+    @Nullable private CountryCode addressCountry;
+    @Nullable private String addressLine1;
+    @Nullable private String addressLine2;
+    @Nullable private String addressZip;
     @Nullable private Boolean addressLessThanAYear;
-    @JsonProperty("PreviousAddressCity") @Nullable private String previousAddressCity;
-    @JsonProperty("PreviousAddressCountry") @Nullable private CountryCode previousAddressCountry;
-    @JsonProperty("PreviousAddressLine1") @Nullable private String previousAddressLine1;
-    @JsonProperty("PreviousAddressLine2") @Nullable private String previousAddressLine2;
-    @JsonProperty("PreviousAddressZip") @Nullable private String previousAddressZip;
-    @JsonProperty("IdentificationDocument") @Nullable private AyondoIdentityDocumentType identificationDocument;
-    @JsonProperty("IdentificationNumber") @Nullable private String identificationNumber;
+    @Nullable private String previousAddressCity;
+    @Nullable private CountryCode previousAddressCountry;
+    @Nullable private String previousAddressLine1;
+    @Nullable private String previousAddressLine2;
+    @Nullable private String previousAddressZip;
+    @Nullable private AyondoIdentityDocumentType identificationDocument;
+    @Nullable private String identificationNumber;
     @Nullable private String identityDocumentUrl;
     @Nullable @JsonIgnore private Boolean clearIdentityDocumentUrl;
     @Nullable private ResidenceScannedDocumentType residenceDocumentType;
@@ -82,18 +80,18 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean needIdentityDocument;
     @Nullable private Boolean needResidencyDocument;
 
-    @JsonProperty("Guid") @Nullable private String guid;
-    @JsonProperty("AddressCheckGuid") @Nullable private String addressCheckUid;
-    @JsonProperty("IdentityCheckGuid") @Nullable private String identityCheckUid;
-    @JsonProperty("LeadGuid") @Nullable private String leadGuid;
+    @Nullable private String guid;
+    @Nullable private String addressCheckUid;
+    @Nullable private String identityCheckUid;
+    @Nullable private String leadGuid;
 
-    @JsonProperty("SubscribeOffers") @Nullable private Boolean subscribeOffers;
-    @JsonProperty("SubscribeTradeNotifications") @Nullable private Boolean subscribeTradeNotifications;
+    @Nullable private Boolean subscribeOffers;
+    @Nullable private Boolean subscribeTradeNotifications;
 
     //TODO Hardcoded for now
-    @JsonProperty("Language") private final String language = "EN";
-    @JsonProperty("Currency") private final String currency = "USD";
-    @JsonProperty("WhiteLabel") private final String whiteLabel = "TradeHero";
+    private final String language = "EN";
+    private final String currency = "USD";
+    private final String whiteLabel = "TradeHero";
 
     private List<StepStatus> stepStatuses;
 
@@ -167,7 +165,6 @@ public class KYCAyondoForm implements KYCForm
             this.lastName = ayondoForm.lastName != null ? ayondoForm.lastName : this.lastName;
             this.middleName = ayondoForm.middleName != null ? ayondoForm.middleName : this.middleName;
             this.email = ayondoForm.getEmail() != null ? ayondoForm.getEmail() : this.email;
-            this.verifiedEmail = ayondoForm.getVerifiedEmail() != null ? ayondoForm.getVerifiedEmail() : this.verifiedEmail;
             this.phonePrimaryCountryCode =
                     ayondoForm.phonePrimaryCountryCode != null ? ayondoForm.phonePrimaryCountryCode : this.phonePrimaryCountryCode;
             this.mobileNumber = ayondoForm.getMobileNumber() != null ? ayondoForm.getMobileNumber() : this.mobileNumber;
@@ -329,16 +326,6 @@ public class KYCAyondoForm implements KYCForm
     public void setEmail(@Nullable String email)
     {
         this.email = email;
-    }
-
-    @Nullable String getVerifiedEmail()
-    {
-        return verifiedEmail;
-    }
-
-    public void setVerifiedEmail(@Nullable String verifiedEmail)
-    {
-        this.verifiedEmail = verifiedEmail;
     }
 
     //<editor-fold desc="Phone Number">
@@ -875,19 +862,10 @@ public class KYCAyondoForm implements KYCForm
             same &= lastName == null ? ayondoForm.lastName == null : lastName.equals(ayondoForm.lastName);
             same &= middleName == null ? ayondoForm.middleName == null : middleName.equals(ayondoForm.middleName);
             same &= email == null ? ayondoForm.email == null : email.equals(ayondoForm.email);
-            same &= verifiedEmail == null
-                    ? ayondoForm.verifiedEmail == null
-                    : verifiedEmail.equals(ayondoForm.verifiedEmail);
-            same &= phonePrimaryCountryCode == null
-                    ? ayondoForm.phonePrimaryCountryCode == null
-                    : phonePrimaryCountryCode.equals(ayondoForm.phonePrimaryCountryCode);
+            same &= phonePrimaryCountryCode == null ? ayondoForm.phonePrimaryCountryCode == null : phonePrimaryCountryCode.equals(ayondoForm.phonePrimaryCountryCode);
             same &= mobileNumber == null ? ayondoForm.mobileNumber == null : mobileNumber.equals(ayondoForm.mobileNumber);
-            same &= verifiedMobileNumberDialingPrefix == null
-                    ? ayondoForm.verifiedMobileNumberDialingPrefix == null
-                    : verifiedMobileNumberDialingPrefix.equals(ayondoForm.verifiedMobileNumberDialingPrefix);
-            same &= verifiedMobileNumber == null
-                    ? ayondoForm.verifiedMobileNumber == null
-                    : verifiedMobileNumber.equals(ayondoForm.verifiedMobileNumber);
+            same &= verifiedMobileNumberDialingPrefix == null ? ayondoForm.verifiedMobileNumberDialingPrefix == null : verifiedMobileNumberDialingPrefix.equals(ayondoForm.verifiedMobileNumberDialingPrefix);
+            same &= verifiedMobileNumber == null ? ayondoForm.verifiedMobileNumber == null : verifiedMobileNumber.equals(ayondoForm.verifiedMobileNumber);
             same &= nationality == null ? ayondoForm.nationality == null : nationality.equals(ayondoForm.nationality);
             same &= residency == null ? ayondoForm.residency == null : residency.equals(ayondoForm.residency);
             same &= dob == null ? ayondoForm.dob == null : dob.equals(ayondoForm.dob);
@@ -984,7 +962,6 @@ public class KYCAyondoForm implements KYCForm
         code ^= lastName == null ? 0 : lastName.hashCode();
         code ^= middleName == null ? 0 : middleName.hashCode();
         code ^= email == null ? 0 : email.hashCode();
-        code ^= verifiedEmail == null ? 0 : verifiedEmail.hashCode();
         code ^= phonePrimaryCountryCode == null ? 0 : phonePrimaryCountryCode.hashCode();
         code ^= mobileNumber == null ? 0 : mobileNumber.hashCode();
         code ^= verifiedMobileNumberDialingPrefix == null ? 0 : verifiedMobileNumberDialingPrefix.hashCode();
@@ -1051,7 +1028,6 @@ public class KYCAyondoForm implements KYCForm
                 ", lastName='" + lastName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", email='" + email + '\'' +
-                ", verifiedEmail='" + verifiedEmail + '\'' +
                 ", phonePrimaryCountryCode=" + phonePrimaryCountryCode +
                 ", mobileNumber='" + mobileNumber + '\'' +
                 ", verifiedMobileNumberDialingPrefix=" + verifiedMobileNumberDialingPrefix +

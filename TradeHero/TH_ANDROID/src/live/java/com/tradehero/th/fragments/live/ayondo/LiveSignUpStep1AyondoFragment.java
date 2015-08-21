@@ -404,17 +404,17 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         KYCAyondoForm update = new KYCAyondoForm();
                                         int dialingPrefix = phoneNumberAndVerifiedDTO.dialingPrefix;
                                         String newNumber = phoneNumberAndVerifiedDTO.typedNumber;
-                                        if (phoneNumberAndVerifiedDTO.verified)
-                                        {
-                                            update.setVerifiedMobileNumberDialingPrefix(dialingPrefix);
-                                            update.setVerifiedMobileNumber(newNumber);
-                                        }
                                         //noinspection ConstantConditions
                                         liveBrokerSituationDTO.kycForm.pickFrom(update);
                                         //noinspection ConstantConditions
                                         populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, phoneNumberAndVerifiedDTO);
                                         update.setPhonePrimaryCountryCode(phoneNumberAndVerifiedDTO.dialingCountry);
                                         update.setMobileNumber(newNumber);
+                                        if (phoneNumberAndVerifiedDTO.verified)
+                                        {
+                                            update.setVerifiedMobileNumberDialingPrefix(dialingPrefix);
+                                            update.setVerifiedMobileNumber(newNumber);
+                                        }
 
                                         return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
                                     }
