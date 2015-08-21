@@ -348,14 +348,16 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     String add1 = addr.getAddressLine(0);
                                     String add2 = addr.getAddressLine(1);
 
-                                    if (addr.getPostalCode() != null)
-                                    {
-                                        add2 = add2.replace(addr.getPostalCode(), "");
-                                    }
+                                    if (add2 != null) {
+                                        if (addr.getPostalCode() != null)
+                                        {
+                                            add2 = add2.replace(addr.getPostalCode(), "");
+                                        }
 
-                                    if (addr.getCountryName() != null)
-                                    {
-                                        add2 = add2.replace(addr.getCountryName(), "");
+                                        if (addr.getCountryName() != null)
+                                        {
+                                            add2 = add2.replace(addr.getCountryName(), "");
+                                        }
                                     }
 
                                     String city = (addr.getAdminArea() != null) ? addr.getAdminArea() : addr.getCountryName();
