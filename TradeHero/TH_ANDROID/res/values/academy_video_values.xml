@@ -9,7 +9,4 @@
 
   <color name="video_thumbnail_strip_background">#ff0a0a0a</color>
   <color name="video_title_background">#aaffffff</color>
-
-  <string name="error_loading_videos">An error has occurred while loading for videos</string>
-  <string name="unable_to_play_videos">Unable to find any application to play this video</string>
 </resources>

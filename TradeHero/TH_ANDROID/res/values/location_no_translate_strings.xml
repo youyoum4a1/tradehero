@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="location_summary" translatable="false">%1$s - %2$s</string>
+
+  <string name="location_name_ad" translatable="false">Andorra</string>
+  <string name="location_name_ae" translatable="false">United Arab Emirates</string>
+  <string name="location_name_af" translatable="false">Afghanistan</string>
+  <string name="location_name_ag" translatable="false">Antigua and Barbuda</string>
+  <string name="location_name_ai" translatable="false">Anguilla</string>
+  <string name="location_name_al" translatable="false">Albania</string>
+  <string name="location_name_am" translatable="false">Armenia</string>
+  <string name="location_name_an" translatable="false">Netherlands Antilles</string>
+  <string name="location_name_ao" translatable="false">Angola</string>
+  <string name="location_name_aq" translatable="false">Antarctica</string>
+  <string name="location_name_ar" translatable="false">Argentina</string>
+  <string name="location_name_as" translatable="false">American Samoa</string>
+  <string name="location_name_at" translatable="false">Austria</string>
+  <string name="location_name_au" translatable="false">Australia</string>
+  <string name="location_name_aw" translatable="false">Aruba</string>
+  <string name="location_name_ax" translatable="false">Åland Islands</string>
+  <string name="location_name_az" translatable="false">Azerbaijan</string>
+  <string name="location_name_ba" translatable="false">Bosnia and Herzegovina</string>
+  <string name="location_name_bb" translatable="false">Barbados</string>
+  <string name="location_name_be" translatable="false">Belgium</string>
+  <string name="location_name_bd" translatable="false">Bangladesh</string>
+  <string name="location_name_bf" translatable="false">Burkina Faso</string>
+  <string name="location_name_bg" translatable="false">Bulgaria</string>
+  <string name="location_name_bh" translatable="false">Bahrain</string>
+  <string name="location_name_bi" translatable="false">Burundi</string>
+  <string name="location_name_bj" translatable="false">Benin</string>
+  <string name="location_name_bl" translatable="false">Saint Barthélemy</string>
+  <string name="location_name_bm" translatable="false">Bermuda</string>
+  <string name="location_name_bn" translatable="false">Brunei Darussalam</string>
+  <string name="location_name_bo" translatable="false">Bolivia, Plurinational State of</string>
+  <string name="location_name_bq" translatable="false">Bonaire, Sint Eustatius and Saba</string>
+  <string name="location_name_br" translatable="false">Brazil</string>
+  <string name="location_name_bs" translatable="false">Bahamas</string>
+  <string name="location_name_bt" translatable="false">Bhutan</string>
+  <string name="location_name_bv" translatable="false">Bouvet Island</string>
+  <string name="location_name_bw" translatable="false">Botswana</string>
+  <string name="location_name_by" translatable="false">Belarus</string>
+  <string name="location_name_bz" translatable="false">Belize</string>
+  <string name="location_name_ca" translatable="false">Canada</string>
+  <string name="location_name_cc" translatable="false">Cocos (Keeling) Islands</string>
+  <string name="location_name_cd" translatable="false">Congo, the Democratic Republic of the</string>
+  <string name="location_name_cf" translatable="false">Central African Republic</string>
+  <string name="location_name_cg" translatable="false">Congo</string>
+  <string name="location_name_ch" translatable="false">Switzerland</string>
+  <string name="location_name_ci" translatable="false">Côte d\'Ivoire</string>
+  <string name="location_name_ck" translatable="false">Cook Islands</string>
+  <string name="location_name_cl" translatable="false">Chile</string>
+  <string name="location_name_cm" translatable="false">Cameroon</string>
+  <string name="location_name_co" translatable="false">Colombia</string>
+  <string name="location_name_cr" translatable="false">Costa Rica</string>
+  <string name="location_name_cs" translatable="false">Former Serbia and Montenegro</string>
+  <string name="location_name_cv" translatable="false">Cabo Verde</string>
+  <string name="location_name_cx" translatable="false">Christmas Island</string>
+  <string name="location_name_cu" translatable="false">Cuba</string>
+  <string name="location_name_cw" translatable="false">Curaçao</string>
+  <string name="location_name_cy" translatable="false">Cyprus</string>
+  <string name="location_name_cz" translatable="false">Czech Republic</string>
+  <string name="location_name_de" translatable="false">Germany</string>
+  <string name="location_name_dk" translatable="false">Denmark</string>
+  <string name="location_name_dj" translatable="false">Djibouti</string>
+  <string name="location_name_dm" translatable="false">Dominica</string>
+  <string name="location_name_do" translatable="false">Dominican Republic</string>
+  <string name="location_name_dz" translatable="false">Algeria</string>
+  <string name="location_name_ec" translatable="false">Ecuador</string>
+  <string name="location_name_ee" translatable="false">Estonia</string>
+  <string name="location_name_eg" translatable="false">Egypt</string>
+  <string name="location_name_eh" translatable="false">Western Sahara</string>
+  <string name="location_name_es" translatable="false">Spain</string>
+  <string name="location_name_er" translatable="false">Eritrea</string>
+  <string name="location_name_et" translatable="false">Ethiopia</string>
+  <string name="location_name_eu" translatable="false">European Union</string>
+  <string name="location_name_fi" translatable="false">Finland</string>
+  <string name="location_name_fj" translatable="false">Fiji</string>
+  <string name="location_name_fk" translatable="false">Falkland Islands (Malvinas)</string>
+  <string name="location_name_fm" translatable="false">Micronesia, Federated States of</string>
+  <string name="location_name_fo" translatable="false">Faroe Islands</string>
+  <string name="location_name_fr" translatable="false">France</string>
+  <string name="location_name_ga" translatable="false">Gabon</string>
+  <string name="location_name_gb" translatable="false">United Kingdom</string>
+  <string name="location_name_gd" translatable="false">Grenada</string>
+  <string name="location_name_ge" translatable="false">Georgia</string>
+  <string name="location_name_gf" translatable="false">French Guiana</string>
+  <string name="location_name_gg" translatable="false">Guernsey</string>
+  <string name="location_name_gh" translatable="false">Ghana</string>
+  <string name="location_name_gi" translatable="false">Gibraltar</string>
+  <string name="location_name_gl" translatable="false">Greenland</string>
+  <string name="location_name_gm" translatable="false">Gambia</string>
+  <string name="location_name_gn" translatable="false">Guinea</string>
+  <string name="location_name_gp" translatable="false">Guadeloupe</string>
+  <string name="location_name_gq" translatable="false">Equatorial Guinea</string>
+  <string name="location_name_gr" translatable="false">Greece</string>
+  <string name="location_name_gs" translatable="false">South Georgia and the South Sandwich Islands</string>
+  <string name="location_name_gt" translatable="false">Guatemala</string>
+  <string name="location_name_gu" translatable="false">Guam</string>
+  <string name="location_name_gw" translatable="false">Guinea-Bissau</string>
+  <string name="location_name_gy" translatable="false">Guyana</string>
+  <string name="location_name_hm" translatable="false">Heard Island and McDonald Islands</string>
+  <string name="location_name_hn" translatable="false">Honduras</string>
+  <string name="location_name_hr" translatable="false">Croatia</string>
+  <string name="location_name_ht" translatable="false">Haiti</string>
+  <string name="location_name_hu" translatable="false">Hungary</string>
+  <string name="location_name_id" translatable="false">Indonesia</string>
+  <string name="location_name_ie" translatable="false">Ireland</string>
+  <string name="location_name_il" translatable="false">Israel</string>
+  <string name="location_name_im" translatable="false">Isle of Man</string>
+  <string name="location_name_in" translatable="false">India</string>
+  <string name="location_name_io" translatable="false">British Indian Ocean Territory</string>
+  <string name="location_name_iq" translatable="false">Iraq</string>
+  <string name="location_name_ir" translatable="false">Iran, Islamic Republic of</string>
+  <string name="location_name_is" translatable="false">Iceland</string>
+  <string name="location_name_it" translatable="false">Italy</string>
+  <string name="location_name_je" translatable="false">Jersey</string>
+  <string name="location_name_jm" translatable="false">Jamaica</string>
+  <string name="location_name_jo" translatable="false">Jordan</string>
+  <string name="location_name_jp" translatable="false">Japan</string>
+  <string name="location_name_ke" translatable="false">Kenya</string>
+  <string name="location_name_kg" translatable="false">Kyrgyzstan</string>
+  <string name="location_name_kh" translatable="false">Cambodia</string>
+  <string name="location_name_ki" translatable="false">Kiribati</string>
+  <string name="location_name_km" translatable="false">Comoros</string>
+  <string name="location_name_kn" translatable="false">Saint Kitts and Nevis</string>
+  <string name="location_name_kp" translatable="false">Korea, Democratic People\'s Republic of</string>
+  <string name="location_name_kr" translatable="false">Korea, Republic of</string>
+  <string name="location_name_kv" translatable="false">Kosovo</string>
+  <string name="location_name_kw" translatable="false">Kuwait</string>
+  <string name="location_name_ky" translatable="false">Cayman Islands</string>
+  <string name="location_name_kz" translatable="false">Kazakhstan</string>
+  <string name="location_name_la" translatable="false">Lao People\'s Democratic Republic</string>
+  <string name="location_name_lb" translatable="false">Lebanon</string>
+  <string name="location_name_lc" translatable="false">Saint Lucia</string>
+  <string name="location_name_li" translatable="false">Liechtenstein</string>
+  <string name="location_name_lk" translatable="false">Sri Lanka</string>
+  <string name="location_name_lr" translatable="false">Liberia</string>
+  <string name="location_name_ls" translatable="false">Lesotho</string>
+  <string name="location_name_lt" translatable="false">Lithuania</string>
+  <string name="location_name_lu" translatable="false">Luxembourg</string>
+  <string name="location_name_lv" translatable="false">Latvia</string>
+  <string name="location_name_ly" translatable="false">Libya</string>
+  <string name="location_name_ma" translatable="false">Morocco</string>
+  <string name="location_name_mc" translatable="false">Monaco</string>
+  <string name="location_name_md" translatable="false">Moldova, Republic of</string>
+  <string name="location_name_me" translatable="false">Montenegro</string>
+  <string name="location_name_mf" translatable="false">Saint Martin (French part)</string>
+  <string name="location_name_mg" translatable="false">Madagascar</string>
+  <string name="location_name_mh" translatable="false">Marshall Islands</string>
+  <string name="location_name_mk" translatable="false">Macedonia, the former Yugoslav Republic of</string>
+  <string name="location_name_ml" translatable="false">Mali</string>
+  <string name="location_name_mm" translatable="false">Myanmar</string>
+  <string name="location_name_mn" translatable="false">Mongolia</string>
+  <string name="location_name_mp" translatable="false">Northern Mariana Islands</string>
+  <string name="location_name_mq" translatable="false">Martinique</string>
+  <string name="location_name_mr" translatable="false">Mauritania</string>
+  <string name="location_name_ms" translatable="false">Montserrat</string>
+  <string name="location_name_mt" translatable="false">Malta</string>
+  <string name="location_name_mu" translatable="false">Mauritius</string>
+  <string name="location_name_mv" translatable="false">Maldives</string>
+  <string name="location_name_mw" translatable="false">Malawi</string>
+  <string name="location_name_mx" translatable="false">Mexico</string>
+  <string name="location_name_my" translatable="false">Malaysia</string>
+  <string name="location_name_mz" translatable="false">Mozambique</string>
+  <string name="location_name_na" translatable="false">Namibia</string>
+  <string name="location_name_nc" translatable="false">New Caledonia</string>
+  <string name="location_name_ne" translatable="false">Niger</string>
+  <string name="location_name_nf" translatable="false">Norfolk Island</string>
+  <string name="location_name_ng" translatable="false">Nigeria</string>
+  <string name="location_name_ni" translatable="false">Nicaragua</string>
+  <string name="location_name_nl" translatable="false">Netherlands</string>
+  <string name="location_name_no" translatable="false">Norway</string>
+  <string name="location_name_np" translatable="false">Nepal</string>
+  <string name="location_name_nr" translatable="false">Nauru</string>
+  <string name="location_name_nu" translatable="false">Niue</string>
+  <string name="location_name_nz" translatable="false">New Zealand</string>
+  <string name="location_name_om" translatable="false">Oman</string>
+  <string name="location_name_pa" translatable="false">Panama</string>
+  <string name="location_name_pe" translatable="false">Peru</string>
+  <string name="location_name_pf" translatable="false">French Polynesia</string>
+  <string name="location_name_pg" translatable="false">Papua New Guinea</string>
+  <string name="location_name_ph" translatable="false">Philippines</string>
+  <string name="location_name_pk" translatable="false">Pakistan</string>
+  <string name="location_name_pl" translatable="false">Poland</string>
+  <string name="location_name_pm" translatable="false">Saint Pierre and Miquelon</string>
+  <string name="location_name_pn" translatable="false">Pitcairn</string>
+  <string name="location_name_pr" translatable="false">Puerto Rico</string>
+  <string name="location_name_ps" translatable="false">Palestine, State of</string>
+  <string name="location_name_pt" translatable="false">Portugal</string>
+  <string name="location_name_pw" translatable="false">Palau</string>
+  <string name="location_name_py" translatable="false">Paraguay</string>
+  <string name="location_name_qa" translatable="false">Qatar</string>
+  <string name="location_name_re" translatable="false">Réunion</string>
+  <string name="location_name_ro" translatable="false">Romania</string>
+  <string name="location_name_rs" translatable="false">Serbia</string>
+  <string name="location_name_ru" translatable="false">Russian Federation</string>
+  <string name="location_name_rw" translatable="false">Rwanda</string>
+  <string name="location_name_sa" translatable="false">Saudi Arabia</string>
+  <string name="location_name_sb" translatable="false">Solomon Islands</string>
+  <string name="location_name_sc" translatable="false">Seychelles</string>
+  <string name="location_name_sd" translatable="false">Sudan</string>
+  <string name="location_name_se" translatable="false">Sweden</string>
+  <string name="location_name_sg" translatable="false">Singapore</string>
+  <string name="location_name_sh" translatable="false">Saint Helena, Ascension and Tristan da Cunha</string>
+  <string name="location_name_si" translatable="false">Slovenia</string>
+  <string name="location_name_sj" translatable="false">Svalbard and Jan Mayen</string>
+  <string name="location_name_sk" translatable="false">Slovakia</string>
+  <string name="location_name_sl" translatable="false">Sierra Leone</string>
+  <string name="location_name_sm" translatable="false">San Marino</string>
+  <string name="location_name_sn" translatable="false">Senegal</string>
+  <string name="location_name_so" translatable="false">Somalia</string>
+  <string name="location_name_sr" translatable="false">Suriname</string>
+  <string name="location_name_ss" translatable="false">South Sudan</string>
+  <string name="location_name_st" translatable="false">Sao Tome and Principe</string>
+  <string name="location_name_sv" translatable="false">El Salvador</string>
+  <string name="location_name_sx" translatable="false">Sint Maarten (Dutch part)</string>
+  <string name="location_name_sy" translatable="false">Syrian Arab Republic</string>
+  <string name="location_name_sz" translatable="false">Swaziland</string>
+  <string name="location_name_tc" translatable="false">Turks and Caicos Islands</string>
+  <string name="location_name_td" translatable="false">Chad</string>
+  <string name="location_name_tf" translatable="false">French Southern Territories</string>
+  <string name="location_name_tg" translatable="false">Togo</string>
+  <string name="location_name_th" translatable="false">Thailand</string>
+  <string name="location_name_tj" translatable="false">Tajikistan</string>
+  <string name="location_name_tk" translatable="false">Tokelau</string>
+  <string name="location_name_tm" translatable="false">Turkmenistan</string>
+  <string name="location_name_tn" translatable="false">Tunisia</string>
+  <string name="location_name_to" translatable="false">Tonga</string>
+  <string name="location_name_tp" translatable="false">Timor-Leste</string>
+  <string name="location_name_tr" translatable="false">Turkey</string>
+  <string name="location_name_tt" translatable="false">Trinidad and Tobago</string>
+  <string name="location_name_tv" translatable="false">Tuvalu</string>
+  <string name="location_name_tz" translatable="false">Tanzania, United Republic of</string>
+  <string name="location_name_ua" translatable="false">Ukraine</string>
+  <string name="location_name_ug" translatable="false">Uganda</string>
+  <string name="location_name_um" translatable="false">United States Minor Outlying Islands</string>
+  <string name="location_name_us" translatable="false">United States</string>
+  <string name="location_name_uy" translatable="false">Uruguay</string>
+  <string name="location_name_uz" translatable="false">Uzbekistan</string>
+  <string name="location_name_va" translatable="false">Holy See (Vatican City State)</string>
+  <string name="location_name_vc" translatable="false">Saint Vincent and the Grenadines</string>
+  <string name="location_name_ve" translatable="false">Venezuela, Bolivarian Republic of</string>
+  <string name="location_name_vg" translatable="false">Virgin Islands, British</string>
+  <string name="location_name_vi" translatable="false">Virgin Islands, U.S.</string>
+  <string name="location_name_vn" translatable="false">Viet Nam</string>
+  <string name="location_name_vu" translatable="false">Vanuatu</string>
+  <string name="location_name_wf" translatable="false">Wallis and Futuna</string>
+  <string name="location_name_ws" translatable="false">Samoa</string>
+  <string name="location_name_ye" translatable="false">Yemen</string>
+  <string name="location_name_yt" translatable="false">Mayotte</string>
+  <string name="location_name_za" translatable="false">South Africa</string>
+  <string name="location_name_zm" translatable="false">Zambia</string>
+  <string name="location_name_zw" translatable="false">Zimbabwe</string>
+
+</resources>

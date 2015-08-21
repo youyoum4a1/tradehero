@@ -35,11 +35,6 @@
   <string name="warrant_info_underlying">Underlying</string>
   <string name="warrant_info_issuer">Issuer</string>
 
-  <string name="error_find_security_id_to_int">Could not find this security</string>
-  <string name="error_fetch_security_list_info">There was an error when fetching the list of securities</string>
-  <string name="error_fetch_security_info">There was an error when fetching the security information</string>
-  <string name="error_fetch_detailed_security_info">There was an error when fetching the detailed security information</string>
-  <string name="error_fetch_quote">There was an error fetching quote information</string>
   <string name="security_close">Close</string>
 
   <!--do not translate-->

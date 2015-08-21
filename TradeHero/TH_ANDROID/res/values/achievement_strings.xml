@@ -2,11 +2,9 @@
 <resources>
   <string name="achievement_xp_earned_format" translatable="false">+%s XP!</string>
   <string name="achievement_level_up">LEVEL UP!</string>
-  <string name="error_fetch_achievements">There was an error when fetching the list of achievements</string>
   <string name="achievements">Achievements</string>
   <string name="achievement_share">Share!</string>
   <string name="achievement_shared">@string/content_shared</string>
   <string name="achievement_share_failed">Failed, try again?</string>
   <string name="achievement_sharing">Sharing…</string>
-  <string name="empty_achievement_list">Sorry, there are no achievements for now.</string>
 </resources>

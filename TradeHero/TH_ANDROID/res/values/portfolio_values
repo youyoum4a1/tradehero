@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <item name="position_margin_close_out_zero" format="float" type="dimen">0</item>
+  <color name="position_margin_close_out_ok_start">@color/number_green</color>
+  <color name="position_margin_close_out_ok_end">@color/number_green</color>
+  <item name="position_margin_close_out_ok" format="float" type="dimen">0.4999</item>
+  <color name="position_margin_close_out_warn_start">@color/light_yellow</color>
+  <color name="position_margin_close_out_warn_end">@color/orange</color>
+  <item name="position_margin_close_out_warn" format="float" type="dimen">0.9</item>
+  <color name="position_margin_close_out_danger_start">@color/number_red</color>
+  <color name="position_margin_close_out_danger_end">@color/dark_red</color>
+  <item name="position_margin_close_out_danger_one" format="float" type="dimen">1</item>
+
+</resources>

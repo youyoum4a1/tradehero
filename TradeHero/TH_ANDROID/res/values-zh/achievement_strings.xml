@@ -7,5 +7,5 @@
   <string name="achievement_shared">@string/content_shared</string>
   <string name="achievement_share_failed">分享失败，重试一次吗？</string>
   <string name="achievement_sharing">分享中…</string>
-  <string name="empty_achievement_list">抱歉，目前没有成就信息。</string>
+  <string name="error_empty_achievement_list">抱歉，目前没有成就信息。</string>
 </resources>

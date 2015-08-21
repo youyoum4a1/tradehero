@@ -19,8 +19,4 @@
   <string name="invite_friend_request_error">Request error</string>
   <string name="follow_friend_request_error">Request error</string>
 
-  <string name="error_fetch_friends">Failed to retrieve your friends list</string>
-  <string name="error_fetch_local_contacts">Failed to retrieve the contacts from your phone</string>
-  <string name="error_fetch_server_friends">Failed to retrieve your friends list from the server</string>
-
 </resources>

@@ -2,7 +2,6 @@
 <resources>
 
   <string name="relation_following">Following</string>
-  <string name="error_fetch_hero">There was an error when fetching the hero information</string>
 
   <string name="onboard_invitation_follow_hero_header">Follow Some Heroes!</string>
   <string name="onboard_invitation_follow_hero_come_on">Here are some successful Trade Heroes that you can follow and learn from.</string>

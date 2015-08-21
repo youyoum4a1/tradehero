@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="error_loading_videos">An error has occurred while loading for videos</string>
+  <string name="unable_to_play_videos">Unable to find any application to play this video</string>
+</resources>

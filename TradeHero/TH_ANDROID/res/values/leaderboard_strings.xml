@@ -53,11 +53,6 @@
   <string name="leaderboard_follow">@string/follow</string>
   <string name="leaderboard_friend_call_action">Connect your social media accounts and start adding your friends.</string>
 
-  <string name="error_fetch_leaderboard_def_list_key">There was an error when fetching the definition list of leaderboards</string>
-  <string name="error_fetch_leaderboard_def">There was an error when fetching the leaderboard definition</string>
-  <string name="error_fetch_leaderboard_info">There was an error when fetching the current leaderboard information</string>
-  <string name="error_fetch_user_on_leaderboard">There was an error when fetching your current position in this leaderboard</string>
-
   <string name="leaderboard_community_followers">Followers</string>
   <string name="leaderboard_community_heros">Heroes</string>
 

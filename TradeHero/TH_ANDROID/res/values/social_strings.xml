@@ -7,29 +7,6 @@
   <string name="account_already_linked_message">This account is already linked with another TradeHero account.\nTry using another one</string>
   <string name="friend_list_update_message">Give some time to our server to update your friends list, and come back in a minute</string>
 
-  <integer name="social_destination_id_facebook">0</integer>
-  <integer name="social_destination_id_linkedin">1</integer>
-  <integer name="social_destination_id_twitter">2</integer>
-  <integer name="social_destination_id_wechat">3</integer>
-  <integer name="social_destination_id_weibo">4</integer>
-  <integer name="social_destination_id_qq">5</integer>
-
-  <integer-array name="ordered_social_logins">
-    <item>@integer/social_destination_id_facebook</item>
-    <item>@integer/social_destination_id_linkedin</item>
-    <item>@integer/social_destination_id_twitter</item>
-    <item>@integer/social_destination_id_weibo</item>
-    <item>@integer/social_destination_id_qq</item>
-  </integer-array>
-
-  <integer-array name="ordered_share_destinations">
-    <item>@integer/social_destination_id_facebook</item>
-    <item>@integer/social_destination_id_linkedin</item>
-    <item>@integer/social_destination_id_twitter</item>
-    <item>@integer/social_destination_id_wechat</item>
-    <item>@integer/social_destination_id_weibo</item>
-  </integer-array>
-
   <string name="invite_code_title">Claim your virtual dollars!</string>
   <string name="invite_code_message">If you were referred by a friend, enter the referral code here and get free 10,000 virtual dollars.</string>
   <string name="settings_referral_code_message_1">Share your referral code with friends.</string>
@@ -44,6 +21,5 @@
   <string name="referral_code_share_network">Share</string>
   <string name="referral_code_copied_clipboard">%1$s copied to clipboard</string>
   <string name="referral_code_sharing_to_networks">Sharing your referral code to social network(s)</string>
-  <string name="error_share_referral_code_on_network">Sharing on social network(s) failed</string>
 
 </resources>

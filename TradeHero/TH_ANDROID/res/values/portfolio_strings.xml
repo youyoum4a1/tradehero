@@ -30,19 +30,9 @@
 
   <string name="portfolio_title_unnamed">Unnamed Portfolio</string>
 
-  <item name="position_margin_close_out_zero" format="float" type="dimen">0</item>
   <string name="position_margin_close_out_ok">Margin is healthy\u00A0\u00A0(%s)</string>
-  <color name="position_margin_close_out_ok_start">@color/number_green</color>
-  <color name="position_margin_close_out_ok_end">@color/number_green</color>
-  <item name="position_margin_close_out_ok" format="float" type="dimen">0.4999</item>
   <string name="position_margin_close_out_warn">Margin is approaching closeout\u00A0\u00A0(%s)</string>
-  <color name="position_margin_close_out_warn_start">@color/light_yellow</color>
-  <color name="position_margin_close_out_warn_end">@color/orange</color>
-  <item name="position_margin_close_out_warn" format="float" type="dimen">0.9</item>
   <string name="position_margin_close_out_danger">Margin is dangerously near closeout\u00A0\u00A0(%s)</string>
-  <color name="position_margin_close_out_danger_start">@color/number_red</color>
-  <color name="position_margin_close_out_danger_end">@color/dark_red</color>
-  <item name="position_margin_close_out_danger_one" format="float" type="dimen">1</item>
 
   <string name="portfolio_margin_call_title">Margin Call</string>
   <string name="portfolio_margin_call_description">You have a margin call on your portfolio, close positions and avoid a forced close-out</string>
@@ -52,8 +42,5 @@
 
   <string name="roi_since_inception_format">%1$s since inception.</string>
   <string name="roi_since_format">%1$s since %2$s.</string>
-
-  <string name="error_fetch_portfolio_list_info">There was an error when fetching the list of portfolios</string>
-  <string name="error_fetch_portfolio_info">There was an error when fetching the portfolio information</string>
 
 </resources>
