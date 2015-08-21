@@ -142,7 +142,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             public Object call(List<CountrySpinnerAdapter.DTO> primaryCountries, List<CountrySpinnerAdapter.DTO> secondaryCountries)
                             {
                                 primaryWidget.setCountries(primaryCountries, null);
-                                secondaryWidget.setCountries(secondaryCountries, null);
+                                secondaryWidget.setCountries(secondaryCountries, CountryCode.getByCode(primaryCountries.get(0).country.name()));
                                 return null;
                             }
                         })
