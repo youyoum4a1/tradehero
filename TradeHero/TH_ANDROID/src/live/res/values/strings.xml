@@ -20,6 +20,26 @@
   <string name="yes">Yes</string>
   <string name="no">No</string>
   <string name="basic_information">Basic Info</string>
+  <string name="nationality">Nationality</string>
+  <string name="residency">Country of Residence</string>
+  <string name="annual_income">Annual Income</string>
+  <string name="net_worth">Net Worth</string>
+  <string name="percent_for_investment">% of Net Worth for Investment</string>
+  <string name="employment_status">Employment Status</string>
+  <string name="previous">Previous</string>
+  <string name="create">Create</string>
+  <string name="clear_all">Clear All</string>
+  <string name="hint_full_name">Full Name</string>
+  <string name="previous_address">Previous Address</string>
+  <string name="country">Country</string>
+  <string name="title">Title</string>
+  <string name="hint_first_name">First Name</string>
+  <string name="hint_last_name">Last Name</string>
+  <string name="enter_code">Enter Code</string>
+  <string name="sms_verification_button_empty_checking">Checking</string>
+  <string name="unable_to_capture_value_from_image">Unable to capture value from image</string>
+  <string name="pick_location_within_country">Please pick nearby location within your country.</string>
+
   <string name="verify">Verify</string>
   <string name="verified">Verified</string>
   <string name="mobile_number">Mobile Number</string>
