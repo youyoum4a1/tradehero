@@ -37,9 +37,17 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
     private Activity activity;
     private LayoutInflater inflater;
 
+    public static int GROUP_SECURITY_POSITION = 0;
+    public static int GROUP_WATCH_POSITION = 1;
+    public static int GROUP_SECURITY_POSITION_CLOSED = 2;
+    public static int GROUP_DATA_LOADING = 3;
+    public static int GROUP_EMPTY = 4;
+
     private ArrayList<SecurityPositionItem> securityPositionList = new ArrayList<>();//持仓（open）
     private ArrayList<SecurityPositionItem> securityPositionListClosed = new ArrayList<>();//平仓（Close）
     private ArrayList<WatchPositionItem> watchPositionList = new ArrayList<>();//自选股
+
+    private static int pendingInitDataSetNum = 2;
 
     @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
     @Inject @ShareSheetTitleCache StringPreference mShareSheetTitleCache;
@@ -58,13 +66,13 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
 
     @Override
     public int getChildrenCount(int i) {
-        if (i == 0) {
+        if (i == GROUP_SECURITY_POSITION) {
             return getSecurityPositionCount();
         }
-        if (i == 1) {
+        if (i == GROUP_WATCH_POSITION) {
             return getWatchPositionCount();
         }
-        if (i == 2) {
+        if (i == GROUP_SECURITY_POSITION_CLOSED) {
             return getSecurityPositionClosedCount();
         }
         return 0;
@@ -81,13 +89,13 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
 
     @Override
     public Object getChild(int i, int i2) {
-        if (i == 0) {
+        if (i == GROUP_SECURITY_POSITION) {
             return securityPositionList.get(i2);
         }
-        if (i == 1) {
+        if (i == GROUP_WATCH_POSITION) {
             return watchPositionList.get(i2);
         }
-        if (i == 2) {
+        if (i == GROUP_SECURITY_POSITION_CLOSED) {
             return securityPositionListClosed.get(i2);
         }
         return null;
@@ -109,13 +117,13 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded,
+    public synchronized View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        if(groupPosition==3){
+        if(groupPosition == GROUP_EMPTY){
             convertView = inflater.inflate(R.layout.empty_layout, parent, false);
             LinearLayout llEmpty = (LinearLayout)convertView.findViewById(R.id.llEmpty);
 
-            if(getTotalCount()!=0){
+            if(getTotalCount() != 0 || pendingInitDataSetNum > 0){
                 llEmpty.setVisibility(View.GONE);
             }else{
                 llEmpty.setVisibility(View.VISIBLE);
@@ -129,7 +137,16 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
                     }
                 });
             }
-        }else {
+        } else if (groupPosition == GROUP_DATA_LOADING) {
+            convertView = inflater.inflate(R.layout.dataloading, parent, false);
+
+            if(pendingInitDataSetNum <= 0){
+                convertView.setVisibility(View.GONE);
+            }else{
+                convertView.setVisibility(View.VISIBLE);
+            }
+
+        } else {
             convertView = inflater.inflate(R.layout.position_head_plus_item, parent, false);
             TextView tvHead = (TextView) convertView.findViewById(R.id.tvPositionHead);
             tvHead.setText(generalsTypes[groupPosition]);
@@ -154,7 +171,7 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
     @Override
     public View getChildView(int groupPosition, int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        if(groupPosition==3){
+        if(groupPosition == GROUP_DATA_LOADING || groupPosition == GROUP_EMPTY){
             return null;
         }
         convertView = inflater.inflate(R.layout.position_security_watch_item, parent, false);
@@ -163,12 +180,12 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
         TextView tvSecurityPrice = (TextView) convertView.findViewById(R.id.tvSecurityPrice);
         TextView tvSecurityCurrency = (TextView) convertView.findViewById(R.id.tvSecurityCurrency);
         TextView tvSecurityExtraInfo = (TextView) convertView.findViewById(R.id.tvSecurityExtraInfo);
-        if (groupPosition == 0 || groupPosition == 2) {
+        if (groupPosition == GROUP_SECURITY_POSITION || groupPosition == GROUP_SECURITY_POSITION_CLOSED) {
             SecurityPositionItem item = null;
-            if (groupPosition == 0) {
+            if (groupPosition == GROUP_SECURITY_POSITION) {
                 item = securityPositionList.get(childPosition);
             }
-            if (groupPosition == 2) {
+            if (groupPosition == GROUP_SECURITY_POSITION_CLOSED) {
                 item = securityPositionListClosed.get(childPosition);
             }
             //name
@@ -206,7 +223,7 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
                     ColorUtils.getColorResourceIdForNumber(pl)));
             tvSecurityExtraInfo.setVisibility(View.VISIBLE);
         }
-        if (groupPosition == 1) {
+        if (groupPosition == GROUP_WATCH_POSITION) {
             WatchPositionItem item = watchPositionList.get(childPosition);
             tvSecurityName.setText(item.watchlistPosition.securityDTO.name);
 
@@ -284,10 +301,20 @@ public class CNPersonTradePositionListAdapter extends BaseExpandableListAdapter 
     }
 
     private void initGeneralTypes() {
-        generalsTypes = new String[]{activity.getResources().getString(R.string.security_position, getSecurityPositionCount()),
+        generalsTypes = new String[]{
+                activity.getResources().getString(R.string.security_position, getSecurityPositionCount()),
                 activity.getResources().getString(R.string.watch_position, getWatchPositionCount()),
                 activity.getResources().getString(R.string.security_position_closed, getSecurityPositionClosedCount()),
+                activity.getResources().getString(R.string.trading_hint_a),
                 activity.getResources().getString(R.string.goto_choose_stock, getSecurityPositionClosedCount())
         };
+    }
+
+    public synchronized void setWatchlistDataInitDone() {
+        pendingInitDataSetNum --;
+    }
+
+    public synchronized void setPositionDataInitDone() {
+        pendingInitDataSetNum --;
     }
 }

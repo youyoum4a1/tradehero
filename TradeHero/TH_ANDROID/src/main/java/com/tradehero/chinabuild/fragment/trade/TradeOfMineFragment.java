@@ -203,8 +203,8 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
                 return true;
             }
         });
-        listView.getRefreshableView().expandGroup(1);
-        listView.getRefreshableView().expandGroup(0);
+        listView.getRefreshableView().expandGroup(CNPersonTradePositionListAdapter.GROUP_WATCH_POSITION);
+        listView.getRefreshableView().expandGroup(CNPersonTradePositionListAdapter.GROUP_SECURITY_POSITION);
     }
 
     private void dealSecurityItem(PositionInterface item)
@@ -336,6 +336,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
             if(listView!=null) {
                 listView.onRefreshComplete();
             }
+            adapter.setPositionDataInitDone();
         }
 
         @Override public void onDTOReceived(
@@ -347,6 +348,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
             if(listView!=null) {
                 listView.onRefreshComplete();
             }
+            adapter.setPositionDataInitDone();
         }
 
         @Override public void onErrorThrown(
@@ -356,6 +358,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
             if(listView!=null) {
                 listView.onRefreshComplete();
             }
+            adapter.setPositionDataInitDone();
         }
     }
 
@@ -366,12 +369,14 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
             if(listView!=null) {
                 listView.onRefreshComplete();
             }
+            adapter.setWatchlistDataInitDone();
         }
 
         @Override public void onErrorThrown(@NotNull UserBaseKey key, @NotNull Throwable error) {
             if(listView!=null) {
                 listView.onRefreshComplete();
             }
+            adapter.setWatchlistDataInitDone();
         }
     }
 
