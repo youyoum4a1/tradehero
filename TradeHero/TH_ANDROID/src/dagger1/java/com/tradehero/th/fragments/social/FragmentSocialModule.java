@@ -17,8 +17,6 @@ import dagger.Module;
                 PeopleSearchFragment.class,
                 AllRelationsFragment.class,
                 RelationsListItemView.class,
-
-                FollowDialogView.class,
         },
         library = true,
         complete = false

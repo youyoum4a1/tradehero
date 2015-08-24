@@ -25,14 +25,13 @@ import com.tradehero.th.api.social.UserFriendsDTO;
 import com.tradehero.th.api.social.UserFriendsFacebookDTO;
 import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
 import com.tradehero.th.api.social.UserFriendsTwitterDTO;
-import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
 import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.AlertDialogRx;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -283,21 +282,6 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
         {
             return Observable.empty();
         }
-    }
-
-    @Override protected void updateListViewRow(@NonNull UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
-    {
-        //TODO
-        //AdapterViewUtils.updateSingleRowWhere(
-        //        listView,
-        //        FriendLeaderboardMarkedUserDTO.class,
-        //        new Predicate<FriendLeaderboardMarkedUserDTO>()
-        //        {
-        //            @Override public boolean apply(FriendLeaderboardMarkedUserDTO friendLeaderboardMarkedUserDTO)
-        //            {
-        //                return friendLeaderboardMarkedUserDTO.leaderboardUserDTO.getBaseKey().equals(heroId);
-        //            }
-        //        });
     }
 
     @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)

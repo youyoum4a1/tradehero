@@ -86,6 +86,7 @@ public class THBasePurchaseReporterRx<
                 break;
 
             case DOMAIN_FOLLOW_CREDITS:
+                //TODO no more free follow
                 if (purchase.getUserToFollow() != null)
                 {
                     // TODO remove when ok https://www.pivotaltracker.com/story/show/77362688
@@ -96,7 +97,7 @@ public class THBasePurchaseReporterRx<
                             {
                                 @Override public Observable<? extends UserProfileDTO> call(UserProfileDTO userProfileDTO)
                                 {
-                                    return userServiceWrapper.get().followRx(purchase.getUserToFollow());
+                                    return userServiceWrapper.get().freeFollowRx(purchase.getUserToFollow());
                                 }
                             });
 

@@ -23,7 +23,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
-import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
@@ -51,7 +50,6 @@ import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
@@ -69,7 +67,6 @@ import com.tradehero.th.fragments.security.SecurityListRxFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
 import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
@@ -116,7 +113,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
@@ -529,7 +525,7 @@ public class PositionListFragment
         else if (userAction instanceof PortfolioHeaderView.FollowUserAction)
         {
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
-            return showFollowDialog(userAction.requested);
+            return freeFollow(userAction.requested.getBaseKey());
         }
         throw new IllegalArgumentException("Unhandled PortfolioHeaderView.UserAction " + userAction);
     }
@@ -545,20 +541,7 @@ public class PositionListFragment
         }
         else if (view instanceof PositionLockedView && shownUserProfileDTO != null)
         {
-            onStopSubscriptions.add(showFollowDialog(shownUserProfileDTO)
-                    .subscribe(
-                            Actions.empty(), // TODO ?
-                            new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable e)
-                                {
-                                    AlertDialogRxUtil.popErrorMessage(
-                                            PositionListFragment.this.getActivity(),
-                                            e);
-                                    // TODO
-                                }
-                            }
-                    ));
+            //No more locked?
         }
         else
         {
@@ -577,65 +560,25 @@ public class PositionListFragment
         }
     }
 
-    @NonNull protected Observable<UserProfileDTO> showFollowDialog(@NonNull UserProfileDTO toBeFollowed)
-    {
-        return HeroAlertDialogRxUtil.showFollowDialog(
-                getActivity(),
-                toBeFollowed,
-                UserProfileDTOUtil.IS_NOT_FOLLOWER)
-                .flatMap(new Func1<FollowRequest, Observable<? extends UserProfileDTO>>()
-                {
-                    @Override public Observable<? extends UserProfileDTO> call(final FollowRequest request)
-                    {
-                        Observable<UserProfileDTO> fromServer;
-                        if (request.isPremium)
-                        {
-                            fromServer = PositionListFragment.this.premiumFollow(request.heroId);
-                        }
-                        else
-                        {
-                            fromServer = PositionListFragment.this.freeFollow(request.heroId);
-                        }
-                        return fromServer
-                                .doOnNext(new Action1<UserProfileDTO>()
-                                {
-                                    @Override public void call(UserProfileDTO userProfileDTO)
-                                    {
-                                        PositionListFragment.this.handleSuccessfulFollow(request);
-                                    }
-                                });
-                    }
-                });
-    }
-
-    @NonNull protected Observable<UserProfileDTO> premiumFollow(@NonNull UserBaseKey heroId)
-    {
-        //noinspection unchecked
-        return userInteractorRx.purchaseAndPremiumFollowAndClear(heroId)
-                .flatMap(new Func1<PurchaseResult, Observable<UserProfileDTO>>()
-                {
-                    @Override public Observable<UserProfileDTO> call(PurchaseResult result)
-                    {
-                        return userProfileCache.getOne(currentUserId.toUserBaseKey())
-                                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>());
-                    }
-                });
-    }
-
-    @NonNull protected Observable<UserProfileDTO> freeFollow(@NonNull UserBaseKey heroId)
+    @NonNull protected Observable<UserProfileDTO> freeFollow(@NonNull final UserBaseKey heroId)
     {
         final ProgressDialog progress = ProgressDialogUtil.create(getActivity(), R.string.following_this_hero);
         return userServiceWrapperLazy.get().freeFollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new DismissDialogAction0(progress));
+                .finallyDo(new DismissDialogAction0(progress))
+                .doOnNext(new Action1<UserProfileDTO>()
+                {
+                    @Override public void call(UserProfileDTO userProfileDTO)
+                    {
+                        handleSuccessfulFollow(new FollowRequest(heroId));
+                    }
+                });
     }
 
     protected void handleSuccessfulFollow(@NonNull FollowRequest request)
     {
         analytics.addEvent(new ScreenFlowEvent(
-                request.isPremium
-                        ? AnalyticsConstants.PremiumFollow_Success
-                        : AnalyticsConstants.FreeFollow_Success,
+                AnalyticsConstants.FreeFollow_Success,
                 AnalyticsConstants.PositionList));
         swipeToRefreshLayout.setRefreshing(true);
         refreshSimplePage();

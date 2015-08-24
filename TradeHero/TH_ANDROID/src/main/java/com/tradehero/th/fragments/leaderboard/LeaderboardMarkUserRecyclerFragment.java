@@ -359,26 +359,6 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         return dto;
     }
 
-    @Override protected void updateListViewRow(@NonNull final UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
-    {
-        //TODO
-        //AdapterViewUtils.updateSingleRowWhere(
-        //        recyclerView,
-        //        LeaderboardMarkedUserItemDisplayDto.DTO.class,
-        //        new Predicate<LeaderboardMarkedUserItemDisplayDto.DTO>()
-        //        {
-        //            @Override public boolean apply(LeaderboardMarkedUserItemDisplayDto.DTO dto)
-        //            {
-        //                boolean isUpdatedRow = dto.leaderboardUserDTO.getBaseKey().equals(heroId);
-        //                if (isUpdatedRow)
-        //                {
-        //                    dto.followChanged(currentUserProfile, heroId);
-        //                }
-        //                return isUpdatedRow;
-        //            }
-        //        });
-    }
-
     protected void pushFilterFragmentIn()
     {
         Bundle args = new Bundle();

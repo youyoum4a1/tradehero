@@ -8,8 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -111,7 +111,7 @@ public class RelationsListItemView extends RelativeLayout
         }
         else
         {
-            followRequestedBehavior.onNext(new FollowRequest(allowableRecipientDTO.user.getBaseKey(), true));
+            followRequestedBehavior.onNext(new FollowRequest(allowableRecipientDTO.user.getBaseKey()));
         }
     }
 

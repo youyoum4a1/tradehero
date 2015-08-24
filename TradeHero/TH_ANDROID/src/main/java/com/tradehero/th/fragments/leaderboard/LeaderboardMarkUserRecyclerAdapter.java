@@ -260,8 +260,6 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
     public static class LbmuHeaderViewHolder<T extends LeaderboardItemDisplayDTO> extends LbmuItemViewHolder<T>
     {
-        @Bind(R.id.mark_expand_down) @Nullable ImageView expandMark;
-
         public LbmuHeaderViewHolder(View itemView, Picasso picasso, Analytics analytics)
         {
             super(itemView, picasso, analytics);
@@ -270,17 +268,6 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         @Override public void display(T dto)
         {
             super.display(dto);
-            if (expandMark != null && this.currentDto != null)
-            {
-                if (this.currentDto.userStatisticsDto == null)
-                {
-                    expandMark.setVisibility(View.GONE);
-                }
-                else
-                {
-                    expandMark.setVisibility(View.VISIBLE);
-                }
-            }
         }
     }
 
@@ -299,8 +286,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         @Bind(R.id.expanding_layout) ExpandingLayout expandingLayout;
         @Bind(R.id.user_statistic_view) @Nullable UserStatisticView userStatisticView;
         @Bind(R.id.leaderboard_user_item_fof) @Nullable MarkdownTextView lbmuFoF;
-        @Bind(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
-        @Bind(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
+        @Bind(R.id.leaderboard_user_item_follow) ImageView lbmuFollowUser;
         @Nullable protected LeaderboardMarkedUserItemDisplayDto currentDto;
 
         public LbmuItemViewHolder(View itemView, Picasso picasso, Analytics analytics)
@@ -358,11 +344,8 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
                 if (lbmuFollowUser != null)
                 {
-                    lbmuFollowUser.setVisibility(this.currentDto.lbmuFollowUserVisibility);
-                }
-                if (lbmuFollowingUser != null)
-                {
-                    lbmuFollowingUser.setVisibility(this.currentDto.lbmuFollowingUserVisibility);
+                    lbmuFollowUser.setBackgroundResource(this.currentDto.lbmuFollowBtnColorResId);
+                    lbmuFollowUser.setImageResource(this.currentDto.lbmuFollowIconResId);
                 }
             }
         }

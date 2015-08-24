@@ -61,20 +61,6 @@ public class SimpleFollowUserAssistant
                 });
     }
 
-    @NonNull protected Observable<UserProfileDTO> launchPremiumFollowRx()
-    {
-        showProgress(R.string.following_this_hero);
-        return userServiceWrapper.followRx(heroId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new Action0()
-                {
-                    @Override public void call()
-                    {
-                        AlertDialogUtil.dismissProgressDialog();
-                    }
-                });
-    }
-
     protected void showProgress(@StringRes int contentResId)
     {
         AlertDialogUtil.showProgressDialog(

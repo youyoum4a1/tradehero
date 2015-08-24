@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -28,19 +27,11 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
-import com.tradehero.th.models.social.FollowRequest;
-import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ReplaceWithFunc1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
@@ -48,8 +39,6 @@ import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import timber.log.Timber;
 
 @Routable({
@@ -213,20 +202,20 @@ public class PushableTimelineFragment extends TimelineFragment
                 if (!mIsHero && (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
                         || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
                 {
-                    onStopSubscriptions.add(HeroAlertDialogRxUtil.showFollowDialog(
-                            getActivity(),
-                            shownProfile,
-                            UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
-                            .flatMap(new Func1<FollowRequest, Observable<? extends UserProfileDTO>>()
-                            {
-                                @Override public Observable<? extends UserProfileDTO> call(FollowRequest request)
-                                {
-                                    return handleFollowRequest(request);
-                                }
-                            })
-                            .subscribe(
-                                    new EmptyAction1<UserProfileDTO>(),
-                                    new EmptyAction1<Throwable>()));
+                    //onStopSubscriptions.add(HeroAlertDialogRxUtil.showFollowDialog(
+                    //        getActivity(),
+                    //        shownProfile,
+                    //        UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
+                    //        .flatMap(new Func1<FollowRequest, Observable<? extends UserProfileDTO>>()
+                    //        {
+                    //            @Override public Observable<? extends UserProfileDTO> call(FollowRequest request)
+                    //            {
+                    //                return handleFollowRequest(request);
+                    //            }
+                    //        })
+                    //        .subscribe(
+                    //                new EmptyAction1<UserProfileDTO>(),
+                    //                new EmptyAction1<Throwable>()));
                 }
                 else
                 {
@@ -240,51 +229,37 @@ public class PushableTimelineFragment extends TimelineFragment
     @OnClick(R.id.follow_button)
     protected void handleFollowRequested()
     {
-        onStopSubscriptions.add(userProfileCache.get().getOne(shownUserBaseKey)
-                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<UserProfileDTO, Observable<Pair<FollowRequest, UserProfileDTO>>>()
-                {
-                    @Override public Observable<Pair<FollowRequest, UserProfileDTO>> call(UserProfileDTO shownProfile)
-                    {
-                        return new ChoiceFollowUserAssistantWithDialog(
-                                getActivity(),
-                                shownProfile)
-                                .launchChoiceRx();
-                    }
-                })
-                .subscribe(
-                        new Action1<Pair<FollowRequest, UserProfileDTO>>()
-                        {
-                            @Override public void call(Pair<FollowRequest, UserProfileDTO> pair)
-                            {
-                                if (!mIsOtherProfile)
-                                {
-                                    linkWith(pair.second);
-                                }
-                                updateBottomButton();
-                                String actionName = pair.first.isPremium
-                                        ? AnalyticsConstants.PremiumFollow_Success
-                                        : AnalyticsConstants.FreeFollow_Success;
-                                analytics.addEvent(new ScreenFlowEvent(actionName, AnalyticsConstants.Profile));
-                            }
-                        },
-                        new ToastOnErrorAction1()
-                ));
-    }
-
-    @NonNull protected Observable<UserProfileDTO> handleFollowRequest(@NonNull FollowRequest request)
-    {
-        if (request.isPremium)
-        {
-            //noinspection unchecked
-            return userInteractorRx.purchaseAndPremiumFollowAndClear(request.heroId)
-                    .map(new ReplaceWithFunc1<>(new UserProfileDTO()));
-        }
-        else
-        {
-            return freeFollow(request.heroId);
-        }
+        //onStopSubscriptions.add(userProfileCache.get().getOne(shownUserBaseKey)
+        //        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+        //        .observeOn(AndroidSchedulers.mainThread())
+        //        .flatMap(new Func1<UserProfileDTO, Observable<Pair<FollowRequest, UserProfileDTO>>>()
+        //        {
+        //            @Override public Observable<Pair<FollowRequest, UserProfileDTO>> call(UserProfileDTO shownProfile)
+        //            {
+        //                return new ChoiceFollowUserAssistantWithDialog(
+        //                        getActivity(),
+        //                        shownProfile)
+        //                        .launchChoiceRx();
+        //            }
+        //        })
+        //        .subscribe(
+        //                new Action1<Pair<FollowRequest, UserProfileDTO>>()
+        //                {
+        //                    @Override public void call(Pair<FollowRequest, UserProfileDTO> pair)
+        //                    {
+        //                        if (!mIsOtherProfile)
+        //                        {
+        //                            linkWith(pair.second);
+        //                        }
+        //                        updateBottomButton();
+        //                        String actionName = pair.first.isPremium
+        //                                ? AnalyticsConstants.PremiumFollow_Success
+        //                                : AnalyticsConstants.FreeFollow_Success;
+        //                        analytics.addEvent(new ScreenFlowEvent(actionName, AnalyticsConstants.Profile));
+        //                    }
+        //                },
+        //                new ToastOnErrorAction1()
+        //        ));
     }
 
     protected Observable<UserProfileDTO> freeFollow(@NonNull UserBaseKey heroId)

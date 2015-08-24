@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.leaderboard;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -23,8 +22,7 @@ import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.models.social.FollowRequest;
-import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -32,7 +30,6 @@ import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
@@ -143,36 +140,34 @@ public class LeaderboardMarkUserListFragmentUtil
         }
     }
 
+    //TODO change this
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
-        onStopSubscriptions.add(AppObservable.bindSupportFragment(
-                fragment,
-                new ChoiceFollowUserAssistantWithDialog(
-                        fragment.getActivity(),
-                        userBaseDTO
-                        // ,getApplicablePortfolioId()
-                ).launchChoiceRx())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<Pair<FollowRequest, UserProfileDTO>>()
+        onStopSubscriptions.add(
+                AppObservable.bindSupportFragment(
+                        fragment,
+                        new SimpleFollowUserAssistant(fragment.getActivity(), userBaseDTO.getBaseKey()).launchFreeFollowRx()
+                )
+                .subscribe(new Action1<UserProfileDTO>()
+                {
+                    @Override public void call(UserProfileDTO userProfileDTO)
+                    {
+                        fragment.setCurrentUserProfileDTO(userProfileDTO);
+                        int followType = userProfileDTO.getFollowType(userBaseDTO);
+                        if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
                         {
-                            @Override public void call(Pair<FollowRequest, UserProfileDTO> pair)
-                            {
-                                fragment.setCurrentUserProfileDTO(pair.second);
-                                int followType = pair.second.getFollowType(userBaseDTO);
-                                if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
-                                {
-                                    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
-                                }
-                                else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
-                                {
-                                    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
-                                }
-                                fragment.updateListViewRow(pair.second, userBaseDTO.getBaseKey());
-                            }
-                        },
-                        new ToastOnErrorAction1()
-                ));
+                            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success,
+                                    AnalyticsConstants.Leaderboard));
+                        }
+                        else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+                        {
+                            analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success,
+                                    AnalyticsConstants.Leaderboard));
+                        }
+                    }
+                },
+                new ToastOnErrorAction1())
+        );
     }
 
     protected void handlePositionsRequested(@NonNull LeaderboardMarkedUserItemDisplayDto dto)
