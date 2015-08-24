@@ -64,7 +64,7 @@ public class ProcessableLeaderboardFriendsDTO
 
         if (list.size() <= (containsCurrentUser ? 1 : 0))
         {
-            list.add(new FriendLeaderboardItemDisplayDTO.CallToAction());
+            list.add(new FriendLeaderboardItemDisplayDTO.CallToAction(this.factory.resources));
         }
 
         return list;

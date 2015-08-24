@@ -19,7 +19,7 @@ public class Constants
     public static final int TIMELINE_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
 
     public static final int LEADERBOARD_MARK_USER_ITEM_PER_PAGE = COMMON_ITEM_PER_PAGE;
-    public static final int MAX_OWN_LEADER_RANKING = -1;
+    public static final int MAX_OWN_LEADER_RANKING = 1000;
 
     // this constant is dedicated for static content page (html, image, cdn that
     // may be needed later, for Api endpoint, refer to retrofit module, we want to make it
@@ -30,7 +30,7 @@ public class Constants
     public static final String APP_HOME = BASE_STATIC_CONTENT_URL + "AppHome";
 
     // Request Header
-    public static final String ACCEPT_ENCODING= "Accept-Encoding";
+    public static final String ACCEPT_ENCODING = "Accept-Encoding";
     public static final String ACCEPT_ENCODING_GZIP = "gzip";
     public static final String TH_CLIENT_VERSION = "TH-Client-Version";
     public static final String AUTHORIZATION = "Authorization";
@@ -62,5 +62,7 @@ public class Constants
         public static final String PARAM_ACCOUNT_TYPE = (RELEASE ? "" : "dev.") + "tradehero.mobi";
     }
 
-    private Constants() {}
+    private Constants()
+    {
+    }
 }
