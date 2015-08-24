@@ -33,8 +33,6 @@
   <string name="watchlist_new_discussion">New Discussion</string>
   <string name="watchlist_not_yet_implemented">Not yet implemented. Stay stuned.</string>
 
-  <string name="error_fetch_portfolio_watchlist">There was an error when fetching the watch list</string>
-
   <string name="watchlist_marking_date_format">dd MMM yyyy HH:mm</string>
   <string name="watchlist_marking_date">Last Updated: %1$s</string>
 

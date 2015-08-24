@@ -19,6 +19,4 @@
   <string name="trade_holding_quantity_verbose">Holding %1$s shares</string>
   <string name="trade_held_quantity_verbose">Held %1$s shares</string>
 
-  <string name="error_fetch_trade_list_info">There was an error when fetching the list of trades</string>
-
 </resources>
