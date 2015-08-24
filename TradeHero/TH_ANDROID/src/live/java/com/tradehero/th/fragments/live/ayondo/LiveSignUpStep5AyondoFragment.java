@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
+import android.widget.ViewSwitcher;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.utils.THToast;
@@ -65,6 +66,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 {
     private static final int INDEX_CHOICE_FROM_CAMERA = 0;
     private static final int INDEX_CHOICE_FROM_LIBRARY = 1;
+    private static final int INDEX_VIEW_CREATE_BUTTON = 0;
+    private static final int INDEX_VIEW_SUBMIT_BUTTON = 1;
 
     @Bind(R.id.identity_document_type) Spinner identityDocumentTypeSpinner;
     @Bind(R.id.residence_document_type) Spinner residenceDocumentTypeSpinner;
@@ -81,6 +84,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.cb_subscribe_offers) CheckBox subscribeOffersCheckBox;
     @Bind(R.id.cb_subscribe_trade_notifications) CheckBox subscribeTradeNotificationsCheckBox;
     @Bind(R.id.btn_create) Button btnCreate;
+    @Bind(R.id.create_switcher) ViewSwitcher createSwitcher;
+    @Bind(R.id.btn_submit) View btnSubmit;
 
     private ImageRequesterUtil imageRequesterUtil;
 
@@ -542,7 +547,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction1("Failed to listen to url clicks")));
 
-        subscriptions.add(ViewObservable.clicks(btnCreate)
+        subscriptions.add(ViewObservable.clicks(btnSubmit)
                 .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnClickEvent, LiveBrokerSituationDTO, KYCAyondoForm>()
                 {
                     @Override public KYCAyondoForm call(OnClickEvent onClickEvent, LiveBrokerSituationDTO liveBrokerSituationDTO)
@@ -596,7 +601,20 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         StepStatus fifthStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(4);
         if (btnCreate != null)
         {
-            btnCreate.setEnabled((fifthStatus != null && StepStatus.COMPLETE.equals(fifthStatus)));
+            if (fifthStatus != null && StepStatus.COMPLETE.equals(fifthStatus))
+            {
+                if (createSwitcher.getDisplayedChild() != INDEX_VIEW_SUBMIT_BUTTON)
+                {
+                    createSwitcher.setDisplayedChild(INDEX_VIEW_SUBMIT_BUTTON);
+                }
+            }
+            else
+            {
+                if (createSwitcher.getDisplayedChild() != INDEX_VIEW_CREATE_BUTTON)
+                {
+                    createSwitcher.setDisplayedChild(INDEX_VIEW_CREATE_BUTTON);
+                }
+            }
         }
     }
 

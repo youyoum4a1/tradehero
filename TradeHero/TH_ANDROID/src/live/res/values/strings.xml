@@ -28,6 +28,9 @@
   <string name="employment_status">Employment Status</string>
   <string name="previous">Previous</string>
   <string name="create">Create</string>
+  <string name="submit_form">Create account now</string>
+  <string name="submit_form_top">All done!</string>
+  <string name="submit_form_bottom">Claim your US$ 100.00!</string>
   <string name="clear_all">Clear All</string>
   <string name="hint_full_name">Full Name</string>
   <string name="previous_address">Previous Address</string>
