@@ -391,6 +391,8 @@ public class KYCAyondoForm implements KYCForm
     public void setResidency(@Nullable CountryCode residency)
     {
         this.residency = residency;
+        this.addressCountry = this.residency;
+        this.previousAddressCountry = this.residency;
     }
     //</editor-fold>
 
