@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- For XP Testing Screen -->
+  <string name="xp_test_reason" translatable="false">XP Reason eg. Trade Bonus</string>
+  <string name="xp_test_from" translatable="false">XP From</string>
+  <string name="xp_test_earned" translatable="false">XP Earned</string>
+  <string name="xp_test_multiplier_reason" translatable="false">Multiplier Reason eg. Positive ROI</string>
+  <string name="xp_test_multiplier" translatable="false">Multiplier Value</string>
+  <string name="xp_test_multiplier1" translatable="false">Multiplier 1</string>
+  <string name="xp_test_multiplier2" translatable="false">Multiplier 2</string>
+  <string name="xp_test_multiplier3" translatable="false">Multiplier 3</string>
+  <string name="xp_test_launch" translatable="false">Launch!</string>
+
+</resources>
