@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-  <!-- We cannot have %3$s - %2$s as it returns weird results on right-to-left languages -->
-  <string name="translation_provided_by_bing">จัดทำโดย Bing</string>
-
-  <string name="translation_error_creating_languages">มีข้อผิดพลาดในการสร้างรายการภาษา</string>
-  <string name="translation_error_saving_preference">มีข้อผิดพลาดในการบันทึกภาษาที่คุณต้องการ</string>
-</resources>

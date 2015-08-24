@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-  <string name="user_level_xp">XP</string>
-  <string name="user_level_up_header_text">ยินดีด้วยค่ะ!</string>
-  <string name="user_level_up_description_text">คุณสำเร็จในระดับ %d!</string>
-</resources>

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  <string name="error_loading_videos">载入视频信息错误</string>
-  <string name="unable_to_play_videos">无法找到播放该视频的应用</string>
-</resources>

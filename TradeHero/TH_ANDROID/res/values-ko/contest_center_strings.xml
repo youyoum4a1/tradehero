@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  <string name="contest_center_tab_active">Active</string>
-  <string name="contest_center_tab_joined">Joined</string>
-  <string name="contest_no_joined">Oops!\n You have not joined any competition yet.\nChoose one from the active tab and start playing!</string>
-</resources>

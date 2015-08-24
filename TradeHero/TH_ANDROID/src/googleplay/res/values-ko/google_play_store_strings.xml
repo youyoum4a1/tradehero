@@ -1,79 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
-
-  <!--<string name="th_iab_logic_holder_name">Google Play Store</string>-->
-
+  <string name="google_play_billing_bad_response_window_description">구글 플레이로부터 응답이 없습니다.
+  </string>
+  <string name="google_play_billing_remote_error_window_description">리모트 서비스 연결 실패
+  </string>
+  <string name="google_play_billing_result_error_window_description"> 구글 플레이로부터 오류가 생겼습니다. 구글스토어 캐시를 지워보세요
+  </string>
+  <string name="google_play_billing_send_intent_error_window_description">구글플레이 연결 오류
+  </string>
+  <string name="google_play_billing_send_intent_error_window_title">Huh?</string>
+  <!-- string name="store_billing_verification_failed_ok">Sure</string -->
+  <string name="google_play_billing_verification_failed_cancel">걱정하지 마세요</string>
+  <string name="google_play_billing_verification_failed_window_description">구글플레이에서 불러온 정보가 일치하지 않습니다.
+  </string>
+  <string name="google_play_billing_verification_failed_window_title">정보 확인 불가</string>
+  <string name="google_play_consumed_purchase_cancel">Okay</string>
+  <string name="google_play_consumed_purchase_message">구매가 성공적으로 이루어졌습니다.</string>
+  <string name="google_play_consumed_purchase_message_info">\"%s\" 구매 성공</string>
+  <string name="google_play_consumed_purchase_title">구매 완료</string>
+  <string name="google_play_purchase_restored_cancel">Okay</string>
+  <string name="google_play_purchase_restored_message"> %1$d 구매복원 완료
+  </string>
+  <string name="google_play_purchase_restored_none_cancel">Okay</string>
+  <string name="google_play_purchase_restored_none_message">모든 구매가 완료되었습니다.
+  </string>
+  <string name="google_play_purchase_restored_none_title">복원할 구매기록 없음</string>
+  <string name="google_play_purchase_restored_title">구매기록 복원</string>
   <string name="google_play_send_support_email_chooser_title">트레이드히어로에게 도움 요청하기
   </string>
-
-  <string name="google_play_send_support_email_report_fail_title">구매 리포트 실패</string>
-  <string name="google_play_send_support_email_report_fail_message">오류내용 트레이드히어로에 보내시겠습니까?
-  </string>
-  <string name="google_play_send_support_email_report_fail_ok">네</string>
-  <string name="google_play_send_support_email_report_fail_cancel">아니요</string>
-
-  <string name="google_play_send_support_email_consume_fail_title">구매 과정 오류</string>
+  <string name="google_play_send_support_email_consume_fail_cancel">아니요</string>
   <string name="google_play_send_support_email_consume_fail_message">오류내용 트레이드히어로에 보내시겠습니까?
   </string>
   <string name="google_play_send_support_email_consume_fail_ok">네</string>
-  <string name="google_play_send_support_email_consume_fail_cancel">아니요</string>
-
-  <string name="google_play_consumed_purchase_title">구매 완료</string>
-  <string name="google_play_consumed_purchase_message">구매가 성공적으로 이루어졌습니다.</string>
-  <string name="google_play_consumed_purchase_message_info">"%s" 구매 성공</string>
-  <string name="google_play_consumed_purchase_cancel">Okay</string>
-
-  <string name="google_play_purchase_restored_none_title">복원할 구매기록 없음</string>
-  <string name="google_play_purchase_restored_none_message">모든 구매가 완료되었습니다.
+  <string name="google_play_send_support_email_consume_fail_title">구매 과정 오류</string>
+  <string name="google_play_send_support_email_report_fail_cancel">아니요</string>
+  <string name="google_play_send_support_email_report_fail_message">오류내용 트레이드히어로에 보내시겠습니까?
   </string>
-  <string name="google_play_purchase_restored_none_cancel">Okay</string>
-
-  <string name="google_play_purchase_restored_title">구매기록 복원</string>
-  <string name="google_play_purchase_restored_message"> %1$d 구매복원 완료
-  </string>
-  <string name="google_play_purchase_restored_cancel">Okay</string>
-
-  <string name="google_play_send_support_email_restore_fail_partial_title">구매 복원 완료</string>
-  <string name="google_play_send_support_email_restore_fail_partial_message">%1$d 구매복원이 완료되었지만 %2$d는 완료되지 못했습니다. 해당 오류 사항을 트레이드히어로에 전달하시겠습니까?</string>
-  <string name="google_play_send_support_email_restore_fail_partial_ok">네</string>
-  <string name="google_play_send_support_email_restore_fail_partial_cancel">아니요</string>
-
-  <string name="google_play_send_support_email_restore_fail_title">구매 복원 실패
-  </string>
+  <string name="google_play_send_support_email_report_fail_ok">네</string>
+  <string name="google_play_send_support_email_report_fail_title">구매 리포트 실패</string>
+  <string name="google_play_send_support_email_restore_fail_cancel">아니요</string>
   <string name="google_play_send_support_email_restore_fail_message">%1$d 구매복원 실패. 해당사항을 트레이드히어로에 전달하세겠습니까?
     purchases.
   </string>
   <string name="google_play_send_support_email_restore_fail_ok">네</string>
-  <string name="google_play_send_support_email_restore_fail_cancel">아니요</string>
-
-  <string name="google_play_billing_verification_failed_window_title">정보 확인 불가</string>
-  <string name="google_play_billing_verification_failed_window_description">구글플레이에서 불러온 정보가 일치하지 않습니다.
+  <string name="google_play_send_support_email_restore_fail_partial_cancel">아니요</string>
+  <string name="google_play_send_support_email_restore_fail_partial_message">%1$d 구매복원이 완료되었지만 %2$d는 완료되지 못했습니다. 해당 오류 사항을 트레이드히어로에 전달하시겠습니까?</string>
+  <string name="google_play_send_support_email_restore_fail_partial_ok">네</string>
+  <string name="google_play_send_support_email_restore_fail_partial_title">구매 복원 완료</string>
+  <string name="google_play_send_support_email_restore_fail_title">구매 복원 실패
   </string>
-  <!--string name="google_play_billing_verification_failed_ok">Sure</string-->
-  <string name="google_play_billing_verification_failed_cancel">걱정하지 마세요</string>
-
-  <!--<string name="google_play_billing_bad_response_window_title">Huh?</string>-->
-  <string name="google_play_billing_bad_response_window_description">구글 플레이로부터 응답이 없습니다.
-  </string>
-  <!--string name="google_play_billing_bad_response_ok">Sure</string-->
-  <!--<string name="google_play_billing_bad_response_cancel">OK</string>-->
-
-  <!--<string name="google_play_billing_result_error_window_title">Huh?</string>-->
-  <string name="google_play_billing_result_error_window_description"> 구글 플레이로부터 오류가 생겼습니다. 구글스토어 캐시를 지워보세요
-  </string>
-  <!--string name="google_play_billing_result_error_ok">Sure</string-->
-  <!--<string name="google_play_billing_result_error_cancel">OK</string>-->
-
-  <!--<string name="google_play_billing_remote_error_window_title">Huh?</string>-->
-  <string name="google_play_billing_remote_error_window_description">리모트 서비스 연결 실패
-  </string>
-  <!--string name="google_play_billing_remote_error_ok">Sure</string-->
-  <!--<string name="google_play_billing_remote_error_cancel">OK</string>-->
-
-  <string name="google_play_billing_send_intent_error_window_title">Huh?</string>
-  <string name="google_play_billing_send_intent_error_window_description">구글플레이 연결 오류
-  </string>
-  <!--string name="google_play_billing_send_intent_error_ok">Sure</string-->
-  <!--<string name="google_play_billing_send_intent_error_cancel">OK</string>-->
-
 </resources>

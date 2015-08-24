@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="social_search_people_hint">ระบุชื่อ</string>
-  <string name="account_already_linked_title">ลิงค์แล้ว</string>
-  <string name="account_already_linked_message">บัญชีนี้ลิงค์เข้ากับบัญชี TradeHero อันอื่นแล้ว\nลองใช้บัญชีอื่น</string>
-
   <integer name="social_destination_id_facebook">0</integer>
   <integer name="social_destination_id_linkedin">1</integer>
   <integer name="social_destination_id_twitter">2</integer>
@@ -27,21 +23,5 @@
     <item>@integer/social_destination_id_wechat</item>
     <item>@integer/social_destination_id_weibo</item>
   </integer-array>
-
-  <string name="invite_code_title">เบิกเงินดอลลาร์เสมือนของคุณ!</string>
-  <string name="invite_code_message">หากคุณได้รับการแนะนำมาจากเพื่อน ระบุรหัสอ้างอิง และรับเงินดอลลาร์เสมือนจำนวน 10,000 ฟรี</string>
-  <string name="settings_referral_code_message_1">แชร์รหัสอ้างอิงกับเพื่อนๆ</string>
-  <string name="settings_referral_code_message_2">รับ &lt;b&gt;TradeHero Dollars ฟรี&lt;/b&gt; เมื่อสมัครสมาชิก</string>
-  <string name="settings_referral_code_message_3">รับ &lt;b&gt;%1$s&lt;/b&gt; เมื่อเชื่อมต่อกับโซเชียลเนทเวิร์ค และเทรดหนึ่งครั้ง</string>
-  <string name="settings_referral_code_message_4">(คุณได้รับ: &lt;b&gt;%1$s&lt;/b&gt;)</string>
-  <string name="settings_referral_code_message">นี่คือรหัสอ้างอิงของคุณ แชร์กับเพื่อนของคุณ และรับ Tradehero Dollars ฟรี เมื่อเพื่อนของคุณสมัครสมาชิก !
-  </string>
-  <string name="referral_code_callback_success">รหัสเชิญชวนถูกต้อง คุณจะได้รับเงินพิเศษ 10,000 TH dollars  </string>
-
-  <string name="referral_code_copy_clipboard">ก๊อบปี้</string>
-  <string name="referral_code_share_network">แชร์</string>
-  <string name="referral_code_copied_clipboard">%1$s ก๊อบปี้ไปที่คลิปบอร์ด</string>
-  <string name="referral_code_sharing_to_networks">กำลังแชร์รหัสอ้างอิงของคุณในโซเชียลเนทเวิร์ค </string>
-  <string name="error_share_referral_code_on_network">เกิดความผิดพลาดในการแชร์ในโซเชียลเนทเวิร์ค</string>
 
 </resources>

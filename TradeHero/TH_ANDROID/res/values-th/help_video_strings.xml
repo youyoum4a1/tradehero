@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-  <string name="error_fetch_help_video_list_info">เกิดข้อผิดพลาด เมื่อได้รับรายการวิดิโอช่วยเหลือ</string>
-  <string name="error_fetch_help_video_info">เกิดข้อผิดพลาด เมื่อได้รับข้อมูลวิดิโอช่วยเหลือ</string>
-  <string name="error_help_video_no_package_available_to_play">คุณไม่มีเครื่องเล่นสำหรับวิดิโอนี้</string>
-
-</resources>

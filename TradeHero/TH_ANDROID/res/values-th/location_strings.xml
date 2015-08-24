@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-  <string name="location_fragment_title">เลือกตำแหน่งที่ตั้งของคุณ</string>
-  <string name="location_fragment_subtitle">มันส่งผลต่อสิ่งที่คุณเห็น</string>
-  <string name="location_name_none">ไม่มี</string>
-</resources>

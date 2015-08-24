@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-  
-  <string name="error_loading_videos">เกิดข้อผิดพลาด ในระหว่างการโหลดวิดิโอ</string>
-  <string name="unable_to_play_videos">ไม่พบโปรแกรมที่สามารถเล่นวิดิโอนี้</string>
-</resources>
