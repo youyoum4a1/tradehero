@@ -690,6 +690,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
+            subscribeOffersCheckBox.setChecked(true);
             update.setSubscribeOffers(subscribeOffersCheckBox.isChecked());
         }
 
@@ -700,6 +701,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         else
         {
+            subscribeTradeNotificationsCheckBox.setChecked(true);
             update.setSubscribeTradeNotifications(subscribeTradeNotificationsCheckBox.isChecked());
         }
 
