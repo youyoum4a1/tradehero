@@ -356,6 +356,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public void call(PhoneNumberDTO phoneNumberDTO)
                             {
+                                buttonVerifyPhone.setText(R.string.verify);
                                 buttonVerifyPhone.setEnabled(false);
                                 if (isValidPhoneNumber(phoneNumberDTO))
                                 {
@@ -369,9 +370,31 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public void call(PhoneNumberDTO phoneNumberDTO)
                             {
-                                buttonVerifyPhone.setEnabled(true);
                                 smsId = null;
                                 expectedCode = null;
+                            }
+                        })
+                        .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<PhoneNumberDTO, LiveBrokerSituationDTO, PhoneNumberDTO>()
+                        {
+                            @Override public PhoneNumberDTO call(PhoneNumberDTO phoneNumberDTO, LiveBrokerSituationDTO liveBrokerSituationDTO)
+                            {
+                                KYCAyondoForm update = new KYCAyondoForm();
+
+                                String newNumber = phoneNumberDTO.typedNumber;
+
+                                update.setPhonePrimaryCountryCode(phoneNumberDTO.dialingCountry);
+                                update.setMobileNumber(newNumber);
+
+                                onNext(new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update));
+
+                                return phoneNumberDTO;
+                            }
+                        })
+                        .filter(new Func1<PhoneNumberDTO, Boolean>()
+                        {
+                            @Override public Boolean call(PhoneNumberDTO phoneNumberDTO)
+                            {
+                                return isValidPhoneNumber(phoneNumberDTO);
                             }
                         })
                         .flatMap(new Func1<PhoneNumberDTO, Observable<PhoneNumberAndVerifiedDTO>>()
@@ -402,19 +425,19 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                             LiveBrokerSituationDTO liveBrokerSituationDTO)
                                     {
                                         KYCAyondoForm update = new KYCAyondoForm();
+
                                         int dialingPrefix = phoneNumberAndVerifiedDTO.dialingPrefix;
                                         String newNumber = phoneNumberAndVerifiedDTO.typedNumber;
-                                        //noinspection ConstantConditions
-                                        liveBrokerSituationDTO.kycForm.pickFrom(update);
-                                        //noinspection ConstantConditions
-                                        populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, phoneNumberAndVerifiedDTO);
-                                        update.setPhonePrimaryCountryCode(phoneNumberAndVerifiedDTO.dialingCountry);
-                                        update.setMobileNumber(newNumber);
+
                                         if (phoneNumberAndVerifiedDTO.verified)
                                         {
                                             update.setVerifiedMobileNumberDialingPrefix(dialingPrefix);
                                             update.setVerifiedMobileNumber(newNumber);
                                         }
+
+                                        //noinspection ConstantConditions
+                                        liveBrokerSituationDTO.kycForm.pickFrom(update);
+                                        populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, phoneNumberAndVerifiedDTO);
 
                                         return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
                                     }
@@ -497,7 +520,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         update.setVerifiedMobileNumberDialingPrefix(verifiedPhonePair.first);
                         update.setVerifiedMobileNumber(verifiedPhonePair.second);
                         //noinspection ConstantConditions
-                        liveBrokerSituationDTO.kycForm.pickFrom(update);
                         liveServiceWrapper.submitPhoneNumberVerifiedStatus(
                                 VerifyPhoneDialogFragment.getFormattedPhoneNumber(verifiedPhonePair.first, verifiedPhonePair.second));
                         buttonVerifyPhone.setEnabled(false);
@@ -511,7 +533,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         onNext(liveBrokerSituationDTO);
                     }
-                }, new TimberOnErrorAction1("")));
+                }, new TimberOnErrorAction1("Failed to update verified mobile number")));
 
         return subscriptions;
     }
