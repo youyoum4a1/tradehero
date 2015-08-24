@@ -19,8 +19,6 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.StringUtils;
 
-import static com.tradehero.th.utils.Constants.MAX_OWN_LEADER_RANKING;
-
 public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayDTO implements com.tradehero.common.persistence.DTO,
         ExpandableItem
 {
@@ -37,7 +35,6 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     @ViewVisibilityValue final int lbmuFoFVisibility;
     @ViewVisibilityValue public int lbmuFollowUserVisibility;
     @ViewVisibilityValue public int lbmuFollowingUserVisibility;
-    private String maxOwnLeaderRanking;
     private boolean expanded;
     private boolean isMyOwnRanking;
 
@@ -47,6 +44,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     public LeaderboardMarkedUserItemDisplayDto(@NonNull Resources resources,
             @NonNull CurrentUserId currentUserId)
     {
+        super(resources);
         //This constructor can only be used for Header view (Current User Ranking)
         this.currentUserId = currentUserId;
         this.leaderboardUserDTO = null;
@@ -69,6 +67,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
             @NonNull CurrentUserId currentUserId,
             @NonNull UserProfileDTO currentUserProfileDTO)
     {
+        super(resources);
         this.currentUserId = currentUserId;
         this.leaderboardUserDTO = null;
         this.userStatisticsDto = null;
@@ -89,6 +88,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
             @NonNull LeaderboardUserDTO leaderboardItem,
             @NonNull UserProfileDTO currentUserProfileDTO)
     {
+        super(resources);
         /**
          * This might not be the correct ranking position; e.g. When the leaderboard is filtered, ordinalPosition is always 0,
          */
@@ -108,8 +108,6 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
                 .relevantDigitCount(3)
                 .withDefaultColor()
                 .build().createSpanned();
-
-        maxOwnLeaderRanking = resources.getString(R.string.leaderboard_max_ranked_position, MAX_OWN_LEADER_RANKING);
 
         this.lbmuPositionColor = currentUserId.get() == leaderboardItem.id ?
                 resources.getColor(R.color.light_green_normal) :

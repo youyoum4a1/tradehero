@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.leaderboard;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.OnClick;
-import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -329,8 +329,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
                             .centerCrop()
                             .placeholder(R.drawable.superman_facebook)
                             .error(R.drawable.superman_facebook)
-                            .into(
-                                    lbmuProfilePicture);
+                            .into(lbmuProfilePicture);
                 }
                 else
                 {

@@ -68,7 +68,7 @@
   <string name="leaderboard_friends_position_failed">Sorry, there\'s not enough information to show this user\'s positions.</string>
   <string name="leaderboard_see_competition_rules">See competition rules here</string>
 
-  <string name="leaderboard_max_ranked_position" translatable="false"><![CDATA[>%d]]></string>
+  <string name="leaderboard_max_ranked_position" translatable="false">&gt;%1$s</string>
   <string name="leaderboard_empty">Start trading now to be the first trader on this leaderboard</string>
 
   <string name="leaderboard_ranks_needed">Move up by %s ranks to win!</string>

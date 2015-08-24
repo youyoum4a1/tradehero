@@ -258,7 +258,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
             for (int i = competitionLeaderboardDTO.adStartRow; i < realSize; i += competitionLeaderboardDTO.adFrequencyRows)
             {
                 int randomAds = (int) (Math.random() * competitionLeaderboardDTO.ads.size());
-                competitionAdapter.addExtraItem(i, new CompetitionAdsExtraItem(competitionLeaderboardDTO.ads.get(randomAds)));
+                competitionAdapter.addExtraItem(i, new CompetitionAdsExtraItem(getResources(), competitionLeaderboardDTO.ads.get(randomAds)));
                 realSize++; //Add +1 because technically, the size of the list has grown by 1 when we add an extra tile.
             }
         }
