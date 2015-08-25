@@ -228,11 +228,11 @@ public class LeaderboardMarkUserListFragmentUtil
                                                analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success,
                                                        AnalyticsConstants.Leaderboard));
                                            }
-                                           else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
-                                           {
-                                               analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success,
-                                                       AnalyticsConstants.Leaderboard));
-                                           }
+                                           //else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+                                           //{
+                                           //    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success,
+                                           //            AnalyticsConstants.Leaderboard));
+                                           //}
                                        }
                                    },
                                 new Action1<Throwable>()

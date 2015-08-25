@@ -33,6 +33,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.achievement.AchievementListFragment;
 import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -557,21 +558,22 @@ abstract public class TimelineFragment extends DashboardFragment
 
     protected int getFollowType()
     {
-        UserProfileDTO userProfileDTO =
-                userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
+        UserProfileDTO userProfileDTO = shownProfile;
         if (userProfileDTO != null)
         {
-            UserBaseKey purchaserKey = currentUserId.toUserBaseKey();
-            if (purchaserKey != null)
+            UserBaseKey currentUser = currentUserId.toUserBaseKey();
+            UserProfileDTO currentProfile = userProfileCache.get().getCachedValue(currentUser);
+            if (currentProfile != null)
             {
-                UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(purchaserKey);
-                if (purchaserProfile != null)
-                {
-                    return purchaserProfile.getFollowType(shownUserBaseKey);
-                }
+                return currentProfile.getFollowType(shownUserBaseKey);
             }
         }
         return 0;
+    }
+
+    protected boolean isFollowing()
+    {
+        return getFollowType() != UserProfileDTOUtil.IS_NOT_FOLLOWER;
     }
 
     protected void registerUserDiscussionActions()

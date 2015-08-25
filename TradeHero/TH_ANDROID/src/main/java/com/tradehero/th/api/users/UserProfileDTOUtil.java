@@ -18,7 +18,6 @@ public class UserProfileDTOUtil extends UserBaseDTOUtil
     public final static int IS_NOT_FOLLOWER_WANT_MSG = -1;
     public final static int IS_NOT_FOLLOWER = 0;
     public final static int IS_FREE_FOLLOWER = 1;
-    public final static int IS_PREMIUM_FOLLOWER = 2;
 
     @NonNull protected final TimingIntervalPreference firstShowOnBoardDialogPreference;
 

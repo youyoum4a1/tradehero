@@ -107,6 +107,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     {
         if (this.heroIds != null)
         {
+            //TODO remove when api changes to freeHeroIds only
             if (this.freeHeroIds != null)
             {
                 if (this.freeHeroIds.contains(userId))
@@ -118,7 +119,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
             {
                 if (this.premiumHeroIds.contains(userId))
                 {
-                    return UserProfileDTOUtil.IS_PREMIUM_FOLLOWER;
+                    return UserProfileDTOUtil.IS_FREE_FOLLOWER;
                 }
             }
         }
