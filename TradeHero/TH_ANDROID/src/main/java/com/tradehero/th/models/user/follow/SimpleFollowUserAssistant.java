@@ -3,23 +3,37 @@ package com.tradehero.th.models.user.follow;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.widget.Button;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.AlertDialogUtil;
+import java.util.ArrayList;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Func1;
 
 public class SimpleFollowUserAssistant
 {
     @Inject protected UserServiceWrapper userServiceWrapper;
+    @Inject protected UserProfileCacheRx userProfileCacheRx;
+    @Inject protected CurrentUserId currentUserId;
 
     @NonNull private final Context context;
     @NonNull protected final UserBaseKey heroId;
+
+    public static void updateFollowButton(Button button)
+    {
+
+    }
 
     //<editor-fold desc="Constructors">
     public SimpleFollowUserAssistant(
@@ -66,5 +80,58 @@ public class SimpleFollowUserAssistant
         AlertDialogUtil.showProgressDialog(
                 context,
                 context.getString(contentResId));
+    }
+
+    public void unFollowFromCache()
+    {
+        UserProfileDTO cachedValue = userProfileCacheRx.getCachedValue(currentUserId.toUserBaseKey());
+        if (cachedValue != null && cachedValue.heroIds != null)
+        {
+            cachedValue.heroIds.remove(heroId.getUserId());
+            userProfileCacheRx.onNext(currentUserId.toUserBaseKey(), cachedValue);
+        }
+    }
+
+    public Observable<UserProfileDTO> unFollowFromServer()
+    {
+        return userServiceWrapper.unfollowRx(heroId);
+    }
+
+    public void followingInCache()
+    {
+        UserProfileDTO cachedValue = userProfileCacheRx.getCachedValue(currentUserId.toUserBaseKey());
+        if(cachedValue != null)
+        {
+            if (cachedValue.heroIds == null)
+            {
+                cachedValue.heroIds = new ArrayList<>(1);
+            }
+            cachedValue.heroIds.add(heroId.getUserId());
+            userProfileCacheRx.onNext(currentUserId.toUserBaseKey(), cachedValue);
+        }
+    }
+
+    public Observable<UserProfileDTO> followingInServer()
+    {
+        return userServiceWrapper.unfollowRx(heroId);
+    }
+
+    public Observable<OnDialogClickEvent> showUnFollowConfirmation(String displayName)
+    {
+        return AlertDialogRxUtil.build(context)
+                .setTitle(context.getString(R.string.manage_heroes_alert_unfollow_title,
+                        displayName))
+                .setMessage(R.string.manage_heroes_alert_unfollow_message)
+                .setPositiveButton(R.string.manage_heroes_alert_unfollow_ok)
+                .setNegativeButton(R.string.manage_heroes_alert_unfollow_cancel)
+                .build()
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(new Func1<OnDialogClickEvent, Boolean>()
+                {
+                    @Override public Boolean call(OnDialogClickEvent onDialogClickEvent)
+                    {
+                        return onDialogClickEvent.isPositive();
+                    }
+                });
     }
 }

@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -27,15 +26,17 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
-import java.util.ArrayList;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 import rx.Observable;
@@ -210,27 +211,38 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         if (isFollowing())
         {
-            onStopSubscriptions.add(userProfileCache.get().getOne(currentUserId.toUserBaseKey())
-                    .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Action1<UserProfileDTO>()
+            SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), shownUserBaseKey);
+            onStopSubscriptions.add(assistant.showUnFollowConfirmation(shownProfile.displayName)
+                    .flatMap(new Func1<OnDialogClickEvent, Observable<Pair<UserBaseKey, UserProfileDTO>>>()
                     {
-                        @Override public void call(UserProfileDTO userProfileDTO)
+                        @Override public Observable<Pair<UserBaseKey, UserProfileDTO>> call(OnDialogClickEvent onDialogClickEvent)
                         {
-                            if (userProfileDTO.freeHeroIds != null)
-                            {
-                                userProfileDTO.freeHeroIds.remove(shownUserBaseKey.getUserId());
-                            }
-                            userProfileCache.get().onNext(currentUserId.toUserBaseKey(), userProfileDTO);
+                            return userProfileCache.get().getOne(currentUserId.toUserBaseKey());
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .map(new ReplaceWithFunc1<Pair<UserBaseKey, UserProfileDTO>, SimpleFollowUserAssistant>(assistant))
+                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    {
+                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
+                            simpleFollowUserAssistant.unFollowFromCache();
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    {
+                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
                             updateBottomButton();
                         }
                     })
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<UserProfileDTO, Observable<UserProfileDTO>>()
+                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
                     {
-                        @Override public Observable<UserProfileDTO> call(UserProfileDTO ignored)
+                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
                         {
-                            return userServiceWrapperLazy.get().unfollowRx(shownUserBaseKey);
+                            return simpleFollowUserAssistant.unFollowFromServer();
                         }
                     })
                     .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to unfollow user")));
@@ -238,27 +250,31 @@ public class PushableTimelineFragment extends TimelineFragment
         else
         {
             onStopSubscriptions.add(userProfileCache.get().getOne(currentUserId.toUserBaseKey())
-                    .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+                    .subscribeOn(Schedulers.io())
+                    .map(new ReplaceWithFunc1<Pair<UserBaseKey, UserProfileDTO>, SimpleFollowUserAssistant>(
+                            new SimpleFollowUserAssistant(getActivity(), shownUserBaseKey)))
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Action1<UserProfileDTO>()
+                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
                     {
-                        @Override public void call(UserProfileDTO userProfileDTO)
+                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
                         {
-                            if (userProfileDTO.freeHeroIds == null)
-                            {
-                                userProfileDTO.freeHeroIds = new ArrayList<>(1);
-                            }
-                            userProfileDTO.freeHeroIds.add(shownUserBaseKey.getUserId());
-                            userProfileCache.get().onNext(currentUserId.toUserBaseKey(), userProfileDTO);
+                            simpleFollowUserAssistant.followingInCache();
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    {
+                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
                             updateBottomButton();
                         }
                     })
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<UserProfileDTO, Observable<UserProfileDTO>>()
+                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
                     {
-                        @Override public Observable<UserProfileDTO> call(UserProfileDTO ignored)
+                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
                         {
-                            return userServiceWrapperLazy.get().freeFollowRx(shownUserBaseKey);
+                            return simpleFollowUserAssistant.followingInServer();
                         }
                     })
                     .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to follow user")));

@@ -23,19 +23,17 @@ import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
@@ -50,8 +48,6 @@ public class LeaderboardMarkUserListFragmentUtil
     @NonNull private final LeaderboardDefCacheRx leaderboardDefCache;
     @NonNull private final Analytics analytics;
     @NonNull private final ProviderUtil providerUtil;
-
-    @Inject protected UserServiceWrapper userServiceWrapper;
 
     private BaseLeaderboardPagedRecyclerRxFragment fragment;
     private LeaderboardType leaderboardType;
@@ -142,52 +138,51 @@ public class LeaderboardMarkUserListFragmentUtil
     {
         LeaderboardMarkedUserItemDisplayDto markedUser = (LeaderboardMarkedUserItemDisplayDto) toUnfollow;
         UserBaseDTO user = markedUser.leaderboardUserDTO;
-        onStopSubscriptions.add(
-                AlertDialogRxUtil.build(fragment.getActivity())
-                        .setTitle(fragment.getString(R.string.manage_heroes_alert_unfollow_title,
-                                user != null ? user.displayName : fragment.getString(R.string.hero)))
-                        .setMessage(R.string.manage_heroes_alert_unfollow_message)
-                        .setPositiveButton(R.string.manage_heroes_alert_unfollow_ok)
-                        .setNegativeButton(R.string.manage_heroes_alert_unfollow_cancel)
-                        .build()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .filter(new Func1<OnDialogClickEvent, Boolean>()
-                        {
-                            @Override public Boolean call(OnDialogClickEvent onDialogClickEvent)
+        SimpleFollowUserAssistant assistant;
+        if (user != null)
+        {
+            assistant = new SimpleFollowUserAssistant(fragment.getActivity(), user.getBaseKey());
+            onStopSubscriptions.add(
+                    assistant.showUnFollowConfirmation(user.displayName)
+                            .map(new ReplaceWithFunc1<OnDialogClickEvent, LeaderboardMarkedUserItemDisplayDto>(
+                                    markedUser))
+                            .doOnNext(new Action1<LeaderboardMarkedUserItemDisplayDto>()
                             {
-                                return onDialogClickEvent.isPositive();
-                            }
-                        })
-                        .map(new ReplaceWithFunc1<OnDialogClickEvent, LeaderboardMarkedUserItemDisplayDto>(
-                                markedUser))
-                        .doOnNext(new Action1<LeaderboardMarkedUserItemDisplayDto>()
-                        {
-                            @Override public void call(LeaderboardMarkedUserItemDisplayDto leaderboardMarkedUserItemDisplayDto)
-                            {
-                                leaderboardMarkedUserItemDisplayDto.setIsFollowing(false);
-                                fragment.updateRow(leaderboardMarkedUserItemDisplayDto);
-                            }
-                        })
-                        .observeOn(Schedulers.io())
-                        .flatMap(new Func1<LeaderboardMarkedUserItemDisplayDto, Observable<UserProfileDTO>>()
-                        {
-                            @Override public Observable<UserProfileDTO> call(LeaderboardMarkedUserItemDisplayDto leaderboardMarkedUserItemDisplayDto)
-                            {
-                                if (leaderboardMarkedUserItemDisplayDto.leaderboardUserDTO != null)
+                                @Override public void call(LeaderboardMarkedUserItemDisplayDto leaderboardMarkedUserItemDisplayDto)
                                 {
-                                    return userServiceWrapper.unfollowRx(leaderboardMarkedUserItemDisplayDto.leaderboardUserDTO.getBaseKey());
+                                    leaderboardMarkedUserItemDisplayDto.setIsFollowing(false);
+                                    fragment.updateRow(leaderboardMarkedUserItemDisplayDto);
                                 }
-                                return Observable.empty();
-                            }
-                        })
-                        .subscribe(new Action1<UserProfileDTO>()
-                        {
-                            @Override public void call(UserProfileDTO userProfileDTO)
+                            })
+                            .map(new ReplaceWithFunc1<LeaderboardMarkedUserItemDisplayDto, SimpleFollowUserAssistant>(assistant))
+                            .doOnNext(new Action1<SimpleFollowUserAssistant>()
                             {
-                                fragment.setCurrentUserProfileDTO(userProfileDTO);
-                            }
-                        }, new TimberOnErrorAction1("Failed to unfollow hero"))
-        );
+                                @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                                {
+                                    simpleFollowUserAssistant.unFollowFromCache();
+                                }
+                            })
+                            .observeOn(Schedulers.io())
+                            .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                            {
+                                @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                                {
+                                    return simpleFollowUserAssistant.unFollowFromServer();
+                                }
+                            })
+                            .subscribe(new Action1<UserProfileDTO>()
+                            {
+                                @Override public void call(UserProfileDTO userProfileDTO)
+                                {
+                                    fragment.setCurrentUserProfileDTO(userProfileDTO);
+                                }
+                            }, new TimberOnErrorAction1("Failed to unfollow hero"))
+            );
+        }
+        else
+        {
+            Timber.e("Error on unfollow from leaderboard, user is null %s", markedUser);
+        }
     }
 
     protected void openTimeline(@NonNull LeaderboardMarkedUserItemDisplayDto dto)
@@ -212,11 +207,12 @@ public class LeaderboardMarkUserListFragmentUtil
 
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
+        SimpleFollowUserAssistant simpleFollowUserAssistant = new SimpleFollowUserAssistant(fragment.getActivity(), userBaseDTO.getBaseKey());
+        simpleFollowUserAssistant.followingInCache();
         onStopSubscriptions.add(
                 AppObservable.bindSupportFragment(
                         fragment,
-                        userServiceWrapper.freeFollowRx(userBaseDTO.getBaseKey())
-                )
+                        simpleFollowUserAssistant.followingInServer())
                         .subscribe(new Action1<UserProfileDTO>()
                                    {
                                        @Override public void call(UserProfileDTO userProfileDTO)
