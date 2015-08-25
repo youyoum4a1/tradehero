@@ -223,7 +223,7 @@ public interface UserServiceRx
     //<editor-fold desc="Follow Hero">
     @POST("/users/{userId}/follow/free")
     Observable<UserProfileDTO> freeFollow(
-            @Path("userId") int userId, String emptyBody);
+            @Path("userId") int userId, @Body String emptyBody);
 
     //<editor-fold desc="Unfollow Hero">
     @POST("/users/{userId}/unfollow")
