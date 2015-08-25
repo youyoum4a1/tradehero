@@ -42,15 +42,15 @@
 
   <ImageButton
       android:id="@+id/leaderboard_user_item_follow"
-      android:layout_width="@dimen/medium_image_w_h"
-      android:layout_height="@dimen/medium_image_w_h"
+      android:layout_width="@dimen/small_image_w_h"
+      android:layout_height="@dimen/small_image_w_h"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
       android:layout_marginRight="@dimen/margin_small"
       android:background="@drawable/basic_blue_selector"
-      android:padding="@dimen/margin_xsmall"
+      android:padding="4dp"
       android:scaleType="centerInside"
-      android:src="@drawable/ic_profile_followers"
+      android:src="@drawable/ic_follow"
       />
 
   <LinearLayout
