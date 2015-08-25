@@ -6,7 +6,7 @@ public class LeaderboardItemUserAction
 {
     public enum UserActionType
     {
-        PROFILE, POSITIONS, FOLLOW, RULES
+        PROFILE, POSITIONS, FOLLOW, UNFOLLOW, RULES
     }
 
     @NonNull public final LeaderboardItemDisplayDTO dto;

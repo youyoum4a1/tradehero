@@ -14,6 +14,7 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.metrics.AnalyticsEvent;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
@@ -230,6 +231,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
                 if (oldDto.lbmuRoiPeriod == null && newDto.lbmuRoiPeriod != null) return false;
                 if (oldDto.lbmuRoiPeriod != null && newDto.lbmuRoiPeriod == null) return false;
                 if (oldDto.lbmuRoiPeriod != null && !oldDto.lbmuRoiPeriod.equals(newDto.lbmuRoiPeriod)) return false;
+                if (oldDto.isFollowing() != (newDto.isFollowing())) return false;
                 return oldDto.lbmuRanking.equals(newDto.lbmuRanking)
                         && !(oldDto.lbmuDisplayPicture != null
                         ? !oldDto.lbmuDisplayPicture.equals(newDto.lbmuDisplayPicture)
@@ -378,8 +380,21 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         {
             if (this.currentDto != null)
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
-                userActionSubject.onNext(new LeaderboardItemUserAction(this.currentDto, UserActionType.FOLLOW));
+                AnalyticsEvent event;
+                LeaderboardItemUserAction userAction;
+
+                if (this.currentDto.isFollowing())
+                {
+                    event = new SimpleEvent(AnalyticsConstants.Leaderboard_Unfollow);
+                    userAction = new LeaderboardItemUserAction(this.currentDto, UserActionType.UNFOLLOW);
+                }
+                else
+                {
+                    event = new SimpleEvent(AnalyticsConstants.Leaderboard_Follow);
+                    userAction = new LeaderboardItemUserAction(this.currentDto, UserActionType.FOLLOW);
+                }
+                analytics.addEvent(event);
+                userActionSubject.onNext(userAction);
             }
         }
 

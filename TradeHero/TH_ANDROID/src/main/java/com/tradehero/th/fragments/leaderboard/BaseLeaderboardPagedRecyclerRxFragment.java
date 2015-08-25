@@ -105,4 +105,6 @@ abstract public class BaseLeaderboardPagedRecyclerRxFragment<
     {
         return R.menu.empty_menu;
     }
+
+    public abstract void updateRow(LeaderboardItemDisplayDTO dto);
 }

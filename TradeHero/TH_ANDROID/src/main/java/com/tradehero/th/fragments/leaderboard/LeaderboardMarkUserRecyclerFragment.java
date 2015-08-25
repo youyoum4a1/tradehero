@@ -194,6 +194,15 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         super.onDestroy();
     }
 
+    @Override public void updateRow(LeaderboardItemDisplayDTO dto)
+    {
+        int position = itemViewAdapter.indexOf(dto);
+        if(position >= 0 )
+        {
+            itemViewAdapter.notifyItemChanged(position);
+        }
+    }
+
     @NonNull protected LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO> createItemViewAdapter()
     {
         LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO> adapter = new LeaderboardMarkUserRecyclerAdapter<>(

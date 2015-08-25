@@ -63,6 +63,7 @@ public class AnalyticsConstants
     public static final String Leaderboard_Profile = "Leaderboard/Profile";// Tap proﬁle on leaderboard user
     public static final String Leaderboard_Positions = "Leaderboard/Positions";// Tap positins on leaderboard user
     public static final String Leaderboard_Follow = "Leaderboard/Follow";// Tap follow on leaderboard user
+    public static final String Leaderboard_Unfollow = "Leaderboard/Unfollow";// Tap follow on leaderboard user
     public static final String Leaderboard_Back = "Leaderboard/Back";// Tap back on leaderboard leaderboardId
     public static final String Leaderboard_FilterShow = "Leaderboard/FilterShow";// Leaderboard ﬁlter screen is
     public static final String Leaderboard_FilterChange = "Leaderboard/FilterChange";//

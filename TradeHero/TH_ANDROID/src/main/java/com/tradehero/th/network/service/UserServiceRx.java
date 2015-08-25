@@ -228,7 +228,7 @@ public interface UserServiceRx
     //<editor-fold desc="Unfollow Hero">
     @POST("/users/{userId}/unfollow")
     Observable<UserProfileDTO> unfollow(
-            @Path("userId") int userId);
+            @Path("userId") int userId, @Body String emptyBody);
     //</editor-fold>
 
     //<editor-fold desc="Get Heroes">

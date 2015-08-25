@@ -185,6 +185,15 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
         super.onDestroy();
     }
 
+    @Override public void updateRow(LeaderboardItemDisplayDTO dto)
+    {
+        int position = itemViewAdapter.indexOf(dto);
+        if(position >= 0 )
+        {
+            itemViewAdapter.notifyItemChanged(position);
+        }
+    }
+
     @NonNull @Override protected PagedRecyclerAdapter<LeaderboardItemDisplayDTO> createItemViewAdapter()
     {
         return new FriendsLeaderboardRecyclerAdapter(

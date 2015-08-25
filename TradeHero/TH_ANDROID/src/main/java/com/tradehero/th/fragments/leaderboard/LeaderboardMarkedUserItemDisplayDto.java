@@ -40,8 +40,9 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     public int lbmuRoiPeriodVisibility;
     String lbmuDisplayPicture;
     @ViewVisibilityValue final int lbmuFoFVisibility;
-    @DrawableRes public final int lbmuFollowBtnColorResId;
-    @DrawableRes public final int lbmuFollowIconResId;
+    @DrawableRes public int lbmuFollowBtnColorResId;
+    @DrawableRes public int lbmuFollowIconResId;
+    private boolean isFollowing;
     private boolean expanded;
     private boolean isMyOwnRanking;
 
@@ -65,8 +66,8 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.isMyOwnRanking = true;
         this.lbmuRoiPeriod = null;
         this.lbmuRoiPeriodVisibility = View.GONE;
-        this.lbmuFollowBtnColorResId = BUTTON_FOLLOW_BG;
-        this.lbmuFollowIconResId = BUTTON_FOLLOW_ICON;
+        this.isFollowing = false;
+        updateFollowingIcon();
     }
 
     /**
@@ -90,8 +91,8 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.lbmuDisplayPicture = currentUserProfileDTO.picture;
         this.lbmuRoiPeriod = null;
         this.lbmuRoiPeriodVisibility = View.GONE;
-        this.lbmuFollowBtnColorResId = BUTTON_FOLLOW_BG;
-        this.lbmuFollowIconResId = BUTTON_FOLLOW_ICON;
+        this.isFollowing = false;
+        updateFollowingIcon();
     }
 
     public LeaderboardMarkedUserItemDisplayDto(@NonNull Resources resources,
@@ -130,10 +131,15 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
                 ? View.VISIBLE
                 : View.GONE;
 
-        boolean isFollowing = currentUserProfileDTO.isFollowingUser(leaderboardItem.getBaseKey());
-        this.lbmuFollowBtnColorResId = isFollowing ? BUTTON_FOLLOWING_BG : BUTTON_FOLLOW_BG;
-        this.lbmuFollowIconResId = isFollowing ? BUTTON_FOLLOWING_ICON : BUTTON_FOLLOW_ICON;
+        this.isFollowing = currentUserProfileDTO.isFollowingUser(leaderboardItem.getBaseKey());
         this.lbmuDisplayPicture = leaderboardItem.picture;
+        updateFollowingIcon();
+    }
+
+    protected void updateFollowingIcon()
+    {
+        this.lbmuFollowBtnColorResId = this.isFollowing ? BUTTON_FOLLOWING_BG : BUTTON_FOLLOW_BG;
+        this.lbmuFollowIconResId = this.isFollowing ? BUTTON_FOLLOWING_ICON : BUTTON_FOLLOW_ICON;
     }
 
     @Override public boolean isExpanded()
@@ -154,6 +160,17 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     public boolean isMyOwnRanking()
     {
         return isMyOwnRanking;
+    }
+
+    public void setIsFollowing(boolean isFollowing)
+    {
+        this.isFollowing = isFollowing;
+        updateFollowingIcon();
+    }
+
+    public boolean isFollowing()
+    {
+        return isFollowing;
     }
 
     public static class Requisite

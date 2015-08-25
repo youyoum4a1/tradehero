@@ -404,7 +404,7 @@ import rx.functions.Func1;
     //<editor-fold desc="Unfollow Hero">
     @NonNull public Observable<UserProfileDTO> unfollowRx(@NonNull UserBaseKey heroId)
     {
-        return userServiceRx.unfollow(heroId.key);
+        return userServiceRx.unfollow(heroId.key, "");
     }
     //</editor-fold>
 
