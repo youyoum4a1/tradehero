@@ -22,4 +22,9 @@
   <string name="upgrade_to_message_more">Upgrade to message more!</string>
   <string name="follower_empty_list_call_action">Get new followers by making trading profits and posting on discussion boards.</string>
 
+  <string name="pm_not_follow_title">Follow %1$s?</string>
+  <string name="pm_not_follow_msg">You need to follow this Hero to be able to send Private Messages.</string>
+  <string name="pm_not_follow_positive">Follow and Send Message</string>
+  <string name="pm_not_follow_negative">@string/cancel</string>
+
 </resources>

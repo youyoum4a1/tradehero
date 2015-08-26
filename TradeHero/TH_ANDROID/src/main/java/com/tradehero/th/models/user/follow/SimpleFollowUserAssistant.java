@@ -145,4 +145,22 @@ public class SimpleFollowUserAssistant
                     }
                 });
     }
+
+    public Observable<OnDialogClickEvent> showFollowForMessageConfirmation(String displayName)
+    {
+        return AlertDialogRxUtil.build(context)
+                .setTitle(context.getString(R.string.pm_not_follow_title, displayName))
+                .setMessage(R.string.pm_not_follow_msg)
+                .setPositiveButton(R.string.pm_not_follow_positive)
+                .setNegativeButton(R.string.pm_not_follow_negative)
+                .build()
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(new Func1<OnDialogClickEvent, Boolean>()
+                {
+                    @Override public Boolean call(OnDialogClickEvent onDialogClickEvent)
+                    {
+                        return onDialogClickEvent.isPositive();
+                    }
+                });
+    }
 }

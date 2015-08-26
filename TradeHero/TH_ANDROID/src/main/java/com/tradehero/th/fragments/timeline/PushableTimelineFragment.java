@@ -277,6 +277,44 @@ public class PushableTimelineFragment extends TimelineFragment
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
     }
 
+    @OnClick(R.id.message_button)
+    protected void handleMessageRequested()
+    {
+        if (isFollowing())
+        {
+            pushPrivateMessageFragment();
+        }
+        else
+        {
+            final SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), shownUserBaseKey);
+            onDestroyViewSubscriptions.add(assistant.showFollowForMessageConfirmation(shownProfile.displayName)
+                    .map(new ReplaceWithFunc1<OnDialogClickEvent, SimpleFollowUserAssistant>(assistant))
+                    .observeOn(Schedulers.io())
+                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    {
+                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
+                            simpleFollowUserAssistant.followingInCache();
+                        }
+                    })
+                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                    {
+                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
+                            return assistant.followingInServer();
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<UserProfileDTO>()
+                    {
+                        @Override public void call(UserProfileDTO userProfileDTO)
+                        {
+                            pushPrivateMessageFragment();
+                        }
+                    }, new TimberOnErrorAction1("Failed to follow user for sending private message")));
+        }
+    }
+
     protected void pushPrivateMessageFragment()
     {
         if (navigator == null)
