@@ -17,7 +17,7 @@ import java.util.List;
  ]
  }
  */
-public class HengshengWithdrawEnterDTO {
+public class HengshengWithdrawEnterDTO extends HengshengBaseDTO{
     public List<WithdrawEnterDTO> data;
 }
 

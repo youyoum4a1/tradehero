@@ -3,7 +3,7 @@ package com.tradehero.firmbargain.hengsheng.data;
 /**
  * Created by Sam on 15/8/25.
  */
-public class HengshengSessionDTO {
+public class HengshengSessionDTO extends HengshengBaseDTO{
 
     public String token_type;
     public String access_token;

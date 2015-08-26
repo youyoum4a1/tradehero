@@ -25,7 +25,7 @@ import java.util.List;
  }
  *
  */
-public class HengshengPositionDTO {
+public class HengshengPositionDTO extends HengshengBaseDTO{
     public List<PositionDTO> data;
 }
 

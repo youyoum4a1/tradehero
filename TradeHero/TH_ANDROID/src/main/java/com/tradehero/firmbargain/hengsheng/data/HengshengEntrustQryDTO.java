@@ -33,7 +33,7 @@ import java.util.List;
      ]
  }
  */
-public class HengshengEntrustQryDTO {
+public class HengshengEntrustQryDTO extends HengshengBaseDTO{
     public List<EntrustQry> data;
 }
 
@@ -44,7 +44,7 @@ class EntrustQry {
     public int entrust_type;
     public String stock_code;
     public int entrust_prop;
-    public int business_amount;
+    public float business_amount;
     public String position_str;
     public int entrust_status;
     public float entrust_amount;

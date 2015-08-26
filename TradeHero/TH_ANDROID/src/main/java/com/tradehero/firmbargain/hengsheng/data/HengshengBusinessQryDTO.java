@@ -27,7 +27,7 @@ import java.util.List;
      ]
  }
  */
-public class HengshengBusinessQryDTO {
+public class HengshengBusinessQryDTO extends HengshengBaseDTO {
     public List<BusinessQryDTO> data;
 }
 

@@ -17,7 +17,7 @@ import java.util.List;
  }
  *
  */
-public class HengShengEntrustEnterDTO {
+public class HengShengEntrustEnterDTO extends HengshengBaseDTO{
     public List<EntrustEnterDTO> data;
 }
 

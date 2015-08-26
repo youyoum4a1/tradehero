@@ -21,8 +21,10 @@ import java.util.List;
          }
      ]
  }
+
+ {"error_no":"-201","error_code":"10204","error_info":"可用股票数量不足"}
  */
-public class HengshengBalanceDTO {
+public class HengshengBalanceDTO extends HengshengBaseDTO{
     public List<BalanceDTO> data;
 }
 
