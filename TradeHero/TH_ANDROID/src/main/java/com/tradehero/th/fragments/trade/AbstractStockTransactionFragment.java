@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.trade;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
@@ -11,20 +13,25 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 
-public abstract class AbstractStockTransactionDialogFragment extends AbstractTransactionDialogFragment
+public abstract class AbstractStockTransactionFragment extends AbstractTransactionFragment
 {
-    public static AbstractStockTransactionDialogFragment newInstance(
+    public static AbstractStockTransactionFragment newInstance(
             boolean isBuy,
             @NonNull Requisite requisite)
     {
-        AbstractStockTransactionDialogFragment abstractBuySellDialogFragment = isBuy ? new BuyStockDialogFragment() : new SellStockDialogFragment();
+        AbstractStockTransactionFragment abstractBuySellDialogFragment = isBuy ? new BuyStockFragment() : new SellStockFragment();
         Bundle args = new Bundle();
-        AbstractStockTransactionDialogFragment.putRequisite(args, requisite);
+        AbstractStockTransactionFragment.putRequisite(args, requisite);
         abstractBuySellDialogFragment.setArguments(args);
         return abstractBuySellDialogFragment;
     }
 
-    protected AbstractStockTransactionDialogFragment()
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    protected AbstractStockTransactionFragment()
     {
         super();
     }

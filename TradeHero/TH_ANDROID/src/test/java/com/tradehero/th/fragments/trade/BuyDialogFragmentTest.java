@@ -65,8 +65,8 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         QuoteDTO quoteDTO = mock(QuoteDTO.class);
         quoteDTO.ask = null;
         quoteDTO.bid = null;
-        assertThat(BuyStockDialogFragment.canShowDialog(quoteDTO, true)).isFalse();
-        assertThat(BuyStockDialogFragment.canShowDialog(quoteDTO, false)).isFalse();
+        assertThat(BuyStockFragment.canShowDialog(quoteDTO, true)).isFalse();
+        assertThat(BuyStockFragment.canShowDialog(quoteDTO, false)).isFalse();
     }
 
     @Test public void shouldShowOnlyBuyWithQuoteNoBid()
@@ -74,8 +74,8 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         QuoteDTO quoteDTO = mock(QuoteDTO.class);
         quoteDTO.ask = 3d;
         quoteDTO.bid = null;
-        assertThat(BuyStockDialogFragment.canShowDialog(quoteDTO, true)).isTrue();
-        assertThat(BuyStockDialogFragment.canShowDialog(quoteDTO, false)).isFalse();
+        assertThat(BuyStockFragment.canShowDialog(quoteDTO, true)).isTrue();
+        assertThat(BuyStockFragment.canShowDialog(quoteDTO, false)).isFalse();
     }
 
     @Test public void shouldShowOnlySellWithQuoteNoAsk()
@@ -83,8 +83,8 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         QuoteDTO quoteDTO = mock(QuoteDTO.class);
         quoteDTO.ask = null;
         quoteDTO.bid = 2d;
-        assertThat(BuyStockDialogFragment.canShowDialog(quoteDTO, true)).isFalse();
-        assertThat(BuyStockDialogFragment.canShowDialog(quoteDTO, false)).isTrue();
+        assertThat(BuyStockFragment.canShowDialog(quoteDTO, true)).isFalse();
+        assertThat(BuyStockFragment.canShowDialog(quoteDTO, false)).isTrue();
     }
 
     @Test public void shouldShowBothWithQuoteOk()
@@ -92,8 +92,8 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         QuoteDTO quoteDTO = mock(QuoteDTO.class);
         quoteDTO.ask = 3d;
         quoteDTO.bid = 2d;
-        assertThat(BuyStockDialogFragment.canShowDialog(quoteDTO, true)).isTrue();
-        assertThat(BuyStockDialogFragment.canShowDialog(quoteDTO, false)).isTrue();
+        assertThat(BuyStockFragment.canShowDialog(quoteDTO, true)).isTrue();
+        assertThat(BuyStockFragment.canShowDialog(quoteDTO, false)).isTrue();
     }
 
     @Test
@@ -298,7 +298,7 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         // Now that the DialogInterface is kept within the Observable chain, we do not
         // easily have access to it
 
-/*        AlertDialog alertDialog = abstractTransactionDialogFragment.mSocialLinkingDialog;
+/*        AlertDialog alertDialog = abstractTransactionFragment.mSocialLinkingDialog;
 
         assertThat(alertDialog).isNotNull();
 
@@ -309,12 +309,12 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
 
         assertThat(alertDialog.isShowing()).isEqualTo(false);
 
-        assertThat(abstractTransactionDialogFragment.mSocialLinkingDialog).isNull();
+        assertThat(abstractTransactionFragment.mSocialLinkingDialog).isNull();
 
         //Test whether the social link is turned off
         assertThat(mBtnShareLn.isChecked()).isEqualTo(false);
 
-        TransactionFormDTO transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+        TransactionFormDTO transactionFormDTO = abstractTransactionFragment.getBuySellOrder();
         assertThat(transactionFormDTO.publishToLi).isEqualTo(false); */
     }
 
@@ -337,12 +337,12 @@ public class BuyDialogFragmentTest extends AbstractTransactionDialogFragmentTest
         newUserProfileDTO.liLinked = true;
 
         // Now we use Observable
-        /*abstractTransactionDialogFragment.onSuccessSocialLink(newUserProfileDTO, SocialNetworkEnum.LN);
+        /*abstractTransactionFragment.onSuccessSocialLink(newUserProfileDTO, SocialNetworkEnum.LN);
 
-        transactionFormDTO = abstractTransactionDialogFragment.getBuySellOrder();
+        transactionFormDTO = abstractTransactionFragment.getBuySellOrder();
         assertThat(transactionFormDTO.publishToLi).isEqualTo(true);
         assertThat(btnLinkedIn.isChecked()).isEqualTo(true);
-        assertThat(abstractTransactionDialogFragment.isSocialLinked(SocialNetworkEnum.LN)).isEqualTo(true);*/
+        assertThat(abstractTransactionFragment.isSocialLinked(SocialNetworkEnum.LN)).isEqualTo(true);*/
     }
 
     @Test

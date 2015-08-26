@@ -2,7 +2,7 @@
 <resources>
 
   <string name="buy_sell_price_as_of">As of</string>
-  <string name="buy_sell_cash_available">Cash Avail.</string>
+  <string name="buy_sell_cash_available">Cash Available</string>
   <string name="buy_sell_cash_left">Cash Left</string>
   <string name="buy_sell_fx_cash_left">Margin Available</string>
   <string name="buy_sell_share_available">Shares Avail.</string>
@@ -10,7 +10,7 @@
   <string name="buy_sell_quantity">Quantity</string>
   <string name="buy_sell_fx_quantity">Units</string>
   <string name="buy_sell_fx_quantity_left">Units left</string>
-  <string name="buy_sell_trade_value">Value</string>
+  <string name="buy_sell_trade_value">Trade Value</string>
   <string name="buy_sell_projected_p_and_l_value">Projected P&amp;L</string>
   <string name="buy_sell_bid_with_bracket">(bid)</string>
   <string name="buy_sell_ask_with_bracket">(ask)</string>
@@ -32,7 +32,7 @@
   <string name="buy_sell_sell_loss">Loss: %s</string>
   <string name="buy_sell_confirm_share_public">Public</string>
   <string name="buy_sell_confirm_share_private">Private</string>
-  <string name="buy_sell_confirm_buy_comment">Add a comment…</string>
+  <string name="buy_sell_confirm_buy_comment">Your thoughts on this trade</string>
   <string name="buy_sell_confirm_share_on">Share:</string>
   <string name="buy_sell_switch_buy">Buy</string>
   <string name="buy_sell_switch_sell">Sell</string>
@@ -78,5 +78,7 @@
   <string name="change">Chg :</string>
 
   <string name="traded_facebook_share_message">bought %1$s shares of %2$s (%3$s) @ %4$s</string>
+  <string name="buy_sell_market_price_title">Market Price:</string>
+  <string name="buy_sell_shares_title">Shares:</string>
 
 </resources>

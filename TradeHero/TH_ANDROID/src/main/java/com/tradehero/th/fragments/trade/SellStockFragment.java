@@ -21,13 +21,13 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class SellStockDialogFragment extends AbstractStockTransactionDialogFragment
+public class SellStockFragment extends AbstractStockTransactionFragment
 {
     private static final boolean IS_BUY = false;
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    public SellStockDialogFragment()
+    public SellStockFragment()
     {
         super();
     }

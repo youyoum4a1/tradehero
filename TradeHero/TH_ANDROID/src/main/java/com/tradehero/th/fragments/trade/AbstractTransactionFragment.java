@@ -1,7 +1,5 @@
 package com.tradehero.th.fragments.trade;
 
-import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,7 +27,6 @@ import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.FacebookShareActivity;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
@@ -40,16 +37,15 @@ import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
-import com.tradehero.th.fragments.base.BaseShareableDialogFragment;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.TransactionEditCommentFragment;
 import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
@@ -61,6 +57,7 @@ import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
@@ -84,18 +81,17 @@ import rx.functions.Func6;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-abstract public class AbstractTransactionDialogFragment extends BaseShareableDialogFragment
+abstract public class AbstractTransactionFragment extends DashboardFragment
 {
-    private static final String KEY_REQUISITE = AbstractTransactionDialogFragment.class.getName() + ".requisite";
+    private static final String KEY_REQUISITE = AbstractTransactionFragment.class.getName() + ".requisite";
     private static final double INITIAL_VALUE = 5000;
 
-    @Bind(R.id.dialog_stock_name) protected TextView mStockNameTextView;
     @Bind(R.id.vcash_left) protected TextView mCashShareLeftTextView;
-    @Bind(R.id.dialog_cash_left) protected TextView mCashShareLeftLabelTextView;
+    //@Bind(R.id.dialog_cash_left) protected TextView mCashShareLeftLabelTextView;
     @Bind(R.id.vtrade_value) protected TextView mTradeValueTextView;
     @Bind(R.id.dialog_price) protected TextView mStockPriceTextView;
     @Bind(R.id.dialog_portfolio) protected TextView mPortfolioTextView;
-    @Bind(R.id.dialog_profit_and_loss) protected TextView mProfitLossView;
+    //@Bind(R.id.dialog_profit_and_loss) protected TextView mProfitLossView;
 
     @Bind(R.id.seek_bar) protected SeekBar mSeekBar;
     @Bind(R.id.quick_price_button_set) protected QuickPriceButtonSet mQuickPriceButtonSet;
@@ -114,6 +110,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     @Inject THBillingInteractorRx userInteractor;
     @Inject Lazy<DashboardNavigator> navigator;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCacheRx userProfileCache;
 
     protected Subscription buySellSubscription;
     protected Requisite requisite;
@@ -151,7 +149,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 (!isBuy && quoteDTO.bid != null);
     }
 
-    protected AbstractTransactionDialogFragment()
+    protected AbstractTransactionFragment()
     {
         super();
         this.usedDTO = new UsedDTO();
@@ -182,7 +180,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setStyle(BaseDialogFragment.STYLE_NO_TITLE, getTheme());
         requisite = getRequisite(getArguments());
         usedDTO.quoteDTO = requisite.quoteDTO;
         quantitySubject.onNext(requisite.quantity);
@@ -196,6 +193,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
         mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
         mQuantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
@@ -205,7 +203,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             }
         });
 
-        mCashShareLeftLabelTextView.setText(getCashLeftLabelResId(null));
+        //mCashShareLeftLabelTextView.setText(getCashLeftLabelResId(null));
 
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
         {
@@ -241,17 +239,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         super.onStart();
         initFetches();
-    }
-
-    @Override public void onResume()
-    {
-        super.onResume();
-
-        /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
-        if (!(navigator.get().getCurrentFragment() instanceof AbstractBuySellFragment))
-        {
-            getDialog().hide();
-        }
     }
 
     @Override public void onDetach()
@@ -305,29 +292,29 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                                 {
                                     mCashShareLeftTextView.setText(getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped));
                                 }
-                                mCashShareLeftLabelTextView.setText(getCashLeftLabelResId(closeablePosition));
-                                mProfitLossView.setVisibility(
-                                        getProfitOrLossUsd(portfolioCompactDTO, quoteDTO, closeablePosition, clamped) == null ? View.GONE
-                                                : View.VISIBLE);
+                                //mCashShareLeftLabelTextView.setText(getCashLeftLabelResId(closeablePosition));
+                                //mProfitLossView.setVisibility(
+                                //        getProfitOrLossUsd(portfolioCompactDTO, quoteDTO, closeablePosition, clamped) == null ? View.GONE
+                                //                : View.VISIBLE);
 
                                 Double profitLoss = showProfitLossUsd
                                         ? getProfitOrLossUsd(portfolioCompactDTO, quoteDTO, closeablePosition, clamped)
                                         : getProfitOrLossUsd(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
-                                if (profitLoss != null && clamped != null && clamped > 0)
-                                {
-                                    int stringResId = profitLoss < 0 ? R.string.buy_sell_sell_loss : R.string.buy_sell_sell_profit;
-                                    mProfitLossView.setText(
-                                            getString(
-                                                    stringResId,
-                                                    THSignedMoney.builder(profitLoss)
-                                                            .withOutSign()
-                                                            .currency(showProfitLossUsd ? null : null)
-                                                            .build().toString()));
-                                }
-                                else
-                                {
-                                    mProfitLossView.setText(getString(R.string.buy_sell_sell_loss, "--"));
-                                }
+                                //if (profitLoss != null && clamped != null && clamped > 0)
+                                //{
+                                //    int stringResId = profitLoss < 0 ? R.string.buy_sell_sell_loss : R.string.buy_sell_sell_profit;
+                                //    mProfitLossView.setText(
+                                //            getString(
+                                //                    stringResId,
+                                //                    THSignedMoney.builder(profitLoss)
+                                //                            .withOutSign()
+                                //                            .currency(showProfitLossUsd ? null : null)
+                                //                            .build().toString()));
+                                //}
+                                //else
+                                //{
+                                //    mProfitLossView.setText(getString(R.string.buy_sell_sell_loss, "--"));
+                                //}
 
                                 return true;
                             }
@@ -526,7 +513,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                             try
                             {
                                 updateText = clampedQuantity != Integer.parseInt(mQuantityEditText.getEditableText().toString());
-                            } catch (NumberFormatException e)
+                            }
+                            catch (NumberFormatException e)
                             {
                                 updateText = true;
                             }
@@ -565,18 +553,11 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     {
         if (securityCompactDTO != null)
         {
-            if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
-            {
-                mStockNameTextView.setText(securityCompactDTO.name);
-            }
-            else
-            {
-                mStockNameTextView.setText(securityCompactDTO.getExchangeSymbol());
-            }
+            setActionBarTitle(getString(R.string.transaction_title_buy, securityCompactDTO.getExchangeSymbol()));
         }
         else
         {
-            mStockNameTextView.setText("-");
+            setActionBarTitle(getString(R.string.transaction_title_buy, "Stock"));
         }
     }
 
@@ -586,8 +567,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             @Nullable PositionDTOCompact closeablePosition)
     {
         mPortfolioTextView.setText(
-                getString(R.string.buy_sell_portfolio_selected_title) + " " + (portfolioCompactDTO == null ? "-"
-                        : portfolioCompactDTO.title));
+                (portfolioCompactDTO == null ? "-" : portfolioCompactDTO.title));
 
         updateDisplay();
 
@@ -779,11 +759,11 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     }
 
     @SuppressWarnings("unused")
-    @OnClick(R.id.dialog_btn_add_cash)
+    //@OnClick(R.id.dialog_btn_add_cash)
     public void onBtnAddCashClick(View ignored)
     {
         DeviceUtil.dismissKeyboard(mCommentsEditText);
-        AbstractTransactionDialogFragment.this.handleBtnAddCashPressed();
+        AbstractTransactionFragment.this.handleBtnAddCashPressed();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -797,7 +777,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     @OnClick(R.id.dialog_btn_cancel)
     public void onCancelClicked(View v)
     {
-        getDialog().dismiss();
+        navigator.get().popFragment();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -805,7 +785,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     public void onConfirmClicked(View v)
     {
         updateConfirmButton(true);
-        saveShareSettings();
         fireBuySellReport();
         launchBuySell();
     }
@@ -816,8 +795,6 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         Bundle bundle = new Bundle();
         SecurityDiscussionEditPostFragment.putSecurityId(bundle, requisite.securityId);
         transactionCommentFragment = navigator.get().pushFragment(TransactionEditCommentFragment.class, bundle);
-
-        getDialog().hide();
     }
 
     @Deprecated public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
@@ -847,7 +824,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.dialog_profit_and_loss)
+    //@OnClick(R.id.dialog_profit_and_loss)
     protected void toggleProfitLossUsdRefCcy()
     {
         this.showProfitLossUsd = !showProfitLossUsd;
@@ -961,6 +938,12 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         return builder.build();
     }
 
+    private boolean shareForTransaction(SocialNetworkEnum socialNetworkEnum)
+    {
+        //TODO handle later
+        return false;
+    }
+
     protected abstract void setBuyEventFor(SharingOptionsEvent.Builder builder);
 
     private ActionMode.Callback createActionModeCallBackForQuantityEditText()
@@ -1002,7 +985,8 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
             {
                 int val = Integer.parseInt(stringValue);
                 quantitySubject.onNext(val);
-            } catch (NumberFormatException e)
+            }
+            catch (NumberFormatException e)
             {
                 Timber.e(e, "Failed to parse number: " + stringValue);
             }
@@ -1030,7 +1014,7 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                             {
                                 @Override public void call(Double price)
                                 {
-                                    AbstractTransactionDialogFragment.this.handleQuickPriceSelected(portfolioCompactDTO, quoteDTO, closeablePosition,
+                                    AbstractTransactionFragment.this.handleQuickPriceSelected(portfolioCompactDTO, quoteDTO, closeablePosition,
                                             price);
                                 }
                             },
@@ -1098,22 +1082,16 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
                 buySellTransactionListener.onTransactionSuccessful(isBuy, securityPositionDetailDTO, mCommentsEditText.getText().toString());
             }
 
-            if (mBtnShareWeChat.isChecked())
-            {
-                //shareWeChatClient(isBuy);
-            }
+            //if (mBtnShareWeChat.isChecked())
+            //{
+            //    //shareWeChatClient(isBuy);
+            //}
         }
 
         @Override public void onCompleted()
         {
-            Dialog dialog = getDialog();
-            // FIXME should we dismiss the dialog on failure?
-            if (dialog != null)
-            {
-                dialog.dismiss();
-            }
-
             updateConfirmButton(false);
+            navigator.get().popFragment();
         }
 
         @Override public void onError(Throwable e)
@@ -1130,37 +1108,37 @@ abstract public class AbstractTransactionDialogFragment extends BaseShareableDia
         }
     }
 
-    protected void shareFacebookClient(boolean isBuy)
-    {
-        Intent shareIntent = new Intent(getActivity(), FacebookShareActivity.class);
-        Bundle extras = new Bundle();
-        FacebookShareActivity.setMessage(
-                extras,
-                String.format(
-                        getString(R.string.traded_facebook_share_message),
-                        THSignedNumber.builder(mTransactionQuantity).build().toString(),
-                        usedDTO.securityCompactDTO.name,
-                        SecurityCompactDTOUtil.getShortSymbol(usedDTO.securityCompactDTO),
-                        getFormattedPrice(isBuy ? usedDTO.quoteDTO.ask : usedDTO.quoteDTO.bid)));
-        FacebookShareActivity.setName(extras, "TradeHero");
-        FacebookShareActivity.setCaption(extras, "tradehero.mobi");
-        FacebookShareActivity.setDescription(
-                extras,
-                String.format(
-                        "Follow %s on TradeHero for great stock tips!",
-                        userProfileDTO.displayName));
-        FacebookShareActivity.setLinkUrl(extras, "http://www.facebook.com");
-        if (usedDTO.securityCompactDTO.imageBlobUrl == null)
-        {
-            FacebookShareActivity.setDefaultPictureUrl(extras);
-        }
-        else
-        {
-            FacebookShareActivity.setPictureUrl(extras, usedDTO.securityCompactDTO.imageBlobUrl);
-        }
-        shareIntent.putExtras(extras);
-        getActivity().startActivity(shareIntent);
-    }
+    //protected void shareFacebookClient(boolean isBuy)
+    //{
+    //    Intent shareIntent = new Intent(getActivity(), FacebookShareActivity.class);
+    //    Bundle extras = new Bundle();
+    //    FacebookShareActivity.setMessage(
+    //            extras,
+    //            String.format(
+    //                    getString(R.string.traded_facebook_share_message),
+    //                    THSignedNumber.builder(mTransactionQuantity).build().toString(),
+    //                    usedDTO.securityCompactDTO.name,
+    //                    SecurityCompactDTOUtil.getShortSymbol(usedDTO.securityCompactDTO),
+    //                    getFormattedPrice(isBuy ? usedDTO.quoteDTO.ask : usedDTO.quoteDTO.bid)));
+    //    FacebookShareActivity.setName(extras, "TradeHero");
+    //    FacebookShareActivity.setCaption(extras, "tradehero.mobi");
+    //    FacebookShareActivity.setDescription(
+    //            extras,
+    //            String.format(
+    //                    "Follow %s on TradeHero for great stock tips!",
+    //                    userProfileDTO.displayName));
+    //    FacebookShareActivity.setLinkUrl(extras, "http://www.facebook.com");
+    //    if (usedDTO.securityCompactDTO.imageBlobUrl == null)
+    //    {
+    //        FacebookShareActivity.setDefaultPictureUrl(extras);
+    //    }
+    //    else
+    //    {
+    //        FacebookShareActivity.setPictureUrl(extras, usedDTO.securityCompactDTO.imageBlobUrl);
+    //    }
+    //    shareIntent.putExtras(extras);
+    //    getActivity().startActivity(shareIntent);
+    //}
 
     @Deprecated public interface BuySellTransactionListener
     {

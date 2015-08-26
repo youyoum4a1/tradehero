@@ -10,16 +10,38 @@
     android:background="@color/white"
     >
 
-  <TextView
-      android:id="@+id/dialog_stock_name"
+  <RelativeLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      style="@style/TH.Title"
       android:layout_marginLeft="@dimen/margin_small"
-      android:layout_marginTop="@dimen/margin_small"
-      tools:text="Padbury Mining Ltd"
-      />
+      android:layout_marginRight="@dimen/margin_small"
+      android:paddingTop="@dimen/margin_small"
+      android:paddingBottom="@dimen/margin_small"
+      >
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buy_sell_portfolio_selected_title"
+        />
+
+    <TextView
+        android:id="@+id/dialog_portfolio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        tools:text="My Stock"
+        />
+
+  </RelativeLayout>
+
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="@android:color/darker_gray"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      />
 
   <RelativeLayout
       android:layout_width="match_parent"
@@ -31,34 +53,144 @@
       >
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buy_sell_market_price_title"
+        />
+
+    <TextView
         android:id="@+id/dialog_price"
-        style="@style/TH.Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        tools:text="Buy @ AU$ 0.033"
+        android:layout_alignParentRight="true"
+        tools:text="US$83.33"
+        />
+
+  </RelativeLayout>
+
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="@android:color/darker_gray"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      />
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      android:paddingTop="@dimen/margin_small"
+      android:paddingBottom="@dimen/margin_small"
+      >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buy_sell_shares_title"
+        android:layout_centerVertical="true"
+        />
+
+    <com.tradehero.th.fragments.trade.view.TradeQuantityEditText
+        android:id="@+id/vquantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tradehero_blue"
+        android:inputType="number"
+        android:numeric="integer"
+        android:layout_alignParentRight="true"
+        tools:text="150"
+        />
+
+  </RelativeLayout>
+
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="@android:color/darker_gray"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      />
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      android:paddingTop="@dimen/margin_small"
+      android:paddingBottom="@dimen/margin_small"
+      >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buy_sell_trade_value"
         />
 
     <TextView
-        android:id="@+id/dialog_portfolio"
-        style="@style/TH.Body"
+        android:id="@+id/vtrade_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_price"
-        android:layout_toLeftOf="@+id/dialog_btn_add_cash"
-        android:layout_alignParentLeft="true"
-        tools:text="Portfolio: Main Portfolio"
+        android:textSize="@dimen/textMedium"
+        android:textColor="@color/tradehero_blue"
+        android:layout_alignParentRight="true"
+        tools:text="US$ 338,306"
+        />
+
+  </RelativeLayout>
+
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="@android:color/darker_gray"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      />
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      android:paddingTop="@dimen/margin_small"
+      android:paddingBottom="@dimen/margin_small"
+      >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buy_sell_cash_available"
         />
 
     <TextView
-        android:id="@+id/dialog_profit_and_loss"
-        style="@style/TH.Body"
+        android:id="@+id/vcash_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dialog_portfolio"
-        android:layout_alignParentLeft="true"
-        tools:text="Loss: US$ 10,165"
+        android:textSize="@dimen/textSmall"
+        android:layout_alignParentRight="true"
+        tools:text="US$ 338,306"
         />
+
+  </RelativeLayout>
+
+  <View
+      android:layout_width="fill_parent"
+      android:layout_height="1dp"
+      android:background="@android:color/darker_gray"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      />
+
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/margin_small"
+      android:layout_marginRight="@dimen/margin_small"
+      android:paddingTop="@dimen/margin_small"
+      android:paddingBottom="@dimen/margin_small"
+      >
 
     <ImageButton
         android:id="@+id/dialog_btn_add_cash"
@@ -75,84 +207,6 @@
         />
 
   </RelativeLayout>
-
-  <TableRow
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      >
-
-    <TextView
-        android:id="@+id/vtrade_value"
-        style="@style/TH.InfoValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        tools:text="US$ 0"
-        />
-
-    <com.tradehero.th.fragments.trade.view.TradeQuantityEditText
-        android:id="@+id/vquantity"
-        style="@style/TH.InfoValue"
-        android:background="@drawable/security_dialog_comment_bg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textColor="@color/tradehero_blue"
-        android:inputType="number"
-        android:numeric="integer"
-        android:textIsSelectable="false"
-        tools:text="0"
-        />
-
-    <TextView
-        android:id="@+id/vcash_left"
-        style="@style/TH.InfoValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        tools:text="US$ 338,306"
-        />
-
-  </TableRow>
-
-  <TableRow
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_gravity="center"
-      >
-
-    <TextView
-        style="@style/TH.InfoKey"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="@string/buy_sell_trade_value"
-        />
-
-    <TextView
-        style="@style/TH.InfoKey"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="@string/buy_sell_quantity"
-        />
-
-    <TextView
-        style="@style/TH.InfoKey"
-        android:id="@+id/dialog_cash_left"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        />
-
-  </TableRow>
 
   <SeekBar
       android:id="@+id/seek_bar"

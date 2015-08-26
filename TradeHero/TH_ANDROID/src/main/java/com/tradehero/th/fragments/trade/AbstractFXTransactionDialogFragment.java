@@ -12,7 +12,7 @@ import com.tradehero.th.fragments.trade.view.QuickPriceButtonSet;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 
-public abstract class AbstractFXTransactionDialogFragment extends AbstractTransactionDialogFragment
+public abstract class AbstractFXTransactionDialogFragment extends AbstractTransactionFragment
 {
     public static AbstractFXTransactionDialogFragment newInstance(
             boolean isBuy,
