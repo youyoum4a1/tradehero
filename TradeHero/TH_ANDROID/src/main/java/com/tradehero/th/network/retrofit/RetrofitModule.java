@@ -8,6 +8,7 @@ import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.common.utils.RetrofitHelper;
+import com.tradehero.firmbargain.hengsheng.services.HengshengServiceAync;
 import com.tradehero.th.api.competition.ProviderCompactDTO;
 import com.tradehero.th.api.competition.ProviderCompactDTODeserialiser;
 import com.tradehero.th.api.competition.ProviderCompactDTOJacksonModule;
@@ -161,6 +162,11 @@ public class RetrofitModule
         return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
 
+    @Provides @Singleton
+    HengshengServiceAync provideHengshengService(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.HENGSHENG_ENDPOINT).build().create(HengshengServiceAync.class);
+    }
 
     @Provides JsonDeserializer<PositionDTO> providesPositionDTODeserialiser(PositionDTODeserialiser deserialiser)
     {

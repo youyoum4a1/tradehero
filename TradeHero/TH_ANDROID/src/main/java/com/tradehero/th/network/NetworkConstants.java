@@ -20,6 +20,8 @@ public class NetworkConstants
     public static final String TRADEHERO_QA_ENDPOINT = "http://thapi-web-prod.chinacloudapp.cn/";
     public static final String TRADEHERO_QA_API_ENDPOINT = TRADEHERO_QA_ENDPOINT + "api/";
 
+    public static final String HENGSHENG_ENDPOINT = "https://sandbox.hs.net";
+
     public static String getApiEndPointInUse()
     {
         return Constants.DOGFOOD_BUILD ? TRADEHERO_QA_API_ENDPOINT : TRADEHERO_PROD_API_ENDPOINT;
