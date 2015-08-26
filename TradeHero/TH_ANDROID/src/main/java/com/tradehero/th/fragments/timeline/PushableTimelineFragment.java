@@ -74,7 +74,6 @@ public class PushableTimelineFragment extends TimelineFragment
     @Bind(R.id.message_button) Button mSendMsgButton;
     @Bind(R.id.follow_message_container) ViewGroup btnContainer;
 
-    protected int mFollowType;//0 not follow, 1 free follow, 2 premium follow
     protected boolean mIsHero = false;//whether the showUser follow the user
     protected MessageHeaderDTO messageThreadHeaderDTO;
 
@@ -191,18 +190,7 @@ public class PushableTimelineFragment extends TimelineFragment
         boolean isFollowing = isFollowing();
         mSendMsgButton.setVisibility(View.VISIBLE);
         mFollowButton.setVisibility(View.VISIBLE);
-        if (isFollowing)
-        {
-            mFollowButton.setBackgroundResource(R.drawable.basic_green_selector);
-            mFollowButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_following, 0, 0, 0);
-            mFollowButton.setText(R.string.following);
-        }
-        else
-        {
-            mFollowButton.setBackgroundResource(R.drawable.basic_blue_selector);
-            mFollowButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_follow, 0, 0, 0);
-            mFollowButton.setText(R.string.follow);
-        }
+        SimpleFollowUserAssistant.updateFollowButton(mFollowButton, isFollowing);
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})

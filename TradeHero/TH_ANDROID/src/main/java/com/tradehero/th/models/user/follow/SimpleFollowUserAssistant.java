@@ -30,9 +30,20 @@ public class SimpleFollowUserAssistant
     @NonNull private final Context context;
     @NonNull protected final UserBaseKey heroId;
 
-    public static void updateFollowButton(Button button)
+    public static void updateFollowButton(Button button, boolean isFollowing)
     {
-
+        if (isFollowing)
+        {
+            button.setBackgroundResource(R.drawable.basic_green_selector);
+            button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_following, 0, 0, 0);
+            button.setText(R.string.following);
+        }
+        else
+        {
+            button.setBackgroundResource(R.drawable.basic_blue_selector);
+            button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_follow, 0, 0, 0);
+            button.setText(R.string.follow);
+        }
     }
 
     //<editor-fold desc="Constructors">
@@ -100,7 +111,7 @@ public class SimpleFollowUserAssistant
     public void followingInCache()
     {
         UserProfileDTO cachedValue = userProfileCacheRx.getCachedValue(currentUserId.toUserBaseKey());
-        if(cachedValue != null)
+        if (cachedValue != null)
         {
             if (cachedValue.heroIds == null)
             {
