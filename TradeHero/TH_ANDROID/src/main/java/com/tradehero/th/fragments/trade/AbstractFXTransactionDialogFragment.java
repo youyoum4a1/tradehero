@@ -33,7 +33,7 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        mQuickPriceButtonSet.setPercent(true);
+        //mQuickPriceButtonSet.setPercent(true);
     }
 
     @Override protected int getCashLeftLabelResId(@Nullable PositionDTOCompact closeablePosition)
@@ -56,10 +56,10 @@ public abstract class AbstractFXTransactionDialogFragment extends AbstractTransa
     public void displayQuickPriceButtonSet(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition)
     {
-        QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
-        if (buttonSetCopy != null)
-        {
-            buttonSetCopy.setEnabled(isQuickButtonEnabled());
-        }
+        //QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
+        //if (buttonSetCopy != null)
+        //{
+        //    buttonSetCopy.setEnabled(isQuickButtonEnabled());
+        //}
     }
 }

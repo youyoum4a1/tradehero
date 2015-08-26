@@ -46,8 +46,8 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
         {
             return getString(R.string.na);
         }
-        THSignedNumber bThSignedNumber = getFormattedPrice(quoteDTO.ask);
-        return bThSignedNumber.toString();
+        //THSignedNumber bThSignedNumber = getFormattedPrice(quoteDTO.ask);
+        return String.format("%.2f", quoteDTO.ask);
     }
 
     @Override @Nullable protected Double getProfitOrLossUsd(

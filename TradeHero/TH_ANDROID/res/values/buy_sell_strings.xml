@@ -79,6 +79,10 @@
 
   <string name="traded_facebook_share_message">bought %1$s shares of %2$s (%3$s) @ %4$s</string>
   <string name="buy_sell_market_price_title">Market Price:</string>
+  <string name="buy_sell_market_price_time">As of %1$s</string>
   <string name="buy_sell_shares_title">Shares:</string>
+  <string name="buy_sell_confirm_buy_now">Buy now</string>
+  <string name="buy_sell_confirm_sell_now">Sell now</string>
+  <string name="stock">Stock</string>
 
 </resources>

@@ -48,18 +48,18 @@ public abstract class AbstractStockTransactionFragment extends AbstractTransacti
         return THSignedMoney
                 .builder(price)
                 .withOutSign()
-                .currency(usedDTO.securityCompactDTO == null ? "-" : usedDTO.securityCompactDTO.currencyDisplay)
+                //.currency(usedDTO.securityCompactDTO == null ? "-" : usedDTO.securityCompactDTO.currencyDisplay)
                 .build();
     }
 
     public void displayQuickPriceButtonSet(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition)
     {
-        QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
-        if (buttonSetCopy != null)
-        {
-            buttonSetCopy.setEnabled(isQuickButtonEnabled());
-            buttonSetCopy.setMaxPrice(getQuickButtonMaxValue(portfolioCompactDTO, quoteDTO, closeablePosition));
-        }
+        //QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
+        //if (buttonSetCopy != null)
+        //{
+        //    buttonSetCopy.setEnabled(isQuickButtonEnabled());
+        //    buttonSetCopy.setMaxPrice(getQuickButtonMaxValue(portfolioCompactDTO, quoteDTO, closeablePosition));
+        //}
     }
 }

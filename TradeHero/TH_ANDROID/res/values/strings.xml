@@ -320,6 +320,7 @@
   <string name="position_close_info">Action of selling the entire long asset or buying the entire short asset to generate cash back to your portfolio.</string>
 
   <string name="transaction_title_buy">Buy %1$s</string>
+  <string name="transaction_title_sell">Sell %1$s</string>
 
   <string name="facebook_app_id">431745923529834</string>
   <string name="image_load_failed">Failed to load image</string>
