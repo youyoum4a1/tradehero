@@ -346,9 +346,19 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
                 if (lbmuFollowUser != null)
                 {
-                    lbmuFollowUser.setBackgroundResource(this.currentDto.lbmuFollowBtnColorResId);
-                    lbmuFollowUser.setImageResource(this.currentDto.lbmuFollowIconResId);
+                    if (this.currentDto.leaderboardUserDTO == null || this.currentDto.currentUserId.toUserBaseKey()
+                            .equals(this.currentDto.leaderboardUserDTO.getBaseKey()))
+                    {
+                        lbmuFollowUser.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        lbmuFollowUser.setVisibility(View.VISIBLE);
+                        lbmuFollowUser.setBackgroundResource(this.currentDto.lbmuFollowBtnColorResId);
+                        lbmuFollowUser.setImageResource(this.currentDto.lbmuFollowIconResId);
+                    }
                 }
+
             }
         }
 
