@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.View;
@@ -11,10 +12,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
-import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -22,10 +22,12 @@ import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
+import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.SecurityUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -160,8 +162,10 @@ public class FollowerListItemView extends RelativeLayout
         public final String titleText;
         public final String revenueText;
         public final Spanned roiInfoText;
+        public final String followingSince;
+        public boolean isFollowing;
 
-        public DTO(@NonNull Resources resources, @NonNull UserFollowerDTO userFollowerDTO)
+        public DTO(@NonNull Resources resources, @NonNull UserFollowerDTO userFollowerDTO, UserProfileDTO currentUserProfileDTO)
         {
             this.userFollowerDTO = userFollowerDTO;
             countryFlagResId = Country.getCountryLogo(R.drawable.default_image, userFollowerDTO.countryCode);
@@ -175,6 +179,8 @@ public class FollowerListItemView extends RelativeLayout
                     .withDefaultColor()
                     .build()
                     .createSpanned();
+            followingSince = resources.getString(R.string.manage_heroes_following_since, DateUtils.getDisplayableDate(resources, userFollowerDTO.followingSince, R.string.data_format_dd_mmm_yyyy));
+            isFollowing = currentUserProfileDTO.isFollowingUser(userFollowerDTO.getBaseKey());
         }
     }
 
@@ -185,7 +191,7 @@ public class FollowerListItemView extends RelativeLayout
         List<DTO> list = new ArrayList<>();
         for (UserFollowerDTO userFollowerDTO : userFollowerDTOs)
         {
-            list.add(new DTO(resources, userFollowerDTO));
+            list.add(new DTO(resources, userFollowerDTO, null));
         }
         return list;
     }

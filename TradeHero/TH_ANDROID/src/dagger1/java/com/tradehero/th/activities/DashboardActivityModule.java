@@ -35,7 +35,7 @@ import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.follower.FollowersFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
@@ -91,7 +91,7 @@ import javax.inject.Singleton;
                 CompetitionWebViewFragment.class,
                 DiscoveryMainFragment.class,
                 FacebookShareActivity.class,
-                FollowerManagerFragment.class,
+                FollowersFragment.class,
                 FriendsInvitationFragment.class,
                 FXInfoFragment.class,
                 FXMainFragment.class,
@@ -115,7 +115,6 @@ import javax.inject.Singleton;
                 WebViewFragment.class
         );
         DiscoveryMainFragment.registerAliases(router);
-        FollowerManagerFragment.registerAliases(router);
         HeroManagerFragment.registerAliases(router);
         StoreScreenFragment.registerAliases(router);
         TrendingMainFragment.registerAliases(router);

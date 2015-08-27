@@ -1,16 +1,12 @@
 package com.tradehero.th.fragments.social.follower;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import com.tradehero.th.api.social.UserFollowerDTO;
-import java.util.ArrayList;
-import java.util.List;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -36,25 +32,6 @@ public class FollowerListItemAdapter extends ArrayAdapter<Object>
         this.userActionSubject = PublishSubject.create();
     }
     //</editor-fold>
-
-    @NonNull public static List<Object> createObjects(
-            @NonNull Resources resources,
-            @NonNull List<? extends UserFollowerDTO> userFollowers)
-    {
-        List<Object> objects = new ArrayList<>();
-        if (userFollowers.size() > 0)
-        {
-            for (UserFollowerDTO userFollowerDTO : userFollowers)
-            {
-                objects.add(new FollowerListItemView.DTO(resources, userFollowerDTO));
-            }
-        }
-        else
-        {
-            objects.add(ITEM_CALL_TO_ACTION);
-        }
-        return objects;
-    }
 
     @Override public int getViewTypeCount()
     {

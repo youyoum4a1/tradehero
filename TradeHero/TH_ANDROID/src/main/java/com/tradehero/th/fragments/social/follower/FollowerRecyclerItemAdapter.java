@@ -1,0 +1,135 @@
+package com.tradehero.th.fragments.social.follower;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import butterknife.Bind;
+import butterknife.OnClick;
+import com.squareup.picasso.Picasso;
+import com.tradehero.th.R;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
+import com.tradehero.th.api.social.UserFollowerDTO;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+import rx.Observable;
+import rx.subjects.PublishSubject;
+
+public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerListItemView.DTO>
+{
+    @Inject Picasso picasso;
+
+    final PublishSubject<FollowerListItemView.DTO> itemActionPublishSubject = PublishSubject.create();
+
+    public FollowerRecyclerItemAdapter(Context context)
+    {
+        super(FollowerListItemView.DTO.class, new FollowerItemComparator());
+        HierarchyInjector.inject(context, this);
+    }
+
+    @Override public TypedViewHolder<FollowerListItemView.DTO> onCreateViewHolder(ViewGroup parent, int viewType)
+    {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.follower_recycler_item, parent, false);
+        FollowerItemViewHolder viewHolder = new FollowerItemViewHolder(view, picasso);
+        viewHolder.getObservable().subscribe(itemActionPublishSubject);
+        return viewHolder;
+    }
+
+    @NonNull public static List<FollowerListItemView.DTO> createItems(Resources resources, List<UserFollowerDTO> followerDTOs, UserProfileDTO userProfileDTO)
+    {
+        ArrayList<FollowerListItemView.DTO> list = new ArrayList<>(followerDTOs.size());
+        for (UserFollowerDTO userFollowerDTO : followerDTOs)
+        {
+            list.add(new FollowerListItemView.DTO(resources, userFollowerDTO, userProfileDTO));
+        }
+        return list;
+    }
+
+    public Observable<FollowerListItemView.DTO> getFollowerDTOObservable()
+    {
+        return itemActionPublishSubject.asObservable();
+    }
+
+    private static class FollowerItemComparator extends TypedRecyclerComparator<FollowerListItemView.DTO>
+    {
+        @Override public int compare(FollowerListItemView.DTO o1, FollowerListItemView.DTO o2)
+        {
+            return o2.userFollowerDTO.followingSince.compareTo(o1.userFollowerDTO.followingSince);
+        }
+
+        @Override public boolean areItemsTheSame(FollowerListItemView.DTO item1, FollowerListItemView.DTO item2)
+        {
+            return item1.userFollowerDTO.getBaseKey().equals(item2.userFollowerDTO.getBaseKey());
+        }
+
+        @Override public boolean areContentsTheSame(FollowerListItemView.DTO oldItem, FollowerListItemView.DTO newItem)
+        {
+            if (!oldItem.titleText.equals(newItem.titleText)) return false;
+            if (oldItem.userFollowerDTO.picture == null && newItem.userFollowerDTO.picture != null) return false;
+            if (oldItem.userFollowerDTO.picture != null && newItem.userFollowerDTO.picture == null) return false;
+            if (oldItem.userFollowerDTO.picture != null && !oldItem.userFollowerDTO.picture.equals(newItem.userFollowerDTO.picture)) return false;
+            if (!oldItem.roiInfoText.equals(newItem.roiInfoText)) return false;
+            if (oldItem.isFollowing != newItem.isFollowing) return false;
+            return true;
+        }
+    }
+
+    public static class FollowerItemViewHolder extends TypedViewHolder<FollowerListItemView.DTO>
+    {
+        private final Picasso picasso;
+        @Bind(R.id.follower_avatar) ImageView userIcon;
+        @Bind(R.id.follower_name) TextView name;
+        @Bind(R.id.follower_roi) TextView roiInfo;
+        @Bind(R.id.follower_since) TextView since;
+        @Bind(R.id.follower_button) ImageButton btnFollow;
+
+        private FollowerListItemView.DTO currentDTO;
+
+        final PublishSubject<FollowerListItemView.DTO> itemActionPublishSubject = PublishSubject.create();
+
+        public FollowerItemViewHolder(View itemView, Picasso picasso)
+        {
+            super(itemView);
+            this.picasso = picasso;
+        }
+
+        @Override public void display(FollowerListItemView.DTO dto)
+        {
+            this.currentDTO = dto;
+            if (dto.userFollowerDTO.picture != null)
+            {
+                picasso.load(dto.userFollowerDTO.picture)
+                        .placeholder(R.drawable.superman_facebook)
+                        .error(R.drawable.superman_facebook)
+                        .into(userIcon);
+            }
+            name.setText(dto.titleText);
+            roiInfo.setText(dto.roiInfoText);
+            since.setText(dto.followingSince);
+            SimpleFollowUserAssistant.updateFollowImageButton(btnFollow, dto.isFollowing);
+        }
+
+        @OnClick(R.id.follower_button)
+        public void onFollowButtonClicked()
+        {
+            if(this.currentDTO != null)
+            {
+                itemActionPublishSubject.onNext(currentDTO);
+            }
+        }
+
+        public Observable<FollowerListItemView.DTO> getObservable()
+        {
+            return itemActionPublishSubject.asObservable();
+        }
+    }
+}

@@ -12,10 +12,6 @@ public class HeroTypeResourceDTOFactory
         {
             case ALL:
                 return new AllHeroTypeResourceDTO();
-            case FREE:
-                return new FreeHeroTypeResourceDTO();
-            case PREMIUM:
-                return new PremiumHeroTypeResourceDTO();
             default:
                 throw new IllegalArgumentException("Unhandled HeroType " + heroType);
         }

@@ -107,7 +107,7 @@ public class UserProfileDTO extends UserProfileCompactDTO
     {
         if (this.heroIds != null)
         {
-            //TODO remove when api changes to freeHeroIds only
+            //TODO remove when api changes
             if (this.freeHeroIds != null)
             {
                 if (this.freeHeroIds.contains(userId))

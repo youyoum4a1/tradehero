@@ -4,14 +4,10 @@ import dagger.Module;
 
 @Module(
         injects = {
-                FollowerManagerFragment.class,
-                FollowerRevenueReportFragment.class,
-                AllFollowerFragment.class,
-                PremiumFollowerFragment.class,
-                FreeFollowerFragment.class,
-                FollowerPayoutManagerFragment.class,
+                FollowersFragment.class,
                 FollowerListItemView.class,
                 SendMessageFragment.class,
+                FollowerRecyclerItemAdapter.class
         },
         library = true,
         complete = false

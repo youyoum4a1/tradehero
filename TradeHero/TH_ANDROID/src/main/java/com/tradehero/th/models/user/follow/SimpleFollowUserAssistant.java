@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.util.Pair;
 import android.widget.Button;
+import android.widget.ImageButton;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -46,6 +47,12 @@ public class SimpleFollowUserAssistant
             button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_follow, 0, 0, 0);
             button.setText(R.string.follow);
         }
+    }
+
+    public static void updateFollowImageButton(ImageButton imgButton, boolean isFollowing)
+    {
+        imgButton.setBackgroundResource(isFollowing ? R.drawable.basic_green_selector : R.drawable.basic_blue_selector);
+        imgButton.setImageResource(isFollowing ? R.drawable.ic_following : R.drawable.ic_follow);
     }
 
     //<editor-fold desc="Constructors">

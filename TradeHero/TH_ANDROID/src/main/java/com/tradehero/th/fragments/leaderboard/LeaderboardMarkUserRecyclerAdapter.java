@@ -8,6 +8,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
@@ -23,6 +24,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.leaderboard.LeaderboardItemUserAction.UserActionType;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -216,7 +218,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
                     return dto1.ranking - dto2.ranking;
                 }
             }
-            return super.compare(o1, o2);
+            return 0;
         }
 
         @Override public boolean areContentsTheSame(T oldItem, T newItem)
@@ -288,7 +290,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         @Bind(R.id.expanding_layout) ExpandingLayout expandingLayout;
         @Bind(R.id.user_statistic_view) @Nullable UserStatisticView userStatisticView;
         @Bind(R.id.leaderboard_user_item_fof) @Nullable MarkdownTextView lbmuFoF;
-        @Bind(R.id.leaderboard_user_item_follow) ImageView lbmuFollowUser;
+        @Bind(R.id.leaderboard_user_item_follow) ImageButton lbmuFollowUser;
         @Nullable protected LeaderboardMarkedUserItemDisplayDto currentDto;
 
         public LbmuItemViewHolder(View itemView, Picasso picasso, Analytics analytics)
@@ -354,8 +356,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
                     else
                     {
                         lbmuFollowUser.setVisibility(View.VISIBLE);
-                        lbmuFollowUser.setBackgroundResource(this.currentDto.lbmuFollowBtnColorResId);
-                        lbmuFollowUser.setImageResource(this.currentDto.lbmuFollowIconResId);
+                        SimpleFollowUserAssistant.updateFollowImageButton(lbmuFollowUser, this.currentDto.isFollowing());
                     }
                 }
 

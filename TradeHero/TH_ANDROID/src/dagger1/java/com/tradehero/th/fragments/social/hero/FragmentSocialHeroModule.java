@@ -8,7 +8,6 @@ import dagger.Module;
                 HeroListItemView.class,
                 HeroesTabContentFragment.class,
                 PremiumHeroFragment.class,
-                FreeHeroFragment.class,
                 AllHeroFragment.class,
         },
         library = true,

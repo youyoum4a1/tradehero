@@ -10,11 +10,6 @@ public abstract class PagedRecyclerAdapter<T> extends TypedRecyclerAdapter<T>
 {
     SparseArray<Integer> shownPages = new SparseArray<>();
 
-    public PagedRecyclerAdapter(Class<T> klass)
-    {
-        super(klass);
-    }
-
     public PagedRecyclerAdapter(Class<T> klass, @Nullable TypedRecyclerComparator<T> comparator)
     {
         super(klass, comparator);

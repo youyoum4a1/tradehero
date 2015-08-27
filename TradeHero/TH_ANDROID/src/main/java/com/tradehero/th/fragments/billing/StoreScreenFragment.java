@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.tester.BillingTestResult;
@@ -34,7 +34,6 @@ import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemRestoreDTO;
-import com.tradehero.th.fragments.social.follower.FollowerRevenueReportFragment;
 import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -289,10 +288,10 @@ public class StoreScreenFragment extends BaseFragment
                     HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
                     navigator.get().pushFragment(HeroManagerFragment.class, bundle);
                 }
-                else if (furtherDTO.furtherFragment.equals(FollowerRevenueReportFragment.class))
-                {
-                    navigator.get().pushFragment(FollowerRevenueReportFragment.class);
-                }
+                //else if (furtherDTO.furtherFragment.equals(FollowerRevenueReportFragment.class))
+                //{
+                //    navigator.get().pushFragment(FollowerRevenueReportFragment.class);
+                //}
                 else
                 {
                     throw new IllegalArgumentException("Unhandled class " + furtherDTO.furtherFragment);

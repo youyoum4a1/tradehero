@@ -18,10 +18,8 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
-import com.tradehero.th.models.social.follower.FreeHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
-import com.tradehero.th.models.social.follower.PremiumHeroTypeResourceDTO;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.THTabView;
@@ -80,8 +78,6 @@ public class HeroManagerFragment extends DashboardFragment
     public static void registerAliases(@NonNull THRouter router)
     {
         router.registerAlias("user/me/heroes/all", "user/me/heroes/tab-index/" + new AllHeroTypeResourceDTO().heroTabIndex);
-        router.registerAlias("user/me/heroes/free", "user/me/heroes/tab-index/" + new FreeHeroTypeResourceDTO().heroTabIndex);
-        router.registerAlias("user/me/heroes/premium", "user/me/heroes/tab-index/" + new PremiumHeroTypeResourceDTO().heroTabIndex);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -148,11 +144,11 @@ public class HeroManagerFragment extends DashboardFragment
         }
         else if (routedFollowerIdForFree != null)
         {
-            mTabHost.setCurrentTab(new FreeHeroTypeResourceDTO().heroTabIndex);
+            //mTabHost.setCurrentTab(new FreeHeroTypeResourceDTO().heroTabIndex);
         }
         else if (routedFollowerIdForPremium != null)
         {
-            mTabHost.setCurrentTab(new PremiumHeroTypeResourceDTO().heroTabIndex);
+            //mTabHost.setCurrentTab(new PremiumHeroTypeResourceDTO().heroTabIndex);
         }
         return mTabHost;
     }
@@ -215,8 +211,6 @@ public class HeroManagerFragment extends DashboardFragment
         {
             int premiumCount = value.getActivePremiumHeroesCount();
             int freeCount = value.getActiveFreeHeroesCount();
-            changeTabTitle(new PremiumHeroTypeResourceDTO(), premiumCount);
-            changeTabTitle(new FreeHeroTypeResourceDTO(), freeCount);
             changeTabTitle(new AllHeroTypeResourceDTO(), premiumCount + freeCount);
         }
     }

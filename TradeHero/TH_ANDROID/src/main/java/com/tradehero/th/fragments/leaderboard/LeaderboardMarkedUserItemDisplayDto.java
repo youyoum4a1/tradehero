@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.leaderboard;
 
 import android.content.res.Resources;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -23,12 +22,6 @@ import com.tradehero.th.utils.StringUtils;
 public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayDTO implements com.tradehero.common.persistence.DTO,
         ExpandableItem
 {
-    private static final int BUTTON_FOLLOW_BG = R.drawable.basic_blue_selector;
-    private static final int BUTTON_FOLLOWING_BG = R.drawable.basic_green_selector;
-
-    private static final int BUTTON_FOLLOW_ICON = R.drawable.ic_follow;
-    private static final int BUTTON_FOLLOWING_ICON = R.drawable.ic_following;
-
     @NonNull final CurrentUserId currentUserId;
     @Nullable final LeaderboardUserDTO leaderboardUserDTO;
     @Nullable final UserStatisticView.DTO userStatisticsDto;
@@ -40,8 +33,6 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     public int lbmuRoiPeriodVisibility;
     String lbmuDisplayPicture;
     @ViewVisibilityValue final int lbmuFoFVisibility;
-    @DrawableRes public int lbmuFollowBtnColorResId;
-    @DrawableRes public int lbmuFollowIconResId;
     private boolean isFollowing;
     private boolean expanded;
     private boolean isMyOwnRanking;
@@ -67,7 +58,6 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.lbmuRoiPeriod = null;
         this.lbmuRoiPeriodVisibility = View.GONE;
         this.isFollowing = false;
-        updateFollowingIcon();
     }
 
     /**
@@ -92,7 +82,6 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.lbmuRoiPeriod = null;
         this.lbmuRoiPeriodVisibility = View.GONE;
         this.isFollowing = false;
-        updateFollowingIcon();
     }
 
     public LeaderboardMarkedUserItemDisplayDto(@NonNull Resources resources,
@@ -133,13 +122,6 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
 
         this.isFollowing = currentUserProfileDTO.isFollowingUser(leaderboardItem.getBaseKey());
         this.lbmuDisplayPicture = leaderboardItem.picture;
-        updateFollowingIcon();
-    }
-
-    protected void updateFollowingIcon()
-    {
-        this.lbmuFollowBtnColorResId = this.isFollowing ? BUTTON_FOLLOWING_BG : BUTTON_FOLLOW_BG;
-        this.lbmuFollowIconResId = this.isFollowing ? BUTTON_FOLLOWING_ICON : BUTTON_FOLLOW_ICON;
     }
 
     @Override public boolean isExpanded()
@@ -165,7 +147,6 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     public void setIsFollowing(boolean isFollowing)
     {
         this.isFollowing = isFollowing;
-        updateFollowingIcon();
     }
 
     public boolean isFollowing()
