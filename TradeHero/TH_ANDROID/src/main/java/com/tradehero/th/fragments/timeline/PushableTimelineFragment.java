@@ -197,19 +197,19 @@ public class PushableTimelineFragment extends TimelineFragment
     @OnClick(R.id.follow_button)
     protected void handleFollowRequested()
     {
+        SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), shownUserBaseKey);
         if (isFollowing())
         {
-            SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), shownUserBaseKey);
             onStopSubscriptions.add(assistant.showUnFollowConfirmation(shownProfile.displayName)
-                    .flatMap(new Func1<OnDialogClickEvent, Observable<Pair<UserBaseKey, UserProfileDTO>>>()
+                    .map(new ReplaceWithFunc1<OnDialogClickEvent, SimpleFollowUserAssistant>(assistant))
+                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<SimpleFollowUserAssistant>>()
                     {
-                        @Override public Observable<Pair<UserBaseKey, UserProfileDTO>> call(OnDialogClickEvent onDialogClickEvent)
+                        @Override public Observable<SimpleFollowUserAssistant> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
                         {
-                            return userProfileCache.get().getOne(currentUserId.toUserBaseKey());
+                            return simpleFollowUserAssistant.ensureCacheValue();
                         }
                     })
-                    .subscribeOn(Schedulers.io())
-                    .map(new ReplaceWithFunc1<Pair<UserBaseKey, UserProfileDTO>, SimpleFollowUserAssistant>(assistant))
+                    .subscribeOn(AndroidSchedulers.mainThread())
                     .doOnNext(new Action1<SimpleFollowUserAssistant>()
                     {
                         @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
@@ -237,10 +237,8 @@ public class PushableTimelineFragment extends TimelineFragment
         }
         else
         {
-            onStopSubscriptions.add(userProfileCache.get().getOne(currentUserId.toUserBaseKey())
+            onStopSubscriptions.add(assistant.ensureCacheValue()
                     .subscribeOn(Schedulers.io())
-                    .map(new ReplaceWithFunc1<Pair<UserBaseKey, UserProfileDTO>, SimpleFollowUserAssistant>(
-                            new SimpleFollowUserAssistant(getActivity(), shownUserBaseKey)))
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(new Action1<SimpleFollowUserAssistant>()
                     {

@@ -40,4 +40,12 @@ public interface PortfolioHeaderView
             super(requested);
         }
     }
+
+    class UnFollowUserAction extends UserAction
+    {
+        public UnFollowUserAction(@NonNull UserProfileDTO requested)
+        {
+            super(requested);
+        }
+    }
 }

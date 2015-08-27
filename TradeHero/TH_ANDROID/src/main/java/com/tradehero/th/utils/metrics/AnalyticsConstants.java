@@ -57,6 +57,7 @@ public class AnalyticsConstants
     public static final String Watchlist_CellSwipe = "Watchlist/CellSwipe";// symbol self.security.q
     public static final String Watchlist_More_Tap = "Watchlist/More/Tap";// symbol self.security.q
     public static final String Positions_Follow = "Positions/Follow";// Following user from positions
+    public static final String Positions_Unfollow = "Positions/Unollow";// Un Following user from positions
     public static final String Position_CellSwipe = "Position/CellSwipe";// symbol
     public static final String Position_More_Tap = "Position/More/Tap";// symbol
     public static final String Leaderboards_ShowLeaderboard = "Leaderboards/ShowLeaderboard";//

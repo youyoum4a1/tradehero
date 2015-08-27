@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.position;
 
 import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -58,6 +57,7 @@ import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
@@ -78,6 +78,7 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import com.tradehero.th.models.social.FollowRequest;
+import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
@@ -90,14 +91,13 @@ import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.AlertDialogRx;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
@@ -527,6 +527,11 @@ public class PositionListFragment
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
             return freeFollow(userAction.requested.getBaseKey());
         }
+        else if(userAction instanceof PortfolioHeaderView.UnFollowUserAction)
+        {
+            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Unfollow));
+            return unfollow(userAction.requested.getBaseKey());
+        }
         throw new IllegalArgumentException("Unhandled PortfolioHeaderView.UserAction " + userAction);
     }
 
@@ -562,17 +567,80 @@ public class PositionListFragment
 
     @NonNull protected Observable<UserProfileDTO> freeFollow(@NonNull final UserBaseKey heroId)
     {
-        final ProgressDialog progress = ProgressDialogUtil.create(getActivity(), R.string.following_this_hero);
-        return userServiceWrapperLazy.get().freeFollowRx(heroId)
+        SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), heroId);
+        return assistant.ensureCacheValue()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .finallyDo(new DismissDialogAction0(progress))
-                .doOnNext(new Action1<UserProfileDTO>()
+                .doOnNext(new Action1<SimpleFollowUserAssistant>()
                 {
-                    @Override public void call(UserProfileDTO userProfileDTO)
+                    @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
                     {
-                        handleSuccessfulFollow(new FollowRequest(heroId));
+                        simpleFollowUserAssistant.followingInCache();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                {
+                    @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    {
+                        updateHeaderViewFollowButton();
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    {
+                        return simpleFollowUserAssistant.followingInServer();
                     }
                 });
+    }
+
+    protected void updateHeaderViewFollowButton()
+    {
+        if(portfolioHeaderView instanceof OtherUserPortfolioHeaderView)
+        {
+            ((OtherUserPortfolioHeaderView) portfolioHeaderView).configureFollowItemsVisibility();
+        }
+    }
+
+    @NonNull protected Observable<UserProfileDTO> unfollow(@NonNull final UserBaseKey heroId)
+    {
+        SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), heroId);
+        return assistant.showUnFollowConfirmation(shownUserProfileDTO.displayName)
+                .map(new ReplaceWithFunc1<OnDialogClickEvent, SimpleFollowUserAssistant>(assistant))
+                .flatMap(new Func1<SimpleFollowUserAssistant, Observable<SimpleFollowUserAssistant>>()
+                {
+                    @Override public Observable<SimpleFollowUserAssistant> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    {
+                        return simpleFollowUserAssistant.ensureCacheValue();
+                    }
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                {
+                    @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    {
+                        simpleFollowUserAssistant.unFollowFromCache();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                {
+                    @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    {
+                        updateHeaderViewFollowButton();
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                {
+                    @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    {
+                        return simpleFollowUserAssistant.unFollowFromServer();
+                    }
+                })
+                ;
     }
 
     protected void handleSuccessfulFollow(@NonNull FollowRequest request)

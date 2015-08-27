@@ -3,6 +3,7 @@ package com.tradehero.th.models.user.follow;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.util.Pair;
 import android.widget.Button;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -11,6 +12,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.AlertDialogUtil;
@@ -162,5 +164,11 @@ public class SimpleFollowUserAssistant
                         return onDialogClickEvent.isPositive();
                     }
                 });
+    }
+
+    public Observable<SimpleFollowUserAssistant> ensureCacheValue()
+    {
+        return userProfileCacheRx.getOne(currentUserId.toUserBaseKey())
+                .map(new ReplaceWithFunc1<Pair<UserBaseKey, UserProfileDTO>, SimpleFollowUserAssistant>(this));
     }
 }
