@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
-import com.tradehero.firmbargain.HAITONGUtils;
-import com.tradehero.firmbargain.SecurityOptActualFragment;
+import com.tradehero.livetrade.haitong.HaitongUtils;
+import com.tradehero.livetrade.SecurityOptActualFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -215,7 +215,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
         }
 
         if(!TradeManager.getInstance(this).isLogined()){
-            HAITONGUtils.jumpToLoginHAITONG(this);
+            HaitongUtils.jumpToLoginHAITONG(this);
             return;
         }
         isMock = false;

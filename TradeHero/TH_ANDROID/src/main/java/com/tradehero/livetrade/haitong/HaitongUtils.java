@@ -1,13 +1,11 @@
-package com.tradehero.firmbargain;
+package com.tradehero.livetrade.haitong;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.cairh.app.sjkh.MainActivity;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.TradeHeroMainActivity;
-import com.tradehero.th.utils.Constants;
 
 import cn.htsec.TradeModule;
 import cn.htsec.data.pkg.trade.TradeManager;
@@ -15,7 +13,7 @@ import cn.htsec.data.pkg.trade.TradeManager;
 /**
  * Created by palmer on 15/7/18.
  */
-public class HAITONGUtils {
+public class HaitongUtils {
 
     //到海通登陆界面
     public final static void jumpToLoginHAITONG(Activity activity){

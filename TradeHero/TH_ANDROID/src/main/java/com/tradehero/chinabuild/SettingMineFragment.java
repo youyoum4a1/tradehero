@@ -25,7 +25,7 @@ import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.firmbargain.HAITONGUtils;
+import com.tradehero.livetrade.haitong.HaitongUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -477,11 +477,11 @@ public class SettingMineFragment extends AbsBaseFragment implements View.OnClick
             getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
 
         } else {
-            HAITONGUtils.jumpToLoginHAITONG(getActivity());
+            HaitongUtils.jumpToLoginHAITONG(getActivity());
         }
     }
 
     private void enterSecurityOpenAccount(){
-        HAITONGUtils.openAnAccount(getActivity());
+        HaitongUtils.openAnAccount(getActivity());
     }
 }

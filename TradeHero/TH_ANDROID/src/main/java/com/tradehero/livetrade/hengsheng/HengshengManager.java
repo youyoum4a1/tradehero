@@ -1,8 +1,8 @@
-package com.tradehero.firmbargain.hengsheng;
+package com.tradehero.livetrade.hengsheng;
 
-import com.tradehero.firmbargain.hengsheng.data.HengshengBalanceDTO;
-import com.tradehero.firmbargain.hengsheng.data.HengshengPositionDTO;
-import com.tradehero.firmbargain.hengsheng.data.HengshengSessionDTO;
+import com.tradehero.livetrade.hengsheng.data.HengshengBalanceDTO;
+import com.tradehero.livetrade.hengsheng.data.HengshengPositionDTO;
+import com.tradehero.livetrade.hengsheng.data.HengshengSessionDTO;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

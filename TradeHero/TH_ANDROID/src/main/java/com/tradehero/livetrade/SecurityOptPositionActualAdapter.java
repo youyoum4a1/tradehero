@@ -1,4 +1,4 @@
-package com.tradehero.firmbargain;
+package com.tradehero.livetrade;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,10 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.tradehero.chinabuild.fragment.security.SecurityOptPositionMockDTO;
+import com.tradehero.livetrade.haitong.SecurityOptPositionActualDTO;
 import com.tradehero.th.R;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**

@@ -1,4 +1,4 @@
-package com.tradehero.firmbargain.hengsheng;
+package com.tradehero.livetrade.hengsheng;
 
 /**
  * Created by trdehero on 15/8/25.

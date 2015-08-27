@@ -1,4 +1,4 @@
-package com.tradehero.firmbargain;
+package com.tradehero.livetrade;
 
 import android.content.Context;
 import android.view.LayoutInflater;

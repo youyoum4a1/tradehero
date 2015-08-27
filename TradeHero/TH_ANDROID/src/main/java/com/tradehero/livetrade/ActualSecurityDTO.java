@@ -1,4 +1,4 @@
-package com.tradehero.firmbargain;
+package com.tradehero.livetrade;
 
 /**
  * Created by palmer on 15/7/19.

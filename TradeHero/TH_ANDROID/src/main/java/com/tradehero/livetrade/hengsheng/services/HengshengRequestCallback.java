@@ -1,6 +1,6 @@
-package com.tradehero.firmbargain.hengsheng.services;
+package com.tradehero.livetrade.hengsheng.services;
 
-import com.tradehero.firmbargain.hengsheng.data.HengshengBaseDTO;
+import com.tradehero.livetrade.hengsheng.data.HengshengBaseDTO;
 
 import retrofit.Callback;
 import retrofit.client.Response;

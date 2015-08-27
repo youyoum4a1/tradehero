@@ -1,4 +1,4 @@
-package com.tradehero.firmbargain;
+package com.tradehero.livetrade;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -23,8 +23,8 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
-import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.livetrade.haitong.SecurityOptPositionActualDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SearchSecurityActualActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -46,11 +46,11 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * Actual Security Buy Page
+ * Actual Security Sell Page
  *
  * Created by palmer on 15/7/16.
  */
-public class SecurityOptActualSubBuyFragment extends Fragment implements View.OnClickListener{
+public class SecurityOptActualSubSellFragment extends Fragment implements View.OnClickListener{
 
     private TradeManager tradeManager;
 
@@ -62,13 +62,13 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
     private TextView reduceOneTV;
     private LinearLayout availableLayout;
     private LinearLayout sharesLayout;
-    private TextView availableCashTV;
-
     private EditText decisionET;
     private ImageView oneFourIV;
     private ImageView oneThirdIV;
     private ImageView halfIV;
     private ImageView allIV;
+    private TextView availableSellTV;
+    private TextView totalSellTV;
 
     //Dialog
     private Dialog buyConfirmDialog;
@@ -80,15 +80,12 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
     private TextView dlgConfirmTV;
     private TextView dlgCancelTV;
 
-    private SecurityOptPositionActualAdapter securityOptPositionActualAdapter;
-
     private int color_up;
     private int color_down;
 
     private String securityExchange = "";
     private String securitySymbol = "";
     private String securityName = "";
-    private double balance = 0.0;
 
     //Buy Sell Layout
     private TextView sell5Price;
@@ -115,10 +112,12 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
 
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     private QuoteDetail quoteDetail;
+    private ArrayList<SecurityOptPositionActualDTO> securityOptPositionActualDTOs = new ArrayList();
+    private SecurityOptPositionActualAdapter securityOptPositionActualAdapter;
+    private double availableSells = 0;
 
     private boolean isRefresh = true;
 
-    private ArrayList<SecurityOptPositionActualDTO> securityOptPositionActualDTOs = new ArrayList();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -149,7 +148,6 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
             }
         }
         queryPositionsRepeat();
-        queryBalance();
         return view;
     }
 
@@ -163,11 +161,12 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         initSellBuyViews(view);
         availableLayout = (LinearLayout) view.findViewById(R.id.layout_available_money);
         sharesLayout = (LinearLayout) view.findViewById(R.id.layout_shares);
-        sharesLayout.setVisibility(View.GONE);
-        availableLayout.setVisibility(View.VISIBLE);
-        availableCashTV = (TextView)view.findViewById(R.id.textview_available_cash);
+        sharesLayout.setVisibility(View.VISIBLE);
+        availableLayout.setVisibility(View.GONE);
+        availableSellTV = (TextView)view.findViewById(R.id.textview_available_sells);
+        totalSellTV = (TextView)view.findViewById(R.id.textview_all_sells);
         buySellBtn = (Button) view.findViewById(R.id.button_security_opt_buy_sell);
-        buySellBtn.setText(R.string.security_opt_buy);
+        buySellBtn.setText(R.string.security_opt_sell);
         buySellBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,7 +174,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
             }
         });
         positionsLV = (ListView) view.findViewById(R.id.listview_security_opt_positions);
-        if(securityOptPositionActualAdapter==null) {
+        if (securityOptPositionActualAdapter == null) {
             securityOptPositionActualAdapter = new SecurityOptPositionActualAdapter(getActivity());
         }
         positionsLV.setAdapter(securityOptPositionActualAdapter);
@@ -204,6 +203,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                     quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLNoRepeatCallback());
                 }
                 enableIfNoSHASHE();
+                displaySells();
             }
         });
         securityCodeTV = (TextView) view.findViewById(R.id.textview_security_code);
@@ -222,7 +222,6 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         addOneTV.setOnClickListener(this);
         reduceOneTV.setOnClickListener(this);
         decisionET = (EditText) view.findViewById(R.id.edittext_security_decision);
-        decisionET.setHint("请输入100的整数倍");
         oneFourIV = (ImageView) view.findViewById(R.id.security_opt_one_fourth);
         oneThirdIV = (ImageView) view.findViewById(R.id.security_opt_one_third);
         halfIV = (ImageView) view.findViewById(R.id.security_opt_half);
@@ -231,10 +230,10 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         oneThirdIV.setOnClickListener(this);
         halfIV.setOnClickListener(this);
         allIV.setOnClickListener(this);
-
         if(!isSHASHE()){
             disableIfNoSHASHE();
         }
+
     }
 
     private void disableIfNoSHASHE(){
@@ -295,7 +294,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
             buyConfirmDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             buyConfirmDialog.setCanceledOnTouchOutside(false);
             buyConfirmDialog.setCancelable(true);
-            buyConfirmDialog.setContentView(R.layout.dialog_security_opt_buy);
+            buyConfirmDialog.setContentView(R.layout.dialog_security_opt_sell);
             dlgStockNameTV = (TextView) buyConfirmDialog.findViewById(R.id.dialog_security_name);
             dlgStockCodeTV = (TextView) buyConfirmDialog.findViewById(R.id.dialog_security_code);
             dlgStockPriceTV = (TextView) buyConfirmDialog.findViewById(R.id.dialog_security_price);
@@ -312,7 +311,6 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                 }
             });
             dlgConfirmTV = (TextView) buyConfirmDialog.findViewById(R.id.dialog_confirm);
-
             dlgConfirmTV.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -325,24 +323,23 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         if (TextUtils.isEmpty(securityName) || TextUtils.isEmpty(securitySymbol)) {
             return;
         }
-        if (priceET.getText() == null || TextUtils.isEmpty(priceET.getText().toString())) {
+        if (priceET.getText() == null) {
             return;
         }
-        if (decisionET.getText() == null || TextUtils.isEmpty(decisionET.getText().toString())) {
+        if (TextUtils.isEmpty(priceET.getText().toString())) {
             return;
         }
-        double amount = Double.valueOf(decisionET.getText().toString());
-        double plus = amount%100;
-        if(plus > 0){
-            THToast.show("购买股票数量必须是100的整数倍哦");
+        if (decisionET.getText() == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(decisionET.getText().toString())) {
             return;
         }
         dlgStockNameTV.setText(securityName);
         dlgStockCodeTV.setText(securitySymbol);
         dlgStockPriceTV.setText(priceET.getText());
-
         dlgStockAmountTV.setText(decisionET.getText());
-        int price = (int) (Double.valueOf(priceET.getText().toString()) * Double.valueOf(decisionET.getText().toString()));
+        int price = (int) (Double.valueOf(priceET.getText().toString()) * Integer.valueOf(decisionET.getText().toString()));
         dlgStockTotalTV.setText(String.valueOf(price));
         buyConfirmDialog.show();
     }
@@ -413,13 +410,10 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
     }
 
     private void setBuyAmount(int percent){
-        if(balance <=0 ){
+        if(availableSells <= 0){
             return;
         }
-        if(quoteDetail == null){
-            return;
-        }
-        double amount = balance/(quoteDetail.prec * percent);
+        double amount = availableSells/percent;
         if(amount < 1){
             return;
         }
@@ -587,13 +581,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
 
         @Override
         public void success(QuoteDetail quoteDetail, Response response) {
-            SecurityOptActualSubBuyFragment.this.quoteDetail = quoteDetail;
-            if(quoteDetail == null || quoteDetail.symb == null){
-                securitySymbol = "";
-                securityName = "";
-                securityExchange = "";
-                return;
-            }
+            SecurityOptActualSubSellFragment.this.quoteDetail = quoteDetail;
             if (securitySymbol.equals(quoteDetail.symb)) {
                 setSellBuyData(quoteDetail);
             }
@@ -618,7 +606,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
     class RefreshBUYSELLNoRepeatCallback implements  Callback<QuoteDetail> {
         @Override
         public void success(QuoteDetail quoteDetail, Response response) {
-            SecurityOptActualSubBuyFragment.this.quoteDetail = quoteDetail;
+            SecurityOptActualSubSellFragment.this.quoteDetail = quoteDetail;
             if(quoteDetail == null || quoteDetail.symb == null){
                 securitySymbol = "";
                 securityName = "";
@@ -637,8 +625,58 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
 
     class RefreshBuySellHandler extends Handler {
         public void handleMessage(Message msg) {
-            THLog.d("Actual buy refresh buy5sell5 per 5 seconds " + securityExchange + " " + securityName + " " + securitySymbol);
             quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
+        }
+    }
+
+    private void queryPositionsRepeat(){
+        if(tradeManager==null || !tradeManager.isLogined() ){
+            if(getActivity()!=null) {
+                getActivity().finish();
+            }
+            return;
+        }
+        tradeManager.sendData(TradeInterface.ID_QUERY_POSITION, new IPackageProxy(){
+            @Override
+            public void onSend(TradeDataHelper helper) {
+                helper.setStartPosition(0);
+            }
+
+
+            @Override
+            public void onReceive(TradeDataHelper helper) {
+                securityOptPositionActualDTOs.clear();
+                int rowCount = helper.getRowCount();
+                for(int i = 0; i < rowCount; i++) {
+                    SecurityOptPositionActualDTO securityOptPositionActualDTO = new SecurityOptPositionActualDTO();
+                    securityOptPositionActualDTO.sec_name = helper.get(i, "sec_name", "");
+                    securityOptPositionActualDTO.sec_code = helper.get(i, "sec_code", null);
+                    securityOptPositionActualDTO.profit = helper.get(i, "profit", 0.0);
+                    securityOptPositionActualDTO.profit_ratio = helper.get(i, "profit_ratio", 0.0);
+                    securityOptPositionActualDTO.buy_money = helper.get(i, "buy_money", 0.0);
+                    securityOptPositionActualDTO.cost_price = helper.get(i, "cost_price", 0.0);
+                    securityOptPositionActualDTO.current_amt = helper.get(i, "current_amt", 0.0);
+                    securityOptPositionActualDTO.enable_amt = helper.get(i, "enable_amt", 0.0);
+                    securityOptPositionActualDTO.market_name = helper.get(i, "market_name", "");
+                    securityOptPositionActualDTOs.add(securityOptPositionActualDTO);
+                }
+                securityOptPositionActualAdapter.addData(securityOptPositionActualDTOs);
+                displaySells();
+                if (isNeedToRefresh()) {
+                    if(isRefresh) {
+                        RefreshQueryPositionHandler refreshQueryPositionHandler = new RefreshQueryPositionHandler();
+                        refreshQueryPositionHandler.sendEmptyMessageDelayed(-1, 5000);
+                    }
+                }
+            }
+
+        });
+
+    }
+
+    class RefreshQueryPositionHandler extends Handler{
+        public void handleMessage(Message msg) {
+            queryPositionsRepeat();
         }
     }
 
@@ -674,90 +712,34 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                     securityOptPositionActualDTOs.add(securityOptPositionActualDTO);
                 }
                 securityOptPositionActualAdapter.addData(securityOptPositionActualDTOs);
+                displaySells();
             }
-
         });
+
     }
 
-    private void queryPositionsRepeat(){
-        if(tradeManager==null || !tradeManager.isLogined() ){
-            if(getActivity()!=null) {
-                getActivity().finish();
-            }
+    private void displaySells(){
+        if(totalSellTV == null || availableSellTV == null){
             return;
         }
-        tradeManager.sendData(TradeInterface.ID_QUERY_POSITION, new IPackageProxy(){
-            @Override
-            public void onSend(TradeDataHelper helper) {
-                helper.setStartPosition(0);
-            }
-
-
-            @Override
-            public void onReceive(TradeDataHelper helper) {
-                securityOptPositionActualDTOs.clear();
-                int rowCount = helper.getRowCount();
-                for(int i = 0; i < rowCount; i++) {
-                    SecurityOptPositionActualDTO securityOptPositionActualDTO = new SecurityOptPositionActualDTO();
-                    securityOptPositionActualDTO.sec_name = helper.get(i, "sec_name", "");
-                    securityOptPositionActualDTO.sec_code = helper.get(i, "sec_code", null);
-                    securityOptPositionActualDTO.profit = helper.get(i, "profit", 0.0);
-                    securityOptPositionActualDTO.profit_ratio = helper.get(i, "profit_ratio", 0.0);
-                    securityOptPositionActualDTO.buy_money = helper.get(i, "buy_money", 0.0);
-                    securityOptPositionActualDTO.cost_price = helper.get(i, "cost_price", 0.0);
-                    securityOptPositionActualDTO.current_amt = helper.get(i, "current_amt", 0.0);
-                    securityOptPositionActualDTO.enable_amt = helper.get(i, "enable_amt", 0.0);
-                    securityOptPositionActualDTO.market_name = helper.get(i, "market_name", "");
-                    securityOptPositionActualDTOs.add(securityOptPositionActualDTO);
-                }
-                securityOptPositionActualAdapter.addData(securityOptPositionActualDTOs);
-                if (isNeedToRefresh()) {
-                    if(isRefresh) {
-                        RefreshQueryPositionHandler refreshQueryPositionHandler = new RefreshQueryPositionHandler();
-                        refreshQueryPositionHandler.sendEmptyMessageDelayed(-1, 200000);
-                    }
-                }
-            }
-
-        });
-
-    }
-
-    class RefreshQueryPositionHandler extends Handler{
-        public void handleMessage(Message msg) {
-            queryPositionsRepeat();
-        }
-    }
-
-
-    private void queryBalance(){
-        if(tradeManager==null || !tradeManager.isLogined() ){
-            if(getActivity()!=null) {
-                getActivity().finish();
-            }
+        if(securityOptPositionActualDTOs == null){
+            totalSellTV.setText("0");
+            availableSellTV.setText("0");
             return;
         }
-        tradeManager.sendData(TradeInterface.ID_QUERY_MONEY_BALANCE, new IPackageProxy(){
-            @Override
-            public void onSend(TradeDataHelper helper) {
-
+        if(TextUtils.isEmpty(securitySymbol) || TextUtils.isEmpty(securityExchange)){
+            totalSellTV.setText("0");
+            availableSellTV.setText("0");
+            return;
+        }
+        for(SecurityOptPositionActualDTO securityOptPositionActualDTO : securityOptPositionActualDTOs){
+            if(securityOptPositionActualDTO.sec_code.equals(securitySymbol)){
+                totalSellTV.setText(DataUtils.keepInteger(securityOptPositionActualDTO.current_amt));
+                availableSellTV.setText(DataUtils.keepInteger(securityOptPositionActualDTO.enable_amt));
+                availableSells = securityOptPositionActualDTO.enable_amt;
+                decisionET.setHint("可委托数量： " + availableSells);
             }
-
-            @Override
-            public void onReceive(TradeDataHelper helper) {
-                int rowCount = helper.getRowCount();
-                for(int i = 0; i < rowCount; i++) {
-                    balance = helper.get(i, "enable_balance", 0.0);
-                    if(balance != 0){
-                        if(availableCashTV!=null) {
-                            availableCashTV.setText(DataUtils.keepInteger(balance));
-                        }
-                        return;
-                    }
-                }
-
-            }
-        });
+        }
     }
 
     private void tradeStock(){
@@ -783,9 +765,8 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
             THToast.show("股票交易数量错误");
             return;
         }
-        double totalAmount = price * quantity;
-        if(totalAmount > balance) {
-            THToast.show("买入股票价格超出可用本金");
+        if (quantity > availableSells){
+            THToast.show("可卖出股票数量不足");
             return;
         }
         if(isSHASHE()) {
@@ -798,7 +779,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                     @Override
                     public void onSend(TradeDataHelper helper) {
                         helper.set(TradeInterface.KEY_MARKET_CODE, SecurityUtils.getMarketCodeBySymbol(securitySymbol));
-                        helper.set(TradeInterface.KEY_ENTRUST_TYPE, "1");
+                        helper.set(TradeInterface.KEY_ENTRUST_TYPE, "2");
                         SecAccountInfo secAccountInfo = tradeManager.getSecAccounts().get(0);
                         helper.set(TradeInterface.KEY_SEC_ACCOUNT, secAccountInfo.getAccount());
                         helper.set(TradeInterface.KEY_SEC_CODE, securitySymbol);
@@ -813,7 +794,6 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
                         if(!TextUtils.isEmpty(resultMsg)) {
                             THToast.show(resultMsg);
                         }
-                        queryBalance();
                         queryPositionsNoRepeat();
                         if(getActivity()!=null) {
                             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(SecurityOptActivity.INTENT_END_TRADING));
@@ -876,4 +856,5 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         sell5Price.setText("- -");
         sell5Amount.setText("- -");
     }
+
 }

@@ -1,8 +1,7 @@
-package com.tradehero.firmbargain;
+package com.tradehero.livetrade;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,11 +16,8 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailSubViewPager;
-import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubBuyFragment;
-import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubDelegationFragment;
-import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubQueryFragment;
-import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubSellFragment;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.livetrade.haitong.HaitongUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -31,7 +27,6 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import cn.htsec.TradeModule;
 import cn.htsec.data.pkg.trade.OnlineListener;
 import cn.htsec.data.pkg.trade.TradeManager;
 
@@ -321,7 +316,7 @@ public class SecurityOptActualFragment extends Fragment implements View.OnClickL
                     if(bankTransferHintDialog != null && getActivity() != null){
                         bankTransferHintDialog.dismiss();
                         THSharePreferenceManager.setEnteredActualPageStatus(getActivity(), currentUserId.get(), true);
-                        HAITONGUtils.bankTransfer(getActivity());
+                        HaitongUtils.bankTransfer(getActivity());
                     }
                 }
             });

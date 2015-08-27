@@ -1,6 +1,4 @@
-package com.tradehero.firmbargain;
-
-import org.json.JSONObject;
+package com.tradehero.livetrade.haitong;
 
 /**
  * Created by palmer on 15/7/17.

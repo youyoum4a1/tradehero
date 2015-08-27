@@ -1,4 +1,4 @@
-package com.tradehero.firmbargain;
+package com.tradehero.livetrade;
 
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;

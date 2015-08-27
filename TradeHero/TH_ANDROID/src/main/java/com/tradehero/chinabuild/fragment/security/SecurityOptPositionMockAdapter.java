@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.tradehero.firmbargain.DataUtils;
+import com.tradehero.livetrade.DataUtils;
 import com.tradehero.th.R;
 
 import java.text.DecimalFormat;

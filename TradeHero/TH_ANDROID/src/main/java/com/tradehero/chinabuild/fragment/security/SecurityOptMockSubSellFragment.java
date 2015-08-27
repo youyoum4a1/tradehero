@@ -31,7 +31,7 @@ import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.common.utils.IOUtils;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.firmbargain.DataUtils;
+import com.tradehero.livetrade.DataUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;

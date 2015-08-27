@@ -22,7 +22,7 @@ import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.firmbargain.HAITONGUtils;
+import com.tradehero.livetrade.haitong.HaitongUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -604,11 +604,11 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
             getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
 
         } else {
-            HAITONGUtils.jumpToLoginHAITONG(getActivity());
+            HaitongUtils.jumpToLoginHAITONG(getActivity());
         }
     }
 
     private void enterSecurityOpenAccount(){
-        HAITONGUtils.openAnAccount(getActivity());
+        HaitongUtils.openAnAccount(getActivity());
     }
 }

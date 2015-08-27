@@ -1,4 +1,4 @@
-package com.tradehero.firmbargain;
+package com.tradehero.livetrade;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
