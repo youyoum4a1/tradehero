@@ -22,7 +22,7 @@ import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.livetrade.haitong.HaitongUtils;
+import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.activities.SecurityOptActivity;

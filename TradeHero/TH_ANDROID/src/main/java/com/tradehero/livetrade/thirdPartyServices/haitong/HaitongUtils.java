@@ -1,4 +1,4 @@
-package com.tradehero.livetrade.haitong;
+package com.tradehero.livetrade.thirdPartyServices.haitong;
 
 import android.app.Activity;
 import android.content.Intent;

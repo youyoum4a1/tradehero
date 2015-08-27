@@ -1,8 +1,8 @@
-package com.tradehero.livetrade.hengsheng;
+package com.tradehero.livetrade.thirdPartyServices.hengsheng;
 
-import com.tradehero.livetrade.hengsheng.data.HengshengBalanceDTO;
-import com.tradehero.livetrade.hengsheng.data.HengshengPositionDTO;
-import com.tradehero.livetrade.hengsheng.data.HengshengSessionDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengBalanceDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengPositionDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengSessionDTO;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

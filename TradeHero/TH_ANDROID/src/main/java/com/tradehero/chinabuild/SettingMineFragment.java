@@ -25,7 +25,7 @@ import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.livetrade.haitong.HaitongUtils;
+import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;

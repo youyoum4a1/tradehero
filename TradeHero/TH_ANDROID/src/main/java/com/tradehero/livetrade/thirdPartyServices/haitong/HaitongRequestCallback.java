@@ -1,4 +1,4 @@
-package com.tradehero.livetrade.haitong;
+package com.tradehero.livetrade.thirdPartyServices.haitong;
 
 /**
  * Created by Sam on 15/8/26.

@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailSubViewPager;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.livetrade.haitong.HaitongUtils;
+import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.users.CurrentUserId;

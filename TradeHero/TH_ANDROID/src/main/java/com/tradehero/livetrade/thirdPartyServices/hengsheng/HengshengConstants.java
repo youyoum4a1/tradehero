@@ -1,4 +1,4 @@
-package com.tradehero.livetrade.hengsheng;
+package com.tradehero.livetrade.thirdPartyServices.hengsheng;
 
 /**
  * Created by trdehero on 15/8/25.
@@ -16,4 +16,8 @@ public class HengshengConstants {
 
     public static final int EXCHANGE_BUY = 1;
     public static final int EXCHANGE_SELL = 2;
+
+    public static final int targetBusinsys = 1000;
+    public static final String opStation = "http://www.baidu.com/";
+    public static final int inputContent = 6;
 }

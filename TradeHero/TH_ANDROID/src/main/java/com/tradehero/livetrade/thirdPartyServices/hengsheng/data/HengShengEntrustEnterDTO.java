@@ -1,4 +1,4 @@
-package com.tradehero.livetrade.hengsheng.data;
+package com.tradehero.livetrade.thirdPartyServices.hengsheng.data;
 
 import java.util.List;
 

@@ -1,14 +1,14 @@
-package com.tradehero.livetrade.hengsheng.services;
+package com.tradehero.livetrade.thirdPartyServices.hengsheng.services;
 
 
-import com.tradehero.livetrade.hengsheng.HengshengConstants;
-import com.tradehero.livetrade.hengsheng.data.HengShengEntrustEnterDTO;
-import com.tradehero.livetrade.hengsheng.data.HengshengBalanceDTO;
-import com.tradehero.livetrade.hengsheng.data.HengshengBusinessQryDTO;
-import com.tradehero.livetrade.hengsheng.data.HengshengEntrustQryDTO;
-import com.tradehero.livetrade.hengsheng.data.HengshengPositionDTO;
-import com.tradehero.livetrade.hengsheng.data.HengshengSessionDTO;
-import com.tradehero.livetrade.hengsheng.data.HengshengWithdrawEnterDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.HengshengConstants;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengShengEntrustEnterDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengBalanceDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengBusinessQryDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengEntrustQryDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengPositionDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengSessionDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengWithdrawEnterDTO;
 
 
 import retrofit.Callback;

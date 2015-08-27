@@ -25,7 +25,7 @@ import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.livetrade.haitong.SecurityOptPositionActualDTO;
+import com.tradehero.livetrade.thirdPartyServices.haitong.SecurityOptPositionActualDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SearchSecurityActualActivity;
 import com.tradehero.th.activities.SecurityOptActivity;

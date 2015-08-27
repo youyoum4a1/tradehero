@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.tradehero.livetrade.haitong.SecurityOptPositionActualDTO;
+import com.tradehero.livetrade.thirdPartyServices.haitong.SecurityOptPositionActualDTO;
 import com.tradehero.th.R;
 
 import java.util.ArrayList;

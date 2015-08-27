@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
-import com.tradehero.livetrade.haitong.HaitongUtils;
+import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.livetrade.SecurityOptActualFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockFragment;
 import com.tradehero.th.R;
