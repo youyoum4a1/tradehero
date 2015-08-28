@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.base;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -13,11 +14,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
+import com.tradehero.common.utils.SDKUtils;
+import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.AlertDialogUtil;
+import com.tradehero.th.utils.GraphicUtil;
 import dagger.Lazy;
+import java.util.List;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.internal.util.SubscriptionList;
@@ -280,5 +288,28 @@ public class BaseFragment extends Fragment
     public <T extends Fragment> boolean allowNavigateTo(@NonNull Class<T> fragmentClass, Bundle args)
     {
         return true;
+    }
+
+    protected static class LollipopArrayAdapter<T> extends ArrayAdapter<T>
+    {
+        public LollipopArrayAdapter(Context context, List<T> objects)
+        {
+            super(context, R.layout.sign_up_dropdown_item_selected, objects);
+            setDropDownViewResource(R.layout.sign_up_dropdown_item);
+        }
+
+        @Override public View getView(int position, View convertView, ViewGroup parent)
+        {
+            View v = super.getView(position, convertView, parent);
+            if (!SDKUtils.isLollipopOrHigher())
+            {
+                if (v instanceof TextView)
+                {
+                    ((TextView) v).setCompoundDrawablesWithIntrinsicBounds(null, null,
+                            GraphicUtil.createStateListDrawableRes(v.getContext(), R.drawable.abc_spinner_mtrl_am_alpha), null);
+                }
+            }
+            return v;
+        }
     }
 }

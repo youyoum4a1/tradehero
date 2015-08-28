@@ -36,29 +36,11 @@ public abstract class AbstractStockTransactionFragment extends AbstractTransacti
         super();
     }
 
-    @Override protected int getCashLeftLabelResId(@Nullable PositionDTOCompact closeablePosition)
-    {
-        return closeablePosition != null
-                ? R.string.buy_sell_share_left
-                : R.string.buy_sell_cash_left;
-    }
-
     @NonNull @Override protected THSignedNumber getFormattedPrice(double price)
     {
         return THSignedNumber
                 .builder(price)
                 .withOutSign()
                 .build();
-    }
-
-    public void displayQuickPriceButtonSet(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO,
-            @Nullable PositionDTOCompact closeablePosition)
-    {
-        //QuickPriceButtonSet buttonSetCopy = mQuickPriceButtonSet;
-        //if (buttonSetCopy != null)
-        //{
-        //    buttonSetCopy.setEnabled(isQuickButtonEnabled());
-        //    buttonSetCopy.setMaxPrice(getQuickButtonMaxValue(portfolioCompactDTO, quoteDTO, closeablePosition));
-        //}
     }
 }
