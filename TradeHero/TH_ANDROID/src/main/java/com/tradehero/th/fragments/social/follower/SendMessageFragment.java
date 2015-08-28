@@ -119,11 +119,7 @@ public class SendMessageFragment extends BaseFragment
         ButterKnife.bind(this, view);
         DeviceUtil.showKeyboardDelayed(inputText);
         mentionTaggedStockHandler.setDiscussionPostContent(inputText);
-
-        if (mentionActionButtonsView != null)
-        {
-            mentionActionButtonsView.setReturnFragmentName(getClass().getName());
-        }
+        mentionActionButtonsView.setReturnFragmentName(getClass().getName());
     }
 
     @Override public void onStart()
