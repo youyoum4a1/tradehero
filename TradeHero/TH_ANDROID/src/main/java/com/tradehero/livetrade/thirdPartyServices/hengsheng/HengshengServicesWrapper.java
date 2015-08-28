@@ -167,7 +167,7 @@ import retrofit.client.Response;
      * 委托买入
      */
     @Override
-    public void buy(int exchangeType, String stockCode, int amount, float price, final LiveTradeCallback<LiveTradeEntrustEnterDTO> callback)
+    public void buy(String stockCode, int amount, float price, final LiveTradeCallback<LiveTradeEntrustEnterDTO> callback)
     {
         String authStr = hengshengManager.getAccessToken();
         if (isSessionValid())
@@ -189,6 +189,8 @@ import retrofit.client.Response;
                     callback.onError(LiveTradeConstants.ERROR_CODE_RETROFIT, error.getLocalizedMessage());
                 }
             };
+
+            int exchangeType = 1;       // Todo
             service.entrustEnter(authStr,
                     HengshengConstants.TARGET_COMP_ID_HENGSHENG,
                     HengshengConstants.SENDER_COMP_ID,
@@ -211,7 +213,7 @@ import retrofit.client.Response;
      * 委托卖出
      */
     @Override
-    public void sell(int exchangeType, String stockCode, int amount, float price, final LiveTradeCallback<LiveTradeEntrustEnterDTO> callback)
+    public void sell(String stockCode, int amount, float price, final LiveTradeCallback<LiveTradeEntrustEnterDTO> callback)
     {
         String authStr = hengshengManager.getAccessToken();
         if (isSessionValid())
@@ -233,6 +235,8 @@ import retrofit.client.Response;
                     callback.onError(LiveTradeConstants.ERROR_CODE_RETROFIT, error.getLocalizedMessage());
                 }
             };
+
+            int exchangeType = 1;       // Todo
             service.entrustEnter(authStr,
                     HengshengConstants.TARGET_COMP_ID_HENGSHENG,
                     HengshengConstants.SENDER_COMP_ID,
@@ -252,7 +256,45 @@ import retrofit.client.Response;
     }
 
     /**
-     * 委托查询
+     * 查询可撤委托
+     */
+    @Override
+    public void cancelableEntrustQuery(final LiveTradeCallback<LiveTradeEntrustQueryDTO> callback)
+    {
+        String authStr = hengshengManager.getAccessToken();
+        if (isSessionValid())
+        {
+            HengshengRequestCallback<HengshengEntrustQryDTO> cb = new HengshengRequestCallback<HengshengEntrustQryDTO>() {
+                @Override
+                public void hengshengSuccess(HengshengBaseDTO hengshengBaseDTO, Response response) {
+                    LiveTradeEntrustQueryDTO dto = new LiveTradeEntrustQueryDTO();
+                    callback.onSuccess(dto);
+                }
+
+                @Override
+                public void hengshengError(HengshengBaseDTO hengshengBaseDTO, Response response) {
+                    callback.onError(hengshengBaseDTO.error_code, hengshengBaseDTO.error_info);
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    callback.onError(LiveTradeConstants.ERROR_CODE_RETROFIT, error.getLocalizedMessage());
+                }
+            };
+            service.entrustQry(authStr,
+                    HengshengConstants.TARGET_COMP_ID_HENGSHENG,
+                    HengshengConstants.SENDER_COMP_ID,
+                    1,
+                    cb);
+        }
+        else
+        {
+            callback.onError(LiveTradeConstants.ERROR_CODE_SESSION_OUT, LiveTradeConstants.ERROR_CODE_SESSION_OUT);
+        }
+    }
+
+    /**
+     * 查询全部委托
      */
     @Override
     public void entrustQuery(final LiveTradeCallback<LiveTradeEntrustQueryDTO> callback)
@@ -280,6 +322,7 @@ import retrofit.client.Response;
             service.entrustQry(authStr,
                     HengshengConstants.TARGET_COMP_ID_HENGSHENG,
                     HengshengConstants.SENDER_COMP_ID,
+                    0,
                     cb);
         }
         else
@@ -292,7 +335,7 @@ import retrofit.client.Response;
      * 撤销委托
      */
     @Override
-    public void entrustCancel(int entrustNo, final LiveTradeCallback<LiveTradeEntrustCancelDTO> callback)
+    public void entrustCancel(final String marketCode, final int entrustNo, final String entrustDate, final String withdrawCate, final String securityId, final LiveTradeCallback<LiveTradeEntrustCancelDTO> callback)
     {
         String authStr = hengshengManager.getAccessToken();
         if (isSessionValid())

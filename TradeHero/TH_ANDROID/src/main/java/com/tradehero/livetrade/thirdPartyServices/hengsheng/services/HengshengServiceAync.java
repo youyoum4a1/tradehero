@@ -128,6 +128,7 @@ public interface HengshengServiceAync
      * @param authorization
      * @param targetComp
      * @param senderComp
+     * @param actionIn
      * @param cb
      */
     @POST("/secu/v1/entrust_qry")
@@ -139,6 +140,7 @@ public interface HengshengServiceAync
             @Header("Authorization") String authorization,
             @Field("targetcomp_id") int targetComp,
             @Field("sendercomp_id") int senderComp,
+            @Field("action_in") int actionIn,
             HengshengRequestCallback<HengshengEntrustQryDTO> cb
     );
 

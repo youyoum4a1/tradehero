@@ -25,13 +25,13 @@ import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.livetrade.thirdPartyServices.haitong.SecurityOptPositionActualDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SearchSecurityActualActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.utils.SecurityUtils;
 
 import java.util.ArrayList;
 
@@ -798,7 +798,7 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
 
                     @Override
                     public void onSend(TradeDataHelper helper) {
-                        helper.set(TradeInterface.KEY_MARKET_CODE, SecurityUtils.getMarketCodeBySymbol(securitySymbol));
+                        helper.set(TradeInterface.KEY_MARKET_CODE, HaitongUtils.getMarketCodeBySymbol(securitySymbol));
                         helper.set(TradeInterface.KEY_ENTRUST_TYPE, "1");
                         SecAccountInfo secAccountInfo = tradeManager.getSecAccounts().get(0);
                         helper.set(TradeInterface.KEY_SEC_ACCOUNT, secAccountInfo.getAccount());

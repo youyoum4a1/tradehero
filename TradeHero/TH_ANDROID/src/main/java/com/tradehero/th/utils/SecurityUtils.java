@@ -40,28 +40,4 @@ public class SecurityUtils {
         return display;
     }
 
-    public static String getMarketCodeBySymbol(String symbol){
-        if(TextUtils.isEmpty(symbol)){
-            return "-1";
-        }
-        if(symbol.startsWith("420")){
-            return "6";
-        }
-        if(symbol.startsWith("400")){
-            return "5";
-        }
-        if(symbol.startsWith("9")){
-            return "2";
-        }
-        if(symbol.startsWith("2")){
-            return "3";
-        }
-        if(symbol.startsWith("6")){
-            return "0";
-        }
-        if(symbol.startsWith("0")){
-            return "1";
-        }
-        return "7";
-    }
 }

@@ -3,6 +3,7 @@ package com.tradehero.livetrade.thirdPartyServices.haitong;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tradehero.th.R;
 import com.tradehero.th.activities.TradeHeroMainActivity;
@@ -60,5 +61,30 @@ public class HaitongUtils {
         } else {
             jumpToLoginHAITONG(activity);
         }
+    }
+
+    public static String getMarketCodeBySymbol(String symbol){
+        if(TextUtils.isEmpty(symbol)){
+            return "-1";
+        }
+        if(symbol.startsWith("420")){
+            return "6";
+        }
+        if(symbol.startsWith("400")){
+            return "5";
+        }
+        if(symbol.startsWith("9")){
+            return "2";
+        }
+        if(symbol.startsWith("2")){
+            return "3";
+        }
+        if(symbol.startsWith("6")){
+            return "0";
+        }
+        if(symbol.startsWith("0")){
+            return "1";
+        }
+        return "7";
     }
 }

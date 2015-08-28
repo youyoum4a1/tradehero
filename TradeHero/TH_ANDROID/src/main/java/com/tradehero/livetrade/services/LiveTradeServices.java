@@ -25,13 +25,15 @@ public interface LiveTradeServices {
 
     void getPosition(LiveTradeCallback<LiveTradePositionDTO> callback);
 
-    void buy(int exchangeType, String stockCode, int amount, float price, LiveTradeCallback<LiveTradeEntrustEnterDTO> callback);
+    void buy(String stockCode, int amount, float price, LiveTradeCallback<LiveTradeEntrustEnterDTO> callback);
 
-    void sell(int exchangeType, String stockCode, int amount, float price, LiveTradeCallback<LiveTradeEntrustEnterDTO> callback);
+    void sell(String stockCode, int amount, float price, LiveTradeCallback<LiveTradeEntrustEnterDTO> callback);
+
+    void cancelableEntrustQuery(LiveTradeCallback<LiveTradeEntrustQueryDTO> callback);
 
     void entrustQuery(LiveTradeCallback<LiveTradeEntrustQueryDTO> callback);
 
-    void entrustCancel(int entrustNo, LiveTradeCallback<LiveTradeEntrustCancelDTO> callback);
+    void entrustCancel(final String marketCode, final int entrustNo, final String entrustDate, final String withdrawCate, final String securityId, LiveTradeCallback<LiveTradeEntrustCancelDTO> callback);
 
     void dealQuery(LiveTradeCallback<LiveTradeDealQueryDTO> callback);
 

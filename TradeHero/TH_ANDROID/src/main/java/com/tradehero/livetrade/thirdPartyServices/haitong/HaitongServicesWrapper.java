@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import cn.htsec.data.SecAccountInfo;
 import cn.htsec.data.pkg.trade.IPackageProxy;
 import cn.htsec.data.pkg.trade.TradeDataHelper;
 import cn.htsec.data.pkg.trade.TradeInterface;
@@ -68,7 +69,16 @@ public class HaitongServicesWrapper implements LiveTradeServices {
             @Override
             public void onReceive(TradeDataHelper tradeDataHelper) {
                 super.onReceive(tradeDataHelper);
+
+                int rowCount = tradeDataHelper.getRowCount();
+                float enabledBalance = 0;
+                for(int i = 0; i < rowCount; i++) {
+                    enabledBalance = tradeDataHelper.get(i, "enable_balance", enabledBalance);
+                    break;
+                }
+
                 LiveTradeBalanceDTO dto = new LiveTradeBalanceDTO();
+                dto.enableBalance = enabledBalance;
                 callback.onSuccess(dto);
             }
 
@@ -80,6 +90,11 @@ public class HaitongServicesWrapper implements LiveTradeServices {
     public void getPosition(final LiveTradeCallback<LiveTradePositionDTO> callback) {
         IPackageProxy proxy = new IPackageProxy(){
             @Override
+            public void onSend(TradeDataHelper helper) {
+                helper.setStartPosition(0);
+            }
+
+            @Override
             public void onRequestFail(String s) {
                 super.onRequestFail(s);
                 callback.onError(LiveTradeConstants.ERROR_CODE_HAITONG, s);
@@ -88,7 +103,7 @@ public class HaitongServicesWrapper implements LiveTradeServices {
             @Override
             public void onReceive(TradeDataHelper tradeDataHelper) {
                 super.onReceive(tradeDataHelper);
-                LiveTradePositionDTO dto = new LiveTradePositionDTO();
+                LiveTradePositionDTO dto = LiveTradePositionDTO.parseHaitongDTO(tradeDataHelper);
                 callback.onSuccess(dto);
             }
 
@@ -97,8 +112,21 @@ public class HaitongServicesWrapper implements LiveTradeServices {
     }
 
     @Override
-    public void buy(int exchangeType, String stockCode, int amount, float price, final LiveTradeCallback<LiveTradeEntrustEnterDTO> callback) {
+    public void buy(final String stockCode, final int amount, final float price, final LiveTradeCallback<LiveTradeEntrustEnterDTO> callback) {
         IPackageProxy proxy = new IPackageProxy(){
+            @Override
+            public void onSend(TradeDataHelper helper) {
+                helper.set(TradeInterface.KEY_MARKET_CODE, HaitongUtils.getMarketCodeBySymbol(stockCode));
+                helper.set(TradeInterface.KEY_ENTRUST_TYPE, "1");
+                SecAccountInfo secAccountInfo = tradeManager.getSecAccounts().get(0);
+                helper.set(TradeInterface.KEY_SEC_ACCOUNT, secAccountInfo.getAccount());
+                helper.set(TradeInterface.KEY_SEC_CODE, stockCode);
+                helper.set(TradeInterface.KEY_ENTRUST_PRICE, String.valueOf(price));
+                helper.set(TradeInterface.KEY_ENTRUST_AMT, String.valueOf(amount));
+                helper.set(TradeInterface.KEY_MARKET_ORDER_TYPE, "");
+            }
+
+
             @Override
             public void onRequestFail(String s) {
                 super.onRequestFail(s);
@@ -108,7 +136,7 @@ public class HaitongServicesWrapper implements LiveTradeServices {
             @Override
             public void onReceive(TradeDataHelper tradeDataHelper) {
                 super.onReceive(tradeDataHelper);
-                LiveTradeEntrustEnterDTO dto = new LiveTradeEntrustEnterDTO();
+                LiveTradeEntrustEnterDTO dto = LiveTradeEntrustEnterDTO.parseHaitongDTO(tradeDataHelper);
                 callback.onSuccess(dto);
             }
 
@@ -117,8 +145,20 @@ public class HaitongServicesWrapper implements LiveTradeServices {
     }
 
     @Override
-    public void sell(int exchangeType, String stockCode, int amount, float price, final LiveTradeCallback<LiveTradeEntrustEnterDTO> callback) {
+    public void sell(final String stockCode, final int amount, final float price, final LiveTradeCallback<LiveTradeEntrustEnterDTO> callback) {
         IPackageProxy proxy = new IPackageProxy(){
+            @Override
+            public void onSend(TradeDataHelper helper) {
+                helper.set(TradeInterface.KEY_MARKET_CODE, HaitongUtils.getMarketCodeBySymbol(stockCode));
+                helper.set(TradeInterface.KEY_ENTRUST_TYPE, "2");
+                SecAccountInfo secAccountInfo = tradeManager.getSecAccounts().get(0);
+                helper.set(TradeInterface.KEY_SEC_ACCOUNT, secAccountInfo.getAccount());
+                helper.set(TradeInterface.KEY_SEC_CODE, stockCode);
+                helper.set(TradeInterface.KEY_ENTRUST_PRICE, String.valueOf(price));
+                helper.set(TradeInterface.KEY_ENTRUST_AMT, String.valueOf(amount));
+                helper.set(TradeInterface.KEY_MARKET_ORDER_TYPE, "");
+            }
+
             @Override
             public void onRequestFail(String s) {
                 super.onRequestFail(s);
@@ -128,7 +168,7 @@ public class HaitongServicesWrapper implements LiveTradeServices {
             @Override
             public void onReceive(TradeDataHelper tradeDataHelper) {
                 super.onReceive(tradeDataHelper);
-                LiveTradeEntrustEnterDTO dto = new LiveTradeEntrustEnterDTO();
+                LiveTradeEntrustEnterDTO dto = LiveTradeEntrustEnterDTO.parseHaitongDTO(tradeDataHelper);
                 callback.onSuccess(dto);
             }
 
@@ -137,8 +177,13 @@ public class HaitongServicesWrapper implements LiveTradeServices {
     }
 
     @Override
-    public void entrustQuery(final LiveTradeCallback<LiveTradeEntrustQueryDTO> callback) {
+    public void cancelableEntrustQuery(final LiveTradeCallback<LiveTradeEntrustQueryDTO> callback) {
         IPackageProxy proxy = new IPackageProxy(){
+            @Override
+            public void onSend(TradeDataHelper helper) {
+                helper.set(TradeInterface.KEY_WITHDRAW_FLAG, "1");
+            }
+
             @Override
             public void onRequestFail(String s) {
                 super.onRequestFail(s);
@@ -148,7 +193,7 @@ public class HaitongServicesWrapper implements LiveTradeServices {
             @Override
             public void onReceive(TradeDataHelper tradeDataHelper) {
                 super.onReceive(tradeDataHelper);
-                LiveTradeEntrustQueryDTO dto = new LiveTradeEntrustQueryDTO();
+                LiveTradeEntrustQueryDTO dto = LiveTradeEntrustQueryDTO.parseHaitongData(tradeDataHelper);
                 callback.onSuccess(dto);
             }
 
@@ -157,8 +202,13 @@ public class HaitongServicesWrapper implements LiveTradeServices {
     }
 
     @Override
-    public void entrustCancel(int entrustNo, final LiveTradeCallback<LiveTradeEntrustCancelDTO> callback) {
+    public void entrustQuery(final LiveTradeCallback<LiveTradeEntrustQueryDTO> callback) {
         IPackageProxy proxy = new IPackageProxy(){
+            @Override
+            public void onSend(TradeDataHelper helper) {
+                helper.set(TradeInterface.KEY_WITHDRAW_FLAG, "0");
+            }
+
             @Override
             public void onRequestFail(String s) {
                 super.onRequestFail(s);
@@ -168,7 +218,36 @@ public class HaitongServicesWrapper implements LiveTradeServices {
             @Override
             public void onReceive(TradeDataHelper tradeDataHelper) {
                 super.onReceive(tradeDataHelper);
-                LiveTradeEntrustCancelDTO dto = new LiveTradeEntrustCancelDTO();
+                LiveTradeEntrustQueryDTO dto = LiveTradeEntrustQueryDTO.parseHaitongData(tradeDataHelper);
+                callback.onSuccess(dto);
+            }
+
+        };
+        tradeManager.sendData(TradeInterface.ID_QUERY_ORDERS, proxy);
+    }
+
+    @Override
+    public void entrustCancel(final String marketCode, final int entrustNo, final String entrustDate, final String withdrawCate, final String securityId, final LiveTradeCallback<LiveTradeEntrustCancelDTO> callback) {
+        IPackageProxy proxy = new IPackageProxy(){
+            @Override
+            public void onSend(TradeDataHelper helper) {
+                helper.set(TradeInterface.KEY_MARKET_CODE, marketCode);
+                helper.set(TradeInterface.KEY_ENTRUST_DATE, entrustDate);
+                helper.set(TradeInterface.KEY_WITHDRAW_CATE, withdrawCate);
+                helper.set(TradeInterface.KEY_ENTRUST_NO, entrustNo);
+                helper.set(TradeInterface.KEY_SEC_CODE, securityId);
+            }
+
+            @Override
+            public void onRequestFail(String s) {
+                super.onRequestFail(s);
+                callback.onError(LiveTradeConstants.ERROR_CODE_HAITONG, s);
+            }
+
+            @Override
+            public void onReceive(TradeDataHelper tradeDataHelper) {
+                super.onReceive(tradeDataHelper);
+                LiveTradeEntrustCancelDTO dto = LiveTradeEntrustCancelDTO.parseHaitongDTO(tradeDataHelper);
                 callback.onSuccess(dto);
             }
 
@@ -188,7 +267,7 @@ public class HaitongServicesWrapper implements LiveTradeServices {
             @Override
             public void onReceive(TradeDataHelper tradeDataHelper) {
                 super.onReceive(tradeDataHelper);
-                LiveTradeDealQueryDTO dto = new LiveTradeDealQueryDTO();
+                LiveTradeDealQueryDTO dto = LiveTradeDealQueryDTO.parseHaitiongData(tradeDataHelper);
                 callback.onSuccess(dto);
             }
 
