@@ -1,12 +1,10 @@
 package com.tradehero.th.fragments.social.follower;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -14,15 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
-import butterknife.OnClick;
+import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.common.widget.BetterViewAnimator;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
@@ -40,7 +35,6 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
@@ -49,7 +43,6 @@ import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.metrics.events.TypeEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
-import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -63,10 +56,6 @@ public class SendMessageFragment extends BaseFragment
     /** ProgressDialog to show progress when sending message */
 
     @Bind(R.id.message_input_edittext) EditText inputText;
-    @Bind(R.id.message_type) TextView messageTypeView;
-    @Bind(R.id.follower_count_switcher) BetterViewAnimator followerCountSwitcher;
-    @Bind(R.id.follower_count_hint) TextView followerCountView;
-    @Bind(R.id.no_follower_hint) TextView noFollowerView;
     @Bind(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
 
     @Inject CurrentUserId currentUserId;
@@ -129,7 +118,6 @@ public class SendMessageFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         DeviceUtil.showKeyboardDelayed(inputText);
-        displayMessageTypeView();
         mentionTaggedStockHandler.setDiscussionPostContent(inputText);
     }
 
@@ -138,6 +126,12 @@ public class SendMessageFragment extends BaseFragment
         super.onStart();
         fetchCurrentUserProfile();
         registerMentions();
+    }
+
+    @Override public void onStop()
+    {
+        setActionBarSubtitle(null);
+        super.onStop();
     }
 
     @Override public void onResume()
@@ -226,60 +220,23 @@ public class SendMessageFragment extends BaseFragment
         getActivity().invalidateOptionsMenu();
     }
 
-    @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
-    @OnClick(R.id.message_type)
-    protected void showHeroTypeDialog(View view)
-    {
-        final Pair<Dialog, Observable<MessageType>> dialogPair = FollowerTypeDialogFactory.showHeroTypeDialog(getActivity());
-        dialogPair.second
-                .subscribe(
-                        new Action1<MessageType>()
-                        {
-                            @Override public void call(MessageType messageType)
-                            {
-                                SendMessageFragment.this.linkWith(messageType);
-                                SendMessageFragment.this.dismissDialog(dialogPair.first);
-                            }
-                        },
-                        new TimberOnErrorAction1("Failed with dialog"));
-    }
-
-    private void linkWith(@NonNull MessageType messageType)
-    {
-        this.messageType = messageType;
-        displayMessageTypeView();
-        displayFollowerCount();
-        getActivity().invalidateOptionsMenu();
-    }
-
-    protected void displayMessageTypeView()
-    {
-        messageTypeView.setText(messageType.titleResource);
-    }
-
     protected void displayFollowerCount()
     {
-        if (currentUserProfileDTO == null)
+        if (currentUserProfileDTO != null)
         {
-            followerCountSwitcher.setVisibility(View.GONE);
-        }
-        else
-        {
-            followerCountSwitcher.setVisibility(View.VISIBLE);
             int count = UserProfileDTOUtil.getFollowerCountByUserProfile(messageType, currentUserProfileDTO);
+            String subtitle;
             if (count == 0)
             {
-                followerCountSwitcher.setDisplayedChildByLayoutId(R.id.no_follower_hint);
-                noFollowerView.setText(getString(R.string.message_center_no_follower, getString(messageType.titleResource)));
+                subtitle = getString(R.string.message_center_no_follower);
             }
             else
             {
-                followerCountSwitcher.setDisplayedChildByLayoutId(R.id.follower_count_hint);
-                followerCountView.setText(getString(
+                subtitle = getString(
                         R.string.message_center_follower_count,
-                        THSignedNumber.builder(count).build().toString(),
-                        getString(messageType.titleResource)));
+                        THSignedNumber.builder(count).with000Suffix().useShortSuffix().build().toString());
             }
+            setActionBarSubtitle(subtitle);
         }
     }
 
@@ -334,13 +291,5 @@ public class SendMessageFragment extends BaseFragment
     {
         Timber.e(e, "Error posting message");
         THToast.show(getString(R.string.broadcast_error));
-    }
-
-    private void dismissDialog(Dialog dialog)
-    {
-        if (dialog != null && dialog.isShowing())
-        {
-            dialog.dismiss();
-        }
     }
 }

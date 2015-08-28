@@ -12,14 +12,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
-import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -62,6 +66,7 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
     @Bind(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.follower_list) RecyclerView followerList;
     @Bind(android.R.id.progress) ProgressBar progressBar;
+    @Bind(R.id.followers_broadcast_button) Button broadcast;
 
     @RouteProperty("heroId") Integer routedHeroId;
 
@@ -114,7 +119,10 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
         followerList.setAdapter(followerRecyclerAdapter);
         followerList.setHasFixedSize(true);
         followerList.addItemDecoration(new TypedRecyclerAdapter.DividerItemDecoration(getActivity()));
-        //followerList.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
+        followerList.addOnScrollListener(new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.FOOTER)
+                .footer(broadcast)
+                .minFooterTranslation(getActivity().getResources().getDimensionPixelSize(R.dimen.clickable_element_min_dimen))
+                .build());
         displayProgress(true);
 
         onDestroyViewSubscriptions.add(
@@ -321,31 +329,12 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
         return HeroType.ALL;
     }
 
-    private void broadcast(DiscussionType discussionType)
+    @OnClick(R.id.followers_broadcast_button)
+    protected void broadcast()
     {
-        //int page = mTabHost.getCurrentTab();
-        //HeroType followerType = HeroType.fromId(page);
-        //
-        //Bundle args = new Bundle();
-        //MessageType messageType;
-        //switch (followerType)
-        //{
-        //    case ALL:
-        //        messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
-        //        break;
-        //    case PREMIUM:
-        //        messageType = MessageType.BROADCAST_PAID_FOLLOWERS;
-        //        break;
-        //    case FREE:
-        //        messageType = MessageType.BROADCAST_FREE_FOLLOWERS;
-        //        break;
-        //    default:
-        //        throw new IllegalStateException("unknown followerType!");
-        //}
-        //
-        //SendMessageFragment.putMessageType(args, messageType);
-        //Timber.d("goToMessagePage index:%d, tabIndex:%d, followerType:%s, discussionType:%s", page,
-        //        page, followerType, discussionType);
-        //navigator.get().pushFragment(SendMessageFragment.class, args);
+        Bundle args = new Bundle();
+        MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
+        SendMessageFragment.putMessageType(args, messageType);
+        navigator.get().pushFragment(SendMessageFragment.class, args);
     }
 }
