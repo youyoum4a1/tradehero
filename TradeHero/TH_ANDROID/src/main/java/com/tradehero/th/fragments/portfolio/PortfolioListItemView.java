@@ -13,7 +13,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
@@ -22,9 +21,7 @@ import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.GraphicUtil;
@@ -36,8 +33,6 @@ public class PortfolioListItemView extends RelativeLayout
 {
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
-    @Inject @ForUserPhoto Transformation userImageTransformation;
-    @Inject DashboardNavigator navigator;
 
     @Bind(R.id.portfolio_title) protected TextView title;
     @Bind(R.id.portfolio_description) protected TextView description;
