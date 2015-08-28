@@ -40,6 +40,8 @@ public class AllRelationsRecyclerFragment extends BasePagedRecyclerRxFragment<
         RelationItemDisplayDTO.DTOList<RelationItemDisplayDTO>>
         implements HasSelectedItem
 {
+    public static final int PREFERRED_PER_PAGE = 50;
+
     @Inject AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache;
     @Inject Picasso picasso;
     @Inject DashboardNavigator navigator;

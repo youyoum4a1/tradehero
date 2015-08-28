@@ -61,6 +61,7 @@ public class MentionActionButtonsView extends LinearLayout
                         switch(event.view().getId())
                         {
                             case R.id.btn_mention:
+                                AllRelationsRecyclerFragment.putPerPage(bundle, AllRelationsRecyclerFragment.PREFERRED_PER_PAGE);
                                 return navigator.pushFragment(AllRelationsRecyclerFragment.class, bundle);
                             case R.id.btn_security_tag:
                                 return navigator.pushFragment(SecuritySearchFragment.class, bundle);

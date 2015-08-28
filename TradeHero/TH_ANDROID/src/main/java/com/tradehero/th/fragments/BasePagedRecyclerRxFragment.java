@@ -64,13 +64,13 @@ abstract public class BasePagedRecyclerRxFragment<
         args.putInt(BUNDLE_KEY_PER_PAGE, perPage);
     }
 
-    public static int getPerPage(@Nullable Bundle args)
+    public static int getPerPage(@Nullable Bundle args, int defaultPerPage)
     {
         if (args != null && args.containsKey(BUNDLE_KEY_PER_PAGE))
         {
             return args.getInt(BUNDLE_KEY_PER_PAGE);
         }
-        return DEFAULT_PER_PAGE;
+        return defaultPerPage;
     }
 
     public BasePagedRecyclerRxFragment()
@@ -82,8 +82,8 @@ abstract public class BasePagedRecyclerRxFragment<
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        perPage = getPerPage(getArguments());
-        perPage = getPerPage(savedInstanceState);
+        perPage = getPerPage(getArguments(), DEFAULT_PER_PAGE);
+        perPage = getPerPage(savedInstanceState, perPage);
         itemViewAdapter = createItemViewAdapter();
     }
 
