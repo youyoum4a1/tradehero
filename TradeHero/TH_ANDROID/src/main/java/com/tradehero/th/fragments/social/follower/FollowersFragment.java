@@ -114,6 +114,12 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        if(!isCurrentUser())
+        {
+            broadcast.setVisibility(View.GONE);
+        }
+
         swipeRefreshLayout.setOnRefreshListener(this);
         followerList.setLayoutManager(new LinearLayoutManager(getActivity()));
         followerList.setAdapter(followerRecyclerAdapter);
