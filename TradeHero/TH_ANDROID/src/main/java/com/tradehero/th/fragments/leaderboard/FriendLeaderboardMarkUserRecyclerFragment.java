@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import butterknife.ButterKnife;
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
@@ -291,11 +290,5 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
         {
             return Observable.empty();
         }
-    }
-
-    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        super.onItemClick(parent, view, position, id);
-        singleExpandingListViewListener.onItemClick(parent, view, position, id);
     }
 }

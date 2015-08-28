@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,7 +44,7 @@ abstract public class BasePagedRecyclerRxFragment<
     private final static String BUNDLE_KEY_PER_PAGE = BasePagedRecyclerRxFragment.class.getName() + ".perPage";
 
     public final static int FIRST_PAGE = 1;
-    public final static int DEFAULT_PER_PAGE = 15;
+    public final static int DEFAULT_PER_PAGE = 20;
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
@@ -59,7 +58,6 @@ abstract public class BasePagedRecyclerRxFragment<
     protected PagedRecyclerAdapter<DTOType> itemViewAdapter;
     @NonNull protected final Map<Integer, Subscription> pagedSubscriptions;
     @NonNull protected final Map<Integer, Subscription> pagedPastSubscriptions;
-    protected DTOType selectedItem;
 
     public static void putPerPage(@NonNull Bundle args, int perPage)
     {
@@ -343,17 +341,5 @@ abstract public class BasePagedRecyclerRxFragment<
             super.raiseEndFlag();
             requestDtos();
         }
-    }
-
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        //TODO Remove??
-        //noinspection unchecked
-        handleDtoClicked((DTOType) parent.getItemAtPosition(position));
-    }
-
-    protected void handleDtoClicked(DTOType clicked)
-    {
-        this.selectedItem = clicked;
     }
 }

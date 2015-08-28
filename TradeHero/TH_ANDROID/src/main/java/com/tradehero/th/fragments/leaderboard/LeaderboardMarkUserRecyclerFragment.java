@@ -13,8 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import butterknife.ButterKnife;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
@@ -113,9 +111,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.leaderboard_mark_user_recyclerview, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        return inflater.inflate(R.layout.leaderboard_mark_user_recyclerview, container, false);
     }
 
     @Override public void onStart()
@@ -395,12 +391,6 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                 filterIcon.setIcon(R.drawable.ic_action_icn_actionbar_filteroff);
             }
         }
-    }
-
-    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        singleExpandingListViewListener.onItemClick(parent, view, position, id);
-        super.onItemClick(parent, view, position, id);
     }
 
     @Override protected Pair<PagedLeaderboardKey, LeaderboardMarkedUserItemDisplayDto.DTOList<LeaderboardItemDisplayDTO>> onMap(

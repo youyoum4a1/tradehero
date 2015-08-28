@@ -40,8 +40,6 @@ public class AllRelationsRecyclerFragment extends BasePagedRecyclerRxFragment<
         RelationItemDisplayDTO.DTOList<RelationItemDisplayDTO>>
         implements HasSelectedItem
 {
-    private static final int PER_PAGE = 50;
-
     @Inject AllowableRecipientPaginatedCacheRx allowableRecipientPaginatedCache;
     @Inject Picasso picasso;
     @Inject DashboardNavigator navigator;
@@ -156,7 +154,7 @@ public class AllRelationsRecyclerFragment extends BasePagedRecyclerRxFragment<
 
     @NonNull @Override public SearchAllowableRecipientListType makePagedDtoKey(int page)
     {
-        return new SearchAllowableRecipientListType(null, page, PER_PAGE);
+        return new SearchAllowableRecipientListType(null, page, perPage);
     }
 
     private boolean isForReturn()
