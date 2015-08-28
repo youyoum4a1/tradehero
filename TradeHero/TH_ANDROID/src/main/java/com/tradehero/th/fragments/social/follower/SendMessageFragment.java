@@ -131,11 +131,7 @@ public class SendMessageFragment extends BaseFragment
         DeviceUtil.showKeyboardDelayed(inputText);
         displayMessageTypeView();
         mentionTaggedStockHandler.setDiscussionPostContent(inputText);
-
-        if (mentionActionButtonsView != null)
-        {
-            mentionActionButtonsView.setReturnFragmentName(getClass().getName());
-        }
+        mentionActionButtonsView.setReturnFragmentName(getClass().getName());
     }
 
     @Override public void onStart()
