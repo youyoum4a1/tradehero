@@ -26,10 +26,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
-import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
@@ -48,7 +45,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-import timber.log.Timber;
 
 @Routable({
         "user/me/followers",
@@ -155,7 +151,6 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
                                         {
                                             followerRecyclerAdapter.addAll(followerSummaryDTOListPair.second);
                                         }
-                                        notifyFollowerLoaded(followerSummaryDTOListPair.first);
                                     }
                                 },
                                 new TimberAndToastOnErrorAction1(
@@ -203,31 +198,9 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
         super.onDestroy();
     }
 
-    private void notifyFollowerLoaded(FollowerSummaryDTO value)
-    {
-        Timber.d("notifyFollowerLoaded for followerTabIndex:%d",
-                getHeroTypeResource().followerTabIndex);
-        OnFollowersLoadedListener loadedListener =
-                FragmentUtils.getParent(this, OnFollowersLoadedListener.class);
-        if (loadedListener != null && !isDetached())
-        {
-            loadedListener.onFollowerLoaded(getHeroTypeResource().followerTabIndex, value);
-        }
-    }
-
     private boolean isCurrentUser()
     {
         return heroId.equals(currentUserId.toUserBaseKey());
-    }
-
-    @NonNull protected HeroTypeResourceDTO getHeroTypeResource()
-    {
-        return HeroTypeResourceDTOFactory.create(getFollowerType());
-    }
-
-    private void redisplayProgress()
-    {
-        progressBar.setVisibility(View.VISIBLE);
     }
 
     public void displayProgress(boolean running)
