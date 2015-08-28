@@ -6,7 +6,7 @@ import dagger.Module;
         injects = {
                 HeroListItemView.class,
                 HeroRecyclerItemAdapter.class,
-                AllHeroFragment.class,
+                HeroesFragment.class,
         },
         library = true,
         complete = false

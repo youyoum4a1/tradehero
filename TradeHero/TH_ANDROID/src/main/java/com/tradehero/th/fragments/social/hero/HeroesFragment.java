@@ -13,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,18 +27,14 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.route.THRouter;
 import java.util.List;
@@ -55,9 +50,9 @@ import rx.schedulers.Schedulers;
         "user/me/heroes",
         "user/id/:followerId/heroes",
 })
-public class AllHeroFragment extends DashboardFragment implements OnRefreshListener
+public class HeroesFragment extends DashboardFragment implements OnRefreshListener
 {
-    private static final String BUNDLE_KEY_FOLLOWER_ID = AllHeroFragment.class.getName() + ".followerId";
+    private static final String BUNDLE_KEY_FOLLOWER_ID = HeroesFragment.class.getName() + ".followerId";
 
     @Inject protected HeroListCacheRx heroListCache;
     @Inject protected CurrentUserId currentUserId;
@@ -85,7 +80,22 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
         super.onCreate(savedInstanceState);
         router.inject(this);
         this.followerId = new UserBaseKey(getArguments().getBundle(BUNDLE_KEY_FOLLOWER_ID));
+        if (routedFollowerId != null)
+        {
+            this.followerId = new UserBaseKey(routedFollowerId);
+        }
         this.heroRecyclerItemAdapter = new HeroRecyclerItemAdapter(getActivity());
+        this.heroRecyclerItemAdapter.setOnItemClickedListener(new TypedRecyclerAdapter.OnItemClickedListener<HeroListItemView.DTO>()
+        {
+            @Override
+            public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<HeroListItemView.DTO> viewHolder,
+                    HeroListItemView.DTO object)
+            {
+                Bundle args = new Bundle();
+                PushableTimelineFragment.putUserBaseKey(args, object.heroDTO.getBaseKey());
+                navigator.get().pushFragment(PushableTimelineFragment.class, args);
+            }
+        });
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -138,7 +148,6 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
                                 progressBar.setVisibility(View.GONE);
                                 heroRecyclerItemAdapter.addAll(pair.second);
                                 swipeRefreshLayout.setEnabled(true);
-                                notifyHeroesLoaded(pair.first);
                             }
                         },
                         new TimberAndToastOnErrorAction1(
@@ -280,69 +289,10 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
         super.onDestroy();
     }
 
-    @SuppressWarnings("unused")
-    protected void handleHeroClicked(AdapterView<?> parent, View view, int position, long id)
-    {
-        Object item = parent.getItemAtPosition(position);
-        if (item instanceof HeroListItemView.DTO)
-        {
-            Bundle args = new Bundle();
-            PushableTimelineFragment.putUserBaseKey(args, ((HeroListItemView.DTO) parent.getItemAtPosition(position)).heroDTO.getBaseKey());
-            navigator.get().pushFragment(PushableTimelineFragment.class, args);
-        }
-        //else if (item.equals(HeroListItemAdapter.DTO_CALL_ACTION))
-        //{
-        //    navigator.get().goToTab(RootFragmentType.COMMUNITY);
-        //}
-    }
-
-    private void unfollow(@NonNull final HeroDTO clickedHeroDTO)
-    {
-        onStopSubscriptions.add(HeroAlertDialogRxUtil.popAlertUnFollowHero(getActivity())
-                .flatMap(new Func1<OnDialogClickEvent, Observable<UserProfileDTO>>()
-                {
-                    @Override public Observable<UserProfileDTO> call(OnDialogClickEvent onDialogClickEvent)
-                    {
-                        if (onDialogClickEvent.isPositive())
-                        {
-                            return new SimpleFollowUserAssistant(getActivity(), clickedHeroDTO.getBaseKey())
-                                    .launchUnFollowRx();
-                        }
-                        return Observable.empty();
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<UserProfileDTO>()
-                        {
-                            @Override public void call(UserProfileDTO profile)
-                            {
-                                heroListCache.get(followerId);
-                            }
-                        },
-                        new ToastOnErrorAction1()
-                ));
-    }
-
     @Override public void onRefresh()
     {
         swipeRefreshLayout.setEnabled(false);
         heroListCache.get(followerId);
-    }
-
-    private void notifyHeroesLoaded(HeroDTOExtWrapper value)
-    {
-        OnHeroesLoadedListener listener =
-                FragmentUtils.getParent(this, OnHeroesLoadedListener.class);
-        if (listener != null && !isDetached())
-        {
-            listener.onHeroesLoaded(HeroTypeResourceDTOFactory.create(getHeroType()), value);
-        }
-    }
-
-    @NonNull protected HeroType getHeroType()
-    {
-        return HeroType.ALL;
     }
 
     protected List<HeroDTO> getHeroes(@NonNull HeroDTOExtWrapper heroDTOExtWrapper)

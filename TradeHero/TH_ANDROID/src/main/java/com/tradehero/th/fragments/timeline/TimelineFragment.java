@@ -44,7 +44,7 @@ import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.social.follower.FollowersFragment;
-import com.tradehero.th.fragments.social.hero.AllHeroFragment;
+import com.tradehero.th.fragments.social.hero.HeroesFragment;
 import com.tradehero.th.fragments.watchlist.MainWatchlistPositionFragment;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
@@ -616,10 +616,10 @@ abstract public class TimelineFragment extends DashboardFragment
     protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();
-        AllHeroFragment.putFollowerId(
+        HeroesFragment.putFollowerId(
                 bundle,
                 mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-        navigator.get().pushFragment(AllHeroFragment.class, bundle);
+        navigator.get().pushFragment(HeroesFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()

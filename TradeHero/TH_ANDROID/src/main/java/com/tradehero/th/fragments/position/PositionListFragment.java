@@ -77,7 +77,6 @@ import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
-import com.tradehero.th.models.social.FollowRequest;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
@@ -100,7 +99,6 @@ import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiRecyclerScrollListener;
@@ -641,15 +639,6 @@ public class PositionListFragment
                     }
                 })
                 ;
-    }
-
-    protected void handleSuccessfulFollow(@NonNull FollowRequest request)
-    {
-        analytics.addEvent(new ScreenFlowEvent(
-                AnalyticsConstants.FreeFollow_Success,
-                AnalyticsConstants.PositionList));
-        swipeToRefreshLayout.setRefreshing(true);
-        refreshSimplePage();
     }
 
     @SuppressWarnings("UnusedDeclaration")
