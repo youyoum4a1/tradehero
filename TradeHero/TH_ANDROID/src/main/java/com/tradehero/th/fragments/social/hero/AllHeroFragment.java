@@ -1,11 +1,12 @@
 package com.tradehero.th.fragments.social.hero;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,12 +14,12 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnItemClick;
+import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.social.HeroDTOExtWrapper;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -32,8 +33,8 @@ import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
+import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import java.util.List;
@@ -42,6 +43,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
 public class AllHeroFragment extends DashboardFragment implements OnRefreshListener
@@ -50,13 +52,14 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
 
     @Inject protected HeroListCacheRx heroListCache;
     @Inject protected CurrentUserId currentUserId;
+    @Inject protected UserProfileCacheRx userProfileCache;
 
     @Bind(R.id.swipe_to_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.heros_list) protected ListView heroListView;
+    @Bind(R.id.heros_list) protected RecyclerView heroListView;
     @Bind(android.R.id.progress) protected ProgressBar progressBar;
 
     private UserBaseKey followerId;
-    private HeroListItemAdapter heroListAdapter;
+    private HeroRecyclerItemAdapter heroRecyclerItemAdapter;
 
     //<editor-fold desc="Argument Passing">
     public static void putFollowerId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
@@ -65,20 +68,11 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
     }
     //</editor-fold>
 
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        this.heroListAdapter = new HeroListItemAdapter(
-                activity,
-                R.layout.hero_list_item,
-                R.layout.hero_list_item_empty_placeholder,
-                R.layout.hero_list_item_empty_placeholder_for_other);
-    }
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         this.followerId = new UserBaseKey(getArguments().getBundle(BUNDLE_KEY_FOLLOWER_ID));
+        this.heroRecyclerItemAdapter = new HeroRecyclerItemAdapter(getActivity());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,8 +87,11 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
         ButterKnife.bind(this, view);
 
         this.swipeRefreshLayout.setOnRefreshListener(this);
-        this.heroListView.setAdapter(this.heroListAdapter);
-        this.heroListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
+        this.heroListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        this.heroListView.setAdapter(this.heroRecyclerItemAdapter);
+        this.heroListView.setHasFixedSize(true);
+        this.heroListView.addItemDecoration(new TypedRecyclerAdapter.DividerItemDecoration(getActivity()));
+
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -110,34 +107,35 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
         super.onStart();
         progressBar.setVisibility(View.VISIBLE);
         swipeRefreshLayout.setEnabled(false);
-        onStopSubscriptions.add(heroListCache.get(followerId)
-                .subscribeOn(Schedulers.computation())
-                .map(new Func1<Pair<UserBaseKey, HeroDTOExtWrapper>, Pair<HeroDTOExtWrapper, List<Object>>>()
+        onStopSubscriptions.add(Observable.combineLatest(
+                heroListCache.get(followerId),
+                userProfileCache.getOne(currentUserId.toUserBaseKey())
+                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
+                new Func2<Pair<UserBaseKey, HeroDTOExtWrapper>, UserProfileDTO, Pair<HeroDTOExtWrapper, List<HeroListItemView.DTO>>>()
                 {
-                    @Override public Pair<HeroDTOExtWrapper, List<Object>> call(Pair<UserBaseKey, HeroDTOExtWrapper> pair)
+                    @Override
+                    public Pair<HeroDTOExtWrapper, List<HeroListItemView.DTO>> call(Pair<UserBaseKey, HeroDTOExtWrapper> pair,
+                            UserProfileDTO userProfileDTO)
                     {
                         return Pair.create(
                                 pair.second,
-                                HeroListItemAdapter.createObjects(
+                                HeroRecyclerItemAdapter.createObjects(
                                         getResources(),
                                         currentUserId,
                                         followerId,
-                                        getHeroes(pair.second)));
+                                        getHeroes(pair.second), userProfileDTO));
                     }
                 })
+                .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<Pair<HeroDTOExtWrapper, List<Object>>>()
+                        new Action1<Pair<HeroDTOExtWrapper, List<HeroListItemView.DTO>>>()
                         {
-                            @Override public void call(Pair<HeroDTOExtWrapper, List<Object>> pair)
+                            @Override public void call(Pair<HeroDTOExtWrapper, List<HeroListItemView.DTO>> pair)
                             {
                                 swipeRefreshLayout.setRefreshing(false);
                                 progressBar.setVisibility(View.GONE);
-                                heroListAdapter.setNotifyOnChange(false);
-                                heroListAdapter.clear();
-                                heroListAdapter.addAll(pair.second);
-                                heroListAdapter.setNotifyOnChange(true);
-                                heroListAdapter.notifyDataSetChanged();
+                                heroRecyclerItemAdapter.addAll(pair.second);
                                 swipeRefreshLayout.setEnabled(true);
                                 notifyHeroesLoaded(pair.first);
                             }
@@ -154,43 +152,38 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
                             }
                         }));
 
-        onStopSubscriptions.add(heroListAdapter.getUserActionObservable()
-                .subscribe(
-                        new Action1<HeroListItemView.UserAction>()
-                        {
-                            @Override public void call(HeroListItemView.UserAction userAction)
-                            {
-                                if (userAction instanceof HeroListItemView.UserActionDelete)
-                                {
-                                    unfollow(((HeroListItemView.UserActionDelete) userAction).heroDTO);
-                                }
-                                else
-                                {
-                                    throw new IllegalArgumentException("Unhandled userAction " + userAction);
-                                }
-                            }
-                        },
-                        new TimberOnErrorAction1("Failed to handle UserAction")));
+        //onStopSubscriptions.add(heroRecyclerItemAdapter.getUserActionObservable()
+        //        .subscribe(
+        //                new Action1<HeroListItemView.UserAction>()
+        //                {
+        //                    @Override public void call(HeroListItemView.UserAction userAction)
+        //                    {
+        //                        if (userAction instanceof HeroListItemView.UserActionDelete)
+        //                        {
+        //                            unfollow(((HeroListItemView.UserActionDelete) userAction).heroDTO);
+        //                        }
+        //                        else
+        //                        {
+        //                            throw new IllegalArgumentException("Unhandled userAction " + userAction);
+        //                        }
+        //                    }
+        //                },
+        //                new TimberOnErrorAction1("Failed to handle UserAction")));
     }
 
     @Override public void onDestroyView()
     {
-        if (this.heroListView != null)
-        {
-            this.heroListView.setOnScrollListener(null);
-        }
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
 
-    @Override public void onDetach()
+    @Override public void onDestroy()
     {
-        heroListAdapter = null;
-        super.onDetach();
+        heroRecyclerItemAdapter = null;
+        super.onDestroy();
     }
 
     @SuppressWarnings("unused")
-    @OnItemClick(R.id.heros_list)
     protected void handleHeroClicked(AdapterView<?> parent, View view, int position, long id)
     {
         Object item = parent.getItemAtPosition(position);

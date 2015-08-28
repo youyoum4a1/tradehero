@@ -9,8 +9,8 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -22,6 +22,7 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -125,7 +126,7 @@ public class HeroListItemView extends RelativeLayout
 
         if (dateInfo != null)
         {
-            dateInfo.setText(dto.dateText);
+            dateInfo.setText(dto.followingSince);
         }
 
         if (statusIcon != null)
@@ -140,7 +141,7 @@ public class HeroListItemView extends RelativeLayout
 
         if (revenueInfo != null)
         {
-            revenueInfo.setText(dto.revenueSpan);
+            revenueInfo.setText(dto.roiInfo);
         }
     }
 
@@ -149,15 +150,17 @@ public class HeroListItemView extends RelativeLayout
         @NonNull public final UserBaseKey followerId;
         @NonNull public final HeroDTO heroDTO;
         @NonNull public final String titleText;
-        @NonNull public final String dateText;
+        @NonNull public final String followingSince;
         @ViewVisibilityValue public final int statusIconVisibility;
         @DrawableRes public final int countryFlagRes;
-        @NonNull public final CharSequence revenueSpan;
+        @NonNull public final CharSequence roiInfo;
+        public boolean isFollowing;
 
         public DTO(@NonNull Resources resources,
                 @NonNull CurrentUserId currentUserId,
                 @NonNull UserBaseKey followerId,
-                @NonNull HeroDTO heroDTO)
+                @NonNull HeroDTO heroDTO,
+                @NonNull UserProfileDTO currentUserProfileDTO)
         {
             this.followerId = followerId;
             this.heroDTO = heroDTO;
@@ -167,19 +170,19 @@ public class HeroListItemView extends RelativeLayout
                     resources.getString(R.string.manage_heroes_datetime_format));
             if (heroDTO.active && heroDTO.followingSince != null)
             {
-                dateText = String.format(
+                followingSince = String.format(
                         resources.getString(R.string.manage_heroes_following_since),
                         df.format(heroDTO.followingSince));
             }
             else if (!heroDTO.active && heroDTO.stoppedFollowingOn != null)
             {
-                dateText = String.format(
+                followingSince = String.format(
                         resources.getString(R.string.manage_heroes_not_following_since),
                         df.format(heroDTO.stoppedFollowingOn));
             }
             else
             {
-                dateText = resources.getString(R.string.na);
+                followingSince = resources.getString(R.string.na);
             }
 
             statusIconVisibility = currentUserId.toUserBaseKey().equals(followerId) && !heroDTO.isOfficialAccount()
@@ -190,15 +193,16 @@ public class HeroListItemView extends RelativeLayout
 
             if (heroDTO.roiSinceInception != null)
             {
-                revenueSpan = THSignedPercentage.builder(heroDTO.roiSinceInception * 100)
+                roiInfo = THSignedPercentage.builder(heroDTO.roiSinceInception * 100)
                         .withDefaultColor()
                         .build()
                         .createSpanned();
             }
             else
             {
-                revenueSpan = resources.getString(R.string.na);
+                roiInfo = resources.getString(R.string.na);
             }
+            isFollowing = currentUserProfileDTO.isFollowingUser(heroDTO.getBaseKey());
         }
     }
 
