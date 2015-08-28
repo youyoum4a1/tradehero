@@ -34,7 +34,6 @@ import com.tradehero.th.fragments.billing.store.StoreItemFactory;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemRestoreDTO;
-import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.system.SystemStatusCache;
@@ -282,20 +281,21 @@ public class StoreScreenFragment extends BaseFragment
             }
             else if (furtherDTO.furtherFragment != null)
             {
-                if (furtherDTO.furtherFragment.equals(HeroManagerFragment.class))
-                {
-                    Bundle bundle = new Bundle();
-                    HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
-                    navigator.get().pushFragment(HeroManagerFragment.class, bundle);
-                }
+                //TODO
+                //if (furtherDTO.furtherFragment.equals(HeroManagerFragment.class))
+                //{
+                //    Bundle bundle = new Bundle();
+                //    HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
+                //    navigator.get().pushFragment(HeroManagerFragment.class, bundle);
+                //}
                 //else if (furtherDTO.furtherFragment.equals(FollowerRevenueReportFragment.class))
                 //{
                 //    navigator.get().pushFragment(FollowerRevenueReportFragment.class);
                 //}
-                else
-                {
-                    throw new IllegalArgumentException("Unhandled class " + furtherDTO.furtherFragment);
-                }
+                //else
+                //{
+                throw new IllegalArgumentException("Unhandled class " + furtherDTO.furtherFragment);
+                //}
             }
             else
             {

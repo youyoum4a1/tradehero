@@ -19,12 +19,9 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.social.follower.AllHeroTypeResourceDTO;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTO;
-import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
-import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.THTabView;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 
@@ -121,42 +118,42 @@ public class HeroManagerFragment extends DashboardFragment
         mTabHost = new FragmentTabHost(getActivity());
         mTabHost.setup(getActivity(), getChildFragmentManager(), FRAGMENT_LAYOUT_ID);
 
-        List<HeroTypeResourceDTO> resourceDTOs = HeroTypeResourceDTOFactory.getListOfHeroType();
-        tabSpecList = new ArrayList<>(resourceDTOs.size());
-        for (HeroTypeResourceDTO resourceDTO : resourceDTOs)
-        {
-            addTab(resourceDTO);
-        }
-        GraphicUtil.setBackgroundColorFromAttribute(mTabHost.getTabWidget(), R.attr.slidingTabBackground);
-        if (routedTabIndex != null)
-        {
-            mTabHost.setCurrentTab(routedTabIndex);
-            routedTabIndex = null;
-        }
-        else if (routedTabIndexMe != null)
-        {
-            mTabHost.setCurrentTab(routedTabIndexMe);
-            routedTabIndexMe = null;
-        }
-        else if (routedFollowerIdForAll != null)
-        {
-            mTabHost.setCurrentTab(new AllHeroTypeResourceDTO().heroTabIndex);
-        }
-        else if (routedFollowerIdForFree != null)
-        {
-            //mTabHost.setCurrentTab(new FreeHeroTypeResourceDTO().heroTabIndex);
-        }
-        else if (routedFollowerIdForPremium != null)
-        {
-            //mTabHost.setCurrentTab(new PremiumHeroTypeResourceDTO().heroTabIndex);
-        }
+        ////List<HeroTypeResourceDTO> resourceDTOs = HeroTypeResourceDTOFactory.getListOfHeroType();
+        //tabSpecList = new ArrayList<>(resourceDTOs.size());
+        //for (HeroTypeResourceDTO resourceDTO : resourceDTOs)
+        //{
+        //    addTab(resourceDTO);
+        //}
+        //GraphicUtil.setBackgroundColorFromAttribute(mTabHost.getTabWidget(), R.attr.slidingTabBackground);
+        //if (routedTabIndex != null)
+        //{
+        //    mTabHost.setCurrentTab(routedTabIndex);
+        //    routedTabIndex = null;
+        //}
+        //else if (routedTabIndexMe != null)
+        //{
+        //    mTabHost.setCurrentTab(routedTabIndexMe);
+        //    routedTabIndexMe = null;
+        //}
+        //else if (routedFollowerIdForAll != null)
+        //{
+        //    mTabHost.setCurrentTab(new AllHeroTypeResourceDTO().heroTabIndex);
+        //}
+        //else if (routedFollowerIdForFree != null)
+        //{
+        //    //mTabHost.setCurrentTab(new FreeHeroTypeResourceDTO().heroTabIndex);
+        //}
+        //else if (routedFollowerIdForPremium != null)
+        //{
+        //    //mTabHost.setCurrentTab(new PremiumHeroTypeResourceDTO().heroTabIndex);
+        //}
         return mTabHost;
     }
 
     private void addTab(@NonNull HeroTypeResourceDTO resourceDTO)
     {
         Bundle args = new Bundle();
-        HeroesTabContentFragment.putFollowerId(args, followerId);
+        //HeroesTabContentFragment.putFollowerId(args, followerId);
 
         String title = MessageFormat.format(getString(resourceDTO.heroTabTitleRes), 0);
 
