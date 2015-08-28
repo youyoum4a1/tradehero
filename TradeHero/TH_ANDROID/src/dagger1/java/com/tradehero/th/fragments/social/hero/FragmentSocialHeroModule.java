@@ -4,7 +4,6 @@ import dagger.Module;
 
 @Module(
         injects = {
-                HeroManagerFragment.class,
                 HeroListItemView.class,
                 HeroRecyclerItemAdapter.class,
                 AllHeroFragment.class,

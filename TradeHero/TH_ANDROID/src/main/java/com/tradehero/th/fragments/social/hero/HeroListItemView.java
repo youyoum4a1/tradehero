@@ -22,7 +22,6 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseDTOUtil;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -154,13 +153,13 @@ public class HeroListItemView extends RelativeLayout
         @ViewVisibilityValue public final int statusIconVisibility;
         @DrawableRes public final int countryFlagRes;
         @NonNull public final CharSequence roiInfo;
-        public boolean isFollowing;
+        public boolean isCurrentUserFollowing;
 
         public DTO(@NonNull Resources resources,
                 @NonNull CurrentUserId currentUserId,
                 @NonNull UserBaseKey followerId,
                 @NonNull HeroDTO heroDTO,
-                @NonNull UserProfileDTO currentUserProfileDTO)
+                @NonNull boolean isCurrentUserFollowing)
         {
             this.followerId = followerId;
             this.heroDTO = heroDTO;
@@ -202,7 +201,7 @@ public class HeroListItemView extends RelativeLayout
             {
                 roiInfo = resources.getString(R.string.na);
             }
-            isFollowing = currentUserProfileDTO.isFollowingUser(heroDTO.getBaseKey());
+            this.isCurrentUserFollowing = isCurrentUserFollowing;
         }
     }
 

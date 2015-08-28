@@ -39,10 +39,19 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemVi
         ArrayList<HeroListItemView.DTO> list = new ArrayList<>(heroes.size());
         for (HeroDTO heroDTO : heroes)
         {
-            list.add(new HeroListItemView.DTO(resources, currentUserId, followerId, heroDTO, currentUserProfileDTO));
+            boolean isCurrentUserFollowing = currentUserProfileDTO.isFollowingUser(heroDTO.getBaseKey());
+
+            /**
+             * If it's the heroes' of current user that we're trying to fetch,
+             * make sure that the current user is following that hero
+             * since the cached values might not be synced with the server yet.
+             */
+            if (!currentUserId.toUserBaseKey().equals(followerId) || isCurrentUserFollowing)
+            {
+                list.add(new DTO(resources, currentUserId, followerId, heroDTO, isCurrentUserFollowing));
+            }
         }
         return list;
-
     }
 
     public HeroRecyclerItemAdapter(Context context)
@@ -83,7 +92,7 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemVi
             if (oldItem.heroDTO.picture != null && newItem.heroDTO.picture == null) return false;
             if (oldItem.heroDTO.picture != null && !oldItem.heroDTO.picture.equals(newItem.heroDTO.picture)) return false;
             if (!oldItem.roiInfo.equals(newItem.roiInfo)) return false;
-            if (oldItem.isFollowing != newItem.isFollowing) return false;
+            if (oldItem.isCurrentUserFollowing != newItem.isCurrentUserFollowing) return false;
             return true;
         }
     }
@@ -120,13 +129,13 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemVi
             name.setText(dto.titleText);
             roiInfo.setText(dto.roiInfo);
             since.setText(dto.followingSince);
-            SimpleFollowUserAssistant.updateFollowImageButton(btnFollow, dto.isFollowing);
+            SimpleFollowUserAssistant.updateFollowImageButton(btnFollow, dto.isCurrentUserFollowing);
         }
 
         @OnClick(R.id.follower_button)
         public void onFollowButtonClicked()
         {
-            if(this.currentDTO != null)
+            if (this.currentDTO != null)
             {
                 itemActionPublishSubject.onNext(currentDTO);
             }

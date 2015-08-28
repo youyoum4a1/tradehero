@@ -18,6 +18,8 @@ import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.common.rx.PairGetSecond;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.social.HeroDTO;
@@ -26,7 +28,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.social.FragmentUtils;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.social.follower.HeroTypeResourceDTOFactory;
@@ -34,9 +35,13 @@ import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.tradehero.th.utils.route.THRouter;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -46,6 +51,10 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 
+@Routable({
+        "user/me/heroes",
+        "user/id/:followerId/heroes",
+})
 public class AllHeroFragment extends DashboardFragment implements OnRefreshListener
 {
     private static final String BUNDLE_KEY_FOLLOWER_ID = AllHeroFragment.class.getName() + ".followerId";
@@ -53,10 +62,13 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
     @Inject protected HeroListCacheRx heroListCache;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserProfileCacheRx userProfileCache;
+    @Inject THRouter router;
 
     @Bind(R.id.swipe_to_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.heros_list) protected RecyclerView heroListView;
     @Bind(android.R.id.progress) protected ProgressBar progressBar;
+
+    @RouteProperty("followerId") Integer routedFollowerId;
 
     private UserBaseKey followerId;
     private HeroRecyclerItemAdapter heroRecyclerItemAdapter;
@@ -71,6 +83,7 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        router.inject(this);
         this.followerId = new UserBaseKey(getArguments().getBundle(BUNDLE_KEY_FOLLOWER_ID));
         this.heroRecyclerItemAdapter = new HeroRecyclerItemAdapter(getActivity());
     }
@@ -92,22 +105,10 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
         this.heroListView.setHasFixedSize(true);
         this.heroListView.addItemDecoration(new TypedRecyclerAdapter.DividerItemDecoration(getActivity()));
 
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        setActionBarTitle(followerId.equals(currentUserId.toUserBaseKey())
-                ? R.string.manage_my_heroes_title
-                : R.string.manage_heroes_title);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override public void onStart()
-    {
-        super.onStart();
         progressBar.setVisibility(View.VISIBLE);
         swipeRefreshLayout.setEnabled(false);
-        onStopSubscriptions.add(Observable.combineLatest(
+
+        onDestroyViewSubscriptions.add(Observable.combineLatest(
                 heroListCache.get(followerId),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
@@ -152,29 +153,125 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
                             }
                         }));
 
-        //onStopSubscriptions.add(heroRecyclerItemAdapter.getUserActionObservable()
-        //        .subscribe(
-        //                new Action1<HeroListItemView.UserAction>()
-        //                {
-        //                    @Override public void call(HeroListItemView.UserAction userAction)
-        //                    {
-        //                        if (userAction instanceof HeroListItemView.UserActionDelete)
-        //                        {
-        //                            unfollow(((HeroListItemView.UserActionDelete) userAction).heroDTO);
-        //                        }
-        //                        else
-        //                        {
-        //                            throw new IllegalArgumentException("Unhandled userAction " + userAction);
-        //                        }
-        //                    }
-        //                },
-        //                new TimberOnErrorAction1("Failed to handle UserAction")));
+        onDestroyViewSubscriptions.add(heroRecyclerItemAdapter.getHeroDTOObservable()
+                .subscribe(
+                        new Action1<HeroListItemView.DTO>()
+                        {
+                            @Override public void call(HeroListItemView.DTO dto)
+                            {
+                                handleFollowClicked(dto);
+                            }
+                        },
+                        new TimberOnErrorAction1("Failed to handle UserAction")));
+    }
+
+    private void handleFollowClicked(HeroListItemView.DTO dto)
+    {
+        SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), dto.heroDTO.getBaseKey());
+        if (dto.isCurrentUserFollowing)
+        {
+            //Unfollow
+            onDestroyViewSubscriptions.add(assistant.showUnFollowConfirmation(dto.titleText)
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .map(new ReplaceWithFunc1<OnDialogClickEvent, SimpleFollowUserAssistant>(assistant))
+                    .observeOn(Schedulers.io())
+                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<SimpleFollowUserAssistant>>()
+                    {
+                        @Override public Observable<SimpleFollowUserAssistant> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
+                            return simpleFollowUserAssistant.ensureCacheValue().doOnNext(new Action1<SimpleFollowUserAssistant>()
+                            {
+                                @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                                {
+                                    simpleFollowUserAssistant.unFollowFromCache();
+                                }
+                            });
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, HeroListItemView.DTO>(dto))
+                    .doOnNext(new Action1<HeroListItemView.DTO>()
+                    {
+                        @Override public void call(HeroListItemView.DTO dto)
+                        {
+                            dto.isCurrentUserFollowing = false;
+                            updateRow(dto);
+                        }
+                    })
+                    .map(new ReplaceWithFunc1<HeroListItemView.DTO, SimpleFollowUserAssistant>(assistant))
+                    .observeOn(Schedulers.io())
+                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                    {
+                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
+                            return simpleFollowUserAssistant.unFollowFromServer();
+                        }
+                    })
+                    .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to unfollow from heroes fragment")));
+        }
+        else
+        {
+            onDestroyViewSubscriptions.add(assistant.ensureCacheValue()
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    {
+                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
+                            simpleFollowUserAssistant.followingInCache();
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, HeroListItemView.DTO>(dto))
+                    .doOnNext(new Action1<HeroListItemView.DTO>()
+                    {
+                        @Override public void call(HeroListItemView.DTO dto)
+                        {
+                            dto.isCurrentUserFollowing = true;
+                            updateRow(dto);
+                        }
+                    })
+                    .map(new ReplaceWithFunc1<HeroListItemView.DTO, SimpleFollowUserAssistant>(assistant))
+                    .observeOn(Schedulers.io())
+                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                    {
+                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
+                            return simpleFollowUserAssistant.followingInServer();
+                        }
+                    })
+                    .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to follow from heroes fragment")));
+        }
+    }
+
+    private void updateRow(HeroListItemView.DTO dto)
+    {
+        int index = heroRecyclerItemAdapter.indexOf(dto);
+        if (index >= 0)
+        {
+            if (currentUserId.toUserBaseKey().equals(followerId))
+            {
+                //Is current user, if unfollow remove from list
+                heroRecyclerItemAdapter.removeItemAt(index);
+            }
+            else
+            {
+                heroRecyclerItemAdapter.notifyItemChanged(index);
+            }
+        }
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        setActionBarTitle(followerId.equals(currentUserId.toUserBaseKey())
+                ? R.string.manage_my_heroes_title
+                : R.string.manage_heroes_title);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
         super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     @Override public void onDestroy()
@@ -193,10 +290,10 @@ public class AllHeroFragment extends DashboardFragment implements OnRefreshListe
             PushableTimelineFragment.putUserBaseKey(args, ((HeroListItemView.DTO) parent.getItemAtPosition(position)).heroDTO.getBaseKey());
             navigator.get().pushFragment(PushableTimelineFragment.class, args);
         }
-        else if (item.equals(HeroListItemAdapter.DTO_CALL_ACTION))
-        {
-            navigator.get().goToTab(RootFragmentType.COMMUNITY);
-        }
+        //else if (item.equals(HeroListItemAdapter.DTO_CALL_ACTION))
+        //{
+        //    navigator.get().goToTab(RootFragmentType.COMMUNITY);
+        //}
     }
 
     private void unfollow(@NonNull final HeroDTO clickedHeroDTO)
