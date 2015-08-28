@@ -8,7 +8,7 @@
   <string name="message_center_follower_count">To %1$s Followers</string>
   <string name="message_center_write_something">Write something for your followers</string>
   <string name="message_center_title">Message Center</string>
-  <string name="message_center_new_message_title">New Message</string>
+  <string name="message_center_new_message_title">New Message to:</string>
   <string name="message_pick_relation">Pick a Relation</string>
   <string name="message_center_private_message_menu">Private Message</string>
   <string name="message_center_broadcast_message_menu">Broadcast Message</string>

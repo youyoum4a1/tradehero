@@ -10,8 +10,8 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
@@ -345,9 +345,9 @@ abstract public class BasePagedRecyclerRxFragment<
         }
     }
 
-    //@OnItemClick(R.id.listview)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
+        //TODO Remove??
         //noinspection unchecked
         handleDtoClicked((DTOType) parent.getItemAtPosition(position));
     }
