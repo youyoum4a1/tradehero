@@ -45,10 +45,9 @@ public abstract class AbstractStockTransactionFragment extends AbstractTransacti
 
     @NonNull @Override protected THSignedNumber getFormattedPrice(double price)
     {
-        return THSignedMoney
+        return THSignedNumber
                 .builder(price)
                 .withOutSign()
-                //.currency(usedDTO.securityCompactDTO == null ? "-" : usedDTO.securityCompactDTO.currencyDisplay)
                 .build();
     }
 

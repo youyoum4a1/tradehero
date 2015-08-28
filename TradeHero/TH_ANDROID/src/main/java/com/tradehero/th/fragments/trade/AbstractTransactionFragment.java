@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,6 +26,7 @@ import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
@@ -46,9 +48,11 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.TransactionEditCommentFragment;
+import com.tradehero.th.fragments.trade.view.PortfolioSelectorView;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -57,6 +61,7 @@ import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
@@ -84,12 +89,15 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     @Bind(R.id.vcash_left) protected TextView mCashShareLeftTextView;
     @Bind(R.id.vtrade_value) protected TextView mTradeValueTextView;
     @Bind(R.id.vmarket_symbol) protected TextView mMarketPriceSymbol;
-    @Bind(R.id.vtrade_symbol) protected  TextView mTradeSymbol;
+    @Bind(R.id.price_updated_time) protected TextView mPriceUpdatedTime;
+    @Bind(R.id.vtrade_symbol) protected TextView mTradeSymbol;
     @Bind(R.id.dialog_price) protected TextView mStockPriceTextView;
-    @Bind(R.id.dialog_portfolio) protected TextView mPortfolioTextView;
+    //@Bind(R.id.dialog_portfolio) protected TextView mPortfolioTextView;
     @Bind(R.id.vquantity) protected EditText mQuantityEditText;
     @Bind(R.id.comments) protected TextView mCommentsEditText;
     @Bind(R.id.dialog_btn_confirm) protected Button mConfirm;
+    @Bind(R.id.portfolio_selector_container) protected PortfolioSelectorView selectedPortfolioContainer;
+    @Bind(R.id.portfolio_spinner) protected Spinner mPortfolioSpinner;
 
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
@@ -115,7 +123,6 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     private TransactionEditCommentFragment transactionCommentFragment;
     Editable unSpannedComment;
     private boolean buttonSetSet;
-    private boolean isTransactionTypeBuy;
 
     @Nullable protected abstract Integer getMaxValue(@NonNull PortfolioCompactDTO portfolioCompactDTO,
             @NonNull QuoteDTO quoteDTO,
@@ -253,6 +260,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
                                 mTradeValueTextView.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
                                 mTradeSymbol.setText(portfolioCompactDTO.currencyDisplay);
+
                                 attachQuickPriceButtonSet(portfolioCompactDTO, quoteDTO, closeablePosition);
                                 if (clamped != null)
                                 {
@@ -295,6 +303,9 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                     @Override public void call(@NonNull SecurityCompactDTO securityCompactDTO)
                     {
                         initSecurityRelatedInfo(securityCompactDTO);
+                        String dateTime = DateUtils.getDisplayableDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc,
+                                R.string.data_format_dd_mmm_yyyy_kk_mm_z);
+                        mPriceUpdatedTime.setText(getString(R.string.buy_sell_market_price_time, dateTime));
                     }
                 })
                 .share();
@@ -503,8 +514,8 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             @NonNull QuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition)
     {
-        mPortfolioTextView.setText(
-                (portfolioCompactDTO == null ? "-" : portfolioCompactDTO.title));
+        //mPortfolioTextView.setText(
+        //        (portfolioCompactDTO == null ? "-" : portfolioCompactDTO.title));
 
         updateDisplay();
 
@@ -680,13 +691,10 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             if (priceRefCcy != null)
             {
                 double value = quantity * priceRefCcy;
-                //THSignedNumber thTradeValue = THSignedMoney.builder(value)
-                //        .withOutSign()
-                //        .currency(portfolioCompactDTO.currencyDisplay)
-                //        .build();
-                //valueText = thTradeValue.toString();
-
-                return String.format("%.3f", value);
+                THSignedNumber thTradeValue = THSignedNumber.builder(value)
+                        .withOutSign()
+                        .build();
+                valueText = thTradeValue.toString();
             }
         }
         return valueText;
@@ -932,6 +940,22 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         }
     }
 
+    @SuppressWarnings("UnusedDeclaration")
+    @OnClick(R.id.portfolio_selector_container)
+    protected void showPortfolioSelector()
+    {
+        onStopSubscriptions.add(selectedPortfolioContainer.createMenuObservable()
+                .subscribe(
+                        new Action1<MenuOwnedPortfolioId>()
+                        {
+                            public void call(MenuOwnedPortfolioId args)
+                            {
+                                requisite.onNext(args);
+                            }
+                        },
+                        new EmptyAction1<Throwable>()));
+    }
+
     public void populateComment()
     {
         if (transactionCommentFragment != null)
@@ -1096,10 +1120,11 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         @NonNull public final SecurityId securityId;
         @NonNull public final QuoteDTO quoteDTO;
         @Nullable public final Integer quantity;
-
+        @Nullable private final BehaviorSubject<OwnedPortfolioId> applicablePortfolioIdSubject;
         @NonNull private final BehaviorSubject<PortfolioId> portfolioIdSubject;
 
         public Requisite(@NonNull SecurityId securityId,
+                @NonNull BehaviorSubject<OwnedPortfolioId> applicablePortfolioIdSubject,
                 @NonNull PortfolioId portfolioId,
                 @NonNull QuoteDTO quoteDTO,
                 @Nullable Integer quantity)
@@ -1107,6 +1132,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             this.securityId = securityId;
             this.quoteDTO = quoteDTO;
             this.quantity = quantity;
+            this.applicablePortfolioIdSubject = applicablePortfolioIdSubject;
             this.portfolioIdSubject = BehaviorSubject.create(portfolioId);
         }
 
@@ -1147,6 +1173,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             {
                 this.quantity = null;
             }
+            this.applicablePortfolioIdSubject = null;
         }
 
         @NonNull public Bundle getArgs()
@@ -1174,6 +1201,14 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         @NonNull public Observable<PortfolioId> getPortfolioIdObservable()
         {
             return portfolioIdSubject.distinctUntilChanged().asObservable();
+        }
+
+        public void onNext(@NonNull OwnedPortfolioId nextPortfolioId)
+        {
+            if (applicablePortfolioIdSubject != null)
+            {
+                applicablePortfolioIdSubject.onNext(nextPortfolioId);
+            }
         }
     }
 

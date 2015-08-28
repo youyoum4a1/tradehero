@@ -19,63 +19,24 @@
       android:paddingBottom="@dimen/margin_small"
       >
 
-    <TextView
+    <Spinner
+        android:id="@+id/portfolio_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/buy_sell_portfolio_selected_title"
-        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        tools:layout_width="120dp"
+        tools:layout_height="40dp"
         />
 
     <TextView
-    style="@style/TH.Subhead.Accented"
-    android:id="@+id/dialog_portfolio"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignParentRight="true"
-    android:layout_centerVertical="true"
-    tools:text="My Stock"
-    />
-
-      <!--WIP-->
-    <!--<com.tradehero.th.fragments.trade.view.PortfolioSelectorView-->
-        <!--android:id="@+id/portfolio_selector_container"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_below="@id/market_close_hint"-->
-        <!--android:layout_marginLeft="@dimen/size_14"-->
-        <!--android:layout_marginStart="@dimen/size_14"-->
-        <!--android:background="@drawable/basic_transparent_selector"-->
-        <!--android:layout_alignParentRight="true"-->
-        <!--android:layout_centerVertical="true"-->
-        <!-->-->
-      <!--&lt;!&ndash;TODO use dropdown/spinner view&ndash;&gt;-->
-
-      <!--<TextView-->
-          <!--android:id="@+id/portfolio_selected"-->
-          <!--style="@style/TH.Subhead.Accented"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:layout_centerVertical="true"-->
-          <!--android:layout_marginLeft="@dimen/margin_small"-->
-          <!--android:layout_marginStart="@dimen/margin_small"-->
-          <!--android:layout_toEndOf="@id/selected_title_anchor"-->
-          <!--android:layout_toRightOf="@id/selected_title_anchor"-->
-          <!--tools:text="Main Portfolio"-->
-          <!--/>-->
-
-      <!--<ImageView-->
-          <!--android:id="@+id/img_action_icon"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:layout_centerVertical="true"-->
-          <!--android:layout_marginLeft="@dimen/margin_xsmall"-->
-          <!--android:layout_marginStart="@dimen/margin_xsmall"-->
-          <!--android:layout_toEndOf="@id/portfolio_selected"-->
-          <!--android:layout_toRightOf="@id/portfolio_selected"-->
-          <!--android:src="@drawable/spinner_arrow_bg"-->
-          <!--/>-->
-
-    <!--</com.tradehero.th.fragments.trade.view.PortfolioSelectorView>-->
+        android:id="@+id/portfolio_label_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/buy_sell_portfolio_selected_title"
+        android:layout_toLeftOf="@id/portfolio_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        />
 
   </RelativeLayout>
 
@@ -110,6 +71,8 @@
           />
 
       <TextView
+          style="@style/TH.Caption"
+          android:id="@+id/price_updated_time"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           tools:text="As of 25 Jun 2015 0800 GMT"
@@ -139,7 +102,7 @@
   </RelativeLayout>
 
   <View
-      android:layout_width="fill_parent"
+      android:layout_width="match_parent"
       android:layout_height="1dp"
       android:background="@android:color/darker_gray"
       android:layout_marginLeft="@dimen/margin_small"
@@ -186,7 +149,7 @@
   </RelativeLayout>
 
   <View
-      android:layout_width="fill_parent"
+      android:layout_width="match_parent"
       android:layout_height="1dp"
       android:background="@android:color/darker_gray"
       android:layout_marginLeft="@dimen/margin_small"
@@ -231,7 +194,7 @@
   </RelativeLayout>
 
   <View
-      android:layout_width="fill_parent"
+      android:layout_width="match_parent"
       android:layout_height="1dp"
       android:background="@android:color/darker_gray"
       android:layout_marginLeft="@dimen/margin_small"
@@ -265,7 +228,7 @@
   </RelativeLayout>
 
   <View
-      android:layout_width="fill_parent"
+      android:layout_width="match_parent"
       android:layout_height="1dp"
       android:background="@android:color/darker_gray"
       android:layout_marginLeft="@dimen/margin_small"
@@ -274,7 +237,7 @@
 
   <RelativeLayout
       android:layout_width="match_parent"
-      android:layout_height="fill_parent"
+      android:layout_height="match_parent"
       android:orientation="horizontal"
       android:gravity="bottom"
       >
@@ -282,7 +245,7 @@
     <com.tradehero.th.widget.MarkdownTextView
         android:id="@+id/comments"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="@dimen/margin_medium"
         android:layout_marginBottom="@dimen/margin_medium"
         android:layout_marginLeft="@dimen/margin_small"

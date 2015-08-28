@@ -762,6 +762,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
                     AbstractTransactionFragment.Requisite transactionRequisite = new AbstractTransactionFragment.Requisite(
                             this.requisite.securityId,
+                            this.requisite.applicablePortfolioIdSubject,
                             currentMenu.getPortfolioIdKey(),
                             quoteDTO,
                             closeUnits == null ? null : Math.abs(closeUnits));
