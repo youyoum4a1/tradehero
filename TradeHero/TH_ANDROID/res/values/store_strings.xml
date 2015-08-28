@@ -110,7 +110,7 @@
   </string>
   <string name="manage_heroes_empty_leaderboard_link">Go to Most Skilled Traders</string>
 
-  <string name="manage_heroes_following_since">following since %s</string>
+  <string name="manage_heroes_following_since">Following since %s</string>
   <string name="manage_heroes_not_following_since">stopped following on %s</string>
   <string name="manage_heroes_datetime_format">@string/data_format_dd_mmm_yyyy</string>
   <string name="manage_heroes_active_header">Following Heroes</string>

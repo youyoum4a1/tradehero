@@ -92,10 +92,10 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
             this.heroId = new UserBaseKey(routedHeroId);
         }
         followerRecyclerAdapter = new FollowerRecyclerItemAdapter(getActivity());
-        followerRecyclerAdapter.setOnItemClickedListener(new TypedRecyclerAdapter.OnItemClickedListener<FollowerListItemView.DTO>()
+        followerRecyclerAdapter.setOnItemClickedListener(new TypedRecyclerAdapter.OnItemClickedListener<FollowerDisplayDTO>()
         {
-            @Override public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<FollowerListItemView.DTO> viewHolder,
-                    FollowerListItemView.DTO object)
+            @Override public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<FollowerDisplayDTO> viewHolder,
+                    FollowerDisplayDTO object)
             {
                 Bundle bundle = new Bundle();
                 PushableTimelineFragment.putUserBaseKey(bundle, new UserBaseKey(object.userFollowerDTO.id));
@@ -130,9 +130,9 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
                         userProfileCache.getOne(currentUserId.toUserBaseKey()),
                         followerSummaryCache.get(heroId)
                                 .subscribeOn(Schedulers.computation()),
-                        new Func2<Pair<UserBaseKey, UserProfileDTO>, Pair<UserBaseKey, FollowerSummaryDTO>, Pair<FollowerSummaryDTO, List<FollowerListItemView.DTO>>>()
+                        new Func2<Pair<UserBaseKey, UserProfileDTO>, Pair<UserBaseKey, FollowerSummaryDTO>, Pair<FollowerSummaryDTO, List<FollowerDisplayDTO>>>()
                         {
-                            @Override public Pair<FollowerSummaryDTO, List<FollowerListItemView.DTO>> call(
+                            @Override public Pair<FollowerSummaryDTO, List<FollowerDisplayDTO>> call(
                                     Pair<UserBaseKey, UserProfileDTO> userProfilePair,
                                     Pair<UserBaseKey, FollowerSummaryDTO> userFollowerPair)
                             {
@@ -149,10 +149,10 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
                 )
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                new Action1<Pair<FollowerSummaryDTO, List<FollowerListItemView.DTO>>>()
+                                new Action1<Pair<FollowerSummaryDTO, List<FollowerDisplayDTO>>>()
                                 {
                                     @Override
-                                    public void call(Pair<FollowerSummaryDTO, List<FollowerListItemView.DTO>> followerSummaryDTOListPair)
+                                    public void call(Pair<FollowerSummaryDTO, List<FollowerDisplayDTO>> followerSummaryDTOListPair)
                                     {
                                         displayProgress(false);
                                         if (followerSummaryDTOListPair.second != null)
@@ -175,9 +175,9 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
         onDestroyViewSubscriptions.add(followerRecyclerAdapter.getFollowerDTOObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<FollowerListItemView.DTO>()
+                        new Action1<FollowerDisplayDTO>()
                         {
-                            @Override public void call(FollowerListItemView.DTO dto)
+                            @Override public void call(FollowerDisplayDTO dto)
                             {
                                 onUserAction(dto);
                             }
@@ -233,7 +233,7 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
         followerSummaryCache.get(heroId);
     }
 
-    protected void onUserAction(@NonNull FollowerListItemView.DTO dto)
+    protected void onUserAction(@NonNull FollowerDisplayDTO dto)
     {
         SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), dto.userFollowerDTO.getBaseKey());
         if (dto.isFollowing)
@@ -256,18 +256,18 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
                             });
                         }
                     })
-                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, FollowerListItemView.DTO>(dto))
+                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, FollowerDisplayDTO>(dto))
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Action1<FollowerListItemView.DTO>()
+                    .doOnNext(new Action1<FollowerDisplayDTO>()
                     {
-                        @Override public void call(FollowerListItemView.DTO dto)
+                        @Override public void call(FollowerDisplayDTO dto)
                         {
                             dto.isFollowing = false;
                             updateSingleRow(dto);
                         }
                     })
                     .observeOn(Schedulers.io())
-                    .map(new ReplaceWithFunc1<FollowerListItemView.DTO, SimpleFollowUserAssistant>(assistant))
+                    .map(new ReplaceWithFunc1<FollowerDisplayDTO, SimpleFollowUserAssistant>(assistant))
                     .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
                     {
                         @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
@@ -289,18 +289,18 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
                             simpleFollowUserAssistant.followingInCache();
                         }
                     })
-                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, FollowerListItemView.DTO>(dto))
+                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, FollowerDisplayDTO>(dto))
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Action1<FollowerListItemView.DTO>()
+                    .doOnNext(new Action1<FollowerDisplayDTO>()
                     {
-                        @Override public void call(FollowerListItemView.DTO dto)
+                        @Override public void call(FollowerDisplayDTO dto)
                         {
                             dto.isFollowing = true;
                             updateSingleRow(dto);
                         }
                     })
                     .observeOn(Schedulers.io())
-                    .map(new ReplaceWithFunc1<FollowerListItemView.DTO, SimpleFollowUserAssistant>(assistant))
+                    .map(new ReplaceWithFunc1<FollowerDisplayDTO, SimpleFollowUserAssistant>(assistant))
                     .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
                     {
                         @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
@@ -312,7 +312,7 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
         }
     }
 
-    private void updateSingleRow(FollowerListItemView.DTO dto)
+    private void updateSingleRow(FollowerDisplayDTO dto)
     {
         if (followerRecyclerAdapter != null)
         {

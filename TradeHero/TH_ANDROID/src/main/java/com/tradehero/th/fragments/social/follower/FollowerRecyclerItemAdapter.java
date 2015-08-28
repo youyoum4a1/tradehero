@@ -24,19 +24,19 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerListItemView.DTO>
+public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerDisplayDTO>
 {
     @Inject Picasso picasso;
 
-    final PublishSubject<FollowerListItemView.DTO> itemActionPublishSubject = PublishSubject.create();
+    final PublishSubject<FollowerDisplayDTO> itemActionPublishSubject = PublishSubject.create();
 
     public FollowerRecyclerItemAdapter(Context context)
     {
-        super(FollowerListItemView.DTO.class, new FollowerItemComparator());
+        super(FollowerDisplayDTO.class, new FollowerItemComparator());
         HierarchyInjector.inject(context, this);
     }
 
-    @Override public TypedViewHolder<FollowerListItemView.DTO> onCreateViewHolder(ViewGroup parent, int viewType)
+    @Override public TypedViewHolder<FollowerDisplayDTO> onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.follower_recycler_item, parent, false);
         FollowerItemViewHolder viewHolder = new FollowerItemViewHolder(view, picasso);
@@ -44,34 +44,34 @@ public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerLi
         return viewHolder;
     }
 
-    @NonNull public static List<FollowerListItemView.DTO> createItems(Resources resources, List<UserFollowerDTO> followerDTOs, UserProfileDTO userProfileDTO)
+    @NonNull public static List<FollowerDisplayDTO> createItems(Resources resources, List<UserFollowerDTO> followerDTOs, UserProfileDTO userProfileDTO)
     {
-        ArrayList<FollowerListItemView.DTO> list = new ArrayList<>(followerDTOs.size());
+        ArrayList<FollowerDisplayDTO> list = new ArrayList<>(followerDTOs.size());
         for (UserFollowerDTO userFollowerDTO : followerDTOs)
         {
-            list.add(new FollowerListItemView.DTO(resources, userFollowerDTO, userProfileDTO));
+            list.add(new FollowerDisplayDTO(resources, userFollowerDTO, userProfileDTO));
         }
         return list;
     }
 
-    public Observable<FollowerListItemView.DTO> getFollowerDTOObservable()
+    public Observable<FollowerDisplayDTO> getFollowerDTOObservable()
     {
         return itemActionPublishSubject.asObservable();
     }
 
-    private static class FollowerItemComparator extends TypedRecyclerComparator<FollowerListItemView.DTO>
+    private static class FollowerItemComparator extends TypedRecyclerComparator<FollowerDisplayDTO>
     {
-        @Override public int compare(FollowerListItemView.DTO o1, FollowerListItemView.DTO o2)
+        @Override public int compare(FollowerDisplayDTO o1, FollowerDisplayDTO o2)
         {
             return o2.userFollowerDTO.followingSince.compareTo(o1.userFollowerDTO.followingSince);
         }
 
-        @Override public boolean areItemsTheSame(FollowerListItemView.DTO item1, FollowerListItemView.DTO item2)
+        @Override public boolean areItemsTheSame(FollowerDisplayDTO item1, FollowerDisplayDTO item2)
         {
             return item1.userFollowerDTO.getBaseKey().equals(item2.userFollowerDTO.getBaseKey());
         }
 
-        @Override public boolean areContentsTheSame(FollowerListItemView.DTO oldItem, FollowerListItemView.DTO newItem)
+        @Override public boolean areContentsTheSame(FollowerDisplayDTO oldItem, FollowerDisplayDTO newItem)
         {
             if (!oldItem.titleText.equals(newItem.titleText)) return false;
             if (oldItem.userFollowerDTO.picture == null && newItem.userFollowerDTO.picture != null) return false;
@@ -83,7 +83,7 @@ public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerLi
         }
     }
 
-    public static class FollowerItemViewHolder extends TypedViewHolder<FollowerListItemView.DTO>
+    public static class FollowerItemViewHolder extends TypedViewHolder<FollowerDisplayDTO>
     {
         private final Picasso picasso;
         @Bind(R.id.follower_avatar) ImageView userIcon;
@@ -92,9 +92,9 @@ public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerLi
         @Bind(R.id.follower_since) TextView since;
         @Bind(R.id.follower_button) ImageButton btnFollow;
 
-        private FollowerListItemView.DTO currentDTO;
+        private FollowerDisplayDTO currentDTO;
 
-        final PublishSubject<FollowerListItemView.DTO> itemActionPublishSubject = PublishSubject.create();
+        final PublishSubject<FollowerDisplayDTO> itemActionPublishSubject = PublishSubject.create();
 
         public FollowerItemViewHolder(View itemView, Picasso picasso)
         {
@@ -102,7 +102,7 @@ public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerLi
             this.picasso = picasso;
         }
 
-        @Override public void display(FollowerListItemView.DTO dto)
+        @Override public void display(FollowerDisplayDTO dto)
         {
             this.currentDTO = dto;
             if (dto.userFollowerDTO.picture != null)
@@ -127,7 +127,7 @@ public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerLi
             }
         }
 
-        public Observable<FollowerListItemView.DTO> getObservable()
+        public Observable<FollowerDisplayDTO> getObservable()
         {
             return itemActionPublishSubject.asObservable();
         }

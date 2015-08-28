@@ -5,7 +5,6 @@ import dagger.Module;
 @Module(
         injects = {
                 FollowersFragment.class,
-                FollowerListItemView.class,
                 SendMessageFragment.class,
                 FollowerRecyclerItemAdapter.class
         },
