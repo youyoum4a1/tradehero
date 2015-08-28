@@ -298,7 +298,36 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
         }
         else
         {
-
+            onDestroyViewSubscriptions.add(assistant.ensureCacheValue()
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .observeOn(Schedulers.io())
+                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    {
+                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
+                            simpleFollowUserAssistant.followingInCache();
+                        }
+                    })
+                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, FollowerListItemView.DTO>(dto))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Action1<FollowerListItemView.DTO>()
+                    {
+                        @Override public void call(FollowerListItemView.DTO dto)
+                        {
+                            dto.isFollowing = true;
+                            updateSingleRow(dto);
+                        }
+                    })
+                    .observeOn(Schedulers.io())
+                    .map(new ReplaceWithFunc1<FollowerListItemView.DTO, SimpleFollowUserAssistant>(assistant))
+                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                    {
+                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        {
+                            return simpleFollowUserAssistant.followingInServer();
+                        }
+                    })
+                    .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to follow user from followers fragment")));
         }
     }
 
@@ -307,7 +336,7 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
         if (followerRecyclerAdapter != null)
         {
             int index = followerRecyclerAdapter.indexOf(dto);
-            if (index > 0)
+            if (index >= 0)
             {
                 followerRecyclerAdapter.notifyItemChanged(index);
             }
