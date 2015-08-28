@@ -186,7 +186,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         else
         {
             this.followButton.setVisibility(VISIBLE);
-            FollowUserAssistant.updateFollowButton(this.followButton, isFollowing);
+            FollowUserAssistant.updateFollowButton(this.followButton, isFollowing, shownUserProfileDTO.getBaseKey());
         }
     }
 

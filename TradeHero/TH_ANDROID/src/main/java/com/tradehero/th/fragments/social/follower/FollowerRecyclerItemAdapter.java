@@ -115,7 +115,7 @@ public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerDi
             name.setText(dto.titleText);
             roiInfo.setText(dto.roiInfoText);
             since.setText(dto.followingSince);
-            FollowUserAssistant.updateFollowImageButton(btnFollow, dto.isFollowing);
+            FollowUserAssistant.updateFollowImageButton(btnFollow, dto.isFollowing, this.currentDTO.userFollowerDTO.getBaseKey());
         }
 
         @OnClick(R.id.follower_button)

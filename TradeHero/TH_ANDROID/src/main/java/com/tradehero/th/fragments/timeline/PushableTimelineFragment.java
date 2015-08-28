@@ -189,8 +189,7 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         boolean isFollowing = isFollowing();
         mSendMsgButton.setVisibility(View.VISIBLE);
-        mFollowButton.setVisibility(View.VISIBLE);
-        FollowUserAssistant.updateFollowButton(mFollowButton, isFollowing);
+        FollowUserAssistant.updateFollowButton(mFollowButton, isFollowing, shownUserBaseKey);
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})

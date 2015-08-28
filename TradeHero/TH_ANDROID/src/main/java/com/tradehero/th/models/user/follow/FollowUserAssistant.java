@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.util.Pair;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import com.tradehero.th.R;
@@ -33,26 +34,42 @@ public class FollowUserAssistant
     @NonNull private final Context context;
     @NonNull protected final UserBaseKey heroId;
 
-    public static void updateFollowButton(Button button, boolean isFollowing)
+    public static void updateFollowButton(Button button, boolean isFollowing, UserBaseKey heroId)
     {
-        if (isFollowing)
+        if (heroId.isOfficialAccount())
         {
-            button.setBackgroundResource(R.drawable.basic_green_selector);
-            button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_following, 0, 0, 0);
-            button.setText(R.string.following);
+            button.setVisibility(View.GONE);
         }
         else
         {
-            button.setBackgroundResource(R.drawable.basic_blue_selector);
-            button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_follow, 0, 0, 0);
-            button.setText(R.string.follow);
+            button.setVisibility(View.VISIBLE);
+            if (isFollowing)
+            {
+                button.setBackgroundResource(R.drawable.basic_green_selector);
+                button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_following, 0, 0, 0);
+                button.setText(R.string.following);
+            }
+            else
+            {
+                button.setBackgroundResource(R.drawable.basic_blue_selector);
+                button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_follow, 0, 0, 0);
+                button.setText(R.string.follow);
+            }
         }
     }
 
-    public static void updateFollowImageButton(ImageButton imgButton, boolean isFollowing)
+    public static void updateFollowImageButton(ImageButton imgButton, boolean isFollowing, UserBaseKey heroId)
     {
-        imgButton.setBackgroundResource(isFollowing ? R.drawable.basic_green_selector : R.drawable.basic_blue_selector);
-        imgButton.setImageResource(isFollowing ? R.drawable.ic_following : R.drawable.ic_follow);
+        if (heroId.isOfficialAccount())
+        {
+            imgButton.setVisibility(View.GONE);
+        }
+        else
+        {
+            imgButton.setVisibility(View.VISIBLE);
+            imgButton.setBackgroundResource(isFollowing ? R.drawable.basic_green_selector : R.drawable.basic_blue_selector);
+            imgButton.setImageResource(isFollowing ? R.drawable.ic_following : R.drawable.ic_follow);
+        }
     }
 
     //<editor-fold desc="Constructors">

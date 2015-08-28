@@ -356,7 +356,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
                     else
                     {
                         lbmuFollowUser.setVisibility(View.VISIBLE);
-                        FollowUserAssistant.updateFollowImageButton(lbmuFollowUser, this.currentDto.isFollowing());
+                        FollowUserAssistant.updateFollowImageButton(lbmuFollowUser, this.currentDto.isFollowing(), this.currentDto.leaderboardUserDTO.getBaseKey());
                     }
                 }
 

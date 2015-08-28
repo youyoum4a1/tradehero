@@ -128,7 +128,7 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroDisplayDTO
             name.setText(dto.titleText);
             roiInfo.setText(dto.roiInfo);
             since.setText(dto.followingSince);
-            FollowUserAssistant.updateFollowImageButton(btnFollow, dto.isCurrentUserFollowing);
+            FollowUserAssistant.updateFollowImageButton(btnFollow, dto.isCurrentUserFollowing, dto.heroDTO.getBaseKey());
         }
 
         @OnClick(R.id.follower_button)
