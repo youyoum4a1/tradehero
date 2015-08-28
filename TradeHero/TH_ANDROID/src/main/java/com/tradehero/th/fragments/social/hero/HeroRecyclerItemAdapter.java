@@ -19,7 +19,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -128,7 +128,7 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroDisplayDTO
             name.setText(dto.titleText);
             roiInfo.setText(dto.roiInfo);
             since.setText(dto.followingSince);
-            SimpleFollowUserAssistant.updateFollowImageButton(btnFollow, dto.isCurrentUserFollowing);
+            FollowUserAssistant.updateFollowImageButton(btnFollow, dto.isCurrentUserFollowing);
         }
 
         @OnClick(R.id.follower_button)

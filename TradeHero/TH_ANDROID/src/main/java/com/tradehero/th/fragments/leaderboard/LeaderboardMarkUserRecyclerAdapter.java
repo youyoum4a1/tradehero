@@ -24,7 +24,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.leaderboard.LeaderboardItemUserAction.UserActionType;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -356,7 +356,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
                     else
                     {
                         lbmuFollowUser.setVisibility(View.VISIBLE);
-                        SimpleFollowUserAssistant.updateFollowImageButton(lbmuFollowUser, this.currentDto.isFollowing());
+                        FollowUserAssistant.updateFollowImageButton(lbmuFollowUser, this.currentDto.isFollowing());
                     }
                 }
 

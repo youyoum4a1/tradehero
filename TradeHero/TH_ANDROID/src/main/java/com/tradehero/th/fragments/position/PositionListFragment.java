@@ -77,7 +77,7 @@ import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
@@ -565,31 +565,31 @@ public class PositionListFragment
 
     @NonNull protected Observable<UserProfileDTO> freeFollow(@NonNull final UserBaseKey heroId)
     {
-        SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), heroId);
+        FollowUserAssistant assistant = new FollowUserAssistant(getActivity(), heroId);
         return assistant.ensureCacheValue()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                .doOnNext(new Action1<FollowUserAssistant>()
                 {
-                    @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    @Override public void call(FollowUserAssistant followUserAssistant)
                     {
-                        simpleFollowUserAssistant.followingInCache();
+                        followUserAssistant.followingInCache();
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                .doOnNext(new Action1<FollowUserAssistant>()
                 {
-                    @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    @Override public void call(FollowUserAssistant followUserAssistant)
                     {
                         updateHeaderViewFollowButton();
                     }
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
                 {
-                    @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
                     {
-                        return simpleFollowUserAssistant.followingInServer();
+                        return followUserAssistant.followingInServer();
                     }
                 });
     }
@@ -604,38 +604,38 @@ public class PositionListFragment
 
     @NonNull protected Observable<UserProfileDTO> unfollow(@NonNull final UserBaseKey heroId)
     {
-        SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), heroId);
+        FollowUserAssistant assistant = new FollowUserAssistant(getActivity(), heroId);
         return assistant.showUnFollowConfirmation(shownUserProfileDTO.displayName)
-                .map(new ReplaceWithFunc1<OnDialogClickEvent, SimpleFollowUserAssistant>(assistant))
-                .flatMap(new Func1<SimpleFollowUserAssistant, Observable<SimpleFollowUserAssistant>>()
+                .map(new ReplaceWithFunc1<OnDialogClickEvent, FollowUserAssistant>(assistant))
+                .flatMap(new Func1<FollowUserAssistant, Observable<FollowUserAssistant>>()
                 {
-                    @Override public Observable<SimpleFollowUserAssistant> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    @Override public Observable<FollowUserAssistant> call(FollowUserAssistant followUserAssistant)
                     {
-                        return simpleFollowUserAssistant.ensureCacheValue();
+                        return followUserAssistant.ensureCacheValue();
                     }
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                .doOnNext(new Action1<FollowUserAssistant>()
                 {
-                    @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    @Override public void call(FollowUserAssistant followUserAssistant)
                     {
-                        simpleFollowUserAssistant.unFollowFromCache();
+                        followUserAssistant.unFollowFromCache();
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                .doOnNext(new Action1<FollowUserAssistant>()
                 {
-                    @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    @Override public void call(FollowUserAssistant followUserAssistant)
                     {
                         updateHeaderViewFollowButton();
                     }
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
                 {
-                    @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                    @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
                     {
-                        return simpleFollowUserAssistant.unFollowFromServer();
+                        return followUserAssistant.unFollowFromServer();
                     }
                 })
                 ;

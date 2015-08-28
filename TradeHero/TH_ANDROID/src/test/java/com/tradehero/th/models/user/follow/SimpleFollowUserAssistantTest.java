@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 @Config(constants = BuildConfig.class)
 public class SimpleFollowUserAssistantTest extends FollowUserAssistantTestBase
 {
-    private SimpleFollowUserAssistant assistant;
+    private FollowUserAssistant assistant;
 
     @Before @Override public void setUp()
     {

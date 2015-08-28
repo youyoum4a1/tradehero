@@ -20,7 +20,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -186,7 +186,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
         else
         {
             this.followButton.setVisibility(VISIBLE);
-            SimpleFollowUserAssistant.updateFollowButton(this.followButton, isFollowing);
+            FollowUserAssistant.updateFollowButton(this.followButton, isFollowing);
         }
     }
 

@@ -26,7 +26,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
@@ -190,47 +190,47 @@ public class PushableTimelineFragment extends TimelineFragment
         boolean isFollowing = isFollowing();
         mSendMsgButton.setVisibility(View.VISIBLE);
         mFollowButton.setVisibility(View.VISIBLE);
-        SimpleFollowUserAssistant.updateFollowButton(mFollowButton, isFollowing);
+        FollowUserAssistant.updateFollowButton(mFollowButton, isFollowing);
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
     @OnClick(R.id.follow_button)
     protected void handleFollowRequested()
     {
-        SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), shownUserBaseKey);
+        FollowUserAssistant assistant = new FollowUserAssistant(getActivity(), shownUserBaseKey);
         if (isFollowing())
         {
             onStopSubscriptions.add(assistant.showUnFollowConfirmation(shownProfile.displayName)
-                    .map(new ReplaceWithFunc1<OnDialogClickEvent, SimpleFollowUserAssistant>(assistant))
-                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<SimpleFollowUserAssistant>>()
+                    .map(new ReplaceWithFunc1<OnDialogClickEvent, FollowUserAssistant>(assistant))
+                    .flatMap(new Func1<FollowUserAssistant, Observable<FollowUserAssistant>>()
                     {
-                        @Override public Observable<SimpleFollowUserAssistant> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public Observable<FollowUserAssistant> call(FollowUserAssistant followUserAssistant)
                         {
-                            return simpleFollowUserAssistant.ensureCacheValue();
+                            return followUserAssistant.ensureCacheValue();
                         }
                     })
                     .subscribeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    .doOnNext(new Action1<FollowUserAssistant>()
                     {
-                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public void call(FollowUserAssistant followUserAssistant)
                         {
-                            simpleFollowUserAssistant.unFollowFromCache();
+                            followUserAssistant.unFollowFromCache();
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    .doOnNext(new Action1<FollowUserAssistant>()
                     {
-                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public void call(FollowUserAssistant followUserAssistant)
                         {
                             updateBottomButton();
                         }
                     })
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                    .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
                     {
-                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
                         {
-                            return simpleFollowUserAssistant.unFollowFromServer();
+                            return followUserAssistant.unFollowFromServer();
                         }
                     })
                     .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to unfollow user")));
@@ -240,27 +240,27 @@ public class PushableTimelineFragment extends TimelineFragment
             onStopSubscriptions.add(assistant.ensureCacheValue()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    .doOnNext(new Action1<FollowUserAssistant>()
                     {
-                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public void call(FollowUserAssistant followUserAssistant)
                         {
-                            simpleFollowUserAssistant.followingInCache();
+                            followUserAssistant.followingInCache();
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    .doOnNext(new Action1<FollowUserAssistant>()
                     {
-                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public void call(FollowUserAssistant followUserAssistant)
                         {
                             updateBottomButton();
                         }
                     })
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                    .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
                     {
-                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
                         {
-                            return simpleFollowUserAssistant.followingInServer();
+                            return followUserAssistant.followingInServer();
                         }
                     })
                     .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to follow user")));
@@ -284,20 +284,20 @@ public class PushableTimelineFragment extends TimelineFragment
         }
         else
         {
-            final SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), shownUserBaseKey);
+            final FollowUserAssistant assistant = new FollowUserAssistant(getActivity(), shownUserBaseKey);
             onDestroyViewSubscriptions.add(assistant.showFollowForMessageConfirmation(shownProfile.displayName)
-                    .map(new ReplaceWithFunc1<OnDialogClickEvent, SimpleFollowUserAssistant>(assistant))
+                    .map(new ReplaceWithFunc1<OnDialogClickEvent, FollowUserAssistant>(assistant))
                     .observeOn(Schedulers.io())
-                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    .doOnNext(new Action1<FollowUserAssistant>()
                     {
-                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public void call(FollowUserAssistant followUserAssistant)
                         {
-                            simpleFollowUserAssistant.followingInCache();
+                            followUserAssistant.followingInCache();
                         }
                     })
-                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                    .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
                     {
-                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
                         {
                             return assistant.followingInServer();
                         }

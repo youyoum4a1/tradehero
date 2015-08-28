@@ -8,7 +8,7 @@ import com.tradehero.th.fragments.FragmentModule;
 import com.tradehero.th.fragments.settings.SettingsDrawerMenuItem;
 import com.tradehero.th.fragments.settings.UpdateCenterDrawerMenuItem;
 import com.tradehero.th.models.intent.IntentDaggerModule;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.share.SocialNetworkUIModule;
 import com.tradehero.th.ui.ViewWrapper;
 import com.tradehero.th.widget.WidgetModule;
@@ -32,7 +32,7 @@ import javax.inject.Singleton;
                 AuthenticationModule.class
         },
         injects = {
-                SimpleFollowUserAssistant.class,
+                FollowUserAssistant.class,
                 UpdateCenterDrawerMenuItem.class,
                 SettingsDrawerMenuItem.class,
         },

@@ -23,7 +23,7 @@ import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
@@ -138,10 +138,10 @@ public class LeaderboardMarkUserListFragmentUtil
     {
         LeaderboardMarkedUserItemDisplayDto markedUser = (LeaderboardMarkedUserItemDisplayDto) toUnfollow;
         UserBaseDTO user = markedUser.leaderboardUserDTO;
-        SimpleFollowUserAssistant assistant;
+        FollowUserAssistant assistant;
         if (user != null)
         {
-            assistant = new SimpleFollowUserAssistant(fragment.getActivity(), user.getBaseKey());
+            assistant = new FollowUserAssistant(fragment.getActivity(), user.getBaseKey());
             onStopSubscriptions.add(
                     assistant.showUnFollowConfirmation(user.displayName)
                             .map(new ReplaceWithFunc1<OnDialogClickEvent, LeaderboardMarkedUserItemDisplayDto>(
@@ -154,20 +154,20 @@ public class LeaderboardMarkUserListFragmentUtil
                                     fragment.updateRow(leaderboardMarkedUserItemDisplayDto);
                                 }
                             })
-                            .map(new ReplaceWithFunc1<LeaderboardMarkedUserItemDisplayDto, SimpleFollowUserAssistant>(assistant))
-                            .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                            .map(new ReplaceWithFunc1<LeaderboardMarkedUserItemDisplayDto, FollowUserAssistant>(assistant))
+                            .doOnNext(new Action1<FollowUserAssistant>()
                             {
-                                @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                                @Override public void call(FollowUserAssistant followUserAssistant)
                                 {
-                                    simpleFollowUserAssistant.unFollowFromCache();
+                                    followUserAssistant.unFollowFromCache();
                                 }
                             })
                             .observeOn(Schedulers.io())
-                            .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                            .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
                             {
-                                @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                                @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
                                 {
-                                    return simpleFollowUserAssistant.unFollowFromServer();
+                                    return followUserAssistant.unFollowFromServer();
                                 }
                             })
                             .subscribe(new Action1<UserProfileDTO>()
@@ -207,12 +207,12 @@ public class LeaderboardMarkUserListFragmentUtil
 
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
-        SimpleFollowUserAssistant simpleFollowUserAssistant = new SimpleFollowUserAssistant(fragment.getActivity(), userBaseDTO.getBaseKey());
-        simpleFollowUserAssistant.followingInCache();
+        FollowUserAssistant followUserAssistant = new FollowUserAssistant(fragment.getActivity(), userBaseDTO.getBaseKey());
+        followUserAssistant.followingInCache();
         onStopSubscriptions.add(
                 AppObservable.bindSupportFragment(
                         fragment,
-                        simpleFollowUserAssistant.followingInServer())
+                        followUserAssistant.followingInServer())
                         .subscribe(new Action1<UserProfileDTO>()
                                    {
                                        @Override public void call(UserProfileDTO userProfileDTO)

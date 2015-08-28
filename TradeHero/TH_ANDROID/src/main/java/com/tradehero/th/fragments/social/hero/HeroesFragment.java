@@ -28,7 +28,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
@@ -176,29 +176,29 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
 
     private void handleFollowClicked(HeroDisplayDTO dto)
     {
-        SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), dto.heroDTO.getBaseKey());
+        FollowUserAssistant assistant = new FollowUserAssistant(getActivity(), dto.heroDTO.getBaseKey());
         if (dto.isCurrentUserFollowing)
         {
             //Unfollow
             onDestroyViewSubscriptions.add(assistant.showUnFollowConfirmation(dto.titleText)
                     .subscribeOn(AndroidSchedulers.mainThread())
-                    .map(new ReplaceWithFunc1<OnDialogClickEvent, SimpleFollowUserAssistant>(assistant))
+                    .map(new ReplaceWithFunc1<OnDialogClickEvent, FollowUserAssistant>(assistant))
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<SimpleFollowUserAssistant>>()
+                    .flatMap(new Func1<FollowUserAssistant, Observable<FollowUserAssistant>>()
                     {
-                        @Override public Observable<SimpleFollowUserAssistant> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public Observable<FollowUserAssistant> call(FollowUserAssistant followUserAssistant)
                         {
-                            return simpleFollowUserAssistant.ensureCacheValue().doOnNext(new Action1<SimpleFollowUserAssistant>()
+                            return followUserAssistant.ensureCacheValue().doOnNext(new Action1<FollowUserAssistant>()
                             {
-                                @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                                @Override public void call(FollowUserAssistant followUserAssistant)
                                 {
-                                    simpleFollowUserAssistant.unFollowFromCache();
+                                    followUserAssistant.unFollowFromCache();
                                 }
                             });
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, HeroDisplayDTO>(dto))
+                    .map(new ReplaceWithFunc1<FollowUserAssistant, HeroDisplayDTO>(dto))
                     .doOnNext(new Action1<HeroDisplayDTO>()
                     {
                         @Override public void call(HeroDisplayDTO dto)
@@ -207,13 +207,13 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
                             updateRow(dto);
                         }
                     })
-                    .map(new ReplaceWithFunc1<HeroDisplayDTO, SimpleFollowUserAssistant>(assistant))
+                    .map(new ReplaceWithFunc1<HeroDisplayDTO, FollowUserAssistant>(assistant))
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                    .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
                     {
-                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
                         {
-                            return simpleFollowUserAssistant.unFollowFromServer();
+                            return followUserAssistant.unFollowFromServer();
                         }
                     })
                     .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to unfollow from heroes fragment")));
@@ -222,15 +222,15 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
         {
             onDestroyViewSubscriptions.add(assistant.ensureCacheValue()
                     .subscribeOn(Schedulers.io())
-                    .doOnNext(new Action1<SimpleFollowUserAssistant>()
+                    .doOnNext(new Action1<FollowUserAssistant>()
                     {
-                        @Override public void call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public void call(FollowUserAssistant followUserAssistant)
                         {
-                            simpleFollowUserAssistant.followingInCache();
+                            followUserAssistant.followingInCache();
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, HeroDisplayDTO>(dto))
+                    .map(new ReplaceWithFunc1<FollowUserAssistant, HeroDisplayDTO>(dto))
                     .doOnNext(new Action1<HeroDisplayDTO>()
                     {
                         @Override public void call(HeroDisplayDTO dto)
@@ -239,13 +239,13 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
                             updateRow(dto);
                         }
                     })
-                    .map(new ReplaceWithFunc1<HeroDisplayDTO, SimpleFollowUserAssistant>(assistant))
+                    .map(new ReplaceWithFunc1<HeroDisplayDTO, FollowUserAssistant>(assistant))
                     .observeOn(Schedulers.io())
-                    .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
+                    .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
                     {
-                        @Override public Observable<UserProfileDTO> call(SimpleFollowUserAssistant simpleFollowUserAssistant)
+                        @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
                         {
-                            return simpleFollowUserAssistant.followingInServer();
+                            return followUserAssistant.followingInServer();
                         }
                     })
                     .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to follow from heroes fragment")));

@@ -24,7 +24,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Func1;
 
-public class SimpleFollowUserAssistant
+public class FollowUserAssistant
 {
     @Inject protected UserServiceWrapper userServiceWrapper;
     @Inject protected UserProfileCacheRx userProfileCacheRx;
@@ -56,7 +56,7 @@ public class SimpleFollowUserAssistant
     }
 
     //<editor-fold desc="Constructors">
-    public SimpleFollowUserAssistant(
+    public FollowUserAssistant(
             @NonNull Context context,
             @NonNull UserBaseKey heroId)
     {
@@ -173,9 +173,9 @@ public class SimpleFollowUserAssistant
                 });
     }
 
-    public Observable<SimpleFollowUserAssistant> ensureCacheValue()
+    public Observable<FollowUserAssistant> ensureCacheValue()
     {
         return userProfileCacheRx.getOne(currentUserId.toUserBaseKey())
-                .map(new ReplaceWithFunc1<Pair<UserBaseKey, UserProfileDTO>, SimpleFollowUserAssistant>(this));
+                .map(new ReplaceWithFunc1<Pair<UserBaseKey, UserProfileDTO>, FollowUserAssistant>(this));
     }
 }
