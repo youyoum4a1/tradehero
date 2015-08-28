@@ -1,5 +1,7 @@
 package com.tradehero.livetrade.data;
 
+import com.tradehero.livetrade.data.subData.PositionDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,19 +34,8 @@ public class LiveTradePositionDTO {
             oneDto.marketName = tradeDataHelper.get(i, "market_name", "");
             dto.positions.add(oneDto);
         }
-        
+
         return dto;
     }
 }
 
-class PositionDTO {
-    public String stockName = "";
-    public String stockCode = "";
-    public float currentAmount = 0.0f;
-    public float enableAmount = 0.0f;
-    public float marketValue = 0.0f;
-    public float price = 0.0f;
-    public float profit = 0.0f;
-    public float profitRatio = 0.0f;
-    public String marketName = "";
-}

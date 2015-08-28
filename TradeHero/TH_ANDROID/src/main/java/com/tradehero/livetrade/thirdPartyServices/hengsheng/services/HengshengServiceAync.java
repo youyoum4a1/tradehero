@@ -162,7 +162,7 @@ public interface HengshengServiceAync
             @Header("Authorization") String authorization,
             @Field("targetcomp_id") int targetComp,
             @Field("sendercomp_id") int senderComp,
-            @Field("entrust_no") int entrustNo,
+            @Field("entrust_no") String entrustNo,
             HengshengRequestCallback<HengshengWithdrawEnterDTO> cb
     );
 

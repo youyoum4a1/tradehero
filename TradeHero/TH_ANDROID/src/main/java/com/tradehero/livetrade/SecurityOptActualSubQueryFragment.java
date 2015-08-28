@@ -14,16 +14,14 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import cn.htsec.TradeModule;
-import cn.htsec.data.pkg.trade.IPackageProxy;
-import cn.htsec.data.pkg.trade.TradeDataHelper;
-import cn.htsec.data.pkg.trade.TradeInterface;
-import cn.htsec.data.pkg.trade.TradeManager;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockActualQueryDelegationAdapter;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockActualQueryTradeAdapter;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.livetrade.data.LiveTradeDealQueryDTO;
+import com.tradehero.livetrade.data.LiveTradeEntrustQueryDTO;
+import com.tradehero.livetrade.services.LiveTradeCallback;
+import com.tradehero.livetrade.services.LiveTradeManager;
 import com.tradehero.th.R;
-import com.tradehero.th.api.trade.ClosedTradeDTO;
-import com.tradehero.th.api.trade.ClosedTradeDTOList;
 import com.tradehero.th.network.service.TradeServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import java.util.List;
@@ -41,10 +39,9 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
     private TextView mStockBankTransferButton;
     private SecurityOptMockActualQueryTradeAdapter mListViewAdapter1;
     private SecurityOptMockActualQueryDelegationAdapter mListViewAdapter2;
-    @Inject
-    TradeServiceWrapper mTradeServiceWrapper;
+    @Inject TradeServiceWrapper mTradeServiceWrapper;
     private boolean mIsShowMore = false;
-    private TradeManager mTradeManager;
+    @Inject LiveTradeManager mTradeManager;
     private ProgressDialog mProgressDlg;
     private Handler mHandler = new Handler();
 
@@ -52,7 +49,6 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         DaggerUtils.inject(this);
-        mTradeManager = TradeManager.getInstance(getActivity().getApplicationContext());
     }
 
     @Override
@@ -93,177 +89,35 @@ public class SecurityOptActualSubQueryFragment extends Fragment  implements View
 
     private void queryDelegationHistory() {
         mProgressBar2.setVisibility(View.VISIBLE);
-        mTradeManager.sendData(TradeInterface.ID_QUERY_ORDERS, new IPackageProxy() {
+        mTradeManager.getLiveTradeServices().entrustQuery(new LiveTradeCallback<LiveTradeEntrustQueryDTO>() {
             @Override
-            public void onSend(TradeDataHelper helper) {
-//                helper.set(TradeInterface.KEY_START_DATE, "20150618");
-//                helper.set(TradeInterface.KEY_END_DATE, "20150717");
-                helper.set(TradeInterface.KEY_WITHDRAW_FLAG, "0");
-//                helper.setStartPosition(0);
-            }
-
-            @Override
-            public void onReceive(TradeDataHelper helper) {
-                int rowCount = helper.getRowCount();
-                int responseCode = helper.getResponseCode();
-                String responseMsg = helper.getResponseMsg();
-
-                int resultCode = helper.getResultCode();
-                String resultMsg = helper.getResultMsg();
-
-                int startPosition = helper.getStartPosition();
-
-                StringBuffer sb = new StringBuffer();
-                sb.append("响应Code:" + responseCode + "\n");
-                sb.append("响应Msg:" + responseMsg + "\n");
-                sb.append("结果Code:" + resultCode + "\n");
-                sb.append("结果Msg:" + resultMsg + "\n");
-                sb.append("起始位置:" + startPosition + "\n");
-                sb.append("结果行数:" + rowCount + "\n");
-
-                List<String> keys = helper.getKeys();
-                ClosedTradeDTOList list = new ClosedTradeDTOList();
-                for (int i = 0; i < rowCount; i++) {
-                    sb.append(i + ",");
-                    ClosedTradeDTO dto = new ClosedTradeDTO();
-                    for (int j = 0; j < keys.size(); j++) {
-                        String key = keys.get(j);
-                        sb.append(key + ":" + helper.get(i, key, null));
-                        if (j != keys.size() - 1) {
-                            sb.append("  ");
-                        }
-                        if (key.equalsIgnoreCase("sec_name")) {
-                            dto.securityName = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("sec_code")) {
-                            dto.securityId = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("entrust_name")) {
-                            dto.entrust_name = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("entrust_price")) {
-                            dto.entrust_price = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("entrust_amt")) {
-                            dto.entrust_amt = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("entrust_date")) {
-                            dto.entrust_date = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("entrust_time")) {
-                            dto.entrust_time = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("entrust_status_name")) {
-                            dto.entrust_status_name = helper.get(i, key, null);
-                        }
-                    }
-                    sb.append("\n");
-                    list.add(dto);
-                }
-                Timber.d("lyl "+sb.toString());
-
-                Timber.d("lyl getDelegation size=" + list.size());
-                mListViewAdapter2.setItems(list);
+            public void onSuccess(LiveTradeEntrustQueryDTO liveTradeEntrustQueryDTO) {
+                mListViewAdapter2.setItems(liveTradeEntrustQueryDTO);
                 mListViewAdapter2.notifyDataSetChanged();
                 mProgressBar2.setVisibility(View.GONE);
             }
 
             @Override
-            public void onRequestStart() {
-//                showProgress();
+            public void onError(String errorCode, String errorContent) {
+                THToast.show(errorContent);
             }
-
-            @Override
-            public void onRequestFinish() {
-//                dismissProgress();
-            }
-
-            @Override
-            public void onRequestFail(String msg) {
-                THToast.show(msg);
-            }
-
         });
     }
 
     private void queryTradeHistroy() {
         mProgressBar1.setVisibility(View.VISIBLE);
-            mTradeManager.sendData(TradeInterface.ID_QUERY_BARGAINS, new IPackageProxy() {
-
+        mTradeManager.getLiveTradeServices().dealQuery(new LiveTradeCallback<LiveTradeDealQueryDTO>() {
             @Override
-            public void onSend(TradeDataHelper helper) {
-//                helper.set(TradeInterface.KEY_START_DATE, "20150701");
-//                helper.set(TradeInterface.KEY_END_DATE, "20150718");
-//                helper.setStartPosition(0);
-            }
-
-            @Override
-            public void onReceive(TradeDataHelper helper) {
-                int rowCount = helper.getRowCount();
-                int responseCode = helper.getResponseCode();
-                String responseMsg  = helper.getResponseMsg();
-
-                int resultCode = helper.getResultCode();
-                String resultMsg = helper.getResultMsg();
-
-                int startPosition = helper.getStartPosition();
-
-                StringBuffer sb = new StringBuffer();
-                sb.append("响应Code:"+responseCode+"\n");
-                sb.append("响应Msg:"+responseMsg+"\n");
-                sb.append("结果Code:"+resultCode+"\n");
-                sb.append("结果Msg:"+resultMsg+"\n");
-                sb.append("起始位置:"+startPosition+"\n");
-                sb.append("结果行数:"+rowCount+"\n");
-
-                List<String> keys = helper.getKeys();
-                ClosedTradeDTOList list = new ClosedTradeDTOList();
-                for(int i = 0; i < rowCount; i++)
-                {
-                    sb.append(i+",");
-                    ClosedTradeDTO dto = new ClosedTradeDTO();
-                    for(int j = 0; j < keys.size(); j++)
-                    {
-                        String key = keys.get(j);
-                        sb.append(key+":"+helper.get(i, key, null));
-                        if(j != keys.size() - 1)
-                        {
-                            sb.append("  ");
-                        }
-                        if (key.equalsIgnoreCase("sec_name")) {
-                            dto.securityName = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("sec_code")) {
-                            dto.securityId = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("entrust_name")) {
-                            dto.entrust_name = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("business_price")) {
-                            dto.business_price = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("business_amt")) {
-                            dto.business_amt = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("business_date")) {
-                            dto.business_date = helper.get(i, key, null);
-                        } else if (key.equalsIgnoreCase("business_time")) {
-                            dto.business_time = helper.get(i, key, null);
-                        }
-                    }
-                    sb.append("\n");
-                    list.add(dto);
-                }
-                Timber.d("lyl "+sb.toString());
-                Timber.d("lyl ID_QUERY_BARGAINS size=" + list.size());
-                mListViewAdapter1.setItems(list);
+            public void onSuccess(LiveTradeDealQueryDTO liveTradeDealQueryDTO) {
+                mListViewAdapter1.setItems(liveTradeDealQueryDTO);
                 mListViewAdapter1.notifyDataSetChanged();
                 mProgressBar1.setVisibility(View.GONE);
             }
 
             @Override
-            public void onRequestStart() {
-//                showProgress();
+            public void onError(String errorCode, String errorContent) {
+                THToast.show(errorContent);
             }
-
-            @Override
-            public void onRequestFinish() {
-//                dismissProgress();
-            }
-
-            @Override
-            public void onRequestFail(String msg) {
-                THToast.show(msg);
-            }
-
         });
     }
 

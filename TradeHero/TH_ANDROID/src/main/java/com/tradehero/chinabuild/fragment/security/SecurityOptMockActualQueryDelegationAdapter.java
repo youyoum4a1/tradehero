@@ -7,12 +7,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.tradehero.livetrade.data.subData.EntrustQueryDTO;
+import com.tradehero.livetrade.data.LiveTradeEntrustQueryDTO;
 import com.tradehero.th.R;
-import com.tradehero.th.api.trade.ClosedTradeDTO;
-import com.tradehero.th.api.trade.ClosedTradeDTOList;
 
 public class SecurityOptMockActualQueryDelegationAdapter extends BaseAdapter{
-    private ClosedTradeDTOList mList = new ClosedTradeDTOList();
+    private LiveTradeEntrustQueryDTO mDto = new LiveTradeEntrustQueryDTO();
     private LayoutInflater inflater;
 
     public SecurityOptMockActualQueryDelegationAdapter(Context context){
@@ -21,12 +22,12 @@ public class SecurityOptMockActualQueryDelegationAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        return mList.size();
+        return mDto.positions.size();
     }
 
     @Override
-    public ClosedTradeDTO getItem(int i) {
-        return mList.get(i);
+    public EntrustQueryDTO getItem(int i) {
+        return mDto.positions.get(i);
     }
 
     @Override
@@ -39,15 +40,15 @@ public class SecurityOptMockActualQueryDelegationAdapter extends BaseAdapter{
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.security_opt_query_delegation_position_item, null);
         }
-        ClosedTradeDTO item = getItem(i);
+        EntrustQueryDTO item = getItem(i);
         ImageView flagImageView = (ImageView)convertView.findViewById(R.id.flag);
-        if (item.entrust_status_name.equalsIgnoreCase("场外撤单")) {
+        if (item.entrustStatusName.equalsIgnoreCase("场外撤单")) {
             flagImageView.setImageResource(R.drawable.cancel_deal);
-        } else if (item.entrust_status_name.equalsIgnoreCase("已撤单")) {
+        } else if (item.entrustStatusName.equalsIgnoreCase("已撤单")) {
             flagImageView.setImageResource(R.drawable.cancel_deal);
-        } else if (item.entrust_status_name.equalsIgnoreCase("已成交")) {
+        } else if (item.entrustStatusName.equalsIgnoreCase("已成交")) {
             flagImageView.setImageResource(R.drawable.finish_deal);
-        } else if (item.entrust_status_name.equalsIgnoreCase("未成交")) {
+        } else if (item.entrustStatusName.equalsIgnoreCase("未成交")) {
             flagImageView.setImageResource(R.drawable.not_finish_deal);
         }
         TextView stockTitle = (TextView)convertView.findViewById(R.id.stock_name);
@@ -55,19 +56,19 @@ public class SecurityOptMockActualQueryDelegationAdapter extends BaseAdapter{
         TextView stockID = (TextView)convertView.findViewById(R.id.stock_id);
         stockID.setText(item.securityId);
         TextView operation = (TextView)convertView.findViewById(R.id.operation);
-        operation.setText(item.entrust_name);
+        operation.setText(item.entrustName);
         TextView price = (TextView)convertView.findViewById(R.id.price);
-        price.setText(item.entrust_price);
+        price.setText(item.entrustPrice);
         TextView numbers = (TextView)convertView.findViewById(R.id.numbers);
-        numbers.setText(item.entrust_amt);
+        numbers.setText(item.entrustAmount);
         TextView timeDate = (TextView)convertView.findViewById(R.id.time_date);
         TextView timeTime = (TextView)convertView.findViewById(R.id.time_time);
-        timeDate.setText(item.entrust_date);
-        timeTime.setText(item.entrust_time);
+        timeDate.setText(item.entrustDate);
+        timeTime.setText(item.entrustTime);
         return convertView;
     }
 
-    public void setItems(ClosedTradeDTOList list) {
-        mList = list;
+    public void setItems(LiveTradeEntrustQueryDTO dto) {
+        mDto = dto;
     }
 }

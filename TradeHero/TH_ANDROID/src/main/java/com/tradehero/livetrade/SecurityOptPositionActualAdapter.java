@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.tradehero.livetrade.thirdPartyServices.haitong.SecurityOptPositionActualDTO;
+import com.tradehero.livetrade.data.LiveTradePositionDTO;
 import com.tradehero.th.R;
+import com.tradehero.livetrade.data.subData.PositionDTO;
 
-import java.util.ArrayList;
 
 /**
  * Created by palmer on 15/7/17.
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class SecurityOptPositionActualAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
-    private ArrayList<SecurityOptPositionActualDTO> securityOptPositionDTOs = new ArrayList();
+    private LiveTradePositionDTO positionDTO;
 
     private int color_up;
     private int color_down;
@@ -29,22 +29,25 @@ public class SecurityOptPositionActualAdapter extends BaseAdapter {
         color_down = context.getResources().getColor(R.color.number_down);
     }
 
-    public void addData(ArrayList<SecurityOptPositionActualDTO> securityOptPositionDTOs){
-        this.securityOptPositionDTOs.clear();
-        if(securityOptPositionDTOs != null){
-            this.securityOptPositionDTOs.addAll(securityOptPositionDTOs);
-        }
+    public void addData(LiveTradePositionDTO positionDTO){
+        this.positionDTO = positionDTO;
+
         notifyDataSetChanged();
+    }
+
+    public LiveTradePositionDTO getData()
+    {
+        return positionDTO;
     }
 
     @Override
     public int getCount() {
-        return securityOptPositionDTOs.size();
+        return positionDTO.positions.size();
     }
 
     @Override
-    public SecurityOptPositionActualDTO getItem(int i) {
-        return securityOptPositionDTOs.get(i);
+    public PositionDTO getItem(int i) {
+        return positionDTO.positions.get(i);
     }
 
     @Override
@@ -70,24 +73,24 @@ public class SecurityOptPositionActualAdapter extends BaseAdapter {
         } else {
             holder = (Holder)convertView.getTag();
         }
-        SecurityOptPositionActualDTO securityOptPositionDTO = getItem(i);
-        if(securityOptPositionDTO!=null){
-            holder.stockName.setText(securityOptPositionDTO.sec_name);
-            holder.code.setText(securityOptPositionDTO.sec_code);
-            if(securityOptPositionDTO.profit_ratio >= 0){
+        PositionDTO dto = getItem(i);
+        if(dto!=null){
+            holder.stockName.setText(dto.stockName);
+            holder.code.setText(dto.stockCode);
+            if(dto.profitRatio >= 0){
                 holder.benefit.setTextColor(color_up);
                 holder.percentageBenefit.setTextColor(color_up);
             } else {
                 holder.benefit.setTextColor(color_down);
                 holder.percentageBenefit.setTextColor(color_down);
             }
-            holder.basePrice.setText(String.valueOf(securityOptPositionDTO.cost_price));
-            holder.base.setText(DataUtils.keepInteger(securityOptPositionDTO.buy_money));
-            String ratio = securityOptPositionDTO.profit_ratio + "%";
+            holder.basePrice.setText(String.valueOf(dto.price));
+            holder.base.setText(DataUtils.keepInteger(dto.marketValue));
+            String ratio = dto.profitRatio + "%";
             holder.percentageBenefit.setText(ratio);
-            holder.benefit.setText(DataUtils.keepInteger(securityOptPositionDTO.profit));
-            holder.totalAccount.setText(DataUtils.keepInteger(securityOptPositionDTO.current_amt));
-            holder.availableAccount.setText(DataUtils.keepInteger(securityOptPositionDTO.enable_amt));
+            holder.benefit.setText(DataUtils.keepInteger(dto.profit));
+            holder.totalAccount.setText(DataUtils.keepInteger(dto.currentAmount));
+            holder.availableAccount.setText(DataUtils.keepInteger(dto.enableAmount));
         }
 
         return convertView;

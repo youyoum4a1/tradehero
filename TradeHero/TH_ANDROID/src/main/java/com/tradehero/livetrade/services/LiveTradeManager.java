@@ -1,5 +1,9 @@
 package com.tradehero.livetrade.services;
 
+import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongServicesWrapper;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.HengshengServicesWrapper;
+import com.tradehero.th.utils.DaggerUtils;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -9,9 +13,12 @@ import javax.inject.Singleton;
 @Singleton public class LiveTradeManager {
 
     private LiveTradeServices liveTradeServices;
+    @Inject HaitongServicesWrapper haitongServicesWrapper;
+    @Inject HengshengServicesWrapper hengshengServicesWrapper;
 
     @Inject public LiveTradeManager() {
-        liveTradeServices = null;
+        // Todo
+        liveTradeServices = haitongServicesWrapper;
     }
 
     public LiveTradeServices getLiveTradeServices() {

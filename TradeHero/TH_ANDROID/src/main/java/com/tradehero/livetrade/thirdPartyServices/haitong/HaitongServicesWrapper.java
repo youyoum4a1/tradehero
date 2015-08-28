@@ -5,6 +5,7 @@ import com.tradehero.livetrade.data.LiveTradeDealQueryDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustCancelDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustEnterDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustQueryDTO;
+import com.tradehero.livetrade.data.LiveTradePendingEntrustQueryDTO;
 import com.tradehero.livetrade.data.LiveTradePositionDTO;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
@@ -177,7 +178,7 @@ public class HaitongServicesWrapper implements LiveTradeServices {
     }
 
     @Override
-    public void cancelableEntrustQuery(final LiveTradeCallback<LiveTradeEntrustQueryDTO> callback) {
+    public void pendingEntrustQuery(final LiveTradeCallback<LiveTradePendingEntrustQueryDTO> callback) {
         IPackageProxy proxy = new IPackageProxy(){
             @Override
             public void onSend(TradeDataHelper helper) {
@@ -193,7 +194,7 @@ public class HaitongServicesWrapper implements LiveTradeServices {
             @Override
             public void onReceive(TradeDataHelper tradeDataHelper) {
                 super.onReceive(tradeDataHelper);
-                LiveTradeEntrustQueryDTO dto = LiveTradeEntrustQueryDTO.parseHaitongData(tradeDataHelper);
+                LiveTradePendingEntrustQueryDTO dto = LiveTradePendingEntrustQueryDTO.parseHaitongData(tradeDataHelper);
                 callback.onSuccess(dto);
             }
 
@@ -227,7 +228,7 @@ public class HaitongServicesWrapper implements LiveTradeServices {
     }
 
     @Override
-    public void entrustCancel(final String marketCode, final int entrustNo, final String entrustDate, final String withdrawCate, final String securityId, final LiveTradeCallback<LiveTradeEntrustCancelDTO> callback) {
+    public void entrustCancel(final String marketCode, final String entrustNo, final String entrustDate, final String withdrawCate, final String securityId, final LiveTradeCallback<LiveTradeEntrustCancelDTO> callback) {
         IPackageProxy proxy = new IPackageProxy(){
             @Override
             public void onSend(TradeDataHelper helper) {

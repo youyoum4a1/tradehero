@@ -7,12 +7,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.tradehero.livetrade.data.LiveTradePendingEntrustQueryDTO;
+import com.tradehero.livetrade.data.subData.PendingEntrustQueryDTO;
 import com.tradehero.th.R;
-import com.tradehero.th.api.trade.ClosedTradeDTO;
-import com.tradehero.th.api.trade.ClosedTradeDTOList;
 
 public class SecurityOptMockActualDelegationAdapter extends BaseAdapter{
-    private ClosedTradeDTOList mList = new ClosedTradeDTOList();
+    private LiveTradePendingEntrustQueryDTO mDto = new LiveTradePendingEntrustQueryDTO();
     private LayoutInflater inflater;
     private int mSelectedPosition = -1;
 
@@ -22,12 +23,12 @@ public class SecurityOptMockActualDelegationAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        return mList.size();
+        return mDto.positions.size();
     }
 
     @Override
-    public ClosedTradeDTO getItem(int i) {
-        return mList.get(i);
+    public PendingEntrustQueryDTO getItem(int i) {
+        return mDto.positions.get(i);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class SecurityOptMockActualDelegationAdapter extends BaseAdapter{
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.security_opt_delegation_position_item, null);
         }
-        ClosedTradeDTO item = getItem(i);
+        PendingEntrustQueryDTO item = getItem(i);
         ImageView choiceImageView = (ImageView)convertView.findViewById(R.id.choice);
         if (mSelectedPosition == i) {
             choiceImageView.setImageResource(R.drawable.choice);
@@ -52,21 +53,21 @@ public class SecurityOptMockActualDelegationAdapter extends BaseAdapter{
         TextView stockID = (TextView)convertView.findViewById(R.id.stock_id);
         stockID.setText(item.securityId);
         TextView operation = (TextView)convertView.findViewById(R.id.operation);
-        operation.setText(item.entrust_name);
+        operation.setText(item.entrustName);
         TextView price = (TextView)convertView.findViewById(R.id.price);
-        price.setText(item.entrust_price);
+        price.setText(String.valueOf(item.entrustPrice));
         TextView numbers = (TextView)convertView.findViewById(R.id.numbers);
-        numbers.setText(item.entrust_amt);
+        numbers.setText(item.entrustAmount);
         TextView timeDate = (TextView)convertView.findViewById(R.id.time_date);
         TextView timeTime = (TextView) convertView.findViewById(R.id.time_time);
-        timeDate.setText(item.entrust_date);
-        timeTime.setText(item.entrust_time);
+        timeDate.setText(item.entrustDate);
+        timeTime.setText(item.entrustTime);
 
         return convertView;
     }
 
-    public void setItems(ClosedTradeDTOList list) {
-        mList = list;
+    public void setItems(LiveTradePendingEntrustQueryDTO dto) {
+        mDto = dto;
     }
 
     public void setSelectedItem(int position) {

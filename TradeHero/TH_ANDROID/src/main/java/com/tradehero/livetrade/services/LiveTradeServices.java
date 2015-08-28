@@ -5,6 +5,7 @@ import com.tradehero.livetrade.data.LiveTradeDealQueryDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustCancelDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustEnterDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustQueryDTO;
+import com.tradehero.livetrade.data.LiveTradePendingEntrustQueryDTO;
 import com.tradehero.livetrade.data.LiveTradePositionDTO;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 
@@ -29,11 +30,11 @@ public interface LiveTradeServices {
 
     void sell(String stockCode, int amount, float price, LiveTradeCallback<LiveTradeEntrustEnterDTO> callback);
 
-    void cancelableEntrustQuery(LiveTradeCallback<LiveTradeEntrustQueryDTO> callback);
+    void pendingEntrustQuery(LiveTradeCallback<LiveTradePendingEntrustQueryDTO> callback);
 
     void entrustQuery(LiveTradeCallback<LiveTradeEntrustQueryDTO> callback);
 
-    void entrustCancel(final String marketCode, final int entrustNo, final String entrustDate, final String withdrawCate, final String securityId, LiveTradeCallback<LiveTradeEntrustCancelDTO> callback);
+    void entrustCancel(final String marketCode, final String entrustNo, final String entrustDate, final String withdrawCate, final String securityId, LiveTradeCallback<LiveTradeEntrustCancelDTO> callback);
 
     void dealQuery(LiveTradeCallback<LiveTradeDealQueryDTO> callback);
 

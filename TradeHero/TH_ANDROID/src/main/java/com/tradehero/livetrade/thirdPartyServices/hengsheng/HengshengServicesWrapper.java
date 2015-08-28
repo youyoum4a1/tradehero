@@ -5,6 +5,7 @@ import com.tradehero.livetrade.data.LiveTradeDealQueryDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustCancelDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustEnterDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustQueryDTO;
+import com.tradehero.livetrade.data.LiveTradePendingEntrustQueryDTO;
 import com.tradehero.livetrade.data.LiveTradePositionDTO;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
@@ -259,7 +260,7 @@ import retrofit.client.Response;
      * 查询可撤委托
      */
     @Override
-    public void cancelableEntrustQuery(final LiveTradeCallback<LiveTradeEntrustQueryDTO> callback)
+    public void pendingEntrustQuery(final LiveTradeCallback<LiveTradePendingEntrustQueryDTO> callback)
     {
         String authStr = hengshengManager.getAccessToken();
         if (isSessionValid())
@@ -267,7 +268,7 @@ import retrofit.client.Response;
             HengshengRequestCallback<HengshengEntrustQryDTO> cb = new HengshengRequestCallback<HengshengEntrustQryDTO>() {
                 @Override
                 public void hengshengSuccess(HengshengBaseDTO hengshengBaseDTO, Response response) {
-                    LiveTradeEntrustQueryDTO dto = new LiveTradeEntrustQueryDTO();
+                    LiveTradePendingEntrustQueryDTO dto = new LiveTradePendingEntrustQueryDTO();
                     callback.onSuccess(dto);
                 }
 
@@ -335,7 +336,7 @@ import retrofit.client.Response;
      * 撤销委托
      */
     @Override
-    public void entrustCancel(final String marketCode, final int entrustNo, final String entrustDate, final String withdrawCate, final String securityId, final LiveTradeCallback<LiveTradeEntrustCancelDTO> callback)
+    public void entrustCancel(final String marketCode, final String entrustNo, final String entrustDate, final String withdrawCate, final String securityId, final LiveTradeCallback<LiveTradeEntrustCancelDTO> callback)
     {
         String authStr = hengshengManager.getAccessToken();
         if (isSessionValid())

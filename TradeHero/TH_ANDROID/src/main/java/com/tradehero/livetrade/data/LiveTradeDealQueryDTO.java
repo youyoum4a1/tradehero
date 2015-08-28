@@ -1,6 +1,6 @@
 package com.tradehero.livetrade.data;
 
-import com.tradehero.th.api.trade.ClosedTradeDTO;
+import com.tradehero.livetrade.data.subData.DealQueryDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import timber.log.Timber;
  */
 public class LiveTradeDealQueryDTO {
 
-    public List positions;
+    public List<DealQueryDTO> positions;
 
     public LiveTradeDealQueryDTO() {
         positions = new ArrayList();
@@ -77,12 +77,3 @@ public class LiveTradeDealQueryDTO {
     }
 }
 
-class DealQueryDTO {
-    public String securityName;
-    public String securityId;
-    public String entrustName;
-    public String businessPrice;
-    public String businessAmount;
-    public String businessDate;
-    public String businessTime;
-}
