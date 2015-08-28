@@ -18,7 +18,6 @@ import com.tradehero.th.api.social.HeroDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.social.hero.HeroListItemView.DTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
 import java.util.ArrayList;
@@ -27,16 +26,16 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
-public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemView.DTO>
+public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroDisplayDTO>
 {
     @Inject Picasso picasso;
 
-    final PublishSubject<HeroListItemView.DTO> itemActionPublishSubject = PublishSubject.create();
+    final PublishSubject<HeroDisplayDTO> itemActionPublishSubject = PublishSubject.create();
 
-    @NonNull public static List<DTO> createObjects(Resources resources, CurrentUserId currentUserId, UserBaseKey followerId, List<HeroDTO> heroes,
+    @NonNull public static List<HeroDisplayDTO> createObjects(Resources resources, CurrentUserId currentUserId, UserBaseKey followerId, List<HeroDTO> heroes,
             UserProfileDTO currentUserProfileDTO)
     {
-        ArrayList<HeroListItemView.DTO> list = new ArrayList<>(heroes.size());
+        ArrayList<HeroDisplayDTO> list = new ArrayList<>(heroes.size());
         for (HeroDTO heroDTO : heroes)
         {
             boolean isCurrentUserFollowing = currentUserProfileDTO.isFollowingUser(heroDTO.getBaseKey());
@@ -48,7 +47,7 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemVi
              */
             if (!currentUserId.toUserBaseKey().equals(followerId) || isCurrentUserFollowing)
             {
-                list.add(new DTO(resources, currentUserId, followerId, heroDTO, isCurrentUserFollowing));
+                list.add(new HeroDisplayDTO(resources, followerId, heroDTO, isCurrentUserFollowing));
             }
         }
         return list;
@@ -56,11 +55,11 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemVi
 
     public HeroRecyclerItemAdapter(Context context)
     {
-        super(HeroListItemView.DTO.class, new FollowerItemComparator());
+        super(HeroDisplayDTO.class, new FollowerItemComparator());
         HierarchyInjector.inject(context, this);
     }
 
-    @Override public TypedViewHolder<HeroListItemView.DTO> onCreateViewHolder(ViewGroup parent, int viewType)
+    @Override public TypedViewHolder<HeroDisplayDTO> onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.follower_recycler_item, parent, false);
         HeroItemViewHolder viewHolder = new HeroItemViewHolder(view, picasso);
@@ -68,24 +67,24 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemVi
         return viewHolder;
     }
 
-    public Observable<HeroListItemView.DTO> getHeroDTOObservable()
+    public Observable<HeroDisplayDTO> getHeroDTOObservable()
     {
         return itemActionPublishSubject.asObservable();
     }
 
-    private static class FollowerItemComparator extends TypedRecyclerComparator<HeroListItemView.DTO>
+    private static class FollowerItemComparator extends TypedRecyclerComparator<HeroDisplayDTO>
     {
-        @Override public int compare(HeroListItemView.DTO o1, HeroListItemView.DTO o2)
+        @Override public int compare(HeroDisplayDTO o1, HeroDisplayDTO o2)
         {
             return o2.heroDTO.followingSince.compareTo(o1.heroDTO.followingSince);
         }
 
-        @Override public boolean areItemsTheSame(HeroListItemView.DTO item1, HeroListItemView.DTO item2)
+        @Override public boolean areItemsTheSame(HeroDisplayDTO item1, HeroDisplayDTO item2)
         {
             return item1.heroDTO.getBaseKey().equals(item2.heroDTO.getBaseKey());
         }
 
-        @Override public boolean areContentsTheSame(HeroListItemView.DTO oldItem, HeroListItemView.DTO newItem)
+        @Override public boolean areContentsTheSame(HeroDisplayDTO oldItem, HeroDisplayDTO newItem)
         {
             if (!oldItem.titleText.equals(newItem.titleText)) return false;
             if (oldItem.heroDTO.picture == null && newItem.heroDTO.picture != null) return false;
@@ -97,7 +96,7 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemVi
         }
     }
 
-    public static class HeroItemViewHolder extends TypedViewHolder<HeroListItemView.DTO>
+    public static class HeroItemViewHolder extends TypedViewHolder<HeroDisplayDTO>
     {
         private final Picasso picasso;
         @Bind(R.id.follower_avatar) ImageView userIcon;
@@ -106,9 +105,9 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemVi
         @Bind(R.id.follower_since) TextView since;
         @Bind(R.id.follower_button) ImageButton btnFollow;
 
-        private HeroListItemView.DTO currentDTO;
+        private HeroDisplayDTO currentDTO;
 
-        final PublishSubject<HeroListItemView.DTO> itemActionPublishSubject = PublishSubject.create();
+        final PublishSubject<HeroDisplayDTO> itemActionPublishSubject = PublishSubject.create();
 
         public HeroItemViewHolder(View itemView, Picasso picasso)
         {
@@ -116,7 +115,7 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemVi
             this.picasso = picasso;
         }
 
-        @Override public void display(HeroListItemView.DTO dto)
+        @Override public void display(HeroDisplayDTO dto)
         {
             this.currentDTO = dto;
             if (dto.heroDTO.picture != null)
@@ -141,7 +140,7 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroListItemVi
             }
         }
 
-        public Observable<HeroListItemView.DTO> getObservable()
+        public Observable<HeroDisplayDTO> getObservable()
         {
             return itemActionPublishSubject.asObservable();
         }

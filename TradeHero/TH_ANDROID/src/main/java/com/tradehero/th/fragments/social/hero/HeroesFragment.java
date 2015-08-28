@@ -85,11 +85,11 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
             this.followerId = new UserBaseKey(routedFollowerId);
         }
         this.heroRecyclerItemAdapter = new HeroRecyclerItemAdapter(getActivity());
-        this.heroRecyclerItemAdapter.setOnItemClickedListener(new TypedRecyclerAdapter.OnItemClickedListener<HeroListItemView.DTO>()
+        this.heroRecyclerItemAdapter.setOnItemClickedListener(new TypedRecyclerAdapter.OnItemClickedListener<HeroDisplayDTO>()
         {
             @Override
-            public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<HeroListItemView.DTO> viewHolder,
-                    HeroListItemView.DTO object)
+            public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<HeroDisplayDTO> viewHolder,
+                    HeroDisplayDTO object)
             {
                 Bundle args = new Bundle();
                 PushableTimelineFragment.putUserBaseKey(args, object.heroDTO.getBaseKey());
@@ -122,10 +122,10 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
                 heroListCache.get(followerId),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
-                new Func2<Pair<UserBaseKey, HeroDTOExtWrapper>, UserProfileDTO, Pair<HeroDTOExtWrapper, List<HeroListItemView.DTO>>>()
+                new Func2<Pair<UserBaseKey, HeroDTOExtWrapper>, UserProfileDTO, Pair<HeroDTOExtWrapper, List<HeroDisplayDTO>>>()
                 {
                     @Override
-                    public Pair<HeroDTOExtWrapper, List<HeroListItemView.DTO>> call(Pair<UserBaseKey, HeroDTOExtWrapper> pair,
+                    public Pair<HeroDTOExtWrapper, List<HeroDisplayDTO>> call(Pair<UserBaseKey, HeroDTOExtWrapper> pair,
                             UserProfileDTO userProfileDTO)
                     {
                         return Pair.create(
@@ -140,9 +140,9 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<Pair<HeroDTOExtWrapper, List<HeroListItemView.DTO>>>()
+                        new Action1<Pair<HeroDTOExtWrapper, List<HeroDisplayDTO>>>()
                         {
-                            @Override public void call(Pair<HeroDTOExtWrapper, List<HeroListItemView.DTO>> pair)
+                            @Override public void call(Pair<HeroDTOExtWrapper, List<HeroDisplayDTO>> pair)
                             {
                                 swipeRefreshLayout.setRefreshing(false);
                                 progressBar.setVisibility(View.GONE);
@@ -164,9 +164,9 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
 
         onDestroyViewSubscriptions.add(heroRecyclerItemAdapter.getHeroDTOObservable()
                 .subscribe(
-                        new Action1<HeroListItemView.DTO>()
+                        new Action1<HeroDisplayDTO>()
                         {
-                            @Override public void call(HeroListItemView.DTO dto)
+                            @Override public void call(HeroDisplayDTO dto)
                             {
                                 handleFollowClicked(dto);
                             }
@@ -174,7 +174,7 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
                         new TimberOnErrorAction1("Failed to handle UserAction")));
     }
 
-    private void handleFollowClicked(HeroListItemView.DTO dto)
+    private void handleFollowClicked(HeroDisplayDTO dto)
     {
         SimpleFollowUserAssistant assistant = new SimpleFollowUserAssistant(getActivity(), dto.heroDTO.getBaseKey());
         if (dto.isCurrentUserFollowing)
@@ -198,16 +198,16 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, HeroListItemView.DTO>(dto))
-                    .doOnNext(new Action1<HeroListItemView.DTO>()
+                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, HeroDisplayDTO>(dto))
+                    .doOnNext(new Action1<HeroDisplayDTO>()
                     {
-                        @Override public void call(HeroListItemView.DTO dto)
+                        @Override public void call(HeroDisplayDTO dto)
                         {
                             dto.isCurrentUserFollowing = false;
                             updateRow(dto);
                         }
                     })
-                    .map(new ReplaceWithFunc1<HeroListItemView.DTO, SimpleFollowUserAssistant>(assistant))
+                    .map(new ReplaceWithFunc1<HeroDisplayDTO, SimpleFollowUserAssistant>(assistant))
                     .observeOn(Schedulers.io())
                     .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
                     {
@@ -230,16 +230,16 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
                         }
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, HeroListItemView.DTO>(dto))
-                    .doOnNext(new Action1<HeroListItemView.DTO>()
+                    .map(new ReplaceWithFunc1<SimpleFollowUserAssistant, HeroDisplayDTO>(dto))
+                    .doOnNext(new Action1<HeroDisplayDTO>()
                     {
-                        @Override public void call(HeroListItemView.DTO dto)
+                        @Override public void call(HeroDisplayDTO dto)
                         {
                             dto.isCurrentUserFollowing = true;
                             updateRow(dto);
                         }
                     })
-                    .map(new ReplaceWithFunc1<HeroListItemView.DTO, SimpleFollowUserAssistant>(assistant))
+                    .map(new ReplaceWithFunc1<HeroDisplayDTO, SimpleFollowUserAssistant>(assistant))
                     .observeOn(Schedulers.io())
                     .flatMap(new Func1<SimpleFollowUserAssistant, Observable<UserProfileDTO>>()
                     {
@@ -252,7 +252,7 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
         }
     }
 
-    private void updateRow(HeroListItemView.DTO dto)
+    private void updateRow(HeroDisplayDTO dto)
     {
         int index = heroRecyclerItemAdapter.indexOf(dto);
         if (index >= 0)
