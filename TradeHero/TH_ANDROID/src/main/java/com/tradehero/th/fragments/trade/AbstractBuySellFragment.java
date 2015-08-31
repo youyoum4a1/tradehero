@@ -358,11 +358,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     {
         super.onResume();
 
-        if (abstractTransactionFragment != null)
-        {
-            abstractTransactionFragment.populateComment();
-        }
-
         fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
         {
             @Override public void onTranslate(float x, float y)

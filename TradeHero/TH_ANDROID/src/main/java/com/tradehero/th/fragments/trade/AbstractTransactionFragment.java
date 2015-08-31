@@ -22,7 +22,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.android.internal.util.Predicate;
-import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -45,7 +44,6 @@ import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -292,6 +290,13 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         buySellSubscription = null;
         ButterKnife.unbind(this);
         super.onDestroyView();
+    }
+
+    @Override public void onResume()
+    {
+        super.onResume();
+
+        populateComment();
     }
 
     @NonNull protected Observable<PortfolioCompactDTOList> getPortfolioCompactListObservable()
@@ -805,6 +810,12 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     {
         Bundle bundle = new Bundle();
         SecurityDiscussionEditPostFragment.putSecurityId(bundle, requisite.securityId);
+
+        if (unSpannedComment != null)
+        {
+            SecurityDiscussionEditPostFragment.putComment(bundle, unSpannedComment.toString());
+        }
+
         transactionCommentFragment = navigator.get().pushFragment(TransactionEditCommentFragment.class, bundle);
     }
 
@@ -981,10 +992,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         {
             unSpannedComment = transactionCommentFragment.getComment();
 
-            if (unSpannedComment != null)
-            {
-                mCommentsEditText.setText(unSpannedComment);
-            }
+            mCommentsEditText.setText(unSpannedComment);
         }
     }
 

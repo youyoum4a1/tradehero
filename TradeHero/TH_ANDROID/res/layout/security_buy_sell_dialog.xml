@@ -10,13 +10,15 @@
     android:background="@color/white"
     >
 
-  <FrameLayout
+  <ScrollView
+      android:id="@+id/buy_sell_scrollview"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
+      android:layout_above="@+id/bottom_wrapper"
       >
 
       <LinearLayout
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical"
           >
@@ -252,25 +254,26 @@
               android:id="@+id/comments"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:minHeight="@dimen/clickable_element_min_dimen"
+              android:minHeight="@dimen/size_10"
               android:layout_marginTop="@dimen/margin_medium"
               android:layout_marginBottom="@dimen/margin_medium"
               android:layout_marginLeft="@dimen/margin_small"
               android:layout_marginRight="@dimen/margin_small"
               android:background="@drawable/security_dialog_comment_bg"
               style="@style/TH.Body"
-              android:layout_alignParentTop="true"
               android:padding="@dimen/margin_xsmall"
               android:hint="@string/buy_sell_confirm_buy_comment"
               />
 
       </LinearLayout>
-  </FrameLayout>
+  </ScrollView>
 
-  <RelativeLayout
+  <LinearLayout
+      android:id="@+id/bottom_wrapper"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="horizontal"
+      android:orientation="vertical"
+      android:layout_alignParentBottom="true"
       >
 
     <LinearLayout
@@ -283,7 +286,6 @@
         android:paddingTop="@dimen/share_container_vertical_padding"
         android:paddingBottom="@dimen/share_container_vertical_padding"
         android:orientation="horizontal"
-        android:layout_above="@+id/dialog_btn_confirm"
         >
 
       <TextView
@@ -306,9 +308,8 @@
         android:minHeight="@dimen/clickable_element_min_dimen"
         android:text="@string/buy_sell_confirm_buy_now"
         android:background="@drawable/basic_green_selector"
-        android:layout_alignParentBottom="true"
         />
 
-  </RelativeLayout>
+  </LinearLayout>
 
 </RelativeLayout>

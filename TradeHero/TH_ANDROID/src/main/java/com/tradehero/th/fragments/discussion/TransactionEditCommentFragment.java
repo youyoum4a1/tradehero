@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +20,14 @@ public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFr
         super.initView();
 
         discussionPostActionButtonsView.hideSocialButtons();
+
+        Bundle bundle = getArguments();
+        String comment = SecurityDiscussionEditPostFragment.getComment(bundle);
+
+        if (comment != null)
+        {
+            discussionPostContent.setText(comment);
+        }
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
