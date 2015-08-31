@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:id="@+id/empty_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_small"
+    >
+
+  <TextView
+      style="@style/TH.Subhead"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_small"
+      android:text="@string/follower_empty_list_title"
+      />
+
+  <TextView
+      style="@style/TH.Body"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_small"
+      android:text="@string/follower_empty_list_call_action"
+      />
+
+  <TextView
+      android:id="@+id/empty_call_to_action"
+      style="@style/TH.Button.Inverse"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal"
+      android:layout_marginTop="@dimen/margin_small"
+      android:background="@drawable/basic_green_selector"
+      android:gravity="center"
+      android:minHeight="@dimen/clickable_element_min_dimen"
+      android:text="@string/competition_trade_now"
+      />
+
+</LinearLayout>
+

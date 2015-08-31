@@ -13,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,6 +29,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.social.HeroListCacheRx;
@@ -62,6 +65,8 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
     @Bind(R.id.swipe_to_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.heros_list) protected RecyclerView heroListView;
     @Bind(android.R.id.progress) protected ProgressBar progressBar;
+    @Bind(R.id.empty_view_stub) ViewStub emptyStub;
+    @Nullable View emptyView;
 
     @RouteProperty("followerId") Integer routedFollowerId;
 
@@ -101,7 +106,7 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.fragment_store_manage_heroes, container, false);
+        return inflater.inflate(R.layout.fragment_heroes, container, false);
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
@@ -148,6 +153,7 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
                                 progressBar.setVisibility(View.GONE);
                                 heroRecyclerItemAdapter.addAll(pair.second);
                                 swipeRefreshLayout.setEnabled(true);
+                                updateEmptyView();
                             }
                         },
                         new TimberAndToastOnErrorAction1(
@@ -172,6 +178,42 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
                             }
                         },
                         new TimberOnErrorAction1("Failed to handle UserAction")));
+    }
+
+    private void updateEmptyView()
+    {
+        if (heroRecyclerItemAdapter.getItemCount() > 0)
+        {
+            if (emptyView != null)
+            {
+                emptyView.setVisibility(View.GONE);
+            }
+        }
+        else
+        {
+            if (emptyView == null)
+            {
+                emptyStub.setLayoutResource(isCurrentUser() ? R.layout.hero_list_item_empty_placeholder :
+                        R.layout.hero_list_item_empty_placeholder_for_other);
+                emptyView = emptyStub.inflate();
+
+                if (isCurrentUser())
+                {
+                    Button callToAction = (Button) emptyView.findViewById(R.id.empty_call_to_action);
+                    if (callToAction != null)
+                    {
+                        callToAction.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override public void onClick(View v)
+                            {
+                                navigator.get().goToTab(RootFragmentType.COMMUNITY);
+                            }
+                        });
+                    }
+                }
+            }
+            emptyView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void handleFollowClicked(HeroDisplayDTO dto)
@@ -257,7 +299,7 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
         int index = heroRecyclerItemAdapter.indexOf(dto);
         if (index >= 0)
         {
-            if (currentUserId.toUserBaseKey().equals(followerId))
+            if (isCurrentUser())
             {
                 //Is current user, if unfollow remove from list
                 heroRecyclerItemAdapter.removeItemAt(index);
@@ -267,6 +309,11 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
                 heroRecyclerItemAdapter.notifyItemChanged(index);
             }
         }
+    }
+
+    private boolean isCurrentUser()
+    {
+        return currentUserId.toUserBaseKey().equals(followerId);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

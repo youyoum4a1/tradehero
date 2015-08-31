@@ -102,13 +102,13 @@
   <string name="manage_my_heroes_title">My Heroes</string>
   <string name="manage_heroes_follows">Follows:</string>
 
-  <string name="manage_heroes_empty_title">Buy Credits to Follow Heroes</string>
-  <string name="manage_heroes_empty_description">Following Heroes allows you to receive all their trades in real-time as well as their market commentary.\nKeep ahead of the game: browse the Most Skilled traders now to pick your Heroes!
+  <string name="manage_heroes_empty_title">You Are Not Following Anyone Yet</string>
+  <string name="manage_heroes_empty_description">Start following Heroes to receive all their trade activity and market commentary in real-time.\nKeep ahead of the game: pick your Heroes now!
   </string>
   <string name="manage_heroes_empty_description_for_other">
     There is no heroes.
   </string>
-  <string name="manage_heroes_empty_leaderboard_link">Go to Most Skilled Traders</string>
+  <string name="manage_heroes_empty_leaderboard_link">Browse Most Skilled Traders</string>
 
   <string name="manage_heroes_following_since">Following since %s</string>
   <string name="manage_heroes_not_following_since">stopped following on %s</string>

@@ -20,7 +20,8 @@
   <string name="following_this_hero">Following this hero…</string>
   <string name="free_message_left">%1$s free message left</string>
   <string name="upgrade_to_message_more">Upgrade to message more!</string>
-  <string name="follower_empty_list_call_action">Get new followers by making trading profits and posting on discussion boards.</string>
+  <string name="follower_empty_list_title">No One Is Following You.</string>
+  <string name="follower_empty_list_call_action">Trade well to make profits and build your follower base.</string>
 
   <string name="pm_not_follow_title">Follow %1$s?</string>
   <string name="pm_not_follow_msg">You need to follow this Hero to be able to send Private Messages.</string>

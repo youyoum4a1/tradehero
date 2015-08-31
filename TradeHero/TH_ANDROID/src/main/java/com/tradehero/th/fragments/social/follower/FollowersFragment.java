@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import butterknife.Bind;
@@ -67,8 +68,8 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
     @Bind(R.id.follower_list) RecyclerView followerList;
     @Bind(android.R.id.progress) ProgressBar progressBar;
     @Bind(R.id.followers_broadcast_button) Button broadcast;
-
-    @Bind(R.id.empty_container) View emptyView;
+    @Bind(R.id.empty_view_stub) ViewStub emptyStub;
+    @Nullable View emptyView;
 
     @RouteProperty("heroId") Integer routedHeroId;
 
@@ -167,7 +168,7 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
                                         {
                                             followerRecyclerAdapter.addAll(followerSummaryDTOListPair.second);
                                         }
-                                        emptyView.setVisibility(followerRecyclerAdapter.getItemCount() > 0? View.GONE: View.VISIBLE);
+                                        updateEmptyView();
                                     }
                                 },
                                 new TimberAndToastOnErrorAction1(
@@ -192,6 +193,43 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
                             }
                         },
                         new TimberAndToastOnErrorAction1("Failed to listen to user actions")));
+    }
+
+    private void updateEmptyView()
+    {
+        if (followerRecyclerAdapter.getItemCount() > 0)
+        {
+            if (emptyView != null)
+            {
+                emptyView.setVisibility(View.GONE);
+            }
+        }
+        else
+        {
+            if (emptyView == null)
+            {
+                emptyStub.setLayoutResource(isCurrentUser() ? R.layout.followers_empty_list :
+                        R.layout.followers_empty_list_for_other);
+                emptyView = emptyStub.inflate();
+
+                if (isCurrentUser())
+                {
+                    Button callToAction = (Button) emptyView.findViewById(R.id.empty_call_to_action);
+                    if (callToAction != null)
+                    {
+                        callToAction.setOnClickListener(new View.OnClickListener()
+                        {
+                            @Override public void onClick(View v)
+                            {
+                                navigator.get().goToTab(RootFragmentType.TRENDING);
+                            }
+                        });
+                    }
+                }
+            }
+            emptyView.setVisibility(View.VISIBLE);
+        }
+
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -332,13 +370,6 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
             }
         }
     }
-
-    @OnClick(R.id.btn_trade_now)
-    protected void onTradeNowClicked()
-    {
-        navigator.get().goToTab(RootFragmentType.TRENDING);
-    }
-
 
     @OnClick(R.id.followers_broadcast_button)
     protected void broadcast()
