@@ -29,24 +29,6 @@ public class THSamsungProductDetailTuner
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO;
                 break;
 
-            case THSamsungConstants.CREDIT_1_DATA_1:
-                productDetails.iconResId = R.drawable.icn_follow_credits;
-                productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
-                break;
-
-            //case THSamsungConstants.CREDIT_5_DATA_1:
-            //    productDetails.iconResId = R.drawable.credit_1;
-            //    productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
-            //    break;
-
-            case THSamsungConstants.CREDIT_10_DATA_1:
-                productDetails.iconResId = R.drawable.icn_follow_credits_10;
-                productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
-                break;
-            case THSamsungConstants.CREDIT_20_DATA_1:
-                productDetails.iconResId = R.drawable.icn_follow_credits_20;
-                productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
-                break;
             case THSamsungConstants.ALERT_1_DATA_1:
                 productDetails.iconResId = R.drawable.buy_alerts_2;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;
