@@ -112,7 +112,8 @@ import javax.inject.Singleton;
                 TradeListFragment.class,
                 TrendingMainFragment.class,
                 UpdateCenterFragment.class,
-                WebViewFragment.class
+                WebViewFragment.class,
+                LiveActivityUtil.getRoutableKYC()
         );
         DiscoveryMainFragment.registerAliases(router);
         FollowerManagerFragment.registerAliases(router);
@@ -120,6 +121,7 @@ import javax.inject.Singleton;
         StoreScreenFragment.registerAliases(router);
         TrendingMainFragment.registerAliases(router);
         UpdateCenterFragment.registerAliases(router);
+        LiveActivityUtil.registerAliases(router);
         return router;
     }
 
