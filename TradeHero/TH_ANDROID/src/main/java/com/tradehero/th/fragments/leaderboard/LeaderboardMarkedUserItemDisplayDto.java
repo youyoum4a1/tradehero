@@ -113,7 +113,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.lbmuPositionColor = currentUserId.get() == leaderboardItem.id ?
                 resources.getColor(R.color.light_green_normal) :
                 resources.getColor(R.color.text_primary);
-        this.lbmuFoF = leaderboardItem.friendOfMarkupString;// **
+        this.lbmuFoF = leaderboardItem.friendOfMarkupString;
         this.lbmuFoFVisibility = leaderboardItem.isIncludeFoF() != null
                 && leaderboardItem.isIncludeFoF()
                 && !StringUtils.isNullOrEmptyOrSpaces(leaderboardItem.friendOfMarkupString)

@@ -30,10 +30,10 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
-import com.tradehero.th.persistence.social.HeroType;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWithFunc1;
@@ -67,6 +67,8 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
     @Bind(R.id.follower_list) RecyclerView followerList;
     @Bind(android.R.id.progress) ProgressBar progressBar;
     @Bind(R.id.followers_broadcast_button) Button broadcast;
+
+    @Bind(R.id.empty_container) View emptyView;
 
     @RouteProperty("heroId") Integer routedHeroId;
 
@@ -165,6 +167,7 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
                                         {
                                             followerRecyclerAdapter.addAll(followerSummaryDTOListPair.second);
                                         }
+                                        emptyView.setVisibility(followerRecyclerAdapter.getItemCount() > 0? View.GONE: View.VISIBLE);
                                     }
                                 },
                                 new TimberAndToastOnErrorAction1(
@@ -330,10 +333,12 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
         }
     }
 
-    @NonNull protected HeroType getFollowerType()
+    @OnClick(R.id.btn_trade_now)
+    protected void onTradeNowClicked()
     {
-        return HeroType.ALL;
+        navigator.get().goToTab(RootFragmentType.TRENDING);
     }
+
 
     @OnClick(R.id.followers_broadcast_button)
     protected void broadcast()
