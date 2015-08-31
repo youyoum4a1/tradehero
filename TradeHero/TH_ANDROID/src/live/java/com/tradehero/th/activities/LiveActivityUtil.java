@@ -9,8 +9,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trending.TileType;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.network.service.DummyAyondoLiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.OffOnViewSwitcher;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 import javax.inject.Inject;
@@ -28,6 +30,16 @@ public class LiveActivityUtil
     @Inject @IsLiveTrading BooleanPreference isLiveTrading;
     private PublishSubject<OffOnViewSwitcherEvent> isTradingLivePublishSubject;
     private OffOnViewSwitcher liveSwitcher;
+
+    public static Class<?> getRoutableKYC()
+    {
+        return IdentityPromptActivity.class;
+    }
+
+    public static void registerAliases(THRouter router)
+    {
+        router.registerAlias(IdentityPromptActivity.ROUTER_KYC_SCHEME + "ayondo", IdentityPromptActivity.ROUTER_KYC_SCHEME + DummyAyondoLiveServiceWrapper.AYONDO_LIVE_BROKER_ID);
+    }
 
     public LiveActivityUtil(BaseActivity activity)
     {

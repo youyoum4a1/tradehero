@@ -38,7 +38,7 @@ import rx.functions.Func1;
 
 public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
 {
-    private static final int AYONDO_LIVE_BROKER_ID = 1;
+    public static final int AYONDO_LIVE_BROKER_ID = 1;
     private static final String AYONDO_LIVE_BROKER_NAME = "ayondo markets";
     private static final int AYONDO_MINIMUM_AGE = 21;
 

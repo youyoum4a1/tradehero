@@ -225,7 +225,7 @@
 
       <Button
           android:id="@+id/btn_prev"
-          style="@style/TH.Button.LiveForm"
+          style="@style/TH.Button.LiveForm.Previous"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentLeft="true"
@@ -234,16 +234,62 @@
           android:text="@string/previous"
           />
 
-      <Button
-          android:id="@+id/btn_create"
-          style="@style/TH.Button.LiveForm"
+      <ViewSwitcher
+          android:id="@+id/create_switcher"
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
           android:layout_alignParentEnd="true"
           android:layout_alignParentRight="true"
-          android:text="@string/create"
-          tools:enabled="true"
-          />
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@id/btn_prev"
+          android:inAnimation="@anim/alpha_in"
+          android:outAnimation="@anim/alpha_out"
+          >
+
+        <Button
+            android:id="@+id/btn_create"
+            style="@style/TH.Button.LiveForm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create"
+            android:layout_gravity="right|end"
+            tools:enabled="true"
+            />
+
+        <LinearLayout
+            android:id="@+id/btn_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/clickable_element_min_dimen"
+            android:paddingLeft="@dimen/margin_small"
+            android:paddingRight="@dimen/margin_small"
+            android:background="@drawable/basic_green_selector"
+            android:orientation="vertical"
+            android:layout_gravity="right|end"
+            android:gravity="center">
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/TH.Caption.Inverse"
+              android:text="@string/submit_form_top"/>
+
+          <TextView
+              style="@style/TH.Button.Inverse"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/submit_form"
+              tools:enabled="true"
+              />
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/TH.Caption.Inverse"
+              android:text="@string/submit_form_bottom"/>
+
+        </LinearLayout>
+
+      </ViewSwitcher>
 
     </RelativeLayout>
 

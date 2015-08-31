@@ -218,6 +218,8 @@ public class KYCAyondoForm implements KYCForm
             this.agreeTermsConditions = ayondoForm.agreeTermsConditions != null ? ayondoForm.agreeTermsConditions : this.agreeTermsConditions;
             this.agreeRisksWarnings = ayondoForm.agreeRisksWarnings != null ? ayondoForm.agreeRisksWarnings : this.agreeRisksWarnings;
             this.agreeDataSharing = ayondoForm.agreeDataSharing != null ? ayondoForm.agreeDataSharing : this.agreeDataSharing;
+            this.subscribeOffers = ayondoForm.subscribeOffers != null ? ayondoForm.subscribeOffers : this.subscribeOffers;
+            this.subscribeTradeNotifications = ayondoForm.subscribeTradeNotifications != null ? ayondoForm.subscribeTradeNotifications : this.subscribeTradeNotifications;
             this.needIdentityDocument = ayondoForm.needIdentityDocument != null ? ayondoForm.needIdentityDocument : this.needIdentityDocument;
             this.needResidencyDocument = ayondoForm.needResidencyDocument != null ? ayondoForm.needResidencyDocument : this.needResidencyDocument;
             this.guid = ayondoForm.guid != null ? ayondoForm.guid : this.guid;

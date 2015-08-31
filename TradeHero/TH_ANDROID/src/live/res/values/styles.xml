@@ -63,9 +63,16 @@
   </style>
 
   <style name="TH.Button.LiveForm"
-      parent="TH.Button.Inverse.Small">
+      parent="TH.Button.Inverse">
     <item name="android:background">@drawable/basic_green_selector</item>
     <item name="android:textColor">@color/white</item>
+    <item name="android:enabled">false</item>
+  </style>
+
+  <style name="TH.Button.LiveForm.Previous"
+      parent="TH.Button">
+    <item name="android:background">@drawable/live_previous_layer_list</item>
+    <item name="android:textColor">@color/light_green_normal</item>
     <item name="android:enabled">false</item>
   </style>
 

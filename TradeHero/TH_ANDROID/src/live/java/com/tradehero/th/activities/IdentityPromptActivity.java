@@ -13,6 +13,8 @@ import com.neovisionaries.i18n.CountryCode;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
 import com.tradehero.th.api.kyc.KYCFormUtil;
@@ -41,20 +43,16 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import timber.log.Timber;
 
+@Routable(IdentityPromptActivity.ROUTER_KYC_SCHEME + ":brokerId")
 public class IdentityPromptActivity extends BaseActivity
 {
-    @Inject
-    FastFillUtil fastFillUtil;
-    @Inject
-    LiveBrokerSituationPreference liveBrokerSituationPreference;
-    @Inject
-    CurrentUserId currentUserId;
-    @Inject
-    UserProfileCacheRx userProfileCache;
-    @Inject
-    LiveServiceWrapper liveServiceWrapper;
-    @Inject
-    Picasso picasso;
+    public static final String ROUTER_KYC_SCHEME = "kyc/";
+    @Inject FastFillUtil fastFillUtil;
+    @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCacheRx userProfileCache;
+    @Inject LiveServiceWrapper liveServiceWrapper;
+    @Inject Picasso picasso;
 
     @Bind(R.id.identity_prompt_passport)
     View scanPassport;
@@ -64,6 +62,8 @@ public class IdentityPromptActivity extends BaseActivity
     ImageView imgPrompt;
     @Bind(R.id.identity_prompt_specific)
     TextView scanSpecificId;
+
+    @RouteProperty("brokerId") int routedBrokerId;
 
     private Subscription fastFillSubscription;
 

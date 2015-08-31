@@ -216,7 +216,12 @@ public class THRouter extends Router
             @NonNull Bundle extras,
             @NonNull Uri originalUrl)
     {
-        String url = originalUrl.toString().substring((resources.getString(R.string.intent_scheme) + "://").length());
+        String url = originalUrl.toString();
+        String scheme = (resources.getString(R.string.intent_scheme) + "://");
+        if(url.contains(scheme))
+        {
+            url = url.substring(scheme.length());
+        }
         int queryMark = url.indexOf('?');
         if (queryMark > 0)
         {
