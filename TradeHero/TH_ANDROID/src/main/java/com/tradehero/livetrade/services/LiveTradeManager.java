@@ -17,12 +17,12 @@ import javax.inject.Singleton;
     @Inject HengshengServicesWrapper hengshengServicesWrapper;
 
     @Inject public LiveTradeManager() {
-        // Todo
-        liveTradeServices = haitongServicesWrapper;
+
     }
 
     public LiveTradeServices getLiveTradeServices() {
-        return liveTradeServices;
+        //Todo
+        return hengshengServicesWrapper;
     }
 
     public void setLiveTradeServices(LiveTradeServices liveTradeServices) {

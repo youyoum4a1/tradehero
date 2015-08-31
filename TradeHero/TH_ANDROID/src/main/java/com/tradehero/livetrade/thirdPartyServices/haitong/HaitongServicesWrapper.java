@@ -71,15 +71,7 @@ public class HaitongServicesWrapper implements LiveTradeServices {
             public void onReceive(TradeDataHelper tradeDataHelper) {
                 super.onReceive(tradeDataHelper);
 
-                int rowCount = tradeDataHelper.getRowCount();
-                float enabledBalance = 0;
-                for(int i = 0; i < rowCount; i++) {
-                    enabledBalance = tradeDataHelper.get(i, "enable_balance", enabledBalance);
-                    break;
-                }
-
-                LiveTradeBalanceDTO dto = new LiveTradeBalanceDTO();
-                dto.enableBalance = enabledBalance;
+                LiveTradeBalanceDTO dto = LiveTradeBalanceDTO.parseHaitongDTO(tradeDataHelper);
                 callback.onSuccess(dto);
             }
 

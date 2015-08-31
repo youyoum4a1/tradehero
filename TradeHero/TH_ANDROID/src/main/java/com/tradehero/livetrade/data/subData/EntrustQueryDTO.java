@@ -7,9 +7,9 @@ public class EntrustQueryDTO {
     public String securityName;
     public String securityId;
     public String entrustName;
-    public String entrustPrice;
-    public String entrustAmount;
+    public float entrustPrice;
+    public int entrustAmount;
     public String entrustDate;
     public String entrustTime;
-    public String entrustStatusName;
+    public int entrustStatus;
 }

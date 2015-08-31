@@ -42,6 +42,9 @@ public class SecurityOptPositionActualAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        if (positionDTO == null) {
+            return 0;
+        }
         return positionDTO.positions.size();
     }
 
@@ -86,7 +89,7 @@ public class SecurityOptPositionActualAdapter extends BaseAdapter {
             }
             holder.basePrice.setText(String.valueOf(dto.price));
             holder.base.setText(DataUtils.keepInteger(dto.marketValue));
-            String ratio = dto.profitRatio + "%";
+            String ratio = String.format("%.2f", dto.profitRatio) + "%";
             holder.percentageBenefit.setText(ratio);
             holder.benefit.setText(DataUtils.keepInteger(dto.profit));
             holder.totalAccount.setText(DataUtils.keepInteger(dto.currentAmount));

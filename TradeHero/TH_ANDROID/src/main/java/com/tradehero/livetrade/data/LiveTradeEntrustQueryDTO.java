@@ -2,6 +2,8 @@ package com.tradehero.livetrade.data;
 
 
 import com.tradehero.livetrade.data.subData.EntrustQueryDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengEntrustQryDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.HengshengEntrustQryData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,11 @@ import timber.log.Timber;
  * Created by Sam on 15/8/27.
  */
 public class LiveTradeEntrustQueryDTO {
+
+    public static final int ENTRUST_STATUS_UNKNOWN = -1;
+    public static final int ENTRUST_STATUS_DEALED = 0;
+    public static final int ENTRUST_STATUS_UNDEALED = 1;
+    public static final int ENTRUST_STATUS_WITHDRAWED = 2;
 
     public List<EntrustQueryDTO> positions;
 
@@ -58,15 +65,15 @@ public class LiveTradeEntrustQueryDTO {
                 } else if (key.equalsIgnoreCase("entrust_name")) {
                     dto.entrustName = helper.get(i, key, null);
                 } else if (key.equalsIgnoreCase("entrust_price")) {
-                    dto.entrustPrice = helper.get(i, key, null);
+                    dto.entrustPrice = helper.get(i, key, 0);
                 } else if (key.equalsIgnoreCase("entrust_amt")) {
-                    dto.entrustAmount = helper.get(i, key, null);
+                    dto.entrustAmount = helper.get(i, key, 0);
                 } else if (key.equalsIgnoreCase("entrust_date")) {
                     dto.entrustDate = helper.get(i, key, null);
                 } else if (key.equalsIgnoreCase("entrust_time")) {
                     dto.entrustTime = helper.get(i, key, null);
                 } else if (key.equalsIgnoreCase("entrust_status_name")) {
-                    dto.entrustStatusName = helper.get(i, key, null);
+                    dto.entrustStatus = parseHaitongEntrustStatusID(helper.get(i, key, null));
                 }
             }
             sb.append("\n");
@@ -75,6 +82,53 @@ public class LiveTradeEntrustQueryDTO {
 
         Timber.d("lyl " + sb.toString());
         return dtos;
+    }
+
+    private static int parseHaitongEntrustStatusID(String name) {
+        if (name == null) {
+            return ENTRUST_STATUS_UNKNOWN;
+        }
+
+        if (name.equalsIgnoreCase("场外撤单") || name.equalsIgnoreCase("已撤单")) {
+            return ENTRUST_STATUS_WITHDRAWED;
+        } else if (name.equalsIgnoreCase("已成交")) {
+            return ENTRUST_STATUS_DEALED;
+        } else if (name.equalsIgnoreCase("未成交")) {
+            return ENTRUST_STATUS_UNDEALED;
+        }
+
+        return ENTRUST_STATUS_UNKNOWN;
+    }
+
+    public static LiveTradeEntrustQueryDTO parseHengshengDTO(HengshengEntrustQryDTO data) {
+        LiveTradeEntrustQueryDTO dto = new LiveTradeEntrustQueryDTO();
+
+        for (int i = 0; i < data.data.size(); i ++) {
+            HengshengEntrustQryData oneData = data.data.get(i);
+            EntrustQueryDTO oneDto = new EntrustQueryDTO();
+            oneDto.securityName = oneData.stock_name;
+            oneDto.securityId = oneData.stock_code;
+            oneDto.entrustName = oneData.entrust_bs==1?"买入":"卖出";
+            oneDto.entrustPrice = oneData.entrust_price;
+            oneDto.entrustAmount = (int)oneData.entrust_amount;
+            oneDto.entrustDate = oneData.entrust_date;
+            oneDto.entrustTime = oneData.entrust_time;
+            oneDto.entrustStatus = parseHengshengEntrustStatusID(oneData.entrust_status);
+
+            dto.positions.add(oneDto);
+        }
+
+        return dto;
+    }
+
+    private static int parseHengshengEntrustStatusID(int status) {
+        if (status == 8) {
+            return ENTRUST_STATUS_DEALED;
+        } else if (status == 6) {
+            return ENTRUST_STATUS_WITHDRAWED;
+        } else {
+            return ENTRUST_STATUS_UNDEALED;
+        }
     }
 }
 

@@ -7,8 +7,8 @@ public class DealQueryDTO {
     public String securityName;
     public String securityId;
     public String entrustName;
-    public String businessPrice;
-    public String businessAmount;
+    public float businessPrice;
+    public int businessAmount;
     public String businessDate;
     public String businessTime;
 }

@@ -17,11 +17,18 @@ import android.widget.TextView;
 
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.livetrade.data.LiveTradeSessionDTO;
+import com.tradehero.livetrade.services.LiveTradeCallback;
+import com.tradehero.livetrade.services.LiveTradeManager;
 import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.livetrade.SecurityOptActualFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockFragment;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.utils.DaggerUtils;
+
+import javax.inject.Inject;
 
 import cn.htsec.data.pkg.trade.TradeManager;
 
@@ -40,6 +47,8 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     public final static String KEY_SECURITY_EXCHANGE = "KEY_SECURITY_EXCHANGE";
     public final static String KEY_PORTFOLIO_ID = "KEY_PORTFOLIO_ID";
     public final static String KEY_IS_FOR_ACTUAL = "KEY_IS_FOR_ACTUAL";
+
+    @Inject LiveTradeManager tradeManager;
 
     private ImageButton searchBtn;
     private ImageButton backButton;
@@ -84,6 +93,9 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_security_opt);
+
+        DaggerUtils.inject(this);
+
         initArguments();
         initResources();
         initViews();
@@ -188,7 +200,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     }
 
     private void gotoDashboard(String strFragment,Bundle bundle) {
-        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME,strFragment);
+        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, strFragment);
         ActivityHelper.launchDashboard(this, bundle);
     }
 
@@ -214,21 +226,42 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
             return;
         }
 
-        if(!TradeManager.getInstance(this).isLogined()){
-            HaitongUtils.jumpToLoginHAITONG(this);
-            return;
-        }
-        isMock = false;
-        mockTV.setTextColor(color_white);
-        mockTV.setBackgroundResource(R.drawable.security_opt_a);
-        actualTV.setBackgroundResource(R.drawable.security_opt_b);
-        actualTV.setTextColor(color_actual);
-        toolbarRL.setBackgroundColor(color_actual);
+        if(!tradeManager.getLiveTradeServices().isSessionValid()) {
+            // Todo.
+            tradeManager.getLiveTradeServices().login("70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
+                @Override
+                public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
+                    isMock = false;
+                    mockTV.setTextColor(color_white);
+                    mockTV.setBackgroundResource(R.drawable.security_opt_a);
+                    actualTV.setBackgroundResource(R.drawable.security_opt_b);
+                    actualTV.setTextColor(color_actual);
+                    toolbarRL.setBackgroundColor(color_actual);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        SecurityOptActualFragment securityOptActualFragment = new SecurityOptActualFragment();
-        securityOptActualFragment.setArguments(getIntent().getExtras());
-        fragmentManager.beginTransaction().replace(R.id.framelayout_mock_actual, securityOptActualFragment).commit();
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    SecurityOptActualFragment securityOptActualFragment = new SecurityOptActualFragment();
+                    securityOptActualFragment.setArguments(getIntent().getExtras());
+                    fragmentManager.beginTransaction().replace(R.id.framelayout_mock_actual, securityOptActualFragment).commit();
+                }
+
+                @Override
+                public void onError(String errorCode, String errorContent) {
+                    THToast.show(errorContent);
+                }
+            });
+        } else {
+            isMock = false;
+            mockTV.setTextColor(color_white);
+            mockTV.setBackgroundResource(R.drawable.security_opt_a);
+            actualTV.setBackgroundResource(R.drawable.security_opt_b);
+            actualTV.setTextColor(color_actual);
+            toolbarRL.setBackgroundColor(color_actual);
+
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            SecurityOptActualFragment securityOptActualFragment = new SecurityOptActualFragment();
+            securityOptActualFragment.setArguments(getIntent().getExtras());
+            fragmentManager.beginTransaction().replace(R.id.framelayout_mock_actual, securityOptActualFragment).commit();
+        }
     }
 
     private void enterSearchPage(){

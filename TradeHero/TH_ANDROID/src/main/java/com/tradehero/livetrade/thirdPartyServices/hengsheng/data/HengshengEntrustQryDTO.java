@@ -1,5 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.hengsheng.data;
 
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.HengshengEntrustQryData;
+
 import java.util.List;
 
 /**
@@ -34,27 +36,6 @@ import java.util.List;
  }
  */
 public class HengshengEntrustQryDTO extends HengshengBaseDTO{
-    public List<EntrustQry> data;
+    public List<HengshengEntrustQryData> data;
 }
 
-class EntrustQry {
-    public String entrust_date;
-    public int entrust_bs;
-    public int exchange_type;
-    public int entrust_type;
-    public String stock_code;
-    public int entrust_prop;
-    public float business_amount;
-    public String position_str;
-    public int entrust_status;
-    public float entrust_amount;
-    public float entrust_price;
-    public int entrust_no;
-    public int withdraw_flag;
-    public String report_time;
-    public String stock_account;
-    public int report_no;
-    public String stock_name;
-    public String entrust_time;
-    public float business_price;
-}

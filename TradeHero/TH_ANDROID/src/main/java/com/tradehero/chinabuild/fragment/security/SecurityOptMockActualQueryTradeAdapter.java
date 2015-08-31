@@ -51,9 +51,9 @@ public class SecurityOptMockActualQueryTradeAdapter extends BaseAdapter{
         TextView operation = (TextView)convertView.findViewById(R.id.operation);
         operation.setText(item.entrustName);
         TextView price = (TextView)convertView.findViewById(R.id.price);
-        price.setText(item.businessPrice);
+        price.setText(String.valueOf(item.businessPrice));
         TextView numbers = (TextView)convertView.findViewById(R.id.numbers);
-        numbers.setText(item.businessAmount);
+        numbers.setText(String.valueOf(item.businessAmount));
         TextView timeDate = (TextView)convertView.findViewById(R.id.time_date);
         TextView timeTime = (TextView)convertView.findViewById(R.id.time_time);
         timeDate.setText(item.businessDate);

@@ -22,6 +22,9 @@ import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.livetrade.data.LiveTradeSessionDTO;
+import com.tradehero.livetrade.services.LiveTradeCallback;
+import com.tradehero.livetrade.services.LiveTradeManager;
 import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.TradeHeroMainActivity;
@@ -52,9 +55,9 @@ import com.tradehero.th.persistence.prefs.ShareDialogROIValueKey;
 import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
+import com.tradehero.th.utils.DaggerUtils;
 
 import cn.htsec.data.ServerManager;
-import cn.htsec.data.pkg.trade.TradeManager;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +107,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
     private final long duration_showing_dialog = 120000;
     private boolean availableShowDialog = false;
 
-    private TradeManager mTradeManager = null;
+    @Inject LiveTradeManager mTradeManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -116,11 +119,10 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         portfolioFetchListener = new WatchlistPositionFragmentPortfolioCacheListener();
         portfolioCompactListFetchListener = new BasePurchaseManagementPortfolioCompactListFetchListener();
 
-        //下载站点列表 海通
-        mTradeManager = TradeManager.getInstance(getActivity());
         ServerManager serverManager = ServerManager.getInstance(getActivity());
         serverManager.startDownloadServerList();
 
+        DaggerUtils.inject(this);
     }
 
     @Override
@@ -591,21 +593,23 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
     }
 
     private void enterSecurityFirmBargain(){
-        if(mTradeManager==null){
-            mTradeManager = TradeManager.getInstance(Application.context());
-        }
-        if(mTradeManager.isLogined()){
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
-            bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
-            Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
-            intent.putExtras(bundle);
-            startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+        mTradeManager.getLiveTradeServices().login("70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
+            @Override
+            public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
+                bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+                Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+            }
 
-        } else {
-            HaitongUtils.jumpToLoginHAITONG(getActivity());
-        }
+            @Override
+            public void onError(String errorCode, String errorContent) {
+
+            }
+        });
     }
 
     private void enterSecurityOpenAccount(){

@@ -1,5 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.hengsheng.data;
 
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.HengshengEntrustEnterData;
+
 import java.util.List;
 
 /**
@@ -18,9 +20,6 @@ import java.util.List;
  *
  */
 public class HengShengEntrustEnterDTO extends HengshengBaseDTO{
-    public List<EntrustEnterDTO> data;
+    public List<HengshengEntrustEnterData> data;
 }
 
-class EntrustEnterDTO {
-    public int entrust_no;
-}

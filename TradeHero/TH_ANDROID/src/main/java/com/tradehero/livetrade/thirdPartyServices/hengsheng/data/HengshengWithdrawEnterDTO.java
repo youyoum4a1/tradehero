@@ -1,5 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.hengsheng.data;
 
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.HengshengWithdrawEnterData;
+
 import java.util.List;
 
 /**
@@ -18,9 +20,6 @@ import java.util.List;
  }
  */
 public class HengshengWithdrawEnterDTO extends HengshengBaseDTO{
-    public List<WithdrawEnterDTO> data;
+    public List<HengshengWithdrawEnterData> data;
 }
 
-class WithdrawEnterDTO {
-    public int entrust_no;
-}

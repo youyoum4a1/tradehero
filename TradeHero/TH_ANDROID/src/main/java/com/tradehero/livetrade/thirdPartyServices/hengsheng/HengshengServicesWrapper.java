@@ -101,7 +101,7 @@ import retrofit.client.Response;
             HengshengRequestCallback<HengshengBalanceDTO> cb = new HengshengRequestCallback<HengshengBalanceDTO>() {
                 @Override
                 public void hengshengSuccess(HengshengBaseDTO hengshengBaseDTO, Response response) {
-                    LiveTradeBalanceDTO dto = new LiveTradeBalanceDTO();
+                    LiveTradeBalanceDTO dto = LiveTradeBalanceDTO.parseHengshengDTO((HengshengBalanceDTO)hengshengBaseDTO);
                     callback.onSuccess(dto);
                 }
 
@@ -136,7 +136,7 @@ import retrofit.client.Response;
         HengshengRequestCallback<HengshengPositionDTO> cb = new HengshengRequestCallback<HengshengPositionDTO>() {
             @Override
             public void hengshengSuccess(HengshengBaseDTO hengshengBaseDTO, Response response) {
-                LiveTradePositionDTO dto = new LiveTradePositionDTO();
+                LiveTradePositionDTO dto = LiveTradePositionDTO.parseHengshengDTO((HengshengPositionDTO)hengshengBaseDTO);
                 callback.onSuccess(dto);
             }
 
@@ -176,7 +176,7 @@ import retrofit.client.Response;
             HengshengRequestCallback<HengShengEntrustEnterDTO> cb = new HengshengRequestCallback<HengShengEntrustEnterDTO>() {
                 @Override
                 public void hengshengSuccess(HengshengBaseDTO hengshengBaseDTO, Response response) {
-                    LiveTradeEntrustEnterDTO dto = new LiveTradeEntrustEnterDTO();
+                    LiveTradeEntrustEnterDTO dto = LiveTradeEntrustEnterDTO.parseHengshengDTO((HengShengEntrustEnterDTO) hengshengBaseDTO);
                     callback.onSuccess(dto);
                 }
 
@@ -222,7 +222,7 @@ import retrofit.client.Response;
             HengshengRequestCallback<HengShengEntrustEnterDTO> cb = new HengshengRequestCallback<HengShengEntrustEnterDTO>() {
                 @Override
                 public void hengshengSuccess(HengshengBaseDTO hengshengBaseDTO, Response response) {
-                    LiveTradeEntrustEnterDTO dto = new LiveTradeEntrustEnterDTO();
+                    LiveTradeEntrustEnterDTO dto = LiveTradeEntrustEnterDTO.parseHengshengDTO((HengShengEntrustEnterDTO) hengshengBaseDTO);
                     callback.onSuccess(dto);
                 }
 
@@ -268,7 +268,7 @@ import retrofit.client.Response;
             HengshengRequestCallback<HengshengEntrustQryDTO> cb = new HengshengRequestCallback<HengshengEntrustQryDTO>() {
                 @Override
                 public void hengshengSuccess(HengshengBaseDTO hengshengBaseDTO, Response response) {
-                    LiveTradePendingEntrustQueryDTO dto = new LiveTradePendingEntrustQueryDTO();
+                    LiveTradePendingEntrustQueryDTO dto = LiveTradePendingEntrustQueryDTO.parseHengshengDTO((HengshengEntrustQryDTO) hengshengBaseDTO);
                     callback.onSuccess(dto);
                 }
 
@@ -306,7 +306,7 @@ import retrofit.client.Response;
             HengshengRequestCallback<HengshengEntrustQryDTO> cb = new HengshengRequestCallback<HengshengEntrustQryDTO>() {
                 @Override
                 public void hengshengSuccess(HengshengBaseDTO hengshengBaseDTO, Response response) {
-                    LiveTradeEntrustQueryDTO dto = new LiveTradeEntrustQueryDTO();
+                    LiveTradeEntrustQueryDTO dto = LiveTradeEntrustQueryDTO.parseHengshengDTO((HengshengEntrustQryDTO) hengshengBaseDTO);
                     callback.onSuccess(dto);
                 }
 
@@ -344,7 +344,7 @@ import retrofit.client.Response;
             HengshengRequestCallback<HengshengWithdrawEnterDTO> cb = new HengshengRequestCallback<HengshengWithdrawEnterDTO>() {
                 @Override
                 public void hengshengSuccess(HengshengBaseDTO hengshengBaseDTO, Response response) {
-                    LiveTradeEntrustCancelDTO dto = new LiveTradeEntrustCancelDTO();
+                    LiveTradeEntrustCancelDTO dto = LiveTradeEntrustCancelDTO.parseHengshengDTO((HengshengWithdrawEnterDTO) hengshengBaseDTO);
                     callback.onSuccess(dto);
                 }
 
@@ -382,7 +382,7 @@ import retrofit.client.Response;
             HengshengRequestCallback<HengshengBusinessQryDTO> cb = new HengshengRequestCallback<HengshengBusinessQryDTO>() {
                 @Override
                 public void hengshengSuccess(HengshengBaseDTO hengshengBaseDTO, Response response) {
-                    LiveTradeDealQueryDTO dto = new LiveTradeDealQueryDTO();
+                    LiveTradeDealQueryDTO dto = LiveTradeDealQueryDTO.parseHengshengDTO((HengshengBusinessQryDTO) hengshengBaseDTO);
                     callback.onSuccess(dto);
                 }
 

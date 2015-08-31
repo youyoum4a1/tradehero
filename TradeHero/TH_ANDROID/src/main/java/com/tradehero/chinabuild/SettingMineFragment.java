@@ -25,6 +25,9 @@ import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.livetrade.data.LiveTradeSessionDTO;
+import com.tradehero.livetrade.services.LiveTradeCallback;
+import com.tradehero.livetrade.services.LiveTradeManager;
 import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -43,6 +46,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 
@@ -89,6 +93,7 @@ public class SettingMineFragment extends AbsBaseFragment implements View.OnClick
     private Button loginAccountBtn;
 
     @Inject Analytics analytics;
+    @Inject LiveTradeManager tradeManager;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,6 +101,8 @@ public class SettingMineFragment extends AbsBaseFragment implements View.OnClick
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
         fetchUserProfile();
         setHasOptionsMenu(true);
+
+        DaggerUtils.inject(this);
     }
 
     @Override
@@ -467,18 +474,23 @@ public class SettingMineFragment extends AbsBaseFragment implements View.OnClick
     }
 
     private void enterSecurityFirmBargain(){
-        if(TradeManager.getInstance(Application.context()).isLogined()){
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
-            bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
-            Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
-            intent.putExtras(bundle);
-            startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+        tradeManager.getLiveTradeServices().login("70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
+            @Override
+            public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
+                bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+                Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+            }
 
-        } else {
-            HaitongUtils.jumpToLoginHAITONG(getActivity());
-        }
+            @Override
+            public void onError(String errorCode, String errorContent) {
+
+            }
+        });
     }
 
     private void enterSecurityOpenAccount(){

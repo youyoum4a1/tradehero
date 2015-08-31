@@ -131,11 +131,12 @@ public class SecurityOptActualSubDelegationFragment extends Fragment implements 
     private void cancelOrder() {
         if (mListViewAdapter.getCount() > 0) {
             PendingEntrustQueryDTO dto = mListViewAdapter.getItem(mSelectedPosition);
-            mTradeManager.getLiveTradeServices().entrustCancel(dto.marketCode, dto.entrustDate, dto.withdrawCate, dto.entrustNo, dto.securityId, new LiveTradeCallback<LiveTradeEntrustCancelDTO>() {
+            mTradeManager.getLiveTradeServices().entrustCancel(dto.marketCode, dto.entrustNo, dto.entrustDate, dto.withdrawCate, dto.securityId, new LiveTradeCallback<LiveTradeEntrustCancelDTO>() {
                 @Override
                 public void onSuccess(LiveTradeEntrustCancelDTO liveTradeEntrustCancelDTO) {
                     mSelectedPosition = -1;
                     queryPendingDelegationHistory();
+                    THToast.show(liveTradeEntrustCancelDTO.resultMsg);
                 }
 
                 @Override

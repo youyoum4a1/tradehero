@@ -1,6 +1,8 @@
 package com.tradehero.livetrade.data;
 
 import com.tradehero.livetrade.data.subData.PendingEntrustQueryDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengEntrustQryDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.HengshengEntrustQryData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,5 +80,29 @@ public class LiveTradePendingEntrustQueryDTO {
         Timber.d("lyl " + sb.toString());
 
         return dtos;
+    }
+
+    public static LiveTradePendingEntrustQueryDTO parseHengshengDTO(HengshengEntrustQryDTO data) {
+        LiveTradePendingEntrustQueryDTO dto = new LiveTradePendingEntrustQueryDTO();
+
+        for (int i = 0; i < data.data.size(); i ++) {
+            HengshengEntrustQryData oneData = data.data.get(i);
+            PendingEntrustQueryDTO oneDto = new PendingEntrustQueryDTO();
+            oneDto.securityName = oneData.stock_name;
+            oneDto.securityId = oneData.stock_code;
+            oneDto.entrustName = oneData.entrust_bs==1?"买入":"卖出";
+            oneDto.entrustPrice = oneData.entrust_price;
+            oneDto.entrustAmount = (int)oneData.entrust_amount;
+            oneDto.entrustDate = oneData.entrust_date;
+            oneDto.entrustTime = oneData.entrust_time;
+            oneDto.marketCode = "";     // Useless for Hengsheng
+            oneDto.secAccount = "";     // Useless for Hengsheng
+            oneDto.withdrawCate = "";   // Useless for Hengsheng
+            oneDto.entrustNo = oneData.entrust_no;
+
+            dto.positions.add(oneDto);
+        }
+
+        return dto;
     }
 }

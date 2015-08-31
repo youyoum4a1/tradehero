@@ -1,5 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.hengsheng.data;
 
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.HengshengBalanceData;
+
 import java.util.List;
 
 /**
@@ -25,19 +27,7 @@ import java.util.List;
  {"error_no":"-201","error_code":"10204","error_info":"可用股票数量不足"}
  */
 public class HengshengBalanceDTO extends HengshengBaseDTO{
-    public List<BalanceDTO> data;
-}
-
-class BalanceDTO {
-    public float frozen_balance;
-    public float asset_balance;
-    public float unfrozen_balance;
-    public float enable_balance;
-    public float fetch_balance;
-    public int money_type;
-    public float current_balance;
-    public float fund_balance;
-    public float market_value;
+    public List<HengshengBalanceData> data;
 }
 
 

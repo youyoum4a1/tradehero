@@ -57,7 +57,7 @@ public class SecurityOptMockActualDelegationAdapter extends BaseAdapter{
         TextView price = (TextView)convertView.findViewById(R.id.price);
         price.setText(String.valueOf(item.entrustPrice));
         TextView numbers = (TextView)convertView.findViewById(R.id.numbers);
-        numbers.setText(item.entrustAmount);
+        numbers.setText(String.valueOf(item.entrustAmount));
         TextView timeDate = (TextView)convertView.findViewById(R.id.time_date);
         TextView timeTime = (TextView) convertView.findViewById(R.id.time_time);
         timeDate.setText(item.entrustDate);

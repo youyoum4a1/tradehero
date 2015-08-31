@@ -93,6 +93,7 @@ import com.tradehero.livetrade.SecurityOptActualSubDelegationFragment;
 import com.tradehero.livetrade.SecurityOptActualSubQueryFragment;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.activities.SearchSecurityActualActivity;
+import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.adapters.CNPersonTradePositionListAdapter;
 import com.tradehero.th.adapters.CompetitionListAdapter;
 import com.tradehero.th.adapters.LeaderboardListAdapter;
@@ -331,7 +332,8 @@ import javax.inject.Singleton;
                         SearchSecurityActualActivity.class,
                         SecurityOptActualSubBuyFragment.class,
                         SecurityOptActualSubSellFragment.class,
-                        SecurityOptActualFragment.class
+                        SecurityOptActualFragment.class,
+                        SecurityOptActivity.class
                         //Security Opt Actual
 
                         //China Build End

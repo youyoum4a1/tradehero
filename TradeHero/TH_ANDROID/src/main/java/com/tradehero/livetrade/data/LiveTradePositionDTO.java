@@ -1,6 +1,8 @@
 package com.tradehero.livetrade.data;
 
 import com.tradehero.livetrade.data.subData.PositionDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengPositionDTO;
+import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.HengshengPositionData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,29 @@ public class LiveTradePositionDTO {
             oneDto.enableAmount = tradeDataHelper.get(i, "enable_amt", 0);
             oneDto.marketName = tradeDataHelper.get(i, "market_name", "");
             dto.positions.add(oneDto);
+        }
+
+        return dto;
+    }
+
+    public static LiveTradePositionDTO parseHengshengDTO(HengshengPositionDTO hengshengDTO) {
+        LiveTradePositionDTO dto = new LiveTradePositionDTO();
+
+        for (int i = 0; i < hengshengDTO.data.size(); i ++) {
+            HengshengPositionData oneData = hengshengDTO.data.get(i);
+            PositionDTO oneDTO = new PositionDTO();
+
+            oneDTO.stockName = oneData.stock_name;
+            oneDTO.stockCode = oneData.stock_code;
+            oneDTO.profit = oneData.income_balance;
+            oneDTO.profitRatio = oneData.income_balance / (oneData.market_value - oneData.income_balance) * 100;
+            oneDTO.marketValue = oneData.market_value;
+            oneDTO.price = oneData.last_price;
+            oneDTO.currentAmount = oneData.current_amount;
+            oneDTO.enableAmount = oneData.enable_amount;
+            oneDTO.marketName = "沪A";       // TODO
+
+            dto.positions.add(oneDTO);
         }
 
         return dto;
