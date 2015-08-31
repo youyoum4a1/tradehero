@@ -20,9 +20,35 @@ public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFr
         super.initView();
 
         discussionPostActionButtonsView.hideSocialButtons();
+    }
 
-        Bundle bundle = getArguments();
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = null;
+
+        if (savedInstanceState != null)
+        {
+            bundle = savedInstanceState;
+        }
+        else
+        {
+            bundle = getArguments();
+        }
+
         String comment = SecurityDiscussionEditPostFragment.getComment(bundle);
+
+        if (comment != null)
+        {
+            discussionPostContent.setText(comment);
+        }
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        String comment = SecurityDiscussionEditPostFragment.getComment(outState);
 
         if (comment != null)
         {

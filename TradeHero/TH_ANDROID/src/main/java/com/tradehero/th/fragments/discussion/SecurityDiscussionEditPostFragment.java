@@ -50,12 +50,14 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
 
     @Nullable public static String getComment(@Nullable Bundle args)
     {
-        String extracted = null;
-        if (args != null && args.containsKey(BUNDLE_KEY_SECURITY_ID))
+        String comment = null;
+
+        if (args != null)
         {
-            extracted = args.getString(BUNDLE_KEY_COMMENT);
+            comment = args.getString(BUNDLE_KEY_COMMENT, "");
         }
-        return extracted;
+
+        return comment;
     }
 
     @Override public void onResume()
