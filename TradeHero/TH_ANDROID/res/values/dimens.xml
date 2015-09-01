@@ -163,7 +163,7 @@
   <dimen name="discussion_separator_thickness">0.5dp</dimen>
   <dimen name="discussion_list_padding_top">@dimen/size_7</dimen>
   <dimen name="discussion_list_padding_bottom">@dimen/size_12</dimen>
-  <dimen name="leaderboard_position_width">@dimen/size_7</dimen>
+  <dimen name="leaderboard_position_width">@dimen/size_5</dimen>
 
   <dimen name="message_read_all_button_radius">@dimen/global_corner_radius</dimen>
   <dimen name="message_read_all_margin_bottom">@dimen/size_1</dimen>

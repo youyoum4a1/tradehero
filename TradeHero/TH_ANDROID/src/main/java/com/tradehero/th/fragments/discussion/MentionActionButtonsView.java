@@ -6,13 +6,13 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.security.SecuritySearchFragment;
-import com.tradehero.th.fragments.social.AllRelationsFragment;
+import com.tradehero.th.fragments.social.AllRelationsRecyclerFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import javax.inject.Inject;
@@ -61,7 +61,8 @@ public class MentionActionButtonsView extends LinearLayout
                         switch(event.view().getId())
                         {
                             case R.id.btn_mention:
-                                return navigator.pushFragment(AllRelationsFragment.class, bundle);
+                                AllRelationsRecyclerFragment.putPerPage(bundle, AllRelationsRecyclerFragment.PREFERRED_PER_PAGE);
+                                return navigator.pushFragment(AllRelationsRecyclerFragment.class, bundle);
                             case R.id.btn_security_tag:
                                 return navigator.pushFragment(SecuritySearchFragment.class, bundle);
                         }

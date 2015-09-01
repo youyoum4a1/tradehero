@@ -6,13 +6,11 @@ import com.tradehero.th.api.users.UserBaseKey;
 public class FollowRequest
 {
     @NonNull public final UserBaseKey heroId;
-    public final boolean isPremium;
 
     //<editor-fold desc="Constructors">
-    public FollowRequest(@NonNull UserBaseKey heroId, boolean isPremium)
+    public FollowRequest(@NonNull UserBaseKey heroId)
     {
         this.heroId = heroId;
-        this.isPremium = isPremium;
     }
     //</editor-fold>
 }

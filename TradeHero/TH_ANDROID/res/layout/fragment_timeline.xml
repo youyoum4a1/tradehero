@@ -48,7 +48,7 @@
     <Button
         android:id="@+id/follow_button"
         style="@style/TH.Button.Timeline.Follow"
-        android:background="@drawable/basic_green_selector"
+        android:background="@drawable/basic_blue_selector"
         android:enabled="false"
         android:text="@string/follow"
         android:visibility="gone"
@@ -57,7 +57,7 @@
     <Button
         android:id="@+id/message_button"
         style="@style/TH.Button.Timeline.Message"
-        android:background="@drawable/basic_blue_selector"
+        android:background="@drawable/basic_light_blue_selector"
         android:enabled="false"
         android:text="@string/message"
         android:visibility="gone"

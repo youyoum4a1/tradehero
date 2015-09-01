@@ -1,104 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
+    android:orientation="vertical"
     >
 
-  <LinearLayout
+  <EditText
+      android:id="@+id/message_input_edittext"
+      style="@style/TH.Body"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:gravity="center_horizontal"
-      android:padding="@dimen/margin_small"
+      android:layout_gravity="center_horizontal"
+      android:layout_margin="@dimen/margin_small"
+      android:layout_marginTop="@dimen/margin_small"
+      android:focusable="true"
+      android:gravity="left|top"
+      android:hint="@string/message_center_write_something"
+      android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
+      android:minHeight="@dimen/size_10"
+      android:padding="@dimen/margin_xsmall"
       >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        >
+    <requestFocus />
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="@string/message_center_sending_to"
-          android:gravity="center_vertical|right"
-          style="@style/TH.Subhead"
-          />
+  </EditText>
 
-      <TextView
-          android:id="@+id/message_type"
-          android:layout_height="wrap_content"
-          android:layout_width="wrap_content"
-          android:gravity="center_vertical|left"
-          style="@style/TH.Spinner"
-          tools:text="Free Follower(s)"
-          />
+  <LinearLayout
+      android:id="@+id/mention_buttons_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_gravity="left"
+      android:layout_marginTop="@dimen/margin_small"
+      android:background="@color/lighter_grey"
+      >
 
-    </LinearLayout>
-
-    <com.tradehero.common.widget.BetterViewAnimator
-        android:id="@+id/follower_count_switcher"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        >
-
-      <TextView
-          android:id="@+id/follower_count_hint"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          tools:text="You have 10 free followers"
-          style="@style/TH.Body"
-          android:gravity="center"
-          />
-
-      <TextView
-          android:id="@+id/no_follower_hint"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          tools:text="You have no free followers"
-          style="@style/TH.Body"
-          android:gravity="center"
-          android:textColor="@color/red"
-          />
-
-    </com.tradehero.common.widget.BetterViewAnimator>
-
-    <LinearLayout
-        android:id="@+id/mention_buttons_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
-        >
-
-      <include layout="@layout/discussion_edit_post_mention_buttons"/>
-
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/message_input_edittext"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:minHeight="@dimen/size_10"
-        style="@style/TH.Body"
-        android:gravity="left|top"
-        android:padding="@dimen/margin_xsmall"
-        android:inputType="text|textImeMultiLine|textMultiLine|textCapSentences|textAutoCorrect|textAutoComplete"
-        android:focusable="true"
-        android:layout_marginTop="@dimen/margin_small"
-        android:hint="@string/message_center_write_something"
-        >
-
-      <requestFocus/>
-
-    </EditText>
+    <include layout="@layout/discussion_edit_post_mention_buttons" />
 
   </LinearLayout>
 
-</ScrollView>
+</RelativeLayout>

@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.util.SortedList;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,17 +26,8 @@ public abstract class TypedRecyclerAdapter<T>
     protected OnItemClickedListener<T> mOnItemClickedListener;
     protected OnItemLongClickedListener<T> mOnItemLongClickedListener;
 
-    public TypedRecyclerAdapter(Class<T> klass)
+    public TypedRecyclerAdapter(Class<T> klass, @NonNull TypedRecyclerComparator<T> comparator)
     {
-        this(klass, null);
-    }
-
-    public TypedRecyclerAdapter(Class<T> klass, @Nullable TypedRecyclerComparator<T> comparator)
-    {
-        if (comparator == null)
-        {
-            comparator = this.createDefaultComparator();
-        }
         this.mComparator = comparator;
 
         this.mSortedList = new SortedList<>(klass, new SortedListAdapterCallback<T>(this)
@@ -60,11 +50,6 @@ public abstract class TypedRecyclerAdapter<T>
                 return TypedRecyclerAdapter.this.mComparator.areItemsTheSame(item1, item2);
             }
         });
-    }
-
-    private TypedRecyclerComparator<T> createDefaultComparator()
-    {
-        return new TypedRecyclerComparator<>();
     }
 
     public void setOnItemClickedListener(@NonNull OnItemClickedListener<T> onItemClickedListener)
@@ -223,21 +208,18 @@ public abstract class TypedRecyclerAdapter<T>
         boolean onItemLongClicked(int position, TypedViewHolder<T> viewHolder, T object);
     }
 
-    public static class TypedRecyclerComparator<T>
+    public static abstract class TypedRecyclerComparator<T>
     {
-        public int compare(T o1, T o2)
+        public abstract int compare(T o1, T o2);
+
+        public boolean areItemsTheSame(T item1, T item2)
         {
-            return 0;
+            return item1.equals(item2);
         }
 
         public boolean areContentsTheSame(T oldItem, T newItem)
         {
             return oldItem.toString().equalsIgnoreCase(newItem.toString());
-        }
-
-        public boolean areItemsTheSame(T item1, T item2)
-        {
-            return item1.equals(item2);
         }
     }
 

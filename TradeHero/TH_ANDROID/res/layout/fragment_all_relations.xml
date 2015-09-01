@@ -12,27 +12,10 @@
       android:layout_height="match_parent"
       />
 
-  <TextView
-      android:id="@+id/sending_to_header"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:padding="@dimen/margin_small"
-      android:text="@string/message_center_sending_to"
-      style="@style/TH.Subhead"
-      android:background="@color/white"/>
-
-  <View
-      android:id="@+id/divider"
-      android:layout_width="match_parent"
-      android:layout_height="1dp"
-      android:layout_below="@id/sending_to_header"
-      android:background="@color/tradehero_divider_grey"/>
-
-  <ListView
-      android:id="@+id/listview"
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/recycler_view"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:layout_below="@id/divider"
       android:clipToPadding="false"
       android:background="@null"/>
 

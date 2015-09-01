@@ -139,24 +139,6 @@ import javax.inject.Singleton;
                         .setDescription("Additional 100,000 Virtual Dollars");
                 price = 4.99f;
                 break;
-            case THAmazonConstants.CREDIT_1:
-                builder.setProductType(ProductType.CONSUMABLE)
-                        .setTitle("1 Premium Follow Credit")
-                        .setDescription("Follow your hero trades in real time");
-                price = 1.99f;
-                break;
-            case THAmazonConstants.CREDIT_10:
-                builder.setProductType(ProductType.CONSUMABLE)
-                        .setTitle("10 Premium Follow Credits")
-                        .setDescription("Follow your heroes trades in real time");
-                price = 19.99f;
-                break;
-            case THAmazonConstants.CREDIT_20:
-                builder.setProductType(ProductType.CONSUMABLE)
-                        .setTitle("20 Premium Follow Credits")
-                        .setDescription("Follow your heroes trades in real time");
-                price = 39.99f;
-                break;
             case THAmazonConstants.ALERT_1:
             case THAmazonConstants.ALERT_5:
             case THAmazonConstants.ALERT_UNLIMITED:

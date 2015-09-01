@@ -29,26 +29,6 @@ public class THAmazonProductDetailTuner
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO;
                 break;
 
-            case THAmazonConstants.CREDIT_1:
-                productDetails.iconResId = R.drawable.icn_follow_credits;
-                productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
-                break;
-
-            //case THAmazonConstants.CREDIT_5:
-            //    productDetails.iconResId = R.drawable.credit_1;
-            //    productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
-            //    break;
-
-            case THAmazonConstants.CREDIT_10:
-                productDetails.iconResId = R.drawable.icn_follow_credits_10;
-                productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
-                break;
-
-            case THAmazonConstants.CREDIT_20:
-                productDetails.iconResId = R.drawable.icn_follow_credits_20;
-                productDetails.domain = ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS;
-                break;
-
             case THAmazonConstants.ALERT_1:
                 productDetails.iconResId = R.drawable.buy_alerts_2;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;

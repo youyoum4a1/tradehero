@@ -221,24 +221,14 @@ public interface UserServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
-    @POST("/users/{userId}/follow")
-    Observable<UserProfileDTO> follow(
-            @Path("userId") int userId);
-
     @POST("/users/{userId}/follow/free")
     Observable<UserProfileDTO> freeFollow(
-            @Path("userId") int userId);
-
-    @POST("/users/{userId}/follow")
-    Observable<UserProfileDTO> follow(
-            @Path("userId") int userId,
-            @Body PurchaseReportDTO purchaseReportDTO);
-    //</editor-fold>
+            @Path("userId") int userId, @Body String emptyBody);
 
     //<editor-fold desc="Unfollow Hero">
     @POST("/users/{userId}/unfollow")
     Observable<UserProfileDTO> unfollow(
-            @Path("userId") int userId);
+            @Path("userId") int userId, @Body String emptyBody);
     //</editor-fold>
 
     //<editor-fold desc="Get Heroes">

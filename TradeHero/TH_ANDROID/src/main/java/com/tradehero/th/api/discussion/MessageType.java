@@ -10,12 +10,12 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 public enum MessageType
 {
     PRIVATE(1, R.string.na, AnalyticsConstants.PrivateMessage),
-    BROADCAST_FREE_FOLLOWERS(2, R.string.follower_type_free, AnalyticsConstants.BroadcastFreeFollowers),
-    BROADCAST_PAID_FOLLOWERS(3, R.string.follower_type_premium, AnalyticsConstants.BroadcastPremiumFollowers),
+    @Deprecated BROADCAST_FREE_FOLLOWERS(2, R.string.follower_type_free, AnalyticsConstants.BroadcastFreeFollowers),
+    @Deprecated BROADCAST_PAID_FOLLOWERS(3, R.string.follower_type_premium, AnalyticsConstants.BroadcastPremiumFollowers),
     BROADCAST_ALL_FOLLOWERS(4, R.string.follower_type_all, AnalyticsConstants.BroadcastAllFollowers),;
 
     public final int typeId;
-    @StringRes public final int titleResource;
+    @Deprecated @StringRes public final int titleResource;
     public final String localyticsResource;
 
     //<editor-fold desc="Constructors">

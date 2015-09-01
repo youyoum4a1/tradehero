@@ -35,9 +35,9 @@ import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
+import com.tradehero.th.fragments.social.follower.FollowersFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
+import com.tradehero.th.fragments.social.hero.HeroesFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
@@ -91,12 +91,12 @@ import javax.inject.Singleton;
                 CompetitionWebViewFragment.class,
                 DiscoveryMainFragment.class,
                 FacebookShareActivity.class,
-                FollowerManagerFragment.class,
+                FollowersFragment.class,
                 FriendsInvitationFragment.class,
                 FXInfoFragment.class,
                 FXMainFragment.class,
                 FXMainFragment.class,
-                HeroManagerFragment.class,
+                HeroesFragment.class,
                 LeaderboardCommunityFragment.class,
                 MainCompetitionFragment.class,
                 MessagesCenterNewFragment.class,
@@ -116,8 +116,6 @@ import javax.inject.Singleton;
                 LiveActivityUtil.getRoutableKYC()
         );
         DiscoveryMainFragment.registerAliases(router);
-        FollowerManagerFragment.registerAliases(router);
-        HeroManagerFragment.registerAliases(router);
         StoreScreenFragment.registerAliases(router);
         TrendingMainFragment.registerAliases(router);
         UpdateCenterFragment.registerAliases(router);

@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.leaderboard;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -23,18 +22,22 @@ import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.models.social.FollowRequest;
-import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
+import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.tradehero.th.rx.ReplaceWithFunc1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+import rx.Observable;
 import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class LeaderboardMarkUserListFragmentUtil
@@ -72,6 +75,7 @@ public class LeaderboardMarkUserListFragmentUtil
     {
         this.fragment = fragment;
         this.leaderboardType = leaderboardType;
+        HierarchyInjector.inject(fragment.getActivity(), this);
     }
 
     public void onStart()
@@ -105,11 +109,18 @@ public class LeaderboardMarkUserListFragmentUtil
                     if (toFollow != null)
                     {
                         handleFollowRequested(toFollow);
+                        LeaderboardMarkedUserItemDisplayDto markedUserItemDisplayDto = (LeaderboardMarkedUserItemDisplayDto) userAction.dto;
+                        markedUserItemDisplayDto.setIsFollowing(true);
+                        fragment.updateRow(markedUserItemDisplayDto);
                     }
                     else
                     {
                         Timber.e(new NullPointerException(), "ToFollow was null");
                     }
+                    break;
+
+                case UNFOLLOW:
+                    handleUnfollowRequested(userAction.dto);
                     break;
 
                 case POSITIONS:
@@ -120,6 +131,57 @@ public class LeaderboardMarkUserListFragmentUtil
                     handleRulesRequested((CompetitionLeaderboardItemDisplayDTO) userAction.dto);
                     break;
             }
+        }
+    }
+
+    private void handleUnfollowRequested(LeaderboardItemDisplayDTO toUnfollow)
+    {
+        LeaderboardMarkedUserItemDisplayDto markedUser = (LeaderboardMarkedUserItemDisplayDto) toUnfollow;
+        UserBaseDTO user = markedUser.leaderboardUserDTO;
+        FollowUserAssistant assistant;
+        if (user != null)
+        {
+            assistant = new FollowUserAssistant(fragment.getActivity(), user.getBaseKey());
+            onStopSubscriptions.add(
+                    assistant.showUnFollowConfirmation(user.displayName)
+                            .map(new ReplaceWithFunc1<OnDialogClickEvent, LeaderboardMarkedUserItemDisplayDto>(
+                                    markedUser))
+                            .doOnNext(new Action1<LeaderboardMarkedUserItemDisplayDto>()
+                            {
+                                @Override public void call(LeaderboardMarkedUserItemDisplayDto leaderboardMarkedUserItemDisplayDto)
+                                {
+                                    leaderboardMarkedUserItemDisplayDto.setIsFollowing(false);
+                                    fragment.updateRow(leaderboardMarkedUserItemDisplayDto);
+                                }
+                            })
+                            .map(new ReplaceWithFunc1<LeaderboardMarkedUserItemDisplayDto, FollowUserAssistant>(assistant))
+                            .doOnNext(new Action1<FollowUserAssistant>()
+                            {
+                                @Override public void call(FollowUserAssistant followUserAssistant)
+                                {
+                                    followUserAssistant.unFollowFromCache();
+                                }
+                            })
+                            .observeOn(Schedulers.io())
+                            .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
+                            {
+                                @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
+                                {
+                                    return followUserAssistant.unFollowFromServer();
+                                }
+                            })
+                            .subscribe(new Action1<UserProfileDTO>()
+                            {
+                                @Override public void call(UserProfileDTO userProfileDTO)
+                                {
+                                    fragment.setCurrentUserProfileDTO(userProfileDTO);
+                                }
+                            }, new TimberOnErrorAction1("Failed to unfollow hero"))
+            );
+        }
+        else
+        {
+            Timber.e("Error on unfollow from leaderboard, user is null %s", markedUser);
         }
     }
 
@@ -145,34 +207,38 @@ public class LeaderboardMarkUserListFragmentUtil
 
     protected void handleFollowRequested(@NonNull final UserBaseDTO userBaseDTO)
     {
-        onStopSubscriptions.add(AppObservable.bindSupportFragment(
-                fragment,
-                new ChoiceFollowUserAssistantWithDialog(
-                        fragment.getActivity(),
-                        userBaseDTO
-                        // ,getApplicablePortfolioId()
-                ).launchChoiceRx())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<Pair<FollowRequest, UserProfileDTO>>()
-                        {
-                            @Override public void call(Pair<FollowRequest, UserProfileDTO> pair)
-                            {
-                                fragment.setCurrentUserProfileDTO(pair.second);
-                                int followType = pair.second.getFollowType(userBaseDTO);
-                                if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+        FollowUserAssistant followUserAssistant = new FollowUserAssistant(fragment.getActivity(), userBaseDTO.getBaseKey());
+        followUserAssistant.followingInCache();
+        onStopSubscriptions.add(
+                AppObservable.bindSupportFragment(
+                        fragment,
+                        followUserAssistant.followingInServer())
+                        .subscribe(new Action1<UserProfileDTO>()
+                                   {
+                                       @Override public void call(UserProfileDTO userProfileDTO)
+                                       {
+                                           fragment.setCurrentUserProfileDTO(userProfileDTO);
+                                           int followType = userProfileDTO.getFollowType(userBaseDTO);
+                                           if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
+                                           {
+                                               analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success,
+                                                       AnalyticsConstants.Leaderboard));
+                                           }
+                                           //else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
+                                           //{
+                                           //    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success,
+                                           //            AnalyticsConstants.Leaderboard));
+                                           //}
+                                       }
+                                   },
+                                new Action1<Throwable>()
                                 {
-                                    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
-                                }
-                                else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
-                                {
-                                    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success, AnalyticsConstants.Leaderboard));
-                                }
-                                fragment.updateListViewRow(pair.second, userBaseDTO.getBaseKey());
-                            }
-                        },
-                        new ToastOnErrorAction1()
-                ));
+                                    @Override public void call(Throwable throwable)
+                                    {
+                                        Timber.e(throwable, "Failed to follow hero");
+                                    }
+                                })
+        );
     }
 
     protected void handlePositionsRequested(@NonNull LeaderboardMarkedUserItemDisplayDto dto)

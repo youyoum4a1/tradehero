@@ -33,8 +33,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     public int lbmuRoiPeriodVisibility;
     String lbmuDisplayPicture;
     @ViewVisibilityValue final int lbmuFoFVisibility;
-    @ViewVisibilityValue public int lbmuFollowUserVisibility;
-    @ViewVisibilityValue public int lbmuFollowingUserVisibility;
+    private boolean isFollowing;
     private boolean expanded;
     private boolean isMyOwnRanking;
 
@@ -58,6 +57,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.isMyOwnRanking = true;
         this.lbmuRoiPeriod = null;
         this.lbmuRoiPeriodVisibility = View.GONE;
+        this.isFollowing = false;
     }
 
     /**
@@ -81,6 +81,7 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.lbmuDisplayPicture = currentUserProfileDTO.picture;
         this.lbmuRoiPeriod = null;
         this.lbmuRoiPeriodVisibility = View.GONE;
+        this.isFollowing = false;
     }
 
     public LeaderboardMarkedUserItemDisplayDto(@NonNull Resources resources,
@@ -112,77 +113,15 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
         this.lbmuPositionColor = currentUserId.get() == leaderboardItem.id ?
                 resources.getColor(R.color.light_green_normal) :
                 resources.getColor(R.color.text_primary);
-        this.lbmuFoF = leaderboardItem.friendOfMarkupString;// **
+        this.lbmuFoF = leaderboardItem.friendOfMarkupString;
         this.lbmuFoFVisibility = leaderboardItem.isIncludeFoF() != null
                 && leaderboardItem.isIncludeFoF()
                 && !StringUtils.isNullOrEmptyOrSpaces(leaderboardItem.friendOfMarkupString)
                 ? View.VISIBLE
                 : View.GONE;
 
-        lbmuFollowUserVisibility = createLbmuFollowUserVisibility(currentUserProfileDTO, leaderboardItem.getBaseKey());
-        lbmuFollowingUserVisibility = createLbmuFollowingUserVisibility(currentUserProfileDTO, leaderboardItem.getBaseKey());
+        this.isFollowing = currentUserProfileDTO.isFollowingUser(leaderboardItem.getBaseKey());
         this.lbmuDisplayPicture = leaderboardItem.picture;
-        // To use when server correctly sets the relationship in LeaderboardUserDTO
-        //lbmuFollowUserVisibility = createLbmuFollowUserVisibility(leaderboardItem);
-        //lbmuFollowingUserVisibility = createLbmuFollowingUserVisibility(leaderboardItem);
-    }
-
-    @ViewVisibilityValue protected int createLbmuFollowUserVisibility(
-            @NonNull UserProfileDTO currentUserProfileDTO,
-            @NonNull UserBaseKey heroId)
-    {
-        if (heroId.key.equals(currentUserProfileDTO.id))
-        {
-            // you can't follow yourself
-            return View.GONE;
-        }
-        else
-        {
-            return !currentUserProfileDTO.isFollowingUser(heroId)
-                    ? View.VISIBLE
-                    : View.GONE;
-        }
-    }
-
-    @ViewVisibilityValue protected int createLbmuFollowingUserVisibility(
-            @NonNull UserProfileDTO currentUserProfileDTO,
-            @NonNull UserBaseKey heroId)
-    {
-        return currentUserProfileDTO.isFollowingUser(heroId)
-                ? View.VISIBLE
-                : View.GONE;
-    }
-
-    public void followChanged(
-            @NonNull UserProfileDTO currentUserProfileDTO,
-            @NonNull UserBaseKey heroId)
-    {
-        this.lbmuFollowUserVisibility = createLbmuFollowUserVisibility(currentUserProfileDTO, heroId);
-        this.lbmuFollowingUserVisibility = createLbmuFollowingUserVisibility(currentUserProfileDTO, heroId);
-    }
-
-    @ViewVisibilityValue protected int createLbmuFollowUserVisibility(
-            @NonNull LeaderboardUserDTO leaderboardItem)
-    {
-        if (leaderboardItem.relationship == null)
-        {
-            // you can't follow yourself
-            return View.GONE;
-        }
-        else
-        {
-            return !leaderboardItem.relationship.isMyHero
-                    ? View.VISIBLE
-                    : View.GONE;
-        }
-    }
-
-    @ViewVisibilityValue protected int createLbmuFollowingUserVisibility(
-            @NonNull LeaderboardUserDTO leaderboardItem)
-    {
-        return leaderboardItem.relationship.isMyHero
-                ? View.VISIBLE
-                : View.GONE;
     }
 
     @Override public boolean isExpanded()
@@ -203,6 +142,16 @@ public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayD
     public boolean isMyOwnRanking()
     {
         return isMyOwnRanking;
+    }
+
+    public void setIsFollowing(boolean isFollowing)
+    {
+        this.isFollowing = isFollowing;
+    }
+
+    public boolean isFollowing()
+    {
+        return isFollowing;
     }
 
     public static class Requisite

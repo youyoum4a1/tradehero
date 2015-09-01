@@ -10,7 +10,6 @@ import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.fragments.billing.store.StoreItemClickableDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemDTO;
 import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
-import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +55,7 @@ public class StoreItemHasFurtherTest
         storeItemHasFurther.display(new StoreItemHasFurtherDTO(
                 R.string.cancel,
                 R.drawable.default_image,
-                HeroManagerFragment.class,
+                //HeroManagerFragment.class,
                 null));
 
         assertThat(storeItemHasFurther.title.getText()).isEqualTo("Cancel");
