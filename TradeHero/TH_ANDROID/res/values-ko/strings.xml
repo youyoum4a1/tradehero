@@ -742,10 +742,6 @@
   <string name="team_credit">Made with love in Singapore and Shanghai</string>
   <string name="tencent_qq">QQ</string>
   <!-- TradeHero URLs -->
-  <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
-  <string name="th_help_url">http://www.tradehero.mobi/about</string>
-  <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
-  <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
   <string name="timeline_discussion_comment_box_hint">코멘트를 입력하세요…</string>
   <string name="timeline_discussion_post">포스트</string>
   <string name="timeline_enable_stock_alert">주식 알림기능 켜기</string>

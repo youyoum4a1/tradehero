@@ -945,10 +945,6 @@
   <string name="team_credit">ทำด้วยใจในสิงคโปร์และเซี่ยงไฮ้</string>
   <string name="tencent_qq">QQ</string>
   <!-- TradeHero URLs -->
-  <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
-  <string name="th_help_url">http://www.tradehero.mobi/about</string>
-  <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
-  <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
   <string name="tile_earn_credit_text">แนะนำเพื่อน และรับเงิน TradeHero dollars!</string>
   <string name="tile_extra_cash_text">ซื้อเงินสดเสมือนเพิ่ม</string>
   <string name="tile_reset_portfolio">รีเซทพอร์ทการลงทุน</string>
