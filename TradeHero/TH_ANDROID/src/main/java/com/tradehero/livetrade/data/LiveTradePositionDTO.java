@@ -27,12 +27,12 @@ public class LiveTradePositionDTO {
             PositionDTO oneDto = new PositionDTO();
             oneDto.stockName = tradeDataHelper.get(i, "sec_name", "");
             oneDto.stockCode = tradeDataHelper.get(i, "sec_code", "");
-            oneDto.profit = tradeDataHelper.get(i, "profit", 0);
-            oneDto.profitRatio = tradeDataHelper.get(i, "profit_ratio", 0);
-            oneDto.marketValue = tradeDataHelper.get(i, "buy_money", 0);
-            oneDto.price = tradeDataHelper.get(i, "cost_price", 0);
-            oneDto.currentAmount = tradeDataHelper.get(i, "current_amt", 0);
-            oneDto.enableAmount = tradeDataHelper.get(i, "enable_amt", 0);
+            oneDto.profit = tradeDataHelper.get(i, "profit", 0.0f);
+            oneDto.profitRatio = tradeDataHelper.get(i, "profit_ratio", 0.0f);
+            oneDto.marketValue = tradeDataHelper.get(i, "buy_money", 0.0f);
+            oneDto.price = tradeDataHelper.get(i, "cost_price", 0.0f);
+            oneDto.currentAmount = tradeDataHelper.get(i, "current_amt", 0.0f);
+            oneDto.enableAmount = tradeDataHelper.get(i, "enable_amt", 0.0f);
             oneDto.marketName = tradeDataHelper.get(i, "market_name", "");
             dto.positions.add(oneDto);
         }

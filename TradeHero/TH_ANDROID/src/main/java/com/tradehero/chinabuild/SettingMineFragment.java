@@ -474,7 +474,7 @@ public class SettingMineFragment extends AbsBaseFragment implements View.OnClick
     }
 
     private void enterSecurityFirmBargain(){
-        tradeManager.getLiveTradeServices().login("70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
+        tradeManager.getLiveTradeServices().login(getActivity(), "70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
             @Override
             public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
                 Bundle bundle = new Bundle();

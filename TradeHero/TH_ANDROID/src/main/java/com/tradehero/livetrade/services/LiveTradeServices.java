@@ -1,5 +1,7 @@
 package com.tradehero.livetrade.services;
 
+import android.app.Activity;
+
 import com.tradehero.livetrade.data.LiveTradeBalanceDTO;
 import com.tradehero.livetrade.data.LiveTradeDealQueryDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustCancelDTO;
@@ -16,7 +18,7 @@ public interface LiveTradeServices {
 
     boolean isSessionValid();
 
-    void login(String account, String password, LiveTradeCallback<LiveTradeSessionDTO> callback);
+    void login(Activity activity, String account, String password, LiveTradeCallback<LiveTradeSessionDTO> callback);
 
     void logout();
 

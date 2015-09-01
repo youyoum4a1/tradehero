@@ -228,7 +228,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
 
         if(!tradeManager.getLiveTradeServices().isSessionValid()) {
             // Todo.
-            tradeManager.getLiveTradeServices().login("70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
+            tradeManager.getLiveTradeServices().login(this, "70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
                 @Override
                 public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
                     isMock = false;

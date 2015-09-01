@@ -62,7 +62,7 @@ public class LiveTradeDealQueryDTO {
                 } else if (key.equalsIgnoreCase("entrust_name")) {
                     dto.entrustName = helper.get(i, key, null);
                 } else if (key.equalsIgnoreCase("business_price")) {
-                    dto.businessPrice = helper.get(i, key, 0);
+                    dto.businessPrice = helper.get(i, key, 0.0f);
                 } else if (key.equalsIgnoreCase("business_amt")) {
                     dto.businessAmount = helper.get(i, key, 0);
                 } else if (key.equalsIgnoreCase("business_date")) {

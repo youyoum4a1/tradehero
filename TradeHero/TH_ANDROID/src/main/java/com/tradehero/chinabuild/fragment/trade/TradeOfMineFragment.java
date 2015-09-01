@@ -593,7 +593,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
     }
 
     private void enterSecurityFirmBargain(){
-        mTradeManager.getLiveTradeServices().login("70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
+        mTradeManager.getLiveTradeServices().login(getActivity(), "70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
             @Override
             public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
                 Bundle bundle = new Bundle();

@@ -22,7 +22,7 @@ import javax.inject.Singleton;
 
     public LiveTradeServices getLiveTradeServices() {
         //Todo
-        return hengshengServicesWrapper;
+        return haitongServicesWrapper;
     }
 
     public void setLiveTradeServices(LiveTradeServices liveTradeServices) {

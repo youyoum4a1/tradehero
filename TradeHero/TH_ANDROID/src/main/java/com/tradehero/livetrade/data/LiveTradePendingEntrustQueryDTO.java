@@ -57,7 +57,7 @@ public class LiveTradePendingEntrustQueryDTO {
                 } else if (key.equalsIgnoreCase("entrust_name")) {
                     dto.entrustName = helper.get(i, key, null);
                 } else if (key.equalsIgnoreCase("entrust_price")) {
-                    dto.entrustPrice = helper.get(i, key, 0);
+                    dto.entrustPrice = helper.get(i, key, 0.0f);
                 } else if (key.equalsIgnoreCase("entrust_amt")) {
                     dto.entrustAmount = helper.get(i, key, 0);
                 } else if (key.equalsIgnoreCase("entrust_date")) {

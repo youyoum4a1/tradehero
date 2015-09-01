@@ -1,5 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.hengsheng;
 
+import android.app.Activity;
+
 import com.tradehero.livetrade.data.LiveTradeBalanceDTO;
 import com.tradehero.livetrade.data.LiveTradeDealQueryDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustCancelDTO;
@@ -50,7 +52,8 @@ import retrofit.client.Response;
      * 登录
      */
     @Override
-    public void login(String account,
+    public void login(Activity activity,
+                      String account,
                       String password,
                       final LiveTradeCallback<LiveTradeSessionDTO> callback
                       )

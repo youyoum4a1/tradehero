@@ -1,5 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.haitong;
 
+import android.app.Activity;
+
 import com.tradehero.livetrade.data.LiveTradeBalanceDTO;
 import com.tradehero.livetrade.data.LiveTradeDealQueryDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustCancelDTO;
@@ -39,8 +41,8 @@ public class HaitongServicesWrapper implements LiveTradeServices {
     }
 
     @Override
-    public void login(String account, String password, LiveTradeCallback<LiveTradeSessionDTO> callback) {
-
+    public void login(Activity activity, String account, String password, LiveTradeCallback<LiveTradeSessionDTO> callback) {
+        HaitongUtils.jumpToLoginHAITONG(activity);
     }
 
     @Override
