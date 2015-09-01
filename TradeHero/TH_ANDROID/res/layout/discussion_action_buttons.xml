@@ -49,6 +49,7 @@
         android:src="@drawable/ic_action_navigation_more_horiz"
         android:background="@drawable/basic_transparent_selector"
         android:layout_gravity="center_vertical"
+        tools:visibility="visible"
         />
 
   </com.tradehero.th.fragments.discussion.DiscussionActionButtonsView>
