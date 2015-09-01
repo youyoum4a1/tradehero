@@ -1333,12 +1333,8 @@
   <string name="tencent_qq">QQ</string>
   <string name="th_amazon_logic_holder_name">亞馬遜商店</string>
   <!-- TradeHero URLs -->
-  <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
-  <string name="th_help_url">http://www.tradehero.mobi/about</string>
   <string name="th_iab_logic_holder_name">Google Play 商店</string>
-  <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
   <string name="th_samsung_logic_holder_name">三星商店</string>
-  <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
   <string name="tile_earn_credit_text">邀請朋友獲得全民股神虛擬幣！</string>
   <string name="tile_earn_credit_text_top">和朋友分享快樂吧</string>
   <string name="tile_extra_cash_text">購買更多虛擬幣</string>

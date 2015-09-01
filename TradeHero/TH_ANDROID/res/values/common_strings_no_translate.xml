@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- TradeHero URLs -->
+  <string name="th_faq_url" translateable="false">https://www.tradehero.mobi/faq</string>
+  <string name="th_help_url" translateable="false">https://www.tradehero.mobi/about</string>
+  <string name="th_terms_url" translateable="false">https://www.tradehero.mobi/terms</string>
+  <string name="th_privacy_terms_url" translateable="false">https://www.tradehero.mobi/privacy</string>
+</resources>
