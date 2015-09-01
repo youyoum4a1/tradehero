@@ -53,9 +53,11 @@ class RelationItemDisplayPaginatedCache
 
     @Override public void invalidate(@NonNull SearchAllowableRecipientListType key)
     {
+        allowableRecipientPaginatedCacheRx.invalidate(key);
     }
 
     @Override public void invalidateAll()
     {
+        allowableRecipientPaginatedCacheRx.invalidateAll();
     }
 }
