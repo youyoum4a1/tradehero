@@ -1,0 +1,20 @@
+package com.tradehero.th.api.discussion.newsfeed;
+
+import com.tradehero.common.api.PagedDTOKey;
+
+public class NewsfeedPagedDTOKey implements PagedDTOKey
+{
+    public final int page;
+    public final int perPage;
+
+    public NewsfeedPagedDTOKey(int page, int perPage)
+    {
+        this.page = page;
+        this.perPage = perPage;
+    }
+
+    @Override public Integer getPage()
+    {
+        return page;
+    }
+}

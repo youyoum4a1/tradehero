@@ -1,0 +1,8 @@
+package com.tradehero.th.api.discussion.newsfeed;
+
+import com.tradehero.common.api.BaseArrayList;
+import com.tradehero.common.persistence.DTO;
+
+public class NewsfeedDTOList extends BaseArrayList<NewsfeedDTO> implements DTO
+{
+}

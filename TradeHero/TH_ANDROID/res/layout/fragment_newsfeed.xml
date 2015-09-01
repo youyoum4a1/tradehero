@@ -1,20 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/discussion_view"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     >
 
-  <android.support.v7.widget.RecyclerView
-      android:id="@android:id/list"
+  <View
+      android:id="@+id/search_empty_container"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:listSelector="@color/transparent"
-      android:divider="@color/transparent"
-      android:clipToPadding="false"
-      android:paddingBottom="@dimen/discussion_comment_box_height"
+      android:layout_height="match_parent"
       />
 
-</FrameLayout>
+  <android.support.v7.widget.RecyclerView
+      android:id="@+id/recycler_view"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@null"
+      android:clipToPadding="false"
+      android:paddingBottom="@dimen/dashboard_tabhost_height"
+      />
+
+  <ProgressBar
+      android:id="@+id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:background="@drawable/round_square"
+      android:visibility="visible"
+      />
+
+</RelativeLayout>

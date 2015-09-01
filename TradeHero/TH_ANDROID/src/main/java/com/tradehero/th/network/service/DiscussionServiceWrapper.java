@@ -12,6 +12,8 @@ import com.tradehero.th.api.discussion.key.DiscussionListKey;
 import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
+import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTOList;
+import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -154,4 +156,9 @@ import rx.Observable;
                 .map(new DTOProcessorDiscussion());
     }
     //</editor-fold>
+
+    @NonNull public Observable<NewsfeedDTOList> getNewsfeed(@NonNull NewsfeedPagedDTOKey key)
+    {
+        return Observable.just(new NewsfeedDTOList());
+    }
 }

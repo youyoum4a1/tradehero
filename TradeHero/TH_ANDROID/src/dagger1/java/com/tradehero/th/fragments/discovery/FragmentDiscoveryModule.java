@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.discovery;
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
+import com.tradehero.th.fragments.discovery.newsfeed.DiscoveryNewsfeedFragment;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Locale;
@@ -11,7 +12,7 @@ import javax.inject.Singleton;
 @Module(
         injects = {
                 DiscoveryMainFragment.class,
-
+                DiscoveryNewsfeedFragment.class,
                 NewsHeadlineFragment.class,
                 DiscoveryDiscussionFragment.class,
         },
