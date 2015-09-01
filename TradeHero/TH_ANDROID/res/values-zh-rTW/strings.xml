@@ -199,7 +199,6 @@
   <string name="comment">評論</string>
   <string name="common_loading_error">對不起，發生了點問題</string>
   <string name="competition_enrollment_web_view_done">完成</string>
-  <!-- eToro specific strings, providerId == 22 -->
   <string name="competition_e_toro_portfolio_title">eToro</string>
   <string name="competition_help_video_title">炒股學院 - %1$s</string>
   <string name="competition_leaderboard_timer_days">天</string>
@@ -208,10 +207,8 @@
   <string name="competition_leaderboard_timer_time_separator">:</string>
   <string name="competition_leaderboard_to_be_won">要贏哦!</string>
   <string name="competition_macquarie_warrant_hero_help_video_title">Help Videos - Macquarie WarrantHero</string>
-  <!-- Macquarie WarrantHero specific strings. providerId == 3 -->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>
-  <!-- Phillip-Macquarie specific strings, providerId == 22 -->
   <string name="competition_phillip_macquarie_warrant_hero_portfolio_title">Phillip-Macquarie</string>
   <string name="competition_portfolio_unsure">未命名比賽</string>
   <string name="competition_trade_now">現在交易!</string>
@@ -239,7 +236,6 @@
   <string name="dashboard_message_center">消息中心</string>
   <string name="dashboard_referral">邀請好友</string>
   <string name="dashboard_store">商店</string>
-  <!-- Dashboard -->
   <string name="dashboard_timeline">我的時間軸</string>
   <string name="dashboard_trending">交易中心</string>
   <string name="data_format_dd_mmm">MM月 dd日</string>
@@ -247,7 +243,6 @@
   <string name="data_format_dd_mmm_yyyy">yyyy年 MM月 dd日</string>
   <string name="data_format_dd_mmm_yyyy_hh_mm">MM月 dd日 HH:mm</string>
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">yyyy年MM月dd日kk:mm z</string>
-  <!-- data format -->
   <string name="data_format_d_mmm_yyyy">yyyy年MM月d日</string>
   <string name="data_format_d_mmm_yyyy_hh_mm">yyyy年MM月d日HH:mm</string>
   <string name="data_format_d_mmm_yyyy_kk_mm">更新時間yyyy-MM-dd kk點</string>
@@ -259,7 +254,6 @@
   <string name="discovery_discussions">社區</string>
   <string name="discovery_learning">學院</string>
   <string name="discovery_news">新聞</string>
-  <!-- Discovery -->
   <string name="discovery_whats_hot">熱門</string>
   <string name="discussion">討論</string>
   <string name="discussion_edit_post_subtitle">在 %s</string>
@@ -333,7 +327,6 @@
   <string name="error_fetch_provider_competition_list">獲取比賽列表時發生錯誤</string>
   <string name="error_fetch_provider_info">獲取比賽提供方信息發生錯誤</string>
   <string name="error_fetch_provider_info_list">獲取比賽提供方發生錯誤</string>
-  <!-- Prize pool group -->
   <string name="error_fetch_provider_prize_pool_info">提取比賽獎項數據庫時出錯</string>
   <string name="error_fetch_quote">獲取報價信息出現錯誤</string>
   <string name="error_fetch_security_info">獲取證劵信息出現錯誤</string>
@@ -419,7 +412,6 @@
   <string name="google_play_billing_already_owned_window_description">你已經購買本項目，在你復原設置前，不能重複購買。
     \n\n你想要像我們報告這個問題嗎？ </string>
   <string name="google_play_billing_already_owned_window_title">已經持有的</string>
-  <!-- string name="store_billing_bad_response_ok">Sure</string -->
   <string name="google_play_billing_bad_response_cancel">可以</string>
   <string name="google_play_billing_bad_response_window_description">我們從Google 商店內接受到不好的反饋</string>
   <string name="google_play_billing_bad_response_window_title">啊？</string>
@@ -428,19 +420,15 @@
   <string name="google_play_billing_developer_error_window_description">安卓商店加載全民股神失敗
     \n\n你想要向全民股神報告這個問題嗎？ </string>
   <string name="google_play_billing_developer_error_window_title">系統錯誤</string>
-  <!-- string name="store_billing_remote_error_ok">Sure</string -->
   <string name="google_play_billing_remote_error_cancel">好的</string>
   <string name="google_play_billing_remote_error_window_description">遠程服務請求，收到錯誤信息</string>
   <string name="google_play_billing_remote_error_window_title">啊?</string>
-  <!-- string name="store_billing_result_error_ok">Sure</string -->
   <string name="google_play_billing_result_error_cancel">好的</string>
   <string name="google_play_billing_result_error_window_description">Google商店向我們反饋了一個錯誤。你可能需要清除Google 商店中緩存的App.</string>
   <string name="google_play_billing_result_error_window_title">啊？</string>
-  <!-- string name="google_play_billing_send_intent_error_ok">Sure</string -->
   <string name="google_play_billing_send_intent_error_cancel">好的</string>
   <string name="google_play_billing_send_intent_error_window_description">打開應用商店時，收到錯誤信息</string>
   <string name="google_play_billing_send_intent_error_window_title">啊哦！</string>
-  <!-- string name="store_billing_verification_failed_ok">Sure</string -->
   <string name="google_play_billing_verification_failed_cancel">別擔心</string>
   <string name="google_play_billing_verification_failed_window_description">關鍵時刻掉鍊子，抱歉，與應用商店通訊失敗</string>
   <string name="google_play_billing_verification_failed_window_title">驗證失敗</string>
@@ -506,7 +494,6 @@
   <string name="iap_purchase_restored_none_message">所有購買項已執行。</string>
   <string name="iap_purchase_restored_none_title">沒有可以恢復的購買項。</string>
   <string name="iap_purchase_restored_title">購買已恢復</string>
-  <!-- In-App Purchases elements -->
   <string name="iap_send_support_email_chooser_title">給全民股神寫郵件</string>
   <string name="iap_send_support_email_report_fail_cancel">不介意</string>
   <string name="iap_send_support_email_report_fail_message">你是否介意將報告發給全民股神？</string>
@@ -525,7 +512,6 @@
   <string name="identity_document_type_id_card">身份證</string>
   <string name="identity_document_type_passport">護照</string>
   <string name="image_load_failed">加載圖片失敗</string>
-  <!-- To get rid of? -->
   <string name="image_url">image_url</string>
   <plurals name="inbox_notification_title">
     <item quantity="other">%d 條<b>新</b>消息
@@ -582,16 +568,13 @@
   <string name="leaderboard_consistency_title">交易持續性</string>
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_empty">開始交易並成為第一個上此英雄榜的人吧</string>
-  <!-- For individual LeaderboardFilterValueSlider -->
   <string name="leaderboard_filter_comparator_sign_bigger_than">&gt;</string>
   <string name="leaderboard_filter_comparator_sign_smaller_than">&lt;</string>
   <string name="leaderboard_filter_consistency_description">越高越好!</string>
-  <!-- For Consistency -->
   <string name="leaderboard_filter_consistency_header">一致性</string>
   <string name="leaderboard_filter_consistency_max_description">始終如一</string>
   <string name="leaderboard_filter_consistency_min_description">反复無常</string>
   <string name="leaderboard_filter_holding_period_description">平均持有時間</string>
-  <!-- For Holding Period -->
   <string name="leaderboard_filter_holding_period_header">持有期</string>
   <string name="leaderboard_filter_holding_period_max_description">長</string>
   <string name="leaderboard_filter_holding_period_min_description">短</string>
@@ -599,21 +582,17 @@
   <string name="leaderboard_filter_menu_button_done">完成</string>
   <string name="leaderboard_filter_menu_title">篩選選項</string>
   <string name="leaderboard_filter_monthly_activity_description">平均月交易</string>
-  <!-- For Monthly Activity -->
   <string name="leaderboard_filter_monthly_activity_header">月活躍度</string>
   <string name="leaderboard_filter_monthly_activity_max_description">活躍</string>
   <string name="leaderboard_filter_monthly_activity_min_description">被動</string>
   <string name="leaderboard_filter_monthly_activity_value_unit">交易(平均值)</string>
   <string name="leaderboard_filter_relative_performance_description">夏普指數- S&amp;P 500 - 越高越好!</string>
-  <!-- For Relative Performance -->
   <string name="leaderboard_filter_relative_performance_header">相關表現</string>
   <string name="leaderboard_filter_relative_performance_max_description">表現出色</string>
   <string name="leaderboard_filter_relative_performance_min_description">表現不佳</string>
   <string name="leaderboard_filter_reset_filter">重置篩選</string>
-  <!-- Full page elements -->
   <string name="leaderboard_filter_top_ranking_reminder">至少要有2 個持倉才可上榜</string>
   <string name="leaderboard_filter_win_ratio_description">輸贏比例，越高越好！</string>
-  <!-- For Win Ratio -->
   <string name="leaderboard_filter_win_ratio_header">勝率</string>
   <string name="leaderboard_filter_win_ratio_max_description">常勝</string>
   <string name="leaderboard_filter_win_ratio_min_description">常敗</string>
@@ -656,7 +635,6 @@
   <string name="leaderboard_volatility">(波幅: <b>%.4f</b>)</string>
   <string name="leaderboard_win_ratio">(勝率: <b>%s</b>%%)</string>
   <string name="leaderboard_win_ratio_title">勝率</string>
-  <!-- LeftDrawer -->
   <string name="left_drawer_footer_title">內容合作商:</string>
   <string name="link">連接 %1$s</string>
   <string name="linkedin">領英</string>
@@ -698,7 +676,6 @@
   <string name="log_in_now">現在登陸！</string>
   <string name="long_position_units">多頭倉位%1$s份</string>
   <string name="low">地位：</string>
-  <!-- Manage Alerts -->
   <string name="manage_alerts_plan">計劃: </string>
   <string name="manage_alerts_with_count">%d 預警</string>
   <string name="manage_followers_follower_none">沒有粉絲數據</string>
@@ -712,13 +689,11 @@
   <string name="manage_followers_revenue_follower">收益: %1$s %2$,.2f</string>
   <string name="manage_followers_revenue_follower_2">收益: %1$s</string>
   <string name="manage_followers_revenue_follower_3">收益:</string>
-  <!-- Manage followers -->
   <string name="manage_followers_title">粉絲</string>
   <string name="manage_followers_total_amount_paid">總支出</string>
   <string name="manage_followers_total_revenue">總收益</string>
   <string name="manage_follower_payment_datetime_format">@string/data_format_dd_mmm_yyyy</string>
   <string name="manage_follower_payment_duration">已支付%d 日:</string>
-  <!-- Manage follower payments -->
   <string name="manage_follower_payment_transaction_list_header">交易</string>
   <string name="manage_heroes_active_header">關注中的英雄</string>
   <string name="manage_heroes_alert_follow_cancel">暫不</string>
@@ -747,7 +722,6 @@
   <string name="manage_heroes_follow_progress_title">執行中</string>
   <string name="manage_heroes_inactive_header">曾經關注過的英雄</string>
   <string name="manage_heroes_not_following_since">暫不關注%s</string>
-  <!-- Manage heroes -->
   <string name="manage_heroes_title">英雄</string>
   <string name="manage_heroes_unfollow_failed">取消關注的過程中，發生了一點錯誤</string>
   <string name="manage_heroes_unfollow_official_accounts_failed">禁止取消關注官方賬號</string>
@@ -907,7 +881,6 @@
   <string name="portfolio_recently_viewed_others">最近觀看過的用戶</string>
   <string name="portfolio_tap_to_enroll_fx">加入和交易外匯</string>
   <string name="portfolio_title_unnamed">未命名投資組合</string>
-  <!-- Portfolios list -->
   <string name="portfolio_topbar_title">投資組合和觀察列表</string>
   <string name="positions_in_period">週期內</string>
   <string name="positions_overall">總體</string>
@@ -945,7 +918,6 @@
   <string name="position_margin_close_out_ok">保證金是充足的healthy\u00A0\u00A0(%s)</string>
   <string name="position_margin_close_out_warn">保證金已經接近平倉\u00A0\u00A0(%s)</string>
   <string name="position_market_value_header">市場價值</string>
-  <!-- Portfolio detail / Positions -->
   <string name="position_nothing_description">當前無任何持倉. 點擊這裡開始進行交易吧!</string>
   <string name="position_nothing_description_other_user">當前沒有持倉</string>
   <plurals name="position_period_held_day">
@@ -976,10 +948,8 @@
   <string name="postal_address">郵寄地址</string>
   <string name="postal_code">郵編號碼</string>
   <string name="powered_by">被促進</string>
-  <!-- Strings for possible PreferenceActivity Back/Next buttons -->
   <string name="preference_fragment_compact_back_button_label">返回</string>
   <string name="preference_fragment_compact_next_button_label">下一個</string>
-  <!-- Optional button to Skip a PreferenceActivity [CHAR LIMIT=20] -->
   <string name="preference_fragment_compact_skip_button_label">跳過</string>
   <string name="preseason_error_message">加載賽前細節的時候出錯</string>
   <string name="preseason_giveaway">賽前福利</string>
@@ -1040,7 +1010,6 @@
   <string name="search_social_friend_hint">尋找你的好友</string>
   <string name="search_stock_spinner_people">用戶</string>
   <string name="search_stock_spinner_stock">股票</string>
-  <!-- do not translate -->
   <string name="security_action_bar_title">%1$s(%2$s)</string>
   <string name="security_avg_volume">平均量</string>
   <string name="security_close">關閉</string>
@@ -1059,7 +1028,6 @@
   <string name="security_on_board_select_invitation_title">建議您...</string>
   <string name="security_open">持倉</string>
   <string name="security_pe_ratio">本益比</string>
-  <!-- Security Info -->
   <string name="security_previous_close">昨日收盤</string>
   <string name="security_search_action_bar_elements_title">搜索</string>
   <string name="security_type_bond">債券</string>
@@ -1171,7 +1139,6 @@
   <string name="setting_accounts">賬號</string>
   <string name="setting_general">通用</string>
   <string name="share_cancel">你的股票已取消</string>
-  <!-- Preseason Popup -->
   <string name="share_now">現在分享！ </string>
   <string name="share_success">分享成功</string>
   <string name="share_to">分享至…</string>
@@ -1219,7 +1186,6 @@
   <string name="social_no_friend_to_follow">沒有可以關注的好友</string>
   <string name="social_no_friend_to_invite">沒有可以邀請的好友</string>
   <string name="social_search_people_hint">輸入一個名字</string>
-  <!-- Splash screen -->
   <string name="splash_copyright_2">新加坡總公司執照號201003309N</string>
   <string name="splash_copyright_3">專利申請中</string>
   <string name="start_new_discussion">開始新的討論</string>
@@ -1322,7 +1288,6 @@
   <string name="store_manage_stock_alerts">管理股市預警</string>
   <string name="store_option_menu_title">全民股神商店</string>
   <string name="suggest_to_upgrade">新的版本上線了，強烈推薦您立刻升級，現在就升級嗎？</string>
-  <!-- do not translate end -->
   <string name="sure_to_delete_message">刪除這條消息？ </string>
   <string name="swipe_learn_more">點擊了解更多相關知識</string>
   <string name="switch_to_live">跳轉至實盤交易</string>
@@ -1332,7 +1297,6 @@
   <string name="team_credit">新加坡和上海團隊傾情奉獻</string>
   <string name="tencent_qq">QQ</string>
   <string name="th_amazon_logic_holder_name">亞馬遜商店</string>
-  <!-- TradeHero URLs -->
   <string name="th_iab_logic_holder_name">Google Play 商店</string>
   <string name="th_samsung_logic_holder_name">三星商店</string>
   <string name="tile_earn_credit_text">邀請朋友獲得全民股神虛擬幣！</string>
@@ -1363,7 +1327,6 @@
   <string name="trade_fx">交易外匯</string>
   <string name="trade_held_quantity_verbose">持有 %1$s 股</string>
   <string name="trade_holding_quantity_verbose">持有 %1$s 股</string>
-  <!-- <string name="network_error">Sorry,network error.</string> -->
   <string name="trade_list_action">操作</string>
   <string name="trade_list_avg_price">平均價格</string>
   <string name="trade_list_comment">評論</string>
@@ -1390,13 +1353,11 @@
   <string name="translation">翻譯</string>
   <string name="translation_error_creating_languages">創建語言列表出錯</string>
   <string name="translation_error_saving_preference">保存出錯</string>
-  <!-- We cannot have %3$s - %2$s as it returns weird results on right-to-left languages -->
   <string name="translation_preferred_language_summary">%2$s-%3$s(%1$s)</string>
   <string name="translation_provided_by_bing">由 必應 提供</string>
   <string name="translation_result">翻譯結果:</string>
   <string name="trending_filter_all_title">全部證劵</string>
   <string name="trending_filter_basic_description">全民股神中的熱門證劵</string>
-  <!-- What's Trending filters -->
   <string name="trending_filter_basic_title">熱門證劵</string>
   <string name="trending_filter_exchange_all">全部</string>
   <string name="trending_filter_exchange_drop_down">%2$s - %1$s</string>
@@ -1404,7 +1365,6 @@
   <string name="trending_filter_price_title">價格異常</string>
   <string name="trending_filter_volume_description">前日交易量&gt; 平均日交易量</string>
   <string name="trending_filter_volume_title">異常交易量</string>
-  <!-- What's Trending -->
   <string name="trending_header">當下人氣股</string>
   <string name="trending_search_empty_result">請輸入信息搜索</string>
   <string name="trending_search_empty_result_for_forex">輸入一個外匯名字或是符號</string>
@@ -1425,11 +1385,9 @@
   <string name="tutorial_buy_sell_content">交易價格* 是指買入時得到的報價，或賣出時的投標價格。這是為了模擬市價委託型交易。對於某些股票，我們沒有報價信息，我們將採用最近一次交易價格代替。\n\n交易數量不能超過每日平均交易總量或當日總量的20％，兩者取較高值。你的交易數量可能會因為這個條款受限。\n\n*價格可能會因為交易所狀況或我們的數據提供方有所延遲
       </string>
   <string name="tutorial_buy_sell_header">買 / 賣</string>
-  <!-- Leaderboard -->
   <string name="tutorial_leaderboard_content">
         查找排行榜上的牛人,按總損益排名，或按特定的“英雄指數”排名。你也可以按交易所、行業、月收益、季度收益、總收益進行篩選。 \n\n競技好友排行榜，與微博好友較勁</string>
   <string name="tutorial_leaderboard_header">社區</string>
-  <!-- Portfolio list -->
   <string name="tutorial_portfolio_list_content">你最近瀏覽過的用戶名單，查看他們的持倉
       </string>
   <string name="tutorial_portfolio_list_header">投資組合</string>
@@ -1440,18 +1398,14 @@
   <string name="tutorial_position_list_formula_bottom_text">總投資(有效交易)</string>
   <string name="tutorial_position_list_formula_left_text">投資回報率</string>
   <string name="tutorial_position_list_formula_top_text">總盈虧(已實現＋未實現)</string>
-  <!-- Positions list -->
   <string name="tutorial_position_list_header">持倉投資回報率</string>
-  <!-- Store screen -->
   <string name="tutorial_store_screen_content">你可以在這裡購買虛擬股金、關注點數、股市預警、數據重置，也可以在此管理訂單
       </string>
   <string name="tutorial_store_screen_header">商店</string>
-  <!-- timeline -->
   <string name="tutorial_timeline_content"> 查找排行榜上的牛人,按總盈虧來排名，或按特定的“英雄指數”排名。你也可以按交易所、行業、月收益、季度收益、總收益進行篩選。\n\n競技好友排行榜，與微博好友一比高下。</string>
   <string name="tutorial_timeline_header">請選擇您的交易所和行業</string>
   <string name="tutorial_trending_content">你可以在屏幕頂部的搜索欄，輸入公司名稱或符號，在我們所支持的股票交易所裡搜尋特定股票。\n\n你也可以滾動查看實時交易的股票：全民股神用戶正在買入或出售的股票
       </string>
-  <!-- Trending -->
   <string name="tutorial_trending_header">尋找股票</string>
   <string name="twitter">Twitter</string>
   <string name="twitter_login_in">用推特登陸</string>
@@ -1477,7 +1431,6 @@
   <string name="user_profile_button_timeline">時間軸</string>
   <string name="user_profile_cash_on_hand">手頭現金</string>
   <string name="user_profile_choose_image_from_camera">從相機拍照</string>
-  <!-- It is good to have it here as other localisations may swap those -->
   <string name="user_profile_choose_image_from_choice">請選擇您的頭像照片：</string>
   <string name="user_profile_choose_image_from_library">從相冊選擇</string>
   <string name="user_profile_confirm_pwd">*確認密碼</string>
@@ -1527,7 +1480,6 @@
   <string name="warrant_price_header">價格</string>
   <string name="warrant_strike_header">履約</string>
   <string name="warrant_strike_value">%1$s%2$.2f</string>
-  <!-- Warrant info -->
   <string name="warrant_type_call">買入期權</string>
   <string name="warrant_type_call_only">僅電話呼叫</string>
   <string name="warrant_type_put">認估期權</string>
@@ -1575,7 +1527,6 @@
   <string name="weibo_message_text_limit">[%d/140]</string>
   <string name="weibo_register">用 Weibo 註冊</string>
   <string name="wrong_number_format">請提供有效數字</string>
-  <!-- Yahoo Charts -->
   <string name="yahoo_chart_1d">1天</string>
   <string name="yahoo_chart_1y">1年</string>
   <string name="yahoo_chart_2y">2年</string>
