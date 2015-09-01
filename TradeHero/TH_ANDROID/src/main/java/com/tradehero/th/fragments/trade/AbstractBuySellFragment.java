@@ -740,15 +740,18 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             {
                 if (securityCompactDTO instanceof FxSecurityCompactDTO)
                 {
-                    //abstractTransactionFragment = AbstractFXTransactionDialogFragment.newInstance(
-                    //        isTransactionTypeBuy,
-                    //        new AbstractTransactionFragment.Requisite(
-                    //                requisite.securityId,
-                    //                currentMenu.getPortfolioIdKey(),
-                    //                quoteDTO,
-                    //                closeUnits == null ? null : Math.abs(closeUnits)));
-                    //abstractTransactionFragment.show(getActivity().getSupportFragmentManager(),
-                    //        AbstractTransactionFragment.class.getName());
+                    Bundle args = new Bundle();
+                    Class klass = isTransactionTypeBuy ? BuyFXDialogFragment.class : SellFXDialogFragment.class;
+
+                    AbstractTransactionFragment.Requisite transactionRequisite = new AbstractTransactionFragment.Requisite(
+                            requisite.securityId,
+                            currentMenu.getPortfolioIdKey(),
+                            quoteDTO,
+                            closeUnits == null ? null : Math.abs(closeUnits));
+
+                    AbstractStockTransactionFragment.putRequisite(args, transactionRequisite);
+
+                    abstractTransactionFragment = (AbstractTransactionFragment) navigator.get().pushFragment(klass, args);
                 }
                 else
                 {
@@ -802,7 +805,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                         @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO, String commentString)
                 {
                     showPrettyReviewAndInvite(isBuy);
-                    shareToWeChat(commentString, isBuy);
+                    //shareToWeChat(commentString, isBuy);
                     String positionType = null;
                     if (securityPositionTransactionDTO.positions == null)
                     {
@@ -846,41 +849,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             {
                 AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
             }
-        }
-    }
-
-    public void shareToWeChat(String commentString, boolean isTransactionTypeBuy)
-    {
-        //TODO Move this!
-        if (socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, DEFAULT_IS_SHARED_TO_WECHAT))
-        {
-            WeChatDTO weChatDTO = new WeChatDTO();
-            weChatDTO.id = securityCompactDTO.id;
-            weChatDTO.type = WeChatMessageType.Trade;
-            if (securityCompactDTO.imageBlobUrl != null && securityCompactDTO.imageBlobUrl.length() > 0)
-            {
-                weChatDTO.imageURL = securityCompactDTO.imageBlobUrl;
-            }
-            if (isTransactionTypeBuy)
-            {
-                weChatDTO.title = getString(R.string.buy_sell_switch_buy) + " "
-                        + securityCompactDTO.name + " " + abstractTransactionFragment.getQuantityString() + getString(
-                        R.string.buy_sell_share_count) + " @" + quoteDTO.ask;
-            }
-            else
-            {
-                weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
-                        + securityCompactDTO.name + " " + abstractTransactionFragment.getQuantityString() + getString(
-                        R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
-            }
-            if (commentString != null && !commentString.isEmpty())
-            {
-                weChatDTO.title = commentString + '\n' + weChatDTO.title;
-            }
-            socialSharerLazy.get().share(weChatDTO)
-                    .subscribe(
-                            new EmptyAction1<SocialShareResult>(),
-                            new TimberAndToastOnErrorAction1("Failed to share to WeChat")); // TODO proper callback?
         }
     }
 

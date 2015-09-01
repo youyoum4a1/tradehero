@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.trade;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.FacebookShareActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -39,34 +41,38 @@ import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
 import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOUtil;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.TransactionFormDTO;
+import com.tradehero.th.api.share.wechat.WeChatDTO;
+import com.tradehero.th.api.share.wechat.WeChatMessageType;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.TransactionEditCommentFragment;
+import com.tradehero.th.fragments.social.ShareDelegateFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
+import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.tradehero.th.network.share.SocialSharer;
+import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioIdListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionListCacheRx;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
@@ -77,7 +83,6 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
@@ -110,11 +115,11 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     @Inject PositionListCacheRx positionCompactListCache;
     @Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
-    @Inject THBillingInteractorRx userInteractor;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject CurrentUserId currentUserId;
-    @Inject UserProfileCacheRx userProfileCache;
+    @Inject protected SocialShareHelper socialShareHelper;
     @Inject protected OwnedPortfolioIdListCacheRx ownedPortfolioIdListCache;
+    @Inject protected Lazy<SocialSharer> socialSharerLazy;
 
     @NonNull protected final UsedDTO usedDTO;
     @NonNull private final BehaviorSubject<Integer> quantitySubject; // It can pass null values
@@ -128,6 +133,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     private String mPriceSelectionMethod = AnalyticsConstants.DefaultPriceSelectionMethod;
     private TransactionEditCommentFragment transactionCommentFragment;
     private List<MenuOwnedPortfolioId> menuOwnedPortfolioIdList;
+    private ShareDelegateFragment shareDelegateFragment;
     Editable unSpannedComment;
 
     @Nullable protected abstract Integer getMaxValue(@NonNull PortfolioCompactDTO portfolioCompactDTO,
@@ -206,10 +212,13 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             }
         });
 
-        if (this.getClass() == SellStockFragment.class)
+        if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXDialogFragment.class)
         {
             mConfirm.setText(R.string.buy_sell_confirm_sell_now);
         }
+
+        shareDelegateFragment = new ShareDelegateFragment(this, this.getView());
+        shareDelegateFragment.onCreate(savedInstanceState);
     }
 
     @Override public void onStart()
@@ -289,6 +298,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         unsubscribe(buySellSubscription);
         buySellSubscription = null;
         ButterKnife.unbind(this);
+        shareDelegateFragment.onDestroy();
         super.onDestroyView();
     }
 
@@ -587,12 +597,12 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
         if (securityCompactDTO != null)
         {
-            setActionBarTitle(getString((klass == BuyStockFragment.class) ? R.string.transaction_title_buy : R.string.transaction_title_sell,
+            setActionBarTitle(getString((klass == BuyStockFragment.class || klass == BuyFXDialogFragment.class) ? R.string.transaction_title_buy : R.string.transaction_title_sell,
                     securityCompactDTO.getExchangeSymbol()));
         }
         else
         {
-            setActionBarTitle(getString((klass == BuyStockFragment.class) ? R.string.transaction_title_buy : R.string.transaction_title_sell,
+            setActionBarTitle(getString((klass == BuyStockFragment.class || klass == SellFXDialogFragment.class) ? R.string.transaction_title_buy : R.string.transaction_title_sell,
                     getString(R.string.stock)));
         }
     }
@@ -894,10 +904,10 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             int quantity)
     {
         return new TransactionFormDTO(
-                shareForTransaction(SocialNetworkEnum.FB),
-                shareForTransaction(SocialNetworkEnum.TW),
-                shareForTransaction(SocialNetworkEnum.LN),
-                shareForTransaction(SocialNetworkEnum.WB),
+                shareDelegateFragment.shareTo(SocialNetworkEnum.FB),
+                shareDelegateFragment.shareTo(SocialNetworkEnum.TW),
+                shareDelegateFragment.shareTo(SocialNetworkEnum.LN),
+                shareDelegateFragment.shareTo(SocialNetworkEnum.WB),
                 null,
                 null,
                 null,
@@ -921,20 +931,14 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                 .setProviderId(usedDTO.portfolioCompactDTO == null ? null : usedDTO.portfolioCompactDTO.getProviderIdKey())
                 .setPriceSelectionMethod(mPriceSelectionMethod)
                 .hasComment(!mCommentsEditText.getText().toString().isEmpty())
-                .facebookEnabled(shareForTransaction(SocialNetworkEnum.FB))
-                .twitterEnabled(shareForTransaction(SocialNetworkEnum.TW))
-                .linkedInEnabled(shareForTransaction(SocialNetworkEnum.LN))
-                .wechatEnabled(shareForTransaction(SocialNetworkEnum.WECHAT))
-                .weiboEnabled(shareForTransaction(SocialNetworkEnum.WB));
+                .facebookEnabled(shareDelegateFragment.shareTo(SocialNetworkEnum.FB))
+                .twitterEnabled(shareDelegateFragment.shareTo(SocialNetworkEnum.TW))
+                .linkedInEnabled(shareDelegateFragment.shareTo(SocialNetworkEnum.LN))
+                .wechatEnabled(shareDelegateFragment.shareTo(SocialNetworkEnum.WECHAT))
+                .weiboEnabled(shareDelegateFragment.shareTo(SocialNetworkEnum.WB));
         setBuyEventFor(builder);
 
         return builder.build();
-    }
-
-    private boolean shareForTransaction(SocialNetworkEnum socialNetworkEnum)
-    {
-        //TODO handle later
-        return false;
     }
 
     protected abstract void setBuyEventFor(SharingOptionsEvent.Builder builder);
@@ -1027,10 +1031,15 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                 buySellTransactionListener.onTransactionSuccessful(isBuy, securityPositionDetailDTO, mCommentsEditText.getText().toString());
             }
 
-            //if (mBtnShareWeChat.isChecked())
-            //{
-            //    //shareWeChatClient(isBuy);
-            //}
+            if (shareDelegateFragment.shareTo(SocialNetworkEnum.FB))
+            {
+                shareFacebookClient(isBuy);
+            }
+
+            if (shareDelegateFragment.isShareToWeChat())
+            {
+                shareToWeChat(mCommentsEditText.getText().toString(), isBuy);
+            }
         }
 
         @Override public void onCompleted()
@@ -1053,37 +1062,68 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         }
     }
 
-    //protected void shareFacebookClient(boolean isBuy)
-    //{
-    //    Intent shareIntent = new Intent(getActivity(), FacebookShareActivity.class);
-    //    Bundle extras = new Bundle();
-    //    FacebookShareActivity.setMessage(
-    //            extras,
-    //            String.format(
-    //                    getString(R.string.traded_facebook_share_message),
-    //                    THSignedNumber.builder(mTransactionQuantity).build().toString(),
-    //                    usedDTO.securityCompactDTO.name,
-    //                    SecurityCompactDTOUtil.getShortSymbol(usedDTO.securityCompactDTO),
-    //                    getFormattedPrice(isBuy ? usedDTO.quoteDTO.ask : usedDTO.quoteDTO.bid)));
-    //    FacebookShareActivity.setName(extras, "TradeHero");
-    //    FacebookShareActivity.setCaption(extras, "tradehero.mobi");
-    //    FacebookShareActivity.setDescription(
-    //            extras,
-    //            String.format(
-    //                    "Follow %s on TradeHero for great stock tips!",
-    //                    userProfileDTO.displayName));
-    //    FacebookShareActivity.setLinkUrl(extras, "http://www.facebook.com");
-    //    if (usedDTO.securityCompactDTO.imageBlobUrl == null)
-    //    {
-    //        FacebookShareActivity.setDefaultPictureUrl(extras);
-    //    }
-    //    else
-    //    {
-    //        FacebookShareActivity.setPictureUrl(extras, usedDTO.securityCompactDTO.imageBlobUrl);
-    //    }
-    //    shareIntent.putExtras(extras);
-    //    getActivity().startActivity(shareIntent);
-    //}
+    protected void shareFacebookClient(boolean isBuy)
+    {
+        Intent shareIntent = new Intent(getActivity(), FacebookShareActivity.class);
+        Bundle extras = new Bundle();
+        FacebookShareActivity.setMessage(
+                extras,
+                String.format(
+                        getString(R.string.traded_facebook_share_message),
+                        mQuantityEditText.getText(),
+                        usedDTO.securityCompactDTO.name,
+                        SecurityCompactDTOUtil.getShortSymbol(usedDTO.securityCompactDTO),
+                        getFormattedPrice(isBuy ? usedDTO.quoteDTO.ask : usedDTO.quoteDTO.bid)));
+        FacebookShareActivity.setName(extras, "TradeHero");
+        FacebookShareActivity.setCaption(extras, "tradehero.mobi");
+        FacebookShareActivity.setDescription(
+                extras,
+                String.format(
+                        "Follow %s on TradeHero for great stock tips!",
+                        shareDelegateFragment.getUserProfileDTO().displayName));
+        FacebookShareActivity.setLinkUrl(extras, "http://www.facebook.com");
+        if (usedDTO.securityCompactDTO.imageBlobUrl == null)
+        {
+            FacebookShareActivity.setDefaultPictureUrl(extras);
+        }
+        else
+        {
+            FacebookShareActivity.setPictureUrl(extras, usedDTO.securityCompactDTO.imageBlobUrl);
+        }
+        shareIntent.putExtras(extras);
+        startActivity(shareIntent);
+    }
+
+    protected void shareToWeChat(String commentString, boolean isTransactionTypeBuy)
+    {
+        WeChatDTO weChatDTO = new WeChatDTO();
+        weChatDTO.id = usedDTO.securityCompactDTO.id;
+        weChatDTO.type = WeChatMessageType.Trade;
+        if (usedDTO.securityCompactDTO.imageBlobUrl != null && usedDTO.securityCompactDTO.imageBlobUrl.length() > 0)
+        {
+            weChatDTO.imageURL = usedDTO.securityCompactDTO.imageBlobUrl;
+        }
+        if (isTransactionTypeBuy)
+        {
+            weChatDTO.title = getString(R.string.buy_sell_switch_buy) + " "
+                    + usedDTO.securityCompactDTO.name + " " + getString(
+                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.ask;
+        }
+        else
+        {
+            weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
+                    + usedDTO.securityCompactDTO.name + " " + mQuantityEditText.getText() + getString(
+                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.bid;
+        }
+        if (commentString != null && !commentString.isEmpty())
+        {
+            weChatDTO.title = commentString + '\n' + weChatDTO.title;
+        }
+        socialSharerLazy.get().share(weChatDTO)
+                .subscribe(
+                        new EmptyAction1<SocialShareResult>(),
+                        new TimberAndToastOnErrorAction1("Failed to share to WeChat")); // TODO proper callback?
+    }
 
     @Deprecated public interface BuySellTransactionListener
     {
