@@ -12,11 +12,11 @@ public abstract class AbstractFXTransactionFragment extends AbstractTransactionF
             boolean isBuy,
             @NonNull Requisite requisite)
     {
-        AbstractFXTransactionFragment abstractBuySellDialogFragment = isBuy ? new BuyFXFragment() : new SellFXFragment();
+        AbstractFXTransactionFragment abstractBuySellFragment = isBuy ? new BuyFXFragment() : new SellFXFragment();
         Bundle args = new Bundle();
         AbstractFXTransactionFragment.putRequisite(args, requisite);
-        abstractBuySellDialogFragment.setArguments(args);
-        return abstractBuySellDialogFragment;
+        abstractBuySellFragment.setArguments(args);
+        return abstractBuySellFragment;
     }
 
     protected AbstractFXTransactionFragment()

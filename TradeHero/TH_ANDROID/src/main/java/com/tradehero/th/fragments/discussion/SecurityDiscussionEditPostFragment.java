@@ -48,16 +48,9 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
         return extracted;
     }
 
-    @Nullable public static String getComment(@Nullable Bundle args)
+    @NonNull public static String getComment(@NonNull Bundle args)
     {
-        String comment = null;
-
-        if (args != null)
-        {
-            comment = args.getString(BUNDLE_KEY_COMMENT, "");
-        }
-
-        return comment;
+        return args.getString(BUNDLE_KEY_COMMENT, "");
     }
 
     @Override public void onResume()

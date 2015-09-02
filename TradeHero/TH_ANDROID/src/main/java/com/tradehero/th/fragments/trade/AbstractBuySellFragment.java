@@ -179,7 +179,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteRefreshProgressBar.setProgress((int) getMillisecondQuoteRefresh());
         quoteRefreshProgressBar.setAnimation(progressAnimation);
 
-        listenToBuySellDialog();
+        listenToBuySellScreen();
     }
 
     @Override public void onStart()
@@ -332,7 +332,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 @NonNull SecurityCompactDTO securityCompactDTO,
                                 @NonNull Boolean buySellReady)
                         {
-                            showBuySellDialog(Math.abs(closeUnits), closeUnits < 0);
+                            pushBuySellScreen(Math.abs(closeUnits), closeUnits < 0);
                             requisite.cancelCloseUnits();
                             return true;
                         }
@@ -717,10 +717,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             default:
                 throw new IllegalArgumentException("Unhandled button " + view.getId());
         }
-        showBuySellDialog(null, isTransactionTypeBuy);
+        pushBuySellScreen(null, isTransactionTypeBuy);
     }
 
-    public void showBuySellDialog(@Nullable Integer closeUnits, boolean isTransactionTypeBuy)
+    public void pushBuySellScreen(@Nullable Integer closeUnits, boolean isTransactionTypeBuy)
     {
         if (abstractTransactionFragment != null
                 && abstractTransactionFragment.isVisible())
@@ -728,7 +728,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             return;//buy/sell dialog already shows
         }
         if (quoteDTO != null
-                && BuyStockFragment.canShowDialog(quoteDTO, isTransactionTypeBuy))
+                && BuyStockFragment.canShowTransactionScreen(quoteDTO, isTransactionTypeBuy))
         {
             OwnedPortfolioId currentMenu = selectedPortfolioContainer.getCurrentMenu();
             if (currentMenu != null)
@@ -763,7 +763,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
                     abstractTransactionFragment = (AbstractTransactionFragment) navigator.get().pushFragment(klass, args);
                 }
-                listenToBuySellDialog();
+                listenToBuySellScreen();
             }
             else
             {
@@ -790,7 +790,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
     }
 
-    protected void listenToBuySellDialog()
+    protected void listenToBuySellScreen()
     {
         if (abstractTransactionFragment != null)
         {

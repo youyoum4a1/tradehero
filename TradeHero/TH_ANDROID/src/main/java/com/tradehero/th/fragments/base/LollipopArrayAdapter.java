@@ -10,9 +10,6 @@ import com.tradehero.th.R;
 import com.tradehero.th.utils.GraphicUtil;
 import java.util.List;
 
-/**
- * Created by LiHao on 2/9/15.
- */
 public class LollipopArrayAdapter<T> extends ArrayAdapter<T>
 {
     public LollipopArrayAdapter(Context context, List<T> objects)

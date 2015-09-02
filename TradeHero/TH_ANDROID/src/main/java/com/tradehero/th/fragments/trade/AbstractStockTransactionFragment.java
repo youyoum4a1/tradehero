@@ -19,11 +19,11 @@ public abstract class AbstractStockTransactionFragment extends AbstractTransacti
             boolean isBuy,
             @NonNull Requisite requisite)
     {
-        AbstractStockTransactionFragment abstractBuySellDialogFragment = isBuy ? new BuyStockFragment() : new SellStockFragment();
+        AbstractStockTransactionFragment abstractBuySellFragment = isBuy ? new BuyStockFragment() : new SellStockFragment();
         Bundle args = new Bundle();
         AbstractStockTransactionFragment.putRequisite(args, requisite);
-        abstractBuySellDialogFragment.setArguments(args);
-        return abstractBuySellDialogFragment;
+        abstractBuySellFragment.setArguments(args);
+        return abstractBuySellFragment;
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

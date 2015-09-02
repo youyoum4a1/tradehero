@@ -12,6 +12,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -149,6 +150,12 @@ public class SellFXFragment extends AbstractFXTransactionFragment
                         && positionDTO.shares > 0;
             }
         };
+    }
+
+    @Override protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO)
+    {
+        setActionBarTitle(getString(R.string.transaction_title_sell,
+                securityCompactDTO != null ? securityCompactDTO.getExchangeSymbol() : getString(R.string.fx)));
     }
 
     protected boolean hasValidInfoForSell()

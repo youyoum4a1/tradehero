@@ -25,35 +25,16 @@ public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFr
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        Bundle bundle = null;
 
-        if (savedInstanceState != null)
-        {
-            bundle = savedInstanceState;
-        }
-        else
-        {
-            bundle = getArguments();
-        }
-
-        String comment = SecurityDiscussionEditPostFragment.getComment(bundle);
-
-        if (comment != null)
-        {
-            discussionPostContent.setText(comment);
-        }
+        String comment = SecurityDiscussionEditPostFragment.getComment(savedInstanceState != null ? savedInstanceState : getArguments());
+        discussionPostContent.setText(comment);
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
 
-        String comment = SecurityDiscussionEditPostFragment.getComment(outState);
-
-        if (comment != null)
-        {
-            discussionPostContent.setText(comment);
-        }
+        SecurityDiscussionEditPostFragment.putComment(outState, discussionPostContent.getText().toString());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

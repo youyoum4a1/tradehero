@@ -14,6 +14,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -32,7 +33,6 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-
     }
 
     @Override protected void setBuyEventFor(SharingOptionsEvent.Builder builder)
@@ -135,6 +135,12 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
                         && positionDTO.shares < 0;
             }
         };
+    }
+
+    @Override protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO)
+    {
+        setActionBarTitle(getString(R.string.transaction_title_buy,
+                securityCompactDTO != null ? securityCompactDTO.getExchangeSymbol() : getString(R.string.stock)));
     }
 
     protected boolean hasValidInfoForBuy()

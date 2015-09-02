@@ -153,7 +153,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
     @Nullable public abstract Double getPriceCcy(@Nullable PortfolioCompactDTO portfolioCompactDTO, @Nullable QuoteDTO quoteDTO);
 
-    public static boolean canShowDialog(@NonNull QuoteDTO quoteDTO, boolean isBuy)
+    public static boolean canShowTransactionScreen(@NonNull QuoteDTO quoteDTO, boolean isBuy)
     {
         return (isBuy && quoteDTO.ask != null) ||
                 (!isBuy && quoteDTO.bid != null);
@@ -592,21 +592,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             @NonNull PositionDTOList positionDTOs,
             @NonNull PortfolioId portfolioId);
 
-    private void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO)
-    {
-        Class klass = this.getClass();
-
-        if (securityCompactDTO != null)
-        {
-            setActionBarTitle(getString((klass == BuyStockFragment.class || klass == BuyFXFragment.class) ? R.string.transaction_title_buy : R.string.transaction_title_sell,
-                    securityCompactDTO.getExchangeSymbol()));
-        }
-        else
-        {
-            setActionBarTitle(getString((klass == BuyStockFragment.class || klass == SellFXFragment.class) ? R.string.transaction_title_buy : R.string.transaction_title_sell,
-                    getString(R.string.stock)));
-        }
-    }
+    abstract protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO);
 
     protected void initPortfolioRelatedInfo(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
