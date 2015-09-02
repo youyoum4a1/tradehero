@@ -49,7 +49,7 @@ public class ShareDelegateFragment
     @Inject protected SocialShareHelper socialShareHelper;
 
     @Bind(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
-    @Nullable @Bind({
+    @Bind({
             R.id.btn_share_fb,
             R.id.btn_share_li,
             R.id.btn_share_tw,
@@ -57,7 +57,7 @@ public class ShareDelegateFragment
     SocialLinkToggleButton[] socialLinkingButtons;
 
     @Nullable protected UserProfileDTO userProfileDTO;
-    @Nullable Fragment parentFragment;
+    Fragment parentFragment;
 
     protected SubscriptionList onDestroySubscriptions;
     protected Subscription weChatLinkingSubscription;
@@ -67,7 +67,6 @@ public class ShareDelegateFragment
     public ShareDelegateFragment(@NonNull Fragment fragment)
     {
         super();
-
         this.parentFragment = fragment;
     }
 
@@ -90,7 +89,8 @@ public class ShareDelegateFragment
     public void onDestroyView()
     {
         ButterKnife.unbind(this);
-
+        unsubscribeWeChatButton();
+        unsubscribeSocialLinkingButtons();
     }
 
     public void onDestroy()
@@ -395,5 +395,10 @@ public class ShareDelegateFragment
     public boolean isShareToWeChat()
     {
         return mBtnShareWeChat.isChecked();
+    }
+
+    @NonNull public List<SocialNetworkEnum> getEnabledSharePreferences()
+    {
+        return socialSharePreferenceHelper.getAllEnabledSharePreferences();
     }
 }
