@@ -98,14 +98,14 @@
                   android:id="@+id/vmarket_symbol"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:layout_toLeftOf="@+id/dialog_price"
+                  android:layout_toLeftOf="@+id/market_price"
                   android:layout_centerVertical="true"
                   tools:text="US$"
                   />
 
               <TextView
                   style="@style/TH.Subhead.Accented"
-                  android:id="@+id/dialog_price"
+                  android:id="@+id/market_price"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_alignParentRight="true"
@@ -142,8 +142,8 @@
               <TextView
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:layout_marginRight="10dp"
-                  android:text="X"
+                  android:layout_marginRight="8dp"
+                  android:text="@string/buy_sell_times_symbol"
                   android:layout_centerVertical="true"
                   android:layout_toLeftOf="@+id/vquantity"
                   />
@@ -258,7 +258,7 @@
               android:layout_marginBottom="@dimen/margin_medium"
               android:layout_marginLeft="@dimen/margin_small"
               android:layout_marginRight="@dimen/margin_small"
-              android:background="@drawable/security_dialog_comment_bg"
+              android:background="@drawable/security_comment_bg"
               style="@style/TH.Body"
               android:padding="@dimen/margin_xsmall"
               android:hint="@string/buy_sell_confirm_buy_comment"
@@ -300,7 +300,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/dialog_btn_confirm"
+        android:id="@+id/btn_confirm"
         style="@style/TH.Button.Inverse"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"

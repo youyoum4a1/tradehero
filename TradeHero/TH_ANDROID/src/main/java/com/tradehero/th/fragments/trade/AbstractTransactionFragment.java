@@ -104,10 +104,10 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     @Bind(R.id.vmarket_symbol) protected TextView mMarketPriceSymbol;
     @Bind(R.id.price_updated_time) protected TextView mPriceUpdatedTime;
     @Bind(R.id.vtrade_symbol) protected TextView mTradeSymbol;
-    @Bind(R.id.dialog_price) protected TextView mStockPriceTextView;
+    @Bind(R.id.market_price) protected TextView mStockPriceTextView;
     @Bind(R.id.vquantity) protected EditText mQuantityEditText;
     @Bind(R.id.comments) protected TextView mCommentsEditText;
-    @Bind(R.id.dialog_btn_confirm) protected Button mConfirm;
+    @Bind(R.id.btn_confirm) protected Button mConfirm;
     @Bind(R.id.portfolio_spinner) protected Spinner mPortfolioSpinner;
 
     @Inject SecurityCompactCacheRx securityCompactCache;
@@ -197,7 +197,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.security_buy_sell_dialog, container, false);
+        return inflater.inflate(R.layout.fragment_buy_sell_security, container, false);
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -794,7 +794,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.dialog_btn_confirm)
+    @OnClick(R.id.btn_confirm)
     public void onConfirmClicked(View v)
     {
         updateConfirmButton(true);
