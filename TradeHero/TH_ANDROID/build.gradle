@@ -61,7 +61,7 @@ android {
     targetCompatibility JavaVersion.VERSION_1_7
   }
 
-  compileSdkVersion 22
+  compileSdkVersion 23
 
   buildToolsVersion "22.0.1"
   //useOldManifestMerger=true
@@ -492,7 +492,6 @@ dependencies {
   compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
   compile "com.android.support:recyclerview-v7:${SUPPORT_V7_VERSION}"
   compile "com.android.support:design:${SUPPORT_V7_VERSION}"
-  releaseCompile "com.android.support:cardview-v7:${SUPPORT_V7_VERSION}" // For UrbanAirship proguarding
   compile "com.android.support:cardview-v7:${SUPPORT_V7_VERSION}"
   googleplayCompile 'com.android.support:multidex:1.0.1'
   samsungCompile 'com.android.support:multidex:1.0.1'

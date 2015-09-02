@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.FloatMath;
 import android.view.MotionEvent;
 import com.tradehero.th.R;
 import com.tradehero.th.api.fx.FXCandleDTO;
@@ -458,7 +457,7 @@ public class KChartsView extends KChartBase {
 	private void setTouchMode(MotionEvent event) {
 		float daltX = Math.abs(event.getRawX() - mStartX);
 		float daltY = Math.abs(event.getRawY() - mStartY);
-		if (FloatMath.sqrt(daltX * daltX + daltY * daltY) > MIN_MOVE_DISTANCE) {
+		if (Math.sqrt(daltX * daltX + daltY * daltY) > MIN_MOVE_DISTANCE) {
 			if (daltX < daltY) {
 				TOUCH_MODE = ZOOM;
 			} else {
