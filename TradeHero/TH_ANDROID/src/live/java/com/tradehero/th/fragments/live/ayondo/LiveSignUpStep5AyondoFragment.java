@@ -314,9 +314,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public void call(LiveBrokerSituationDTO situationDTO)
                             {
-                                KYCAyondoForm update = new KYCAyondoForm();
                                 //noinspection ConstantConditions
-                                update.pickFrom(populate((KYCAyondoForm) situationDTO.kycForm));
+                                populate((KYCAyondoForm) situationDTO.kycForm);
                                 populate(documentActionIdentity, ((KYCAyondoForm) situationDTO.kycForm).getIdentityDocumentUrl());
                                 populate(documentActionResidence, ((KYCAyondoForm) situationDTO.kycForm).getResidenceDocumentUrl());
                             }
@@ -668,17 +667,12 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
 
     @MainThread
-    @NonNull private KYCAyondoForm populate(@NonNull KYCAyondoForm kycForm)
+    private void populate(@NonNull KYCAyondoForm kycForm)
     {
-        KYCAyondoForm update = new KYCAyondoForm();
         Boolean agreeTerms = kycForm.isAgreeTermsConditions();
         if (agreeTerms != null)
         {
             termsConditionsCheckBox.setChecked(agreeTerms);
-        }
-        else
-        {
-            update.setAgreeTermsConditions(termsConditionsCheckBox.isChecked());
         }
 
         Boolean riskWarning = kycForm.isAgreeRisksWarnings();
@@ -686,19 +680,11 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             riskWarningCheckBox.setChecked(riskWarning);
         }
-        else
-        {
-            update.setAgreeRisksWarnings(riskWarningCheckBox.isChecked());
-        }
 
         Boolean dataSharing = kycForm.isAgreeDataSharing();
         if (dataSharing != null)
         {
             dataSharingCheckBox.setChecked(dataSharing);
-        }
-        else
-        {
-            update.setAgreeDataSharing(dataSharingCheckBox.isChecked());
         }
 
         Boolean subscribeOffers = kycForm.isSubscribeOffers();
@@ -709,7 +695,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         else
         {
             subscribeOffersCheckBox.setChecked(true);
-            update.setSubscribeOffers(subscribeOffersCheckBox.isChecked());
         }
 
         Boolean subscribeTradeNotifications = kycForm.isSubscribeTradeNotifications();
@@ -720,10 +705,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         else
         {
             subscribeTradeNotificationsCheckBox.setChecked(true);
-            update.setSubscribeTradeNotifications(subscribeTradeNotificationsCheckBox.isChecked());
         }
-
-        return update;
     }
 
     @MainThread

@@ -8,12 +8,14 @@ import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.metrics.Analytics;
+import com.tradehero.metrics.AnalyticsEvent;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
@@ -22,6 +24,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.fragments.leaderboard.LeaderboardItemUserAction.UserActionType;
 import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.utils.GraphicUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
@@ -215,7 +218,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
                     return dto1.ranking - dto2.ranking;
                 }
             }
-            return super.compare(o1, o2);
+            return 0;
         }
 
         @Override public boolean areContentsTheSame(T oldItem, T newItem)
@@ -230,6 +233,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
                 if (oldDto.lbmuRoiPeriod == null && newDto.lbmuRoiPeriod != null) return false;
                 if (oldDto.lbmuRoiPeriod != null && newDto.lbmuRoiPeriod == null) return false;
                 if (oldDto.lbmuRoiPeriod != null && !oldDto.lbmuRoiPeriod.equals(newDto.lbmuRoiPeriod)) return false;
+                if (oldDto.isFollowing() != (newDto.isFollowing())) return false;
                 return oldDto.lbmuRanking.equals(newDto.lbmuRanking)
                         && !(oldDto.lbmuDisplayPicture != null
                         ? !oldDto.lbmuDisplayPicture.equals(newDto.lbmuDisplayPicture)
@@ -260,8 +264,6 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
     public static class LbmuHeaderViewHolder<T extends LeaderboardItemDisplayDTO> extends LbmuItemViewHolder<T>
     {
-        @Bind(R.id.mark_expand_down) @Nullable ImageView expandMark;
-
         public LbmuHeaderViewHolder(View itemView, Picasso picasso, Analytics analytics)
         {
             super(itemView, picasso, analytics);
@@ -270,17 +272,6 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         @Override public void display(T dto)
         {
             super.display(dto);
-            if (expandMark != null && this.currentDto != null)
-            {
-                if (this.currentDto.userStatisticsDto == null)
-                {
-                    expandMark.setVisibility(View.GONE);
-                }
-                else
-                {
-                    expandMark.setVisibility(View.VISIBLE);
-                }
-            }
         }
     }
 
@@ -299,8 +290,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         @Bind(R.id.expanding_layout) ExpandingLayout expandingLayout;
         @Bind(R.id.user_statistic_view) @Nullable UserStatisticView userStatisticView;
         @Bind(R.id.leaderboard_user_item_fof) @Nullable MarkdownTextView lbmuFoF;
-        @Bind(R.id.leaderboard_user_item_follow) View lbmuFollowUser;
-        @Bind(R.id.leaderboard_user_item_following) View lbmuFollowingUser;
+        @Bind(R.id.leaderboard_user_item_follow) ImageButton lbmuFollowUser;
         @Nullable protected LeaderboardMarkedUserItemDisplayDto currentDto;
 
         public LbmuItemViewHolder(View itemView, Picasso picasso, Analytics analytics)
@@ -358,12 +348,18 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
                 if (lbmuFollowUser != null)
                 {
-                    lbmuFollowUser.setVisibility(this.currentDto.lbmuFollowUserVisibility);
+                    if (this.currentDto.leaderboardUserDTO == null || this.currentDto.currentUserId.toUserBaseKey()
+                            .equals(this.currentDto.leaderboardUserDTO.getBaseKey()))
+                    {
+                        lbmuFollowUser.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        lbmuFollowUser.setVisibility(View.VISIBLE);
+                        FollowUserAssistant.updateFollowImageButton(lbmuFollowUser, this.currentDto.isFollowing(), this.currentDto.leaderboardUserDTO.getBaseKey());
+                    }
                 }
-                if (lbmuFollowingUser != null)
-                {
-                    lbmuFollowingUser.setVisibility(this.currentDto.lbmuFollowingUserVisibility);
-                }
+
             }
         }
 
@@ -395,8 +391,21 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         {
             if (this.currentDto != null)
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Follow));
-                userActionSubject.onNext(new LeaderboardItemUserAction(this.currentDto, UserActionType.FOLLOW));
+                AnalyticsEvent event;
+                LeaderboardItemUserAction userAction;
+
+                if (this.currentDto.isFollowing())
+                {
+                    event = new SimpleEvent(AnalyticsConstants.Leaderboard_Unfollow);
+                    userAction = new LeaderboardItemUserAction(this.currentDto, UserActionType.UNFOLLOW);
+                }
+                else
+                {
+                    event = new SimpleEvent(AnalyticsConstants.Leaderboard_Follow);
+                    userAction = new LeaderboardItemUserAction(this.currentDto, UserActionType.FOLLOW);
+                }
+                analytics.addEvent(event);
+                userActionSubject.onNext(userAction);
             }
         }
 

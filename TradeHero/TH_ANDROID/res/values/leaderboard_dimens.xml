@@ -5,6 +5,6 @@
   <dimen name="leaderboard_title_text_size">@dimen/text_subhead</dimen>
   <dimen name="leaderboard_position_text_size">@dimen/text_title</dimen>
   <dimen name="leaderboard_title_text_padding">@dimen/margin_small</dimen>
-  <dimen name="leaderboard_user_view_profile_width">@dimen/size_7</dimen>
+  <dimen name="leaderboard_user_view_profile_width">@dimen/big_image_w_h</dimen>
   <dimen name="leaderboard_flag_icon_margin_right">10dp</dimen>
 </resources>

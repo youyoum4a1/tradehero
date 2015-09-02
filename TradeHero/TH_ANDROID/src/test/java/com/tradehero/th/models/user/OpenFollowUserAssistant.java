@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 

@@ -146,10 +146,8 @@
   <string name="competition_leaderboard_timer_time_separator">:</string>
   <string name="competition_leaderboard_to_be_won">กำลังจะชนะ!</string>
   <string name="competition_macquarie_warrant_hero_help_video_title">วิดิโอช่วยเหลือ - Macquarie WarrantHero</string>
-  <!-- Macquarie WarrantHero specific strings. providerId == 3 -->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>
-  <!-- Phillip-Macquarie specific strings, providerId == 22 -->
   <string name="competition_phillip_macquarie_warrant_hero_portfolio_title">Phillip-Macquarie</string>
   <string name="competition_portfolio_unsure">การแข่งขันที่ไม่มีชื่อ</string>
   <string name="competition_trade_now">เทรดเลย!</string>
@@ -171,7 +169,6 @@
   <string name="dashboard_message_center">ข้อความ</string>
   <string name="dashboard_referral">แนะนำเพื่อน</string>
   <string name="dashboard_store">เก็บบันทึก</string>
-  <!-- Dashboard -->
   <string name="dashboard_timeline">ไทม์ไลน์</string>
   <string name="dashboard_trending">เทรด</string>
   <string name="data_format_dd_mmm">dd MMM</string>
@@ -179,7 +176,6 @@
   <string name="data_format_dd_mmm_yyyy">dd MMM yyyy</string>
   <string name="data_format_dd_mmm_yyyy_hh_mm">dd MMM HH:mm</string>
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">dd MMM yyyy kk:mm z</string>
-  <!-- data format -->
   <string name="data_format_d_mmm_yyyy">d MMM yyyy</string>
   <string name="data_format_d_mmm_yyyy_hh_mm">d MMM yyyy HH:mm</string>
   <string name="data_format_d_mmm_yyyy_kk_mm">อัพเดทเวลา: d MMM yyyy kk</string>
@@ -188,7 +184,6 @@
   <string name="discovery_discussions">การสนทนา</string>
   <string name="discovery_learning">ศูนย์การเรียนรู้</string>
   <string name="discovery_news">ข่าว</string>
-  <!-- Discovery -->
   <string name="discovery_whats_hot">หุ้นร้อน</string>
   <string name="discussion">การสนทนา</string>
   <string name="discussion_edit_post_subtitle">on %s</string>
@@ -243,7 +238,6 @@
   <string name="error_fetch_provider_competition_list">เกิดข้อผิดพลาด เมื่อได้รับรายการการแข่งขัน</string>
   <string name="error_fetch_provider_info">เกิดข้อผิดพลาด เมื่อได้รับข้อมูลผู้จัดการแข่งขัน</string>
   <string name="error_fetch_provider_info_list">เกิดข้อผิดพลาด เมื่อได้รับรายการผู้จัดการแข่งขัน</string>
-  <!-- Prize pool group -->
   <string name="error_fetch_provider_prize_pool_info">เกิดข้อผิดพลาด เมื่อได้รับข้อมูลเงินรางวัลของผู้จัดการแข่งขัน</string>
   <string name="error_fetch_quote">เกิดข้อผิดพลาด เมื่อได้รับข้อมูลชื่อย่อหลักทรัพย์</string>
   <string name="error_fetch_security_info">เกิดข้อผิดพลาด เมื่อได้รับข้อมูลหลักทรัพย์</string>
@@ -303,7 +297,6 @@
   <string name="iap_purchase_restored_none_message">การซื้อทั้งหมดของคุณผ่านการประมวลผลแล้ว</string>
   <string name="iap_purchase_restored_none_title">ไม่มีการซื้อที่ต้องเรียกคืน</string>
   <string name="iap_purchase_restored_title">การซื้อได้รับการเรียกคืนแล้ว</string>
-  <!-- In-App Purchases elements -->
   <string name="iap_send_support_email_chooser_title">ส่งอีเมลถึง TradeHero ซัพพอร์ท</string>
   <string name="iap_send_support_email_report_fail_cancel">ไม่เป็นไร </string>
   <string name="iap_send_support_email_report_fail_message">คุณจะรังเกียจไหม หากแจ้งเหตุการณ์นี้ไปยัง TradeHero?</string>
@@ -317,7 +310,6 @@
   <string name="iap_send_support_email_restore_fail_partial_ok">ชัวร์</string>
   <string name="iap_send_support_email_restore_fail_partial_title">การซื้อได้รับการเรียกคืนแล้ว </string>
   <string name="iap_send_support_email_restore_fail_title">การซื้อไม่สามารถเรียกคืนได้</string>
-  <!-- To get rid of? -->
   <string name="image_url">image_url</string>
   <plurals name="inbox_notification_title">
     <item quantity="other">%d
@@ -374,16 +366,13 @@
   <string name="leaderboard_consistency_title">ความสม่ำเสมอของการเทรด</string>
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_empty">เริ่มเทรดเลย เพื่อเป็นเทรดเดอร์คนแรกบนบอร์ดผู้นำนี้</string>
-  <!-- For individual LeaderboardFilterValueSlider -->
   <string name="leaderboard_filter_comparator_sign_bigger_than">&gt;</string>
   <string name="leaderboard_filter_comparator_sign_smaller_than">&lt;</string>
   <string name="leaderboard_filter_consistency_description">ยิ่งสูง ยิ่งดี!</string>
-  <!-- For Consistency -->
   <string name="leaderboard_filter_consistency_header">ความสม่ำเสมอ</string>
   <string name="leaderboard_filter_consistency_max_description">สม่ำเสมอ </string>
   <string name="leaderboard_filter_consistency_min_description">ไม่สม่ำเสมอ</string>
   <string name="leaderboard_filter_holding_period_description">ระยะเวลาถือครองเฉลี่ย</string>
-  <!-- For Holding Period -->
   <string name="leaderboard_filter_holding_period_header">ระยะเวลาถือครอง</string>
   <string name="leaderboard_filter_holding_period_max_description">ซื้อ (Long)</string>
   <string name="leaderboard_filter_holding_period_min_description">ขาย (Short)</string>
@@ -391,21 +380,17 @@
   <string name="leaderboard_filter_menu_button_done">สำเร็จ</string>
   <string name="leaderboard_filter_menu_title">ตัวเลือกในการคัดกรอง</string>
   <string name="leaderboard_filter_monthly_activity_description">จำนวนการเทรดเฉลี่ย ต่อเดือน</string>
-  <!-- For Monthly Activity -->
   <string name="leaderboard_filter_monthly_activity_header">กิจกรรมประจำเดือน</string>
   <string name="leaderboard_filter_monthly_activity_max_description">แอคทีฟ</string>
   <string name="leaderboard_filter_monthly_activity_min_description">แพสซีฟ</string>
   <string name="leaderboard_filter_monthly_activity_value_unit">จำนวนการเทรด (เฉลี่ย)</string>
   <string name="leaderboard_filter_relative_performance_description">อัตราส่วนชาร์พ (Sharpe Ratio) – ดัชนี S&amp;P 500 - ยิ่งสูง ยิ่งดี!</string>
-  <!-- For Relative Performance -->
   <string name="leaderboard_filter_relative_performance_header">ผลงานเชิงเปรียบเทียบ</string>
   <string name="leaderboard_filter_relative_performance_max_description">ผลงานสูงกว่าคาด</string>
   <string name="leaderboard_filter_relative_performance_min_description">ผลงานต่ำกว่าคาด</string>
   <string name="leaderboard_filter_reset_filter">รีเซทเครื่องมือกรอง</string>
-  <!-- Full page elements -->
   <string name="leaderboard_filter_top_ranking_reminder">ต้องมีอย่างน้อย 2 สถานะ เพื่อให้มีคุณสมบัติสำหรับการจัดอันดับได้</string>
   <string name="leaderboard_filter_win_ratio_description">เทรดที่ทำกำไร vs. เทรดที่ขาดทุน – ยิ่งสูง ยิ่งดี</string>
-  <!-- For Win Ratio -->
   <string name="leaderboard_filter_win_ratio_header">โอกาสชนะ</string>
   <string name="leaderboard_filter_win_ratio_max_description">ทำกำไรเสมอ</string>
   <string name="leaderboard_filter_win_ratio_min_description">ไม่เคยทำกำไร</string>
@@ -444,7 +429,6 @@
   <string name="leaderboard_volatility">(ความผันผวน: <b>%.4f</b>)</string>
   <string name="leaderboard_win_ratio">(โอกาสชนะ: <b>%s</b>%%)</string>
   <string name="leaderboard_win_ratio_title">โอกาสชนะ</string>
-  <!-- LeftDrawer -->
   <string name="left_drawer_footer_title">หุ้นส่วนด้านเนื้อหา:</string>
   <string name="link">ลิงค์ %1$s</string>
   <string name="linkedin">LinkedIn</string>
@@ -460,7 +444,6 @@
   <string name="location_fragment_title">เลือกตำแหน่งที่ตั้งของคุณ</string>
   <string name="location_name_none">ไม่มี</string>
   <string name="log_in_now">เข้าสู่ระบบเลย!</string>
-  <!-- Manage Alerts -->
   <string name="manage_alerts_plan">แผนการ: </string>
   <string name="manage_alerts_with_count">%d การแจ้งเตือน</string>
   <string name="manage_followers_follower_none">ไม่มีผู้ติดตาม </string>
@@ -474,13 +457,11 @@
   <string name="manage_followers_revenue_follower">รายได้: %1$s %2$,.2f</string>
   <string name="manage_followers_revenue_follower_2">รายได้: %1$s</string>
   <string name="manage_followers_revenue_follower_3">รายได้: </string>
-  <!-- Manage followers -->
   <string name="manage_followers_title">ผู้ติดตาม</string>
   <string name="manage_followers_total_amount_paid">จำนวนเงินรวมที่จ่าย</string>
   <string name="manage_followers_total_revenue">รายได้รวม</string>
   <string name="manage_follower_payment_datetime_format">@string/data_format_dd_mmm_yyyy</string>
   <string name="manage_follower_payment_duration">ชำระแล้วสำหรับระยะเวลา %d วัน:</string>
-  <!-- Manage follower payments -->
   <string name="manage_follower_payment_transaction_list_header">ธุรกรรม</string>
   <string name="manage_heroes_active_header">กำลังติดตามฮีโร่</string>
   <string name="manage_heroes_alert_follow_cancel">ไม่ใช่ตอนนี้</string>
@@ -510,7 +491,6 @@
   <string name="manage_heroes_follow_progress_title">กำลังประมวลผล</string>
   <string name="manage_heroes_inactive_header">ฮีโร่ที่ไม่แอคทีฟ</string>
   <string name="manage_heroes_not_following_since">หยุดติดตามเมื่อ %s</string>
-  <!-- Manage heroes -->
   <string name="manage_heroes_title">ฮีโร่</string>
   <string name="manage_heroes_unfollow_failed">เกิดข้อผิดพลาด เมื่อยกเลิกการติดตามฮีโร่รายนี้
   </string>
@@ -599,7 +579,6 @@
   <string name="portfolio_recently_viewed_heroes">ฮีโร่ที่เรียกดูล่าสุด</string>
   <string name="portfolio_recently_viewed_others">ผู้ใช้ที่เรียกดูล่าสุด</string>
   <string name="portfolio_title_unnamed">พอร์ทการลงทุนที่ไม่มีชื่อ</string>
-  <!-- Portfolios list -->
   <string name="portfolio_topbar_title">พอร์ทการลงทุน และ รายการเฝ้าระวัง</string>
   <string name="positions_in_period">ในระยะเวลา</string>
   <string name="positions_overall">โดยรวม</string>
@@ -625,7 +604,6 @@
   <string name="position_margin_close_out_danger">หลักประกันกำลังจะหมดอย่างอันตราย (%s)</string>
   <string name="position_margin_close_out_warn">หลักประกันกำลังจะหมด (%s)</string>
   <string name="position_market_value_header">มูลค่าตลาด</string>
-  <!-- Portfolio detail / Positions -->
   <string name="position_nothing_description">ไม่มีสถานะเปิด แตะเพื่อเทรด!</string>
   <plurals name="position_period_held_day">
     <item quantity="other">%1%d วัน</item>
@@ -695,7 +673,6 @@
   <string name="security_on_board_select_invitation_title">หุ้นที่ต้องจับตา!</string>
   <string name="security_open">เปิด</string>
   <string name="security_pe_ratio">P/E</string>
-  <!-- Security Info -->
   <string name="security_previous_close">ก่อนหน้า</string>
   <string name="security_search_action_bar_elements_title">ค้นหาองค์ประกอบ</string>
   <string name="security_type_bond">หุ้นกู้</string>
@@ -802,7 +779,6 @@
   <string name="settings_version_holder">v%s</string>
   <string name="setting_accounts">บัญชี</string>
   <string name="setting_general">ทั่วไป</string>
-  <!-- Preseason Popup -->
   <string name="share_now">แชร์เลย!</string>
   <string name="share_success">ส่วนแบ่งของคุณ ดำเนินการสำเร็จแล้ว</string>
   <string name="share_to">แชร์ให้กับ…</string>
@@ -826,7 +802,6 @@
   <string name="social_no_friend_to_follow">ไม่มีผู้ใช้ให้ติดตาม</string>
   <string name="social_no_friend_to_invite">ไม่มีผู้ใช้ให้เชิญชวน</string>
   <string name="social_search_people_hint">ระบุชื่อ</string>
-  <!-- Splash screen -->
   <string name="splash_copyright_2">จดทะเบียนบริษัทสิงคโปร์เลขที่ 201003309N</string>
   <string name="splash_copyright_3">สิทธิบัตรอยู่ในระหว่างการพิจารณา</string>
   <string name="start_new_discussion">เริ่มการสนทนาใหม่</string>
@@ -939,16 +914,10 @@
   <string name="store_manage_stock_alerts">จัดการแจ้งเตือนราคาหุ้น</string>
   <string name="store_option_menu_title">TradeHero Store</string>
   <string name="suggest_to_upgrade">เวอร์ชั่นใหม่พร้อมใช้งานแล้ว เราแนะนำให้คุณทำการอัพเกรด คุณต้องการอัพเกรดเลยหรือไม่?</string>
-  <!-- do not translate end -->
   <string name="sure_to_delete_message">ลบข้อความนี้?</string>
   <string name="tab_to_dismiss">แตะเพื่อยกเลิก</string>
   <string name="team_credit">ทำด้วยใจในสิงคโปร์และเซี่ยงไฮ้</string>
   <string name="tencent_qq">QQ</string>
-  <!-- TradeHero URLs -->
-  <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
-  <string name="th_help_url">http://www.tradehero.mobi/about</string>
-  <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
-  <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
   <string name="tile_earn_credit_text">แนะนำเพื่อน และรับเงิน TradeHero dollars!</string>
   <string name="tile_extra_cash_text">ซื้อเงินสดเสมือนเพิ่ม</string>
   <string name="tile_reset_portfolio">รีเซทพอร์ทการลงทุน</string>
@@ -967,7 +936,6 @@
   <string name="trade_comment">ความเห็นในการเทรด</string>
   <string name="trade_held_quantity_verbose">ถือ %1$s หุ้น</string>
   <string name="trade_holding_quantity_verbose">กำลังถือ %1$s หุ้น</string>
-  <!-- <string name="network_error">Sorry,network error.</string> -->
   <string name="trade_list_action">การดำเนินการ</string>
   <string name="trade_list_avg_price">เฉลี่ย ราคา</string>
   <string name="trade_list_comment">ความเห็น</string>
@@ -993,7 +961,6 @@
   <string name="trending_filter_all_description"> </string>
   <string name="trending_filter_all_title">หลักทรัพย์ทั้งหมด</string>
   <string name="trending_filter_basic_description">ผู้คนกำลังซื้อและขายอะไรใน TradeHero</string>
-  <!-- What's Trending filters -->
   <string name="trending_filter_basic_title">หลักทรัพย์ที่เกิดเทรนด์</string>
   <string name="trending_filter_exchange_all">ทั้งหมด</string>
   <string name="trending_filter_exchange_drop_down">%2$s - %1$s</string>
@@ -1001,7 +968,6 @@
   <string name="trending_filter_price_title">พฤติกรรมราคา (Price Action)</string>
   <string name="trending_filter_volume_description">ปริมาณการซื้อขายในวันก่อนหน้า &gt; ปริมาณการซื้อขายเฉลี่ยต่อวัน</string>
   <string name="trending_filter_volume_title">ปริมาณการซื้อขายผิดปกติ</string>
-  <!-- What's Trending -->
   <string name="trending_header">เทรนด์ คือ อะไร</string>
   <string name="trending_search_empty_result">พิมพ์ข้อความเพื่อค้นหา</string>
   <string name="trending_search_empty_result_for_people">โปรดระบุชื่อบุคคล</string>
@@ -1015,11 +981,9 @@
     ด้วยเงื่อนไขนี้\n\n*ราคาอาจล่าช้าตามที่ได้รับแจ้งจากตลาดหุ้น หรือบริษัทผู้ให้บริการข้อมูล
   </string>
   <string name="tutorial_buy_sell_header">ซื้อ / ขาย</string>
-  <!-- Leaderboard -->
   <string name="tutorial_leaderboard_content">
     พบกับเทรดเดอร์ระดับท็อปในกระดานผู้นำ โดยเรียงตามกำไร&amp;ขาดทุนล่าสุด หรือเรียงตามวิธีการจัดอันดับเฉพาะของ Hero Quotient คุณสามารถคัดกรองได้ด้วยข้อมูลตลาดหุ้น กลุ่มธุรกิจ ผลตอบแทนรายเดือนและรายไตรมาส ตลอดจนเทรดเดอร์ระดับท็อปทั้งหมด\n\nแข่งขันกับเพื่อนๆของคุณจาก Facebook, Twitter และ LinkedIn บนกระดานผู้นำของเพื่อน</string>
   <string name="tutorial_leaderboard_header">ชุมชน</string>
-  <!-- Portfolio list -->
   <string name="tutorial_portfolio_list_content">รายชื่อผู้ใช้ TradeHero users ที่คุณดูล่าสุด เจาะลงไปในแต่ละรายชื่อ เพื่อดูรายละเอียดสถานะ
   </string>
   <string name="tutorial_portfolio_list_header">พอร์ทการลงทุน</string>
@@ -1030,19 +994,15 @@
   <string name="tutorial_position_list_formula_bottom_text">เงินลงทุนรวม (สำหรับเทรดที่มีคุณสมบัติตรงตามเงื่อนไข)</string>
   <string name="tutorial_position_list_formula_left_text">ROI =</string>
   <string name="tutorial_position_list_formula_top_text">กำไร&amp;ขาดทุนรวม (เกิดขึ้นแล้ว + ยังไม่เกิดขึ้น)</string>
-  <!-- Positions list -->
   <string name="tutorial_position_list_header">ระดับสถานะ ROI</string>
-  <!-- Store screen -->
   <string name="tutorial_store_screen_content">ซื้อ TradeHero dollars, เครดิต, แจ้งเตือนราคาหุ้น, และรีเซทพอร์ทการลงทุน ที่นี่ คุณสามารถจัดการการซื้อได้
   </string>
   <string name="tutorial_store_screen_header">เก็บบันทึก</string>
-  <!-- timeline -->
   <string name="tutorial_timeline_content">
     พบกับเทรดเดอร์ระดับท็อปในกระดานผู้นำ โดยเรียงตามกำไร&amp;ขาดทุนล่าสุด หรือเรียงตามวิธีการจัดอันดับเฉพาะของ Hero Quotient คุณสามารถคัดกรองได้ด้วยข้อมูลตลาดหุ้น กลุ่มธุรกิจ ผลตอบแทนรายเดือนและรายไตรมาส ตลอดจนเทรดเดอร์ระดับท็อปทั้งหมด\n\nแข่งขันกับเพื่อนๆของคุณจาก Facebook, Twitter และ LinkedIn บนกระดานผู้นำของเพื่อน</string>
   <string name="tutorial_timeline_header">โปรดเลือกตลาดหุ้น และ กลุ่มธุรกิจ</string>
   <string name="tutorial_trending_content">ค้นหาหุ้นในทุกตลาดหุ้นที่ได้รับการสนับสนุน โดยพิมพ์ในแถบค้นหาที่อยู่ด้านบนของหน้าจอ คุณสามารถค้นหาด้วยชื่อบริษัทหรือชื่อย่อ\n\nหากคุณต้องการ คุณก็สามารถเลื่อนหน้าจอเพื่อดูหุ้นที่เกิดเทรนด์: ซึ่งเป็นหุ้นที่ผู้ใช้ TradeHero รายอื่น กำลังซื้อและขาย
   </string>
-  <!-- Trending -->
   <string name="tutorial_trending_header">ค้นหาหุ้น</string>
   <string name="twitter">Twitter</string>
   <string name="twitter_login_in">เชื่อมต่อกับ Twitter</string>
@@ -1066,7 +1026,6 @@
   <string name="user_profile_button_timeline">ไทม์ไลน์</string>
   <string name="user_profile_cash_on_hand">เงินสดในมือ</string>
   <string name="user_profile_choose_image_from_camera">รูปถ่ายจากกล้องถ่ายรูป</string>
-  <!-- It is good to have it here as other localisations may swap those -->
   <string name="user_profile_choose_image_from_choice">สำหรับรูปถ่ายของคุณ, เลือก:</string>
   <string name="user_profile_choose_image_from_library">รูปถ่ายจากคลัง</string>
   <string name="user_profile_confirm_pwd">*ยืนยันรหัสผ่าน</string>

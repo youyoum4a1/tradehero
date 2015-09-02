@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="follow">Follow</string>
+  <string name="following">Following</string>
   <string name="follow_all">Follow All</string>
   <string name="message">Message</string>
   <string name="upgrade_to_premium">Upgrade to Premium</string>
@@ -326,5 +327,6 @@
   <string name="image_load_failed">Failed to load image</string>
   <string name="video_locked_hint">Coming soon!</string>
   <string name="history_tab_wait_message">Please wait for loading portfolio</string>
+  <string name="hero">Hero</string>
 
 </resources>

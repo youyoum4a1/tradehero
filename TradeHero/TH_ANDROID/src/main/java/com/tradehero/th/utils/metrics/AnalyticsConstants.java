@@ -57,12 +57,14 @@ public class AnalyticsConstants
     public static final String Watchlist_CellSwipe = "Watchlist/CellSwipe";// symbol self.security.q
     public static final String Watchlist_More_Tap = "Watchlist/More/Tap";// symbol self.security.q
     public static final String Positions_Follow = "Positions/Follow";// Following user from positions
+    public static final String Positions_Unfollow = "Positions/Unollow";// Un Following user from positions
     public static final String Position_CellSwipe = "Position/CellSwipe";// symbol
     public static final String Position_More_Tap = "Position/More/Tap";// symbol
     public static final String Leaderboards_ShowLeaderboard = "Leaderboards/ShowLeaderboard";//
     public static final String Leaderboard_Profile = "Leaderboard/Profile";// Tap proﬁle on leaderboard user
     public static final String Leaderboard_Positions = "Leaderboard/Positions";// Tap positins on leaderboard user
     public static final String Leaderboard_Follow = "Leaderboard/Follow";// Tap follow on leaderboard user
+    public static final String Leaderboard_Unfollow = "Leaderboard/Unfollow";// Tap follow on leaderboard user
     public static final String Leaderboard_Back = "Leaderboard/Back";// Tap back on leaderboard leaderboardId
     public static final String Leaderboard_FilterShow = "Leaderboard/FilterShow";// Leaderboard ﬁlter screen is
     public static final String Leaderboard_FilterChange = "Leaderboard/FilterChange";//

@@ -21,6 +21,7 @@ import dagger.Module;
                 LeaderboardFilterSliderContainer.class,
                 LeaderboardMarkUserRecyclerAdapter.class,
                 FriendsLeaderboardRecyclerAdapter.class,
+                LeaderboardMarkUserListFragmentUtil.class,
         },
         library = true,
         complete = false

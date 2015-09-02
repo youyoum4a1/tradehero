@@ -104,10 +104,8 @@
   <string name="competition_leaderboard_timer_time_separator">:</string>
   <string name="competition_leaderboard_to_be_won">획득!</string>
   <string name="competition_macquarie_warrant_hero_help_video_title">도움말 영상 - Macquarie WarrantHero</string>
-  <!-- Macquarie WarrantHero specific strings. providerId == 3 -->
   <string name="competition_macquarie_warrant_hero_main_title">Macquarie WarrantHero</string>
   <string name="competition_macquarie_warrant_hero_security_list_title">Macquarie Securities - WarrantHero</string>
-  <!-- Phillip-Macquarie specific strings, providerId == 22 -->
   <string name="competition_phillip_macquarie_warrant_hero_portfolio_title">Phillip-Macquarie</string>
   <string name="competition_portfolio_unsure">이름없는 대회</string>
   <string name="contest_center_tab_active">Active</string>
@@ -121,7 +119,6 @@
   <string name="dashboard_menu_settings">설정</string>
   <string name="dashboard_message_center">메세지</string>
   <string name="dashboard_store">스토어</string>
-  <!-- Dashboard -->
   <string name="dashboard_timeline">홈</string>
   <string name="dashboard_trending">주식거래</string>
   <string name="data_format_dd_mmm">MM월 dd일</string>
@@ -129,7 +126,6 @@
   <string name="data_format_dd_mmm_yyyy">yyyy MM월 dd일</string>
   <string name="data_format_dd_mmm_yyyy_hh_mm">MM월 dd일 HH:mm</string>
   <string name="data_format_dd_mmm_yyyy_kk_mm_z">yyyy MM월 dd일 kk:mm z</string>
-  <!-- data format -->
   <string name="data_format_d_mmm_yyyy">d MMM yyyy</string>
   <string name="data_format_d_mmm_yyyy_hh_mm">d MMM yyyy HH:mm</string>
   <string name="data_format_d_mmm_yyyy_kk_mm">마지막 업데이트된 시간: d MMM yyyy kk</string>
@@ -209,7 +205,6 @@
   <string name="google_play_billing_send_intent_error_window_description">구글플레이 연결 오류
   </string>
   <string name="google_play_billing_send_intent_error_window_title">Huh?</string>
-  <!-- string name="store_billing_verification_failed_ok">Sure</string -->
   <string name="google_play_billing_verification_failed_cancel">걱정하지 마세요</string>
   <string name="google_play_billing_verification_failed_window_description">구글플레이에서 불러온 정보가 일치하지 않습니다.
   </string>
@@ -251,7 +246,6 @@
   </string>
   <string name="hashtag">$</string>
   <string name="help">도움말</string>
-  <!-- To get rid of? -->
   <string name="image_url">image_url</string>
   <string name="invite">친구</string>
   <string name="invite_all">모두 친구</string>
@@ -289,11 +283,9 @@
   <string name="leaderboard_datetime_format">@string/data_format_d_mmm_yyyy</string>
   <string name="leaderboard_empty">지금 트레이드를 시작하여 리더보드에 첫번째로 이름을 올리세요!
   </string>
-  <!-- For individual LeaderboardFilterValueSlider -->
   <string name="leaderboard_filter_comparator_sign_bigger_than">&gt;</string>
   <string name="leaderboard_filter_comparator_sign_smaller_than">&lt;</string>
   <string name="leaderboard_filter_holding_period_description">평균 보유시간</string>
-  <!-- For Holding Period -->
   <string name="leaderboard_filter_holding_period_header">보유기간</string>
   <string name="leaderboard_filter_holding_period_max_description">최장</string>
   <string name="leaderboard_filter_holding_period_min_description">최저</string>
@@ -301,16 +293,13 @@
   <string name="leaderboard_filter_menu_button_done">완료</string>
   <string name="leaderboard_filter_menu_title">필터옵션</string>
   <string name="leaderboard_filter_monthly_activity_description">월별 거래횟수</string>
-  <!-- For Monthly Activity -->
   <string name="leaderboard_filter_monthly_activity_header">월별 활동내역</string>
   <string name="leaderboard_filter_monthly_activity_max_description">능동적</string>
   <string name="leaderboard_filter_monthly_activity_min_description">수동적</string>
   <string name="leaderboard_filter_monthly_activity_value_unit">거래 횟수 (평균)</string>
   <string name="leaderboard_filter_reset_filter">필터 초기화</string>
-  <!-- Full page elements -->
   <string name="leaderboard_filter_top_ranking_reminder">랭킹에 진입하기 위해서는 적어도 2개의 거래목록이 있어야합니다.</string>
   <string name="leaderboard_filter_win_ratio_description">수익 vs. 손해를 낸 거래 - 높을 수록 좋아요!</string>
-  <!-- For Win Ratio -->
   <string name="leaderboard_filter_win_ratio_header">승률</string>
   <string name="leaderboard_filter_win_ratio_max_description">항상 수익을 냄</string>
   <string name="leaderboard_filter_win_ratio_min_description">수익을 낸적 없음</string>
@@ -347,7 +336,6 @@
   <string name="link_now">지금 연결!</string>
   <string name="loading_loading">로딩중…</string>
   <string name="loading_required_information">요청한 정보 로딩중</string>
-  <!-- Manage Alerts -->
   <string name="manage_alerts_plan">플랜: </string>
   <string name="manage_alerts_with_count">%d개의 알림기능</string>
   <string name="manage_followers_follower_none">팔로워 없음.</string>
@@ -361,13 +349,11 @@
   <string name="manage_followers_revenue_follower">수익: %1$s %2$,.2f</string>
   <string name="manage_followers_revenue_follower_2">수익: %1$s</string>
   <string name="manage_followers_revenue_follower_3">수익: </string>
-  <!-- Manage followers -->
   <string name="manage_followers_title">팔로워</string>
   <string name="manage_followers_total_amount_paid">지급된 총금액</string>
   <string name="manage_followers_total_revenue">총 수익</string>
   <string name="manage_follower_payment_datetime_format">@string/data_format_dd_mmm_yyyy</string>
   <string name="manage_follower_payment_duration">%d일간의 금액이 지급되었습니다:</string>
-  <!-- Manage follower payments -->
   <string name="manage_follower_payment_transaction_list_header">거래내역</string>
   <string name="manage_heroes_active_header">팔로우중인 히어로</string>
   <string name="manage_heroes_alert_follow_cancel">나중에</string>
@@ -397,7 +383,6 @@
   <string name="manage_heroes_follow_progress_title">진행중</string>
   <string name="manage_heroes_inactive_header">비활성화된 히어로</string>
   <string name="manage_heroes_not_following_since">%s님 팔로우를 중단했습니다</string>
-  <!-- Manage heroes -->
   <string name="manage_heroes_title">히어로</string>
   <string name="manage_heroes_unfollow_failed">해당 히어로 팔로우를 중단하는 과정에서 오류가 발생하였습니다.
   </string>
@@ -457,7 +442,6 @@
   <string name="portfolio_recently_viewed_heroes">최근 방문한 히어로</string>
   <string name="portfolio_recently_viewed_others">최근 방문한 사용자</string>
   <string name="portfolio_title_unnamed">제목없는 포트폴리오</string>
-  <!-- Portfolios list -->
   <string name="portfolio_topbar_title">포트폴리오 &amp; 관심종목</string>
   <string name="positions_in_period">기간내</string>
   <string name="positions_overall">전체</string>
@@ -479,7 +463,6 @@
   <string name="position_locked_follow_to_unlock">다음단계로 넘어가려면 팔로우하세요!</string>
   <string name="position_locked_title">보유종목</string>
   <string name="position_market_value_header">시가</string>
-  <!-- Portfolio detail / Positions -->
   <string name="position_nothing_description">보유한 주식이 없습니다. 지금 트레이드를 시작하세요!</string>
   <plurals name="position_period_held_day">
     <item quantity="other">%1%d 일</item>
@@ -489,10 +472,8 @@
   <string name="position_total_invested_header">총 투자금액</string>
   <string name="position_unrealised_pl_header">확정되지 않은 손익</string>
   <string name="post">게시</string>
-  <!-- Strings for possible PreferenceActivity Back/Next buttons -->
   <string name="preference_fragment_compact_back_button_label">뒤로</string>
   <string name="preference_fragment_compact_next_button_label">다음</string>
-  <!-- Optional button to Skip a PreferenceActivity [CHAR LIMIT=20] -->
   <string name="preference_fragment_compact_skip_button_label">건너뛰기</string>
   <string name="press_back_again_to_exit">뒤로 버튼을 누르면 종료합니다.</string>
   <string name="private_message_btn_send">보내기</string>
@@ -530,7 +511,6 @@
   <string name="security_news">뉴스</string>
   <string name="security_open">시작가</string>
   <string name="security_pe_ratio">P/E 지수</string>
-  <!-- Security Info -->
   <string name="security_previous_close">마감</string>
   <string name="security_type_bond">금리</string>
   <string name="security_type_covered_warrant">Covered Warrant</string>
@@ -635,7 +615,6 @@
   <string name="social_followers">팔로워</string>
   <string name="social_heroes">히어로</string>
   <string name="social_search_people_hint">이름을 입력하세요</string>
-  <!-- Splash screen -->
   <string name="splash_copyright_2">Registered in Singapore company number 201003309N</string>
   <string name="splash_copyright_3">Patents Pending</string>
   <string name="start_new_discussion">새토론 시작하기</string>
@@ -736,16 +715,10 @@
   <string name="store_manage_stock_alerts">주식 알림기능 관리</string>
   <string name="store_option_menu_title">트레이드히어로 스토어</string>
   <string name="suggest_to_upgrade">새로운 버전이 나왔습니다. 업데이트하여 더욱 편리하게 사용하세요. 지금 업데이트하시겠습니까?</string>
-  <!-- do not translate end -->
   <string name="sure_to_delete_message">Delete this message?</string>
   <string name="tab_to_dismiss">무시하려면 탭하세요</string>
   <string name="team_credit">Made with love in Singapore and Shanghai</string>
   <string name="tencent_qq">QQ</string>
-  <!-- TradeHero URLs -->
-  <string name="th_faq_url">http://www.tradehero.mobi/faq</string>
-  <string name="th_help_url">http://www.tradehero.mobi/about</string>
-  <string name="th_privacy_terms_url">http://www.tradehero.mobi/privacy</string>
-  <string name="th_terms_url">http://www.tradehero.mobi/terms</string>
   <string name="timeline_discussion_comment_box_hint">코멘트를 입력하세요…</string>
   <string name="timeline_discussion_post">포스트</string>
   <string name="timeline_enable_stock_alert">주식 알림기능 켜기</string>
@@ -774,7 +747,6 @@
   <string name="trending_filter_all_description"> </string>
   <string name="trending_filter_all_title">모든 종목</string>
   <string name="trending_filter_basic_description">트레이드히어로 거래 인기종목</string>
-  <!-- What's Trending filters -->
   <string name="trending_filter_basic_title">인기 종목</string>
   <string name="trending_filter_exchange_all">모두</string>
   <string name="trending_filter_exchange_drop_down">%2$s - %1$s</string>
@@ -782,7 +754,6 @@
   <string name="trending_filter_price_title">Price Action</string>
   <string name="trending_filter_volume_description">전날 거래량 &gt; 평균 일일 거래량</string>
   <string name="trending_filter_volume_title">거래량 폭등 주</string>
-  <!-- What's Trending -->
   <string name="trending_header">인기상승 종목</string>
   <string name="trending_search_empty_result">검색할 단어를 입력하세요</string>
   <string name="trending_search_empty_result_for_people">사람 이름을 입력하세요</string>
@@ -794,11 +765,9 @@
     *모든 가격은 증시 혹은 데이터제공자에 따라 지연될 수 있습니다.
   </string>
   <string name="tutorial_buy_sell_header">매수 / 매도</string>
-  <!-- Leaderboard -->
   <string name="tutorial_leaderboard_content">
     Find top traders in the leaderboards, ranked either by raw P&amp;L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.</string>
   <string name="tutorial_leaderboard_header">커뮤니티</string>
-  <!-- Portfolio list -->
   <string name="tutorial_portfolio_list_content"> 최근 방문한 트레이드히어로 사용자 목록. 각 사용자명을 누르면 자세한 거래정보를 확인할 수 있습니다.
   </string>
   <string name="tutorial_portfolio_list_header">포트폴리오</string>
@@ -809,19 +778,15 @@
   <string name="tutorial_position_list_formula_bottom_text">총 투자금액 (인중된 거래 기준)</string>
   <string name="tutorial_position_list_formula_left_text">ROI =</string>
   <string name="tutorial_position_list_formula_top_text">Total P&amp;L (realized + unrealized)</string>
-  <!-- Positions list -->
   <string name="tutorial_position_list_header">포지션 레벨 수익률 </string>
-  <!-- Store screen -->
   <string name="tutorial_store_screen_content">트레이드히어로 게임머니와 크레딧으로 주식 알림기능과 포트폴리오 초기화 기능을 이용하세요. 구매관리도 할 수 있습니다.
   </string>
   <string name="tutorial_store_screen_header">Store</string>
-  <!-- timeline -->
   <string name="tutorial_timeline_content">
     Find top traders in the leaderboards, ranked either by raw P&amp;L or by our custom Hero Quotient ranking algorithm. You can filter by stock exchange, industry sectors, monthly and quarterly returns and overall top traders.\n\nCompete with your friends from Facebook, Twitter and LinkedIn on the Friends Leaderboard.</string>
   <string name="tutorial_timeline_header">트레이드히어로에 오신것을 환영합니다!</string>
   <string name="tutorial_trending_content">상단에 있는 검색창에서 지원되는 주식시장의 주식을 검색하세요. 회사명 혹은 종목코드로 검색 가능합니다. 트레이드히어로 사용자들이 사고 파는 주식은 인기종목을 스크롤하면 확인할 수 있습니다.
   </string>
-  <!-- Trending -->
   <string name="tutorial_trending_header">주식 검색</string>
   <string name="twitter">트위터</string>
   <string name="update">업데이트</string>
@@ -838,7 +803,6 @@
   <string name="user_profile_button_timeline">타임라인</string>
   <string name="user_profile_cash_on_hand">Cash on Hand</string>
   <string name="user_profile_choose_image_from_camera">카메라로 사진찍기</string>
-  <!-- It is good to have it here as other localisations may swap those -->
   <string name="user_profile_choose_image_from_choice">프로필 사진을 고르세요:</string>
   <string name="user_profile_choose_image_from_library">사진첩에서 고르기</string>
   <string name="user_profile_confirm_pwd">비밀번호 확인</string>
@@ -879,7 +843,6 @@
   <string name="warrant_info_underlying">Underlying</string>
   <string name="warrant_price_header">Price</string>
   <string name="warrant_strike_header">Strike</string>
-  <!-- Warrant info -->
   <string name="warrant_type_call">Call</string>
   <string name="warrant_type_put">Put</string>
   <string name="watchlist_add_title">관심종목에 추가</string>

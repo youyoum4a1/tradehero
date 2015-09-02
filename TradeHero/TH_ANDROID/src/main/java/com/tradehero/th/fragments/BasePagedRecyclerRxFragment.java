@@ -8,10 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
@@ -45,7 +44,7 @@ abstract public class BasePagedRecyclerRxFragment<
     private final static String BUNDLE_KEY_PER_PAGE = BasePagedRecyclerRxFragment.class.getName() + ".perPage";
 
     public final static int FIRST_PAGE = 1;
-    public final static int DEFAULT_PER_PAGE = 15;
+    public final static int DEFAULT_PER_PAGE = 20;
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
@@ -59,20 +58,19 @@ abstract public class BasePagedRecyclerRxFragment<
     protected PagedRecyclerAdapter<DTOType> itemViewAdapter;
     @NonNull protected final Map<Integer, Subscription> pagedSubscriptions;
     @NonNull protected final Map<Integer, Subscription> pagedPastSubscriptions;
-    protected DTOType selectedItem;
 
     public static void putPerPage(@NonNull Bundle args, int perPage)
     {
         args.putInt(BUNDLE_KEY_PER_PAGE, perPage);
     }
 
-    public static int getPerPage(@Nullable Bundle args)
+    public static int getPerPage(@Nullable Bundle args, int defaultPerPage)
     {
         if (args != null && args.containsKey(BUNDLE_KEY_PER_PAGE))
         {
             return args.getInt(BUNDLE_KEY_PER_PAGE);
         }
-        return DEFAULT_PER_PAGE;
+        return defaultPerPage;
     }
 
     public BasePagedRecyclerRxFragment()
@@ -84,8 +82,8 @@ abstract public class BasePagedRecyclerRxFragment<
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        perPage = getPerPage(getArguments());
-        perPage = getPerPage(savedInstanceState);
+        perPage = getPerPage(getArguments(), DEFAULT_PER_PAGE);
+        perPage = getPerPage(savedInstanceState, perPage);
         itemViewAdapter = createItemViewAdapter();
     }
 
@@ -343,17 +341,5 @@ abstract public class BasePagedRecyclerRxFragment<
             super.raiseEndFlag();
             requestDtos();
         }
-    }
-
-    //@OnItemClick(R.id.listview)
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        //noinspection unchecked
-        handleDtoClicked((DTOType) parent.getItemAtPosition(position));
-    }
-
-    protected void handleDtoClicked(DTOType clicked)
-    {
-        this.selectedItem = clicked;
     }
 }

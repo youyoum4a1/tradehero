@@ -37,4 +37,9 @@ public class BaseLiveFragmentUtil
     public void onDestroyView()
     {
     }
+
+    public void onResume()
+    {
+
+    }
 }

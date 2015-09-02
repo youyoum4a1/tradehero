@@ -2,7 +2,7 @@ package com.tradehero.th.models.user;
 
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistant;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -49,28 +49,28 @@ abstract public class FollowUserAssistantTestBase
 
     //<editor-fold desc="Prepare ServiceWrapper">
     protected void prepareUserServiceForFailUnfollow(
-            SimpleFollowUserAssistant assistant,
+            FollowUserAssistant assistant,
             RetrofitError expected)
     {
         when(userServiceWrapper.unfollowRx(heroId)).then(createFailUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForSuccessUnfollow(
-            SimpleFollowUserAssistant assistant,
+            FollowUserAssistant assistant,
             UserProfileDTO expected)
     {
         when(userServiceWrapper.unfollowRx(heroId)).then(createSuccessUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForFailFollow(
-            SimpleFollowUserAssistant assistant,
+            FollowUserAssistant assistant,
             RetrofitError expected)
     {
         when(userServiceWrapper.followRx(heroId)).then(createFailUserServiceAnswer(expected));
     }
 
     protected void prepareUserServiceForSuccessFollow(
-            SimpleFollowUserAssistant assistant,
+            FollowUserAssistant assistant,
             UserProfileDTO expected)
     {
         when(userServiceWrapper.followRx(heroId)).then(createSuccessUserServiceAnswer(expected));
