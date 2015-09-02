@@ -28,11 +28,6 @@ public class SellFXFragment extends AbstractFXTransactionFragment
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    public SellFXFragment()
-    {
-        super();
-    }
-
     @Override protected void setBuyEventFor(SharingOptionsEvent.Builder builder)
     {
         builder.setBuyEvent(IS_BUY);
@@ -45,7 +40,7 @@ public class SellFXFragment extends AbstractFXTransactionFragment
             return getString(R.string.na);
         }
         THSignedNumber sthSignedNumber = getFormattedPrice(quoteDTO.bid);
-        return getString(R.string.buy_sell_dialog_sell, sthSignedNumber.toString());
+        return sthSignedNumber.toString();
     }
 
     @Override @Nullable protected Double getProfitOrLossUsd(
