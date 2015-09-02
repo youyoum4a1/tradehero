@@ -32,6 +32,7 @@ import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.base.LollipopArrayAdapter;
 import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
 import com.tradehero.th.fragments.live.DatePickerDialogFragment;
 import com.tradehero.th.fragments.live.VerifyPhoneDialogFragment;
