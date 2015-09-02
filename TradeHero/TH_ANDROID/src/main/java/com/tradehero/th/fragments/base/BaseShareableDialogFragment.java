@@ -18,7 +18,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareHelper;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
+import com.tradehero.th.models.share.preference.SocialSharePreferenceHelper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
@@ -40,7 +40,7 @@ import rx.functions.Func1;
 
 public class BaseShareableDialogFragment extends BaseDialogFragment
 {
-    @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
+    @Inject SocialSharePreferenceHelper socialSharePreferenceHelper;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected SocialShareHelper socialShareHelper;
@@ -60,7 +60,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        socialSharePreferenceHelperNew.reload();
+        socialSharePreferenceHelper.reload();
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
@@ -161,7 +161,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                         {
                             @Override public void call(OnClickEvent event)
                             {
-                                socialSharePreferenceHelperNew.updateSocialSharePreference(
+                                socialSharePreferenceHelper.updateSocialSharePreference(
                                         SocialNetworkEnum.WECHAT,
                                         ((ToggleButton) event.view()).isChecked());
                             }
@@ -269,7 +269,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                         SocialLinkToggleButton button = (SocialLinkToggleButton) event.view();
                         if (!button.isChecked())
                         {
-                            socialSharePreferenceHelperNew.updateSocialSharePreference(
+                            socialSharePreferenceHelper.updateSocialSharePreference(
                                     button.getSocialNetworkEnum(),
                                     false);
                             return Observable.empty();
@@ -309,7 +309,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
                 {
                     @Override public Boolean call(Boolean isLinked)
                     {
-                        return socialSharePreferenceHelperNew.isShareEnabled(
+                        return socialSharePreferenceHelper.isShareEnabled(
                                 socialNetworkEnum,
                                 isLinked);
                     }
@@ -356,7 +356,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
     public void setPublishEnable(@NonNull SocialNetworkEnum socialNetwork)
     {
-        socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetwork, true);
+        socialSharePreferenceHelper.updateSocialSharePreference(socialNetwork, true);
         for (SocialLinkToggleButton toggleButton : socialLinkingButtons)
         {
             if (toggleButton != null && toggleButton.getSocialNetworkEnum().equals(socialNetwork))
@@ -368,16 +368,16 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 
     protected boolean shareForTransaction(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
-        return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, false);
+        return socialSharePreferenceHelper.isShareEnabled(socialNetworkEnum, false);
     }
 
     protected void saveShareSettings()
     {
-        socialSharePreferenceHelperNew.save();
+        socialSharePreferenceHelper.save();
     }
 
     @NonNull protected List<SocialNetworkEnum> getEnabledSharePreferences()
     {
-        return socialSharePreferenceHelperNew.getAllEnabledSharePreferences();
+        return socialSharePreferenceHelper.getAllEnabledSharePreferences();
     }
 }

@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
 
-public class SocialSharePreferenceHelperNew
+public class SocialSharePreferenceHelper
 {
     @NonNull private final SocialShareSetPreference socialShareSetPreference;
     @NonNull private static Hashtable<SocialNetworkEnum, SocialSharePreferenceDTO> sharePreferencesMap = null;
@@ -18,7 +18,7 @@ public class SocialSharePreferenceHelperNew
     private static AtomicBoolean isInitialized = new AtomicBoolean();
 
     //<editor-fold desc="Constructors">
-    @Inject public SocialSharePreferenceHelperNew(
+    @Inject public SocialSharePreferenceHelper(
             @NonNull SocialShareSetPreference socialShareSetPreference)
     {
         super();

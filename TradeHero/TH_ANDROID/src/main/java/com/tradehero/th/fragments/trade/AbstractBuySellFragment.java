@@ -45,7 +45,7 @@ import com.tradehero.th.fragments.trade.view.PortfolioSelectorView;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
+import com.tradehero.th.models.share.preference.SocialSharePreferenceHelper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioIdListCacheRx;
@@ -101,7 +101,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Inject @ShowAskForReviewDialog protected TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog protected TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject protected BroadcastUtils broadcastUtils;
-    @Inject protected SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
+    @Inject protected SocialSharePreferenceHelper socialSharePreferenceHelper;
     @Inject protected Lazy<SocialSharer> socialSharerLazy;
 
     @Bind(R.id.portfolio_selector_container) protected PortfolioSelectorView selectedPortfolioContainer;

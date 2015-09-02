@@ -20,7 +20,7 @@ import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.share.SocialShareHelper;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
+import com.tradehero.th.models.share.preference.SocialSharePreferenceHelper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
@@ -43,7 +43,7 @@ import rx.internal.util.SubscriptionList;
 
 public class ShareDelegateFragment
 {
-    @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
+    @Inject SocialSharePreferenceHelper socialSharePreferenceHelper;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected SocialShareHelper socialShareHelper;
@@ -82,7 +82,7 @@ public class ShareDelegateFragment
     {
         ButterKnife.bind(this, view);
 
-        socialSharePreferenceHelperNew.reload();
+        socialSharePreferenceHelper.reload();
         registerWeChatButton();
         registerSocialButtons();
     }
@@ -156,7 +156,7 @@ public class ShareDelegateFragment
                         {
                             @Override public void call(OnClickEvent event)
                             {
-                                socialSharePreferenceHelperNew.updateSocialSharePreference(
+                                socialSharePreferenceHelper.updateSocialSharePreference(
                                         SocialNetworkEnum.WECHAT,
                                         ((ToggleButton) event.view()).isChecked());
                             }
@@ -268,7 +268,7 @@ public class ShareDelegateFragment
                 {
                     @Override public Boolean call(Boolean isLinked)
                     {
-                        return socialSharePreferenceHelperNew.isShareEnabled(
+                        return socialSharePreferenceHelper.isShareEnabled(
                                 socialNetworkEnum,
                                 isLinked);
                     }
@@ -315,7 +315,7 @@ public class ShareDelegateFragment
 
     private void setPublishEnable(@NonNull SocialNetworkEnum socialNetwork)
     {
-        socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetwork, true);
+        socialSharePreferenceHelper.updateSocialSharePreference(socialNetwork, true);
         for (SocialLinkToggleButton toggleButton : socialLinkingButtons)
         {
             if (toggleButton != null && toggleButton.getSocialNetworkEnum().equals(socialNetwork))
@@ -347,7 +347,7 @@ public class ShareDelegateFragment
                         SocialLinkToggleButton button = (SocialLinkToggleButton) event.view();
                         if (!button.isChecked())
                         {
-                            socialSharePreferenceHelperNew.updateSocialSharePreference(
+                            socialSharePreferenceHelper.updateSocialSharePreference(
                                     button.getSocialNetworkEnum(),
                                     false);
                             return Observable.empty();
