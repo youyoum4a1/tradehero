@@ -43,8 +43,6 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
 {
     protected ShareDelegateFragment shareDelegateFragment;
 
-    @Nullable protected UserProfileDTO userProfileDTO;
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
