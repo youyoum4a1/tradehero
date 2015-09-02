@@ -63,7 +63,45 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
 
         @Override public boolean areContentsTheSame(NewsfeedDisplayDTO oldItem, NewsfeedDisplayDTO newItem)
         {
-            //TODO
+            if (oldItem.picture != null && newItem.picture == null) return false;
+            if (oldItem.picture == null && newItem.picture != null) return false;
+            if (oldItem.picture != null && !oldItem.picture.equals(newItem.picture)) return false;
+            if (!oldItem.name.equals(newItem.name)) return false;
+            if (!oldItem.body.equals(newItem.body)) return false;
+            if (!oldItem.createdAtUTC.equals(newItem.createdAtUTC)) return false;
+
+            if (oldItem instanceof NewsfeedDisplayNewsDTO && newItem instanceof NewsfeedDisplayNewsDTO)
+            {
+                NewsfeedDisplayNewsDTO oldNews = (NewsfeedDisplayNewsDTO) oldItem;
+                NewsfeedDisplayNewsDTO newNews = (NewsfeedDisplayNewsDTO) newItem;
+
+                if (oldNews.heroImage != null && newNews.heroImage == null) return false;
+                if (oldNews.heroImage == null && newNews.heroImage != null) return false;
+                if (oldNews.heroImage != null && !oldNews.heroImage.equals(newNews.heroImage)) return false;
+                if (!oldNews.title.equals(newNews.title)) return false;
+                return true;
+            }
+            else if (oldItem instanceof NewsfeedDisplayStockTwitDTO && newItem instanceof NewsfeedDisplayStockTwitDTO)
+            {
+                NewsfeedDisplayStockTwitDTO oldTwit = (NewsfeedDisplayStockTwitDTO) oldItem;
+                NewsfeedDisplayStockTwitDTO newTwit = (NewsfeedDisplayStockTwitDTO) newItem;
+
+                if (oldTwit.heroImage != null && newTwit.heroImage == null) return false;
+                if (oldTwit.heroImage == null && newTwit.heroImage != null) return false;
+                if (oldTwit.heroImage != null && !oldTwit.heroImage.equals(newTwit.heroImage)) return false;
+                return true;
+            }
+            else if (oldItem instanceof NewsfeedDisplayDiscussionDTO && newItem instanceof NewsfeedDisplayDiscussionDTO)
+            {
+                NewsfeedDisplayDiscussionDTO oldDiscussion = (NewsfeedDisplayDiscussionDTO) oldItem;
+                NewsfeedDisplayDiscussionDTO newDiscussion = (NewsfeedDisplayDiscussionDTO) newItem;
+
+                if (oldDiscussion.logo != null && newDiscussion.logo == null) return false;
+                if (oldDiscussion.logo == null && newDiscussion.logo != null) return false;
+                if (oldDiscussion.logo != null && !oldDiscussion.logo.equals(newDiscussion.logo)) return false;
+                if (!oldDiscussion.content.equals(newDiscussion.content)) return false;
+                return true;
+            }
             return super.areContentsTheSame(oldItem, newItem);
         }
 
@@ -72,7 +110,6 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
             return item1.id == item2.id && item1.getClass().equals(item2.getClass());
         }
     }
-
 
     public static class NewsfeedViewHolder extends TypedViewHolder<NewsfeedDisplayDTO>
     {
@@ -127,7 +164,6 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
     public static class NewsfeedStockTwitViewHolder extends NewsfeedViewHolder
     {
         @Bind(R.id.newsfeed_item_hero_image) ImageView heroImg;
-
 
         public NewsfeedStockTwitViewHolder(View itemView)
         {

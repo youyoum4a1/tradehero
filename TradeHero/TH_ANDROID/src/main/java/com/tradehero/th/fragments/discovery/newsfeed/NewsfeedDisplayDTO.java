@@ -9,6 +9,9 @@ public class NewsfeedDisplayDTO implements DTO
 {
     public int id;
     public Date createdAtUTC;
+    public String picture;
+    public String name;
+    public String body;
 
     public static class DTOList<T extends NewsfeedDisplayDTO> extends BaseArrayList<T> implements
             DTO,
