@@ -48,7 +48,7 @@ public class BaseShareableDialogFragment extends BaseDialogFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        shareDelegateFragment = new ShareDelegateFragment(this.getParentFragment());
+        shareDelegateFragment = new ShareDelegateFragment(this);
         shareDelegateFragment.onCreate(savedInstanceState);
     }
 
