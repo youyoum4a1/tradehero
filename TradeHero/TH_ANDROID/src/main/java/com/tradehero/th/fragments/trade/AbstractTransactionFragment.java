@@ -212,7 +212,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             }
         });
 
-        if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXDialogFragment.class)
+        if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXFragment.class)
         {
             mConfirm.setText(R.string.buy_sell_confirm_sell_now);
         }
@@ -597,12 +597,12 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
         if (securityCompactDTO != null)
         {
-            setActionBarTitle(getString((klass == BuyStockFragment.class || klass == BuyFXDialogFragment.class) ? R.string.transaction_title_buy : R.string.transaction_title_sell,
+            setActionBarTitle(getString((klass == BuyStockFragment.class || klass == BuyFXFragment.class) ? R.string.transaction_title_buy : R.string.transaction_title_sell,
                     securityCompactDTO.getExchangeSymbol()));
         }
         else
         {
-            setActionBarTitle(getString((klass == BuyStockFragment.class || klass == SellFXDialogFragment.class) ? R.string.transaction_title_buy : R.string.transaction_title_sell,
+            setActionBarTitle(getString((klass == BuyStockFragment.class || klass == SellFXFragment.class) ? R.string.transaction_title_buy : R.string.transaction_title_sell,
                     getString(R.string.stock)));
         }
     }

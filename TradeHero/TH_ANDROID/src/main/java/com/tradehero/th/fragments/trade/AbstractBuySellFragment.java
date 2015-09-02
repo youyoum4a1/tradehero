@@ -31,9 +31,6 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -51,7 +48,6 @@ import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioIdListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -64,7 +60,6 @@ import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
@@ -384,10 +379,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onStop()
     {
         quoteDTO = null;
-        AbstractTransactionFragment dialogCopy = abstractTransactionFragment;
-        if (dialogCopy != null)
+        AbstractTransactionFragment copy = abstractTransactionFragment;
+        if (copy != null)
         {
-            dialogCopy.setBuySellTransactionListener(null);
+            copy.setBuySellTransactionListener(null);
         }
 
         super.onStop();
@@ -741,7 +736,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 if (securityCompactDTO instanceof FxSecurityCompactDTO)
                 {
                     Bundle args = new Bundle();
-                    Class klass = isTransactionTypeBuy ? BuyFXDialogFragment.class : SellFXDialogFragment.class;
+                    Class klass = isTransactionTypeBuy ? BuyFXFragment.class : SellFXFragment.class;
 
                     AbstractTransactionFragment.Requisite transactionRequisite = new AbstractTransactionFragment.Requisite(
                             requisite.securityId,

@@ -21,13 +21,13 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
+public class SellFXFragment extends AbstractFXTransactionFragment
 {
-    private static final boolean IS_BUY = true;
+    private static final boolean IS_BUY = false;
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    public BuyFXDialogFragment()
+    public SellFXFragment()
     {
         super();
     }
@@ -39,12 +39,12 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
 
     @Override protected String getLabel(@NonNull QuoteDTO quoteDTO)
     {
-        if (quoteDTO.ask == null)
+        if (quoteDTO.bid == null)
         {
             return getString(R.string.na);
         }
-        THSignedNumber bThSignedNumber = getFormattedPrice(quoteDTO.ask);
-        return getString(R.string.buy_sell_dialog_buy, bThSignedNumber.toString());
+        THSignedNumber sthSignedNumber = getFormattedPrice(quoteDTO.bid);
+        return getString(R.string.buy_sell_dialog_sell, sthSignedNumber.toString());
     }
 
     @Override @Nullable protected Double getProfitOrLossUsd(
@@ -55,16 +55,16 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
     {
         if (portfolioCompactDTO == null
                 || quoteDTO == null
-                || quoteDTO.ask == null)
-        {
-            return null;
-        }
-        if (closeablePosition == null || closeablePosition.averagePriceSecCcy == null || quantity == null)
+                || quoteDTO.bid == null
+                || quoteDTO.toUSDRate == null
+                || quantity == null
+                || closeablePosition == null
+                || closeablePosition.averagePriceSecCcy == null)
         {
             return null;
         }
 
-        return -quantity * quoteDTO.toUSDRate * (quoteDTO.ask - closeablePosition.averagePriceSecCcy);
+        return quantity * quoteDTO.toUSDRate * (quoteDTO.bid - closeablePosition.averagePriceSecCcy);
     }
 
     @Override @NonNull public String getCashShareLeft(
@@ -72,7 +72,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
             @NonNull QuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition, int quantity)
     {
-        return getRemainingWhenBuy(portfolioCompactDTO, quoteDTO, closeablePosition, quantity);
+        return getRemainingWhenSell(portfolioCompactDTO, quoteDTO, closeablePosition, quantity);
     }
 
     @Override @Nullable protected Integer getMaxValue(
@@ -80,17 +80,17 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
             @NonNull QuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition)
     {
-        return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
+        return getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
     }
 
     @Override protected boolean hasValidInfo()
     {
-        return hasValidInfoForBuy();
+        return hasValidInfoForSell();
     }
 
     @Override protected boolean isQuickButtonEnabled()
     {
-        return usedDTO.quoteDTO != null && usedDTO.quoteDTO.ask != null;
+        return usedDTO.quoteDTO != null && usedDTO.quoteDTO.bid != null && usedDTO.quoteDTO.toUSDRate != null;
     }
 
     @Override protected double getQuickButtonMaxValue(
@@ -98,7 +98,13 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
             @NonNull QuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition)
     {
-        return portfolioCompactDTO.cashBalanceRefCcy;
+        Integer maxSellableShares = getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
+        if (maxSellableShares != null && usedDTO.quoteDTO != null && usedDTO.quoteDTO.bid != null)
+        {
+            // TODO see other currencies
+            return maxSellableShares * usedDTO.quoteDTO.bid * usedDTO.quoteDTO.toUSDRate;
+        }
+        return 0;
     }
 
     @Override protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO)
@@ -118,7 +124,8 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
                 .subscribe(new BuySellObserver(requisite.securityId, transactionFormDTO, IS_BUY));
     }
 
-    @Nullable @Override public Double getPriceCcy(@Nullable PortfolioCompactDTO portfolioCompactDTO,
+    @Nullable @Override public Double getPriceCcy(
+            @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable QuoteDTO quoteDTO)
     {
         if (quoteDTO == null)
@@ -139,15 +146,15 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
             {
                 return positionDTO.portfolioId == portfolioId.key
                         && positionDTO.shares != null
-                        && positionDTO.shares < 0;
+                        && positionDTO.shares > 0;
             }
         };
     }
 
-    protected boolean hasValidInfoForBuy()
+    protected boolean hasValidInfoForSell()
     {
         return usedDTO.securityCompactDTO != null
                 && usedDTO.quoteDTO != null
-                && usedDTO.quoteDTO.ask != null;
+                && usedDTO.quoteDTO.bid != null;
     }
 }

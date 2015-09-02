@@ -57,7 +57,7 @@ public class ShareDelegateFragment
     SocialLinkToggleButton[] socialLinkingButtons;
 
     @Nullable protected UserProfileDTO userProfileDTO;
-    @NonNull Fragment parentFragment;
+    @Nullable Fragment parentFragment;
 
     protected SubscriptionList subscriptions;
     protected Subscription weChatLinkingSubscription;
@@ -86,6 +86,7 @@ public class ShareDelegateFragment
 
     public void onDestroy()
     {
+        parentFragment = null;
         subscriptions.unsubscribe();
         ButterKnife.unbind(this);
     }
