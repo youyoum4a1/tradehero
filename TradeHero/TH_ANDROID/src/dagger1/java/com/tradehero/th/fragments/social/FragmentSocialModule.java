@@ -15,14 +15,8 @@ import dagger.Module;
         },
         injects = {
                 PeopleSearchFragment.class,
-<<<<<<< HEAD
-                AllRelationsFragment.class,
-                RelationsListItemView.class,
-                ShareDelegateFragment.class,
-                FollowDialogView.class,
-=======
                 AllRelationsRecyclerFragment.class,
->>>>>>> origin/develop
+                ShareDelegateFragment.class,
         },
         library = true,
         complete = false
