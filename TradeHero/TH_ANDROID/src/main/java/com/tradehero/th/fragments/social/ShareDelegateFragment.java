@@ -59,7 +59,7 @@ public class ShareDelegateFragment
     @Nullable protected UserProfileDTO userProfileDTO;
     @Nullable Fragment parentFragment;
 
-    protected SubscriptionList subscriptions;
+    protected SubscriptionList onDestroySubscriptions;
     protected Subscription weChatLinkingSubscription;
 
     Subscription socialLinkingSubscription;
@@ -69,11 +69,11 @@ public class ShareDelegateFragment
         super();
 
         this.parentFragment = fragment;
-        this.subscriptions = new SubscriptionList();
     }
 
     public void onCreate(Bundle savedInstanceState)
     {
+        this.onDestroySubscriptions = new SubscriptionList();
         HierarchyInjector.inject(parentFragment.getActivity(), this);
         fetchUserProfile();
     }
@@ -87,11 +87,16 @@ public class ShareDelegateFragment
         registerSocialButtons();
     }
 
+    public void onDestroyView()
+    {
+        ButterKnife.unbind(this);
+
+    }
+
     public void onDestroy()
     {
         parentFragment = null;
-        subscriptions.unsubscribe();
-        ButterKnife.unbind(this);
+        onDestroySubscriptions.unsubscribe();
     }
 
     @Nullable public UserProfileDTO getUserProfileDTO()
@@ -101,7 +106,7 @@ public class ShareDelegateFragment
 
     protected void fetchUserProfile()
     {
-        subscriptions.add(AppObservable.bindSupportFragment(
+        onDestroySubscriptions.add(AppObservable.bindSupportFragment(
                 parentFragment,
                 userProfileCache.get(currentUserId.toUserBaseKey()))
                 .observeOn(AndroidSchedulers.mainThread())

@@ -300,8 +300,14 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         unsubscribe(buySellSubscription);
         buySellSubscription = null;
         ButterKnife.unbind(this);
-        shareDelegateFragment.onDestroy();
+        shareDelegateFragment.onDestroyView();
         super.onDestroyView();
+    }
+
+    @Override public void onDestroy()
+    {
+        super.onDestroy();
+        shareDelegateFragment.onDestroy();
     }
 
     @Override public void onResume()
