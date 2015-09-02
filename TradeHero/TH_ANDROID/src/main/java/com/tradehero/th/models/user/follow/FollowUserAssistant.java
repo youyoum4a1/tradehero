@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class FollowUserAssistant
@@ -131,7 +132,13 @@ public class FollowUserAssistant
 
     public Observable<UserProfileDTO> unFollowFromServer()
     {
-        return userServiceWrapper.unfollowRx(heroId);
+        return userServiceWrapper.unfollowRx(heroId).doOnNext(new Action1<UserProfileDTO>()
+        {
+            @Override public void call(UserProfileDTO userProfileDTO)
+            {
+                userProfileCacheRx.onNext(currentUserId.toUserBaseKey(), userProfileDTO);
+            }
+        });
     }
 
     public void followingInCache()
@@ -150,7 +157,13 @@ public class FollowUserAssistant
 
     public Observable<UserProfileDTO> followingInServer()
     {
-        return userServiceWrapper.unfollowRx(heroId);
+        return userServiceWrapper.freeFollowRx(heroId).doOnNext(new Action1<UserProfileDTO>()
+        {
+            @Override public void call(UserProfileDTO userProfileDTO)
+            {
+                userProfileCacheRx.onNext(currentUserId.toUserBaseKey(), userProfileDTO);
+            }
+        });
     }
 
     public Observable<OnDialogClickEvent> showUnFollowConfirmation(String displayName)
