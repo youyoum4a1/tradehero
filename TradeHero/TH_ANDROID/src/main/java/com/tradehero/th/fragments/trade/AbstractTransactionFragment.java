@@ -164,6 +164,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         super();
         this.usedDTO = new UsedDTO();
         this.quantitySubject = BehaviorSubject.create();
+        this.shareDelegateFragment = new ShareDelegateFragment(this);
     }
 
     //<editor-fold desc="Arguments passing">
@@ -193,6 +194,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         requisite = getRequisite(getArguments());
         usedDTO.quoteDTO = requisite.quoteDTO;
         quantitySubject.onNext(requisite.quantity);
+        shareDelegateFragment.onCreate(savedInstanceState);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -218,8 +220,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             mConfirm.setText(R.string.buy_sell_confirm_sell_now);
         }
 
-        shareDelegateFragment = new ShareDelegateFragment(this, this.getView());
-        shareDelegateFragment.onCreate(savedInstanceState);
+        shareDelegateFragment.onViewCreated(view, savedInstanceState);
     }
 
     @Override public void onStart()

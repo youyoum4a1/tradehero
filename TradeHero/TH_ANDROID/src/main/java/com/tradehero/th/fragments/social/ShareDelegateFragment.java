@@ -64,22 +64,25 @@ public class ShareDelegateFragment
 
     Subscription socialLinkingSubscription;
 
-    public ShareDelegateFragment(@NonNull Fragment fragment, View view)
+    public ShareDelegateFragment(@NonNull Fragment fragment)
     {
         super();
 
         this.parentFragment = fragment;
-        ButterKnife.bind(this, view);
-
         this.subscriptions = new SubscriptionList();
     }
 
     public void onCreate(Bundle savedInstanceState)
     {
         HierarchyInjector.inject(parentFragment.getActivity(), this);
+        fetchUserProfile();
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        ButterKnife.bind(this, view);
 
         socialSharePreferenceHelperNew.reload();
-        fetchUserProfile();
         registerWeChatButton();
         registerSocialButtons();
     }
