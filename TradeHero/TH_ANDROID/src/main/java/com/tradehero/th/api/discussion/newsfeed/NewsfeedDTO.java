@@ -17,7 +17,6 @@ import java.util.Date;
 public class NewsfeedDTO implements DTO
 {
     public int id;
-    public String type;
     public Date createdAtUTC;
     public String picture;
     public String displayName;
