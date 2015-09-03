@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -39,7 +37,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             tools:layout_width="120dp"
-            tools:layout_height="30dp"
+            tools:layout_height="48dp"
             />
 
         <TextView
@@ -91,7 +89,7 @@
             />
 
         <TextView
-            style="@style/TH.Subhead"
+            style="@style/TH.Title"
             android:id="@+id/market_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,7 +136,7 @@
             />
 
         <com.tradehero.th.fragments.trade.view.TradeQuantityEditText
-            style="@style/TH.Subhead.Accented"
+            style="@style/TH.Title.Accented"
             android:id="@+id/vquantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -188,7 +186,7 @@
             />
 
         <TextView
-            style="@style/TH.Subhead.Accented"
+            style="@style/TH.Title.Accented"
             android:id="@+id/vtrade_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -299,7 +297,7 @@
           android:layout_height="wrap_content"
           android:layout_marginLeft="@dimen/margin_small"
           android:text="@string/buy_sell_confirm_share_on"
-          style="@style/TH.Body1.Inverse"
+          style="@style/TH.Body"
           />
 
       <include layout="@layout/share_panel_layout"/>
