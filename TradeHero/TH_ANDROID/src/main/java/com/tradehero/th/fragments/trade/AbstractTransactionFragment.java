@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -969,18 +968,19 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     {
         String stringValue = editable.toString();
         if (usedDTO.portfolioCompactDTO != null
-                && usedDTO.quoteDTO != null
-                && !TextUtils.isEmpty(stringValue))
+                && usedDTO.quoteDTO != null)
         {
+            int val = 0;
             try
             {
-                int val = Integer.parseInt(stringValue);
-                quantitySubject.onNext(val);
+                val = Integer.parseInt(stringValue);
             }
             catch (NumberFormatException e)
             {
+                val = 0;
                 Timber.e(e, "Failed to parse number: " + stringValue);
             }
+            quantitySubject.onNext(val);
         }
     }
 
