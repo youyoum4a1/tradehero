@@ -14,7 +14,6 @@ import com.tradehero.th.models.ModelsModule;
 import com.tradehero.th.models.chart.ChartModule;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.models.push.PushModule;
-import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
 import com.tradehero.th.network.NetworkModule;
 import com.tradehero.th.network.share.SocialNetworkAppModule;
 import com.tradehero.th.persistence.PersistenceModule;
@@ -44,8 +43,6 @@ import javax.inject.Singleton;
         injects =
                 {
                         THApp.class,
-                        ChoiceFollowUserAssistantWithDialog.class,
-
                         DisplayablePortfolioFetchAssistant.class,
 
                         MessageHeaderDTO.class,

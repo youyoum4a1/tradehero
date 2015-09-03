@@ -16,8 +16,8 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
@@ -33,7 +33,7 @@ import com.tradehero.th.api.discussion.key.MessageListKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.social.AllRelationsFragment;
+import com.tradehero.th.fragments.social.AllRelationsRecyclerFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -516,35 +516,12 @@ public class MessagesCenterNewFragment extends BaseFragment
             {
                 @Override public void onClick(View view)
                 {
-                    //MessagesCenterNewFragment.this.reportMessageAllRead();
-                    navigator.get().pushFragment(AllRelationsFragment.class);
+                    Bundle bundle = new Bundle();
+                    AllRelationsRecyclerFragment.putPerPage(bundle, AllRelationsRecyclerFragment.PREFERRED_PER_PAGE);
+                    navigator.get().pushFragment(AllRelationsRecyclerFragment.class, bundle);
                 }
             });
         }
-    }
-
-    private void reportMessageAllRead()
-    {
-        Timber.d("reportMessageAllRead...");
-        onStopSubscriptions.add(
-                AppObservable.bindSupportFragment(
-                        this,
-                        messageServiceWrapper.get().readAllMessageRx(
-                                currentUserId.toUserBaseKey()))
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                new Action1<BaseResponseDTO>()
-                                {
-                                    @Override public void call(BaseResponseDTO args)
-                                    {
-                                        MessagesCenterNewFragment.this.updateAllAsRead();
-                                    }
-                                },
-                                new ToastOnErrorAction1()
-                        ));
-
-        //Mark this locally as read, makes the user feels it's marked instantly for better experience
-        updateAllAsRead();
     }
 
     private void setMessageRead(int position)

@@ -3,19 +3,16 @@ package com.tradehero.th.fragments.portfolio;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
-import butterknife.OnClick;
-import android.support.annotation.Nullable;
+import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
@@ -24,12 +21,7 @@ import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForUserPhoto;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.GraphicUtil;
@@ -41,10 +33,7 @@ public class PortfolioListItemView extends RelativeLayout
 {
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
-    @Inject @ForUserPhoto Transformation userImageTransformation;
-    @Inject DashboardNavigator navigator;
 
-    @Bind(R.id.follower_profile_picture) @Nullable protected ImageView userIcon;
     @Bind(R.id.portfolio_title) protected TextView title;
     @Bind(R.id.portfolio_description) protected TextView description;
     @Bind(R.id.roi_value) @Nullable protected TextView roiValue;
@@ -66,10 +55,6 @@ public class PortfolioListItemView extends RelativeLayout
         super.onFinishInflate();
         ButterKnife.bind(this);
         HierarchyInjector.inject(this);
-        if (userIcon != null && picasso != null)
-        {
-            displayDefaultUserIcon();
-        }
     }
 
     @Override protected void onDetachedFromWindow()
@@ -77,35 +62,11 @@ public class PortfolioListItemView extends RelativeLayout
         unsubscribe(userWatchlistSubscription);
         userWatchlistSubscription = null;
 
-        if (this.userIcon != null)
-        {
-            this.userIcon.setOnClickListener(null);
-        }
         if (portfolioImage != null)
         {
             picasso.cancelRequest(portfolioImage);
         }
         super.onDetachedFromWindow();
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.follower_profile_picture) @Nullable
-    protected void handleUserIconClicked()
-    {
-        if (displayablePortfolioDTO != null && displayablePortfolioDTO.userBaseDTO != null)
-        {
-            Bundle bundle = new Bundle();
-            UserBaseKey userToSee = new UserBaseKey(displayablePortfolioDTO.userBaseDTO.id);
-            if (currentUserId.toUserBaseKey().equals(userToSee))
-            {
-                navigator.pushFragment(MeTimelineFragment.class, bundle);
-            }
-            else
-            {
-                PushableTimelineFragment.putUserBaseKey(bundle, userToSee);
-                navigator.pushFragment(PushableTimelineFragment.class, bundle);
-            }
-        }
     }
 
     protected void unsubscribe(@Nullable Subscription subscription)
@@ -120,7 +81,6 @@ public class PortfolioListItemView extends RelativeLayout
     {
         this.displayablePortfolioDTO = displayablePortfolioDTO;
 
-        displayUserIcon();
         displayTitle();
         displayDescription();
         displayRoiValue();
@@ -164,35 +124,9 @@ public class PortfolioListItemView extends RelativeLayout
     //<editor-fold desc="Display Methods">
     public void display()
     {
-        displayUserIcon();
         displayTitle();
         displayDescription();
         displayRoiValue();
-    }
-
-    public void displayUserIcon()
-    {
-        if (userIcon != null)
-        {
-            displayDefaultUserIcon();
-            if (displayablePortfolioDTO != null && displayablePortfolioDTO.userBaseDTO != null)
-            {
-                picasso.load(displayablePortfolioDTO.userBaseDTO.picture)
-                        .transform(userImageTransformation)
-                        .placeholder(userIcon.getDrawable())
-                        .into(userIcon);
-            }
-        }
-    }
-
-    public void displayDefaultUserIcon()
-    {
-        if (userIcon != null)
-        {
-            picasso.load(R.drawable.superman_facebook)
-                    .transform(userImageTransformation)
-                    .into(userIcon);
-        }
     }
 
     public void displayTitle()

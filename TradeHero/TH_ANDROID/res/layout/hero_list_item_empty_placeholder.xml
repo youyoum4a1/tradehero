@@ -23,11 +23,13 @@
       android:text="@string/manage_heroes_empty_description"
       />
 
-  <TextView
+  <Button
+      android:id="@+id/empty_call_to_action"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:minHeight="@dimen/clickable_element_min_dimen"
       style="@style/TH.Button.Accented"
+      android:background="?attr/selectableItemBackground"
       android:layout_marginTop="@dimen/margin_medium"
       android:text="@string/manage_heroes_empty_leaderboard_link"
       android:gravity="center"

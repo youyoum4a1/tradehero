@@ -261,8 +261,8 @@
   </style>
 
   <style name="TH.TextSocialButtons" parent="TH.Subhead.Accented">
-    <item name="android:layout_width">28dp</item>
-    <item name="android:layout_height">28dp</item>
+    <item name="android:layout_width">32dp</item>
+    <item name="android:layout_height">32dp</item>
     <item name="android:layout_marginRight">2dp</item>
     <item name="android:layout_marginLeft">2dp</item>
     <item name="android:checked">false</item>
@@ -321,17 +321,16 @@
     <item name="android:theme">@style/ThemeOverlay.AppCompat.Light</item>
   </style>
 
-  <style name="TH.Button.Timeline" parent="TH.Button">
+  <style name="TH.Button.Timeline" parent="TH.Button.Inverse">
     <item name="android:layout_width">0dp</item>
     <item name="android:layout_height">match_parent</item>
     <item name="android:layout_weight">1</item>
-    <item name="android:paddingLeft">15dp</item>
-    <item name="android:paddingRight">15dp</item>
-    <item name="android:textColor">@color/white</item>
+    <item name="android:paddingLeft">16dp</item>
+    <item name="android:paddingRight">16dp</item>
   </style>
 
   <style name="TH.Button.Timeline.Follow" parent="TH.Button.Timeline">
-    <item name="android:drawableLeft">@drawable/icn_star_white</item>
+    <item name="android:drawableLeft">@drawable/ic_follow</item>
   </style>
 
   <style name="TH.Button.Timeline.Message" parent="TH.Button.Timeline">

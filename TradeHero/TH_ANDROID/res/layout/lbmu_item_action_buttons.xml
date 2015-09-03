@@ -25,22 +25,6 @@
         style="@style/Leaderboard_ActionButton_Blue"
         />
 
-
-    <Button
-        android:id="@+id/leaderboard_user_item_follow"
-        android:text="@string/leaderboard_follow"
-        style="@style/Leaderboard_ActionButton_Blue"
-        />
-
-    <ImageView
-        android:id="@+id/leaderboard_user_item_following"
-        android:visibility="gone"
-        android:src="@drawable/following_stamp"
-        android:scaleType="fitCenter"
-        style="@style/Leaderboard_Action"
-        android:contentDescription="@string/leaderboard_follow"
-        />
-
   </LinearLayout>
 
 </merge>

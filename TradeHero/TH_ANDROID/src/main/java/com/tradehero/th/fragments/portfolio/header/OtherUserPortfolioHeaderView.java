@@ -2,15 +2,16 @@ package com.tradehero.th.fragments.portfolio.header;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
-import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.th.R;
@@ -19,6 +20,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -28,11 +30,9 @@ import rx.subjects.BehaviorSubject;
 
 public class OtherUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
 {
-    @Bind(R.id.header_portfolio_following_container) RelativeLayout followContainer;
     @Bind(R.id.portfolio_header_avatar) ImageView userImageView;
     @Bind(R.id.header_portfolio_username) TextView usernameTextView;
-    @Bind(R.id.header_portfolio_following_image) ImageView followingImageView;
-    @Bind(R.id.follow_button) TextView followButton;
+    @Bind(R.id.follow_button) Button followButton;
     @Bind(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
 
     @Inject CurrentUserId currentUserId;
@@ -42,6 +42,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
 
     private UserProfileDTO shownUserProfileDTO;
     @NonNull protected BehaviorSubject<UserAction> userActionBehaviour;
+    private boolean isFollowing;
 
     //<editor-fold desc="Constructors">
     public OtherUserPortfolioHeaderView(Context context)
@@ -85,7 +86,7 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.portfolio_person_container)
+    @OnClick({R.id.portfolio_header_avatar, R.id.header_portfolio_username})
     protected void userClicked(@SuppressWarnings("UnusedParameters") View view)
     {
         if (shownUserProfileDTO != null)
@@ -100,7 +101,14 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     {
         if (shownUserProfileDTO != null)
         {
-            userActionBehaviour.onNext(new FollowUserAction(shownUserProfileDTO));
+            if (isFollowing)
+            {
+                userActionBehaviour.onNext(new UnFollowUserAction(shownUserProfileDTO));
+            }
+            else
+            {
+                userActionBehaviour.onNext(new FollowUserAction(shownUserProfileDTO));
+            }
         }
     }
 
@@ -170,21 +178,15 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     public void configureFollowItemsVisibility()
     {
         UserProfileDTO currentUser = this.userCache.getCachedValue(currentUserId.toUserBaseKey());
+        isFollowing = (currentUser != null && currentUser.isFollowingUser(this.shownUserProfileDTO.id));
         if (this.shownUserProfileDTO == null || isCurrentUser(this.shownUserProfileDTO.id))
         {
-            this.followingImageView.setVisibility(GONE);
-            this.followButton.setVisibility(GONE);
-        }
-        // TODO rework so we handle better the case where currentUser is null
-        else if (currentUser != null && currentUser.isFollowingUser(this.shownUserProfileDTO.id))
-        {
-            this.followingImageView.setVisibility(VISIBLE);
             this.followButton.setVisibility(GONE);
         }
         else
         {
-            this.followingImageView.setVisibility(GONE);
             this.followButton.setVisibility(VISIBLE);
+            FollowUserAssistant.updateFollowButton(this.followButton, isFollowing, shownUserProfileDTO.getBaseKey());
         }
     }
 

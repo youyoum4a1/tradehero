@@ -41,10 +41,10 @@ public class THBaseIABProductIdentifierFetcherRx
         inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T0_KEY));
         inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T1_KEY));
         inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T2_KEY));
-        inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_1));
-        //inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_5));
-        inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_10));
-        inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_20));
+
+        //inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_1));
+        //inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_10));
+        //inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_20));
 
         subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_1));
         subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_5));

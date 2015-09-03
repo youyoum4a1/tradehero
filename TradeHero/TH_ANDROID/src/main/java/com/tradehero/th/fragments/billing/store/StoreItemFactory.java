@@ -50,10 +50,10 @@ public class StoreItemFactory
                 R.string.store_buy_virtual_dollars,
                 R.drawable.icn_th_dollars,
                 ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR));
-        created.add(new StoreItemPromptPurchaseDTO(
-                R.string.store_buy_follow_credits,
-                R.drawable.icn_follow_credits,
-                ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS));
+        //created.add(new StoreItemPromptPurchaseDTO(
+        //        R.string.store_buy_follow_credits,
+        //        R.drawable.icn_follow_credits,
+        //        ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS));
         if (includeAlerts)
         {
             created.add(new StoreItemPromptPurchaseDTO(

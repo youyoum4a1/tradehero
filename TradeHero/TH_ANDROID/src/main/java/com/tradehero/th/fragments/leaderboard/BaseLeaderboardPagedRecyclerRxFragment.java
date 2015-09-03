@@ -101,12 +101,10 @@ abstract public class BaseLeaderboardPagedRecyclerRxFragment<
         this.currentUserProfileDTO = currentUserProfileDTO;
     }
 
-    protected void updateListViewRow(@NonNull UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
-    {
-    }
-
     @MenuRes protected int getMenuResource()
     {
         return R.menu.empty_menu;
     }
+
+    public abstract void updateRow(LeaderboardItemDisplayDTO dto);
 }

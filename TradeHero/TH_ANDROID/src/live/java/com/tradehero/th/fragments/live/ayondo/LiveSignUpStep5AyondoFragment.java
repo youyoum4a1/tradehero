@@ -28,6 +28,7 @@ import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.tradehero.th.api.live.LiveBrokerDTO;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
+import com.tradehero.th.fragments.base.LollipopArrayAdapter;
 import com.tradehero.th.fragments.settings.ImageRequesterUtil;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;

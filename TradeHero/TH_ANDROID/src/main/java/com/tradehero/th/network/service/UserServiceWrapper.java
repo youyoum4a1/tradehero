@@ -42,7 +42,6 @@ import com.tradehero.th.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.tradehero.th.auth.AuthData;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUser;
 import com.tradehero.th.models.user.DTOProcessorFollowFreeUserBatch;
-import com.tradehero.th.models.user.DTOProcessorFollowPremiumUser;
 import com.tradehero.th.models.user.DTOProcessorSignInUpUserProfile;
 import com.tradehero.th.models.user.DTOProcessorUpdateCountryCode;
 import com.tradehero.th.models.user.DTOProcessorUpdateReferralCode;
@@ -390,33 +389,9 @@ import rx.functions.Func1;
     //</editor-fold>
 
     //<editor-fold desc="Follow Hero">
-    @NonNull public Observable<UserProfileDTO> followRx(@NonNull UserBaseKey heroId)
-    {
-        return userServiceRx.follow(heroId.key)
-                .map(new DTOProcessorFollowPremiumUser(
-                        userProfileCache.get(),
-                        heroListCache.get(),
-                        userMessagingRelationshipCache.get(),
-                        currentUserId.toUserBaseKey(),
-                        heroId));
-    }
-
-    @NonNull public Observable<UserProfileDTO> followRx(
-            @NonNull UserBaseKey heroId,
-            @NonNull PurchaseReportDTO purchaseDTO)
-    {
-        return userServiceRx.follow(heroId.key, purchaseDTO)
-                .map(new DTOProcessorFollowPremiumUser(
-                        userProfileCache.get(),
-                        heroListCache.get(),
-                        userMessagingRelationshipCache.get(),
-                        currentUserId.toUserBaseKey(),
-                        heroId));
-    }
-
     @NonNull public Observable<UserProfileDTO> freeFollowRx(@NonNull UserBaseKey heroId)
     {
-        return userServiceRx.freeFollow(heroId.key)
+        return userServiceRx.freeFollow(heroId.key, "")
                 .map(new DTOProcessorFollowFreeUser(
                         userProfileCache.get(),
                         heroListCache.get(),
@@ -429,7 +404,7 @@ import rx.functions.Func1;
     //<editor-fold desc="Unfollow Hero">
     @NonNull public Observable<UserProfileDTO> unfollowRx(@NonNull UserBaseKey heroId)
     {
-        return userServiceRx.unfollow(heroId.key);
+        return userServiceRx.unfollow(heroId.key, "");
     }
     //</editor-fold>
 

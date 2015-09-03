@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -25,22 +24,18 @@ import com.tradehero.th.api.social.FollowerSummaryDTO;
 import com.tradehero.th.api.social.UserFollowerDTO;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
-import com.tradehero.th.fragments.social.hero.HeroAlertDialogRxUtil;
-import com.tradehero.th.models.social.FollowRequest;
-import com.tradehero.th.models.user.follow.ChoiceFollowUserAssistantWithDialog;
+import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.message.MessageThreadHeaderCacheRx;
 import com.tradehero.th.persistence.social.FollowerSummaryCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWithFunc1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
@@ -50,6 +45,7 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Routable({
@@ -78,7 +74,6 @@ public class PushableTimelineFragment extends TimelineFragment
     @Bind(R.id.message_button) Button mSendMsgButton;
     @Bind(R.id.follow_message_container) ViewGroup btnContainer;
 
-    protected int mFollowType;//0 not follow, 1 free follow, 2 premium follow
     protected boolean mIsHero = false;//whether the showUser follow the user
     protected MessageHeaderDTO messageThreadHeaderDTO;
 
@@ -154,6 +149,7 @@ public class PushableTimelineFragment extends TimelineFragment
         mFollowButton.setEnabled(true);
         mSendMsgButton.setEnabled(true);
         displayActionBarTitle();
+        updateBottomButton();
     }
 
     private class FollowerSummaryObserver implements Observer<Pair<UserBaseKey, FollowerSummaryDTO>>
@@ -191,99 +187,82 @@ public class PushableTimelineFragment extends TimelineFragment
 
     protected void updateBottomButton()
     {
-        if (!mIsOtherProfile)
-        {
-            return;
-        }
-        mFollowType = getFollowType();
-        if (mFollowType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
-        {
-            mFollowButton.setText(R.string.upgrade_to_premium);
-        }
-        else if (mFollowType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
-        {
-            mFollowButton.setText(R.string.following_premium);
-        }
-        mFollowButton.setVisibility(View.VISIBLE);
+        boolean isFollowing = isFollowing();
         mSendMsgButton.setVisibility(View.VISIBLE);
-        mSendMsgButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override public void onClick(View v)
-            {
-                if (!mIsHero && (mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER
-                        || mFollowType == UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG))
-                {
-                    onStopSubscriptions.add(HeroAlertDialogRxUtil.showFollowDialog(
-                            getActivity(),
-                            shownProfile,
-                            UserProfileDTOUtil.IS_NOT_FOLLOWER_WANT_MSG)
-                            .flatMap(new Func1<FollowRequest, Observable<? extends UserProfileDTO>>()
-                            {
-                                @Override public Observable<? extends UserProfileDTO> call(FollowRequest request)
-                                {
-                                    return handleFollowRequest(request);
-                                }
-                            })
-                            .subscribe(
-                                    new EmptyAction1<UserProfileDTO>(),
-                                    new EmptyAction1<Throwable>()));
-                }
-                else
-                {
-                    pushPrivateMessageFragment();
-                }
-            }
-        });
+        FollowUserAssistant.updateFollowButton(mFollowButton, isFollowing, shownUserBaseKey);
     }
 
     @SuppressWarnings({"UnusedParameters", "UnusedDeclaration"})
     @OnClick(R.id.follow_button)
     protected void handleFollowRequested()
     {
-        onStopSubscriptions.add(userProfileCache.get().getOne(shownUserBaseKey)
-                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<UserProfileDTO, Observable<Pair<FollowRequest, UserProfileDTO>>>()
-                {
-                    @Override public Observable<Pair<FollowRequest, UserProfileDTO>> call(UserProfileDTO shownProfile)
-                    {
-                        return new ChoiceFollowUserAssistantWithDialog(
-                                getActivity(),
-                                shownProfile)
-                                .launchChoiceRx();
-                    }
-                })
-                .subscribe(
-                        new Action1<Pair<FollowRequest, UserProfileDTO>>()
-                        {
-                            @Override public void call(Pair<FollowRequest, UserProfileDTO> pair)
-                            {
-                                if (!mIsOtherProfile)
-                                {
-                                    linkWith(pair.second);
-                                }
-                                updateBottomButton();
-                                String actionName = pair.first.isPremium
-                                        ? AnalyticsConstants.PremiumFollow_Success
-                                        : AnalyticsConstants.FreeFollow_Success;
-                                analytics.addEvent(new ScreenFlowEvent(actionName, AnalyticsConstants.Profile));
-                            }
-                        },
-                        new ToastOnErrorAction1()
-                ));
-    }
-
-    @NonNull protected Observable<UserProfileDTO> handleFollowRequest(@NonNull FollowRequest request)
-    {
-        if (request.isPremium)
+        FollowUserAssistant assistant = new FollowUserAssistant(getActivity(), shownUserBaseKey);
+        if (isFollowing())
         {
-            //noinspection unchecked
-            return userInteractorRx.purchaseAndPremiumFollowAndClear(request.heroId)
-                    .map(new ReplaceWithFunc1<>(new UserProfileDTO()));
+            onStopSubscriptions.add(assistant.showUnFollowConfirmation(shownProfile.displayName)
+                    .map(new ReplaceWithFunc1<OnDialogClickEvent, FollowUserAssistant>(assistant))
+                    .flatMap(new Func1<FollowUserAssistant, Observable<FollowUserAssistant>>()
+                    {
+                        @Override public Observable<FollowUserAssistant> call(FollowUserAssistant followUserAssistant)
+                        {
+                            return followUserAssistant.ensureCacheValue();
+                        }
+                    })
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Action1<FollowUserAssistant>()
+                    {
+                        @Override public void call(FollowUserAssistant followUserAssistant)
+                        {
+                            followUserAssistant.unFollowFromCache();
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Action1<FollowUserAssistant>()
+                    {
+                        @Override public void call(FollowUserAssistant followUserAssistant)
+                        {
+                            updateBottomButton();
+                        }
+                    })
+                    .observeOn(Schedulers.io())
+                    .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
+                    {
+                        @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
+                        {
+                            return followUserAssistant.unFollowFromServer();
+                        }
+                    })
+                    .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to unfollow user")));
         }
         else
         {
-            return freeFollow(request.heroId);
+            onStopSubscriptions.add(assistant.ensureCacheValue()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Action1<FollowUserAssistant>()
+                    {
+                        @Override public void call(FollowUserAssistant followUserAssistant)
+                        {
+                            followUserAssistant.followingInCache();
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Action1<FollowUserAssistant>()
+                    {
+                        @Override public void call(FollowUserAssistant followUserAssistant)
+                        {
+                            updateBottomButton();
+                        }
+                    })
+                    .observeOn(Schedulers.io())
+                    .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
+                    {
+                        @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
+                        {
+                            return followUserAssistant.followingInServer();
+                        }
+                    })
+                    .subscribe(new EmptyAction1<UserProfileDTO>(), new TimberOnErrorAction1("Failed to follow user")));
         }
     }
 
@@ -293,6 +272,44 @@ public class PushableTimelineFragment extends TimelineFragment
         return userServiceWrapperLazy.get().freeFollowRx(heroId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
+    }
+
+    @OnClick(R.id.message_button)
+    protected void handleMessageRequested()
+    {
+        if (isFollowing())
+        {
+            pushPrivateMessageFragment();
+        }
+        else
+        {
+            final FollowUserAssistant assistant = new FollowUserAssistant(getActivity(), shownUserBaseKey);
+            onDestroyViewSubscriptions.add(assistant.showFollowForMessageConfirmation(shownProfile.displayName)
+                    .map(new ReplaceWithFunc1<OnDialogClickEvent, FollowUserAssistant>(assistant))
+                    .observeOn(Schedulers.io())
+                    .doOnNext(new Action1<FollowUserAssistant>()
+                    {
+                        @Override public void call(FollowUserAssistant followUserAssistant)
+                        {
+                            followUserAssistant.followingInCache();
+                        }
+                    })
+                    .flatMap(new Func1<FollowUserAssistant, Observable<UserProfileDTO>>()
+                    {
+                        @Override public Observable<UserProfileDTO> call(FollowUserAssistant followUserAssistant)
+                        {
+                            return assistant.followingInServer();
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<UserProfileDTO>()
+                    {
+                        @Override public void call(UserProfileDTO userProfileDTO)
+                        {
+                            pushPrivateMessageFragment();
+                        }
+                    }, new TimberOnErrorAction1("Failed to follow user for sending private message")));
+        }
     }
 
     protected void pushPrivateMessageFragment()
@@ -352,8 +369,8 @@ public class PushableTimelineFragment extends TimelineFragment
     {
         return !(
                 ((Object) this).getClass().isAssignableFrom(fragmentClass) &&
-                    shownUserBaseKey != null &&
-                    shownUserBaseKey.equals(getUserBaseKey(args)))
+                        shownUserBaseKey != null &&
+                        shownUserBaseKey.equals(getUserBaseKey(args)))
                 && super.allowNavigateTo(fragmentClass, args);
     }
 }

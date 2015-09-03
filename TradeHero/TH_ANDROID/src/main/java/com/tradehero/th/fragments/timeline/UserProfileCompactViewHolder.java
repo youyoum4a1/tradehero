@@ -4,13 +4,13 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
-import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
@@ -97,7 +97,7 @@ public class UserProfileCompactViewHolder
         // Followers Count
         if (followersCount != null)
         {
-            followersCount.setText(THSignedNumber.builder(userProfileDTO.allFollowerCount).build().toString());
+            followersCount.setText(THSignedNumber.builder(userProfileDTO.allFollowerCount).with000Suffix().useShortSuffix().relevantDigitCount(1).build().toString());
         }
 
         // Heroes Count
@@ -107,6 +107,9 @@ public class UserProfileCompactViewHolder
                     userProfileDTO.heroIds == null
                             ? userProfileDTO.allHeroCount
                             : userProfileDTO.heroIds.size())
+                    .with000Suffix()
+                    .useShortSuffix()
+                    .relevantDigitCount(1)
                     .build().toString());
         }
 

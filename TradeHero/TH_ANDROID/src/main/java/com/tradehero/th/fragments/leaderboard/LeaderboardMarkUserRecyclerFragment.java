@@ -13,8 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import butterknife.ButterKnife;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
@@ -113,9 +111,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.leaderboard_mark_user_recyclerview, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        return inflater.inflate(R.layout.leaderboard_mark_user_recyclerview, container, false);
     }
 
     @Override public void onStart()
@@ -192,6 +188,15 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         saveCurrentFilterKey();
         fragmentUtil.onDestroy();
         super.onDestroy();
+    }
+
+    @Override public void updateRow(LeaderboardItemDisplayDTO dto)
+    {
+        int position = itemViewAdapter.indexOf(dto);
+        if(position >= 0 )
+        {
+            itemViewAdapter.notifyItemChanged(position);
+        }
     }
 
     @NonNull protected LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO> createItemViewAdapter()
@@ -359,26 +364,6 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         return dto;
     }
 
-    @Override protected void updateListViewRow(@NonNull final UserProfileDTO currentUserProfile, @NonNull final UserBaseKey heroId)
-    {
-        //TODO
-        //AdapterViewUtils.updateSingleRowWhere(
-        //        recyclerView,
-        //        LeaderboardMarkedUserItemDisplayDto.DTO.class,
-        //        new Predicate<LeaderboardMarkedUserItemDisplayDto.DTO>()
-        //        {
-        //            @Override public boolean apply(LeaderboardMarkedUserItemDisplayDto.DTO dto)
-        //            {
-        //                boolean isUpdatedRow = dto.leaderboardUserDTO.getBaseKey().equals(heroId);
-        //                if (isUpdatedRow)
-        //                {
-        //                    dto.followChanged(currentUserProfile, heroId);
-        //                }
-        //                return isUpdatedRow;
-        //            }
-        //        });
-    }
-
     protected void pushFilterFragmentIn()
     {
         Bundle args = new Bundle();
@@ -406,12 +391,6 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                 filterIcon.setIcon(R.drawable.ic_action_icn_actionbar_filteroff);
             }
         }
-    }
-
-    @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        singleExpandingListViewListener.onItemClick(parent, view, position, id);
-        super.onItemClick(parent, view, position, id);
     }
 
     @Override protected Pair<PagedLeaderboardKey, LeaderboardMarkedUserItemDisplayDto.DTOList<LeaderboardItemDisplayDTO>> onMap(

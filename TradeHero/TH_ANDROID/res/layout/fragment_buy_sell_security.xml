@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+
+  <ScrollView
+      android:id="@+id/buy_sell_scrollview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_above="@+id/bottom_wrapper"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          android:paddingTop="@dimen/margin_xsmall"
+          >
+
+        <Spinner
+            android:id="@+id/portfolio_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TH.Spinner"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            tools:layout_width="120dp"
+            tools:layout_height="48dp"
+            />
+
+        <TextView
+            android:id="@+id/portfolio_label_title"
+            style="@style/TH.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buy_sell_portfolio_selected_title"
+            android:layout_toLeftOf="@id/portfolio_spinner"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            />
+
+      </RelativeLayout>
+
+      <View
+          android:layout_width="fill_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          />
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          android:paddingTop="@dimen/margin_small"
+          android:paddingBottom="@dimen/margin_small"
+          >
+
+
+        <TextView
+            android:id="@+id/market_price_label"
+            style="@style/TH.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buy_sell_market_price_title"
+            />
+
+        <TextView
+            style="@style/TH.Caption"
+            android:layout_below="@id/market_price_label"
+            android:id="@+id/price_updated_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="As of 25 Jun 2015 0800 GMT"
+            />
+
+        <TextView
+            style="@style/TH.Title"
+            android:id="@+id/market_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@id/price_updated_time"
+            tools:text="83.33"
+            />
+
+        <TextView
+            android:id="@+id/vmarket_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/market_price"
+            style="@style/TH.Caption"
+            android:layout_alignBaseline="@id/market_price"
+            android:layout_marginRight="@dimen/margin_xsmall"
+            tools:text="US$"
+            />
+      </RelativeLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          />
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          android:paddingTop="@dimen/margin_xsmall"
+          android:paddingBottom="@dimen/margin_xsmall"
+          >
+
+        <TextView
+            style="@style/TH.Body"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buy_sell_shares_title"
+            android:layout_centerVertical="true"
+            />
+
+        <com.tradehero.th.fragments.trade.view.TradeQuantityEditText
+            style="@style/TH.Title.Accented"
+            android:id="@+id/vquantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/tradehero_blue"
+            android:inputType="number"
+            android:layout_centerVertical="true"
+            android:numeric="integer"
+            android:layout_alignParentRight="true"
+            tools:text="150"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_xsmall"
+            android:text="@string/buy_sell_times_symbol"
+            android:layout_alignBaseline="@id/vquantity"
+            style="@style/TH.Caption"
+            android:layout_toLeftOf="@+id/vquantity"
+            />
+
+      </RelativeLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          />
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          android:paddingTop="@dimen/margin_small"
+          android:paddingBottom="@dimen/margin_small"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/buy_sell_trade_value"
+            style="@style/TH.Body"
+            android:layout_centerVertical="true"
+            />
+
+        <TextView
+            style="@style/TH.Title.Accented"
+            android:id="@+id/vtrade_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            tools:text="338,306"
+            />
+
+        <TextView
+            style="@style/TH.Caption"
+            android:id="@+id/vtrade_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_xsmall"
+            android:layout_toLeftOf="@+id/vtrade_value"
+            android:layout_alignBaseline="@id/vtrade_value"
+            tools:text="US$"
+            />
+
+
+      </RelativeLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          />
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          android:paddingTop="@dimen/margin_xsmall"
+          android:paddingBottom="@dimen/margin_xsmall"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TH.Body"
+            android:layout_centerVertical="true"
+            android:text="@string/buy_sell_cash_available"
+            />
+
+        <TextView
+            style="@style/TH.Caption"
+            android:id="@+id/vcash_left"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            tools:text="US$ 338,306"
+            />
+
+      </RelativeLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          />
+
+      <com.tradehero.th.widget.MarkdownTextView
+          android:id="@+id/comments"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/size_10"
+          android:layout_marginTop="@dimen/margin_medium"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:layout_marginRight="@dimen/margin_small"
+          android:background="@drawable/security_comment_bg"
+          style="@style/TH.Body"
+          android:padding="@dimen/margin_xsmall"
+          android:hint="@string/buy_sell_confirm_buy_comment"
+          />
+
+    </LinearLayout>
+  </ScrollView>
+
+  <LinearLayout
+      android:id="@+id/bottom_wrapper"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:layout_alignParentBottom="true"
+      >
+
+    <LinearLayout
+        android:id="@+id/share_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:paddingTop="@dimen/share_container_vertical_padding"
+        android:paddingBottom="@dimen/share_container_vertical_padding"
+        android:orientation="horizontal"
+        >
+
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/margin_small"
+          android:text="@string/buy_sell_confirm_share_on"
+          style="@style/TH.Body"
+          />
+
+      <include layout="@layout/share_panel_layout"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_confirm"
+        style="@style/TH.Button.Inverse"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:text="@string/buy_sell_confirm_buy_now"
+        android:background="@drawable/basic_green_selector"
+        />
+
+  </LinearLayout>
+
+</RelativeLayout>

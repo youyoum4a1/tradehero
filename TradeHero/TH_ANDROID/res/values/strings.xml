@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <string name="follow">Follow</string>
+  <string name="following">Following</string>
   <string name="follow_all">Follow All</string>
   <string name="message">Message</string>
   <string name="upgrade_to_premium">Upgrade to Premium</string>
@@ -319,9 +320,13 @@
   <string name="position_long_info">The buying of a security such as a stock, commodity or currency, with the expectation that the asset will rise in value, opposite of \"Short\"</string>
   <string name="position_close_info">Action of selling the entire long asset or buying the entire short asset to generate cash back to your portfolio.</string>
 
+  <string name="transaction_title_buy">Buy %1$s</string>
+  <string name="transaction_title_sell">Sell %1$s</string>
+
   <string name="facebook_app_id">431745923529834</string>
   <string name="image_load_failed">Failed to load image</string>
   <string name="video_locked_hint">Coming soon!</string>
   <string name="history_tab_wait_message">Please wait for loading portfolio</string>
+  <string name="hero">Hero</string>
 
 </resources>

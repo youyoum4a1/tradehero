@@ -43,8 +43,8 @@ import com.tradehero.th.fragments.discussion.DiscussionFragmentUtil;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
-import com.tradehero.th.fragments.social.follower.FollowerManagerFragment;
-import com.tradehero.th.fragments.social.hero.HeroManagerFragment;
+import com.tradehero.th.fragments.social.follower.FollowersFragment;
+import com.tradehero.th.fragments.social.hero.HeroesFragment;
 import com.tradehero.th.fragments.watchlist.MainWatchlistPositionFragment;
 import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
@@ -555,23 +555,15 @@ abstract public class TimelineFragment extends DashboardFragment
         }
     }
 
-    protected int getFollowType()
+    protected boolean isFollowing()
     {
-        UserProfileDTO userProfileDTO =
-                userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
-        if (userProfileDTO != null)
+        UserBaseKey currentUser = currentUserId.toUserBaseKey();
+        UserProfileDTO currentProfile = userProfileCache.get().getCachedValue(currentUser);
+        if (currentProfile != null)
         {
-            UserBaseKey purchaserKey = currentUserId.toUserBaseKey();
-            if (purchaserKey != null)
-            {
-                UserProfileDTO purchaserProfile = userProfileCache.get().getCachedValue(purchaserKey);
-                if (purchaserProfile != null)
-                {
-                    return purchaserProfile.getFollowType(shownUserBaseKey);
-                }
-            }
+            return currentProfile.isFollowingUser(shownUserBaseKey);
         }
-        return 0;
+        return false;
     }
 
     protected void registerUserDiscussionActions()
@@ -624,19 +616,19 @@ abstract public class TimelineFragment extends DashboardFragment
     protected void pushHeroFragment()
     {
         Bundle bundle = new Bundle();
-        HeroManagerFragment.putFollowerId(
+        HeroesFragment.putFollowerId(
                 bundle,
                 mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-        navigator.get().pushFragment(HeroManagerFragment.class, bundle);
+        navigator.get().pushFragment(HeroesFragment.class, bundle);
     }
 
     protected void pushFollowerFragment()
     {
         Bundle bundle = new Bundle();
-        FollowerManagerFragment.putHeroId(
+        FollowersFragment.putHeroId(
                 bundle,
                 mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
-        navigator.get().pushFragment(FollowerManagerFragment.class, bundle);
+        navigator.get().pushFragment(FollowersFragment.class, bundle);
     }
 
     protected void pushAchievementFragment()

@@ -940,6 +940,10 @@ public class KYCAyondoForm implements KYCForm
             same &= addressCheckUid == null ? ayondoForm.addressCheckUid == null : addressCheckUid.equals(ayondoForm.addressCheckUid);
             same &= identityCheckUid == null ? ayondoForm.identityCheckUid == null : identityCheckUid.equals(ayondoForm.identityCheckUid);
             same &= leadGuid == null ? ayondoForm.leadGuid == null : leadGuid.equals(ayondoForm.leadGuid);
+            same &= subscribeOffers == null ? ayondoForm.subscribeOffers == null
+                    : subscribeOffers.equals(ayondoForm.subscribeOffers);
+            same &= subscribeTradeNotifications == null ? ayondoForm.subscribeTradeNotifications == null
+                    : subscribeTradeNotifications.equals(ayondoForm.subscribeTradeNotifications);
             same &= stepStatuses == null ? ayondoForm.stepStatuses == null
                     : (ayondoForm.stepStatuses != null && stepStatuses.size() == ayondoForm.stepStatuses.size());
             if (same && stepStatuses != null && ayondoForm.stepStatuses != null)
