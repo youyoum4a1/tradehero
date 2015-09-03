@@ -167,7 +167,7 @@ public class LiveServiceWrapper
         if (kycForm instanceof KYCAyondoForm)
         {
             //TODO change to specific class
-            return liveServiceAyondoRx.createOrUpdateLead(new AyondoLeadDTO((KYCAyondoForm) kycForm));
+            return liveServiceAyondoRx.createOrUpdateLead(new AyondoLeadDTO((KYCAyondoForm) kycForm)).retry();
         }
         else
         {
