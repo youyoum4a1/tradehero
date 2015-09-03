@@ -1,6 +1,7 @@
 package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.kyc.BrokerApplicationDTO;
 import com.tradehero.th.api.kyc.BrokerDocumentUploadResponseDTO;
 import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
@@ -167,7 +168,19 @@ public class LiveServiceWrapper
         if (kycForm instanceof KYCAyondoForm)
         {
             //TODO change to specific class
-            return liveServiceAyondoRx.createOrUpdateLead(new AyondoLeadDTO((KYCAyondoForm) kycForm)).retry();
+            return liveServiceAyondoRx
+                    .createOrUpdateLead(
+                            new AyondoLeadDTO((KYCAyondoForm) kycForm)
+                    )
+                    .onErrorResumeNext(
+                    new Func1<Throwable, Observable<? extends BrokerApplicationDTO>>()
+                    {
+                        @Override public Observable<? extends BrokerApplicationDTO> call(Throwable throwable)
+                        {
+                            THToast.show("Cannot connect to server, please check your internet connection.");
+                            return Observable.empty();
+                        }
+                    });
         }
         else
         {
