@@ -32,8 +32,7 @@ class NewsfeedDisplayDTOPaginatedCache
                     @Override public Pair<NewsfeedPagedDTOKey, NewsfeedDisplayDTO.DTOList<NewsfeedDisplayDTO>> call(
                             Pair<NewsfeedPagedDTOKey, NewsfeedDTOList> newsfeedPagedDTOKeyNewsfeedDTOListPair)
                     {
-                        //TODO
-                        return null;
+                        return NewsfeedPaginatedAdapter.createList(newsfeedPagedDTOKeyNewsfeedDTOListPair);
                     }
                 });
     }

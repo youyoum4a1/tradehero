@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.fragments.discovery.newsfeed.DiscoveryNewsfeedFragment;
+import com.tradehero.th.fragments.discovery.newsfeed.NewsfeedPaginatedAdapter;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Locale;
@@ -14,6 +15,7 @@ import javax.inject.Singleton;
                 DiscoveryMainFragment.class,
                 DiscoveryNewsfeedFragment.class,
                 NewsHeadlineFragment.class,
+                NewsfeedPaginatedAdapter.class,
                 DiscoveryDiscussionFragment.class,
         },
         library = true,
