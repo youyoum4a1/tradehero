@@ -227,6 +227,7 @@
           >
 
         <TextView
+            android:id="@+id/cash_or_stock_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TH.Body"

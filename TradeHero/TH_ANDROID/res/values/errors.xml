@@ -69,5 +69,6 @@
   <string name="error_save_image_in_external_storage">Error in saving image in external storage of your device.</string>
 
   <string name="error_fetch_portfolio_watchlist">There was an error when fetching the watch list</string>
+  <string name="error_no_internet_connection">Cannot connect to server, please check your internet connection.</string>
 
 </resources>

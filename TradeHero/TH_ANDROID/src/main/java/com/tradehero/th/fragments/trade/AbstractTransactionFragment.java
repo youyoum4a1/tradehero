@@ -108,6 +108,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     @Bind(R.id.comments) protected TextView mCommentsEditText;
     @Bind(R.id.btn_confirm) protected Button mConfirm;
     @Bind(R.id.portfolio_spinner) protected Spinner mPortfolioSpinner;
+    @Bind(R.id.cash_or_stock_left) protected TextView mCashOrStockLeft;
 
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;

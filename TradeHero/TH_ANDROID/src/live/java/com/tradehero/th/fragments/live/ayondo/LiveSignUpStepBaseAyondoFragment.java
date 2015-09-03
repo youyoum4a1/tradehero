@@ -4,6 +4,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.BrokerApplicationDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.StepStatus;
@@ -128,7 +129,7 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                             {
                                 @Override public Observable<? extends BrokerApplicationDTO> call(Throwable throwable)
                                 {
-                                    THToast.show("Cannot connect to server, please check your internet connection.");
+                                    THToast.show(R.string.error_no_internet_connection);
                                     return Observable.empty();
                                 }
                             });
