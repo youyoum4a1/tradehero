@@ -171,16 +171,7 @@ public class LiveServiceWrapper
             return liveServiceAyondoRx
                     .createOrUpdateLead(
                             new AyondoLeadDTO((KYCAyondoForm) kycForm)
-                    )
-                    .onErrorResumeNext(
-                    new Func1<Throwable, Observable<? extends BrokerApplicationDTO>>()
-                    {
-                        @Override public Observable<? extends BrokerApplicationDTO> call(Throwable throwable)
-                        {
-                            THToast.show("Cannot connect to server, please check your internet connection.");
-                            return Observable.empty();
-                        }
-                    });
+                    );
         }
         else
         {
