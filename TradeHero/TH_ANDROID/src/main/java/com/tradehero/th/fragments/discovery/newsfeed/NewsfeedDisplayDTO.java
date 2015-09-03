@@ -17,7 +17,6 @@ public abstract class NewsfeedDisplayDTO implements DTO
     public final String time;
     public final String picture;
     public final String name;
-    public final String body;
 
     public NewsfeedDisplayDTO(NewsfeedDTO newsfeedDTO, PrettyTime prettyTime)
     {
@@ -26,8 +25,9 @@ public abstract class NewsfeedDisplayDTO implements DTO
         this.time = prettyTime.format(this.createdAtUTC);
         this.picture = newsfeedDTO.picture;
         this.name = newsfeedDTO.displayName;
-        this.body = newsfeedDTO.body;
     }
+
+    public abstract String getBody();
 
     public static class DTOList<T extends NewsfeedDisplayDTO> extends BaseArrayList<T> implements
             DTO,

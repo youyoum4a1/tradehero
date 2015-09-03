@@ -88,7 +88,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
             if (oldItem.picture == null && newItem.picture != null) return false;
             if (oldItem.picture != null && !oldItem.picture.equals(newItem.picture)) return false;
             if (!oldItem.name.equals(newItem.name)) return false;
-            if (!oldItem.body.equals(newItem.body)) return false;
+            if (!oldItem.getBody().equals(newItem.getBody())) return false;
             if (!oldItem.createdAtUTC.equals(newItem.createdAtUTC)) return false;
 
             if (oldItem instanceof NewsfeedNewsDisplayDTO && newItem instanceof NewsfeedNewsDisplayDTO)
@@ -154,7 +154,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
                     .into(avatar);
             name.setText(newsfeedDisplayDTO.name);
             time.setText(newsfeedDisplayDTO.time);
-            body.setText(newsfeedDisplayDTO.body);
+            body.setText(newsfeedDisplayDTO.getBody());
         }
     }
 
