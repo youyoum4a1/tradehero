@@ -31,9 +31,6 @@ import com.tradehero.th.api.quote.QuoteDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
-import com.tradehero.th.api.share.wechat.WeChatMessageType;
-import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -48,10 +45,9 @@ import com.tradehero.th.fragments.trade.view.PortfolioSelectorView;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
+import com.tradehero.th.models.share.preference.SocialSharePreferenceHelper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioIdListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -64,7 +60,6 @@ import com.tradehero.th.persistence.timing.TimingIntervalPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
@@ -106,7 +101,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Inject @ShowAskForReviewDialog protected TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog protected TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject protected BroadcastUtils broadcastUtils;
-    @Inject protected SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
+    @Inject protected SocialSharePreferenceHelper socialSharePreferenceHelper;
     @Inject protected Lazy<SocialSharer> socialSharerLazy;
 
     @Bind(R.id.portfolio_selector_container) protected PortfolioSelectorView selectedPortfolioContainer;
@@ -126,7 +121,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Nullable protected OwnedPortfolioIdList applicableOwnedPortfolioIds;
 
     protected Animation progressAnimation;
-    protected AbstractTransactionDialogFragment abstractTransactionDialogFragment;
+    protected AbstractTransactionFragment abstractTransactionFragment;
     protected boolean poppedPortfolioChanged = false;
     private PublishSubject<Void> quoteRepeatSubject;
     private Observable<Void> quoteRepeatDelayedObservable;
@@ -184,7 +179,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteRefreshProgressBar.setProgress((int) getMillisecondQuoteRefresh());
         quoteRefreshProgressBar.setAnimation(progressAnimation);
 
-        listenToBuySellDialog();
+        listenToBuySellScreen();
     }
 
     @Override public void onStart()
@@ -337,7 +332,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 @NonNull SecurityCompactDTO securityCompactDTO,
                                 @NonNull Boolean buySellReady)
                         {
-                            showBuySellDialog(Math.abs(closeUnits), closeUnits < 0);
+                            pushBuySellScreen(Math.abs(closeUnits), closeUnits < 0);
                             requisite.cancelCloseUnits();
                             return true;
                         }
@@ -357,12 +352,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-
-        if (abstractTransactionDialogFragment != null && abstractTransactionDialogFragment.getDialog() != null)
-        {
-            abstractTransactionDialogFragment.populateComment();
-            abstractTransactionDialogFragment.getDialog().show();
-        }
 
         fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(new OnMovableBottomTranslateListener()
         {
@@ -390,10 +379,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onStop()
     {
         quoteDTO = null;
-        AbstractTransactionDialogFragment dialogCopy = abstractTransactionDialogFragment;
-        if (dialogCopy != null)
+        AbstractTransactionFragment copy = abstractTransactionFragment;
+        if (copy != null)
         {
-            dialogCopy.setBuySellTransactionListener(null);
+            copy.setBuySellTransactionListener(null);
         }
 
         super.onStop();
@@ -411,7 +400,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onDestroy()
     {
         quoteRepeatSubject.onCompleted();
-        abstractTransactionDialogFragment = null;
+        abstractTransactionFragment = null;
         super.onDestroy();
     }
 
@@ -728,44 +717,53 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             default:
                 throw new IllegalArgumentException("Unhandled button " + view.getId());
         }
-        showBuySellDialog(null, isTransactionTypeBuy);
+        pushBuySellScreen(null, isTransactionTypeBuy);
     }
 
-    public void showBuySellDialog(@Nullable Integer closeUnits, boolean isTransactionTypeBuy)
+    public void pushBuySellScreen(@Nullable Integer closeUnits, boolean isTransactionTypeBuy)
     {
-        if (abstractTransactionDialogFragment != null
-                && abstractTransactionDialogFragment.isVisible())
+        if (abstractTransactionFragment != null
+                && abstractTransactionFragment.isVisible())
         {
             return;//buy/sell dialog already shows
         }
         if (quoteDTO != null
-                && BuyStockDialogFragment.canShowDialog(quoteDTO, isTransactionTypeBuy))
+                && BuyStockFragment.canShowTransactionScreen(quoteDTO, isTransactionTypeBuy))
         {
             OwnedPortfolioId currentMenu = selectedPortfolioContainer.getCurrentMenu();
             if (currentMenu != null)
             {
                 if (securityCompactDTO instanceof FxSecurityCompactDTO)
                 {
-                    abstractTransactionDialogFragment = AbstractFXTransactionDialogFragment.newInstance(
-                            isTransactionTypeBuy,
-                            new AbstractTransactionDialogFragment.Requisite(
-                                    requisite.securityId,
-                                    currentMenu.getPortfolioIdKey(),
-                                    quoteDTO,
-                                    closeUnits == null ? null : Math.abs(closeUnits)));
+                    Bundle args = new Bundle();
+                    Class klass = isTransactionTypeBuy ? BuyFXFragment.class : SellFXFragment.class;
+
+                    AbstractTransactionFragment.Requisite transactionRequisite = new AbstractTransactionFragment.Requisite(
+                            requisite.securityId,
+                            currentMenu.getPortfolioIdKey(),
+                            quoteDTO,
+                            closeUnits == null ? null : Math.abs(closeUnits));
+
+                    AbstractStockTransactionFragment.putRequisite(args, transactionRequisite);
+
+                    abstractTransactionFragment = (AbstractTransactionFragment) navigator.get().pushFragment(klass, args);
                 }
                 else
                 {
-                    abstractTransactionDialogFragment = AbstractStockTransactionDialogFragment.newInstance(
-                            isTransactionTypeBuy,
-                            new AbstractTransactionDialogFragment.Requisite(
-                                    requisite.securityId,
-                                    currentMenu.getPortfolioIdKey(),
-                                    quoteDTO,
-                                    closeUnits == null ? null : Math.abs(closeUnits)));
+                    Bundle args = new Bundle();
+                    Class klass = isTransactionTypeBuy ? BuyStockFragment.class : SellStockFragment.class;
+
+                    AbstractTransactionFragment.Requisite transactionRequisite = new AbstractTransactionFragment.Requisite(
+                            this.requisite.securityId,
+                            currentMenu.getPortfolioIdKey(),
+                            quoteDTO,
+                            closeUnits == null ? null : Math.abs(closeUnits));
+
+                    AbstractStockTransactionFragment.putRequisite(args, transactionRequisite);
+
+                    abstractTransactionFragment = (AbstractTransactionFragment) navigator.get().pushFragment(klass, args);
                 }
-                abstractTransactionDialogFragment.show(getActivity().getSupportFragmentManager(), AbstractTransactionDialogFragment.class.getName());
-                listenToBuySellDialog();
+                listenToBuySellScreen();
             }
             else
             {
@@ -792,17 +790,17 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
     }
 
-    protected void listenToBuySellDialog()
+    protected void listenToBuySellScreen()
     {
-        if (abstractTransactionDialogFragment != null)
+        if (abstractTransactionFragment != null)
         {
-            abstractTransactionDialogFragment.setBuySellTransactionListener(new AbstractStockTransactionDialogFragment.BuySellTransactionListener()
+            abstractTransactionFragment.setBuySellTransactionListener(new AbstractStockTransactionFragment.BuySellTransactionListener()
             {
                 @Override public void onTransactionSuccessful(boolean isBuy,
                         @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO, String commentString)
                 {
                     showPrettyReviewAndInvite(isBuy);
-                    shareToWeChat(commentString, isBuy);
+                    //shareToWeChat(commentString, isBuy);
                     String positionType = null;
                     if (securityPositionTransactionDTO.positions == null)
                     {
@@ -835,7 +833,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     private void showPrettyReviewAndInvite(boolean isBuy)
     {
-        Double profit = abstractTransactionDialogFragment.getProfitOrLossUsd();
+        Double profit = abstractTransactionFragment.getProfitOrLossUsd();
         if (!isBuy && profit != null && profit > 0)
         {
             if (mShowAskForReviewDialogPreference.isItTime())
@@ -846,41 +844,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             {
                 AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
             }
-        }
-    }
-
-    public void shareToWeChat(String commentString, boolean isTransactionTypeBuy)
-    {
-        //TODO Move this!
-        if (socialSharePreferenceHelperNew.isShareEnabled(SocialNetworkEnum.WECHAT, DEFAULT_IS_SHARED_TO_WECHAT))
-        {
-            WeChatDTO weChatDTO = new WeChatDTO();
-            weChatDTO.id = securityCompactDTO.id;
-            weChatDTO.type = WeChatMessageType.Trade;
-            if (securityCompactDTO.imageBlobUrl != null && securityCompactDTO.imageBlobUrl.length() > 0)
-            {
-                weChatDTO.imageURL = securityCompactDTO.imageBlobUrl;
-            }
-            if (isTransactionTypeBuy)
-            {
-                weChatDTO.title = getString(R.string.buy_sell_switch_buy) + " "
-                        + securityCompactDTO.name + " " + abstractTransactionDialogFragment.getQuantityString() + getString(
-                        R.string.buy_sell_share_count) + " @" + quoteDTO.ask;
-            }
-            else
-            {
-                weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
-                        + securityCompactDTO.name + " " + abstractTransactionDialogFragment.getQuantityString() + getString(
-                        R.string.buy_sell_share_count) + " @" + quoteDTO.bid;
-            }
-            if (commentString != null && !commentString.isEmpty())
-            {
-                weChatDTO.title = commentString + '\n' + weChatDTO.title;
-            }
-            socialSharerLazy.get().share(weChatDTO)
-                    .subscribe(
-                            new EmptyAction1<SocialShareResult>(),
-                            new TimberAndToastOnErrorAction1("Failed to share to WeChat")); // TODO proper callback?
         }
     }
 

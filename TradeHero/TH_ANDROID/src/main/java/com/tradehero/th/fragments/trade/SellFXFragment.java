@@ -12,6 +12,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -21,16 +22,11 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class SellStockDialogFragment extends AbstractStockTransactionDialogFragment
+public class SellFXFragment extends AbstractFXTransactionFragment
 {
     private static final boolean IS_BUY = false;
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
-
-    public SellStockDialogFragment()
-    {
-        super();
-    }
 
     @Override protected void setBuyEventFor(SharingOptionsEvent.Builder builder)
     {
@@ -44,7 +40,7 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
             return getString(R.string.na);
         }
         THSignedNumber sthSignedNumber = getFormattedPrice(quoteDTO.bid);
-        return getString(R.string.buy_sell_dialog_sell, sthSignedNumber.toString());
+        return sthSignedNumber.toString();
     }
 
     @Override @Nullable protected Double getProfitOrLossUsd(
@@ -53,28 +49,18 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
             @Nullable PositionDTOCompact closeablePosition,
             @Nullable Integer quantity)
     {
-        if (portfolioCompactDTO == null || quoteDTO == null || quantity == null)
+        if (portfolioCompactDTO == null
+                || quoteDTO == null
+                || quoteDTO.bid == null
+                || quoteDTO.toUSDRate == null
+                || quantity == null
+                || closeablePosition == null
+                || closeablePosition.averagePriceSecCcy == null)
         {
             return null;
         }
-        Double bidUsd = quoteDTO.getBidUSD();
-        if (bidUsd == null)
-        {
-            return null;
-        }
-        double netProceedsUsd = quantity * bidUsd - portfolioCompactDTO.getProperTxnCostUsd();
-        Double totalSpentUsd = null;
-        if (closeablePosition != null && closeablePosition.averagePriceRefCcy != null)
-        {
-            totalSpentUsd = closeablePosition.averagePriceRefCcy * portfolioCompactDTO.getProperRefCcyToUsdRate() * quantity;
-        }
-        if (totalSpentUsd == null)
-        {
-            return null;
-        }
-        return netProceedsUsd - totalSpentUsd;
 
-        // TODO Replace with same calculation as on FX
+        return quantity * quoteDTO.toUSDRate * (quoteDTO.bid - closeablePosition.averagePriceSecCcy);
     }
 
     @Override @NonNull public String getCashShareLeft(
@@ -159,6 +145,12 @@ public class SellStockDialogFragment extends AbstractStockTransactionDialogFragm
                         && positionDTO.shares > 0;
             }
         };
+    }
+
+    @Override protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO)
+    {
+        setActionBarTitle(getString(R.string.transaction_title_sell,
+                securityCompactDTO != null ? securityCompactDTO.getExchangeSymbol() : getString(R.string.fx)));
     }
 
     protected boolean hasValidInfoForSell()

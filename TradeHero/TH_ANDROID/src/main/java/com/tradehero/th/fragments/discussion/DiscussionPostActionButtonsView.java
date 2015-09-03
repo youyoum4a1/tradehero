@@ -18,7 +18,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.share.SocialShareHelper;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceHelperNew;
+import com.tradehero.th.models.share.preference.SocialSharePreferenceHelper;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import javax.inject.Inject;
@@ -38,7 +38,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject SocialSharePreferenceHelperNew socialSharePreferenceHelperNew;
+    @Inject SocialSharePreferenceHelper socialSharePreferenceHelper;
     @Inject SocialShareHelper socialShareHelper;
 
     //<editor-fold desc="Constructors">
@@ -60,7 +60,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     {
         if (!isInEditMode())
         {
-            socialSharePreferenceHelperNew.reload();
+            socialSharePreferenceHelper.reload();
             initSocialButton(facebookShareButton, SocialNetworkEnum.FB);
             initSocialButton(twitterShareButton, SocialNetworkEnum.TW);
             initSocialButton(linkedInShareButton, SocialNetworkEnum.LN);
@@ -79,7 +79,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     private boolean initialSocialShareCheckedState(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
-        return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinked(socialNetworkEnum));
+        return socialSharePreferenceHelper.isShareEnabled(socialNetworkEnum, isSocialLinked(socialNetworkEnum));
     }
 
     private boolean isSocialLinked(@NonNull SocialNetworkEnum socialNetworkEnum)
@@ -118,7 +118,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
                 DiscussionPostActionButtonsView.this.askToLinkSocial(compoundButton, socialNetworkEnum);
                 isChecked = false;
             }
-            socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetworkEnum, isChecked);
+            socialSharePreferenceHelper.updateSocialSharePreference(socialNetworkEnum, isChecked);
             compoundButton.setChecked(isChecked);
         }
     }
@@ -130,7 +130,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         SocialNetworkEnum socialNetworkEnum = (SocialNetworkEnum) compoundButton.getTag();
         if (socialNetworkEnum != null)
         {
-            socialSharePreferenceHelperNew.updateSocialSharePreference(socialNetworkEnum, isChecked);
+            socialSharePreferenceHelper.updateSocialSharePreference(socialNetworkEnum, isChecked);
             compoundButton.setChecked(isChecked);
         }
     }
@@ -168,12 +168,12 @@ public class DiscussionPostActionButtonsView extends LinearLayout
 
     public boolean isShareEnabled(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
-        return socialSharePreferenceHelperNew.isShareEnabled(socialNetworkEnum, isSocialLinked(socialNetworkEnum));
+        return socialSharePreferenceHelper.isShareEnabled(socialNetworkEnum, isSocialLinked(socialNetworkEnum));
     }
 
     public void onPostDiscussion()
     {
-        socialSharePreferenceHelperNew.save();
+        socialSharePreferenceHelper.save();
     }
 
     public void hideSocialButtons()

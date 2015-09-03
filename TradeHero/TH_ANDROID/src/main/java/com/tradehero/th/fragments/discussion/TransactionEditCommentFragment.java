@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discussion;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +20,21 @@ public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFr
         super.initView();
 
         discussionPostActionButtonsView.hideSocialButtons();
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+
+        String comment = SecurityDiscussionEditPostFragment.getComment(savedInstanceState != null ? savedInstanceState : getArguments());
+        discussionPostContent.setText(comment);
+    }
+
+    @Override public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        SecurityDiscussionEditPostFragment.putComment(outState, discussionPostContent.getText().toString());
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)

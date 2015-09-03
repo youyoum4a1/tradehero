@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuInflater;
 import com.android.internal.util.Predicate;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -12,6 +14,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -21,15 +24,15 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragment
+public class BuyStockFragment extends AbstractStockTransactionFragment
 {
     private static final boolean IS_BUY = true;
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    public BuyStockDialogFragment()
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super();
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override protected void setBuyEventFor(SharingOptionsEvent.Builder builder)
@@ -44,7 +47,7 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
             return getString(R.string.na);
         }
         THSignedNumber bThSignedNumber = getFormattedPrice(quoteDTO.ask);
-        return getString(R.string.buy_sell_dialog_buy, bThSignedNumber.toString());
+        return bThSignedNumber.toString();
     }
 
     @Override @Nullable protected Double getProfitOrLossUsd(
@@ -132,6 +135,12 @@ public class BuyStockDialogFragment extends AbstractStockTransactionDialogFragme
                         && positionDTO.shares < 0;
             }
         };
+    }
+
+    @Override protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO)
+    {
+        setActionBarTitle(getString(R.string.transaction_title_buy,
+                securityCompactDTO != null ? securityCompactDTO.getExchangeSymbol() : getString(R.string.stock)));
     }
 
     protected boolean hasValidInfoForBuy()

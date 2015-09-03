@@ -12,6 +12,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionDTOCompact;
 import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.quote.QuoteDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.TransactionFormDTO;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.rx.view.DismissDialogAction0;
@@ -21,16 +22,11 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 
-public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
+public class BuyFXFragment extends AbstractFXTransactionFragment
 {
     private static final boolean IS_BUY = true;
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
-
-    public BuyFXDialogFragment()
-    {
-        super();
-    }
 
     @Override protected void setBuyEventFor(SharingOptionsEvent.Builder builder)
     {
@@ -44,7 +40,7 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
             return getString(R.string.na);
         }
         THSignedNumber bThSignedNumber = getFormattedPrice(quoteDTO.ask);
-        return getString(R.string.buy_sell_dialog_buy, bThSignedNumber.toString());
+        return bThSignedNumber.toString();
     }
 
     @Override @Nullable protected Double getProfitOrLossUsd(
@@ -142,6 +138,12 @@ public class BuyFXDialogFragment extends AbstractFXTransactionDialogFragment
                         && positionDTO.shares < 0;
             }
         };
+    }
+
+    @Override protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO)
+    {
+        setActionBarTitle(getString(R.string.transaction_title_buy,
+                securityCompactDTO != null ? securityCompactDTO.getExchangeSymbol() : getString(R.string.fx)));
     }
 
     protected boolean hasValidInfoForBuy()

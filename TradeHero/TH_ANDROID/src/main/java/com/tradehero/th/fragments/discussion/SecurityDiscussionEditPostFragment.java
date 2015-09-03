@@ -20,6 +20,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragment
 {
     private static final String BUNDLE_KEY_SECURITY_ID = SecurityDiscussionEditPostFragment.class.getName() + ".securityId";
+    private static final String BUNDLE_KEY_COMMENT = SecurityDiscussionEditPostFragment.class.getName() + ".comment";
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
@@ -32,6 +33,11 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
         args.putBundle(BUNDLE_KEY_SECURITY_ID, securityId.getArgs());
     }
 
+    public static void putComment(@NonNull Bundle args, @NonNull String comment)
+    {
+        args.putString(BUNDLE_KEY_COMMENT, comment);
+    }
+
     @Nullable public static SecurityId getSecurityId(@Nullable Bundle args)
     {
         SecurityId extracted = null;
@@ -40,6 +46,11 @@ public class SecurityDiscussionEditPostFragment extends DiscussionEditPostFragme
             extracted = new SecurityId(args.getBundle(BUNDLE_KEY_SECURITY_ID));
         }
         return extracted;
+    }
+
+    @NonNull public static String getComment(@NonNull Bundle args)
+    {
+        return args.getString(BUNDLE_KEY_COMMENT, "");
     }
 
     @Override public void onResume()

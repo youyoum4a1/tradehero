@@ -16,6 +16,7 @@ import dagger.Module;
         injects = {
                 PeopleSearchFragment.class,
                 AllRelationsRecyclerFragment.class,
+                ShareDelegateFragment.class,
         },
         library = true,
         complete = false
