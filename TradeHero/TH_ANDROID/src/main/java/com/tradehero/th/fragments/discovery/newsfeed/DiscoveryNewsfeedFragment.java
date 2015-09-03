@@ -43,7 +43,7 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
 
     @NonNull @Override protected PagedRecyclerAdapter<NewsfeedDisplayDTO> createItemViewAdapter()
     {
-        return new NewsfeedPaginatedAdapter();
+        return new NewsfeedPaginatedAdapter(getActivity());
     }
 
     @NonNull @Override protected DTOCacheRx<NewsfeedPagedDTOKey, NewsfeedDisplayDTO.DTOList<NewsfeedDisplayDTO>> getCache()

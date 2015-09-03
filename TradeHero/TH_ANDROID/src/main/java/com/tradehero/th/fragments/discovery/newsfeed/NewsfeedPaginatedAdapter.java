@@ -1,5 +1,7 @@
 package com.tradehero.th.fragments.discovery.newsfeed;
 
+import android.content.Context;
+import android.support.annotation.CallSuper;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTO;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTOList;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
+import com.tradehero.th.inject.HierarchyInjector;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
@@ -24,9 +27,10 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
 
     @Inject Picasso picasso;
 
-    public NewsfeedPaginatedAdapter()
+    public NewsfeedPaginatedAdapter(Context context)
     {
         super(NewsfeedDisplayDTO.class, new NewsfeedDisplayDTOComparator());
+        HierarchyInjector.inject(context, this);
     }
 
     @Override public int getItemViewType(int position)
@@ -79,7 +83,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
     {
         @Override public int compare(NewsfeedDisplayDTO o1, NewsfeedDisplayDTO o2)
         {
-            return o1.createdAtUTC.compareTo(o2.createdAtUTC);
+            return o2.createdAtUTC.compareTo(o1.createdAtUTC);
         }
 
         @Override public boolean areContentsTheSame(NewsfeedDisplayDTO oldItem, NewsfeedDisplayDTO newItem)
@@ -146,6 +150,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
             this.picasso = picasso;
         }
 
+        @CallSuper
         @Override public void display(NewsfeedDisplayDTO newsfeedDisplayDTO)
         {
             picasso.load(newsfeedDisplayDTO.picture)
@@ -170,6 +175,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
 
         @Override public void display(NewsfeedDisplayDTO newsfeedDisplayDTO)
         {
+            super.display(newsfeedDisplayDTO);
             NewsfeedNewsDisplayDTO newsDTO = (NewsfeedNewsDisplayDTO) newsfeedDisplayDTO;
             if (newsDTO.heroImage != null)
             {
@@ -199,6 +205,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
 
         @Override public void display(NewsfeedDisplayDTO newsfeedDisplayDTO)
         {
+            super.display(newsfeedDisplayDTO);
             //TODO in the future
         }
     }
@@ -214,6 +221,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
 
         @Override public void display(NewsfeedDisplayDTO newsfeedDisplayDTO)
         {
+            super.display(newsfeedDisplayDTO);
             NewsfeedStockTwitDisplayDTO stockTwitDTO = (NewsfeedStockTwitDisplayDTO) newsfeedDisplayDTO;
             if (stockTwitDTO.heroImage != null)
             {

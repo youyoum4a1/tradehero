@@ -67,7 +67,7 @@
           android:layout_alignRight="@id/newsfeed_item_time"
           android:layout_below="@id/newsfeed_item_time"
           android:scaleType="centerCrop"
-          tools:src="@drawable/stocktwits_blue"
+          android:src="@drawable/stocktwits_blue"
           />
 
     </RelativeLayout>
