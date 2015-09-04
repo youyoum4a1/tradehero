@@ -80,19 +80,6 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
         return hasValidInfoForBuy();
     }
 
-    @Override protected boolean isQuickButtonEnabled()
-    {
-        return usedDTO.quoteDTO != null && usedDTO.quoteDTO.ask != null;
-    }
-
-    @Override protected double getQuickButtonMaxValue(
-            @NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
-            @Nullable PositionDTOCompact closeablePosition)
-    {
-        return portfolioCompactDTO.cashBalanceRefCcy;
-    }
-
     @Override protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO)
     {
         final ProgressDialog progressDialog = ProgressDialog.show(

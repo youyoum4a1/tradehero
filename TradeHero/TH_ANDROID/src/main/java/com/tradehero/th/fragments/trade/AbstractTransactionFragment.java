@@ -118,7 +118,6 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject CurrentUserId currentUserId;
-    @Inject protected SocialShareHelper socialShareHelper;
     @Inject protected OwnedPortfolioIdListCacheRx ownedPortfolioIdListCache;
     @Inject protected Lazy<SocialSharer> socialSharerLazy;
 
@@ -142,12 +141,6 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             @Nullable PositionDTOCompact closeablePosition);
 
     protected abstract boolean hasValidInfo();
-
-    protected abstract boolean isQuickButtonEnabled();
-
-    protected abstract double getQuickButtonMaxValue(@NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
-            @Nullable PositionDTOCompact closeablePosition);
 
     abstract protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO);
 
@@ -240,12 +233,19 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                                     @NonNull PortfolioCompactDTOList portfolioCompactDTOs,
                                     @NonNull OwnedPortfolioIdList ownedPortfolioIds)
                             {
+                                int selectedPortfolioPosition = 0;
+
                                 menuOwnedPortfolioIdList = new ArrayList<>();
-                                for (PortfolioCompactDTO candidate : portfolioCompactDTOs)
+                                for (PortfolioCompactDTO candidate: portfolioCompactDTOs)
                                 {
                                     if (ownedPortfolioIds.contains(candidate.getOwnedPortfolioId()))
                                     {
                                         menuOwnedPortfolioIdList.add(new MenuOwnedPortfolioId(candidate.getUserBaseKey(), candidate));
+
+                                        if (candidate.getPortfolioId().key.equals(selectedPortfolioId.key))
+                                        {
+                                            selectedPortfolioPosition = menuOwnedPortfolioIdList.size() - 1;
+                                        }
                                     }
                                 }
 
@@ -254,6 +254,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                                                 getActivity(),
                                                 menuOwnedPortfolioIdList);
                                 mPortfolioSpinner.setAdapter(menuOwnedPortfolioIdLollipopArrayAdapter);
+                                mPortfolioSpinner.setSelection(selectedPortfolioPosition);
                                 mPortfolioSpinner.setEnabled(menuOwnedPortfolioIdList.size() > 1);
 
                                 return null;
