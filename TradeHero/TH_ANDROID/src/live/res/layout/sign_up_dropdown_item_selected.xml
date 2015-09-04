@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/dropdownListPreferredItemHeight"
     android:paddingLeft="?attr/listPreferredItemPaddingLeft"
-    android:paddingRight="?attr/listPreferredItemPaddingRight"
     android:singleLine="true"
     android:gravity="center_vertical"
     android:drawableRight="@drawable/spinner_dropdown_arrow_green"
