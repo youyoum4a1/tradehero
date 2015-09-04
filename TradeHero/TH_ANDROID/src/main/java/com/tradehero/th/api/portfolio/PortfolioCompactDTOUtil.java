@@ -74,11 +74,6 @@ public class PortfolioCompactDTOUtil
             return null;
         }
 
-        if (closeablePosition != null && portfolioCompactDTO.id != closeablePosition.portfolioId)
-        {
-            throw new IllegalArgumentException("Portfolio ids do not match " + portfolioCompactDTO.id + " and " + closeablePosition.portfolioId);
-        }
-
         if (closeablePosition != null
                 && closeablePosition.positionStatus != null
                 && closeablePosition.positionStatus.equals(PositionStatus.LONG))

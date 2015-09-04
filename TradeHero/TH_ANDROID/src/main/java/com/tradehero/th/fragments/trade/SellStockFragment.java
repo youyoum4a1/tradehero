@@ -99,6 +99,11 @@ public class SellStockFragment extends AbstractStockTransactionFragment
         return R.string.buy_sell_share_left;
     }
 
+    @Override protected Boolean isBuyTransaction()
+    {
+        return false;
+    }
+
     @Override protected boolean hasValidInfo()
     {
         return hasValidInfoForSell();

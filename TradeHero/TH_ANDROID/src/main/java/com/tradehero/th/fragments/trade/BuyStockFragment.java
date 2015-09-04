@@ -80,6 +80,11 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
         return R.string.buy_sell_cash_available;
     }
 
+    @Override protected Boolean isBuyTransaction()
+    {
+        return true;
+    }
+
     @Override protected boolean hasValidInfo()
     {
         return hasValidInfoForBuy();

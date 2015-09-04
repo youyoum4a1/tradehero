@@ -88,7 +88,7 @@ import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.functions.Func3;
+import rx.functions.Func4;
 import rx.functions.Func6;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
@@ -220,6 +220,8 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
     protected abstract int getCashShareLabel();
 
+    protected abstract Boolean isBuyTransaction();
+
     @Override public void onStart()
     {
         super.onStart();
@@ -230,21 +232,26 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                         requisite.getPortfolioIdObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
                         getPortfolioCompactListObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
                         getApplicablePortfolioIdsObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
-                        new Func3<PortfolioId, PortfolioCompactDTOList, OwnedPortfolioIdList, Boolean>()
+                        getAllCloseablePositionObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
+                        new Func4<PortfolioId, PortfolioCompactDTOList, OwnedPortfolioIdList, List<OwnedPortfolioId>, Boolean>()
                         {
                             @Override public Boolean call(
                                     @NonNull PortfolioId selectedPortfolioId,
                                     @NonNull PortfolioCompactDTOList portfolioCompactDTOs,
-                                    @NonNull OwnedPortfolioIdList ownedPortfolioIds)
+                                    @NonNull OwnedPortfolioIdList ownedPortfolioIds,
+                                    @Nullable List<OwnedPortfolioId> closeableOwnedPortfolioIds)
                             {
                                 int selectedPortfolioPosition = 0;
 
                                 menuOwnedPortfolioIdList = new ArrayList<>();
-                                for (PortfolioCompactDTO candidate: portfolioCompactDTOs)
+                                for (PortfolioCompactDTO candidate : portfolioCompactDTOs)
                                 {
                                     if (ownedPortfolioIds.contains(candidate.getOwnedPortfolioId()))
                                     {
-                                        menuOwnedPortfolioIdList.add(new MenuOwnedPortfolioId(candidate.getUserBaseKey(), candidate));
+                                        if (isBuyTransaction() || closeableOwnedPortfolioIds.contains(candidate.getOwnedPortfolioId()))
+                                        {
+                                            menuOwnedPortfolioIdList.add(new MenuOwnedPortfolioId(candidate.getUserBaseKey(), candidate));
+                                        }
 
                                         if (candidate.getPortfolioId().key.equals(selectedPortfolioId.key))
                                         {
@@ -290,7 +297,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                             {
                                 requisite.portfolioIdSubject.onNext(portfolioId);
                             }
-                        }, new TimberOnErrorAction1("message"))
+                        }, new TimberOnErrorAction1("Failed on listening Spinner select event."))
         );
     }
 
@@ -500,6 +507,35 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                 .share();
     }
     //</editor-fold>
+
+    @NonNull protected Observable<List<OwnedPortfolioId>> getAllCloseablePositionObservable()
+    {
+        return Observable.combineLatest(
+                positionCompactListCache.get(requisite.securityId),
+                getApplicablePortfolioIdsObservable(),
+                new Func2<Pair<SecurityId, PositionDTOList>, OwnedPortfolioIdList, List<OwnedPortfolioId>>()
+                {
+                    @Override public List<OwnedPortfolioId> call(Pair<SecurityId, PositionDTOList> securityIdPositionDTOListPair,
+                            OwnedPortfolioIdList ownedPortfolioIds)
+                    {
+                        List<OwnedPortfolioId> closeableOwnedPortfolioIdList = new ArrayList<>();
+
+                        for (PositionDTO positionDTO : securityIdPositionDTOListPair.second)
+                        {
+                            if (ownedPortfolioIds.contains(positionDTO.getOwnedPortfolioId())
+                                    && positionDTO.shares != null
+                                    && positionDTO.shares != 0)
+                            {
+                                closeableOwnedPortfolioIdList.add(positionDTO.getOwnedPortfolioId());
+                            }
+                        }
+
+                        return closeableOwnedPortfolioIdList;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .share();
+    }
 
     @NonNull protected Observable<Integer> getMaxValueObservable() // It can pass null values
     {

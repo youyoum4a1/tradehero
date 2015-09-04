@@ -84,6 +84,11 @@ public class SellFXFragment extends AbstractFXTransactionFragment
         return R.string.buy_sell_fx_quantity_left;
     }
 
+    @Override protected Boolean isBuyTransaction()
+    {
+        return false;
+    }
+
     @Override protected boolean hasValidInfo()
     {
         return hasValidInfoForSell();
