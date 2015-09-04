@@ -81,7 +81,6 @@ public class ShareDelegateFragment
     {
         ButterKnife.bind(this, view);
 
-        socialSharePreferenceHelper.reload();
         registerWeChatButton();
         registerSocialButtons();
     }
