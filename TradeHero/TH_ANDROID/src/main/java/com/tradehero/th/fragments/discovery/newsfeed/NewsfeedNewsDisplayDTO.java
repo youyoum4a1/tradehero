@@ -5,8 +5,9 @@ import org.ocpsoft.prettytime.PrettyTime;
 
 public class NewsfeedNewsDisplayDTO extends NewsfeedDisplayDTO
 {
-    public String heroImage;
-    public String title;
+    public final String heroImage;
+    public final String title;
+    public final String url;
     private final String description;
 
     public NewsfeedNewsDisplayDTO(NewsfeedNewsDTO newsfeedDTO, PrettyTime prettyTime)
@@ -14,6 +15,7 @@ public class NewsfeedNewsDisplayDTO extends NewsfeedDisplayDTO
         super(newsfeedDTO, prettyTime);
         this.heroImage = newsfeedDTO.thumbnail;
         this.title = newsfeedDTO.title;
+        this.url = newsfeedDTO.url;
         this.description = newsfeedDTO.description;
     }
 

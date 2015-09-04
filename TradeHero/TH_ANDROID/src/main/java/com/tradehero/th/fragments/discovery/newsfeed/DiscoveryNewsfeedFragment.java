@@ -10,9 +10,12 @@ import butterknife.ButterKnife;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedRecyclerAdapter;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedCache;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
 import com.tradehero.th.fragments.BasePagedRecyclerRxFragment;
+import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.news.NewsWebFragment;
 import javax.inject.Inject;
 
 public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
@@ -23,6 +26,7 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
         >
 {
     @Inject NewsfeedPagedCache newsfeedPagedCache;
+    @Inject DashboardNavigator navigator;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -43,7 +47,22 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
 
     @NonNull @Override protected PagedRecyclerAdapter<NewsfeedDisplayDTO> createItemViewAdapter()
     {
-        return new NewsfeedPaginatedAdapter(getActivity());
+        NewsfeedPaginatedAdapter adapter = new NewsfeedPaginatedAdapter(getActivity());
+        adapter.setOnItemClickedListener(new TypedRecyclerAdapter.OnItemClickedListener<NewsfeedDisplayDTO>()
+        {
+            @Override
+            public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<NewsfeedDisplayDTO> viewHolder, NewsfeedDisplayDTO object)
+            {
+                if(object instanceof NewsfeedNewsDisplayDTO)
+                {
+                    Bundle args = new Bundle();
+                    NewsWebFragment.putNewsId(args, object.id);
+                    NewsWebFragment.putUrl(args, ((NewsfeedNewsDisplayDTO) object).url);
+                    navigator.pushFragment(NewsWebFragment.class, args);
+                }
+            }
+        });
+        return adapter;
     }
 
     @NonNull @Override protected DTOCacheRx<NewsfeedPagedDTOKey, NewsfeedDisplayDTO.DTOList<NewsfeedDisplayDTO>> getCache()

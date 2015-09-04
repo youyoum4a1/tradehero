@@ -8,6 +8,7 @@
     android:layout_marginLeft="@dimen/margin_small"
     android:layout_marginRight="@dimen/margin_small"
     android:layout_marginTop="@dimen/margin_xsmall"
+    android:foreground="?attr/selectableItemBackground"
     app:cardElevation="4dp"
     >
 

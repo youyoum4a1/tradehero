@@ -7,4 +7,6 @@ public class NewsfeedNewsDTO extends NewsfeedDTO
     public String description;
     public String thumbnail;
     public String title;
+    public String url;
+
 }
