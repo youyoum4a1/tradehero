@@ -13,7 +13,9 @@ import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
 import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTOList;
+import com.tradehero.th.api.discussion.newsfeed.NewsfeedNewsDTO;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
+import com.tradehero.th.api.discussion.newsfeed.NewsfeedStockTwitDTO;
 import com.tradehero.th.api.pagination.PaginatedDTO;
 import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -24,6 +26,7 @@ import com.tradehero.th.network.DelayRetriesOrFailFunc1;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
+import com.tradehero.th.utils.DateUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -159,6 +162,39 @@ import rx.Observable;
 
     @NonNull public Observable<NewsfeedDTOList> getNewsfeed(@NonNull NewsfeedPagedDTOKey key)
     {
-        return Observable.just(new NewsfeedDTOList());
+        NewsfeedDTOList list = new NewsfeedDTOList();
+
+        NewsfeedNewsDTO dto = new NewsfeedNewsDTO();
+
+        dto.id = 1;
+        dto.title = "Apple's September 9 Event: Will There be a Surprise Product?";
+        dto.displayName = "Seeking Alpha";
+        dto.createdAtUTC = DateUtils.parseString("2015-09-03 14:20:00", "yyyy-MM-dd HH:mm:ss");
+        dto.picture = "https://pbs.twimg.com/profile_images/534299535552421888/eHacq8EQ.png";
+        dto.description = "The launch of a new iPhone is a big deal, I realize, so maybe there really are 7000 people going to San Francisco to see it. My sense is that there could be much more on the menu. Not that iPhone won't still be center stage. It will.";
+        dto.thumbnail = "http://www.iclarified.com/images/news/32816/134572/134572-640.jpg";
+
+        NewsfeedStockTwitDTO stockTwitDTO = new NewsfeedStockTwitDTO();
+        stockTwitDTO.id = 2;
+        stockTwitDTO.message = "<$NASDAQ:AAPL,123$> It will be interesting to see if it dip tomorrow after all Tim Cook said today. {#ff0000|Bearish}";
+        stockTwitDTO.displayName = "Moriuchi Taka";
+        stockTwitDTO.createdAtUTC = DateUtils.parseString("2015-09-03 14:00:00", "yyyy-MM-dd HH:mm:ss");
+        stockTwitDTO.picture = "https://tuneuplyrics.files.wordpress.com/2013/08/taka.jpg";
+
+
+        NewsfeedNewsDTO motley = new NewsfeedNewsDTO();
+
+        motley.id = 3;
+        motley.title = "3 Things That Could Go Wrong for Apple";
+        motley.displayName = "The Motley Fool";
+        motley.createdAtUTC = DateUtils.parseString("2015-09-03 13:24:00", "yyyy-MM-dd HH:mm:ss");
+        motley.picture = "https://lh6.googleusercontent.com/-_nnBHgQANeU/AAAAAAAAAAI/AAAAAAAAAAA/p0jEdCySwjw/s0-c-k-no-ns/photo.jpg";
+        motley.description = "The iPhone is still posting amazing growth, but the end of subsidies and slowing innovation are among the things that could cause trouble down the road.";
+
+        list.add(dto);
+        list.add(stockTwitDTO);
+        list.add(motley);
+
+        return Observable.just(list);
     }
 }
