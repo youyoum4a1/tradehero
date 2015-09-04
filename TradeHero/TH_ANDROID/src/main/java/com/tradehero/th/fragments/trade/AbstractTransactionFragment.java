@@ -213,8 +213,12 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             mConfirm.setText(R.string.buy_sell_confirm_sell_now);
         }
 
+        mCashOrStockLeft.setText(getCashShareLabel());
+
         shareDelegateFragment.onViewCreated(view, savedInstanceState);
     }
+
+    protected abstract int getCashShareLabel();
 
     @Override public void onStart()
     {

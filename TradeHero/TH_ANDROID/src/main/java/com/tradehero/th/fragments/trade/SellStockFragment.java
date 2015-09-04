@@ -94,6 +94,11 @@ public class SellStockFragment extends AbstractStockTransactionFragment
         return getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
     }
 
+    @Override protected int getCashShareLabel()
+    {
+        return R.string.buy_sell_share_left;
+    }
+
     @Override protected boolean hasValidInfo()
     {
         return hasValidInfoForSell();
@@ -147,7 +152,6 @@ public class SellStockFragment extends AbstractStockTransactionFragment
     {
         setActionBarTitle(getString(R.string.transaction_title_sell,
                 securityCompactDTO != null ? securityCompactDTO.getExchangeSymbol() : getString(R.string.stock)));
-        mCashOrStockLeft.setText(R.string.buy_sell_share_left);
     }
 
     protected boolean hasValidInfoForSell()

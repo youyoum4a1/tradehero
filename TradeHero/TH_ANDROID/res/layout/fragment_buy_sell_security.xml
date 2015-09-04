@@ -232,7 +232,6 @@
             android:layout_height="wrap_content"
             style="@style/TH.Body"
             android:layout_centerVertical="true"
-            android:text="@string/buy_sell_cash_available"
             />
 
         <TextView

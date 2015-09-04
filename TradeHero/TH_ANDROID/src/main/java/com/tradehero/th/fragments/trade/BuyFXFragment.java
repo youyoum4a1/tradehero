@@ -79,6 +79,11 @@ public class BuyFXFragment extends AbstractFXTransactionFragment
         return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
     }
 
+    @Override protected int getCashShareLabel()
+    {
+        return R.string.buy_sell_cash_available;
+    }
+
     @Override protected boolean hasValidInfo()
     {
         return hasValidInfoForBuy();

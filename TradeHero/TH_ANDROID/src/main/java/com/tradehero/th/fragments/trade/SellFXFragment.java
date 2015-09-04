@@ -79,6 +79,11 @@ public class SellFXFragment extends AbstractFXTransactionFragment
         return getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
     }
 
+    @Override protected int getCashShareLabel()
+    {
+        return R.string.buy_sell_fx_quantity_left;
+    }
+
     @Override protected boolean hasValidInfo()
     {
         return hasValidInfoForSell();
