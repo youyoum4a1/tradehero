@@ -5,8 +5,7 @@ import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.Hengshe
 import java.util.List;
 
 /**
- * Created by Sam on 15/8/26.
- *
+ * <pre>
  * For Reference: http://open.hs.net/wiki/doc/services/secu/func_secu_entrust_qry.html
  * Example response
  * {
@@ -34,6 +33,8 @@ import java.util.List;
          }
      ]
  }
+ * </pre>
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class HengshengEntrustQryDTO extends HengshengBaseDTO{
     public List<HengshengEntrustQryData> data;

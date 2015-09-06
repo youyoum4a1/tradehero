@@ -5,7 +5,7 @@ import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.Hengshe
 import java.util.List;
 
 /**
- * Created by trdehero on 15/8/25.
+ * <pre>
  * For reference: http://open.hs.net/wiki/doc/services/secu/func_client_exact_fund_all_qry.html
  * Example data:
  * {
@@ -25,6 +25,10 @@ import java.util.List;
  }
 
  {"error_no":"-201","error_code":"10204","error_info":"可用股票数量不足"}
+
+ </pre>
+
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class HengshengBalanceDTO extends HengshengBaseDTO{
     public List<HengshengBalanceData> data;

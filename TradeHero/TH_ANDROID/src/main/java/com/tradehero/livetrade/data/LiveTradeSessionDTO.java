@@ -1,7 +1,7 @@
 package com.tradehero.livetrade.data;
 
 /**
- * Created by Sam on 15/8/27.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class LiveTradeSessionDTO {
 }

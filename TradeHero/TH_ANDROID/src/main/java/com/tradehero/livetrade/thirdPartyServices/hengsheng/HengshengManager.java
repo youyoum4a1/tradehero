@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * Created by Sam on 15/8/25.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 @Singleton
 public class HengshengManager {

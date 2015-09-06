@@ -6,7 +6,7 @@ import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.Hengshe
 import cn.htsec.data.pkg.trade.TradeDataHelper;
 
 /**
- * Created by Sam on 15/8/27.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class LiveTradeBalanceDTO {
     public float enableBalance;

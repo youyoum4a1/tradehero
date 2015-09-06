@@ -1,9 +1,8 @@
 package com.tradehero.livetrade.thirdPartyServices.hengsheng.data;
 
 /**
- * Created by Sam on 15/8/26.
- *
  * Stores error info.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class HengshengBaseDTO {
     public String error_no;

@@ -1,7 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.hengsheng;
 
 /**
- * Created by trdehero on 15/8/25.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class HengshengConstants {
     public static final String KEY = "72ce07d4-1270-40d8-a158-0a9d0e26c61c";

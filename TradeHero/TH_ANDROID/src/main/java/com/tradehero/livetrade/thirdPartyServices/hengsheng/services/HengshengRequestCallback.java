@@ -6,7 +6,7 @@ import retrofit.Callback;
 import retrofit.client.Response;
 
 /**
- * Created by Sam on 15/8/25.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public abstract class HengshengRequestCallback<T> implements Callback<T> {
 

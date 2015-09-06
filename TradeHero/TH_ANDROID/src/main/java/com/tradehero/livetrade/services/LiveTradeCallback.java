@@ -1,7 +1,7 @@
 package com.tradehero.livetrade.services;
 
 /**
- * Created by Sam on 15/8/27.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public interface LiveTradeCallback<T> {
 

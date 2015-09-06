@@ -27,7 +27,7 @@ import cn.htsec.data.pkg.trade.TradeInterface;
 import cn.htsec.data.pkg.trade.TradeManager;
 
 /**
- * Created by Sam on 15/8/26.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 @Singleton
 public class HaitongServicesWrapper implements LiveTradeServices {

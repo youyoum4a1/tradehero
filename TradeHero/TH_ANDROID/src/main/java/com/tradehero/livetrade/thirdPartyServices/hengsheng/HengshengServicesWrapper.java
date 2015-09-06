@@ -35,7 +35,7 @@ import retrofit.client.Response;
 
 
 /**
- * Created by Sam on 15/8/24.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 @Singleton public class HengshengServicesWrapper implements LiveTradeServices {
 

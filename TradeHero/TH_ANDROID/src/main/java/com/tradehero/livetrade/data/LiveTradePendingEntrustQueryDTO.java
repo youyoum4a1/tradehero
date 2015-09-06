@@ -11,7 +11,7 @@ import cn.htsec.data.pkg.trade.TradeDataHelper;
 import timber.log.Timber;
 
 /**
- * Created by Sam on 15/8/28.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class LiveTradePendingEntrustQueryDTO {
     public List<PendingEntrustQueryDTO> positions;

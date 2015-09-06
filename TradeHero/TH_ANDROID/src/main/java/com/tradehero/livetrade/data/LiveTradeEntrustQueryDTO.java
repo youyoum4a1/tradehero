@@ -13,7 +13,7 @@ import timber.log.Timber;
 
 
 /**
- * Created by Sam on 15/8/27.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class LiveTradeEntrustQueryDTO {
 

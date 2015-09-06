@@ -5,7 +5,7 @@ import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.HengshengWithdr
 import cn.htsec.data.pkg.trade.TradeDataHelper;
 
 /**
- * Created by Sam on 15/8/27.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class LiveTradeEntrustCancelDTO {
 

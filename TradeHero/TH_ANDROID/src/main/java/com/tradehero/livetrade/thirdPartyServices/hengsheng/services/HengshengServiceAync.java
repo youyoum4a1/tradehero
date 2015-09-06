@@ -18,6 +18,11 @@ import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.POST;
 
+
+/**
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
+ */
+
 public interface HengshengServiceAync
 {
     /**

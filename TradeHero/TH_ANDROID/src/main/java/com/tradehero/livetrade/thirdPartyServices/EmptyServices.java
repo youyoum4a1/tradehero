@@ -14,7 +14,7 @@ import com.tradehero.livetrade.services.LiveTradeCallback;
 import com.tradehero.livetrade.services.LiveTradeServices;
 
 /**
- * Created by Sam on 15/8/28.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class EmptyServices implements LiveTradeServices {
     @Override

@@ -5,9 +5,8 @@ import com.tradehero.livetrade.thirdPartyServices.hengsheng.data.subData.Hengshe
 import java.util.List;
 
 /**
- * Created by Sam on 15/8/26.
  *
- *
+ * <pre>
  * For reference: http://open.hs.net/wiki/doc/services/secu/func_secu_entrust_withdraw.html
  *
  * Example response
@@ -18,6 +17,8 @@ import java.util.List;
      }
  ]
  }
+ * </pre>
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class HengshengWithdrawEnterDTO extends HengshengBaseDTO{
     public List<HengshengWithdrawEnterData> data;

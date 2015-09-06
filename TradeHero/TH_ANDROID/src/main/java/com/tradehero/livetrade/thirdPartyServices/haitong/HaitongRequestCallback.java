@@ -1,7 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.haitong;
 
 /**
- * Created by Sam on 15/8/26.
+ * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public interface HaitongRequestCallback {
 
