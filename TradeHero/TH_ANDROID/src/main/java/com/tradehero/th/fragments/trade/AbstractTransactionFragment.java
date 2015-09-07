@@ -78,16 +78,20 @@ import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.widget.OnTextChangeEvent;
+import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.functions.Func3;
 import rx.functions.Func4;
 import rx.functions.Func6;
 import rx.subjects.BehaviorSubject;
@@ -99,7 +103,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     private static final double INITIAL_VALUE = 5000;
 
     @Bind(R.id.vcash_left) protected TextView mCashShareLeftTextView;
-    @Bind(R.id.vtrade_value) protected TextView mTradeValueTextView;
+    @Bind(R.id.vtrade_value) protected EditText mTradeValueTextView;
     @Bind(R.id.vmarket_symbol) protected TextView mMarketPriceSymbol;
     @Bind(R.id.price_updated_time) protected TextView mPriceUpdatedTime;
     @Bind(R.id.vtrade_symbol) protected TextView mTradeSymbol;
@@ -134,6 +138,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     private TransactionEditCommentFragment transactionCommentFragment;
     private List<MenuOwnedPortfolioId> menuOwnedPortfolioIdList;
     private ShareDelegateFragment shareDelegateFragment;
+    private Boolean hasTradeValueTextFieldFocus;
     Editable unSpannedComment;
 
     @Nullable protected abstract Integer getMaxValue(@NonNull PortfolioCompactDTO portfolioCompactDTO,
@@ -158,6 +163,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         this.usedDTO = new UsedDTO();
         this.quantitySubject = BehaviorSubject.create();
         this.shareDelegateFragment = new ShareDelegateFragment(this);
+        this.hasTradeValueTextFieldFocus = false;
     }
 
     //<editor-fold desc="Arguments passing">
@@ -208,6 +214,14 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             }
         });
 
+        mTradeValueTextView.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override public void onFocusChange(View v, boolean hasFocus)
+            {
+                hasTradeValueTextFieldFocus = hasFocus;
+            }
+        });
+
         if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXFragment.class)
         {
             mConfirm.setText(R.string.buy_sell_confirm_sell_now);
@@ -216,6 +230,93 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         mCashOrStockLeft.setText(getCashShareLabel());
 
         shareDelegateFragment.onViewCreated(view, savedInstanceState);
+
+        onDestroyViewSubscriptions.add(
+                Observable.combineLatest(
+                        getPortfolioCompactObservable(),
+                        getQuoteObservable(),
+                        getCloseablePositionObservable(),
+                        WidgetObservable.text(mTradeValueTextView),
+                        new Func4<PortfolioCompactDTO, QuoteDTO, PositionDTO, OnTextChangeEvent, Integer>()
+                        {
+                            @Override
+                            public Integer call(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO, PositionDTO positionDTO,
+                                    OnTextChangeEvent onTextChangeEvent)
+                            {
+                                Integer quantity = 0;
+                                Double tradeValue = 0.0;
+
+                                if (hasTradeValueTextFieldFocus)
+                                {
+                                    String tradeValueText = mTradeValueTextView.getText().toString().replace(",", "");
+
+                                    if (tradeValueText.isEmpty())
+                                    {
+                                        return 0;
+                                    }
+
+                                    try
+                                    {
+                                        tradeValue = Double.parseDouble(tradeValueText);
+                                    }
+                                    catch (NumberFormatException e)
+                                    {
+                                        Timber.d("Trade value is not a number.");
+                                    }
+
+                                    quantity = getQuantityFromTradeValue(portfolioCompactDTO, quoteDTO, tradeValue);
+
+                                    if (positionDTO != null)
+                                    {
+                                        String quantityText = mQuantityEditText.getText().toString();
+                                        Integer quantityValue = Integer.parseInt(quantityText);
+
+                                        if (quantityValue.equals(getMaxSellableShares(portfolioCompactDTO, quoteDTO, positionDTO)))
+                                        {
+                                            String calculateTradeValueText =
+                                                    getTradeValueText(portfolioCompactDTO, quoteDTO, quantityValue).replace(",", "");
+
+                                            if (!calculateTradeValueText.equals(tradeValueText))
+                                            {
+                                                mTradeValueTextView.setText(calculateTradeValueText);
+                                            }
+
+                                            return quantityValue;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (tradeValue - 1 > portfolioCompactDTO.cashBalanceRefCcy)
+                                        {
+                                            tradeValueText = THSignedNumber.builder(portfolioCompactDTO.cashBalanceRefCcy)
+                                                    .relevantDigitCount(1)
+                                                    .withOutSign()
+                                                    .build().toString();
+
+                                            mTradeValueTextView.setText(tradeValueText);
+                                        }
+                                    }
+                                }
+
+                                return quantity;
+                            }
+                        })
+                        .filter(new Func1<Integer, Boolean>()
+                        {
+                            @Override public Boolean call(Integer integer)
+                            {
+                                return hasTradeValueTextFieldFocus;
+                            }
+                        })
+                        .doOnNext(new Action1<Integer>()
+                        {
+                            @Override public void call(Integer integer)
+                            {
+                                mQuantityEditText.setText(integer.toString());
+                            }
+                        })
+                        .subscribe()
+        );
     }
 
     protected abstract int getCashShareLabel();
@@ -650,7 +751,11 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     {
         updateDisplay();
 
-        mTradeValueTextView.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
+        if (!hasTradeValueTextFieldFocus)
+        {
+            mTradeValueTextView.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
+        }
+
         mTradeSymbol.setText(portfolioCompactDTO.currencyDisplay);
 
         if (clamped != null)
@@ -829,6 +934,25 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         return valueText;
     }
 
+    public Integer getQuantityFromTradeValue(
+            @Nullable PortfolioCompactDTO portfolioCompactDTO,
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable Double tradeValue
+    )
+    {
+        Double quantity = 0.0;
+        if (portfolioCompactDTO != null && quoteDTO != null && tradeValue != null)
+        {
+            Double priceRefCcy = getPriceCcy(portfolioCompactDTO, quoteDTO);
+            if (priceRefCcy != null)
+            {
+                quantity = tradeValue / priceRefCcy;
+            }
+        }
+
+        return quantity.intValue();
+    }
+
     public String getQuantityString()
     {
         return mQuantityEditText.getText().toString();
@@ -863,6 +987,27 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
         transactionCommentFragment = navigator.get().pushFragment(TransactionEditCommentFragment.class, bundle);
     }
+
+    //@OnTextChanged(R.id.vtrade_value)
+    //public void onTradeValueChanged(CharSequence text)
+    //{
+    //    Observable.combineLatest(
+    //            getPortfolioCompactObservable(),
+    //            getQuoteObservable(),
+    //            new Func2<PortfolioCompactDTO, QuoteDTO, Object>()
+    //            {
+    //                @Override public Object call(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO)
+    //                {
+    //                    Integer tradeValue = Integer.parseInt(mTradeValueTextView.getText().toString().replace(",", ""));
+    //
+    //                    mQuantityEditText.setText(
+    //                            getQuantityFromTradeValue(portfolioCompactDTO, quoteDTO, tradeValue).toString());
+    //                    return null;
+    //                }
+    //            })
+    //            .subscribeOn(AndroidSchedulers.mainThread()
+    //            );
+    //}
 
     @Deprecated public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
     {
