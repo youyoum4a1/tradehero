@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import com.tradehero.common.persistence.DTOCacheRx;
+import com.tradehero.common.text.ClickableTagProcessor;
+import com.tradehero.common.text.LinkTagProcessor;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
@@ -18,6 +20,7 @@ import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import javax.inject.Inject;
+import rx.functions.Action1;
 
 public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
         NewsfeedPagedDTOKey,
@@ -54,15 +57,16 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
             @Override
             public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<NewsfeedDisplayDTO> viewHolder, NewsfeedDisplayDTO object)
             {
-                if(object instanceof NewsfeedNewsDisplayDTO)
+                if (object instanceof NewsfeedNewsDisplayDTO)
                 {
                     Bundle args = new Bundle();
                     NewsWebFragment.putNewsId(args, object.id);
                     NewsWebFragment.putUrl(args, ((NewsfeedNewsDisplayDTO) object).url);
                     navigator.pushFragment(NewsWebFragment.class, args);
-                }else if(object instanceof NewsfeedStockTwitDisplayDTO)
+                }
+                else if (object instanceof NewsfeedStockTwitDisplayDTO)
                 {
-                    if(((NewsfeedStockTwitDisplayDTO) object).link != null)
+                    if (((NewsfeedStockTwitDisplayDTO) object).link != null)
                     {
                         Bundle args = new Bundle();
                         WebViewFragment.putUrl(args, ((NewsfeedStockTwitDisplayDTO) object).link);
@@ -71,6 +75,25 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
                 }
             }
         });
+        onDestroySubscriptions.add(adapter.getUserActionObservable()
+                .subscribe(new Action1<ClickableTagProcessor.UserAction>()
+                {
+                    @Override public void call(ClickableTagProcessor.UserAction userAction)
+                    {
+                        if(userAction instanceof LinkTagProcessor.WebUserAction)
+                        {
+                            Bundle args = new Bundle();
+                            WebViewFragment.putUrl(args, ((LinkTagProcessor.WebUserAction) userAction).link);
+                            navigator.pushFragment(WebViewFragment.class, args);
+                        }
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+
+                    }
+                }));
         return adapter;
     }
 

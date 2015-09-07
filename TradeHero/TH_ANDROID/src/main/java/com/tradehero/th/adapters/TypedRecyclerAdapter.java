@@ -171,6 +171,12 @@ public abstract class TypedRecyclerAdapter<T>
     @Override
     public abstract TypedViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType);
 
+    @Override public void onViewRecycled(TypedViewHolder<T> holder)
+    {
+        super.onViewRecycled(holder);
+        holder.recycled();
+    }
+
     @Override
     public void onBindViewHolder(final TypedViewHolder<T> holder, final int position)
     {
@@ -232,6 +238,11 @@ public abstract class TypedRecyclerAdapter<T>
         }
 
         public abstract void display(T t);
+
+        public void recycled()
+        {
+            //Do nothing
+        }
     }
 
     public static class DividerItemDecoration extends RecyclerView.ItemDecoration

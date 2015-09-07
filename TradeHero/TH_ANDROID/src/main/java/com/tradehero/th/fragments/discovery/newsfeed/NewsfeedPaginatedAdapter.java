@@ -10,14 +10,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.text.ClickableTagProcessor;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTO;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTOList;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.widget.MarkdownTextView;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+import rx.Observable;
+import rx.subjects.PublishSubject;
 
 public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDisplayDTO>
 {
@@ -27,10 +31,13 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
 
     @Inject Picasso picasso;
 
+    private PublishSubject<ClickableTagProcessor.UserAction> userActionSubject;
+
     public NewsfeedPaginatedAdapter(Context context)
     {
         super(NewsfeedDisplayDTO.class, new NewsfeedDisplayDTOComparator());
         HierarchyInjector.inject(context, this);
+        userActionSubject = PublishSubject.create();
     }
 
     @Override public int getItemViewType(int position)
@@ -61,10 +68,15 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
             case VIEW_TYPE_DISCUSSION:
                 return new NewsfeedDiscussionViewHolder(inflater.inflate(R.layout.newsfeed_item_discussion, parent, false), picasso);
             case VIEW_TYPE_STOCK_TWIT:
-                return new NewsfeedStockTwitViewHolder(inflater.inflate(R.layout.newsfeed_item_stocktwit, parent, false), picasso);
+                return new NewsfeedStockTwitViewHolder(inflater.inflate(R.layout.newsfeed_item_stocktwit, parent, false), picasso, userActionSubject);
             default:
                 return null;
         }
+    }
+
+    public Observable<ClickableTagProcessor.UserAction> getUserActionObservable()
+    {
+        return userActionSubject.asObservable();
     }
 
     public static Pair<NewsfeedPagedDTOKey, NewsfeedDisplayDTO.DTOList<NewsfeedDisplayDTO>> createList(
@@ -214,9 +226,11 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
     {
         @Bind(R.id.newsfeed_item_hero_image) ImageView heroImg;
 
-        public NewsfeedStockTwitViewHolder(View itemView, Picasso picasso)
+        public NewsfeedStockTwitViewHolder(View itemView, Picasso picasso, PublishSubject<ClickableTagProcessor.UserAction> subject)
         {
             super(itemView, picasso);
+            MarkdownTextView textView = (MarkdownTextView) body;
+            textView.getUserActionObservable().subscribe(subject);
         }
 
         @Override public void display(NewsfeedDisplayDTO newsfeedDisplayDTO)
