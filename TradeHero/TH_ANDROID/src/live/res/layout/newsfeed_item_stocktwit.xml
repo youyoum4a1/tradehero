@@ -8,6 +8,7 @@
     android:layout_marginLeft="@dimen/margin_small"
     android:layout_marginRight="@dimen/margin_small"
     android:layout_marginTop="@dimen/margin_xsmall"
+    android:foreground="?attr/selectableItemBackground"
     app:cardElevation="4dp"
     >
 
@@ -88,11 +89,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_xsmall"
-        android:ellipsize="end"
-        android:maxLines="3"
+        android:singleLine="false"
+        android:scrollbars="none"
         android:paddingLeft="@dimen/margin_xsmall"
         android:paddingRight="@dimen/margin_xsmall"
-        tools:text="&lt;$NASDAQ:AAPL,123$&gt; It will be interesting to see if it dip tomorrow after all Tim Cook said today. {#ff0000|Bearish}"
+        tools:text="Does anybody know what kind of &quot; Conflict of Interest &quot; does &quot;BOB&quot; have [https://www.youtube.com/watch?v=GDz5yuxfgg0&amp;index=90&amp;list=RDGftT_wzRJdc](https://www.youtube.com/watch?v=GDz5yuxfgg0&amp;index=90&amp;list=RDGftT_wzRJdc)"
         />
 
   </LinearLayout>

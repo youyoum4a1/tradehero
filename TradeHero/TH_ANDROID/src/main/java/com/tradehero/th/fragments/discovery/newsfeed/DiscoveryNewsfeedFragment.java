@@ -16,6 +16,7 @@ import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
 import com.tradehero.th.fragments.BasePagedRecyclerRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.NewsWebFragment;
+import com.tradehero.th.fragments.web.WebViewFragment;
 import javax.inject.Inject;
 
 public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
@@ -59,6 +60,11 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
                     NewsWebFragment.putNewsId(args, object.id);
                     NewsWebFragment.putUrl(args, ((NewsfeedNewsDisplayDTO) object).url);
                     navigator.pushFragment(NewsWebFragment.class, args);
+                }else if(object instanceof NewsfeedStockTwitDisplayDTO)
+                {
+                    Bundle args = new Bundle();
+                    WebViewFragment.putUrl(args, ((NewsfeedStockTwitDisplayDTO) object).link);
+                    navigator.pushFragment(WebViewFragment.class, args);
                 }
             }
         });

@@ -9,10 +9,11 @@ import com.tradehero.th.fragments.education.VideoCategoriesFragment;
 
 enum DiscoveryTabType
 {
-    NEWS(R.string.discovery_news, NewsPagerFragment.class),
+    NEWSFEED(R.string.discovery_newsfeed, DiscoveryNewsfeedFragment.class),
     DISCUSSION(R.string.discovery_discussions, DiscoveryDiscussionFragment.class),
-    ACADEMY(R.string.discovery_learning, VideoCategoriesFragment.class),
-    NEW(R.string.discovery, DiscoveryNewsfeedFragment.class);
+    ACADEMY(R.string.discovery_learning, VideoCategoriesFragment.class);
+
+    //NEWS(R.string.discovery_news, NewsPagerFragment.class) TODO Remove this class
 
     @StringRes public final int titleStringResId;
     @NonNull public final Class<? extends Fragment> fragmentClass;
