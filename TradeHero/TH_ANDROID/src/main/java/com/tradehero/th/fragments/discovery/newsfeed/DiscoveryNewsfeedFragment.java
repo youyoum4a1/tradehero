@@ -62,9 +62,12 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
                     navigator.pushFragment(NewsWebFragment.class, args);
                 }else if(object instanceof NewsfeedStockTwitDisplayDTO)
                 {
-                    Bundle args = new Bundle();
-                    WebViewFragment.putUrl(args, ((NewsfeedStockTwitDisplayDTO) object).link);
-                    navigator.pushFragment(WebViewFragment.class, args);
+                    if(((NewsfeedStockTwitDisplayDTO) object).link != null)
+                    {
+                        Bundle args = new Bundle();
+                        WebViewFragment.putUrl(args, ((NewsfeedStockTwitDisplayDTO) object).link);
+                        navigator.pushFragment(WebViewFragment.class, args);
+                    }
                 }
             }
         });
