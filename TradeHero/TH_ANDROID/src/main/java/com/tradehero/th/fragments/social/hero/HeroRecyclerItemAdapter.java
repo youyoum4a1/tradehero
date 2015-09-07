@@ -115,7 +115,7 @@ public class HeroRecyclerItemAdapter extends TypedRecyclerAdapter<HeroDisplayDTO
             this.picasso = picasso;
         }
 
-        @Override public void display(HeroDisplayDTO dto)
+        @Override public void onDisplay(HeroDisplayDTO dto)
         {
             this.currentDTO = dto;
             if (dto.heroDTO.picture != null)

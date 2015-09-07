@@ -171,16 +171,10 @@ public abstract class TypedRecyclerAdapter<T>
     @Override
     public abstract TypedViewHolder<T> onCreateViewHolder(ViewGroup parent, int viewType);
 
-    @Override public void onViewRecycled(TypedViewHolder<T> holder)
-    {
-        super.onViewRecycled(holder);
-        holder.recycled();
-    }
-
     @Override
     public void onBindViewHolder(final TypedViewHolder<T> holder, final int position)
     {
-        holder.display(getItem(position));
+        holder.onDisplay(getItem(position));
         if (mOnItemClickedListener != null)
         {
             holder.itemView.setOnClickListener(new View.OnClickListener()
@@ -202,6 +196,12 @@ public abstract class TypedRecyclerAdapter<T>
                 }
             });
         }
+    }
+
+    @Override public void onViewRecycled(TypedViewHolder<T> holder)
+    {
+        super.onViewRecycled(holder);
+        holder.onRecycled();
     }
 
     public interface OnItemClickedListener<T>
@@ -237,9 +237,9 @@ public abstract class TypedRecyclerAdapter<T>
             ButterKnife.bind(this, itemView);
         }
 
-        public abstract void display(T t);
+        public abstract void onDisplay(T t);
 
-        public void recycled()
+        public void onRecycled()
         {
             //Do nothing
         }

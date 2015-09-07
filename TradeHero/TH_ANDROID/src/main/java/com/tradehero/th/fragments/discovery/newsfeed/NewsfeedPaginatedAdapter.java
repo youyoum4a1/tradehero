@@ -163,7 +163,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
         }
 
         @CallSuper
-        @Override public void display(NewsfeedDisplayDTO newsfeedDisplayDTO)
+        @Override public void onDisplay(NewsfeedDisplayDTO newsfeedDisplayDTO)
         {
             picasso.load(newsfeedDisplayDTO.picture)
                     .placeholder(R.drawable.superman_facebook)
@@ -185,9 +185,9 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
             super(itemView, picasso);
         }
 
-        @Override public void display(NewsfeedDisplayDTO newsfeedDisplayDTO)
+        @Override public void onDisplay(NewsfeedDisplayDTO newsfeedDisplayDTO)
         {
-            super.display(newsfeedDisplayDTO);
+            super.onDisplay(newsfeedDisplayDTO);
             NewsfeedNewsDisplayDTO newsDTO = (NewsfeedNewsDisplayDTO) newsfeedDisplayDTO;
             if (newsDTO.heroImage != null)
             {
@@ -215,9 +215,9 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
             super(itemView, picasso);
         }
 
-        @Override public void display(NewsfeedDisplayDTO newsfeedDisplayDTO)
+        @Override public void onDisplay(NewsfeedDisplayDTO newsfeedDisplayDTO)
         {
-            super.display(newsfeedDisplayDTO);
+            super.onDisplay(newsfeedDisplayDTO);
             //TODO in the future
         }
     }
@@ -233,9 +233,9 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
             textView.getUserActionObservable().subscribe(subject);
         }
 
-        @Override public void display(NewsfeedDisplayDTO newsfeedDisplayDTO)
+        @Override public void onDisplay(NewsfeedDisplayDTO newsfeedDisplayDTO)
         {
-            super.display(newsfeedDisplayDTO);
+            super.onDisplay(newsfeedDisplayDTO);
             NewsfeedStockTwitDisplayDTO stockTwitDTO = (NewsfeedStockTwitDisplayDTO) newsfeedDisplayDTO;
             if (stockTwitDTO.heroImage != null)
             {

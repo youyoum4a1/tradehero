@@ -53,7 +53,7 @@ public class PositionNothingView extends RelativeLayout
             super(itemView);
         }
 
-        @Override public void display(Object o)
+        @Override public void onDisplay(Object o)
         {
             if (description != null && o instanceof DTO)
             {
