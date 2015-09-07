@@ -1111,13 +1111,12 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                         SecurityCompactDTOUtil.getShortSymbol(usedDTO.securityCompactDTO),
                         getFormattedPrice(isBuy ? usedDTO.quoteDTO.ask : usedDTO.quoteDTO.bid)));
         FacebookShareActivity.setName(extras, "TradeHero");
-        FacebookShareActivity.setCaption(extras, "tradehero.mobi");
+        FacebookShareActivity.setCaption(extras, "by myhero");
         FacebookShareActivity.setDescription(
                 extras,
                 String.format(
                         "Follow %s on TradeHero for great stock tips!",
                         shareDelegateFragment.getUserProfileDTO().displayName));
-        FacebookShareActivity.setLinkUrl(extras, "http://www.facebook.com");
         if (usedDTO.securityCompactDTO.imageBlobUrl == null)
         {
             FacebookShareActivity.setDefaultPictureUrl(extras);
