@@ -988,27 +988,6 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         transactionCommentFragment = navigator.get().pushFragment(TransactionEditCommentFragment.class, bundle);
     }
 
-    //@OnTextChanged(R.id.vtrade_value)
-    //public void onTradeValueChanged(CharSequence text)
-    //{
-    //    Observable.combineLatest(
-    //            getPortfolioCompactObservable(),
-    //            getQuoteObservable(),
-    //            new Func2<PortfolioCompactDTO, QuoteDTO, Object>()
-    //            {
-    //                @Override public Object call(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO)
-    //                {
-    //                    Integer tradeValue = Integer.parseInt(mTradeValueTextView.getText().toString().replace(",", ""));
-    //
-    //                    mQuantityEditText.setText(
-    //                            getQuantityFromTradeValue(portfolioCompactDTO, quoteDTO, tradeValue).toString());
-    //                    return null;
-    //                }
-    //            })
-    //            .subscribeOn(AndroidSchedulers.mainThread()
-    //            );
-    //}
-
     @Deprecated public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
     {
         this.buySellTransactionListener = buySellTransactionListener;

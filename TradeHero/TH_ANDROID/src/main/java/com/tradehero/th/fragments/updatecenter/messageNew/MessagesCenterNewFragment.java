@@ -1,11 +1,13 @@
 package com.tradehero.th.fragments.updatecenter.messageNew;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,7 @@ import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.tradehero.th.api.discussion.MessageType;
 import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
 import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
@@ -34,6 +37,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.social.AllRelationsRecyclerFragment;
+import com.tradehero.th.fragments.social.follower.SendMessageFragment;
 import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
@@ -44,15 +48,23 @@ import com.tradehero.th.network.service.MessageServiceWrapper;
 import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
 import com.tradehero.th.persistence.discussion.DiscussionListCacheRx;
 import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
+import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.tradehero.th.rx.dialog.AlertDialogRx;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+import rx.Observable;
 import rx.Observer;
+import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnClickEvent;
+import rx.android.view.ViewObservable;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 @Routable("messages")
@@ -79,6 +91,7 @@ public class MessagesCenterNewFragment extends BaseFragment
 
     private boolean hasMorePage = true;
     private MessageListViewAdapter listAdapter;
+    private Subscription dialogSubscription;
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
@@ -119,6 +132,53 @@ public class MessagesCenterNewFragment extends BaseFragment
         setReadAllLayoutVisible();
     }
 
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        onDestroyViewSubscriptions.add(ViewObservable.clicks(composeLayout).flatMap(
+                new Func1<OnClickEvent, Observable<?>>()
+                {
+                    @Override public Observable<?> call(OnClickEvent onClickEvent)
+                    {
+                        final String[] composerSelection = {getString(R.string.a_hero_or_friend), getString(R.string.all_followers)};
+
+                        return AlertDialogRx.build(new AlertDialog.Builder(getActivity()).setItems(
+                                composerSelection,
+                                new DialogInterface.OnClickListener()
+                                {
+                                    @Override public void onClick(DialogInterface dialog, int pos)
+                                    {
+                                        switch (pos)
+                                        {
+                                            case 0:
+                                                Bundle bundle = new Bundle();
+                                                AllRelationsRecyclerFragment.putPerPage(bundle, AllRelationsRecyclerFragment.PREFERRED_PER_PAGE);
+                                                navigator.get().pushFragment(AllRelationsRecyclerFragment.class, bundle);
+                                                break;
+
+                                            case 1:
+                                                Bundle args = new Bundle();
+                                                MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
+                                                SendMessageFragment.putMessageType(args, messageType);
+                                                navigator.get().pushFragment(SendMessageFragment.class, args);
+                                                break;
+
+                                            default:
+                                                break;
+                                        }
+                                    }
+                                })).setTitle(getString(R.string.pick_recipients))
+                                .setNegativeButton(getString(R.string.cancel))
+                                .build();
+                    }
+                }
+        ).subscribe(
+                new EmptyAction1<Object>(),
+                new TimberOnErrorAction1("")
+        ));
+    }
+
     private void init(View view)
     {
         HierarchyInjector.inject(this);
@@ -152,8 +212,6 @@ public class MessagesCenterNewFragment extends BaseFragment
                 MessagesCenterNewFragment.this.doRefreshContent();
             }
         });
-
-        setComposeLayoutClickListener();
     }
 
     private void pushUserProfileFragment(@Nullable MessageHeaderDTO messageHeaderDTO)
@@ -508,25 +566,9 @@ public class MessagesCenterNewFragment extends BaseFragment
         view.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
-    private void setComposeLayoutClickListener()
-    {
-        if (composeLayout != null)
-        {
-            composeLayout.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
-                    Bundle bundle = new Bundle();
-                    AllRelationsRecyclerFragment.putPerPage(bundle, AllRelationsRecyclerFragment.PREFERRED_PER_PAGE);
-                    navigator.get().pushFragment(AllRelationsRecyclerFragment.class, bundle);
-                }
-            });
-        }
-    }
-
     private void setMessageRead(int position)
     {
-        if (listAdapter!=null && position < listAdapter.getCount())
+        if (listAdapter != null && position < listAdapter.getCount())
         {
             listAdapter.getItem(position).unread = false;
         }
