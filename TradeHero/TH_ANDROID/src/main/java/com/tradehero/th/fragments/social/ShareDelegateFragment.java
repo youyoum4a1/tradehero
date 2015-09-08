@@ -74,13 +74,14 @@ public class ShareDelegateFragment
     {
         this.onDestroySubscriptions = new SubscriptionList();
         HierarchyInjector.inject(parentFragment.getActivity(), this);
-        fetchUserProfile();
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         ButterKnife.bind(this, view);
 
+        socialSharePreferenceHelper.load();
+        fetchUserProfile();
         registerWeChatButton();
         registerSocialButtons();
     }
