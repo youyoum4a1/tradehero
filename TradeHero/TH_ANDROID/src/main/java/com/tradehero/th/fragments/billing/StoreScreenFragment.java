@@ -30,6 +30,8 @@ import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.billing.THProductDetail;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.fragments.billing.store.StoreItemDisplayDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemProductDisplayDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemRestoreDisplayDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -137,8 +139,9 @@ public class StoreScreenFragment extends BaseFragment
                         ArrayList<StoreItemDisplayDTO> dtos = new ArrayList<>(thProductDetails.size());
                         for (THProductDetail productDetail : thProductDetails)
                         {
-                            dtos.add(new StoreItemDisplayDTO(productDetail));
+                            dtos.add(new StoreItemProductDisplayDTO(productDetail));
                         }
+                        dtos.add(new StoreItemRestoreDisplayDTO());
                         return dtos;
                     }
                 })

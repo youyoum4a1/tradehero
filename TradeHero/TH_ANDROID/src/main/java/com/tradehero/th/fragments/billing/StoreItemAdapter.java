@@ -9,6 +9,8 @@ import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.fragments.billing.store.StoreItemDisplayDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemProductDisplayDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemRestoreDisplayDTO;
 
 public class StoreItemAdapter extends TypedRecyclerAdapter<StoreItemDisplayDTO>
 {
@@ -25,17 +27,18 @@ public class StoreItemAdapter extends TypedRecyclerAdapter<StoreItemDisplayDTO>
 
     @Override public TypedViewHolder<StoreItemDisplayDTO> onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        return new StoreItemDisplayDTOViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.store_recycler_item, parent, false));
+        return new StoreItemDisplayProductDTOViewHolder(
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.store_recycler_item, parent, false));
     }
 
-    public static class StoreItemDisplayDTOViewHolder extends TypedViewHolder<StoreItemDisplayDTO>
+    public static class StoreItemDisplayProductDTOViewHolder extends TypedViewHolder<StoreItemDisplayDTO>
     {
         @Bind(R.id.icon) ImageView img;
         @Bind(R.id.title) TextView title;
         @Bind(R.id.description) TextView desc;
         @Bind(R.id.price) TextView price;
 
-        public StoreItemDisplayDTOViewHolder(View itemView)
+        public StoreItemDisplayProductDTOViewHolder(View itemView)
         {
             super(itemView);
         }
@@ -44,8 +47,18 @@ public class StoreItemAdapter extends TypedRecyclerAdapter<StoreItemDisplayDTO>
         {
             img.setImageResource(storeItem.iconResId);
             title.setText(storeItem.titleResId);
-            desc.setText(storeItem.descriptionResId);
-            price.setText(storeItem.priceText);
+            if (storeItem instanceof StoreItemProductDisplayDTO)
+            {
+                desc.setVisibility(View.VISIBLE);
+                price.setVisibility(View.VISIBLE);
+                desc.setText(((StoreItemProductDisplayDTO) storeItem).descriptionResId);
+                price.setText(((StoreItemProductDisplayDTO) storeItem).priceText);
+            }
+            else if (storeItem instanceof StoreItemRestoreDisplayDTO)
+            {
+                price.setVisibility(View.GONE);
+                desc.setVisibility(View.GONE);
+            }
         }
     }
 }
