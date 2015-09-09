@@ -20,6 +20,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -104,6 +105,7 @@ public class StoreScreenFragment extends BaseFragment
         ButterKnife.bind(this, view);
         listView.setLayoutManager(new LinearLayoutManager(getActivity()));
         listView.setHasFixedSize(true);
+        listView.addItemDecoration(new TypedRecyclerAdapter.DividerItemDecoration(getActivity()));
         listView.setAdapter(storeItemAdapter);
     }
 
