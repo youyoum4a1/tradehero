@@ -16,8 +16,8 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:paddingTop="@dimen/margin_xsmall"
       android:paddingBottom="@dimen/margin_xsmall"
+      android:paddingTop="@dimen/margin_xsmall"
       >
 
     <RelativeLayout
@@ -67,7 +67,6 @@
         android:id="@+id/newsfeed_item_hero_image"
         android:layout_width="match_parent"
         android:layout_height="@dimen/size_18"
-        android:layout_marginBottom="@dimen/margin_xsmall"
         android:layout_marginTop="@dimen/margin_xsmall"
         android:scaleType="centerCrop"
         tools:src="@drawable/img_placeholder_news_2"
@@ -78,6 +77,7 @@
         style="@style/TH.Subhead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_xsmall"
         android:paddingLeft="@dimen/margin_xsmall"
         android:paddingRight="@dimen/margin_xsmall"
         tools:text="China vs Japan in Race to Build Indonesia Bullet Train"
