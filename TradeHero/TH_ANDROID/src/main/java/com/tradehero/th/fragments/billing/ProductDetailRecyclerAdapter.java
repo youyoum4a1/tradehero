@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.billing.THProductDetail;
@@ -43,9 +42,9 @@ public class ProductDetailRecyclerAdapter extends TypedRecyclerAdapter<THProduct
 
         @Override public void display(THProductDetail thProductDetail)
         {
-            THToast.show(thProductDetail.getDescription());
             img.setImageResource(thProductDetail.getIconResId());
-            title.setText(thProductDetail.getDescription());
+            title.setText(thProductDetail.getStoreTitleResId());
+            desc.setText(thProductDetail.getStoreDescriptionResId());
             price.setText(thProductDetail.getPriceText());
         }
     }

@@ -16,4 +16,6 @@ public interface THProductDetail<ProductIdentifierType extends ProductIdentifier
     String getPriceText();
     String getDescription();
     int getDisplayOrder();
+    @StringRes int getStoreTitleResId();
+    @StringRes int getStoreDescriptionResId();
 }
