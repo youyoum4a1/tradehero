@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.tradehero.common.billing.PurchaseOrder;
+import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -36,6 +38,7 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
+import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -91,6 +94,59 @@ public class StoreScreenFragment extends BaseFragment
     {
         super.onCreate(savedInstanceState);
         storeItemAdapter = new StoreItemAdapter();
+        storeItemAdapter.setOnItemClickedListener(new TypedRecyclerAdapter.OnItemClickedListener<StoreItemDisplayDTO>()
+        {
+            @Override
+            public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<StoreItemDisplayDTO> viewHolder, StoreItemDisplayDTO object)
+            {
+                if (object instanceof StoreItemProductDisplayDTO)
+                {
+                    unsubscribe(purchaseSubscription);
+
+                    //noinspection unchecked
+                    purchaseSubscription = AppObservable.bindSupportFragment(
+                            StoreScreenFragment.this,
+                            userInteractorRx.createPurchaseOrder(((StoreItemProductDisplayDTO) object).productDetail)
+                                    .flatMap(new Func1<PurchaseOrder, Observable<PurchaseResult>>()
+                                    {
+                                        @Override public Observable<PurchaseResult> call(PurchaseOrder o)
+                                        {
+                                            return userInteractorRx.purchase(o);
+                                        }
+                                    }))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    new Action1<PurchaseResult>()
+                                    {
+                                        @Override public void call(PurchaseResult ignored)
+                                        {
+                                            userProfileCache.get(currentUserId.toUserBaseKey());
+                                            portfolioCompactListCache.get(currentUserId.toUserBaseKey());
+                                        }
+                                    },
+                                    new TimberAndToastOnErrorAction1("Purchase failed"));
+                }
+                else if (object instanceof StoreItemRestoreDisplayDTO)
+                {
+                    unsubscribe(purchaseSubscription);
+                    //noinspection unchecked
+                    purchaseSubscription = AppObservable.bindSupportFragment(
+                            StoreScreenFragment.this,
+                            userInteractorRx.restorePurchasesAndClear(true))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    new Action1<PurchaseResult>()
+                                    {
+                                        @Override public void call(PurchaseResult ignored)
+                                        {
+                                            userProfileCache.get(currentUserId.toUserBaseKey());
+                                            portfolioCompactListCache.get(currentUserId.toUserBaseKey());
+                                        }
+                                    },
+                                    new TimberAndToastOnErrorAction1("Restore failed"));
+                }
+            }
+        });
     }
 
     @Override public void onAttach(Activity activity)
@@ -169,7 +225,6 @@ public class StoreScreenFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        listView.setOnScrollListener(null);
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
