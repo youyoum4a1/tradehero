@@ -18,6 +18,7 @@ import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnNothingSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
@@ -129,7 +130,11 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                             {
                                 @Override public Observable<? extends BrokerApplicationDTO> call(Throwable throwable)
                                 {
-                                    THToast.show(R.string.error_no_internet_connection);
+                                    if (throwable.getCause() instanceof UnknownHostException)
+                                    {
+                                        THToast.show(R.string.error_no_internet_connection);
+                                    }
+
                                     return Observable.empty();
                                 }
                             });
