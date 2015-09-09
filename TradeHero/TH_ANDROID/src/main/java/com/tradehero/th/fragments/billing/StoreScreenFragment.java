@@ -29,6 +29,7 @@ import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.billing.THProductDetail;
 import com.tradehero.th.fragments.base.BaseFragment;
+import com.tradehero.th.fragments.billing.store.StoreItemDisplayDTO;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
@@ -38,6 +39,7 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
@@ -47,6 +49,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Actions;
+import rx.functions.Func1;
 import timber.log.Timber;
 
 @Routable({
@@ -68,7 +71,7 @@ public class StoreScreenFragment extends BaseFragment
 
     @Bind(R.id.store_option_list) protected RecyclerView listView;
 
-    private ProductDetailRecyclerAdapter storeItemAdapter;
+    private StoreItemAdapter storeItemAdapter;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     @Nullable protected Subscription purchaseSubscription;
 
@@ -85,7 +88,7 @@ public class StoreScreenFragment extends BaseFragment
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        storeItemAdapter = new ProductDetailRecyclerAdapter();
+        storeItemAdapter = new StoreItemAdapter();
     }
 
     @Override public void onAttach(Activity activity)
@@ -127,11 +130,23 @@ public class StoreScreenFragment extends BaseFragment
         fetchUserProfile();
 
         onStopSubscriptions.add(getProductsObservable()
-                .subscribe(new Action1<List<THProductDetail>>()
+                .map(new Func1<List<THProductDetail>, List<StoreItemDisplayDTO>>()
                 {
-                    @Override public void call(List<THProductDetail> thProductDetails)
+                    @Override public List<StoreItemDisplayDTO> call(List<THProductDetail> thProductDetails)
                     {
-                        storeItemAdapter.addAll(thProductDetails);
+                        ArrayList<StoreItemDisplayDTO> dtos = new ArrayList<>(thProductDetails.size());
+                        for (THProductDetail productDetail : thProductDetails)
+                        {
+                            dtos.add(new StoreItemDisplayDTO(productDetail));
+                        }
+                        return dtos;
+                    }
+                })
+                .subscribe(new Action1<List<StoreItemDisplayDTO>>()
+                {
+                    @Override public void call(List<StoreItemDisplayDTO> dtos)
+                    {
+                        storeItemAdapter.addAll(dtos);
                     }
                 }));
 
