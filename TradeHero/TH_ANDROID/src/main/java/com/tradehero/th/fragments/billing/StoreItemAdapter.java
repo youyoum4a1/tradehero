@@ -18,6 +18,11 @@ public class StoreItemAdapter extends TypedRecyclerAdapter<StoreItemDisplayDTO>
     {
         super(StoreItemDisplayDTO.class, new TypedRecyclerComparator<StoreItemDisplayDTO>()
         {
+            @Override public boolean areItemsTheSame(StoreItemDisplayDTO item1, StoreItemDisplayDTO item2)
+            {
+                return item1.titleResId == item2.titleResId;
+            }
+
             @Override public int compare(StoreItemDisplayDTO o1, StoreItemDisplayDTO o2)
             {
                 return o1.displayOrder - o2.displayOrder;
