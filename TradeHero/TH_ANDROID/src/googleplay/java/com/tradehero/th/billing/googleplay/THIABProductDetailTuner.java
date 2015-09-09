@@ -14,34 +14,24 @@ public class THIABProductDetailTuner
             case THIABConstants.EXTRA_CASH_T0_KEY:
                 productDetails.iconResId = R.drawable.icn_th_dollars;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR;
+                productDetails.displayOrder = 0;
                 break;
             case THIABConstants.EXTRA_CASH_T1_KEY:
                 productDetails.iconResId = R.drawable.icn_th_dollars_50k;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR;
+                productDetails.displayOrder = 1;
                 break;
             case THIABConstants.EXTRA_CASH_T2_KEY:
                 productDetails.iconResId = R.drawable.icn_th_dollars_100k;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR;
+                productDetails.displayOrder = 2;
                 break;
 
             case THIABConstants.RESET_PORTFOLIO_0:
                 productDetails.iconResId = R.drawable.icn_reset_portfolio;
                 productDetails.domain = ProductIdentifierDomain.DOMAIN_RESET_PORTFOLIO;
+                productDetails.displayOrder = 3;
                 break;
-
-            case THIABConstants.ALERT_1:
-                productDetails.iconResId = R.drawable.buy_alerts_2;
-                productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;
-                break;
-            case THIABConstants.ALERT_5:
-                productDetails.iconResId = R.drawable.buy_alerts_5;
-                productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;
-                break;
-            case THIABConstants.ALERT_UNLIMITED:
-                productDetails.iconResId = R.drawable.buy_alerts_infinite;
-                productDetails.domain = ProductIdentifierDomain.DOMAIN_STOCK_ALERTS;
-                break;
-
             default:
                 Timber.d("Unhandled productDetails key %s", productDetails.getProductIdentifier().identifier);
         }

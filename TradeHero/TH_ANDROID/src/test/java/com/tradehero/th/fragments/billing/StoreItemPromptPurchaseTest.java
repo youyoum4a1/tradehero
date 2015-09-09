@@ -8,9 +8,6 @@ import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.base.TestTHApp;
 import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.fragments.billing.store.StoreItemClickableDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +34,7 @@ public class StoreItemPromptPurchaseTest
     @Test(expected = ClassCastException.class)
     public void testCrashesWhenPassingNotStoreItemPromptPurchaseDTO1()
     {
-        storeItemPromptPurchase.display(new StoreItemDTO(1));
+        storeItemPromptPurchase.display(new StoreItemDTO(1, price, description));
     }
 
     @Test(expected = ClassCastException.class)
