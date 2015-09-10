@@ -301,9 +301,11 @@
     <string name="security_market_cap_usd">总市值%s</string>
 
 
-    <string name="user_tatal_roi_day_30">收益率：</string>
-    <string name="user_tatal_fans">粉丝：</string>
+    <string name="user_tatal_roi_day_30">收益率</string>
+    <string name="user_tatal_fans">粉丝</string>
     <string name="user_tatal_wealth">总资产：</string>
+    <string name="user_tatal_trade">交易次数</string>
+    <string name="user_tatal_win_ratio">胜率</string>
 
     <string name="chart_loading_image_">正在载入...</string>
 

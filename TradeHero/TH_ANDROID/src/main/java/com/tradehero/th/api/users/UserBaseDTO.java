@@ -79,4 +79,15 @@ public class UserBaseDTO extends ExtendedDTO
         }
         return "";
     }
+
+    public String getShortDisplayName(int length)
+    {
+        String name = getDisplayName();
+        if (name.length() > length) {
+            name = name.substring(0, length - 1);
+            name = name + "...";
+        }
+
+        return name;
+    }
 }

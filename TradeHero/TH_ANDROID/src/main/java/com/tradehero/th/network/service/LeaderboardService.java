@@ -1,5 +1,6 @@
 package com.tradehero.th.network.service;
 
+import com.tradehero.chinabuild.data.UserTrendingDTO;
 import com.tradehero.chinabuild.data.UserTrendingDTOList;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
@@ -31,8 +32,21 @@ public interface LeaderboardService
 
     //活跃ROI榜 推荐榜
     //<editor-fold desc="Get Leaderboard">
-    @GET("/users/trendingPerfRoi?countryCode=CN")
+    @Deprecated @GET("/users/trendingPerfRoi?countryCode=CN")
     UserTrendingDTOList getLeaderboardDayROI(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+
+    // 推荐榜
+    @GET("/cn/v2/users/trendingPerfRoi")
+    UserTrendingDTOList getLeaderboardPrefROI(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage
+    );
+
+    //高胜率榜
+    @GET("/cn/v2/users/trendingWinRatio")
+    UserTrendingDTOList getLeaderboardWinRatio(
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 

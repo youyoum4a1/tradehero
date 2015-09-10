@@ -4,16 +4,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -24,7 +19,6 @@ import com.tradehero.chinabuild.fragment.leaderboard.StockGodListBaseFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
@@ -75,7 +69,7 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
         gotoDashboard(SearchUnitFragment.class.getName(),bundle);
     }
 
-    private static final String[] CONTENT = new String[] {" 推荐榜 ", " 人气榜 ", " 土豪榜 "};
+    private static final String[] CONTENT = new String[] {" 推荐榜 ", " 高胜率榜 ", " 人气榜 "};
 
     class CustomAdapter extends FragmentPagerAdapter
     {
@@ -99,13 +93,13 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
                     return fragment;
                 case 1:
                     fragment = new StockGodListBaseFragment();
-                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.POPULAR);
+                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.WINRATIO);
                     fragment.setArguments(args);
 
                     return fragment;
                 case 2:
                     fragment = new StockGodListBaseFragment();
-                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.WEALTH);
+                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.POPULAR);
                     fragment.setArguments(args);
 
                     return fragment;

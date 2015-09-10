@@ -27,6 +27,7 @@ public class LeaderboardListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private LeaderboardUserDTOList leaderboardUserDTOs = new LeaderboardUserDTOList();
     public boolean hasLeaderboard;
+    private static final int MAX_USER_NAME_LENGTH = 5;
 
     public int leaderboardType = -1;
 
@@ -116,6 +117,8 @@ public class LeaderboardListAdapter extends BaseAdapter {
                 holder.imgUserName = (TextView) convertView.findViewById(R.id.tvUserName);
                 holder.tvUserExtraTitle = (TextView) convertView.findViewById(R.id.tvUserExtraTitle);
                 holder.tvUserExtraValue = (TextView) convertView.findViewById(R.id.tvUserExtraValue);
+                holder.tvROITitle = (TextView) convertView.findViewById(R.id.tvROITitle);
+                holder.tvROIValue = (TextView) convertView.findViewById(R.id.tvROIValue);
                 if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
                 {
                     holder.tvSchool = (TextView) convertView.findViewById(R.id.tvSchool);
@@ -139,7 +142,8 @@ public class LeaderboardListAdapter extends BaseAdapter {
                 holder.allContent.setVisibility(View.VISIBLE);
             }
 
-            if (position < 3)
+            if (position < 3 &&
+                    (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL))
             {
                 holder.tvUserRank.setText("");
                 holder.tvUserRank.setBackgroundResource(RANK_RES[position]);
@@ -152,17 +156,45 @@ public class LeaderboardListAdapter extends BaseAdapter {
 
             ImageLoader.getInstance().displayImage(item.picture, holder.imgUserHead, UniversalImageLoader.getAvatarImageLoaderOptions());
 
-            holder.imgUserName.setText(item.getDisplayName());
+            if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
+            {
+                holder.imgUserName.setText(item.getDisplayName());
+            }
+            else
+            {
+                holder.imgUserName.setText(item.getShortDisplayName(MAX_USER_NAME_LENGTH));
+            }
+
 
             if (leaderboardType == LeaderboardDefKeyKnowledge.DAYS_ROI)
             {//显示 PerROI
                 //推荐榜
-                holder.tvUserExtraTitle.setText(context.getString(R.string.user_tatal_roi_day_30));
+                holder.tvROITitle.setText(context.getString(R.string.user_tatal_roi_day_30));
                 THSignedNumber roi = THSignedPercentage.builder(item.perfRoi * 100)
                         .withSign()
                         .signTypeArrow()
                         .build();
-                holder.tvUserExtraValue.setText(roi.toString());
+                holder.tvROIValue.setText(roi.toString());
+                holder.tvROIValue.setTextColor(context.getResources().getColor(roi.getColorResId()));
+
+                holder.tvUserExtraTitle.setText(context.getString(R.string.user_tatal_trade));
+                holder.tvUserExtraValue.setText(String.valueOf(item.tradeCount));
+            }
+            else if (leaderboardType == LeaderboardDefKeyKnowledge.WINRATIO)
+            {// 高胜率榜
+                holder.tvROITitle.setText(context.getString(R.string.user_tatal_roi_day_30));
+                THSignedNumber roi = THSignedPercentage.builder(item.perfRoi * 100)
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                holder.tvROIValue.setText(roi.toString());
+
+                holder.tvUserExtraTitle.setText(context.getString(R.string.user_tatal_win_ratio));
+                THSignedNumber winRatio = THSignedPercentage.builder(item.roiInPeriod * 100)
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                holder.tvUserExtraValue.setText(winRatio.toString());
                 holder.tvUserExtraValue.setTextColor(context.getResources().getColor(roi.getColorResId()));
             }
             else if (leaderboardType == LeaderboardDefKeyKnowledge.POPULAR)
@@ -213,6 +245,8 @@ public class LeaderboardListAdapter extends BaseAdapter {
         public TextView imgUserName = null;
         public TextView tvUserExtraTitle = null;
         public TextView tvUserExtraValue = null;
+        public TextView tvROITitle = null;
+        public TextView tvROIValue = null;
         public TextView tvSchool = null;
         public RelativeLayout allContent;
     }

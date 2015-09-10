@@ -100,7 +100,15 @@ import javax.inject.Singleton;
             if (leaderboardKey.id == LeaderboardDefKeyKnowledge.DAYS_ROI)//返回推荐榜
             {
                 PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
-                UserTrendingDTOList data = leaderboardService.getLeaderboardDayROI(
+                UserTrendingDTOList data = leaderboardService.getLeaderboardPrefROI(
+                        pagedLeaderboardKey.page,
+                        pagedLeaderboardKey.perPage);
+                return processFromExtraData(data);
+            }
+            else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.WINRATIO)//返回高人气榜
+            {
+                PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+                UserTrendingDTOList data = leaderboardService.getLeaderboardWinRatio(
                         pagedLeaderboardKey.page,
                         pagedLeaderboardKey.perPage);
                 return processFromExtraData(data);
@@ -156,6 +164,7 @@ import javax.inject.Singleton;
                 userDTO.totalWealth = dataDTO.totalWealth;
                 userDTO.roiInPeriod = dataDTO.winRatio;
                 userDTO.perfRoi = dataDTO.perfRoi;
+                userDTO.tradeCount = dataDTO.tradeCount;
                 leaderboardDTO.users.add(userDTO);
             }
             return leaderboardDTO;

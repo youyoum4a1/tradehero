@@ -26,6 +26,7 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public int followerCount;
     public double totalWealth;
     public double perfRoi;
+    public int tradeCount;
 
     public LeaderboardUserDTO()
     {
