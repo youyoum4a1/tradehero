@@ -162,8 +162,7 @@ public class RetrofitModule
         return builder.setEndpoint(NetworkConstants.YAHOO_FINANCE_ENDPOINT).build().create(YahooNewsService.class);
     }
 
-    @Provides @Singleton
-    HengshengServiceAync provideHengshengService(RestAdapter.Builder builder)
+    @Provides @Singleton HengshengServiceAync provideHengshengService(RestAdapter.Builder builder)
     {
         return builder.setEndpoint(NetworkConstants.HENGSHENG_ENDPOINT).build().create(HengshengServiceAync.class);
     }

@@ -36,6 +36,13 @@
     <attr name="strokeWidth" format="dimension" />
     <attr name="unselectedColor" format="color" />
 
+    <declare-styleable name="TabPageIndicator">
+        <attr name="selectedTextColor" format="color"/>
+        <attr name="selectedTextSize" format="float"/>
+        <attr name="unselectedTextColor" format="color"/>
+        <attr name="unselectedTextSize" format="float"/>
+    </declare-styleable>
+
     <declare-styleable name="CirclePageIndicator">
         <!-- Whether or not the indicators should be centered. -->
         <attr name="centered" />

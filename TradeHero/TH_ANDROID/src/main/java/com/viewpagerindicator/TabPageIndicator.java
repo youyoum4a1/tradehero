@@ -17,6 +17,7 @@
 package com.viewpagerindicator;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v4.view.PagerAdapter;
@@ -40,6 +41,11 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
 {
     /** Title text used when no title is provided by the adapter. */
     private static final CharSequence EMPTY_TITLE = "";
+
+    private int mSelectedTextColor;
+    private float mSelectedTextSize;
+    private int mUnselectedTextColor;
+    private float mUnselectedTextSize;
 
     /**
      * Interface for a callback when the selected tab has been reselected.
@@ -90,6 +96,12 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
     {
         super(context, attrs);
         setHorizontalScrollBarEnabled(false);
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.TabPageIndicator, R.attr.vpiTabPageIndicatorStyle, 0);
+        mSelectedTextColor = a.getColor(R.styleable.TabPageIndicator_selectedTextColor, Color.parseColor("#FFFFFF"));
+        mSelectedTextSize = a.getFloat(R.styleable.TabPageIndicator_selectedTextSize, (float) 15.50);
+        mUnselectedTextColor = a.getColor(R.styleable.TabPageIndicator_unselectedTextColor, Color.parseColor("#CDE0F3"));
+        mUnselectedTextSize = a.getFloat(R.styleable.TabPageIndicator_unselectedTextSize, (float) 13);
 
         mTabLayout = new IcsLinearLayout(context, R.attr.vpiTabPageIndicatorStyle);
         addView(mTabLayout, new ViewGroup.LayoutParams(WRAP_CONTENT, MATCH_PARENT));
@@ -321,14 +333,14 @@ public class TabPageIndicator extends HorizontalScrollView implements PageIndica
             child.setSelected(isSelected);
             if (isSelected)
             {
-                ((TextView)child).setTextSize((float)15.50);
-                ((TextView)child).setTextColor(Color.parseColor("#FFFFFF"));
+                ((TextView)child).setTextSize(mSelectedTextSize);
+                ((TextView)child).setTextColor(mSelectedTextColor);
                 ((TextView)child).setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
             }
             else
             {
-                ((TextView)child).setTextColor(Color.parseColor("#CDE0F3"));
-                ((TextView)child).setTextSize(13);
+                ((TextView)child).setTextColor(mUnselectedTextColor);
+                ((TextView)child).setTextSize(mUnselectedTextSize);
                 ((TextView)child).setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
             }
             if (isSelected)

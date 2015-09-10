@@ -282,6 +282,7 @@
     <string name="stockgod_leaderboard_all">总盈利榜</string>
     <string name="stockgod_leaderboard_season">季度榜</string>
     <string name="stockgod_leaderboard_6month">半年榜</string>
+    <string name="stockgod_title">全新榜单</string>
 
     <string name="press_back_again_to_exit">再按一次返回退出应用</string>
     <string name="settings">设置</string>

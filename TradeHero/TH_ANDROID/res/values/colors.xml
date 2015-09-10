@@ -92,6 +92,8 @@
 
     <color name="notification_text_color">@color/white</color>
 
+    <color name="leaderboard_item_unpressed">#f0f0f0</color>
+    <color name="leaderboard_item_pressed">#f5f5f5</color>
     <color name="message_button_blue_pressed">#f4f4f4</color>
 
     <color name="light_green_selector">#a0dc50</color>
