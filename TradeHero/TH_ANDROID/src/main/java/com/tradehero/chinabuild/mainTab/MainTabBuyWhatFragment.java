@@ -59,7 +59,7 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
                 gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
                 break;
             case R.id.new_suggest_icon:
-
+                gotoDashboard(MainTabFragmentStockGod.class.getName());
                 break;
             case R.id.follow_chance_icon:
                 gotoDashboard(FollowBuyFragment.class.getName());
@@ -79,7 +79,7 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         goToMockTrade();
     }
 
-    private void goToMockTrade(){
+    private void goToMockTrade() {
         Bundle bundle = new Bundle();
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
         Intent intent = new Intent(getActivity(), SecurityOptActivity.class);

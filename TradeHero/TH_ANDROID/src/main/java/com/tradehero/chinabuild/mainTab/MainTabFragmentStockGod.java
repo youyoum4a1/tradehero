@@ -5,36 +5,27 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
-
-import com.tradehero.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.chinabuild.fragment.leaderboard.StockGodListBaseFragment;
-import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
+import com.tradehero.chinabuild.fragment.security.BasePurchaseManagerFragment;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.base.DashboardNavigatorActivity;
-import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
-
-import org.jetbrains.annotations.Nullable;
-
 import javax.inject.Inject;
 
-public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPager.OnPageChangeListener
+public class MainTabFragmentStockGod extends BasePurchaseManagerFragment implements ViewPager.OnPageChangeListener
 {
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) TabPageIndicator indicator;
-    @InjectView(R.id.toolbar) Toolbar toolbar;
     FragmentPagerAdapter adapter;
     @Inject Analytics analytics;
 
@@ -55,18 +46,10 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
         indicator.setOutsideListener(this);
     }
 
-    @OnClick(R.id.imgreturn)
-    public void returnClicked()
-    {
-        //popCurrentFragment();
-    }
-
-    @OnClick(R.id.imgSearch)
-    public void searchClicked()
-    {
-        Bundle bundle =  new Bundle();
-        bundle.putInt(SearchUnitFragment.BUNDLE_DEFAULT_TAB_PAGE, SearchUnitFragment.TAB_SEARCH_USER);
-        gotoDashboard(SearchUnitFragment.class.getName(),bundle);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain(getString(R.string.new_suggest_list));
     }
 
     private static final String[] CONTENT = new String[] {" 推荐榜 ", " 高胜率榜 ", " 人气榜 "};
@@ -144,20 +127,4 @@ public class MainTabFragmentStockGod extends AbsBaseFragment implements ViewPage
     @Override public void onPageScrollStateChanged(int i)
     {
     }
-
-    private DashboardNavigator getDashboardNavigator() {
-        @Nullable DashboardNavigatorActivity activity = ((DashboardNavigatorActivity) getActivity());
-        if (activity != null) {
-            return activity.getDashboardNavigator();
-        }
-        return null;
-    }
-
-    private void popCurrentFragment() {
-        DashboardNavigator navigator = getDashboardNavigator();
-        if (navigator != null) {
-            navigator.popFragment();
-        }
-    }
-
 }

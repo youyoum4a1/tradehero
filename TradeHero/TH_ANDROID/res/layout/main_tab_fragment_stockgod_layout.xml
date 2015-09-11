@@ -1,73 +1,32 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@color/bg_fragment"
-    android:layout_height="fill_parent">
+    android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/TradeHero.Dashboard.ActionBar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:background="@color/tab_head_bg">
-
-        <RelativeLayout
-            android:background="@color/tab_head_bg"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/imgreturn"
-                android:layout_alignParentLeft="true"
-                android:layout_height="48dp"
-                android:layout_width="48dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/icon_return_xml" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/stockgod_title"
-                android:textColor="@color/white"
-                android:textSize="20dp"
-                android:layout_centerInParent="true" />
-
-            <ImageView
-                android:id="@+id/imgSearch"
-                android:layout_alignParentRight="true"
-                android:layout_height="50dp"
-                android:layout_width="50dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/btn_search_xml" />
-
-
-        </RelativeLayout>
-
-    </android.support.v7.widget.Toolbar>
-
-  <RelativeLayout
-      android:background="@color/white"
-      android:layout_width="fill_parent"
-      android:layout_height="@dimen/tab_main_indicator_height">
-
-    <com.viewpagerindicator.TabPageIndicator
-        android:id="@+id/indicator"
-        android:layout_marginRight="10dp"
-        android:layout_height="fill_parent"
+    <RelativeLayout
         android:layout_width="fill_parent"
-        app:selectedTextColor="@color/tab_head_bg"
-        app:unselectedTextColor="#c0c0c0"/>
+        android:layout_height="@dimen/tab_main_indicator_height"
+        android:background="@color/white">
 
-  </RelativeLayout>
-  <android.support.v4.view.ViewPager
-      android:id="@+id/pager"
-      android:layout_width="fill_parent"
-      android:layout_height="0dp"
-      android:layout_weight="1"
-      />
+        <com.viewpagerindicator.TabPageIndicator
+            android:id="@+id/indicator"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="10dp"
+            app:selectedTextColor="@color/tab_head_bg"
+            app:unselectedTextColor="#c0c0c0"/>
+
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
 
 </LinearLayout>
 
