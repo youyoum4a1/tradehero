@@ -260,10 +260,8 @@ abstract public class DashboardFragment extends BaseFragment {
     }
 
     public void gotoDashboard(Class Fragment, Bundle bundle) {
-        Bundle args = new Bundle();
-        args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, Fragment.getName());
-        args.putAll(bundle);
-        ActivityHelper.launchDashboard(this.getActivity(), args);
+        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, Fragment.getName());
+        ActivityHelper.launchDashboard(this.getActivity(), bundle);
     }
 
     public Fragment pushFragment(@NotNull Class fragmentClass, Bundle args) {

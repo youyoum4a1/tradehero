@@ -20,11 +20,10 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import timber.log.Timber;
-
-import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-8-21.
@@ -46,6 +45,11 @@ public abstract class AbsBaseFragment extends Fragment
     //Show dialogfragment
     private LoginSuggestDialogFragment dialogFragment;
     private FragmentManager fm;
+
+    public void gotoDashboard(String strFragment)
+    {
+        gotoDashboard(strFragment, new Bundle());
+    }
 
     public void gotoDashboard(String strFragment,Bundle bundle)
     {

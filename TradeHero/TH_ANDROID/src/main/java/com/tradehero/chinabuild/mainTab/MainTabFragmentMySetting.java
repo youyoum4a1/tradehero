@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild;
+package com.tradehero.chinabuild.mainTab;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +16,12 @@ import butterknife.OnClick;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
-import com.tradehero.chinabuild.fragment.*;
+import com.tradehero.chinabuild.fragment.AbsBaseFragment;
+import com.tradehero.chinabuild.fragment.InviteFriendsFragment;
+import com.tradehero.chinabuild.fragment.LoginSuggestDialogFragment;
+import com.tradehero.chinabuild.fragment.MyProfileFragment;
+import com.tradehero.chinabuild.fragment.SettingFragment;
+import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.message.NotificationFragment;
 import com.tradehero.chinabuild.fragment.userCenter.MyMainPage;
 import com.tradehero.chinabuild.fragment.userCenter.UserAccountPage;
@@ -29,6 +34,7 @@ import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
 import com.tradehero.livetrade.services.LiveTradeManager;
 import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -38,26 +44,21 @@ import com.tradehero.th.api.portfolio.PortfolioDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.persistence.portfolio.PortfolioCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactCache;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCache;
 import com.tradehero.th.persistence.user.UserProfileCache;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-
-import cn.htsec.data.pkg.trade.TradeManager;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
-
-public class SettingMineFragment extends AbsBaseFragment implements View.OnClickListener{
+public class MainTabFragmentMySetting extends AbsBaseFragment implements View.OnClickListener{
 
     DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> portfolioFetchListener;
     @Inject PortfolioCompactCache portfolioCompactCache;

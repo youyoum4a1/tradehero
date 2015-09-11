@@ -22,17 +22,19 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.htsec.TradeModule;
+import cn.htsec.data.pkg.trade.TradeManager;
 import com.igexin.sdk.PushManager;
-import com.tradehero.chinabuild.MainTabFragmentCompetition;
-import com.tradehero.chinabuild.MainTabFragmentDiscovery;
-import com.tradehero.chinabuild.MainTabFragmentStockGod;
-import com.tradehero.chinabuild.MainTabFragmentTrade;
-import com.tradehero.chinabuild.SettingMineFragment;
 import com.tradehero.chinabuild.data.AppInfoDTO;
 import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
+import com.tradehero.chinabuild.mainTab.MainTabBuyWhatFragment;
+import com.tradehero.chinabuild.mainTab.MainTabFragmentCompetition;
+import com.tradehero.chinabuild.mainTab.MainTabFragmentDiscovery;
+import com.tradehero.chinabuild.mainTab.MainTabFragmentMySetting;
+import com.tradehero.chinabuild.mainTab.MainTabFragmentTrade;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -61,9 +63,6 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-
-import cn.htsec.TradeModule;
-import cn.htsec.data.pkg.trade.TradeManager;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
@@ -127,10 +126,10 @@ public class TradeHeroMainActivity extends AppCompatActivity {
      */
     private Class fragmentArray[] = {
             MainTabFragmentTrade.class,
-            MainTabFragmentStockGod.class,
+            MainTabBuyWhatFragment.class,
             MainTabFragmentDiscovery.class,
             MainTabFragmentCompetition.class,
-            SettingMineFragment.class
+            MainTabFragmentMySetting.class
     };
 
     /**
@@ -138,7 +137,7 @@ public class TradeHeroMainActivity extends AppCompatActivity {
      */
     private int strTabArray[] = {
             R.string.tab_main_trade,
-            R.string.tab_main_stock_god,
+            R.string.tab_main_buy_what,
             R.string.tab_main_descovery,
             R.string.tab_main_competition,
             R.string.tab_main_me

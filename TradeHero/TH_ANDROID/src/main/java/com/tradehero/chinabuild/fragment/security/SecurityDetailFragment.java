@@ -213,7 +213,6 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private View operationFocusView;
     private View positionFocusView;
 
-
     protected BetterViewAnimator chartImageWrapper;
     protected ChartImageView chartImage;
     protected TimesView timeListView;

@@ -95,7 +95,7 @@
                     <TextView
                         android:id="@+id/tvTabMenu1"
                         style="@style/navigation_text"
-                        android:text="@string/tab_main_stock_god" />
+                        android:text="@string/tab_main_buy_what" />
                 </LinearLayout>
 
                 <LinearLayout

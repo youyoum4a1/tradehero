@@ -2,11 +2,7 @@ package com.tradehero.th.utils.dagger;
 
 import android.content.Context;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
-import com.tradehero.chinabuild.MainTabFragmentCompetition;
-import com.tradehero.chinabuild.MainTabFragmentDiscovery;
-import com.tradehero.chinabuild.MainTabFragmentStockGod;
-import com.tradehero.chinabuild.MainTabFragmentTrade;
-import com.tradehero.chinabuild.SettingMineFragment;
+import com.tradehero.chinabuild.buyWhat.FollowBuyFragment;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout;
@@ -85,12 +81,18 @@ import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
+import com.tradehero.chinabuild.mainTab.MainTabBuyWhatFragment;
+import com.tradehero.chinabuild.mainTab.MainTabFragmentCompetition;
+import com.tradehero.chinabuild.mainTab.MainTabFragmentDiscovery;
+import com.tradehero.chinabuild.mainTab.MainTabFragmentMySetting;
+import com.tradehero.chinabuild.mainTab.MainTabFragmentStockGod;
+import com.tradehero.chinabuild.mainTab.MainTabFragmentTrade;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.livetrade.SecurityOptActualFragment;
 import com.tradehero.livetrade.SecurityOptActualSubBuyFragment;
-import com.tradehero.livetrade.SecurityOptActualSubSellFragment;
 import com.tradehero.livetrade.SecurityOptActualSubDelegationFragment;
 import com.tradehero.livetrade.SecurityOptActualSubQueryFragment;
+import com.tradehero.livetrade.SecurityOptActualSubSellFragment;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.activities.SearchSecurityActualActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -202,10 +204,12 @@ import javax.inject.Singleton;
                         //China Build Start
                         MainTabFragmentTrade.class,
                         StockLearningMainFragment.class,
-                        SettingMineFragment.class,
+                        MainTabFragmentMySetting.class,
                         MainTabFragmentDiscovery.class,
                         MainTabFragmentStockGod.class,
+                        MainTabBuyWhatFragment.class,
                         MainTabFragmentCompetition.class,
+                        FollowBuyFragment.class,
 
                         StockGodListBaseFragment.class,
 
