@@ -16,6 +16,9 @@ public class THSamsungProductDetail
     public boolean hasFurtherDetails = false;
     public int furtherDetailsResId = R.string.na;
     public ProductIdentifierDomain domain;
+    public int displayOrder;
+    public int storeDescriptionResId;
+    public int storeTitleResId;
 
     //<editor-fold desc="Constructors">
     public THSamsungProductDetail()
@@ -72,5 +75,20 @@ public class THSamsungProductDetail
     @Override public String getDescription()
     {
         return getItemDesc();
+    }
+
+    @Override public int getDisplayOrder()
+    {
+        return displayOrder;
+    }
+
+    @Override public int getStoreTitleResId()
+    {
+        return storeTitleResId;
+    }
+
+    @Override public int getStoreDescriptionResId()
+    {
+        return storeDescriptionResId;
     }
 }

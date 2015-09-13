@@ -301,6 +301,7 @@ android {
     samsungLiveNoPushDebug {
       java {
         srcDir 'src/samsungDebug/java'
+        srcDir 'src/liveDebug/java'
         srcDir 'src/dagger1LiveDebug/java'
       }
     }

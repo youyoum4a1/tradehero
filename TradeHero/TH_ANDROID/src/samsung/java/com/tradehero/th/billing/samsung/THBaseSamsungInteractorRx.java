@@ -13,8 +13,6 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
-import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
-import com.tradehero.th.fragments.billing.THSamsungStoreProductDetailView;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -31,9 +29,7 @@ public class THBaseSamsungInteractorRx
                 THSamsungPurchaseOrder,
                 THSamsungOrderId,
                 THSamsungPurchase,
-                THSamsungLogicHolderRx,
-                THSamsungStoreProductDetailView,
-                THSamsungSKUDetailAdapter>
+                THSamsungLogicHolderRx>
         implements THSamsungInteractorRx
 {
     public static final String BUNDLE_KEY_ACTION = THBaseSamsungInteractorRx.class.getName() + ".action";

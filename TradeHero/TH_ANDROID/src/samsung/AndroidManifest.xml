@@ -3,7 +3,7 @@
     package="com.tradehero.th">
 
   <supports-screens
-      android:smallScreens="false"
+      android:smallScreens="true"
       />
 
   <!-- Samsung IAP -->
