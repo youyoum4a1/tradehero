@@ -39,6 +39,7 @@ import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
@@ -207,7 +208,7 @@ public class StoreScreenFragment extends BaseFragment
                     {
                         storeItemAdapter.addAll(dtos);
                     }
-                }));
+                }, new TimberOnErrorAction1("Failed to fetch products for Store")));
 
         cancelOthersAndShowBillingAvailable();
     }

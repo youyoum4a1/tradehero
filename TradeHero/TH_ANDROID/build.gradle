@@ -365,7 +365,9 @@ android {
       }
       java {
         srcDir 'src/samsungRelease/java'
-        srcDir 'src/dagger1LiveRelease/java'
+        srcDir 'src/liveDebug/java'
+        srcDir 'src/dagger1LiveDebug/java'
+        //        srcDir 'src/dagger1LiveRelease/java'
       }
     }
 

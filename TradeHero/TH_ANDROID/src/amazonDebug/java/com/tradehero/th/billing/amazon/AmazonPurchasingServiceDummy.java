@@ -139,14 +139,6 @@ import javax.inject.Singleton;
                         .setDescription("Additional 100,000 Virtual Dollars");
                 price = 4.99f;
                 break;
-            case THAmazonConstants.ALERT_1:
-            case THAmazonConstants.ALERT_5:
-            case THAmazonConstants.ALERT_UNLIMITED:
-                builder.setProductType(ProductType.SUBSCRIPTION)
-                        .setTitle("TH $10K")
-                        .setDescription("Additional 10,000 Virtual Dollars");
-                price = 0;
-                break;
             case THAmazonConstants.RESET_PORTFOLIO_0:
                 builder.setProductType(ProductType.CONSUMABLE)
                         .setTitle("Reset Portfolio")
