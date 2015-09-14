@@ -14,8 +14,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
-import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
-import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -32,9 +30,7 @@ public class THBaseAmazonInteractorRx
                 THAmazonPurchaseOrder,
                 THAmazonOrderId,
                 THAmazonPurchase,
-                THAmazonLogicHolderRx,
-                THAmazonStoreProductDetailView,
-                THAmazonSKUDetailAdapter>
+                THAmazonLogicHolderRx>
         implements THAmazonInteractorRx
 {
     @NonNull protected final CurrentUserId currentUserId;

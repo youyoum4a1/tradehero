@@ -16,6 +16,9 @@ public class THAmazonProductDetail extends AmazonProductDetail<AmazonSKU>
     boolean hasFurtherDetails = false;
     int furtherDetailsResId = R.string.na;
     ProductIdentifierDomain domain;
+    public int displayOrder;
+    public int storeDescriptionResId;
+    public int storeTitleResId;
 
     //<editor-fold desc="Constructors">
     public THAmazonProductDetail(@NonNull Product product)
@@ -62,5 +65,20 @@ public class THAmazonProductDetail extends AmazonProductDetail<AmazonSKU>
     @Override @Nullable public String getDescription()
     {
         return product.getTitle();
+    }
+
+    @Override public int getDisplayOrder()
+    {
+        return displayOrder;
+    }
+
+    @Override public int getStoreTitleResId()
+    {
+        return storeTitleResId;
+    }
+
+    @Override public int getStoreDescriptionResId()
+    {
+        return storeDescriptionResId;
     }
 }
