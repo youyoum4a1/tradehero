@@ -12,7 +12,7 @@
   <string name="achievement_shared">@string/content_shared</string>
   <string name="achievement_share_failed">分享失败，重试一次吗？</string>
   <string name="achievement_sharing">分享中…</string>
-  <string name="achievement_xp_earned_format">+%sXP!</string>
+  <string name="achievement_xp_earned_format">+%s XP!</string>
   <string name="action_exchange">交易所</string>
   <string name="action_invite">邀请好友</string>
   <string name="action_menu_about">关于</string>
@@ -38,6 +38,7 @@
   <string name="alert_dialog_market_close_message_basic">当前证劵的交易市场已休市.\n您还是可以根据最近一次的交易价做交易，只是需要注意的是，其差价幅度可能会比正常时间要来的大</string>
   <string name="alert_dialog_market_close_title">市场关闭</string>
   <string name="alert_dialog_please_wait">请耐心等待</string>
+  <string name="all_followers" formatted="false">全部粉丝</string>
   <string name="already_registered">已经有账号了？</string>
   <string name="amazon_store_billing_inventory_failed_error_cancel">不需要</string>
   <string name="amazon_store_billing_inventory_failed_error_ok">当然</string>
@@ -123,6 +124,7 @@
   <string name="authentication_unlink_confirm_dialog_title">解绑 %s</string>
   <string name="authentication_unlink_fail_message">对不起，您不能解绑已用于登录的账户</string>
   <string name="authentication_welcome_new_user">新用户</string>
+  <string name="a_hero_or_friend" formatted="false">一位股神或者朋友</string>
   <string name="back">返回</string>
   <string name="basic_information">基本知识</string>
   <string name="best_roi">投资回报率：</string>
@@ -147,7 +149,9 @@
   <string name="buy_sell_button_sell">卖出 @ %1$s %2$s</string>
   <string name="buy_sell_cash_available">可用现金</string>
   <string name="buy_sell_cash_left">剩余现金</string>
-  <string name="buy_sell_confirm_buy_comment">发表评论...</string>
+  <string name="buy_sell_confirm_buy_comment">你对于这个交易的见解</string>
+  <string name="buy_sell_confirm_buy_now" formatted="false">现在买入</string>
+  <string name="buy_sell_confirm_sell_now" formatted="false">现在卖出</string>
   <string name="buy_sell_confirm_share_on">分享:</string>
   <string name="buy_sell_confirm_share_private">私人的</string>
   <string name="buy_sell_confirm_share_public">公开</string>
@@ -162,6 +166,8 @@
   <string name="buy_sell_fx_quantity_left">剩余单位</string>
   <string name="buy_sell_loading_ask_price">加载买入价格…</string>
   <string name="buy_sell_loading_bid_price">加载卖出价格…</string>
+  <string name="buy_sell_market_price_time" formatted="false">达到%1$s</string>
+  <string name="buy_sell_market_price_title" formatted="false">市场价格</string>
   <string name="buy_sell_market_status">市场状态</string>
   <string name="buy_sell_no_portfolio_cancel">好的</string>
   <string name="buy_sell_no_portfolio_message">没有可用的投资组合。</string>
@@ -181,13 +187,15 @@
   <string name="buy_sell_quantity">数量</string>
   <string name="buy_sell_sell_loss">损失: %s</string>
   <string name="buy_sell_sell_profit">盈利: %s</string>
+  <string name="buy_sell_shares_title" formatted="false">股份</string>
   <string name="buy_sell_share_available">可用股票</string>
-  <string name="buy_sell_share_count">股票</string>
+  <string name="buy_sell_share_count"/>
   <string name="buy_sell_share_left">剩余股票</string>
   <string name="buy_sell_switch_buy">买入</string>
   <string name="buy_sell_switch_sell">卖出</string>
   <string name="buy_sell_toggle">切换 买入/卖出 模式</string>
-  <string name="buy_sell_trade_value">价值</string>
+  <string name="buy_sell_trade_value">交易价值
+  </string>
   <string name="buy_sell_usd_price_unit_left">=美元</string>
   <string name="cancel">取消</string>
   <string name="change">改变：</string>
@@ -348,6 +356,7 @@
   <string name="error_lost_position_in_cache">我们无法追踪到该笔交易的数据</string>
   <string name="error_network_connection">请检查网络连接</string>
   <string name="error_not_enough_information">信息不足，请再试一次</string>
+  <string name="error_no_internet_connection" formatted="false">无法连接到服务器，请检查您的连线状态。</string>
   <string name="error_save_image_in_external_storage">您的设备外置内存在储存图像时发生错误</string>
   <string name="error_share_referral_code_on_network">分享到社交媒体上失败</string>
   <string name="error_unknown">发生了错误. 请重试</string>
@@ -368,12 +377,14 @@
   <string name="facebook_register">用 Facebook 注册</string>
   <string name="fast_fill_not_available">不可快速补充</string>
   <string name="follow">关注</string>
-  <string name="follower_empty_list_call_action">通过炒股获利和在讨论榜里发布信息来获取新的关注者</string>
+  <string name="follower_empty_list_call_action">通过优秀的交易来盈利和建立你的粉丝群</string>
+  <string name="follower_empty_list_title" formatted="false">没有人正在关注你</string>
   <string name="follower_item_with_subtitle">%1$s(%2$s)</string>
   <string name="follower_type_all">所有粉丝</string>
   <string name="follower_type_free">普通粉丝</string>
   <string name="follower_type_free_singular">普通粉丝</string>
   <string name="follower_type_premium">高级粉丝</string>
+  <string name="following" formatted="false">正在关注</string>
   <string name="following_premium">关注中\n(高级)</string>
   <string name="following_this_hero">正在关注这个英雄...</string>
   <string name="follow_all">全部关注</string>
@@ -479,6 +490,7 @@
   <string name="guide_trade_well_gain_followers">交易顺利并且获得关注者</string>
   <string name="hashtag">$</string>
   <string name="help">帮助</string>
+  <string name="hero" formatted="false">股神</string>
   <string name="high">高位：</string>
   <string name="hint_first_name">姓氏</string>
   <string name="hint_full_name">全名</string>
@@ -701,20 +713,17 @@
   <string name="manage_heroes_alert_follow_ok">关注</string>
   <string name="manage_heroes_alert_follow_title">关注英雄</string>
   <string name="manage_heroes_alert_unfollow_cancel">取消</string>
-  <string name="manage_heroes_alert_unfollow_message">
-    您确定不想再收到这位英雄的交易信息以及对市场的评价？您将不能再查看该英雄的持仓与时间轴。一旦确认，您将立即停止对该用户的订阅。若要再次关注，将会重新扣除您的关注点数
+  <string name="manage_heroes_alert_unfollow_message">你将不会再收到这位股神的活动信息
   </string>
   <string name="manage_heroes_alert_unfollow_ok">取消关注</string>
   <string name="manage_heroes_alert_unfollow_title">取消关注</string>
   <string name="manage_heroes_datetime_format">@string/data_format_dd_mmm_yyyy</string>
-  <string name="manage_heroes_empty_description">一旦高级关注了某位英雄，你都能第一时间获得英雄的交易及动态通知。
-    一马当先: 选择最牛全民股神，做你的英雄!
-  </string>
+  <string name="manage_heroes_empty_description">开始关注股神，来接收他们所有的交易活动实时信息，和对市场评论\n保持在游戏中的领先地位。现在就选择你的股神吧！</string>
   <string name="manage_heroes_empty_description_for_other">
     没有关注的英雄
   </string>
   <string name="manage_heroes_empty_leaderboard_link">查看最牛的股神</string>
-  <string name="manage_heroes_empty_title">购买关注点数，关注股市达人</string>
+  <string name="manage_heroes_empty_title">你还未关注什么人</string>
   <string name="manage_heroes_following_since">从%s开始关注</string>
   <string name="manage_heroes_follows">关注:</string>
   <string name="manage_heroes_follow_failed">关注该股神的过程中，发生了一点错误</string>
@@ -747,9 +756,9 @@
   <string name="me">我</string>
   <string name="message">消息</string>
   <string name="message_center_broadcast_message_menu">广播消息</string>
-  <string name="message_center_follower_count">你拥有%1$s%2$s</string>
-  <string name="message_center_new_message_title">新消息</string>
-  <string name="message_center_no_follower">你没有%s</string>
+  <string name="message_center_follower_count">要达到%1$s粉丝</string>
+  <string name="message_center_new_message_title">发送新消息到:</string>
+  <string name="message_center_no_follower">你还没有粉丝</string>
   <string name="message_center_private_message_menu">私信</string>
   <string name="message_center_sending_to">发送给:</string>
   <string name="message_center_tab_message">收件箱</string>
@@ -847,11 +856,15 @@
   <string name="percent_net_worth_invest_from_more_than_75p">超过75%</string>
   <string name="percent_net_worth_invest_less_than_25_p">少于百分之25</string>
   <string name="pick_location_within_country">请选择您在本国的地点</string>
+  <string name="pick_recipients" formatted="false">选择收件人</string>
   <string name="please_update">此版本已经过期，请升级至最新的版本</string>
   <string name="please_update_token_description">请重新关联你的社交账号</string>
   <string name="please_update_token_title">社交关联过期请重新关联</string>
   <string name="plus">+</string>
   <string name="plus_symbol">+</string>
+  <string name="pm_not_follow_msg" formatted="false">你需要关注这个股神才能给他发私信</string>
+  <string name="pm_not_follow_positive" formatted="false">关注和发送信息</string>
+  <string name="pm_not_follow_title" formatted="false">关注%1$s?</string>
   <string name="portfolio_default_title">主要的投资组合</string>
   <string name="portfolio_description_count_closed_positions_other">%2$s有一个%1$d已关闭的持仓</string>
   <string name="portfolio_description_count_closed_positions_you">你有%1$d已关闭的持仓</string>
@@ -1190,10 +1203,11 @@
   <string name="splash_copyright_3">专利申请中</string>
   <string name="start_new_discussion">开始新的讨论</string>
   <string name="start_trading">开始炒股！</string>
+  <string name="stock" formatted="false">股票</string>
   <string name="stocks">证劵</string>
-  <string name="stock_alerts">股市预警</string>
+  <string name="stock_alerts">股票预警</string>
   <string name="stock_alerts_no_alerts">不使用预警</string>
-  <string name="stock_alert_active">激活股市预警</string>
+  <string name="stock_alert_active">激活股票预警</string>
   <string name="stock_alert_active_one">激活</string>
   <string name="stock_alert_active_until">激活至</string>
   <string name="stock_alert_active_until_date">激活至 %1$s</string>
@@ -1206,7 +1220,7 @@
   <string name="stock_alert_edit_note">请注意：股市预警会在每15分钟执行一次价格检查，某些信息源可能会延迟超过15分钟以上</string>
   <string name="stock_alert_empty">您没有设置股票预警</string>
   <string name="stock_alert_inactive">未激活</string>
-  <string name="stock_alert_inactive_title">未激活股市预警</string>
+  <string name="stock_alert_inactive_title">未激活股票预警</string>
   <string name="stock_alert_manage_subscriptions">管理您的订阅</string>
   <string name="stock_alert_notification_received">收到通知</string>
   <string name="stock_alert_percentage_change">价格变动</string>
@@ -1273,9 +1287,9 @@
   <string name="store_buy_reset_portfolio_window_message">抹掉使用数据，一切从头开始</string>
   <string name="store_buy_reset_portfolio_window_title">数据重置</string>
   <string name="store_buy_restore_purchases">Restore Purchases</string>
-  <string name="store_buy_stock_alerts">股市预警</string>
+  <string name="store_buy_stock_alerts">股票预警</string>
   <string name="store_buy_stock_alerts_window_message">在股票价格变动的时候，及时获得通知。按月支付，随时取消</string>
-  <string name="store_buy_stock_alerts_window_title">股市预警提交</string>
+  <string name="store_buy_stock_alerts_window_title">股票预警提交</string>
   <string name="store_buy_virtual_dollars">虚拟现金</string>
   <string name="store_buy_virtual_dollar_window_button_buy">现在就买!</string>
   <string name="store_buy_virtual_dollar_window_button_cancel">取消</string>
@@ -1285,7 +1299,7 @@
   <string name="store_header_manage_purchases">管理订单</string>
   <string name="store_manage_followers">管理粉丝</string>
   <string name="store_manage_heroes">管理英雄</string>
-  <string name="store_manage_stock_alerts">管理股市预警</string>
+  <string name="store_manage_stock_alerts">管理股票预警</string>
   <string name="store_option_menu_title">全民股神商店</string>
   <string name="suggest_to_upgrade">新的版本上线了，强烈推荐您立刻升级，现在就升级吗？</string>
   <string name="sure_to_delete_message">删除这条消息？</string>
@@ -1348,6 +1362,8 @@
   <string name="trading_per_quarter_empty">请选择</string>
   <string name="trading_per_quarter_none">完全没有</string>
   <string name="trading_per_quarter_over_10">超过10</string>
+  <string name="transaction_title_buy" formatted="false">买入%1$s</string>
+  <string name="transaction_title_sell" formatted="false">卖出%1$s</string>
   <string name="translate">翻译</string>
   <string name="translating">翻译中...</string>
   <string name="translation">翻译</string>
@@ -1498,7 +1514,7 @@
   <string name="watchlist_gain">利润</string>
   <string name="watchlist_gain_loss">获利/亏损</string>
   <string name="watchlist_item_deleted_failed">从观察列表中删除 %d 失败</string>
-  <string name="watchlist_item_deleted_successfully">%d 已从自选股删除</string>
+  <string name="watchlist_item_deleted_successfully">%d 已从观察清单中删除</string>
   <string name="watchlist_last_price_format">%1$s <b>%2$s</b></string>
   <string name="watchlist_loss">亏损</string>
   <string name="watchlist_marking_date">最近更新: %1$s</string>

@@ -49,7 +49,7 @@ public class ShareDelegateFragment
     @Inject protected SocialShareHelper socialShareHelper;
 
     @Bind(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
-    @Bind({
+    @Nullable @Bind({
             R.id.btn_share_fb,
             R.id.btn_share_li,
             R.id.btn_share_tw,
