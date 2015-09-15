@@ -133,6 +133,7 @@
     <item name="android:popupMenuStyle">@style/TradeHero.Dashboard.ActionBar.PopupMenu</item>
     <item name="android:actionBarWidgetTheme">@style/TradeHero.Dashboard.ActionBar.WidgetStyle</item>
     <item name="android:dropDownListViewStyle">@style/TradeHero.Dashboard.ActionBar.DropDownListView</item>
+    <item name="vpiTabPageIndicatorStyle">@style/Widget.TabPageIndicator</item>
   </style>
 
   <style name="TradeHero.Authentication.EditText" parent="@android:style/Widget.EditText">

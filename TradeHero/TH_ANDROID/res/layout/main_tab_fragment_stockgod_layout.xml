@@ -16,6 +16,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
             app:selectedTextColor="@color/tab_head_bg"
             app:unselectedTextColor="#c0c0c0"/>
 

@@ -35,8 +35,18 @@ public class LeaderboardDefKeyKnowledge
         if (leaderboardDefKey == null) return "";
         switch (leaderboardDefKey.key)
         {
+            case SEARCH_RECOMMEND:
+                return "推荐榜";
+
             case POPULAR:
                 return "人气榜";
+
+            case WINRATIO:
+                return "高胜率榜";
+
+            case HOTSTOCK:
+                return "热股榜";
+
             case WEALTH:
                 return "土豪榜";
         }
