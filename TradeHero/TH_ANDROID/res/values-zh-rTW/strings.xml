@@ -614,7 +614,6 @@
   <string name="leaderboard_friend_call_action">連接到你的社交媒體賬號，開始關注你的朋友們。</string>
   <string name="leaderboard_friend_empty_text_invite_friends">… 與英雄更加緊密！好成績，當然要和好友一起分享。連接微博、看看你在朋友中排第幾</string>
   <string name="leaderboard_keep_friends_close">與朋友保持聯繫</string>
-  <string name="leaderboard_max_ranked_position">&gt;%d</string>
   <string name="leaderboard_monthly_avg_days_held">平均持有天數</string>
   <string name="leaderboard_monthly_trade_count">月交易量</string>
   <string name="leaderboard_not_ranked">未排名</string>

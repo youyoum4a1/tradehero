@@ -15,6 +15,15 @@ public class PortfolioDTOUtil
         }
         if (portfolioDTO.title != null)
         {
+            if (portfolioDTO.title.equals(resources.getString(R.string.my_stocks_con)))
+            {
+                return resources.getString(R.string.trending_tab_stocks_main);
+            }
+            else if (portfolioDTO.title.equals(resources.getString(R.string.my_fx_con)))
+            {
+                return resources.getString(R.string.my_fx);
+            }
+
             return portfolioDTO.title;
         }
         if (portfolioDTO.providerId != null)
