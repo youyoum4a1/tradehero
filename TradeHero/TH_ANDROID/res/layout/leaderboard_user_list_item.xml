@@ -5,23 +5,24 @@
     android:layout_width="fill_parent"
     android:layout_height="72dp"
     android:id="@+id/rlItemAll"
-    android:background="@drawable/listview_item_selector"
+    android:background="@drawable/leaderboardlistview_item_selector"
     >
 
     <TextView
         android:id="@+id/tvUserRank"
-        android:layout_width="wrap_content"
+        android:layout_width="32dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:textColor="#9a9a9a"
-        android:text="1"
+        android:text="888"
+        android:gravity="center"
         android:textSize="18sp"/>
 
     <ImageView
         android:id="@+id/imgUserHead"
         android:layout_toRightOf="@id/tvUserRank"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginRight="10dp"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -35,8 +36,8 @@
         android:layout_toRightOf="@id/imgUserHead"
         android:layout_centerVertical="true"
         android:textColor="@color/black"
-        android:textSize="16sp"
-        android:text="name"
+        android:textSize="12sp"
+        android:text="一共五个字"
         android:layout_width="wrap_content"/>
 
     <TextView
@@ -44,7 +45,6 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
         android:layout_alignBottom="@id/imgUserHead"
         android:textColor="#828282"
         android:text="收益率"
@@ -56,7 +56,6 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp"
         android:layout_alignTop="@id/imgUserHead"
         android:textColor="#828282"
         android:text="100%"

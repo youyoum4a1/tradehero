@@ -16,6 +16,7 @@ import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -28,6 +29,7 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
@@ -118,11 +120,20 @@ public class StockGodListBaseFragment extends DashboardFragment {
         listBang.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long position) {
-                analytics.addEvent(new MethodEvent(AnalyticsConstants.LEADERBOARD_USER_CLICKED_POSITION, "" + position));
-                Bundle bundle = new Bundle();
-                LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
-                bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
-                gotoDashboard(PortfolioFragment.class, bundle);
+                if (leaderboard_key == LeaderboardDefKeyKnowledge.HOTSTOCK) {
+                    Bundle bundle = new Bundle();
+                    LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
+                    SecurityId id = new SecurityId(userDTO.exchange, userDTO.symbol);
+                    bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, id.getArgs());
+                    bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, userDTO.securityName);
+                    gotoDashboard(SecurityDetailFragment.class, bundle);
+                } else {
+                    analytics.addEvent(new MethodEvent(AnalyticsConstants.LEADERBOARD_USER_CLICKED_POSITION, "" + position));
+                    Bundle bundle = new Bundle();
+                    LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
+                    bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
+                    gotoDashboard(PortfolioFragment.class, bundle);
+                }
             }
         });
     }

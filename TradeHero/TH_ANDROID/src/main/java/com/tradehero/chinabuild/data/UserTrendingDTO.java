@@ -13,4 +13,10 @@ public class UserTrendingDTO
     public double totalWealth;
     public double perfRoi;
     public int tradeCount;
+    public String exchange;
+    public String securityName;
+    public String symbol;
+    public int watchCount;
+    public int topWatchUserId;
+    public String topWatchUserName;
 }

@@ -14,6 +14,7 @@ import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -106,6 +107,10 @@ public class LeaderboardListAdapter extends BaseAdapter {
                 {
                     convertView = inflater.inflate(R.layout.leaderboard_user_list_item_for_shool, viewGroup, false);
                 }
+                else if(leaderboardType == LeaderboardDefKeyKnowledge.HOTSTOCK)
+                {
+                    convertView = inflater.inflate(R.layout.leaderboard_hot_stock_list_item, viewGroup, false);
+                }
                 else
                 {
                     convertView = inflater.inflate(R.layout.leaderboard_user_list_item, viewGroup, false);
@@ -119,6 +124,9 @@ public class LeaderboardListAdapter extends BaseAdapter {
                 holder.tvUserExtraValue = (TextView) convertView.findViewById(R.id.tvUserExtraValue);
                 holder.tvROITitle = (TextView) convertView.findViewById(R.id.tvROITitle);
                 holder.tvROIValue = (TextView) convertView.findViewById(R.id.tvROIValue);
+                holder.tvStockName = (TextView) convertView.findViewById(R.id.tvStockName);
+                holder.tvStockId = (TextView) convertView.findViewById(R.id.tvStockId);
+                holder.tvFanNum = (TextView) convertView.findViewById(R.id.tvFanNum);
                 if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
                 {
                     holder.tvSchool = (TextView) convertView.findViewById(R.id.tvSchool);
@@ -165,7 +173,6 @@ public class LeaderboardListAdapter extends BaseAdapter {
                 holder.imgUserName.setText(item.getShortDisplayName(MAX_USER_NAME_LENGTH));
             }
 
-
             if (leaderboardType == LeaderboardDefKeyKnowledge.DAYS_ROI)
             {//显示 PerROI
                 //推荐榜
@@ -200,8 +207,23 @@ public class LeaderboardListAdapter extends BaseAdapter {
             else if (leaderboardType == LeaderboardDefKeyKnowledge.POPULAR)
             {//显示 粉丝数
                 //人气榜
+                holder.tvROITitle.setText(context.getString(R.string.user_tatal_roi_day_30));
+                THSignedNumber roi = THSignedPercentage.builder(item.perfRoi * 100)
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                holder.tvROIValue.setText(roi.toString());
+
                 holder.tvUserExtraTitle.setText(context.getString(R.string.user_tatal_fans));
                 holder.tvUserExtraValue.setText(String.valueOf(item.followerCount));
+                holder.tvUserExtraValue.setTextColor(context.getResources().getColor(R.color.number_up));
+            }
+            else if (leaderboardType == LeaderboardDefKeyKnowledge.HOTSTOCK)
+            {//热股榜
+                holder.tvStockName.setText(item.securityName);
+                holder.tvStockId.setText(item.symbol);
+                holder.imgUserName.setText(item.getShortTopWatchUserName(MAX_USER_NAME_LENGTH));
+                holder.tvFanNum.setText(item.getDisplayableWatchCount());
             }
             else if (leaderboardType == LeaderboardDefKeyKnowledge.WEALTH)
             {//显示 总资产
@@ -248,6 +270,9 @@ public class LeaderboardListAdapter extends BaseAdapter {
         public TextView tvROITitle = null;
         public TextView tvROIValue = null;
         public TextView tvSchool = null;
+        public TextView tvStockName = null;
+        public TextView tvStockId = null;
+        public TextView tvFanNum = null;
         public RelativeLayout allContent;
     }
 }

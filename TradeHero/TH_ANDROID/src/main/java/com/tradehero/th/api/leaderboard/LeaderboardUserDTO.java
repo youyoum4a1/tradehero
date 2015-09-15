@@ -27,6 +27,12 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public double totalWealth;
     public double perfRoi;
     public int tradeCount;
+    public String exchange;
+    public String securityName;
+    public String symbol;
+    public int watchCount;
+    public int topWatchUserId;
+    public String topWatchUserName;
 
     public LeaderboardUserDTO()
     {
@@ -73,6 +79,32 @@ public class LeaderboardUserDTO extends UserBaseDTO
         this.put(ExpandableItem.class.getName(), expanded);
     }
 
+    public String getShortTopWatchUserName(int length)
+    {
+        String name = topWatchUserName;
+        if (name == null) {
+            return " ";
+        }
+        if (name.length() > length) {
+            name = name.substring(0, length - 1);
+            name = name + "...";
+        }
+
+        return name;
+    }
+
+    public String getDisplayableWatchCount()
+    {
+        int tenKNum = watchCount / 10000;
+        if (tenKNum < 1)
+        {
+            return String.valueOf(watchCount);
+        }
+        else
+        {
+            return tenKNum + "万多";
+        }
+    }
 
     //</editor-fold>
 }

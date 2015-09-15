@@ -116,7 +116,15 @@ import javax.inject.Singleton;
             else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.POPULAR)//返回人气榜
             {
                 PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
-                UserTrendingDTOList data = leaderboardService.getLeaderboardPopular(
+                UserTrendingDTOList data = leaderboardService.getLeaderboardFollow(
+                        pagedLeaderboardKey.page,
+                        pagedLeaderboardKey.perPage);
+                return processFromExtraData(data);
+            }
+            else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.HOTSTOCK)
+            {
+                PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+                UserTrendingDTOList data = leaderboardService.getLeaderboardHotStock(
                         pagedLeaderboardKey.page,
                         pagedLeaderboardKey.perPage);
                 return processFromExtraData(data);
@@ -165,6 +173,12 @@ import javax.inject.Singleton;
                 userDTO.roiInPeriod = dataDTO.winRatio;
                 userDTO.perfRoi = dataDTO.perfRoi;
                 userDTO.tradeCount = dataDTO.tradeCount;
+                userDTO.exchange = dataDTO.exchange;
+                userDTO.securityName = dataDTO.securityName;
+                userDTO.symbol = dataDTO.symbol;
+                userDTO.watchCount = dataDTO.watchCount;
+                userDTO.topWatchUserId = dataDTO.topWatchUserId;
+                userDTO.topWatchUserName = dataDTO.topWatchUserName;
                 leaderboardDTO.users.add(userDTO);
             }
             return leaderboardDTO;

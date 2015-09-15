@@ -14,13 +14,14 @@ public class LeaderboardDefKeyKnowledge
     public static final int FRIEND_ID = -1;
 
 
-    public static final int SEARCH_RECOMMEND = 4444;//综合搜索的默认推荐
-    public static final int DAYS_ROI = 5555;//ROI
-    public static final int POPULAR = 6666;//人气榜
-    public static final int WINRATIO = 7777;//高胜率榜
-    public static final int WEALTH = 8888;//土豪榜
-    public static final int COMPETITION = 9999;//比赛榜
-    public static final int COMPETITION_FOR_SCHOOL = 9998;//比赛榜
+    public static final int SEARCH_RECOMMEND = 1;//综合搜索的默认推荐
+    public static final int DAYS_ROI = 2;//ROI
+    public static final int POPULAR = 3;//人气榜
+    public static final int WINRATIO = 4;//高胜率榜
+    public static final int HOTSTOCK = 5;//热股榜
+    public static final int WEALTH = 6;//土豪榜
+    public static final int COMPETITION = 7;//比赛榜
+    public static final int COMPETITION_FOR_SCHOOL = 8;//比赛榜
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefKeyKnowledge()

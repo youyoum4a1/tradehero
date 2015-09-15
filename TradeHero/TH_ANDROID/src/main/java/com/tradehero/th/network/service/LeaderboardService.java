@@ -31,7 +31,7 @@ public interface LeaderboardService
 
 
     //活跃ROI榜 推荐榜
-    //<editor-fold desc="Get Leaderboard">
+    // Use getLeaderboardPrefROI() instead
     @Deprecated @GET("/users/trendingPerfRoi?countryCode=CN")
     UserTrendingDTOList getLeaderboardDayROI(
             @Query("page") Integer page,
@@ -51,9 +51,21 @@ public interface LeaderboardService
             @Query("perPage") Integer perPage);
 
     //人气榜
-    //<editor-fold desc="Get Leaderboard">
-    @GET("/users/trendingFollow?countryCode=CN")
+    // Use getLeaderboardFollow() instead
+    @Deprecated @GET("/users/trendingFollow?countryCode=CN")
     UserTrendingDTOList getLeaderboardPopular(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+
+    //人气榜
+    @GET("/cn/v2/users/trendingFollow")
+    UserTrendingDTOList getLeaderboardFollow(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+
+    //热股榜
+    @GET("/cn/v2/securities/trendingWatch")
+    UserTrendingDTOList getLeaderboardHotStock(
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 

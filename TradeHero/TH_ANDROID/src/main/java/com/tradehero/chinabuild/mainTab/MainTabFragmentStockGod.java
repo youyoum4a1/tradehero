@@ -52,7 +52,7 @@ public class MainTabFragmentStockGod extends BasePurchaseManagerFragment impleme
         setHeadViewMiddleMain(getString(R.string.new_suggest_list));
     }
 
-    private static final String[] CONTENT = new String[] {" 推荐榜 ", " 高胜率榜 ", " 人气榜 "};
+    private static final String[] CONTENT = new String[] {" 推荐榜 ", " 高胜率榜 ", " 人气榜 ", " 热股榜 "};
 
     class CustomAdapter extends FragmentPagerAdapter
     {
@@ -83,6 +83,13 @@ public class MainTabFragmentStockGod extends BasePurchaseManagerFragment impleme
                 case 2:
                     fragment = new StockGodListBaseFragment();
                     args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.POPULAR);
+                    fragment.setArguments(args);
+
+                    return fragment;
+
+                case 3:
+                    fragment = new StockGodListBaseFragment();
+                    args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.HOTSTOCK);
                     fragment.setArguments(args);
 
                     return fragment;
