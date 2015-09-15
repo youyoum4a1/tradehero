@@ -1,7 +1,10 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,8 +13,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.EmptyLeaderboardUserDTO;
+import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -24,7 +29,7 @@ import com.tradehero.th.utils.StringUtils;
 
 public class LeaderboardListAdapter extends BaseAdapter {
 
-    private Context context;
+    private FragmentActivity context;
     private LayoutInflater inflater;
     private LeaderboardUserDTOList leaderboardUserDTOs = new LeaderboardUserDTOList();
     public boolean hasLeaderboard;
@@ -41,7 +46,7 @@ public class LeaderboardListAdapter extends BaseAdapter {
     public LeaderboardListAdapter(Context context)
     {
         DaggerUtils.inject(this);
-        this.context = context;
+        this.context = (FragmentActivity)context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -97,7 +102,7 @@ public class LeaderboardListAdapter extends BaseAdapter {
 
     @Override public View getView(int position, View convertView, ViewGroup viewGroup)
     {
-        LeaderboardUserDTO item = (LeaderboardUserDTO) getItem(position);
+        final LeaderboardUserDTO item = (LeaderboardUserDTO) getItem(position);
         if (item != null)
         {
             ViewHolder holder;
@@ -224,6 +229,17 @@ public class LeaderboardListAdapter extends BaseAdapter {
                 holder.tvStockId.setText(item.symbol);
                 holder.imgUserName.setText(item.getShortTopWatchUserName(MAX_USER_NAME_LENGTH));
                 holder.tvFanNum.setText(item.getDisplayableWatchCount());
+
+                holder.imgUserName.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, item.topWatchUserId);
+                        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, PortfolioFragment.class.getName());
+                        ActivityHelper.launchDashboard(context, bundle);
+                        return true;
+                    }
+                });
             }
             else if (leaderboardType == LeaderboardDefKeyKnowledge.WEALTH)
             {//显示 总资产
