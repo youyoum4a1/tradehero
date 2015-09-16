@@ -351,7 +351,21 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                                     {
                                         if (isBuyTransaction() || closeableOwnedPortfolioIds.contains(candidate.getOwnedPortfolioId()))
                                         {
-                                            menuOwnedPortfolioIdList.add(new MenuOwnedPortfolioId(candidate.getUserBaseKey(), candidate));
+                                            MenuOwnedPortfolioId menuOwnedPortfolioId = new MenuOwnedPortfolioId(candidate.getUserBaseKey(), candidate);
+
+                                            if (menuOwnedPortfolioId.title != null)
+                                            {
+                                                if (menuOwnedPortfolioId.title.equals(getString(R.string.my_stocks_con)))
+                                                {
+                                                    menuOwnedPortfolioId.title = getString(R.string.trending_tab_stocks_main);
+                                                }
+                                                else if (menuOwnedPortfolioId.title.equals(getString(R.string.my_fx_con)))
+                                                {
+                                                    menuOwnedPortfolioId.title = getString(R.string.my_fx);
+                                                }
+                                            }
+
+                                            menuOwnedPortfolioIdList.add(menuOwnedPortfolioId);
                                         }
 
                                         if (candidate.getPortfolioId().key.equals(selectedPortfolioId.key))

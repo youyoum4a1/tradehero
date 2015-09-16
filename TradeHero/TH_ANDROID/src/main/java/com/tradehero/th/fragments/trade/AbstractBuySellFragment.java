@@ -271,9 +271,23 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 {
                                     if (ownedPortfolioIds.contains(candidate.getOwnedPortfolioId()))
                                     {
-                                        selectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(
+                                        MenuOwnedPortfolioId menuOwnedPortfolioId = new MenuOwnedPortfolioId(
                                                 candidate.getUserBaseKey(),
-                                                candidate));
+                                                candidate);
+
+                                        if (menuOwnedPortfolioId.title != null)
+                                        {
+                                            if (menuOwnedPortfolioId.title.equals(getString(R.string.my_stocks_con)))
+                                            {
+                                                menuOwnedPortfolioId.title = getString(R.string.trending_tab_stocks_main);
+                                            }
+                                            else if (menuOwnedPortfolioId.title.equals(getString(R.string.my_fx_con)))
+                                            {
+                                                menuOwnedPortfolioId.title = getString(R.string.my_fx);
+                                            }
+                                        }
+
+                                        selectedPortfolioContainer.addMenuOwnedPortfolioId(menuOwnedPortfolioId);
                                     }
                                 }
                                 return null;
