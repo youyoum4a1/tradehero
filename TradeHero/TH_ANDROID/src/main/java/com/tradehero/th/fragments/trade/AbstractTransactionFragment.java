@@ -351,7 +351,21 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                                     {
                                         if (isBuyTransaction() || closeableOwnedPortfolioIds.contains(candidate.getOwnedPortfolioId()))
                                         {
-                                            menuOwnedPortfolioIdList.add(new MenuOwnedPortfolioId(candidate.getUserBaseKey(), candidate));
+                                            MenuOwnedPortfolioId menuOwnedPortfolioId = new MenuOwnedPortfolioId(candidate.getUserBaseKey(), candidate);
+
+                                            if (menuOwnedPortfolioId.title != null)
+                                            {
+                                                if (menuOwnedPortfolioId.title.equals(getString(R.string.my_stocks_con)))
+                                                {
+                                                    menuOwnedPortfolioId.title = getString(R.string.trending_tab_stocks_main);
+                                                }
+                                                else if (menuOwnedPortfolioId.title.equals(getString(R.string.my_fx_con)))
+                                                {
+                                                    menuOwnedPortfolioId.title = getString(R.string.my_fx);
+                                                }
+                                            }
+
+                                            menuOwnedPortfolioIdList.add(menuOwnedPortfolioId);
                                         }
 
                                         if (candidate.getPortfolioId().key.equals(selectedPortfolioId.key))
@@ -987,27 +1001,6 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
         transactionCommentFragment = navigator.get().pushFragment(TransactionEditCommentFragment.class, bundle);
     }
-
-    //@OnTextChanged(R.id.vtrade_value)
-    //public void onTradeValueChanged(CharSequence text)
-    //{
-    //    Observable.combineLatest(
-    //            getPortfolioCompactObservable(),
-    //            getQuoteObservable(),
-    //            new Func2<PortfolioCompactDTO, QuoteDTO, Object>()
-    //            {
-    //                @Override public Object call(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO)
-    //                {
-    //                    Integer tradeValue = Integer.parseInt(mTradeValueTextView.getText().toString().replace(",", ""));
-    //
-    //                    mQuantityEditText.setText(
-    //                            getQuantityFromTradeValue(portfolioCompactDTO, quoteDTO, tradeValue).toString());
-    //                    return null;
-    //                }
-    //            })
-    //            .subscribeOn(AndroidSchedulers.mainThread()
-    //            );
-    //}
 
     @Deprecated public void setBuySellTransactionListener(BuySellTransactionListener buySellTransactionListener)
     {
