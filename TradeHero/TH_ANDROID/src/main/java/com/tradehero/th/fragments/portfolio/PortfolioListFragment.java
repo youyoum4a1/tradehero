@@ -15,6 +15,7 @@ import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -78,6 +79,14 @@ public class PortfolioListFragment extends DashboardFragment
         }
 
         portfolioRecyclerAdapter = new PortfolioRecyclerAdapter();
+        portfolioRecyclerAdapter.setOnItemClickedListener(new TypedRecyclerAdapter.OnItemClickedListener<PortfolioDisplayDTO>()
+        {
+            @Override
+            public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<PortfolioDisplayDTO> viewHolder, PortfolioDisplayDTO object)
+            {
+
+            }
+        });
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
