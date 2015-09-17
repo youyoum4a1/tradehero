@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_xsmall"
+    android:layout_marginLeft="@dimen/margin_small"
+    android:layout_marginRight="@dimen/margin_small"
+    android:layout_marginTop="@dimen/margin_xsmall"
+    app:cardElevation="4dp"
+    >
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:padding="@dimen/margin_small"
+      >
+
+    <TextView
+        android:id="@+id/roi_value"
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:gravity="right"
+        android:minWidth="@dimen/size_10"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        tools:text="- 8.88%"
+        />
+
+    <TextView
+        android:id="@+id/portfolio_title"
+        style="@style/TH.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@id/roi_value"
+        android:ellipsize="end"
+        android:singleLine="true"
+        tools:text="My Stocks"
+        />
+
+    <TextView
+        android:id="@+id/portfolio_description"
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/portfolio_title"
+        android:layout_toRightOf="@id/portfolio_image"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@color/text_secondary"
+        tools:text="You have 2 open positions."
+        />
+
+    <ImageView
+        android:id="@+id/portfolio_chart"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_10"
+        android:layout_below="@id/portfolio_description"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        android:scaleType="fitXY"
+        android:src="@drawable/line_chart"
+        />
+
+    <TextView
+        android:id="@+id/portfolio_roi_since"
+        style="@style/TH.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/portfolio_chart"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        tools:text="Since incepsmall"
+        />
+
+  </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

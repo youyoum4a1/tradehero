@@ -14,9 +14,9 @@ import com.tradehero.th.activities.FriendsInvitationActivity;
 import com.tradehero.th.activities.SettingsActivity;
 import com.tradehero.th.activities.StoreScreenActivity;
 import com.tradehero.th.activities.UpdateCenterActivity;
-import com.tradehero.th.fragments.contestcenter.ContestCenterFragment;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
+import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.utils.Constants;
@@ -51,10 +51,10 @@ public enum RootFragmentType
             null,
             AnalyticsConstants.TabBar_Discovery),
     CONTEST_CENTER(R.layout.left_drawer_item,
-            R.string.dashboard_contest_center,
-            R.string.dashboard_contest_center_key,
+            R.string.dashboard_portfolios,
+            R.string.dashboard_portfolios_key,
             R.drawable.ic_tab_portfolio,
-            ContestCenterFragment.class,
+            PortfolioListFragment.class,
             null,
             AnalyticsConstants.TabBar_ContestCenter),
     ME(R.layout.left_drawer_item,

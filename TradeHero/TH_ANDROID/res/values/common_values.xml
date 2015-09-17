@@ -13,6 +13,7 @@
   <string name="dashboard_alerts_key" translatable="false">key_alerts</string>
   <string name="dashboard_referral_key" translatable="false">key_refer_friends</string>
   <string name="dashboard_contest_center_key" translatable="false">key_contest_center</string>
+  <string name="dashboard_portfolios_key" translatable="false">key_portfolios</string>
   <string name="dashboard_store_key" translatable="false">key_store</string>
   <string name="dashboard_menu_settings_key" translatable="false">key_settings</string>
   <string name="dashboard_menu_faq_key" translatable="false">key_faq</string>

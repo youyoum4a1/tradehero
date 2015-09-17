@@ -14,6 +14,7 @@
   <string name="portfolio_description_count_closed_positions_other">%2$s has %1$d closed positions</string>
   <string name="portfolio_description_count_watch_positions_other">%2$s is watching %1$d items</string>
   <string name="portfolio_description_count_watchlist">You have %1$d items</string>
+  <string name="portfolio_description_nothing">No positions</string>
   <string name="portfolio_default_title">Main Portfolio</string>
   <string name="portfolio_item_title_loading">Loading…</string>
   <string name="portfolio_header_total_value">Total Value</string>
@@ -40,7 +41,7 @@
 
   <string name="portfolio_tap_to_enroll_fx">Tap to enroll and trade FX</string>
 
-  <string name="roi_since_inception_format">%1$s since inception.</string>
-  <string name="roi_since_format">%1$s since %2$s.</string>
+  <string name="roi_since_inception_format">Since inception.</string>
+  <string name="roi_since_format">Since %1$s.</string>
 
 </resources>

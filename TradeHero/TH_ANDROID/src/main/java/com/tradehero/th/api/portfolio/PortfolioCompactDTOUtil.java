@@ -100,7 +100,7 @@ public class PortfolioCompactDTOUtil
         return (int) Math.floor((availableUsd - txnCostUsd) / quotePriceUsd);
     }
 
-    @Nullable public static String getPortfolioSubtitle(
+    public static String getPortfolioSubtitle(
             @NonNull Resources resources,
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable String userName)
@@ -147,7 +147,7 @@ public class PortfolioCompactDTOUtil
                         portfolioCompactDTO.watchlistPositionsCount);
             }
         }
-        return null;
+        return resources.getString(R.string.portfolio_description_nothing);
     }
 
     @NonNull public static MarginCloseOutState getMarginCloseOutState(
@@ -181,7 +181,8 @@ public class PortfolioCompactDTOUtil
         try
         {
             converted = quoteDTO.clone();
-        } catch (CloneNotSupportedException e)
+        }
+        catch (CloneNotSupportedException e)
         {
             Timber.e(e, "Could not clone");
             converted = new QuoteDTO();
@@ -258,7 +259,7 @@ public class PortfolioCompactDTOUtil
         }
         if (providerId != null)
         {
-            PortfolioCompactDTO candidate= portfolioCompactDTOs.findFirstWhere(new Predicate<PortfolioCompactDTO>()
+            PortfolioCompactDTO candidate = portfolioCompactDTOs.findFirstWhere(new Predicate<PortfolioCompactDTO>()
             {
                 @Override public boolean apply(PortfolioCompactDTO portfolioCompactDTO)
                 {
@@ -281,4 +282,5 @@ public class PortfolioCompactDTOUtil
             }
         }
         throw new IllegalArgumentException("Unhandled case " + potential + ", " + providerId + ", " + securityId);
-    }}
+    }
+}

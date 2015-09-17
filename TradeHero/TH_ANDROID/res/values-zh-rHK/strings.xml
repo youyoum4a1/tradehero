@@ -1012,8 +1012,8 @@
   <string name="residence_document_type_utility_bill">賬單：水費，電費，電話和瓦斯</string>
   <string name="residency">居住國家</string>
   <string name="retry">重新嘗試</string>
-  <string name="roi_since_format">%1$s自從%2$s.</string>
-  <string name="roi_since_inception_format">%1$s從開始</string>
+  <string name="roi_since_format">自從%1$s.</string>
+  <string name="roi_since_inception_format">從開始</string>
   <string name="scan_it">讓我們掃描</string>
   <string name="search_regional_hint">搜索國家和地區</string>
   <string name="search_social_friend_empty">未找到符合條件的好友</string>

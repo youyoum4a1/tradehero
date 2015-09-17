@@ -135,7 +135,7 @@ public class PortfolioListItemView extends RelativeLayout
         {
             title.setText(DisplayablePortfolioUtil.getLongTitle(getResources(),
                     displayablePortfolioDTO));
-            title.setTextColor(DisplayablePortfolioUtil.getLongTitleTextColor(getContext(),
+            title.setTextColor(DisplayablePortfolioUtil.getLongTitleTextColor(getResources(),
                     displayablePortfolioDTO));
         }
     }

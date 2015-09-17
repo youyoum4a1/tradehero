@@ -20,6 +20,7 @@ import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import javax.inject.Inject;
 
+@Deprecated
 public class ContestCenterFragment extends DashboardFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
