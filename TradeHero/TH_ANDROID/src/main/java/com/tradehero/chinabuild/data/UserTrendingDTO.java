@@ -1,5 +1,7 @@
 package com.tradehero.chinabuild.data;
 
+import java.util.Date;
+
 /**
  * Created by huhaiping on 14-8-27.
  */
@@ -19,4 +21,11 @@ public class UserTrendingDTO
     public int watchCount;
     public int topWatchUserId;
     public String topWatchUserName;
+
+    //for buyWhat
+    public String userName;
+    public double monthlyRoi;
+    public double price;
+    public Date dateTimeUtc;
+    public double percent;
 }

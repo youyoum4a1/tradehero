@@ -5,6 +5,7 @@ import com.tradehero.th.adapters.ExpandableItem;
 import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.UserBaseDTO;
+import java.util.Date;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,6 +34,13 @@ public class LeaderboardUserDTO extends UserBaseDTO
     public int watchCount;
     public int topWatchUserId;
     public String topWatchUserName;
+
+    //for buy what
+    public double monthlyRoi;
+    public double price;
+    public Date dateTimeUtc;
+    public double percent;
+    public double winRatio;
 
     public LeaderboardUserDTO()
     {

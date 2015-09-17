@@ -44,6 +44,7 @@ public class StockGodListBaseFragment extends DashboardFragment {
     public static final String BUNLDE_LEADERBOARD_KEY = "bundle_leaderboard_key";
 
     @Inject LeaderboardCache leaderboardCache;
+    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
     @Inject Analytics analytics;
     @Inject CurrentUserId currentUserId;
 
@@ -51,7 +52,6 @@ public class StockGodListBaseFragment extends DashboardFragment {
     @InjectView(R.id.tradeheroprogressbar_heros) TradeHeroProgressBar progressBar;
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
 
-    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
     private LeaderboardListAdapter adapter;
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 20;

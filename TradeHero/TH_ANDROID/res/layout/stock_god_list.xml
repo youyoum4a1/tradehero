@@ -1,41 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/contest_center_content_screen"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_fragment"
     >
-  <com.tradehero.common.widget.BetterViewAnimator
-      android:id="@+id/bvaViewAll"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent">
 
-      <com.tradehero.th.widget.TradeHeroProgressBar
-              android:id="@+id/tradeheroprogressbar_heros"
-              android:layout_width="@dimen/loading_logo_width"
-              android:layout_height="@dimen/loading_logo_height"
-              android:layout_gravity="center"
-              android:background="@drawable/logo"
-              />
-  <com.tradehero.chinabuild.listview.SecurityListView
-      xmlns:ptr="http://schemas.android.com/apk/res-auto"
-      ptr:ptrHeaderTextColor="@color/black"
-      android:id="@+id/listBang"
-      android:scrollingCache="false"
-      android:fadingEdge="none"
-      android:dividerHeight="1px"
-      android:divider="@color/transparent"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent">
-  </com.tradehero.chinabuild.listview.SecurityListView>
-    <ImageView android:id="@+id/imgEmpty"
-        android:background="@drawable/empty"
-        android:layout_gravity="center"
-        android:layout_width="150dp"
-        android:layout_height="150dp"/>
-  </com.tradehero.common.widget.BetterViewAnimator>
+    <com.tradehero.common.widget.BetterViewAnimator
+        android:id="@+id/bvaViewAll"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <com.tradehero.th.widget.TradeHeroProgressBar
+            android:id="@+id/tradeheroprogressbar_heros"
+            android:layout_width="@dimen/loading_logo_width"
+            android:layout_height="@dimen/loading_logo_height"
+            android:layout_gravity="center"
+            android:background="@drawable/logo"
+            />
+
+        <com.tradehero.chinabuild.listview.SecurityListView
+            android:id="@+id/listBang"
+            xmlns:ptr="http://schemas.android.com/apk/res-auto"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="@color/transparent"
+            android:dividerHeight="1px"
+            android:fadingEdge="none"
+            android:scrollingCache="false"
+            ptr:ptrHeaderTextColor="@color/black"/>
+
+        <ImageView
+            android:id="@+id/imgEmpty"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:background="@drawable/empty"/>
+    </com.tradehero.common.widget.BetterViewAnimator>
 
 </LinearLayout>
 

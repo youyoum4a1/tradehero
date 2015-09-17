@@ -1,6 +1,5 @@
 package com.tradehero.th.network.service;
 
-import com.tradehero.chinabuild.data.UserTrendingDTO;
 import com.tradehero.chinabuild.data.UserTrendingDTOList;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
@@ -116,5 +115,11 @@ public interface LeaderboardService
 
     @GET("/leaderboards/newfriends")
     LeaderboardFriendsDTO getNewFriendsLeaderboard();
+
+    //买什么
+    @GET("/cn/v2/trades/chances")
+    UserTrendingDTOList getLeaderboardBuyWhat(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
 
 }

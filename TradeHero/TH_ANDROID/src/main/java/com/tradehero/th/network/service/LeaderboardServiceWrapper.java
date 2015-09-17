@@ -7,7 +7,13 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOFactory;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.api.leaderboard.key.*;
+import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.SortedPerPagedLeaderboardKey;
+import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
 import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
 import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
 import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
@@ -16,10 +22,9 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.models.DTOProcessor;
 import com.tradehero.th.models.leaderboard.def.DTOProcessorLeaderboardDefDTOList;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import org.jetbrains.annotations.NotNull;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.jetbrains.annotations.NotNull;
 
 @Singleton public class LeaderboardServiceWrapper
 {
@@ -142,6 +147,14 @@ import javax.inject.Singleton;
                 UserTrendingDTOList data = leaderboardService.getLeaderboardSearchRecommend();
                 return processFromExtraData(data);
             }
+            else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.BUY_WHAT)//买什么榜
+            {
+                PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+                UserTrendingDTOList data = leaderboardService.getLeaderboardBuyWhat(
+                        pagedLeaderboardKey.page,
+                        pagedLeaderboardKey.perPage);
+                return processFromExtraDataForBuyWhat(data);
+            }
             else
             {
                 PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
@@ -179,6 +192,34 @@ import javax.inject.Singleton;
                 userDTO.watchCount = dataDTO.watchCount;
                 userDTO.topWatchUserId = dataDTO.topWatchUserId;
                 userDTO.topWatchUserName = dataDTO.topWatchUserName;
+                leaderboardDTO.users.add(userDTO);
+            }
+            return leaderboardDTO;
+        }
+        return null;
+    }
+
+    public LeaderboardDTO processFromExtraDataForBuyWhat(UserTrendingDTOList data)
+    {
+        if (data != null && data.size() > 0)
+        {
+            LeaderboardDTO leaderboardDTO = new LeaderboardDTO();
+            leaderboardDTO.users = new LeaderboardUserDTOList();
+            int sizeData = data.size();
+            for (int i = 0; i < sizeData; i++) {
+                UserTrendingDTO dataDTO = data.get(i);
+                LeaderboardUserDTO userDTO = new LeaderboardUserDTO();
+                userDTO.id = dataDTO.userId;
+                userDTO.displayName = dataDTO.userName;
+                userDTO.picture = dataDTO.pictureUrl;
+                userDTO.winRatio = dataDTO.winRatio;
+                userDTO.exchange = dataDTO.exchange;
+                userDTO.securityName = dataDTO.securityName;
+                userDTO.symbol = dataDTO.symbol;
+                userDTO.monthlyRoi = dataDTO.monthlyRoi;
+                userDTO.price = dataDTO.price;
+                userDTO.dateTimeUtc = dataDTO.dateTimeUtc;
+                userDTO.percent = dataDTO.percent;
                 leaderboardDTO.users.add(userDTO);
             }
             return leaderboardDTO;

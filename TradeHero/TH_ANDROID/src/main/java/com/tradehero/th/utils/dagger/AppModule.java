@@ -81,6 +81,7 @@ import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
+import com.tradehero.chinabuild.mainTab.MainTabBuyWhatAdapter;
 import com.tradehero.chinabuild.mainTab.MainTabBuyWhatFragment;
 import com.tradehero.chinabuild.mainTab.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.mainTab.MainTabFragmentDiscovery;
@@ -207,6 +208,7 @@ import javax.inject.Singleton;
                         MainTabFragmentMySetting.class,
                         MainTabFragmentDiscovery.class,
                         MainTabFragmentStockGod.class,
+                        MainTabBuyWhatAdapter.class,
                         MainTabBuyWhatFragment.class,
                         MainTabFragmentCompetition.class,
                         FollowBuyFragment.class,
@@ -280,7 +282,6 @@ import javax.inject.Singleton;
                         SecurityDiscussOrNewsFragment.class,
                         InviteFriendsFragment.class,
                         InputInviteCodeFragment.class,
-                        UserTimeLineAdapter.class,
                         MyProfileFragment.class,
                         MyEditNameFragment.class,
                         MyEditAccountFragment.class,

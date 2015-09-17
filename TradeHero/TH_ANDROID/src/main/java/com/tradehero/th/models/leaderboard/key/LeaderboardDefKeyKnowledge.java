@@ -1,7 +1,6 @@
 package com.tradehero.th.models.leaderboard.key;
 
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-
 import javax.inject.Inject;
 
 public class LeaderboardDefKeyKnowledge
@@ -22,6 +21,7 @@ public class LeaderboardDefKeyKnowledge
     public static final int WEALTH = 6;//土豪榜
     public static final int COMPETITION = 7;//比赛榜
     public static final int COMPETITION_FOR_SCHOOL = 8;//比赛榜
+    public static final int BUY_WHAT = 9;//买什么榜
 
     //<editor-fold desc="Constructors">
     @Inject public LeaderboardDefKeyKnowledge()

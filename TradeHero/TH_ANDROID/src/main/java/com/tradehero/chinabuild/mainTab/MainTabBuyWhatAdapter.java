@@ -5,26 +5,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
-import java.util.List;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
+import com.tradehero.th.utils.DaggerUtils;
+import dagger.Lazy;
+import javax.inject.Inject;
+import org.ocpsoft.prettytime.PrettyTime;
 
-public class MainTabBuyWhatAdapter extends BaseAdapter{
-    private List<MainTabBuyWhatDTO> mDto;
-     private LayoutInflater inflater;
+public class MainTabBuyWhatAdapter extends BaseAdapter {
+    private LeaderboardUserDTOList mDtoList = new LeaderboardUserDTOList();
+    private LayoutInflater inflater;
 
-    public MainTabBuyWhatAdapter(Context context){
+    @Inject public Lazy<PrettyTime> prettyTime;
+
+    public MainTabBuyWhatAdapter(Context context) {
+        DaggerUtils.inject(this);
         inflater = LayoutInflater.from(context);
     }
 
     @Override
     public int getCount() {
-        return 4;
-//        return mDto.size();
+        return mDtoList.size();
     }
 
     @Override
-    public MainTabBuyWhatDTO getItem(int i) {
-        return mDto.get(i);
+    public LeaderboardUserDTO getItem(int i) {
+        return mDtoList.get(i);
     }
 
     @Override
@@ -37,32 +48,30 @@ public class MainTabBuyWhatAdapter extends BaseAdapter{
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.main_tab_buy_what_item, null);
         }
-//        MainTabBuyWhatDTO item = getItem(i);
-        // ImageView choiceImageView = (ImageView)convertView.findViewById(R.id.choice);
-        // if (mSelectedPosition == i) {
-        //     choiceImageView.setImageResource(R.drawable.choice);
-        // } else {
-        //     choiceImageView.setImageResource(R.drawable.no_choice);
-        // }
-        // TextView stockTitle = (TextView)convertView.findViewById(R.id.stock_name);
-        // stockTitle.setText(item.securityName);
-        // TextView stockID = (TextView)convertView.findViewById(R.id.stock_id);
-        // stockID.setText(item.securityId);
-        // TextView operation = (TextView)convertView.findViewById(R.id.operation);
-        // operation.setText(item.entrustName);
-        // TextView price = (TextView)convertView.findViewById(R.id.price);
-        // price.setText(String.valueOf(item.entrustPrice));
-        // TextView numbers = (TextView)convertView.findViewById(R.id.numbers);
-        // numbers.setText(String.valueOf(item.entrustAmount));
-        // TextView timeDate = (TextView)convertView.findViewById(R.id.time_date);
-        // TextView timeTime = (TextView) convertView.findViewById(R.id.time_time);
-        // timeDate.setText(item.entrustDate);
-        // timeTime.setText(item.entrustTime);
+        LeaderboardUserDTO item = getItem(i);
+        ImageView choiceImageView = (ImageView) convertView.findViewById(R.id.icon);
+        ImageLoader.getInstance().displayImage(item.picture, choiceImageView, UniversalImageLoader.getAvatarImageLoaderOptions());
+        TextView userName = (TextView) convertView.findViewById(R.id.user_name);
+        userName.setText(item.displayName);
+        TextView winRate = (TextView) convertView.findViewById(R.id.win_rate);
+        winRate.setText(item.winRatio*100+"%");
+        TextView monthlyRate = (TextView) convertView.findViewById(R.id.monthly_rate);
+        monthlyRate.setText(String.valueOf(item.monthlyRoi*100).substring(0,5)+"%");
+        TextView securityName = (TextView) convertView.findViewById(R.id.security_name);
+        securityName.setText(item.securityName);
+        TextView tradePrice = (TextView) convertView.findViewById(R.id.trade_price);
+        tradePrice.setText("成交价格 "+item.price);
+        TextView tradeTime = (TextView) convertView.findViewById(R.id.trade_time);
+        tradeTime.setText(prettyTime.get().formatUnrounded(item.dateTimeUtc));
 
         return convertView;
     }
 
-    public void setItems(List<MainTabBuyWhatDTO> dto) {
-        mDto = dto;
+    public void setItems(LeaderboardUserDTOList list) {
+        mDtoList = list;
+    }
+
+    public void addItems(LeaderboardUserDTOList listData) {
+        mDtoList.addAll(listData);
     }
 }
