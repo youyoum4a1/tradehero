@@ -12,12 +12,14 @@ import android.widget.ListView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.BasePurchaseManagerFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.chinabuild.mainTab.MainTabBuyWhatAdapter;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
+import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
@@ -101,13 +103,15 @@ public class FollowBuyFragment extends BasePurchaseManagerFragment implements Ad
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Timber.d("lyl onItemClick "+position);
-        goToMockTrade();
+        goToMockTrade(mListViewAdapter.getItem(position - 1));
     }
 
-    private void goToMockTrade(){
+    private void goToMockTrade(LeaderboardUserDTO dto){
         Bundle bundle = new Bundle();
         bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+        bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, dto.exchange);
+        bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, dto.symbol);
+        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, dto.securityName);
         Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
