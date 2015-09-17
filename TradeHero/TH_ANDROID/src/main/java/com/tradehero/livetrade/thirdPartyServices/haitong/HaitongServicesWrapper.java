@@ -56,8 +56,8 @@ public class HaitongServicesWrapper implements LiveTradeServices {
     }
 
     @Override
-    public void signup() {
-
+    public void signup(Activity activity) {
+        HaitongUtils.openAnAccount(activity);
     }
 
     @Override

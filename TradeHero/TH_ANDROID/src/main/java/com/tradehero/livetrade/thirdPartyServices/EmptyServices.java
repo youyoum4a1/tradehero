@@ -33,7 +33,7 @@ public class EmptyServices implements LiveTradeServices {
     }
 
     @Override
-    public void signup() {
+    public void signup(Activity activity) {
 
     }
 

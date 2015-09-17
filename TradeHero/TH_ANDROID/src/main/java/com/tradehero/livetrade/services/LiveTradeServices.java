@@ -22,7 +22,7 @@ public interface LiveTradeServices {
 
     void logout();
 
-    void signup();
+    void signup(Activity activity);
 
     void getBalance(LiveTradeCallback<LiveTradeBalanceDTO> callback) ;
 

@@ -126,13 +126,13 @@ public class StockGodListBaseFragment extends DashboardFragment {
                     SecurityId id = new SecurityId(userDTO.exchange, userDTO.symbol);
                     bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, id.getArgs());
                     bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, userDTO.securityName);
-                    gotoDashboard(SecurityDetailFragment.class, bundle);
+                    pushFragment(SecurityDetailFragment.class, bundle);
                 } else {
                     analytics.addEvent(new MethodEvent(AnalyticsConstants.LEADERBOARD_USER_CLICKED_POSITION, "" + position));
                     Bundle bundle = new Bundle();
                     LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
                     bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
-                    gotoDashboard(PortfolioFragment.class, bundle);
+                    pushFragment(PortfolioFragment.class, bundle);
                 }
             }
         });

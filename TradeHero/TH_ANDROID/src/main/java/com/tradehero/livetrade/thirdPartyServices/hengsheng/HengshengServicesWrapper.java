@@ -88,7 +88,7 @@ import retrofit.client.Response;
     }
 
     @Override
-    public void signup() {
+    public void signup(Activity activity) {
         // Do nothing. Does not support
     }
 

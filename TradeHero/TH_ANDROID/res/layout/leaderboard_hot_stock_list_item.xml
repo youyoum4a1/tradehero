@@ -48,30 +48,28 @@
     <LinearLayout
         android:id="@+id/tvContent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_toRightOf="@id/tvStockName"
         android:layout_marginLeft="50dp"
         android:orientation="horizontal"
         android:layout_centerVertical="true"
+        android:gravity="center_vertical"
         >
 
         <TextView
             android:id="@+id/tvUserName"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_width="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="5dp"
-            android:textColor="#6c6c6c"
+            android:textColor="#3297ed"
             android:textSize="14sp"
             android:text="一共五个字"
+            android:gravity="center_vertical"
             />
 
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="5dp"
-            android:textColor="#828282"
+            android:textColor="#3297ed"
             android:textSize="14sp"
             android:text="等"/>
 
@@ -79,8 +77,6 @@
             android:id="@+id/tvFanNum"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="5dp"
             android:textColor="#3297ed"
             android:textSize="18sp"
             android:text="8956"/>
@@ -88,8 +84,6 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="5dp"
             android:textColor="#828282"
             android:textSize="14sp"
             android:text="人关注它"/>

@@ -17,6 +17,7 @@ import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -29,7 +30,7 @@ import com.tradehero.th.utils.StringUtils;
 
 public class LeaderboardListAdapter extends BaseAdapter {
 
-    private FragmentActivity context;
+    private DashboardActivity context;
     private LayoutInflater inflater;
     private LeaderboardUserDTOList leaderboardUserDTOs = new LeaderboardUserDTOList();
     public boolean hasLeaderboard;
@@ -46,7 +47,7 @@ public class LeaderboardListAdapter extends BaseAdapter {
     public LeaderboardListAdapter(Context context)
     {
         DaggerUtils.inject(this);
-        this.context = (FragmentActivity)context;
+        this.context = (DashboardActivity)context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -233,10 +234,12 @@ public class LeaderboardListAdapter extends BaseAdapter {
                 holder.imgUserName.setOnTouchListener(new View.OnTouchListener() {
                     @Override
                     public boolean onTouch(View v, MotionEvent event) {
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, item.topWatchUserId);
-                        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, PortfolioFragment.class.getName());
-                        ActivityHelper.launchDashboard(context, bundle);
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, item.topWatchUserId);
+                            context.getDashboardNavigator().pushFragment(PortfolioFragment.class, bundle);
+                        }
+
                         return true;
                     }
                 });
