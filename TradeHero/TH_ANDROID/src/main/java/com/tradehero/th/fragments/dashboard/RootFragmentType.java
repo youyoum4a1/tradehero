@@ -53,7 +53,7 @@ public enum RootFragmentType
     CONTEST_CENTER(R.layout.left_drawer_item,
             R.string.dashboard_contest_center,
             R.string.dashboard_contest_center_key,
-            R.drawable.icn_menu_contest_center,
+            R.drawable.ic_tab_portfolio,
             ContestCenterFragment.class,
             null,
             AnalyticsConstants.TabBar_ContestCenter),
