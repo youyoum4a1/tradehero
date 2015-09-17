@@ -6,22 +6,25 @@
   <color name="text_primary_inverse">@color/white</color>
   <color name="text_secondary_inverse">#fff4f4f4</color>
   <color name="text_primary_accented">@color/tradehero_blue</color>
-  <color name="text_secondary_accented">#ff499bfb</color>
+  <color name="text_secondary_accented">#4499fa</color>
 
   <!--Tradehero Colors-->
-  <color name="tradehero_blue">#1376FB</color>
-  <color name="tradehero_blue_pressed">#58b0dd</color>
-  <color name="tradehero_blue_focused">#8cdddd</color>
+  <color name="tradehero_blue">#54C7FC</color>
+  <color name="tradehero_blue_pressed">#4ca5d1</color>
+  <color name="tradehero_blue_focused">#77d0fa</color>
   <color name="tradehero_blue_status_bar">@color/tradehero_blue</color>
+  <color name="tradehero_blue_status_bar_700">#327797</color>
   <color name="tradehero_dark_blue">#03237D</color>
 
-  <color name="tradehero_tab_bg_color">@color/tradehero_dark_blue</color>
-  <color name="tradehero_tab_indicator_color">#F7F7F7</color>
+  <color name="tradehero_tab_bg_color">#fafafa</color>
+  <color name="tradehero_tab_indicator_color">@color/tradehero_blue</color>
   <color name="tradehero_bottom_tab_bg_color">#3E454C</color>
   <color name="tradehero_divider_grey">@color/grey</color>
   <color name="tradehero_dashboard_bg_color">#E2E8EE</color>
   <color name="tradehero_grid_border_color">@color/darker_grey</color>
   <color name="tradehero_reside_menu_bg">#ff00a2e0</color>
+
+  <color name="tradehero_highlight">#b7b7b7</color>
 
   <color name="number_green">#ff20ae1e</color>
   <color name="number_red">#E51A33</color>

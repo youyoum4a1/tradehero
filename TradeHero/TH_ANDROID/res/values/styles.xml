@@ -9,16 +9,16 @@
       parent="Theme.AppCompat.Light.NoActionBar">
     <item name="colorAccent">@color/text_secondary_accented</item>
     <item name="colorPrimary">@color/tradehero_blue</item>
-    <item name="colorPrimaryDark">#ff0b4a9e</item>
+    <item name="colorPrimaryDark">@color/tradehero_blue_status_bar_700</item>
     <item name="colorControlNormal">@color/text_secondary</item>
-    <item name="colorControlHighlight">#b7b7b7</item>
+    <item name="colorControlHighlight">@color/tradehero_highlight</item>
     <item name="android:textColorPrimary">@color/primary_text</item>
     <item name="android:textColorPrimaryInverse">@color/primary_inverse_text</item>
     <item name="android:textColorSecondary">@color/secondary_text</item>
     <item name="android:textColorSecondaryInverse">@color/secondary_inverse_text</item>
     <item name="android:textColorHighlight">@color/accented_primary_text</item>
     <item name="android:textColorHighlightInverse">@color/accented_secondary_text</item>
-    <item name="slidingTabBackground">@color/tradehero_dark_blue</item>
+    <item name="slidingTabBackground">@color/tradehero_tab_bg_color</item>
   </style>
 
   <style name="TradeHero"
