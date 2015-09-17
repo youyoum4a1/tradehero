@@ -204,37 +204,6 @@ abstract public class THBaseBillingInteractorRx<
         return popErrorAndHandle(super.purchase(purchaseOrder));
     }
 
-    //@NonNull protected Observable<THProductDetailType> getDomainDialogResult(
-    //        @NonNull final ProductIdentifierDomain domain)
-    //{
-    //    return getInventory()
-    //            .flatMap(
-    //                    new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Observable<? extends THProductDetailType>>()
-    //                    {
-    //                        @Override public Observable<? extends THProductDetailType> call(
-    //                                ProductInventoryResult<ProductIdentifierType, THProductDetailType> result)
-    //                        {
-    //                            Map<ProductIdentifierType, THProductDetailType> filtered2 = new HashMap<>();
-    //                            for (Map.Entry<ProductIdentifierType, THProductDetailType> entry : result.mapped.entrySet())
-    //                            {
-    //                                if (entry.getValue().getDomain().equals(domain))
-    //                                {
-    //                                    filtered2.put(entry.getKey(), entry.getValue());
-    //                                }
-    //                            }
-    //                            if (filtered2.size() > 0)
-    //                            {
-    //                                return billingAlertDialogUtil.popBuyDialogAndHandle(
-    //                                        activityProvider.get(),
-    //                                        domain,
-    //                                        new ProductInventoryResult<>(result.requestCode, filtered2),
-    //                                        null);
-    //                            }
-    //                            return Observable.empty();
-    //                        }
-    //                    });
-    //}
-
     @NonNull @Override public Observable<PurchaseResult<
             ProductIdentifierType,
             THPurchaseOrderType,
@@ -242,34 +211,10 @@ abstract public class THBaseBillingInteractorRx<
             THProductPurchaseType>> purchaseAndClear(
             @NonNull ProductIdentifierDomain domain)
     {
-        //return popErrorAndHandle(getDomainDialogResult(domain)
-        //        .flatMap(
-        //                new Func1<THProductDetailType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
-        //                {
-        //                    @Override
-        //                    public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-        //                            final THProductDetailType selected)
-        //                    {
-        //                        return THBaseBillingInteractorRx.this.createPurchaseOrder(selected)
-        //                                .flatMap(
-        //                                        new Func1<THPurchaseOrderType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
-        //                                        {
-        //                                            @Override
-        //                                            public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-        //                                                    THPurchaseOrderType purchaseOrder)
-        //                                            {
-        //                                                return billingLogicHolder.purchaseAndClear(
-        //                                                        billingLogicHolder.getUnusedRequestCode(),
-        //                                                        purchaseOrder);
-        //                                            }
-        //                                        });
-        //                    }
-        //                }
-        //        ));
         return Observable.empty();
     }
 
-    @NonNull @Override public Observable<PurchaseResult<
+    @Deprecated @NonNull @Override public Observable<PurchaseResult<
             ProductIdentifierType,
             THPurchaseOrderType,
             THOrderIdType,
@@ -277,101 +222,7 @@ abstract public class THBaseBillingInteractorRx<
             @NonNull ProductIdentifierDomain domain)
     {
         return Observable.empty();
-        //return popErrorAndHandle(getDomainDialogResult(domain)
-        //        .flatMap(
-        //                new Func1<THProductDetailType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
-        //                {
-        //                    @Override
-        //                    public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-        //                            final THProductDetailType selected)
-        //                    {
-        //                        return THBaseBillingInteractorRx.this.createPurchaseOrder(selected)
-        //                                .flatMap(
-        //                                        new Func1<THPurchaseOrderType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
-        //                                        {
-        //                                            @Override
-        //                                            public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-        //                                                    THPurchaseOrderType purchaseOrder)
-        //                                            {
-        //                                                return billingLogicHolder.purchase(
-        //                                                        billingLogicHolder.getUnusedRequestCode(),
-        //                                                        purchaseOrder);
-        //                                            }
-        //                                        });
-        //                    }
-        //                }
-        //        ));
     }
-    //</editor-fold>
-
-    //<editor-fold desc="Premium Follow">
-    //@NonNull @Override
-    //public Observable<PurchaseResult<
-    //        ProductIdentifierType,
-    //        THPurchaseOrderType,
-    //        THOrderIdType,
-    //        THProductPurchaseType>> purchaseAndPremiumFollowAndClear(
-    //        @NonNull final UserBaseKey heroId)
-    //{
-    //    return popErrorAndHandle(getDomainDialogResult(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
-    //            .flatMap(
-    //                    new Func1<THProductDetailType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
-    //                    {
-    //                        @Override
-    //                        public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-    //                                final THProductDetailType selected)
-    //                        {
-    //                            return THBaseBillingInteractorRx.this.createPurchaseOrder(selected, heroId)
-    //                                    .flatMap(
-    //                                            new Func1<THPurchaseOrderType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
-    //                                            {
-    //                                                @Override
-    //                                                public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-    //                                                        THPurchaseOrderType purchaseOrder)
-    //                                                {
-    //                                                    return billingLogicHolder.purchaseAndClear(
-    //                                                            billingLogicHolder.getUnusedRequestCode(),
-    //                                                            purchaseOrder);
-    //                                                }
-    //                                            });
-    //                        }
-    //                    }
-    //            ));
-    //}
-    //
-    //@NonNull @Override
-    //public Observable<PurchaseResult<
-    //        ProductIdentifierType,
-    //        THPurchaseOrderType,
-    //        THOrderIdType,
-    //        THProductPurchaseType>> purchaseAndPremiumFollow(
-    //        @NonNull final UserBaseKey heroId)
-    //{
-    //    return popErrorAndHandle(getDomainDialogResult(ProductIdentifierDomain.DOMAIN_FOLLOW_CREDITS)
-    //            .flatMap(
-    //                    new Func1<THProductDetailType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
-    //                    {
-    //                        @Override
-    //                        public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-    //                                final THProductDetailType selected)
-    //                        {
-    //                            return THBaseBillingInteractorRx.this.createPurchaseOrder(selected, heroId)
-    //                                    .flatMap(
-    //                                            new Func1<THPurchaseOrderType, Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>>>()
-    //                                            {
-    //                                                @Override
-    //                                                public Observable<? extends PurchaseResult<ProductIdentifierType, THPurchaseOrderType, THOrderIdType, THProductPurchaseType>> call(
-    //                                                        THPurchaseOrderType purchaseOrder)
-    //                                                {
-    //                                                    return billingLogicHolder.purchase(
-    //                                                            billingLogicHolder.getUnusedRequestCode(),
-    //                                                            purchaseOrder);
-    //                                                }
-    //                                            });
-    //                        }
-    //                    }
-    //            ));
-    //}
     //</editor-fold>
 
     //<editor-fold desc="Restore Purchases">

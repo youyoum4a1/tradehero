@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.common.billing.PurchaseOrder;
@@ -298,85 +297,6 @@ public class StoreScreenFragment extends BaseFragment
                 productDomainIdentifierOrdinal = null;
             }
         }
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    //@OnItemClick(R.id.store_option_list)
-    protected void onStoreListItemClick(AdapterView<?> adapterView, View view, int position, long l)
-    {
-        //StoreItemDTO clickedItem = (StoreItemDTO) adapterView.getItemAtPosition(position);
-        //if (clickedItem instanceof StoreItemPromptPurchaseDTO)
-        //{
-        //    unsubscribe(purchaseSubscription);
-        //    //noinspection unchecked
-        //    purchaseSubscription = AppObservable.bindSupportFragment(
-        //            this,
-        //            userInteractorRx.purchaseAndClear(((StoreItemPromptPurchaseDTO) clickedItem).productIdentifierDomain))
-        //            .observeOn(AndroidSchedulers.mainThread())
-        //            .subscribe(
-        //                    new Action1<PurchaseResult>()
-        //                    {
-        //                        @Override public void call(PurchaseResult ignored)
-        //                        {
-        //                            userProfileCache.get(currentUserId.toUserBaseKey());
-        //                            portfolioCompactListCache.get(currentUserId.toUserBaseKey());
-        //                        }
-        //                    },
-        //                    new TimberAndToastOnErrorAction1("Purchase failed"));
-        //}
-        //else if (clickedItem instanceof StoreItemRestoreDTO)
-        //{
-        //    unsubscribe(purchaseSubscription);
-        //    //noinspection unchecked
-        //    purchaseSubscription = AppObservable.bindSupportFragment(
-        //            this,
-        //            userInteractorRx.restorePurchasesAndClear(true))
-        //            .observeOn(AndroidSchedulers.mainThread())
-        //            .subscribe(
-        //                    new Action1<PurchaseResult>()
-        //                    {
-        //                        @Override public void call(PurchaseResult ignored)
-        //                        {
-        //                            userProfileCache.get(currentUserId.toUserBaseKey());
-        //                            portfolioCompactListCache.get(currentUserId.toUserBaseKey());
-        //                        }
-        //                    },
-        //                    new TimberAndToastOnErrorAction1("Restore failed"));
-        //}
-        //else if (clickedItem instanceof StoreItemHasFurtherDTO)
-        //{
-        //    StoreItemHasFurtherDTO furtherDTO = (StoreItemHasFurtherDTO) clickedItem;
-        //    if (furtherDTO.furtherActivity != null)
-        //    {
-        //        navigator.get().launchActivity(furtherDTO.furtherActivity);
-        //    }
-        //    else if (furtherDTO.furtherFragment != null)
-        //    {
-        //        //TODO
-        //        //if (furtherDTO.furtherFragment.equals(HeroManagerFragment.class))
-        //        //{
-        //        //    Bundle bundle = new Bundle();
-        //        //    HeroManagerFragment.putFollowerId(bundle, currentUserId.toUserBaseKey());
-        //        //    navigator.get().pushFragment(HeroManagerFragment.class, bundle);
-        //        //}
-        //        //else if (furtherDTO.furtherFragment.equals(FollowerRevenueReportFragment.class))
-        //        //{
-        //        //    navigator.get().pushFragment(FollowerRevenueReportFragment.class);
-        //        //}
-        //        //else
-        //        //{
-        //        throw new IllegalArgumentException("Unhandled class " + furtherDTO.furtherFragment);
-        //        //}
-        //    }
-        //    else
-        //    {
-        //        throw new IllegalArgumentException("Unhandled situation where both activity and fragment are null");
-        //    }
-        //}
-        //else
-        //{
-        //    throw new IllegalArgumentException("Unhandled type " + clickedItem);
-        //}
     }
 
     @Override public int getTutorialLayout()
