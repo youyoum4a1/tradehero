@@ -129,11 +129,11 @@
                 android:id="@+id/trade_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="3分钟前"
                 android:textColor="#828282"
                 android:textSize="14sp"/>
 
             <TextView
+                android:id="@+id/percent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="仓位88.22%"
