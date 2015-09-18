@@ -1,112 +1,69 @@
 package com.tradehero.th.fragments.billing;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+import butterknife.Bind;
 import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.fragments.billing.store.StoreItemDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemPromptPurchaseDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemRestoreDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemTitleDTO;
-import java.util.HashMap;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
+import com.tradehero.th.fragments.billing.store.StoreItemDisplayDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemProductDisplayDTO;
+import com.tradehero.th.fragments.billing.store.StoreItemRestoreDisplayDTO;
 
-public class StoreItemAdapter extends ArrayAdapter<StoreItemDTO>
+public class StoreItemAdapter extends TypedRecyclerAdapter<StoreItemDisplayDTO>
 {
-    public static final int VIEW_TYPE_HEADER = 0;
-    public static final int VIEW_TYPE_LIKE_BUTTON = 1;
-    public static final int VIEW_TYPE_HAS_FURTHER = 2;
-
-    @NonNull private HashMap<Integer, Integer> viewTypeToLayoutId;
-
-    //<editor-fold desc="Constructors">
-    public StoreItemAdapter(Context context)
+    public StoreItemAdapter()
     {
-        super(context, 0);
-        viewTypeToLayoutId = new HashMap<>();
-        buildViewTypeMap();
-    }
-    //</editor-fold>
-
-    private void buildViewTypeMap()
-    {
-        viewTypeToLayoutId.put(VIEW_TYPE_HEADER, R.layout.store_item_header);
-        viewTypeToLayoutId.put(VIEW_TYPE_LIKE_BUTTON, R.layout.store_item_like_button);
-        viewTypeToLayoutId.put(VIEW_TYPE_HAS_FURTHER, R.layout.store_item_has_further);
-    }
-
-    @Override public long getItemId(int i)
-    {
-        return i;
-    }
-
-    @Override public int getViewTypeCount()
-    {
-        return viewTypeToLayoutId.size();
-    }
-
-    @Override public int getItemViewType(int position)
-    {
-        int viewType;
-        StoreItemDTO storeItemDTO = getItem(position);
-        if (storeItemDTO instanceof StoreItemTitleDTO)
+        super(StoreItemDisplayDTO.class, new TypedRecyclerComparator<StoreItemDisplayDTO>()
         {
-            viewType = VIEW_TYPE_HEADER;
-        }
-        else if (storeItemDTO instanceof StoreItemPromptPurchaseDTO
-                || storeItemDTO instanceof StoreItemRestoreDTO)
-        {
-            viewType = VIEW_TYPE_LIKE_BUTTON;
-        }
-        else if (storeItemDTO instanceof StoreItemHasFurtherDTO)
-        {
-            viewType = VIEW_TYPE_HAS_FURTHER;
-        }
-        else
-        {
-            throw new IllegalArgumentException("Unhandled dto type " + storeItemDTO);
-        }
-        return viewType;
+            @Override public boolean areItemsTheSame(StoreItemDisplayDTO item1, StoreItemDisplayDTO item2)
+            {
+                return item1.titleResId == item2.titleResId;
+            }
+
+            @Override public int compare(StoreItemDisplayDTO o1, StoreItemDisplayDTO o2)
+            {
+                return o1.displayOrder - o2.displayOrder;
+            }
+        });
     }
 
-    public int getLayoutIdFromPosition(int position)
+    @Override public TypedViewHolder<StoreItemDisplayDTO> onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        return viewTypeToLayoutId.get(getItemViewType(position));
+        return new StoreItemDisplayProductDTOViewHolder(
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.store_recycler_item, parent, false));
     }
 
-    @Override public View getView(int position, View view, ViewGroup viewGroup)
+    public static class StoreItemDisplayProductDTOViewHolder extends TypedViewHolder<StoreItemDisplayDTO>
     {
-        int layoutToInflate = getLayoutIdFromPosition(position);
-        if (view == null)
+        @Bind(R.id.icon) ImageView img;
+        @Bind(R.id.title) TextView title;
+        @Bind(R.id.description) TextView desc;
+        @Bind(R.id.price) TextView price;
+
+        public StoreItemDisplayProductDTOViewHolder(View itemView)
         {
-            view = LayoutInflater.from(getContext()).inflate(layoutToInflate, viewGroup, false);
+            super(itemView);
         }
 
-        //noinspection unchecked
-        ((DTOView<StoreItemDTO>) view).display(getItem(position));
-        if ((position & 1) == 0)
+        @Override public void display(StoreItemDisplayDTO storeItem)
         {
-            view.setBackgroundResource(R.drawable.basic_white_selector);
+            img.setImageResource(storeItem.iconResId);
+            title.setText(storeItem.titleResId);
+            if (storeItem instanceof StoreItemProductDisplayDTO)
+            {
+                desc.setVisibility(View.VISIBLE);
+                price.setVisibility(View.VISIBLE);
+                desc.setText(((StoreItemProductDisplayDTO) storeItem).descriptionResId);
+                price.setText(((StoreItemProductDisplayDTO) storeItem).priceText);
+            }
+            else if (storeItem instanceof StoreItemRestoreDisplayDTO)
+            {
+                price.setVisibility(View.GONE);
+                desc.setVisibility(View.GONE);
+            }
         }
-        else
-        {
-            view.setBackgroundResource(R.drawable.basic_light_grey_selector);
-        }
-
-        return view;
-    }
-
-    @Override public boolean areAllItemsEnabled()
-    {
-        return false;
-    }
-
-    @Override public boolean isEnabled(int position)
-    {
-        return getItemViewType(position) != VIEW_TYPE_HEADER;
     }
 }

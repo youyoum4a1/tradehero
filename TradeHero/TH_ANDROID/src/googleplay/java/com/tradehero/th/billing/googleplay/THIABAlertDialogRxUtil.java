@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.googleplay;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -18,10 +17,7 @@ import com.tradehero.th.activities.ActivityUtil;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.BaseBillingUtils;
 import com.tradehero.th.billing.BillingUtils;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
-import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
-import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
 import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
@@ -36,8 +32,6 @@ public class THIABAlertDialogRxUtil
         IABSKU,
         THIABProductDetail,
         THIABLogicHolderRx,
-        THIABStoreProductDetailView,
-        THIABSKUDetailAdapter,
         THIABOrderId,
         THIABPurchase>
 {
@@ -324,13 +318,6 @@ public class THIABAlertDialogRxUtil
     //</editor-fold>
 
     //<editor-fold desc="SKU related">
-    @Override @NonNull protected THIABSKUDetailAdapter createProductDetailAdapter(
-            @NonNull Activity activity,
-            @NonNull ProductIdentifierDomain skuDomain)
-    {
-        return new THIABSKUDetailAdapter(activity, skuDomain);
-    }
-
     @Override @NonNull public HashMap<ProductIdentifier, Boolean> getEnabledItems()
     {
         HashMap<ProductIdentifier, Boolean> enabledItems = new HashMap<>();

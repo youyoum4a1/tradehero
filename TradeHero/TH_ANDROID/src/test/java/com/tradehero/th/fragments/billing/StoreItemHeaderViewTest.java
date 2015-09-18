@@ -6,8 +6,6 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.fragments.billing.store.StoreItemDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemTitleDTO;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +31,7 @@ public class StoreItemHeaderViewTest
     @Test(expected = ClassCastException.class)
     public void testCrashesWhenPassingNotStoreItemTitleDTO()
     {
-        storeItemHeaderView.display(new StoreItemDTO(1));
+        storeItemHeaderView.display(new StoreItemDTO(1, price, description));
     }
 
     @Test public void testOkWhenPassingStoreItemTitleDTO()

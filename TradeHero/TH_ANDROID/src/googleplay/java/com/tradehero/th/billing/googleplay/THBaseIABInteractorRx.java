@@ -15,14 +15,14 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
-import com.tradehero.th.fragments.billing.THIABSKUDetailAdapter;
-import com.tradehero.th.fragments.billing.THIABStoreProductDetailView;
 import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 @Singleton public class THBaseIABInteractorRx
@@ -35,9 +35,7 @@ import rx.functions.Func1;
                 THIABPurchaseOrder,
                 THIABOrderId,
                 THIABPurchase,
-                THIABLogicHolderRx,
-                THIABStoreProductDetailView,
-                THIABSKUDetailAdapter>
+                THIABLogicHolderRx>
         implements THIABInteractorRx
 {
     public static final String BUNDLE_KEY_ACTION = THBaseIABInteractorRx.class.getName() + ".action";
@@ -133,5 +131,19 @@ import rx.functions.Func1;
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(IABConstants.GOOGLE_PLAY_ACCOUNT_URL));
             currentActivity.startActivity(intent);
         }
+    }
+
+    @NonNull @Override public Observable<List<THIABProductDetail>> listProduct()
+    {
+        return super.listProduct().doOnNext(new Action1<List<THIABProductDetail>>()
+        {
+            @Override public void call(List<THIABProductDetail> thiabProductDetails)
+            {
+                for (THIABProductDetail productDetail : thiabProductDetails)
+                {
+                    THIABProductDetailTuner.fineTune(productDetail);
+                }
+            }
+        });
     }
 }

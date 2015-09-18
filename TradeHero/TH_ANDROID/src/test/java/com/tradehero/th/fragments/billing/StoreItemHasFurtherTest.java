@@ -7,9 +7,6 @@ import com.tradehero.THRobolectricTestRunner;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.fragments.billing.store.StoreItemClickableDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemHasFurtherDTO;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +33,7 @@ public class StoreItemHasFurtherTest
     @Test(expected = ClassCastException.class)
     public void testCrashesWhenPassingNotStoreItemHasFurtherDTO1()
     {
-        storeItemHasFurther.display(new StoreItemDTO(1));
+        storeItemHasFurther.display(new StoreItemDTO(1, price, description));
     }
 
     @Test(expected = ClassCastException.class)
