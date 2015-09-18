@@ -11,7 +11,6 @@ import android.widget.ListView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.buyWhat.FollowBuyFragment;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
-import com.tradehero.chinabuild.fragment.leaderboard.StockGodListBaseFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
@@ -28,7 +27,6 @@ import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
     private ImageView mQueryBtn;
@@ -40,7 +38,8 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
     private MainTabBuyWhatAdapter mListViewAdapter;
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 10;
-    @Inject LeaderboardCache leaderboardCache;
+    @Inject
+    LeaderboardCache leaderboardCache;
     protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
 
     @Override
@@ -123,17 +122,20 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
                 break;
             case R.id.hot_stock_icon:
                 Bundle args = new Bundle();
-                args.putInt(StockGodListBaseFragment.BUNLDE_LEADERBOARD_KEY, LeaderboardDefKeyKnowledge.POPULAR);
-                gotoDashboard(StockGodListBaseFragment.class.getName(), args);
+                args.putInt(MainTabFragmentStockGod.TAB_KEY, 3);
+                gotoDashboard(MainTabFragmentStockGod.class.getName(), args);
                 break;
             case R.id.win_rate_icon:
+                Bundle args2 = new Bundle();
+                args2.putInt(MainTabFragmentStockGod.TAB_KEY, 1);
+                gotoDashboard(MainTabFragmentStockGod.class.getName(), args2);
                 break;
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        goToMockTrade(mListViewAdapter.getItem(position-1));
+        goToMockTrade(mListViewAdapter.getItem(position - 1));
     }
 
     private void goToMockTrade(LeaderboardUserDTO dto) {
@@ -170,8 +172,6 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
     private void setListData(LeaderboardKey key, LeaderboardUserDTOList listData) {
         if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
             currentPage = 0;
-            Timber.d("lyl setListData size="+listData.size());
-            Timber.d("lyl "+listData.get(0).toString());
             mListViewAdapter.setItems(listData);
         } else {
             mListViewAdapter.addItems(listData);

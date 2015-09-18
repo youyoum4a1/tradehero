@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/up_layout"
         android:layout_width="match_parent"
         android:layout_height="61dp"
         android:background="@color/white">
@@ -86,6 +87,7 @@
         android:src="#f0f0f0"/>
 
     <RelativeLayout
+        android:id="@+id/down_layout"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:background="@color/white">
@@ -138,6 +140,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/follow_buy_button"
             android:layout_width="48dp"
             android:layout_height="30dp"
             android:layout_alignParentRight="true"

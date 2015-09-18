@@ -16,8 +16,9 @@ import com.tradehero.th.utils.DaggerUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+import timber.log.Timber;
 
-public class MainTabBuyWhatAdapter extends BaseAdapter {
+public class MainTabBuyWhatAdapter extends BaseAdapter implements View.OnClickListener {
     private LeaderboardUserDTOList mDtoList = new LeaderboardUserDTOList();
     private LayoutInflater inflater;
 
@@ -54,15 +55,20 @@ public class MainTabBuyWhatAdapter extends BaseAdapter {
         TextView userName = (TextView) convertView.findViewById(R.id.user_name);
         userName.setText(item.displayName);
         TextView winRate = (TextView) convertView.findViewById(R.id.win_rate);
-        winRate.setText(item.winRatio*100+"%");
+        winRate.setText(String.valueOf(item.winRatio*100).substring(0,4)+"%");
         TextView monthlyRate = (TextView) convertView.findViewById(R.id.monthly_rate);
         monthlyRate.setText(String.valueOf(item.monthlyRoi*100).substring(0,5)+"%");
         TextView securityName = (TextView) convertView.findViewById(R.id.security_name);
-        securityName.setText(item.securityName);
+        securityName.setText(item.securityName+"("+item.symbol+")");
         TextView tradePrice = (TextView) convertView.findViewById(R.id.trade_price);
         tradePrice.setText("成交价格 "+item.price);
         TextView tradeTime = (TextView) convertView.findViewById(R.id.trade_time);
         tradeTime.setText(prettyTime.get().formatUnrounded(item.dateTimeUtc));
+
+//        RelativeLayout upLayout = (RelativeLayout)convertView.findViewById(R.id.up_layout);
+//        upLayout.setOnClickListener(this);
+//        RelativeLayout downLayout = (RelativeLayout)convertView.findViewById(R.id.down_layout);
+//        downLayout.setOnClickListener(this);
 
         return convertView;
     }
@@ -73,5 +79,10 @@ public class MainTabBuyWhatAdapter extends BaseAdapter {
 
     public void addItems(LeaderboardUserDTOList listData) {
         mDtoList.addAll(listData);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Timber.d("lyl onClick "+v.getId());
     }
 }
