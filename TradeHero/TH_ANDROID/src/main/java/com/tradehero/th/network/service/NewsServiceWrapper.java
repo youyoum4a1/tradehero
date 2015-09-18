@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
 import com.tradehero.th.api.news.CountryLanguagePairDTO;
 import com.tradehero.th.api.news.NewsItemCategoryDTO;
 import com.tradehero.th.api.news.NewsItemCompactDTO;
@@ -98,6 +99,11 @@ import rx.Observable;
 
         return paginatedNewsItemCompactDTO
                 .map(newsDTOProcessorProvider.get());
+    }
+
+    @NonNull public Observable<PaginatedDTO<NewsItemCompactDTO>> getIntegratedNews(NewsfeedPagedDTOKey newsfeedPagedDTOKey)
+    {
+        return newsServiceRx.getIntegratedNews(newsfeedPagedDTOKey.countryCode, newsfeedPagedDTOKey.languageCode, newsfeedPagedDTOKey.page, newsfeedPagedDTOKey.perPage);
     }
 
     @NonNull public Observable<NewsItemDTO> getSecurityNewsDetailRx(DiscussionKey discussionKey)

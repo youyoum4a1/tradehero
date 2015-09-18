@@ -13,16 +13,7 @@ public class NewsfeedNewsDisplayDTO extends NewsfeedDisplayDTO
 
     public static NewsfeedNewsDisplayDTO from(NewsItemCompactDTO newsItemCompactDTO, PrettyTime prettyTime)
     {
-        NewsfeedNewsDTO newsfeedNewsDTO = new NewsfeedNewsDTO();
-        newsfeedNewsDTO.id = newsItemCompactDTO.id;
-        newsfeedNewsDTO.createdAtUTC = newsItemCompactDTO.createdAtUtc;
-        newsfeedNewsDTO.picture = newsItemCompactDTO.source.imageUrl;
-        newsfeedNewsDTO.displayName = newsItemCompactDTO.source.rootName;
-        newsfeedNewsDTO.url = newsItemCompactDTO.url;
-        newsfeedNewsDTO.thumbnail = newsItemCompactDTO.thumbnail;
-        newsfeedNewsDTO.title = newsItemCompactDTO.title;
-        newsfeedNewsDTO.description = newsItemCompactDTO.description;
-        return new NewsfeedNewsDisplayDTO(newsfeedNewsDTO, prettyTime);
+        return new NewsfeedNewsDisplayDTO(NewsfeedNewsDTO.from(newsItemCompactDTO), prettyTime);
     }
 
     public NewsfeedNewsDisplayDTO(NewsfeedNewsDTO newsfeedDTO, PrettyTime prettyTime)

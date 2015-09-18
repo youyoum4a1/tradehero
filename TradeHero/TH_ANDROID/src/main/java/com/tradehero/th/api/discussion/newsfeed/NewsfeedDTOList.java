@@ -5,4 +5,8 @@ import com.tradehero.common.persistence.DTO;
 
 public class NewsfeedDTOList extends BaseArrayList<NewsfeedDTO> implements DTO
 {
+    public NewsfeedDTOList(int initialCapacity)
+    {
+        super(initialCapacity);
+    }
 }

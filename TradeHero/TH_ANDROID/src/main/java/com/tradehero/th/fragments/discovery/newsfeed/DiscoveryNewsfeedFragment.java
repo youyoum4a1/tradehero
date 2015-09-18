@@ -19,6 +19,7 @@ import com.tradehero.th.fragments.BasePagedRecyclerRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import java.util.Locale;
 import javax.inject.Inject;
 import rx.functions.Action1;
 
@@ -31,6 +32,7 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
 {
     @Inject NewsfeedPagedCache newsfeedPagedCache;
     @Inject DashboardNavigator navigator;
+    @Inject Locale locale;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -109,6 +111,6 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
 
     @NonNull @Override public NewsfeedPagedDTOKey makePagedDtoKey(int page)
     {
-        return new NewsfeedPagedDTOKey(page, perPage);
+        return new NewsfeedPagedDTOKey(locale.getCountry(), locale.getLanguage(), page, perPage);
     }
 }
