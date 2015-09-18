@@ -6,6 +6,7 @@ import android.view.View;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
+import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
@@ -25,6 +26,9 @@ public class PortfolioDisplayDTO implements DTO
     @ViewVisibilityValue public final int sinceValueVisibility;
     @ViewVisibilityValue public final int chartVisibility;
     @Nullable public final OwnedPortfolioId ownedPortfolioId;
+    public final boolean isWatchlist;
+    @Nullable public final AssetClass assetClass;
+    @Nullable public final Integer providerId;
 
     public PortfolioDisplayDTO(Resources resources, CurrentUserId currentUserId, DisplayablePortfolioDTO dto)
     {
@@ -77,7 +81,19 @@ public class PortfolioDisplayDTO implements DTO
         }
 
         this.description = DisplayablePortfolioUtil.getLongSubTitle(resources, currentUserId, dto);
-
         this.ownedPortfolioId = dto.ownedPortfolioId;
+
+        if(dto.portfolioDTO != null)
+        {
+            this.isWatchlist = dto.portfolioDTO.isWatchlist;
+            this.assetClass = dto.portfolioDTO.assetClass;
+            this.providerId = dto.portfolioDTO.providerId;
+        }
+        else
+        {
+            isWatchlist = false;
+            assetClass = null;
+            providerId = null;
+        }
     }
 }

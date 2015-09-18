@@ -16,16 +16,21 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
+import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
+import com.tradehero.th.fragments.position.TabbedPositionListFragment;
+import com.tradehero.th.fragments.watchlist.MainWatchlistPositionFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction1;
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
@@ -42,7 +47,7 @@ public class PortfolioListFragment extends DashboardFragment
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
 
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
-    @Inject UserProfileCacheRx userProfileCache;
+    @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject CurrentUserId currentUserId;
 
     @Bind(R.id.portfolio_refresh) SwipeRefreshLayout swipeRefreshLayout;
@@ -84,9 +89,44 @@ public class PortfolioListFragment extends DashboardFragment
             @Override
             public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<PortfolioDisplayDTO> viewHolder, PortfolioDisplayDTO object)
             {
-
+                if (object.isWatchlist)
+                {
+                    pushWatchlistPositionFragment();
+                }
+                else if (object.ownedPortfolioId != null)
+                {
+                    pushPositionListFragment(object);
+                }
             }
         });
+    }
+
+    private void pushPositionListFragment(@NonNull PortfolioDisplayDTO object)
+    {
+        Bundle args = new Bundle();
+
+        if (object.ownedPortfolioId.userId.equals(currentUserId.get()))
+        {
+            TabbedPositionListFragment.putApplicablePortfolioId(args, object.ownedPortfolioId);
+        }
+        TabbedPositionListFragment.putGetPositionsDTOKey(args, object.ownedPortfolioId);
+        TabbedPositionListFragment.putShownUser(args, object.ownedPortfolioId.getUserBaseKey());
+
+        TabbedPositionListFragment.putIsFX(args, object.assetClass);
+        if (object.providerId != null && object.providerId > 0)
+        {
+            TabbedPositionListFragment.putProviderId(args, new ProviderId(object.providerId));
+            navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
+            return;
+        }
+        navigator.get().pushFragment(TabbedPositionListFragment.class, args);
+    }
+
+    private void pushWatchlistPositionFragment()
+    {
+        Bundle args = new Bundle();
+        MainWatchlistPositionFragment.putShowActionBarTitle(args, true);
+        navigator.get().pushFragment(MainWatchlistPositionFragment.class, args);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -104,6 +144,18 @@ public class PortfolioListFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        {
+            @Override public void onRefresh()
+            {
+                portfolioCompactListCache.invalidate(shownUserBaseKey);
+                portfolioCompactListCache.get(shownUserBaseKey);
+                userProfileCache.get().invalidate(shownUserBaseKey);
+                userProfileCache.get().get(shownUserBaseKey);
+            }
+        });
+
         DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
 
         portfolioList.setAdapter(portfolioRecyclerAdapter);
