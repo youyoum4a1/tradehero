@@ -22,7 +22,6 @@ import com.tradehero.livetrade.SecurityOptPhoneNumBindFragment;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
 import com.tradehero.livetrade.services.LiveTradeManager;
-import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.livetrade.SecurityOptActualFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockFragment;
 import com.tradehero.th.R;
@@ -236,7 +235,7 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
             UserProfileDTO profileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
             if (tradeManager.getLiveTradeServices().needCheckPhoneNumber() && profileDTO.phoneNumber == null) {
                 registerReceiver(new PhoneBindBroadcastReceiver(),
-                        new IntentFilter(SecurityOptPhoneNumBindFragment.INTENT_REFRESH_COMPETITION_DISCUSSIONS));
+                        new IntentFilter(SecurityOptPhoneNumBindFragment.PHONE_NUM_BIND_SUCCESS));
 
                 gotoDashboard(SecurityOptPhoneNumBindFragment.class.getName(), new Bundle());
             }

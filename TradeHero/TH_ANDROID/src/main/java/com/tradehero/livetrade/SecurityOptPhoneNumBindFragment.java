@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +11,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.password.PhoneNumberBindDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 
 import javax.inject.Inject;
@@ -35,9 +36,11 @@ import retrofit.client.Response;
  */
 public class SecurityOptPhoneNumBindFragment extends DashboardFragment implements View.OnClickListener {
 
-    public static final String INTENT_REFRESH_COMPETITION_DISCUSSIONS = "SecurityOptPhoneNumBindFragment.success";
+    public static final String PHONE_NUM_BIND_SUCCESS = "SecurityOptPhoneNumBindFragment.success";
 
     @Inject UserServiceWrapper userServiceWrapper;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCache;
 
     @InjectView(R.id.phone_number)
     EditText phoneNumber;
@@ -127,15 +130,16 @@ public class SecurityOptPhoneNumBindFragment extends DashboardFragment implement
                 userServiceWrapper.phoneNumBind(phoneNumber.getText().toString(), verifyCode.getText().toString(), new Callback<PhoneNumberBindDTO>() {
                     @Override
                     public void success(PhoneNumberBindDTO phoneNumberBindDTO, Response response) {
-                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(INTENT_REFRESH_COMPETITION_DISCUSSIONS));
+                        UserProfileDTO profileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+                        profileDTO.phoneNumber = phoneNumberBindDTO.phoneNumber;
+
                         popCurrentFragment();
+                        getActivity().sendBroadcast(new Intent(PHONE_NUM_BIND_SUCCESS));
                     }
 
                     @Override
                     public void failure(RetrofitError error) {
                         THToast.show(new THException(error));
-                        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(INTENT_REFRESH_COMPETITION_DISCUSSIONS));
-                        popCurrentFragment();
                     }
                 });
 

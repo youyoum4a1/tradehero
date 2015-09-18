@@ -1,6 +1,5 @@
 package com.tradehero.chinabuild.fragment.trade;
 
-import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -48,7 +47,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
@@ -604,7 +602,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
         UserProfileDTO profileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
         if (mTradeManager.getLiveTradeServices().needCheckPhoneNumber() && profileDTO.phoneNumber == null) {
             getActivity().registerReceiver(new PhoneBindBroadcastReceiver(),
-                    new IntentFilter(SecurityOptPhoneNumBindFragment.INTENT_REFRESH_COMPETITION_DISCUSSIONS));
+                    new IntentFilter(SecurityOptPhoneNumBindFragment.PHONE_NUM_BIND_SUCCESS));
 
             Bundle bundle = new Bundle();
             gotoDashboard(SecurityOptPhoneNumBindFragment.class, bundle);

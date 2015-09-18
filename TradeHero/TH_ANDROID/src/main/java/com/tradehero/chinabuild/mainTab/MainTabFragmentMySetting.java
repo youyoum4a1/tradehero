@@ -482,7 +482,7 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
         UserProfileDTO profileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
         if (tradeManager.getLiveTradeServices().needCheckPhoneNumber() && profileDTO.phoneNumber == null) {
             getActivity().registerReceiver(new PhoneBindBroadcastReceiver(),
-                    new IntentFilter(SecurityOptPhoneNumBindFragment.INTENT_REFRESH_COMPETITION_DISCUSSIONS));
+                    new IntentFilter(SecurityOptPhoneNumBindFragment.PHONE_NUM_BIND_SUCCESS));
 
             gotoDashboard(SecurityOptPhoneNumBindFragment.class.getName(), new Bundle());
         }
