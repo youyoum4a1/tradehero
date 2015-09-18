@@ -89,16 +89,7 @@ public class XCTServicesWrapper implements LiveTradeServices {
 
     @Override
     public void login(Activity activity, String account, String password, LiveTradeCallback<LiveTradeSessionDTO> callback) {
-        PackageManager packageManager = activity.getPackageManager();
-        try {
-            packageManager.getApplicationInfo("lthj.exchangestock.caopanshou", 0);
-            entrustPosition(activity);
-        } catch (PackageManager.NameNotFoundException e) {
-            APKDownloadNInstaller installer = new APKDownloadNInstaller();
-            installer.downloadApk(activity, APK_URL);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        
     }
 
     @Override
@@ -179,6 +170,19 @@ public class XCTServicesWrapper implements LiveTradeServices {
         bundle.putString(PAKCAGER_NAME, THIRDAPPPAKCAGER_NAME);
         intent.putExtras(bundle);
         activity.startActivity(intent);
+    }
+
+    public void launchXCT(Activity activity) {
+        PackageManager packageManager = activity.getPackageManager();
+        try {
+            packageManager.getApplicationInfo("lthj.exchangestock.caopanshou", 0);
+            entrustPosition(activity);
+        } catch (PackageManager.NameNotFoundException e) {
+            APKDownloadNInstaller installer = new APKDownloadNInstaller();
+            installer.downloadApk(activity, APK_URL);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
