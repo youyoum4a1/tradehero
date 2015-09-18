@@ -17,6 +17,12 @@ import com.tradehero.livetrade.services.LiveTradeServices;
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class EmptyServices implements LiveTradeServices {
+
+    @Override
+    public boolean needCheckPhoneNumber() {
+        return false;
+    }
+
     @Override
     public boolean isSessionValid() {
         return false;

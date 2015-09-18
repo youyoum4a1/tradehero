@@ -1,6 +1,9 @@
 package com.tradehero.chinabuild.mainTab;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
@@ -30,6 +33,7 @@ import com.tradehero.chinabuild.fragment.userCenter.UserHeroesListFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.livetrade.SecurityOptPhoneNumBindFragment;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
 import com.tradehero.livetrade.services.LiveTradeManager;
@@ -475,26 +479,42 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
     }
 
     private void enterSecurityFirmBargain(){
-        tradeManager.getLiveTradeServices().login(getActivity(), "70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
-            @Override
-            public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
-                bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
-                Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
-            }
+        UserProfileDTO profileDTO = userProfileCache.get().get(currentUserId.toUserBaseKey());
+        if (tradeManager.getLiveTradeServices().needCheckPhoneNumber() && profileDTO.phoneNumber == null) {
+            getActivity().registerReceiver(new PhoneBindBroadcastReceiver(),
+                    new IntentFilter(SecurityOptPhoneNumBindFragment.INTENT_REFRESH_COMPETITION_DISCUSSIONS));
 
-            @Override
-            public void onError(String errorCode, String errorContent) {
+            gotoDashboard(SecurityOptPhoneNumBindFragment.class.getName(), new Bundle());
+        }
+        else {
+            tradeManager.getLiveTradeServices().login(getActivity(), "70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
+                @Override
+                public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
+                    bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+                    Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+                }
 
-            }
-        });
+                @Override
+                public void onError(String errorCode, String errorContent) {
+
+                }
+            });
+        }
     }
 
     private void enterSecurityOpenAccount(){
         HaitongUtils.openAnAccount(getActivity());
+    }
+
+    class PhoneBindBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            enterSecurityFirmBargain();
+        }
     }
 }

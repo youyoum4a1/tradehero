@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.livetrade.SecurityOptPhoneNumBindFragment;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
 import com.tradehero.livetrade.services.LiveTradeManager;
@@ -25,7 +26,10 @@ import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.livetrade.SecurityOptActualFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockFragment;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.DaggerUtils;
 
 import javax.inject.Inject;
@@ -49,6 +53,8 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     public final static String KEY_IS_FOR_ACTUAL = "KEY_IS_FOR_ACTUAL";
 
     @Inject LiveTradeManager tradeManager;
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCache;
 
     private ImageButton searchBtn;
     private ImageButton backButton;
@@ -222,33 +228,41 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
     }
 
     private void enterActual(){
-        if(!isMock){
+        if(!isMock) {
             return;
         }
 
         if(!tradeManager.getLiveTradeServices().isSessionValid()) {
-            // Todo.
-            tradeManager.getLiveTradeServices().login(this, "70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
-                @Override
-                public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
-                    isMock = false;
-                    mockTV.setTextColor(color_white);
-                    mockTV.setBackgroundResource(R.drawable.security_opt_a);
-                    actualTV.setBackgroundResource(R.drawable.security_opt_b);
-                    actualTV.setTextColor(color_actual);
-                    toolbarRL.setBackgroundColor(color_actual);
+            UserProfileDTO profileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+            if (tradeManager.getLiveTradeServices().needCheckPhoneNumber() && profileDTO.phoneNumber == null) {
+                registerReceiver(new PhoneBindBroadcastReceiver(),
+                        new IntentFilter(SecurityOptPhoneNumBindFragment.INTENT_REFRESH_COMPETITION_DISCUSSIONS));
 
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    SecurityOptActualFragment securityOptActualFragment = new SecurityOptActualFragment();
-                    securityOptActualFragment.setArguments(getIntent().getExtras());
-                    fragmentManager.beginTransaction().replace(R.id.framelayout_mock_actual, securityOptActualFragment).commit();
-                }
+                gotoDashboard(SecurityOptPhoneNumBindFragment.class.getName(), new Bundle());
+            }
+            else {
+                tradeManager.getLiveTradeServices().login(this, "70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
+                    @Override
+                    public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
+                        isMock = false;
+                        mockTV.setTextColor(color_white);
+                        mockTV.setBackgroundResource(R.drawable.security_opt_a);
+                        actualTV.setBackgroundResource(R.drawable.security_opt_b);
+                        actualTV.setTextColor(color_actual);
+                        toolbarRL.setBackgroundColor(color_actual);
 
-                @Override
-                public void onError(String errorCode, String errorContent) {
-                    THToast.show(errorContent);
-                }
-            });
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        SecurityOptActualFragment securityOptActualFragment = new SecurityOptActualFragment();
+                        securityOptActualFragment.setArguments(getIntent().getExtras());
+                        fragmentManager.beginTransaction().replace(R.id.framelayout_mock_actual, securityOptActualFragment).commit();
+                    }
+
+                    @Override
+                    public void onError(String errorCode, String errorContent) {
+                        THToast.show(errorContent);
+                    }
+                });
+            }
         } else {
             isMock = false;
             mockTV.setTextColor(color_white);
@@ -327,6 +341,13 @@ public class SecurityOptActivity extends FragmentActivity implements View.OnClic
                 RefreshLoadingHandler handler = new RefreshLoadingHandler();
                 handler.sendEmptyMessageDelayed(-1, 1000);
             }
+        }
+    }
+
+    class PhoneBindBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            enterActual();
         }
     }
 }

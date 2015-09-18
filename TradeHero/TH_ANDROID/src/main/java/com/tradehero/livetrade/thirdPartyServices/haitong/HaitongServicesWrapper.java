@@ -41,6 +41,11 @@ public class HaitongServicesWrapper implements LiveTradeServices {
     }
 
     @Override
+    public boolean needCheckPhoneNumber() {
+        return false;
+    }
+
+    @Override
     public void login(Activity activity, String account, String password, LiveTradeCallback<LiveTradeSessionDTO> callback) {
         HaitongUtils.jumpToLoginHAITONG(activity);
     }

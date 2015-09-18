@@ -96,7 +96,9 @@
     <string name="login_with_offical_account">使用官方账号登录</string>
     <string name="login_account">账号：</string>
     <string name="login_password">密码：</string>
+    <string name="login_phone">手机号：</string>
     <string name="login_account_hint">手机号或邮箱</string>
+    <string name="phone_bind_hint">请输入手机号码</string>
     <string name="login_password_hint">6-20位数字或字母</string>
     <string name="agreed">已同意</string>
     <string name="authentication_agreement">《隐私条款和服务政策》</string>

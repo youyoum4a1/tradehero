@@ -48,6 +48,11 @@ import retrofit.client.Response;
         this.hengshengManager = hengshengManager;
     }
 
+    @Override
+    public boolean needCheckPhoneNumber() {
+        return false;
+    }
+
     /**
      * 登录
      */

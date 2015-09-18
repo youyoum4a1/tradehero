@@ -26,6 +26,7 @@ import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
+import com.tradehero.th.api.users.password.PhoneNumberBindDTO;
 import com.tradehero.th.api.users.password.ResetPasswordDTO;
 import com.tradehero.th.api.users.password.ResetPasswordFormDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
@@ -248,6 +249,13 @@ import retrofit.client.Response;
     {
         MiddleCallback<Response> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.sendCode(phoneNumber, middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<PhoneNumberBindDTO> phoneNumBind(String phoneNumber, String verifyCode, Callback<PhoneNumberBindDTO> callback)
+    {
+        MiddleCallback<PhoneNumberBindDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.bindPhoneNumber(phoneNumber, verifyCode, middleCallback);
         return middleCallback;
     }
 

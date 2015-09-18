@@ -16,6 +16,8 @@ import com.tradehero.livetrade.data.LiveTradeSessionDTO;
  */
 public interface LiveTradeServices {
 
+    boolean needCheckPhoneNumber();
+
     boolean isSessionValid();
 
     void login(Activity activity, String account, String password, LiveTradeCallback<LiveTradeSessionDTO> callback);

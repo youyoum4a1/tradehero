@@ -94,6 +94,8 @@ import com.tradehero.livetrade.SecurityOptActualSubBuyFragment;
 import com.tradehero.livetrade.SecurityOptActualSubDelegationFragment;
 import com.tradehero.livetrade.SecurityOptActualSubQueryFragment;
 import com.tradehero.livetrade.SecurityOptActualSubSellFragment;
+import com.tradehero.livetrade.SecurityOptPhoneNumBindFragment;
+import com.tradehero.livetrade.thirdPartyServices.xincaitong.XCTServicesWrapper;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.activities.SearchSecurityActualActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -338,7 +340,9 @@ import javax.inject.Singleton;
                         SecurityOptActualSubBuyFragment.class,
                         SecurityOptActualSubSellFragment.class,
                         SecurityOptActualFragment.class,
-                        SecurityOptActivity.class
+                        SecurityOptActivity.class,
+                        XCTServicesWrapper.class,
+                        SecurityOptPhoneNumBindFragment.class
                         //Security Opt Actual
 
                         //China Build End

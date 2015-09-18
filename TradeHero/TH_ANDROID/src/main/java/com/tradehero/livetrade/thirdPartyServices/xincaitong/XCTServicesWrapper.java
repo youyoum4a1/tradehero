@@ -19,7 +19,11 @@ import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
 import com.tradehero.livetrade.services.LiveTradeServices;
 import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.APKDownloadNInstaller;
+import com.tradehero.th.utils.DaggerUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,14 +76,22 @@ public class XCTServicesWrapper implements LiveTradeServices {
     // 证券端的action参数，用bundle保存
     public final static String INTENT_TRADE_ACTION = "action";
     public final static String PAKCAGER_NAME = "pakagerName";
-    public final static String THIRDAPPPAKCAGER_NAME = "cn.emoney.pf";
+    public final static String THIRDAPPPAKCAGER_NAME = "com.tradehero.th";
 
     public final String INTENT_EXTRA_PARAM_PARCELABLE_TAG = "plugBackParcelable";
     public final String INTENT_EXTRA_PARAM_SERIliZABLE_TAG = "plugBackSerializable";
 
+    @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCache;
+
     @Inject public XCTServicesWrapper()
     {
+        DaggerUtils.inject(this);
+    }
 
+    @Override
+    public boolean needCheckPhoneNumber() {
+        return true;
     }
 
     @Override
@@ -89,7 +101,10 @@ public class XCTServicesWrapper implements LiveTradeServices {
 
     @Override
     public void login(Activity activity, String account, String password, LiveTradeCallback<LiveTradeSessionDTO> callback) {
-        
+        UserProfileDTO profileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        if (profileDTO.phoneNumber != null) {
+            launchXCT(activity, profileDTO.phoneNumber);
+        }
     }
 
     @Override
@@ -142,7 +157,20 @@ public class XCTServicesWrapper implements LiveTradeServices {
 
     }
 
-    public void entrustPosition(Activity activity) {
+    public void launchXCT(Activity activity, String phoneNum) {
+        PackageManager packageManager = activity.getPackageManager();
+        try {
+            packageManager.getApplicationInfo("lthj.exchangestock.caopanshou", 0);
+            entrustPosition(activity, phoneNum);
+        } catch (PackageManager.NameNotFoundException e) {
+            APKDownloadNInstaller installer = new APKDownloadNInstaller();
+            installer.downloadApk(activity, APK_URL);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void entrustPosition(Activity activity, String phoneNum) {
         Intent intent = new Intent();
         ComponentName comp = new ComponentName(
                 "lthj.exchangestock.caopanshou",
@@ -162,7 +190,7 @@ public class XCTServicesWrapper implements LiveTradeServices {
         intent.setAction("com.lthjxct.android.appstock.stock.2nd.caopanshou");
         intent.putExtra(INTENT_EXTRA_CMD, CMD_RUN_TRADE);
         Bundle bundle = new Bundle();
-        JSONObject jsonObject = genJSON();
+        JSONObject jsonObject = genJSON(phoneNum);
         bundle.putString(INTENT_EXTRA_PARAM_STANDARD, jsonObject.toString());
         bundle.putSerializable(INTENT_EXTRA_PARAM_SERIliZABLE_TAG, "0");
         bundle.putString(INTENT_EXTRA_PARAM_NET, "");
@@ -170,19 +198,6 @@ public class XCTServicesWrapper implements LiveTradeServices {
         bundle.putString(PAKCAGER_NAME, THIRDAPPPAKCAGER_NAME);
         intent.putExtras(bundle);
         activity.startActivity(intent);
-    }
-
-    public void launchXCT(Activity activity) {
-        PackageManager packageManager = activity.getPackageManager();
-        try {
-            packageManager.getApplicationInfo("lthj.exchangestock.caopanshou", 0);
-            entrustPosition(activity);
-        } catch (PackageManager.NameNotFoundException e) {
-            APKDownloadNInstaller installer = new APKDownloadNInstaller();
-            installer.downloadApk(activity, APK_URL);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -214,13 +229,12 @@ public class XCTServicesWrapper implements LiveTradeServices {
      * 获取手机号
      * @return
      */
-    private JSONObject genJSON() {
+    private JSONObject genJSON(String phoneNum) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("Mdn", "18603518692");
+            jsonObject.put("Mdn", phoneNum);
             jsonObject.put("invokeType", "2");
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return jsonObject;

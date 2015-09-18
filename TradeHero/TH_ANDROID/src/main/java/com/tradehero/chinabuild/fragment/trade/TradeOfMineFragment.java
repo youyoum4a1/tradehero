@@ -1,6 +1,10 @@
 package com.tradehero.chinabuild.fragment.trade;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +26,7 @@ import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
+import com.tradehero.livetrade.SecurityOptPhoneNumBindFragment;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
 import com.tradehero.livetrade.services.LiveTradeManager;
@@ -41,6 +46,7 @@ import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.base.Application;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -54,6 +60,7 @@ import com.tradehero.th.persistence.prefs.ShareDialogKey;
 import com.tradehero.th.persistence.prefs.ShareDialogROIValueKey;
 import com.tradehero.th.persistence.prefs.ShareDialogTotalValueKey;
 import com.tradehero.th.persistence.prefs.ShareSheetTitleCache;
+import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCache;
 import com.tradehero.th.utils.DaggerUtils;
 
@@ -80,6 +87,7 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
     @Inject UserWatchlistPositionCache userWatchlistPositionCache;
     @Inject PortfolioCache portfolioCache;
     @Inject CurrentUserId currentUserId;
+    @Inject UserProfileCache userProfileCache;
 
     private LinearLayout mRefreshView;
     private TextView roiTV;
@@ -593,26 +601,43 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
     }
 
     private void enterSecurityFirmBargain(){
-        mTradeManager.getLiveTradeServices().login(getActivity(), "70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
-            @Override
-            public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
-                Bundle bundle = new Bundle();
-                bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
-                bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
-                Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
-            }
+        UserProfileDTO profileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
+        if (mTradeManager.getLiveTradeServices().needCheckPhoneNumber() && profileDTO.phoneNumber == null) {
+            getActivity().registerReceiver(new PhoneBindBroadcastReceiver(),
+                    new IntentFilter(SecurityOptPhoneNumBindFragment.INTENT_REFRESH_COMPETITION_DISCUSSIONS));
 
-            @Override
-            public void onError(String errorCode, String errorContent) {
+            Bundle bundle = new Bundle();
+            gotoDashboard(SecurityOptPhoneNumBindFragment.class, bundle);
+        }
+        else {
+            mTradeManager.getLiveTradeServices().login(getActivity(), "70000399", "111111", new LiveTradeCallback<LiveTradeSessionDTO>() {
+                @Override
+                public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(SecurityOptActivity.KEY_IS_FOR_ACTUAL, true);
+                    bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
+                    Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_left_out);
+                }
 
-            }
-        });
+                @Override
+                public void onError(String errorCode, String errorContent) {
+
+                }
+            });
+        }
     }
 
     private void enterSecurityOpenAccount(){
         HaitongUtils.openAnAccount(getActivity());
+    }
+
+    class PhoneBindBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            enterSecurityFirmBargain();
+        }
     }
 }

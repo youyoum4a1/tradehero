@@ -319,7 +319,9 @@
     <string name="login_with_offical_account">Official Account Login</string>
     <string name="login_account">Account：</string>
     <string name="login_password">Password：</string>
+    <string name="login_phone">Phone Number：</string>
     <string name="login_account_hint">Email or Mobile Number</string>
+    <string name="phone_bind_hint">Please enter mobile Number</string>
     <string name="login_password_hint">6-20 Letters or Numbers</string>
     <string name="agreed">Agreed</string>
     <string name="authentication_agreement">《隐私条款和服务政策》</string>

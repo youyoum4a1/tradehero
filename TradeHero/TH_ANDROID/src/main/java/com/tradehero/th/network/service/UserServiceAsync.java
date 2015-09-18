@@ -14,6 +14,7 @@ import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
+import com.tradehero.th.api.users.password.PhoneNumberBindDTO;
 import com.tradehero.th.api.users.password.ResetPasswordDTO;
 import com.tradehero.th.api.users.password.ResetPasswordFormDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
@@ -184,6 +185,15 @@ interface UserServiceAsync
     void sendCode(
             @Query("phoneNumber") String phoneNumber,
             Callback<Response> cb);
+    //</editor-fold>
+
+    //<editor-fold desc="Send Verify code">
+    @POST("/cn/v2/users/bindPhoneNumber")
+    @FormUrlEncoded
+    void bindPhoneNumber(
+            @Field("phone_number") String phoneNumber,
+            @Field("verify_code") String verifyCode,
+            Callback<PhoneNumberBindDTO> cb);
     //</editor-fold>
 
     //<editor_fold desc="Download App Version Info">
