@@ -2,7 +2,6 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,11 +15,9 @@ import com.tradehero.chinabuild.data.EmptyLeaderboardUserDTO;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -249,6 +246,20 @@ public class LeaderboardListAdapter extends BaseAdapter {
                 //土豪榜
                 holder.tvUserExtraTitle.setText(context.getString(R.string.user_tatal_wealth));
                 holder.tvUserExtraValue.setText(NumberDisplayUtils.getString(item.totalWealth));
+            }
+            else if (leaderboardType == LeaderboardDefKeyKnowledge.TOTAL_ROI)
+            {//显示 TotalROI
+                //总收益率榜
+                holder.tvUserExtraTitle.setText(context.getString(R.string.user_tatal_trade));
+                holder.tvUserExtraValue.setText(String.valueOf(item.tradeCount));
+
+                holder.tvROITitle.setText(context.getString(R.string.user_tatal_roi_day_30));
+                THSignedNumber roi = THSignedPercentage.builder(item.perfRoi * 100)
+                        .withSign()
+                        .signTypeArrow()
+                        .build();
+                holder.tvROIValue.setText(roi.toString());
+                holder.tvROIValue.setTextColor(context.getResources().getColor(roi.getColorResId()));
             }
             else
             {//显示 ROI

@@ -3,8 +3,7 @@ package com.tradehero.th.models.leaderboard.key;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import javax.inject.Inject;
 
-public class LeaderboardDefKeyKnowledge
-{
+public class LeaderboardDefKeyKnowledge {
     // For fake leaderboard definition, hardcoded on client side
     public static final int FOLLOWER_ID = -5;
     public static final int HERO_ID = -4;
@@ -22,33 +21,30 @@ public class LeaderboardDefKeyKnowledge
     public static final int COMPETITION = 7;//比赛榜
     public static final int COMPETITION_FOR_SCHOOL = 8;//比赛榜
     public static final int BUY_WHAT = 9;//买什么榜
+    public static final int TOTAL_ROI = 10;//榜
 
     //<editor-fold desc="Constructors">
-    @Inject public LeaderboardDefKeyKnowledge()
-    {
+    @Inject
+    public LeaderboardDefKeyKnowledge() {
         super();
     }
     //</editor-fold>
 
-    public static String getLeaderboardName(LeaderboardDefKey leaderboardDefKey)
-    {
+    public static String getLeaderboardName(LeaderboardDefKey leaderboardDefKey) {
         if (leaderboardDefKey == null) return "";
-        switch (leaderboardDefKey.key)
-        {
+        switch (leaderboardDefKey.key) {
             case SEARCH_RECOMMEND:
                 return "推荐榜";
-
             case POPULAR:
                 return "人气榜";
-
             case WINRATIO:
                 return "高胜率榜";
-
             case HOTSTOCK:
                 return "热股榜";
-
             case WEALTH:
                 return "土豪榜";
+            case TOTAL_ROI:
+                return "总收益率榜";
         }
         return "";
     }

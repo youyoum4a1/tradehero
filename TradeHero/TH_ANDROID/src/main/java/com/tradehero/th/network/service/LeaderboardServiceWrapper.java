@@ -155,6 +155,14 @@ import org.jetbrains.annotations.NotNull;
                         pagedLeaderboardKey.perPage);
                 return processFromExtraDataForBuyWhat(data);
             }
+            else if (leaderboardKey.id == LeaderboardDefKeyKnowledge.TOTAL_ROI)//返回推荐榜
+            {
+                PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;
+                UserTrendingDTOList data = leaderboardService.getLeaderboardTotalROI(
+                        pagedLeaderboardKey.page,
+                        pagedLeaderboardKey.perPage);
+                return processFromExtraData(data);
+            }
             else
             {
                 PagedLeaderboardKey pagedLeaderboardKey = (PagedLeaderboardKey) leaderboardKey;

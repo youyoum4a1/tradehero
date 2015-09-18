@@ -43,6 +43,13 @@ public interface LeaderboardService
             @Query("perPage") Integer perPage
     );
 
+    // 总收益率榜
+    @GET("/users/trendingPerfRoi2")
+    UserTrendingDTOList getLeaderboardTotalROI(
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage
+    );
+
     //高胜率榜
     @GET("/cn/v2/users/trendingWinRatio")
     UserTrendingDTOList getLeaderboardWinRatio(
