@@ -9,7 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -32,15 +35,14 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Discovery Square fragment
@@ -71,7 +73,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
     //Square Classroom
     private LinearLayout classroomLL;
 
-    @InjectView(R.id.rlTopBanner) RelativeLayout rlTopBanner;
+    @InjectView(R.id.ad_layout) RelativeLayout rlTopBanner;
     @InjectView(R.id.pager) ViewPager pager;
     @InjectView(R.id.indicator) CirclePageIndicator indicator;
     private List<View> views = new ArrayList();
@@ -160,7 +162,7 @@ public class DiscoverySquareFragment extends DashboardFragment implements View.O
         }
     }
 
-    @OnClick(R.id.btnBannerClose)
+    @OnClick(R.id.ad_close_button)
     public void onClickBanner()
     {
         dismissTopBanner();

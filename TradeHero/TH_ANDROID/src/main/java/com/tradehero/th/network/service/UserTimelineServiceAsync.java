@@ -3,12 +3,11 @@ package com.tradehero.th.network.service;
 import com.tradehero.chinabuild.data.AdsDTO;
 import com.tradehero.chinabuild.data.TimeLineTotalInfo;
 import com.tradehero.th.api.timeline.TimelineDTO;
+import java.util.List;
 import retrofit.Callback;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;
-
-import java.util.List;
 
 interface UserTimelineServiceAsync
 {
@@ -108,4 +107,9 @@ interface UserTimelineServiceAsync
     //TimeLine Total Information
     @GET("/misc/timelineActivity")
     void retrieveTimeLineTotalInfo(Callback<TimeLineTotalInfo> callback);
+
+    //buy what Advertisement
+    @GET("/misc/ads2")
+    void downloadBuyWhatAdvertisements(Callback<List<AdsDTO>> callback);
+    //</editor-fold>
 }

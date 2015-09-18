@@ -8,13 +8,12 @@ import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.network.retrofit.BaseMiddleCallback;
 import com.tradehero.th.network.retrofit.MiddleCallback;
+import java.util.List;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import retrofit.Callback;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
-import java.util.List;
 
 @Singleton public class UserTimelineServiceWrapper
 {
@@ -117,6 +116,10 @@ import java.util.List;
 
     public void downloadAdvertisements(Callback<List<AdsDTO>> callback){
         userTimelineServiceAsync.downloadAdvertisements(callback);
+    }
+
+    public void downloadBuyWhatAdvertisements(Callback<List<AdsDTO>> callback){
+        userTimelineServiceAsync.downloadBuyWhatAdvertisements(callback);
     }
 
     public void retrieveTimeLineTotalInfo(Callback<TimeLineTotalInfo> callback){
