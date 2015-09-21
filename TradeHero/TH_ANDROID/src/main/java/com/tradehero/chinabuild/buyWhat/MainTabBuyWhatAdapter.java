@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.mainTab;
+package com.tradehero.chinabuild.buyWhat;
 
 import android.content.Context;
 import android.view.LayoutInflater;

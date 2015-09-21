@@ -29,8 +29,8 @@
         android:id="@+id/ad_layout"
         android:layout_width="fill_parent"
         android:layout_height="126dp"
-        android:orientation="vertical"
         android:adjustViewBounds="true"
+        android:orientation="vertical"
         android:visibility="gone">
 
         <android.support.v4.view.ViewPager
@@ -158,16 +158,27 @@
             android:textSize="14sp"/>
     </LinearLayout>
 
-    <com.tradehero.chinabuild.listview.SecurityListView
-        android:id="@+id/list"
-        xmlns:ptr="http://schemas.android.com/apk/res-auto"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:divider="@color/transparent"
-        android:dividerHeight="1px"
-        android:fadingEdge="none"
-        android:scrollingCache="false"
-        ptr:ptrHeaderTextColor="@color/black"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+
+        <com.tradehero.chinabuild.listview.SecurityListView
+            android:id="@+id/list"
+            xmlns:ptr="http://schemas.android.com/apk/res-auto"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="@color/transparent"
+            android:dividerHeight="1px"
+            android:fadingEdge="none"
+            android:scrollingCache="false"
+            ptr:ptrHeaderTextColor="@color/black"/>
+    </RelativeLayout>
 
 </LinearLayout>
 

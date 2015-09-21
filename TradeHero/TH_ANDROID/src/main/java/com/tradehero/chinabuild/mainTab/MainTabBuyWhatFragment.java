@@ -14,10 +14,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.buyWhat.FollowBuyFragment;
+import com.tradehero.chinabuild.buyWhat.MainTabBuyWhatAdapter;
 import com.tradehero.chinabuild.data.AdsDTO;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
@@ -68,6 +70,7 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
     ViewPager pager;
     CirclePageIndicator mAdIndicator;
     Button mAdCloseButton;
+    private ProgressBar mProgress;
     @Inject
     LeaderboardCache leaderboardCache;
     protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
@@ -128,6 +131,7 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         mHotStockBtn.setOnClickListener(this);
         mWinRateBtn = (ImageView) view.findViewById(R.id.win_rate_icon);
         mWinRateBtn.setOnClickListener(this);
+        mProgress = (ProgressBar) view.findViewById(R.id.progress);
 
         mListView = (SecurityListView) view.findViewById(R.id.list);
         if (mListViewAdapter == null) {
@@ -179,17 +183,21 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         }
     }
 
-    public void dismissTopBanner()
-    {
+    public void dismissTopBanner() {
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.alpha_out);
-        animation.setAnimationListener(new Animation.AnimationListener()
-        {
-            @Override public void onAnimationStart(Animation animation){}
-            @Override public void onAnimationEnd(Animation animation)
-            {
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
                 mAdLayout.setVisibility(View.GONE);
             }
-            @Override public void onAnimationRepeat(Animation animation){}
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
         });
         mAdLayout.startAnimation(animation);
     }
@@ -234,6 +242,9 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
             currentPage = 0;
             mListViewAdapter.setItems(listData);
+            if (listData.size() == 0) {
+                mProgress.setVisibility(View.INVISIBLE);
+            }
         } else {
             mListViewAdapter.addItems(listData);
         }
@@ -251,9 +262,9 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         super.onPause();
     }
 
-    private void downloadAdvertisements(){
-        if(!SHOW_ADVERTISEMENT){
-            if(mAdLayout.getVisibility()==View.VISIBLE){
+    private void downloadAdvertisements() {
+        if (!SHOW_ADVERTISEMENT) {
+            if (mAdLayout.getVisibility() == View.VISIBLE) {
                 mAdLayout.setVisibility(View.GONE);
             }
             return;
@@ -277,26 +288,23 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         });
     }
 
-    private void initTopBanner(List<AdsDTO> adsDTOs)
-    {
-        if(getActivity()== null|| mAdLayout == null){
+    private void initTopBanner(List<AdsDTO> adsDTOs) {
+        if (getActivity() == null || mAdLayout == null) {
             return;
         }
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         views = new ArrayList();
         mAdLayout.setVisibility(View.VISIBLE);
 
-        for (int num = 0; num < adsDTOs.size(); num++)
-        {
+        for (int num = 0; num < adsDTOs.size(); num++) {
             final AdsDTO adsDTO = adsDTOs.get(num);
             View view = layoutInflater.inflate(R.layout.search_square_top_banner_item, null);
             ImageView imageView = (ImageView) view.findViewById(R.id.imgTopBannerItem);
             ImageLoader.getInstance().displayImage(adsDTO.bannerImageUrl, imageView, UniversalImageLoader.getAdvertisementImageLoaderOptions());
             views.add(view);
-            view.setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(View view)
-                {
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
                     enterTargetTopic(adsDTO);
                 }
             });
@@ -318,28 +326,28 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         });
     }
 
-    private void enterTargetTopic(AdsDTO adsDTO){
-        if(adsDTO.competitionId >0){
+    private void enterTargetTopic(AdsDTO adsDTO) {
+        if (adsDTO.competitionId > 0) {
             jumpCompetitionDetailPage(adsDTO.competitionId);
             return;
         }
-        if(adsDTO.timeLineItemId >0){
+        if (adsDTO.timeLineItemId > 0) {
             jumpTimeLine(adsDTO.timeLineItemId);
             return;
         }
-        if(adsDTO.redirectUrl!=null && !adsDTO.redirectUrl.equals("")){
+        if (adsDTO.redirectUrl != null && !adsDTO.redirectUrl.equals("")) {
             jumpWeb(adsDTO.redirectUrl);
             return;
         }
     }
 
-    private void jumpCompetitionDetailPage(int competitionId){
+    private void jumpCompetitionDetailPage(int competitionId) {
         Bundle bundle = new Bundle();
         bundle.putInt(CompetitionDetailFragment.BUNDLE_COMPETITION_ID, competitionId);
         gotoDashboard(CompetitionMainFragment.class.getName(), bundle);
     }
 
-    private void jumpTimeLine(int timeLineItemId){
+    private void jumpTimeLine(int timeLineItemId) {
         Bundle bundle = new Bundle();
         Bundle discussBundle = new Bundle();
         discussBundle.putString(TimelineItemDTOKey.BUNDLE_KEY_TYPE, DiscussionType.TIMELINE_ITEM.name());
@@ -349,37 +357,32 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         return;
     }
 
-    private void jumpWeb(String url){
+    private void jumpWeb(String url) {
         Bundle bundle = new Bundle();
         bundle.putString(WebViewFragment.BUNDLE_WEBVIEW_URL, url);
         bundle.putString(WebViewFragment.BUNDLE_WEBVIEW_TITLE, "");
         gotoDashboard(WebViewFragment.class.getName(), bundle);
     }
 
-    PagerAdapter pageAdapter = new PagerAdapter()
-    {
+    PagerAdapter pageAdapter = new PagerAdapter() {
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object)
-        {
+        public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView(views.get(position));
         }
 
         @Override
-        public Object instantiateItem(ViewGroup container, int position)
-        {
+        public Object instantiateItem(ViewGroup container, int position) {
             container.addView(views.get(position));
             return views.get(position);
         }
 
         @Override
-        public boolean isViewFromObject(View arg0, Object arg1)
-        {
+        public boolean isViewFromObject(View arg0, Object arg1) {
             return arg0 == arg1;
         }
 
         @Override
-        public int getCount()
-        {
+        public int getCount() {
             return (views == null) ? 0 : views.size();
         }
     };

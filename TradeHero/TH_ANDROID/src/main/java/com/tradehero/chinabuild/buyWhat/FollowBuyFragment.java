@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.BasePurchaseManagerFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
-import com.tradehero.chinabuild.mainTab.MainTabBuyWhatAdapter;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -33,6 +33,7 @@ import timber.log.Timber;
 public class FollowBuyFragment extends BasePurchaseManagerFragment implements AdapterView.OnItemClickListener {
     private SecurityListView mListView;
     private MainTabBuyWhatAdapter mListViewAdapter;
+    private ProgressBar mProgress;
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 10;
     @Inject LeaderboardCache leaderboardCache;
@@ -48,6 +49,7 @@ public class FollowBuyFragment extends BasePurchaseManagerFragment implements Ad
     }
 
     private void initViews(View view) {
+        mProgress = (ProgressBar) view.findViewById(R.id.progress);
         mListView = (SecurityListView) view.findViewById(R.id.list);
         if (mListViewAdapter == null) {
             mListViewAdapter = new MainTabBuyWhatAdapter(getActivity());
@@ -147,6 +149,9 @@ public class FollowBuyFragment extends BasePurchaseManagerFragment implements Ad
             Timber.d("lyl setListData size="+listData.size());
             Timber.d("lyl "+listData.get(0).toString());
             mListViewAdapter.setItems(listData);
+            if (listData.size() == 0) {
+                mProgress.setVisibility(View.INVISIBLE);
+            }
         } else {
             mListViewAdapter.addItems(listData);
         }
