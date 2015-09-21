@@ -28,7 +28,6 @@ import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
-import timber.log.Timber;
 
 public class FollowBuyFragment extends BasePurchaseManagerFragment implements AdapterView.OnItemClickListener {
     private SecurityListView mListView;
@@ -74,7 +73,7 @@ public class FollowBuyFragment extends BasePurchaseManagerFragment implements Ad
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewRight0(R.drawable.search);
-        setHeadViewMiddleMain(getString(R.string.tab_main_buy_what));
+        setHeadViewMiddleMain(getString(R.string.follow_chance));
     }
 
     protected void fetchLeaderboard() {
@@ -146,8 +145,6 @@ public class FollowBuyFragment extends BasePurchaseManagerFragment implements Ad
     private void setListData(LeaderboardKey key, LeaderboardUserDTOList listData) {
         if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
             currentPage = 0;
-            Timber.d("lyl setListData size="+listData.size());
-            Timber.d("lyl "+listData.get(0).toString());
             mListViewAdapter.setItems(listData);
             if (listData.size() == 0) {
                 mProgress.setVisibility(View.INVISIBLE);
