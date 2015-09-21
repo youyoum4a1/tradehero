@@ -17,6 +17,7 @@ import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.widget.BetterViewAnimator;
@@ -128,11 +129,12 @@ public class StockGodListBaseFragment extends DashboardFragment {
                     bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, userDTO.securityName);
                     pushFragment(SecurityDetailFragment.class, bundle);
                 } else {
-                    analytics.addEvent(new MethodEvent(AnalyticsConstants.LEADERBOARD_USER_CLICKED_POSITION, "" + position));
-                    Bundle bundle = new Bundle();
                     LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
-                    bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, userDTO.id);
-                    pushFragment(PortfolioFragment.class, bundle);
+
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, userDTO.id);
+                    bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
+                    pushFragment(UserMainPage.class, bundle);
                 }
             }
         });
