@@ -40,49 +40,59 @@
         android:text="一共五个字"
         android:layout_width="wrap_content"/>
 
-    <TextView
-        android:id="@+id/tvROITitle"
-        android:layout_width="100dp"
+    <RelativeLayout
+        android:id="@+id/infoContainer"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignBottom="@id/imgUserHead"
-        android:textColor="#828282"
-        android:text="收益率"
-        android:gravity="center"
-        android:textSize="14sp"/>
-
-    <TextView
-        android:id="@+id/tvROIValue"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_alignTop="@id/imgUserHead"
-        android:textColor="#828282"
-        android:text="100%"
-        android:gravity="center"
-        android:textSize="14sp"/>
-
-    <TextView
-        android:id="@+id/tvUserExtraTitle"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:textColor="#828282"
-        android:layout_toLeftOf="@id/tvROITitle"
         android:layout_alignBottom="@id/imgUserHead"
-        android:text="Extra"
-        android:gravity="center"
-        android:textSize="14sp"/>
+        android:layout_toRightOf="@id/tvUserName"
+        android:layout_marginLeft="20dp">
 
-    <TextView
-        android:id="@+id/tvUserExtraValue"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:textColor="#828282"
-        android:layout_toLeftOf="@id/tvROIValue"
-        android:layout_alignTop="@id/imgUserHead"
-        android:text="value"
-        android:gravity="center"
-        android:textSize="14sp"/>
+        <TextView
+            android:id="@+id/tvROITitle"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:textColor="#828282"
+            android:text="收益率"
+            android:gravity="center"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tvROIValue"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/imgUserHead"
+            android:textColor="#828282"
+            android:text="100%"
+            android:gravity="center"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tvUserExtraTitle"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:textColor="#828282"
+            android:layout_toLeftOf="@id/tvROITitle"
+            android:layout_alignParentBottom="true"
+            android:text="Extra"
+            android:gravity="center"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tvUserExtraValue"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:textColor="#828282"
+            android:layout_toLeftOf="@id/tvROIValue"
+            android:layout_alignTop="@id/imgUserHead"
+            android:text="value"
+            android:gravity="center"
+            android:textSize="14sp"/>
+    </RelativeLayout>
 
     <View
       android:layout_width="fill_parent"

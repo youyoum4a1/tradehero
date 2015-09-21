@@ -130,6 +130,7 @@ public class LeaderboardListAdapter extends BaseAdapter {
                 holder.tvStockName = (TextView) convertView.findViewById(R.id.tvStockName);
                 holder.tvStockId = (TextView) convertView.findViewById(R.id.tvStockId);
                 holder.tvFanNum = (TextView) convertView.findViewById(R.id.tvFanNum);
+                holder.infoContainer = (RelativeLayout) convertView.findViewById(R.id.infoContainer);
                 if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
                 {
                     holder.tvSchool = (TextView) convertView.findViewById(R.id.tvSchool);
@@ -174,6 +175,20 @@ public class LeaderboardListAdapter extends BaseAdapter {
             else
             {
                 holder.imgUserName.setText(item.getShortDisplayName(MAX_USER_NAME_LENGTH));
+            }
+
+            if (holder.infoContainer != null) {
+                holder.infoContainer.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, item.id);
+                            context.getDashboardNavigator().pushFragment(PortfolioFragment.class, bundle);
+                        }
+                        return true;
+                    }
+                });
             }
 
             if (leaderboardType == LeaderboardDefKeyKnowledge.DAYS_ROI)
@@ -303,6 +318,7 @@ public class LeaderboardListAdapter extends BaseAdapter {
         public TextView tvStockName = null;
         public TextView tvStockId = null;
         public TextView tvFanNum = null;
+        public RelativeLayout infoContainer = null;
         public RelativeLayout allContent;
     }
 }
