@@ -1,25 +1,20 @@
 package com.tradehero.chinabuild.buyWhat;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
 import com.tradehero.chinabuild.fragment.security.BasePurchaseManagerFragment;
-import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
@@ -29,7 +24,7 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 
-public class FollowBuyFragment extends BasePurchaseManagerFragment implements AdapterView.OnItemClickListener {
+public class FollowBuyFragment extends BasePurchaseManagerFragment {
     private SecurityListView mListView;
     private MainTabBuyWhatAdapter mListViewAdapter;
     private ProgressBar mProgress;
@@ -54,7 +49,7 @@ public class FollowBuyFragment extends BasePurchaseManagerFragment implements Ad
             mListViewAdapter = new MainTabBuyWhatAdapter(getActivity());
         }
         mListView.setAdapter(mListViewAdapter);
-        mListView.setOnItemClickListener(this);
+//        mListView.setOnItemClickListener(this);
         mListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         mListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
@@ -100,23 +95,6 @@ public class FollowBuyFragment extends BasePurchaseManagerFragment implements Ad
     @Override
     public void onClickHeadRight0() {
         pushFragment(SearchUnitFragment.class, new Bundle());
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        goToMockTrade(mListViewAdapter.getItem(position - 1));
-    }
-
-    private void goToMockTrade(LeaderboardUserDTO dto){
-        Bundle bundle = new Bundle();
-        bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
-        bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, dto.exchange);
-        bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, dto.symbol);
-        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, dto.securityName);
-        Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
     }
 
     protected class BaseLeaderboardFragmentLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> {

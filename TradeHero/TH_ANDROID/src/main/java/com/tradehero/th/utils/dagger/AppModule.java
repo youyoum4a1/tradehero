@@ -3,6 +3,7 @@ package com.tradehero.th.utils.dagger;
 import android.content.Context;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshExpandableListView;
 import com.tradehero.chinabuild.buyWhat.FollowBuyFragment;
+import com.tradehero.chinabuild.buyWhat.FragmentStockGod;
 import com.tradehero.chinabuild.buyWhat.MainTabBuyWhatAdapter;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
 import com.tradehero.chinabuild.dialog.TimeLineCommentDialogLayout;
@@ -86,7 +87,6 @@ import com.tradehero.chinabuild.mainTab.MainTabBuyWhatFragment;
 import com.tradehero.chinabuild.mainTab.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.mainTab.MainTabFragmentDiscovery;
 import com.tradehero.chinabuild.mainTab.MainTabFragmentMySetting;
-import com.tradehero.chinabuild.mainTab.MainTabFragmentStockGod;
 import com.tradehero.chinabuild.mainTab.MainTabFragmentTrade;
 import com.tradehero.common.persistence.CacheHelper;
 import com.tradehero.livetrade.SecurityOptActualFragment;
@@ -209,7 +209,7 @@ import javax.inject.Singleton;
                         StockLearningMainFragment.class,
                         MainTabFragmentMySetting.class,
                         MainTabFragmentDiscovery.class,
-                        MainTabFragmentStockGod.class,
+                        FragmentStockGod.class,
                         MainTabBuyWhatAdapter.class,
                         MainTabBuyWhatFragment.class,
                         MainTabFragmentCompetition.class,

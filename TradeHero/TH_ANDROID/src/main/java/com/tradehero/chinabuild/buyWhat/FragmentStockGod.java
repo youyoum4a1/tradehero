@@ -1,4 +1,4 @@
-package com.tradehero.chinabuild.mainTab;
+package com.tradehero.chinabuild.buyWhat;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,7 +22,7 @@ import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.TabPageIndicator;
 import javax.inject.Inject;
 
-public class MainTabFragmentStockGod extends BasePurchaseManagerFragment implements ViewPager.OnPageChangeListener {
+public class FragmentStockGod extends BasePurchaseManagerFragment implements ViewPager.OnPageChangeListener {
     public static String TAB_KEY = "TAB_KEY";
     @InjectView(R.id.pager)
     ViewPager pager;

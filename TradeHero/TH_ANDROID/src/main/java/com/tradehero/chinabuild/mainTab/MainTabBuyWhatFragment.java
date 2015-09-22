@@ -1,6 +1,5 @@
 package com.tradehero.chinabuild.mainTab;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -19,6 +17,7 @@ import android.widget.RelativeLayout;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.buyWhat.FollowBuyFragment;
+import com.tradehero.chinabuild.buyWhat.FragmentStockGod;
 import com.tradehero.chinabuild.buyWhat.MainTabBuyWhatAdapter;
 import com.tradehero.chinabuild.data.AdsDTO;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
@@ -26,16 +25,13 @@ import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
-import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
@@ -56,7 +52,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnClickListener {
     private ImageView mQueryBtn;
     private ImageView mNewSuggestBtn;
     private ImageView mFollowChanceBtn;
@@ -138,7 +134,6 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
             mListViewAdapter = new MainTabBuyWhatAdapter(getActivity());
         }
         mListView.setAdapter(mListViewAdapter);
-        mListView.setOnItemClickListener(this);
         mListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
         mListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
@@ -160,20 +155,20 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
                 gotoDashboard(SearchUnitFragment.class.getName(), new Bundle());
                 break;
             case R.id.new_suggest_icon:
-                gotoDashboard(MainTabFragmentStockGod.class.getName());
+                gotoDashboard(FragmentStockGod.class.getName());
                 break;
             case R.id.follow_chance_icon:
                 gotoDashboard(FollowBuyFragment.class.getName());
                 break;
             case R.id.hot_stock_icon:
                 Bundle args = new Bundle();
-                args.putInt(MainTabFragmentStockGod.TAB_KEY, 3);
-                gotoDashboard(MainTabFragmentStockGod.class.getName(), args);
+                args.putInt(FragmentStockGod.TAB_KEY, 3);
+                gotoDashboard(FragmentStockGod.class.getName(), args);
                 break;
             case R.id.win_rate_icon:
                 Bundle args2 = new Bundle();
-                args2.putInt(MainTabFragmentStockGod.TAB_KEY, 1);
-                gotoDashboard(MainTabFragmentStockGod.class.getName(), args2);
+                args2.putInt(FragmentStockGod.TAB_KEY, 1);
+                gotoDashboard(FragmentStockGod.class.getName(), args2);
                 break;
             case R.id.ad_close_button:
                 dismissTopBanner();
@@ -200,23 +195,6 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
             }
         });
         mAdLayout.startAnimation(animation);
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        goToMockTrade(mListViewAdapter.getItem(position - 1));
-    }
-
-    private void goToMockTrade(LeaderboardUserDTO dto) {
-        Bundle bundle = new Bundle();
-        bundle.putString(SecurityOptActivity.BUNDLE_FROM_TYPE, SecurityOptActivity.TYPE_BUY);
-        bundle.putString(SecurityOptActivity.KEY_SECURITY_EXCHANGE, dto.exchange);
-        bundle.putString(SecurityOptActivity.KEY_SECURITY_SYMBOL, dto.symbol);
-        bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, dto.securityName);
-        Intent intent = new Intent(getActivity(), SecurityOptActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
-        getActivity().overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
     }
 
     protected class BaseLeaderboardFragmentLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> {
