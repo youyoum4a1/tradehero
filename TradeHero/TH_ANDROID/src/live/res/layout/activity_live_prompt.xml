@@ -30,7 +30,7 @@
           android:layout_width="@dimen/extra_big_image_w_h"
           android:layout_height="@dimen/extra_big_image_w_h"
           android:scaleType="fitCenter"
-          android:src="@drawable/th_app_logo"
+          android:src="@drawable/logo_about_bull"
           />
 
       <TextView
@@ -71,10 +71,12 @@
           android:layout_marginBottom="@dimen/margin_medium"
           android:layout_marginTop="@dimen/margin_small"
           android:gravity="center"
+          android:textColor="?android:textColorSecondary"
           android:text="@string/start_live"
           />
 
       <Button
+          android:id="@+id/btn_open_account"
           style="@style/TH.Button.Link"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

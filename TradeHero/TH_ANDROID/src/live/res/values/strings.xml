@@ -10,7 +10,7 @@
   <string name="live">Live</string>
   <string name="go_live_span">Go %1$s !</string>
   <string name="tradehero_live">TradeHero LIVE</string>
-  <string name="live_5_steps_away">5 steps away to open an account!</string>
+  <string name="live_5_steps_away">5 steps away to open an account! Get $100 free upon successful account opening.</string>
 
   <string name="tile_live_trading_top">Open a LIVE account</string>
   <string name="tile_live_trading">Get free US$100</string>
