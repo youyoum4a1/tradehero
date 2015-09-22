@@ -122,12 +122,7 @@ public class StockGodListBaseFragment extends DashboardFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long position) {
                 if (leaderboard_key == LeaderboardDefKeyKnowledge.HOTSTOCK) {
-                    Bundle bundle = new Bundle();
-                    LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
-                    SecurityId id = new SecurityId(userDTO.exchange, userDTO.symbol);
-                    bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, id.getArgs());
-                    bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, userDTO.securityName);
-                    pushFragment(SecurityDetailFragment.class, bundle);
+                    // Do nothing.
                 } else {
                     LeaderboardUserDTO userDTO = (LeaderboardUserDTO) adapter.getItem((int) position);
 

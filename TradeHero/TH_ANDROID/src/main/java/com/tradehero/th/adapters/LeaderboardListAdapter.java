@@ -13,12 +13,14 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.EmptyLeaderboardUserDTO;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
+import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
+import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -132,6 +134,7 @@ public class LeaderboardListAdapter extends BaseAdapter {
                 holder.tvStockId = (TextView) convertView.findViewById(R.id.tvStockId);
                 holder.tvFanNum = (TextView) convertView.findViewById(R.id.tvFanNum);
                 holder.infoContainer = (RelativeLayout) convertView.findViewById(R.id.infoContainer);
+                holder.stockInfoContainer = (RelativeLayout) convertView.findViewById(R.id.stockInfoContainer);
                 if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
                 {
                     holder.tvSchool = (TextView) convertView.findViewById(R.id.tvSchool);
@@ -250,6 +253,19 @@ public class LeaderboardListAdapter extends BaseAdapter {
                         return true;
                     }
                 });
+                holder.stockInfoContainer.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            Bundle bundle = new Bundle();
+                            SecurityId id = new SecurityId(item.exchange, item.symbol);
+                            bundle.putBundle(SecurityDetailFragment.BUNDLE_KEY_SECURITY_ID_BUNDLE, id.getArgs());
+                            bundle.putString(SecurityDetailFragment.BUNDLE_KEY_SECURITY_NAME, item.securityName);
+                            context.getDashboardNavigator().pushFragment(SecurityDetailFragment.class, bundle);
+                        }
+                        return true;
+                    }
+                });
             }
             else if (leaderboardType == LeaderboardDefKeyKnowledge.WEALTH)
             {//显示 总资产
@@ -314,6 +330,7 @@ public class LeaderboardListAdapter extends BaseAdapter {
         public TextView tvStockId = null;
         public TextView tvFanNum = null;
         public RelativeLayout infoContainer = null;
+        public RelativeLayout stockInfoContainer = null;
         public RelativeLayout allContent;
     }
 }

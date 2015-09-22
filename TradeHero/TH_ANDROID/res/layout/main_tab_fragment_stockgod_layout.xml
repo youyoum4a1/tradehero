@@ -18,7 +18,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             app:selectedTextColor="@color/tab_head_bg"
-            app:unselectedTextColor="#c0c0c0"/>
+            app:unselectedTextColor="#a0a0a0"/>
 
     </RelativeLayout>
 
