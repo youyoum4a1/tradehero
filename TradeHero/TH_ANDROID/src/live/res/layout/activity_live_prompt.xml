@@ -1,59 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:padding="@dimen/margin_small"
     >
 
-  <ImageView
-      android:layout_width="@dimen/extra_big_image_w_h"
-      android:layout_height="@dimen/extra_big_image_w_h"
-      android:scaleType="fitCenter"
-      android:src="@drawable/th_app_logo"
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/my_toolbar"
+      style="@style/TradeHero.ActionBar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
       />
 
-  <TextView
-      style="@style/TH.Headline"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/welcome_live"
-      />
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
 
-  <TextView
-      style="@style/TH.Subhead"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/powered_by"
-      />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_medium"
+        >
 
-  <TextView
-      style="@style/TH.Body"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="@dimen/margin_small"
-      android:layout_marginTop="@dimen/margin_small"
-      android:gravity="center"
-      android:text="@string/start_live"
-      />
+      <ImageView
+          android:layout_width="@dimen/extra_big_image_w_h"
+          android:layout_height="@dimen/extra_big_image_w_h"
+          android:scaleType="fitCenter"
+          android:src="@drawable/th_app_logo"
+          />
 
-  <Button
-      style="@style/TH.Button.Accented"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:background="?attr/selectableItemBackground"
-      android:padding="@dimen/margin_small"
-      android:text="@string/open_new_account"
-      />
+      <TextView
+          style="@style/TH.Headline"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_medium"
+          android:text="@string/welcome_live"
+          />
 
-  <Button
-      style="@style/TH.Button.Accented"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:background="?attr/selectableItemBackground"
-      android:padding="@dimen/margin_small"
-      android:text="@string/link_existing_account"
-      />
+      <LinearLayout
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:orientation="horizontal"
+          >
+
+        <TextView
+            style="@style/TH.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:text="@string/powered_by"
+            />
+
+        <ImageView
+            android:layout_width="@dimen/size_20"
+            android:layout_height="@dimen/size_5"
+            android:scaleType="fitCenter"
+            tools:src="@drawable/logo_text"
+            />
+      </LinearLayout>
+
+      <TextView
+          style="@style/TH.Subhead"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:layout_marginTop="@dimen/margin_small"
+          android:gravity="center"
+          android:text="@string/start_live"
+          />
+
+      <Button
+          style="@style/TH.Button.Link"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="?attr/selectableItemBackground"
+          android:padding="@dimen/margin_small"
+          android:text="@string/open_new_account"
+          />
+
+      <Button
+          style="@style/TH.Button.Link"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="?attr/selectableItemBackground"
+          android:padding="@dimen/margin_small"
+          android:text="@string/link_existing_account"
+          />
+    </LinearLayout>
+
+  </ScrollView>
+
 
 </LinearLayout>

@@ -16,10 +16,8 @@ import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.OffOnViewSwitcher;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 import javax.inject.Inject;
-import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
 public class LiveActivityUtil
@@ -28,7 +26,6 @@ public class LiveActivityUtil
     private CompositeSubscription onDestroyOptionsMenuSubscriptions;
 
     @Inject @IsLiveTrading BooleanPreference isLiveTrading;
-    private PublishSubject<OffOnViewSwitcherEvent> isTradingLivePublishSubject;
     private OffOnViewSwitcher liveSwitcher;
 
     public static Class<?> getRoutableKYC()
@@ -38,13 +35,13 @@ public class LiveActivityUtil
 
     public static void registerAliases(THRouter router)
     {
-        router.registerAlias(IdentityPromptActivity.ROUTER_KYC_SCHEME + "ayondo", IdentityPromptActivity.ROUTER_KYC_SCHEME + DummyAyondoLiveServiceWrapper.AYONDO_LIVE_BROKER_ID);
+        router.registerAlias(IdentityPromptActivity.ROUTER_KYC_SCHEME + "ayondo",
+                IdentityPromptActivity.ROUTER_KYC_SCHEME + DummyAyondoLiveServiceWrapper.AYONDO_LIVE_BROKER_ID);
     }
 
     public LiveActivityUtil(BaseActivity activity)
     {
         this.activity = activity;
-        isTradingLivePublishSubject = PublishSubject.create();
         HierarchyInjector.inject(activity, this);
     }
 
@@ -62,42 +59,32 @@ public class LiveActivityUtil
         MenuItem item = menu.findItem(R.id.switch_live);
         liveSwitcher = (OffOnViewSwitcher) item.getActionView();
 
-        onDestroyOptionsMenuSubscriptions.add(
-                Observable.merge(liveSwitcher.getSwitchObservable(),
-                        isTradingLivePublishSubject
-                                .startWith(new OffOnViewSwitcherEvent(false, isLiveTrading.get()))
-                                .doOnNext(new Action1<OffOnViewSwitcherEvent>()
-                                {
-                                    @Override public void call(OffOnViewSwitcherEvent event)
-                                    {
-                                        liveSwitcher.setIsOn(event.isOn, false);
-                                    }
-                                }))
-                        .doOnNext(new Action1<OffOnViewSwitcherEvent>()
+        onDestroyOptionsMenuSubscriptions.add(liveSwitcher.getSwitchObservable()
+                .doOnNext(new Action1<OffOnViewSwitcherEvent>()
+                {
+                    @Override public void call(OffOnViewSwitcherEvent event)
+                    {
+                        //Every-time a change happened.
+                        isLiveTrading.set(event.isOn);
+                    }
+                })
+                .distinctUntilChanged(
+                        new Func1<OffOnViewSwitcherEvent, Boolean>()
+                        {
+                            @Override public Boolean call(OffOnViewSwitcherEvent event)
+                            {
+                                return event.isOn;
+                            }
+                        })
+                .subscribe(
+                        new Action1<OffOnViewSwitcherEvent>()
                         {
                             @Override public void call(OffOnViewSwitcherEvent event)
                             {
-                                //Every-time a change happened.
-                                isLiveTrading.set(event.isOn);
+                                onLiveTradingChanged(event);
                             }
-                        })
-                        .distinctUntilChanged(
-                                new Func1<OffOnViewSwitcherEvent, Boolean>()
-                                {
-                                    @Override public Boolean call(OffOnViewSwitcherEvent event)
-                                    {
-                                        return event.isOn;
-                                    }
-                                })
-                        .subscribe(
-                                new Action1<OffOnViewSwitcherEvent>()
-                                {
-                                    @Override public void call(OffOnViewSwitcherEvent event)
-                                    {
-                                        onLiveTradingChanged(event);
-                                    }
-                                },
-                                new TimberOnErrorAction1("Failed to listen to liveSwitcher in LiveActivityUtil")));
+                        },
+                        new TimberOnErrorAction1("Failed to listen to liveSwitcher in LiveActivityUtil")));
 
         for (Fragment f : activity.getSupportFragmentManager().getFragments())
         {
@@ -113,6 +100,10 @@ public class LiveActivityUtil
             //There's no fragment that can handle live trading, disable it.
             switchLive(false);
         }
+        else
+        {
+            switchLive(isLiveTrading.get());
+        }
     }
 
     private void onLiveTradingChanged(OffOnViewSwitcherEvent event)
@@ -121,7 +112,7 @@ public class LiveActivityUtil
         {
             if (f instanceof DashboardFragment && f.isVisible())
             {
-                ((DashboardFragment) f).onLiveTradingChanged(event.isOn);
+                ((DashboardFragment) f).onLiveTradingChanged(event);
             }
         }
 
@@ -167,7 +158,6 @@ public class LiveActivityUtil
             onDestroyOptionsMenuSubscriptions.clear();
         }
         liveSwitcher = null;
-        this.isTradingLivePublishSubject = null;
         this.activity = null;
     }
 
@@ -178,15 +168,10 @@ public class LiveActivityUtil
 
     private void switchLive(boolean isLive, boolean fromUser)
     {
-        isTradingLivePublishSubject.onNext(new OffOnViewSwitcherEvent(fromUser, isLive));
+        liveSwitcher.setIsOn(isLive, fromUser);
     }
 
     public void onTrendingTileClicked(TileType tileType)
     {
-        //Disable live toggling for now
-        //if (tileType.equals(TileType.LiveToggle))
-        //{
-        //    switchLive(true, true);
-        //}
     }
 }

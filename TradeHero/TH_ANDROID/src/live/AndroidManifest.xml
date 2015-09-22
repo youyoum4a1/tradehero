@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    >
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
   <!-- Required by Jumio -->
   <uses-permission android:name="android.permission.CAMERA"/>
@@ -19,6 +17,15 @@
         android:theme="@style/Theme.Netverify"
         android:name="com.jumio.netverify.sdk.activity.NetverifyActivity"
         android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
+
+    <activity
+        android:name="com.tradehero.th.activities.CallToActionActivity"
+        android:theme="@style/TradeHero.Live"
+        android:label="@string/live_trading_title"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        android:noHistory="false"
+        />
 
     <activity
         android:name="com.tradehero.th.activities.IdentityPromptActivity"

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <string name="live_trading_title">Live Trading</string>
   <string name="welcome_live">Welcome to LIVE Trading!</string>
   <string name="start_live">Start your trading journey by opening a new account or linking an existing one.</string>
   <string name="broker_name_none">No Broker</string>

@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.base;
 
 import android.view.MenuItem;
+import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 import dagger.Lazy;
 import javax.inject.Inject;
 
@@ -13,7 +14,7 @@ abstract public class DashboardFragment extends BaseFragment
         return false;
     }
 
-    public void onLiveTradingChanged(boolean isLive)
+    public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
     }
 

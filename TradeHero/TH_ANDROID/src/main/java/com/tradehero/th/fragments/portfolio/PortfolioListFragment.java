@@ -32,6 +32,7 @@ import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,9 +82,9 @@ public class PortfolioListFragment extends DashboardFragment
         return true;
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive)
+    @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
-        super.onLiveTradingChanged(isLive);
+        super.onLiveTradingChanged(event);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
