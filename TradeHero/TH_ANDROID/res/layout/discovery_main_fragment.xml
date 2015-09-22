@@ -22,14 +22,4 @@
       tools:background="@android:color/holo_red_dark"
       />
 
-  <include
-      layout="@layout/live_call_to_action"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:layout_centerHorizontal="true"
-      android:layout_marginBottom="@dimen/size_10"
-      tools:visibility="visible"
-      />
-
 </RelativeLayout>

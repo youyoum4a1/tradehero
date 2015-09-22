@@ -258,12 +258,6 @@ abstract public class TimelineFragment extends DashboardFragment
         liveFragmentUtil.onResume();
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive)
-    {
-        super.onLiveTradingChanged(isLive);
-        liveFragmentUtil.setCallToAction(isLive);
-    }
-
     protected void loadLatestTimeline()
     {
         onStopSubscriptions.add(getTimelineObservable(new TimelineKey(TimelineSection.Timeline,

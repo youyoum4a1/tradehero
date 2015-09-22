@@ -3,9 +3,11 @@ package com.tradehero.th.fragments.portfolio;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,6 +51,8 @@ public class PortfolioListFragment extends DashboardFragment
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject CurrentUserId currentUserId;
+    @Inject Toolbar toolbar;
+    @Inject DrawerLayout drawerLayout;
 
     @Bind(R.id.portfolio_refresh) SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.portfolio_list) RecyclerView portfolioList;
@@ -75,6 +79,11 @@ public class PortfolioListFragment extends DashboardFragment
     @Override public boolean shouldShowLiveTradingToggle()
     {
         return true;
+    }
+
+    @Override public void onLiveTradingChanged(boolean isLive)
+    {
+        super.onLiveTradingChanged(isLive);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

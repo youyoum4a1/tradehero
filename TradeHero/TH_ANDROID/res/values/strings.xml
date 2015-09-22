@@ -328,5 +328,7 @@
   <string name="video_locked_hint">Coming soon!</string>
   <string name="history_tab_wait_message">Please wait for loading portfolio</string>
   <string name="hero">Hero</string>
+  <string name="open_new_account">Open a new account</string>
+  <string name="link_existing_account">Link an existing account</string>
 
 </resources>

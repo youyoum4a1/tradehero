@@ -181,12 +181,6 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         liveFragmentUtil.onResume();
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive)
-    {
-        super.onLiveTradingChanged(isLive);
-        liveFragmentUtil.setCallToAction(isLive);
-    }
-
     @Override public void onStop()
     {
         unsubscribe(leaderboardDefListFetchSubscription);

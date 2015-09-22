@@ -125,7 +125,7 @@ public class LiveActivityUtil
             }
         }
 
-        //changeBarColor(event);
+        changeBarColor(event);
     }
 
     private void changeBarColor(OffOnViewSwitcherEvent event)

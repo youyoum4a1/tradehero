@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:tools="http://schemas.android.com/tools"
     >
 
   <android.support.v4.widget.SwipeRefreshLayout android:id="@+id/swipe_container"
@@ -64,16 +63,5 @@
         />
 
   </LinearLayout>
-
-  <include
-      layout="@layout/live_call_to_action"
-      tools:visibility="visible"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:layout_centerHorizontal="true"
-      android:layout_marginBottom="@dimen/size_10"
-      />
-
 
 </RelativeLayout>

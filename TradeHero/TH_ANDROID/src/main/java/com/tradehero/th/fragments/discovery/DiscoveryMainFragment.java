@@ -116,12 +116,6 @@ public class DiscoveryMainFragment extends DashboardFragment
         liveFragmentUtil.onResume();
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive)
-    {
-        super.onLiveTradingChanged(isLive);
-        liveFragmentUtil.setCallToAction(isLive);
-    }
-
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);

@@ -288,7 +288,7 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public boolean shouldShowLiveTradingToggle()
     {
-        return false;
+        return true;
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)
