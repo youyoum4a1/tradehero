@@ -38,7 +38,7 @@
         android:textColor="@color/black"
         android:textSize="12sp"
         android:text="一共五个字"
-        android:layout_width="wrap_content"/>
+        android:layout_width="60dp"/>
 
     <RelativeLayout
         android:id="@+id/infoContainer"

@@ -1,5 +1,7 @@
 package com.tradehero.th.api.users;
 
+import android.text.TextPaint;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.th.api.ExtendedDTO;
@@ -78,16 +80,5 @@ public class UserBaseDTO extends ExtendedDTO
             return displayName.replace("　", "").replace(" ","");
         }
         return "";
-    }
-
-    public String getShortDisplayName(int length)
-    {
-        String name = getDisplayName();
-        if (name.length() > length) {
-            name = name.substring(0, length - 1);
-            name = name + "...";
-        }
-
-        return name;
     }
 }

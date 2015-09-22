@@ -59,10 +59,12 @@
         <TextView
             android:id="@+id/tvUserName"
             android:layout_height="fill_parent"
+            android:maxWidth="65dp"
             android:layout_width="wrap_content"
             android:textColor="#3297ed"
             android:textSize="14sp"
             android:text="一共五个字"
+            android:singleLine="true"
             android:gravity="center_vertical"
             />
 

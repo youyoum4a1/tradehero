@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.EmptyLeaderboardUserDTO;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -168,14 +169,7 @@ public class LeaderboardListAdapter extends BaseAdapter {
 
             ImageLoader.getInstance().displayImage(item.picture, holder.imgUserHead, UniversalImageLoader.getAvatarImageLoaderOptions());
 
-            if (leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION || leaderboardType == LeaderboardDefKeyKnowledge.COMPETITION_FOR_SCHOOL)
-            {
-                holder.imgUserName.setText(item.getDisplayName());
-            }
-            else
-            {
-                holder.imgUserName.setText(item.getShortDisplayName(MAX_USER_NAME_LENGTH));
-            }
+            holder.imgUserName.setText(item.getDisplayName());
 
             if (holder.infoContainer != null) {
                 holder.infoContainer.setOnTouchListener(new View.OnTouchListener() {
@@ -248,8 +242,9 @@ public class LeaderboardListAdapter extends BaseAdapter {
                     public boolean onTouch(View v, MotionEvent event) {
                         if (event.getAction() == MotionEvent.ACTION_UP) {
                             Bundle bundle = new Bundle();
-                            bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, item.topWatchUserId);
-                            context.getDashboardNavigator().pushFragment(PortfolioFragment.class, bundle);
+                            bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, item.topWatchUserId);
+                            bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
+                            context.getDashboardNavigator().pushFragment(UserMainPage.class, bundle);
                         }
 
                         return true;
