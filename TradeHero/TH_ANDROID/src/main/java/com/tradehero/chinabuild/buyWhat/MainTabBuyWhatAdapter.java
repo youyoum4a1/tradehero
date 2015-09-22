@@ -94,6 +94,9 @@ public class MainTabBuyWhatAdapter extends BaseAdapter implements View.OnClickLi
 
         TextView percent = (TextView) convertView.findViewById(R.id.percent);
         String percentString = String.valueOf(item.percent * 100);
+        if (item.percent < 0.0001) {
+            percentString = "0.01";
+        }
         int pointPosition3 = percentString.indexOf(".");
         int end3 = pointPosition3 + 3 > percentString.length() ? percentString.length() : pointPosition3 + 3;
         percent.setText("仓位 " + percentString.substring(0, end3) + "%");
