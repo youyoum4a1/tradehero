@@ -714,7 +714,7 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
     }
 
     private void setStockPrice(double open, double data, TextView textView) {
-        textView.setText(String.valueOf(data));
+        textView.setText(String.format("%.2f", data));
         if (data >= open) {
             textView.setTextColor(color_up);
         } else {
