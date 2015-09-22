@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="72dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rlItemAll"
-    android:background="@drawable/leaderboardlistview_item_selector"
-    >
+    android:background="@drawable/leaderboardlistview_item_selector">
 
     <TextView
         android:id="@+id/tvUserRank"
@@ -19,7 +18,7 @@
         android:gravity="center"
         android:textSize="18sp"/>
 
-    <ImageView
+    <com.makeramen.RoundedImageView
         android:id="@+id/imgUserHead"
         android:layout_toRightOf="@id/tvUserRank"
         android:layout_marginLeft="5dp"
@@ -27,7 +26,8 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:scaleType="fitXY"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"
+        app:corner_radius="24dp"/>
 
     <TextView
         android:id="@+id/tvUserName"
