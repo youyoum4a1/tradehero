@@ -45,6 +45,7 @@
   <string name="sms_verification_button_empty_checking">Checking</string>
   <string name="unable_to_capture_value_from_image">Unable to capture value from image</string>
   <string name="pick_location_within_country">Please pick nearby location within your country.</string>
+  <string name="password">Password</string>
 
   <string name="verify">Verify</string>
   <string name="verified">Verified</string>

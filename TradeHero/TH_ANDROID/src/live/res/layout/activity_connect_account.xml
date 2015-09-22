@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <android.support.v7.widget.Toolbar
+      android:id="@+id/my_toolbar"
+      style="@style/TradeHero.ActionBar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      />
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:fillViewport="true"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_small"
+        >
+
+      <ImageView
+          android:layout_width="@dimen/size_25"
+          android:layout_height="@dimen/size_10"
+          android:scaleType="fitCenter"
+          tools:src="@drawable/logo_text"
+          />
+
+      <android.support.design.widget.TextInputLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          >
+
+        <EditText
+            android:id="@+id/connect_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/account_id"
+            android:inputType="text"
+            tools:text="XX 1234 5678"
+            />
+
+      </android.support.design.widget.TextInputLayout>
+
+      <android.support.design.widget.TextInputLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          >
+
+        <EditText
+            android:id="@+id/connect_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            tools:text="texttexxt"
+            />
+
+      </android.support.design.widget.TextInputLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          >
+
+        <Spinner
+            android:id="@+id/country_code_spinner"
+            style="@style/TH.Spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:minHeight="@dimen/clickable_element_min_dimen"
+            tools:layout_height="48dp"
+            tools:layout_width="48dp"
+            />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+          <EditText
+              android:id="@+id/connect_phone"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/mobile_number"
+              android:inputType="phone"
+              tools:text="12345678"
+              />
+
+        </android.support.design.widget.TextInputLayout>
+
+      </LinearLayout>
+
+      <Button
+          style="@style/TH.Button.Inverse"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_large"
+          android:background="@drawable/basic_blue_selector"
+          android:padding="@dimen/margin_small"
+          android:text="@string/connect"
+          />
+    </LinearLayout>
+  </ScrollView>
+
+</LinearLayout>
