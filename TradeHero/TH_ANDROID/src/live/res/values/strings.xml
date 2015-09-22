@@ -136,4 +136,11 @@
   <string name="live_username_invalid">\'%1$s\' is not valid. Must be 5 – 20 alphanumeric characters</string>
   <string name="live_username_not_available">\'%1$s\' is not available</string>
 
+
+  <string name="open_new_account">Open a new account</string>
+  <string name="link_existing_account">Link an existing account</string>
+  <string name="account_id">Account ID</string>
+  <string name="connect">connect</string>
+  <string name="connect_account">Connect an Account</string>
+
 </resources>

@@ -8,7 +8,8 @@ import dagger.Module;
         injects = {
                 SignUpLiveActivity.class,
                 IdentityPromptActivity.class,
-                CallToActionActivity.class
+                CallToActionActivity.class,
+                ConnectAccountActivity.class,
         },
         complete = false,
         library = true

@@ -37,6 +37,15 @@
         />
 
     <activity
+        android:name="com.tradehero.th.activities.ConnectAccountActivity"
+        android:theme="@style/TradeHero.Live"
+        android:label="@string/connect_account"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        android:noHistory="false"
+        />
+
+    <activity
         android:name="com.tradehero.th.activities.SignUpLiveActivity"
         android:theme="@style/TradeHero.Live"
         android:label="@string/tradehero_live"

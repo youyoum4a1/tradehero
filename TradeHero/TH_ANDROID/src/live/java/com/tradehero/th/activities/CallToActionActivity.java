@@ -33,7 +33,7 @@ public class CallToActionActivity extends BaseActivity
 
     @Override public boolean onOptionsItemSelected(MenuItem item)
     {
-        if(item.getItemId() == R.id.close)
+        if (item.getItemId() == R.id.close)
         {
             onBackPressed();
             return true;
@@ -45,6 +45,13 @@ public class CallToActionActivity extends BaseActivity
     public void openAccount()
     {
         startActivity(new Intent(this, IdentityPromptActivity.class));
+        finish();
+    }
+
+    @OnClick(R.id.btn_connect_account)
+    public void connectAccount()
+    {
+        startActivity(new Intent(this, ConnectAccountActivity.class));
         finish();
     }
 }

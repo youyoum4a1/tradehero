@@ -103,6 +103,7 @@
       </LinearLayout>
 
       <Button
+          android:id="@+id/btn_connect"
           style="@style/TH.Button.Inverse"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
