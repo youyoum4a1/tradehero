@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    style="@style/TH.Title"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="right|center_vertical"
+    android:gravity="right|center_vertical"
+    android:minWidth="@dimen/size_8"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
+    />

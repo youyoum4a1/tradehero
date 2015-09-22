@@ -8,7 +8,6 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -61,8 +60,6 @@ public class OffOnViewSwitcher extends LinearLayout
         LayoutInflater.from(getContext()).inflate(R.layout.off_on_switcher_merged, this);
         ButterKnife.bind(this);
         setOrientation(HORIZONTAL);
-        setGravity(Gravity.CENTER_VERTICAL);
-        offOnViewSwitcher.setForegroundGravity(Gravity.CENTER_VERTICAL);
         offOnViewSwitcher.setAnimateFirstView(false);
         mSwitchSubject = PublishSubject.create();
 

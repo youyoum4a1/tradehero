@@ -4,8 +4,10 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_gravity="center_vertical"
-    android:gravity="center"
+    android:gravity="right"
     android:background="?attr/selectableItemBackgroundBorderless"
-    app:offLayout="@layout/live_switch_virtual_textview"
-    app:onLayout="@layout/live_switch_live_imageview"
+    app:offLayout="@layout/off_on_switcher_textview_right"
+    app:onLayout="@layout/off_on_switcher_textview_right"
+    app:offText="@string/virtual"
+    app:onText="@string/live"
     />

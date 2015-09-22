@@ -72,6 +72,11 @@ public class PortfolioListFragment extends DashboardFragment
         return null;
     }
 
+    @Override public boolean shouldShowLiveTradingToggle()
+    {
+        return true;
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
