@@ -11,12 +11,21 @@
         android:layout_height="@dimen/tab_main_indicator_height"
         android:background="@color/white">
 
+        <View
+            android:id="@+id/bottomLine"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#cecece"
+            />
+
         <com.viewpagerindicator.TabPageIndicator
             android:id="@+id/indicator"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="6dp"
+            android:layout_above="@id/bottomLine"
             app:selectedTextColor="@color/tab_head_bg"
             app:unselectedTextColor="#a0a0a0"/>
 
@@ -24,6 +33,7 @@
             android:layout_width="22dp"
             android:layout_alignParentRight="true"
             android:layout_height="fill_parent"
+            android:layout_above="@id/bottomLine"
             android:background="@drawable/tabindicator_sidebar"/>
 
     </RelativeLayout>

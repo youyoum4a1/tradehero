@@ -39,46 +39,24 @@ import javax.inject.Singleton;
 @Singleton
 public class XCTServicesWrapper implements LiveTradeServices {
 
-    private static final String APK_URL = "http://fhmainstorage.blob.core.windows.net/fhres/cps_20150805.apk";
+    private static final String APK_URL = "http://fhmainstorage.blob.core.windows.net/fhres/XCT_QMGS_EXCH.apk";
 
     // 第三方证券与交易模块间的接口变量定义
     // ***************************************************************************************
+
+    public final static String PACKAGE_NAME = "xct.exchangestock.qmgs";
+    public final static String ACTIVITY_NAME = "lthj.exchangestock.FlashGridActv";
     // 定义交易Intent的Action
-    public final static String TRADE_ACTION = "com.lthjxct.android.appstock.stock.2nd.cps.caopanshou";
-
-    // 定义证券Intent的Action
-    public final static String STOCK_ACTION = "com.lthjxct.android.appstock.stock.2nd.cps.demo";
-
     // Intent参数
     // 命令标识
     public final static String INTENT_EXTRA_CMD = "action_cmd";
     // Intent命令类型
     // 启动交易(可以有参数,param1(股票市场),param2(股票代码),若有参数则跳转到股票的买入或卖出界面
     public final static String CMD_RUN_TRADE = "cmd_run_trade";
-    // 停止交易,无参数
-    public final static String CMD_STOP_TRADE = "cmd_stop_trade";
-    // 交易调证券,进入该股票的行情界面，param1(股票市场),param2(股票代码)
-    public final static String CMD_RUN_STOCK = "cmd_run_stock";
-    // 添加自选股,param1(股票市场),param2(股票代码)
-    public final static String CMD_ADD_STOCK = "cmd_add_stock";
-    // 市场类型命令参数,使用Bundle保存，股票市场定义(1:上海，2: 深圳, 3: 香港)
-    public final static String INTENT_EXTRA_PARAM_MARKET = "action_param_market";
-    // 股票代码命令参数,使用Bundle保存
-    public final static String INTENT_EXTRA_PARAM_STOCKCODE = "action_param_stockcode";
-    // 委托买卖方向(0正常登录，1登录后进入买，2登录后进入卖)
-    public final static String INTENT_EXTRA_PARAM_DIRECTION = "action_param_direction";
     // 证券传给交易的其他参数
     public final static String INTENT_EXTRA_PARAM_STANDARD = "action_param_standard";
     // 证券端交易界面标识
-    public final static String INTENT_EXTRA_PARAM_UIID = "action_param_uiid";
-    // 联网类型参数
-    public final static String INTENT_EXTRA_PARAM_NET = "action_param_net";
-    // 证券端的action参数，用bundle保存
-    public final static String INTENT_TRADE_ACTION = "action";
-    public final static String PAKCAGER_NAME = "pakagerName";
-    public final static String THIRDAPPPAKCAGER_NAME = "com.tradehero.th";
 
-    public final String INTENT_EXTRA_PARAM_PARCELABLE_TAG = "plugBackParcelable";
     public final String INTENT_EXTRA_PARAM_SERIliZABLE_TAG = "plugBackSerializable";
 
     @Inject CurrentUserId currentUserId;
@@ -160,7 +138,7 @@ public class XCTServicesWrapper implements LiveTradeServices {
     public void launchXCT(Activity activity, String phoneNum) {
         PackageManager packageManager = activity.getPackageManager();
         try {
-            packageManager.getApplicationInfo("lthj.exchangestock.caopanshou", 0);
+            packageManager.getApplicationInfo(PACKAGE_NAME, 0);
             entrustPosition(activity, phoneNum);
         } catch (PackageManager.NameNotFoundException e) {
             APKDownloadNInstaller installer = new APKDownloadNInstaller();
@@ -172,30 +150,23 @@ public class XCTServicesWrapper implements LiveTradeServices {
 
     public void entrustPosition(Activity activity, String phoneNum) {
         Intent intent = new Intent();
-        ComponentName comp = new ComponentName(
-                "lthj.exchangestock.caopanshou",
-                "lthj.exchangestock.FlashGridActv");
+        ComponentName comp = new ComponentName(PACKAGE_NAME, ACTIVITY_NAME);
 		/*
 		 * 判断交易进程是否存在,如果进程存在直接调起后台栈，如果不存在再重新创建
 		 */
-        boolean isProcessExist = isProcessExist("lthj.exchangestock.caopanshou", activity);
+        boolean isProcessExist = isProcessExist(PACKAGE_NAME,activity);
         if(!isProcessExist){
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }else{
             //该flag,标识如果后台栈存在该进程,则直接调起
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         }
-
         intent.setComponent(comp);
-        intent.setAction("com.lthjxct.android.appstock.stock.2nd.caopanshou");
         intent.putExtra(INTENT_EXTRA_CMD, CMD_RUN_TRADE);
         Bundle bundle = new Bundle();
-        JSONObject jsonObject = genJSON(phoneNum);
+        JSONObject jsonObject = genJSON(phoneNum); //生成手机号
         bundle.putString(INTENT_EXTRA_PARAM_STANDARD, jsonObject.toString());
         bundle.putSerializable(INTENT_EXTRA_PARAM_SERIliZABLE_TAG, "0");
-        bundle.putString(INTENT_EXTRA_PARAM_NET, "");
-        bundle.putString(INTENT_TRADE_ACTION, STOCK_ACTION);
-        bundle.putString(PAKCAGER_NAME, THIRDAPPPAKCAGER_NAME);
         intent.putExtras(bundle);
         activity.startActivity(intent);
     }
