@@ -16,9 +16,15 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="6dp"
             app:selectedTextColor="@color/tab_head_bg"
             app:unselectedTextColor="#a0a0a0"/>
+
+        <ImageView
+            android:layout_width="22dp"
+            android:layout_alignParentRight="true"
+            android:layout_height="fill_parent"
+            android:background="@drawable/fliter"/>
 
     </RelativeLayout>
 

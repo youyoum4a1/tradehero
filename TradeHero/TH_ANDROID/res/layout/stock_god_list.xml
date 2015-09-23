@@ -30,6 +30,7 @@
             android:dividerHeight="1px"
             android:fadingEdge="none"
             android:scrollingCache="false"
+            android:background="@color/leaderboard_item_unpressed"
             ptr:ptrHeaderTextColor="@color/black"/>
 
         <ImageView

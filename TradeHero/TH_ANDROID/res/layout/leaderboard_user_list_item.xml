@@ -69,6 +69,7 @@
             android:textColor="#828282"
             android:text="100%"
             android:gravity="center"
+            android:textStyle="bold"
             android:textSize="14sp"/>
 
         <TextView
@@ -91,7 +92,8 @@
             android:layout_alignTop="@id/imgUserHead"
             android:text="value"
             android:gravity="center"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:textStyle="bold"/>
     </RelativeLayout>
 
     <View
