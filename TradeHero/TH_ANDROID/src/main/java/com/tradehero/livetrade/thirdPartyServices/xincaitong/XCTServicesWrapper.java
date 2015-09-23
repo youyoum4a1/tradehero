@@ -142,7 +142,7 @@ public class XCTServicesWrapper implements LiveTradeServices {
             entrustPosition(activity, phoneNum);
         } catch (PackageManager.NameNotFoundException e) {
             APKDownloadNInstaller installer = new APKDownloadNInstaller();
-            installer.downloadApk(activity, APK_URL);
+            installer.downloadApk(activity, APK_URL, "全民股神交易");
         } catch (Exception e) {
             e.printStackTrace();
         }

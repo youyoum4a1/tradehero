@@ -17,25 +17,24 @@ import java.io.File;
  */
 public class APKDownloadNInstaller extends BroadcastReceiver {
     private static final String APK_FOLDER = "apks";
-    private static final String APK_LOCAL_NAME = "update.apk";
 
     private String save_path;
     private Activity activity;
 
-    public void downloadApk(Activity activity, String apkUrl){
+    public void downloadApk(Activity activity, String apkUrl, String localName) {
         this.activity = activity;
         DownloadManager downloadManager  = (DownloadManager)(activity.getSystemService(activity.DOWNLOAD_SERVICE));
 
         String dir = createFolder(APK_FOLDER);
-        save_path = dir +"/" + APK_LOCAL_NAME;
+        save_path = dir +"/" + localName;
 
-        File f = new File(dir + "/" + APK_LOCAL_NAME);
+        File f = new File(dir + "/" + localName);
         if(f.exists()) f.delete();
 
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(apkUrl));
 
-        request.setDestinationInExternalPublicDir(APK_FOLDER, APK_LOCAL_NAME);
+        request.setDestinationInExternalPublicDir(APK_FOLDER, localName);
         request.allowScanningByMediaScanner();//表示允许MediaScanner扫描到这个文件，默认不允许。
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
 
