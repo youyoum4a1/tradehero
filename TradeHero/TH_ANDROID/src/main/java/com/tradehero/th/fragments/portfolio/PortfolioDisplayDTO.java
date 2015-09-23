@@ -74,7 +74,7 @@ public class PortfolioDisplayDTO implements DTO
         else
         {
             this.roiVisibility = View.VISIBLE;
-            this.roiValue = resources.getString(R.string.na);
+            this.roiValue = THSignedPercentage.builder(0).withOutSign().build().createSpanned();
             this.sinceValue = "";
             this.sinceValueVisibility = View.GONE;
             this.chartVisibility = View.GONE;
@@ -83,7 +83,7 @@ public class PortfolioDisplayDTO implements DTO
         this.description = DisplayablePortfolioUtil.getLongSubTitle(resources, currentUserId, dto);
         this.ownedPortfolioId = dto.ownedPortfolioId;
 
-        if(dto.portfolioDTO != null)
+        if (dto.portfolioDTO != null)
         {
             this.isWatchlist = dto.portfolioDTO.isWatchlist;
             this.assetClass = dto.portfolioDTO.assetClass;
