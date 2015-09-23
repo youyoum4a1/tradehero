@@ -41,6 +41,7 @@ import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.BetterViewAnimator;
+import com.tradehero.livetrade.DataUtils;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.DashboardActivity;
@@ -415,7 +416,7 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
     private void displayNotice(String cost, double benefit, String benefitPercent, String currencyDisplay){
         noticeLL.setVisibility(View.VISIBLE);
         costPriceTV.setText(currencyDisplay + cost);
-        benefitTV.setText(currencyDisplay + String.valueOf(benefit));
+        benefitTV.setText(currencyDisplay + DataUtils.keepTwoDecimal(benefit));
         benefitPercentTV.setText(benefitPercent);
         if(benefit > 0){
             benefitTV.setTextColor(colorUp);
@@ -1920,8 +1921,8 @@ public class SecurityDetailFragment extends BasePurchaseManagerFragment
                     .signTypeArrow()
                     .build();
             tvPositionTotalCcy.setTextColor(getResources().getColor(roi.getColorResId()));
-            tvPositionTotalCcy.setText("$" + positionDTO.getTotalScoreOfTrade() + "(" + roi.toString() + ")");
-            tvPositionSumAmont.setText("$" + Math.round(positionDTO.sumInvestedAmountRefCcy));
+            tvPositionTotalCcy.setText("$" + DataUtils.keepTwoDecimal(positionDTO.getTotalScoreOfTrade()) + "(" + roi.toString() + ")");
+            tvPositionSumAmont.setText("$" + DataUtils.keepTwoDecimal(positionDTO.sumInvestedAmountRefCcy));
             tvPositionStartTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.earliestTradeUtc));
             tvPositionLastTime.setText(DateUtils.getFormattedDate(getResources(), positionDTO.latestTradeUtc));
             tvPositionHoldTime.setText(getResources().getString(R.string.position_hold_days,

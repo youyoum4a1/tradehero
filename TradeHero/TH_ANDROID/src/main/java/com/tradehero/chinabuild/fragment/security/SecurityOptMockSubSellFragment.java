@@ -638,9 +638,9 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
         }
         if(TextUtils.isEmpty(priceET.getText())){
             if(quoteDetail.bp1!=null) {
-                priceET.setText(String.valueOf(quoteDetail.bp1));
+                priceET.setText(DataUtils.keepTwoDecimal(quoteDetail.bp1));
             } else if (quoteDetail.sp1 != null){
-                priceET.setText(String.valueOf(quoteDetail.sp1));
+                priceET.setText(DataUtils.keepTwoDecimal(quoteDetail.sp1));
             }
         }
     }
@@ -656,7 +656,7 @@ public class SecurityOptMockSubSellFragment extends Fragment implements View.OnC
     }
 
     private void setStockPrice(double open, double data, TextView textView){
-        textView.setText(String.valueOf(data));
+        textView.setText(DataUtils.keepTwoDecimal(data));
         if(data >= open){
             textView.setTextColor(color_up);
         } else {

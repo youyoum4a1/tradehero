@@ -185,7 +185,7 @@ public class THSignedNumber
     public static StringBuilder getStringFormat(int precision)
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("#,###0");
+        sb.append("##,##0");
         if (precision > 0)
         {
             sb.append('.');

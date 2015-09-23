@@ -22,6 +22,7 @@ import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
+import com.tradehero.livetrade.DataUtils;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
@@ -402,7 +403,7 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
 
                 if (tradeDTO != null)
                 {
-                    holder.tvTradePrice.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.getUnitPriceCurrency());
+                    holder.tvTradePrice.setText(tradeDTO.getCurrencyDisplay() + DataUtils.keepTwoDecimal(tradeDTO.getUnitPriceCurrency()));
                     holder.tvTradeCount.setText(tradeDTO.displayTradeQuantity());
                     holder.tvTradeMoney.setText(tradeDTO.getCurrencyDisplay() + tradeDTO.displayTradeMoney());
                     holder.title0.setText(tradeDTO.isBuy() ? "买入股票：" : "卖出股票：");

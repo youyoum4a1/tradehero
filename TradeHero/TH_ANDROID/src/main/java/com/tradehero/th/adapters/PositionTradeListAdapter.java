@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.tradehero.livetrade.DataUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.trade.TradeDTOList;
@@ -74,7 +76,7 @@ public class PositionTradeListAdapter extends BaseAdapter
 
             holder.tvTradeOperater.setText(item.isBuy() ? "购买" : "出售");
             holder.tvTradeQuantity.setText(item.displayTradeQuantity() + " x ");
-            holder.tvTradePrice.setText(item.getCurrencyDisplay() + item.getUnitPriceCurrency());
+            holder.tvTradePrice.setText(item.getCurrencyDisplay() + DataUtils.keepTwoDecimal(item.getUnitPriceCurrency()));
             holder.tvTradeTime.setText(DateUtils.getFormattedUtcDate(context.getResources(), item.dateTime));
         }
         return convertView;

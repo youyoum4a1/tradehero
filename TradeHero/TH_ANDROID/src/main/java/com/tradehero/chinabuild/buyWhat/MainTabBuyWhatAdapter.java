@@ -15,6 +15,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
+import com.tradehero.livetrade.DataUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.SecurityOptActivity;
@@ -87,7 +88,7 @@ public class MainTabBuyWhatAdapter extends BaseAdapter implements View.OnClickLi
         securityName.setText(item.securityName + "(" + item.symbol + ")");
 
         TextView tradePrice = (TextView) convertView.findViewById(R.id.trade_price);
-        tradePrice.setText("成交价格 " + item.price);
+        tradePrice.setText("成交价格 " + DataUtils.keepTwoDecimal(item.price));
 
         TextView tradeTime = (TextView) convertView.findViewById(R.id.trade_time);
         tradeTime.setText(prettyTime.get().formatUnrounded(item.dateTimeUtc));

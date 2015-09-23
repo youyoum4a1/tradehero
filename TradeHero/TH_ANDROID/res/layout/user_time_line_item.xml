@@ -169,7 +169,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
-            <TextView
+            1<TextView
                     android:id="@+id/title0"
                     style="@style/buy_sale_title"
                     android:layout_marginTop="3dp"

@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tradehero.livetrade.DataUtils;
 import com.tradehero.livetrade.data.subData.EntrustQueryDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustQueryDTO;
 import com.tradehero.th.R;
@@ -56,7 +57,7 @@ public class SecurityOptMockActualQueryDelegationAdapter extends BaseAdapter{
         TextView operation = (TextView)convertView.findViewById(R.id.operation);
         operation.setText(item.entrustName);
         TextView price = (TextView)convertView.findViewById(R.id.price);
-        price.setText(String.valueOf(item.entrustPrice));
+        price.setText(DataUtils.keepTwoDecimal(item.entrustPrice));
         TextView numbers = (TextView)convertView.findViewById(R.id.numbers);
         numbers.setText(String.valueOf(item.entrustAmount));
         TextView timeDate = (TextView)convertView.findViewById(R.id.time_date);
