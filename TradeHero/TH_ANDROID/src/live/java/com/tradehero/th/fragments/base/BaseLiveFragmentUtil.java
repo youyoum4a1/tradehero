@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.base;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -7,6 +8,7 @@ import butterknife.ButterKnife;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.IdentityPromptActivity;
+import com.tradehero.th.activities.LiveActivityUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.fastfill.FastFillUtil;
@@ -15,11 +17,14 @@ import javax.inject.Inject;
 
 public class BaseLiveFragmentUtil
 {
+    public static final int CODE_PROMPT = 1;
+
     Fragment fragment;
 
     @Inject DashboardNavigator navigator;
     @Inject FastFillUtil fastFill;
     @Inject @LiveAvailability BooleanPreference liveAvailability;
+    @Inject LiveActivityUtil liveActivityUtil;
 
     public static BaseLiveFragmentUtil createFor(Fragment fragment, View view)
     {
@@ -71,6 +76,14 @@ public class BaseLiveFragmentUtil
 
     public void launchPrompt()
     {
-        fragment.startActivity(new Intent(fragment.getActivity(), IdentityPromptActivity.class));
+        fragment.startActivityForResult(new Intent(fragment.getActivity(), IdentityPromptActivity.class), CODE_PROMPT);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(requestCode == CODE_PROMPT && resultCode == Activity.RESULT_CANCELED)
+        {
+            liveActivityUtil.switchLive(false);
+        }
     }
 }

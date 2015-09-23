@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.trending;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -339,6 +340,12 @@ public class TrendingMainFragment extends DashboardFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflateCustomToolbarView();
         handlePageRouting();
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        trendingLiveFragmentUtil.onActivityResult(requestCode, resultCode, data);
     }
 
     private void inflateCustomToolbarView()

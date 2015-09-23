@@ -45,4 +45,8 @@ public class BaseLiveFragmentUtil
     public void launchPrompt()
     {
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+    }
 }

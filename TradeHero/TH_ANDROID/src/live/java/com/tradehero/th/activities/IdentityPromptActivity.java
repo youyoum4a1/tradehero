@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.neovisionaries.i18n.CountryCode;
 import com.squareup.picasso.Picasso;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -32,6 +33,7 @@ import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ScannedDocument;
 import com.tradehero.th.network.service.LiveServiceWrapper;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ReplaceWithFunc1;
@@ -57,6 +59,7 @@ public class IdentityPromptActivity extends BaseActivity
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
 
     @Bind(R.id.identity_prompt_passport)
     View scanPassport;
@@ -284,5 +287,11 @@ public class IdentityPromptActivity extends BaseActivity
     {
         startActivity(new Intent(this, SignUpLiveActivity.class));
         finish();
+    }
+
+    @Override public void onBackPressed()
+    {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
     }
 }
