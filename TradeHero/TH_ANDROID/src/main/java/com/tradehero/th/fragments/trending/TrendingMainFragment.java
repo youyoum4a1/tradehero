@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.trending;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,6 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.common.rx.PairGetSecond;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
@@ -37,6 +39,7 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.AssetClass;
+import com.tradehero.th.api.portfolio.AssetClassDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -44,6 +47,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.base.LollipopArrayAdapter;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.position.FXMainPositionListFragment;
@@ -56,6 +60,7 @@ import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.rx.view.adapter.AdapterViewObservable;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.utils.Constants;
@@ -63,11 +68,14 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
+import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.Subscriber;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -116,6 +124,7 @@ public class TrendingMainFragment extends DashboardFragment
     private BehaviorSubject<ExchangeCompactSpinnerDTO> exchangeSpinnerDTOSubject;
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
     private Spinner assetTypeSpinner;
+    private LollipopArrayAdapter<AssetClassDTO> assetTypeAdapter;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -209,7 +218,10 @@ public class TrendingMainFragment extends DashboardFragment
                 Timber.e(e, "Unhandled assetClass for user " + currentUserId.get());
             }
         }
-
+        ArrayList<AssetClassDTO> assetClassDTOs = new ArrayList<>(2);
+        assetClassDTOs.add(new AssetClassDTO(AssetClass.STOCKS));
+        assetClassDTOs.add(new AssetClassDTO(AssetClass.FX));
+        assetTypeAdapter = new LollipopArrayAdapter<>(getActivity(), assetClassDTOs);
         exchangeSpinnerDTOSubject = BehaviorSubject.create();
     }
 
@@ -362,13 +374,102 @@ public class TrendingMainFragment extends DashboardFragment
     private void setupStockFxSwitcher(@NonNull View view)
     {
         assetTypeSpinner = (Spinner) view.findViewById(R.id.stock_type_dropdown);
+        assetTypeSpinner.setAdapter(assetTypeAdapter);
         onDestroyOptionsMenuSubscriptions.add(AdapterViewObservable.selects(assetTypeSpinner)
                 .ofType(OnItemSelectedEvent.class)
                 .subscribe(new Action1<OnItemSelectedEvent>()
                 {
                     @Override public void call(OnItemSelectedEvent onItemSelectedEvent)
                     {
+                        final TrendingTabType oldType = lastType;
+                        final AssetClassDTO assetClassDTO = assetTypeAdapter.getItem(onItemSelectedEvent.position);
+                        final ProgressDialog progressDialog;
+                        if (!fetchedFXPortfolio && userProfileCache.getCachedValue(currentUserId.toUserBaseKey()) == null)
+                        {
+                            progressDialog =
+                                    ProgressDialog.show(getActivity(), getString(R.string.loading_loading),
+                                            getString(R.string.alert_dialog_please_wait));
+                            progressDialog.setCanceledOnTouchOutside(true);
+                        }
+                        else
+                        {
+                            progressDialog = null;
+                        }
+                        Action0 dismissProgress = new DismissDialogAction0(progressDialog);
 
+                        // We want to identify whether to:
+                        // - wait for enough info
+                        // - pop for FX enroll
+                        // - just change the tab
+
+                        if (userProfileObservable == null)
+                        {
+                            initUserProfileObservable();
+                        }
+                        onDestroyOptionsMenuSubscriptions.add(AppObservable.bindSupportFragment(
+                                TrendingMainFragment.this,
+                                userProfileObservable)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .doOnUnsubscribe(dismissProgress)
+                                .finallyDo(dismissProgress)
+                                .subscribe(new Subscriber<UserProfileDTO>()
+                                {
+                                    @Override public void onCompleted()
+                                    {
+
+                                    }
+
+                                    @Override public void onError(Throwable e)
+                                    {
+                                        THToast.show(getString(R.string.error_fetch_your_user_profile));
+                                    }
+
+                                    @Override public void onNext(UserProfileDTO userProfileDTO)
+                                    {
+                                        if (assetClassDTO.assetClass == AssetClass.FX && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
+                                        {
+                                            if (fxDialogShowed)
+                                            {
+                                                return;
+                                            }
+                                            else
+                                            {
+                                                fxDialogShowed = true;
+                                            }
+                                            final FxOnBoardDialogFragment onBoardDialogFragment =
+                                                    FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getSupportFragmentManager());
+                                            onBoardDialogFragment.getUserActionTypeObservable()
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(
+                                                            new Action1<FxOnBoardDialogFragment.UserAction>()
+                                                            {
+                                                                @Override public void call(FxOnBoardDialogFragment.UserAction action)
+                                                                {
+                                                                    handleUserEnrolledFX(action);
+                                                                }
+                                                            },
+                                                            new TimberOnErrorAction1("")
+                                                    );
+                                        }
+                                        else
+                                        {
+                                            if (assetClassDTO.assetClass == AssetClass.STOCKS)
+                                            {
+                                                lastType = TrendingTabType.STOCK;
+                                            }
+                                            else
+                                            {
+                                                lastType = TrendingTabType.FX;
+                                            }
+                                            if (!oldType.equals(lastType))
+                                            {
+                                                clearChildFragmentManager();
+                                                initViews();
+                                                getActivity().supportInvalidateOptionsMenu();
+                                            }
+                                        }
+                                    }
+                                }));
                     }
                 }, new TimberOnErrorAction1("Error on dropdown of asset type")));
         //onDestroyOptionsMenuSubscriptions.add(stockFxSwitcher.getSwitchObservable()

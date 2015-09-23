@@ -9,7 +9,7 @@ public enum AssetClass
     STOCKS(1),
     FX(2),
     WARRANT(3),
-    ;
+    CFD(4);
 
     private int value;
 
