@@ -243,6 +243,6 @@
     <string name="follow_chance">跟买机会</string>
     <string name="hot_stock_list">热股榜</string>
     <string name="win_rate_list">高胜率榜</string>
-    <string name="monthly_rate">月累计收益率</string>
+    <string name="monthly_rate">月累计收益</string>
     <string name="follow_buy">跟买</string>
 </resources>

@@ -124,12 +124,10 @@ public class FollowBuyFragment extends BasePurchaseManagerFragment {
         if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
             currentPage = 0;
             mListViewAdapter.setItems(listData);
-            if (listData.size() == 0) {
-                mProgress.setVisibility(View.INVISIBLE);
-            }
         } else {
             mListViewAdapter.addItems(listData);
         }
+        mProgress.setVisibility(View.INVISIBLE);
 
         //如果返回数据已经为空了，说明没有了下一页。
         if (listData.size() > 0) {

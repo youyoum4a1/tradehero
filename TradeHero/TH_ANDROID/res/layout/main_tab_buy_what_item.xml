@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="137dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="#e1e1e1"/>
 
     <RelativeLayout
         android:id="@+id/up_layout"
@@ -27,10 +33,9 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/icon"
-            android:singleLine="true"
             android:maxLength="10"
-            android:text="巴菲特"
-            android:textSize="14sp"/>
+            android:singleLine="true"
+            android:textSize="13sp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -43,7 +48,6 @@
                 android:id="@+id/win_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="55.34%"
                 android:textColor="#d52625"
                 android:textSize="15sp"/>
 
@@ -68,7 +72,6 @@
                 android:id="@+id/monthly_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="55.34%"
                 android:textColor="#d52625"
                 android:textSize="15sp"/>
 
@@ -96,6 +99,7 @@
         android:background="@color/white">
 
         <LinearLayout
+            android:id="@+id/security_name_layout"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -108,14 +112,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="中兴通讯(000063)"
                 android:textSize="15sp"/>
 
             <TextView
                 android:id="@+id/trade_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="成交价格 18.22"
                 android:textColor="#828282"
                 android:textSize="14sp"/>
         </LinearLayout>
@@ -123,7 +125,9 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/security_name_layout"
+            android:layout_marginLeft="17dp"
+            android:layout_centerVertical="true"
             android:orientation="vertical">
 
             <TextView
@@ -154,6 +158,11 @@
             android:textColor="@color/white"
             android:textSize="13sp"/>
     </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="#e1e1e1"/>
 
     <ImageView
         android:layout_width="match_parent"

@@ -48,14 +48,14 @@
             android:background="@color/transparent"
             android:padding="1dp"/>
 
-        <Button
-            android:id="@+id/ad_close_button"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/btn_x"/>
+        <!--<Button-->
+            <!--android:id="@+id/ad_close_button"-->
+            <!--android:layout_width="24dp"-->
+            <!--android:layout_height="24dp"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_marginRight="15dp"-->
+            <!--android:background="@drawable/btn_x"/>-->
     </RelativeLayout>
 
     <LinearLayout
@@ -142,6 +142,11 @@
             android:textColor="#454545"
             android:textSize="12sp"/>
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="#e1e1e1"/>
 
     <LinearLayout
         android:layout_width="match_parent"
