@@ -73,7 +73,6 @@ public class StockGodListBaseFragment extends DashboardFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewRight0(R.drawable.search);
-        setHeadViewMiddleMain(LeaderboardDefKeyKnowledge.getLeaderboardName(getLeaderboardDTO()));
     }
 
     @Override
