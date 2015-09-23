@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.tradehero.chinabuild.data.QuoteDetail;
 import com.tradehero.chinabuild.data.SignedQuote;
 import com.tradehero.chinabuild.fragment.competition.CompetitionSecuritySearchFragment;
@@ -44,10 +43,7 @@ import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
-
-
 import javax.inject.Inject;
-
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -172,7 +168,9 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
             if(!isSHASHE()){
                 priceET.setEnabled(false);
                 addOneTV.setEnabled(false);
+                addOneTV.setBackgroundResource(R.drawable.security_opt_add_disable);
                 reduceOneTV.setEnabled(false);
+                reduceOneTV.setBackgroundResource(R.drawable.security_opt_minus_disable);
             }
             quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
             retrieveQuoteDTO();
@@ -237,11 +235,15 @@ public class SecurityOptMockSubBuyFragment extends Fragment implements View.OnCl
                     if(!isSHASHE()){
                         priceET.setEnabled(false);
                         addOneTV.setEnabled(false);
+                        addOneTV.setBackgroundResource(R.drawable.security_opt_add_disable);
                         reduceOneTV.setEnabled(false);
+                        reduceOneTV.setBackgroundResource(R.drawable.security_opt_minus_disable);
                     } else {
                         priceET.setEnabled(true);
                         addOneTV.setEnabled(true);
+                        addOneTV.setBackgroundResource(R.drawable.security_opt_add);
                         reduceOneTV.setEnabled(true);
+                        reduceOneTV.setBackgroundResource(R.drawable.security_opt_minus);
                     }
                     if(isEmptyBefore) {
                         quoteServiceWrapper.getQuoteDetails(securityExchange, securitySymbol, new RefreshBUYSELLCallback());
