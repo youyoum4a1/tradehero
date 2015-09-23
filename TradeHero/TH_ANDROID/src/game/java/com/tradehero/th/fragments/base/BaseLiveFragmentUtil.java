@@ -40,6 +40,9 @@ public class BaseLiveFragmentUtil
 
     public void onResume()
     {
+    }
 
+    public void launchPrompt()
+    {
     }
 }

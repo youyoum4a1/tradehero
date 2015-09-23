@@ -28,7 +28,6 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.BaseActivity;
-import com.tradehero.th.activities.CallToActionActivity;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
@@ -297,7 +296,7 @@ public class TrendingMainFragment extends DashboardFragment
         super.onLiveTradingChanged(event);
         if(event.isOn && event.isFromUser)
         {
-            navigator.get().launchActivity(CallToActionActivity.class);
+            trendingLiveFragmentUtil.launchPrompt();
         }
     }
 

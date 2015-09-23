@@ -1,10 +1,12 @@
 package com.tradehero.th.fragments.base;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import butterknife.ButterKnife;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.IdentityPromptActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.fastfill.FastFillUtil;
@@ -65,5 +67,10 @@ public class BaseLiveFragmentUtil
     public void onResume()
     {
         //Do nothing
+    }
+
+    public void launchPrompt()
+    {
+        fragment.startActivity(new Intent(fragment.getActivity(), IdentityPromptActivity.class));
     }
 }

@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -215,6 +218,24 @@ public class IdentityPromptActivity extends BaseActivity
         super.onDestroy();
     }
 
+    @Override public boolean onCreateOptionsMenu(Menu menu)
+    {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.live_prompt_menu, menu);
+        return true;
+    }
+
+    @Override public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if (item.getItemId() == R.id.close)
+        {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
