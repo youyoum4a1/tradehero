@@ -24,7 +24,7 @@
             android:layout_width="22dp"
             android:layout_alignParentRight="true"
             android:layout_height="fill_parent"
-            android:background="@drawable/fliter"/>
+            android:background="@drawable/tabindicator_sidebar"/>
 
     </RelativeLayout>
 

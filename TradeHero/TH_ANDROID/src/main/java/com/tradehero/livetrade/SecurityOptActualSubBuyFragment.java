@@ -514,9 +514,9 @@ public class SecurityOptActualSubBuyFragment extends Fragment implements View.On
         }
         if (priceET.getText() == null || TextUtils.isEmpty(priceET.getText().toString())) {
             if (quoteDetail.sp1 != null) {
-                priceET.setText(String.valueOf(quoteDetail.sp1));
+                priceET.setText(String.format("%.2f", quoteDetail.sp1));
             } else if (quoteDetail.bp1 != null) {
-                priceET.setText(String.valueOf(quoteDetail.bp1));
+                priceET.setText(String.format("%.2f", quoteDetail.bp1));
             }
         }
     }
