@@ -12,7 +12,7 @@ def process(line):
     os.system('sed -i .bk \'s/VERSION = 101/VERSION = ' + channelNum + '/\' src/main/java/com/tradehero/th/utils/Constants.java')
 
     # Do build
-    os.system('../../gradlew build')
+    os.system('../../gradlew assembleRelease')
 
     # Change back the channel id
     os.system('sed -i .bk \'s/VERSION = ' + channelNum + '/VERSION = 101/\' src/main/java/com/tradehero/th/utils/Constants.java')
