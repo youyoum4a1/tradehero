@@ -56,7 +56,7 @@ public class FragmentStockGod extends BasePurchaseManagerFragment implements Vie
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        setHeadViewMiddleMain(getString(R.string.new_suggest_list));
+        setHeadViewMiddleMain(getString(R.string.stockgod_title));
     }
 
     private static final String[] CONTENT = new String[]{"推荐榜", "高胜率榜", "人气榜", "热股榜", "总收益率榜"};
