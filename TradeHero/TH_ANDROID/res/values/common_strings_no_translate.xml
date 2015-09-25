@@ -5,4 +5,8 @@
   <string name="th_help_url" translateable="false">https://www.tradehero.mobi/about</string>
   <string name="th_terms_url" translateable="false">https://www.tradehero.mobi/terms</string>
   <string name="th_privacy_terms_url" translateable="false">https://www.tradehero.mobi/privacy</string>
+
+  <!-- Static portfolio -->
+  <string name="my_stocks_con" translateable="false">My Stocks</string>
+  <string name="my_fx_con" translateable="false">My FX</string>
 </resources>

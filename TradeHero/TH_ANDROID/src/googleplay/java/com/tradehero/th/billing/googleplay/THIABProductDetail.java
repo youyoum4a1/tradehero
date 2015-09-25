@@ -20,6 +20,9 @@ public class THIABProductDetail
     boolean hasFurtherDetails = false;
     @StringRes int furtherDetailsResId = R.string.na;
     ProductIdentifierDomain domain;
+    public int displayOrder;
+    public int storeDescriptionResId;
+    public int storeTitleResId;
 
     //<editor-fold desc="Constructors">
     public THIABProductDetail(@NonNull IABSKUListKey itemType, @NonNull String jsonSkuDetails) throws JSONException
@@ -80,5 +83,20 @@ public class THIABProductDetail
     @Override public String getDescription()
     {
         return description;
+    }
+
+    @Override public int getDisplayOrder()
+    {
+        return displayOrder;
+    }
+
+    @Override public int getStoreTitleResId()
+    {
+        return storeTitleResId;
+    }
+
+    @Override public int getStoreDescriptionResId()
+    {
+        return storeDescriptionResId;
     }
 }

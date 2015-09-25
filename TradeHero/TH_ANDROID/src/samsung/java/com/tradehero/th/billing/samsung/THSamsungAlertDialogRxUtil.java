@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.samsung;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -10,11 +9,8 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.BaseBillingUtils;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
-import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
-import com.tradehero.th.fragments.billing.THSamsungStoreProductDetailView;
 import java.util.HashMap;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -23,8 +19,6 @@ public class THSamsungAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         SamsungSKU,
         THSamsungProductDetail,
         THSamsungLogicHolderRx,
-        THSamsungStoreProductDetailView,
-        THSamsungSKUDetailAdapter,
         THSamsungOrderId,
         THSamsungPurchase>
 {
@@ -42,13 +36,6 @@ public class THSamsungAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     //</editor-fold>
 
     //<editor-fold desc="SKU related">
-    @Override @NonNull protected THSamsungSKUDetailAdapter createProductDetailAdapter(
-            @NonNull Activity activity,
-            @NonNull ProductIdentifierDomain skuDomain)
-    {
-        return new THSamsungSKUDetailAdapter(activity, skuDomain);
-    }
-
     @Override @NonNull public HashMap<ProductIdentifier, Boolean> getEnabledItems()
     {
         HashMap<ProductIdentifier, Boolean> enabledItems = new HashMap<>();

@@ -3,6 +3,8 @@ package com.tradehero.th.fragments.live.ayondo;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import com.tradehero.common.utils.THToast;
+import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.BrokerApplicationDTO;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.StepStatus;
@@ -16,6 +18,8 @@ import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnNothingSelectedEvent;
 import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
@@ -121,7 +125,20 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                 {
                     @Override public Observable<BrokerApplicationDTO> call(KYCAyondoForm kycAyondoForm)
                     {
-                        return liveServiceWrapper.createOrUpdateLead(kycAyondoForm);
+                        return liveServiceWrapper.createOrUpdateLead(kycAyondoForm)
+                                .onErrorResumeNext(
+                            new Func1<Throwable, Observable<? extends BrokerApplicationDTO>>()
+                            {
+                                @Override public Observable<? extends BrokerApplicationDTO> call(Throwable throwable)
+                                {
+                                    if (throwable.getCause() instanceof IOException)
+                                    {
+                                        THToast.show(R.string.error_no_internet_connection);
+                                    }
+
+                                    return Observable.empty();
+                                }
+                            });
                     }
                 })
                 .subscribe(new Action1<BrokerApplicationDTO>()

@@ -9,7 +9,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 public class MenuOwnedPortfolioId extends OwnedPortfolioId
         implements CharSequence
 {
-    @Nullable public final String title;
+    @Nullable public String title;
 
     //<editor-fold desc="Constructors">
     public MenuOwnedPortfolioId(int userId, int portfolioId, @Nullable String title)

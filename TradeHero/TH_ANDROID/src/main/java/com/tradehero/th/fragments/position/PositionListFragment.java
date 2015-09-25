@@ -1150,7 +1150,18 @@ public class PositionListFragment
 
         if (portfolioDTO != null)
         {
-            title = portfolioDTO.title;
+            if (portfolioDTO.title.equals(getString(R.string.my_stocks_con)))
+            {
+                title = getString(R.string.trending_tab_stocks_main);
+            }
+            else if (portfolioDTO.title.equals(getString(R.string.my_fx_con)))
+            {
+                title = getString(R.string.my_fx);
+            }
+            else
+            {
+                title = portfolioDTO.title;
+            }
         }
 
         if (title == null)

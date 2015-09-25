@@ -13,12 +13,12 @@ import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.billing.THBaseBillingInteractorRx;
-import com.tradehero.th.fragments.billing.THSamsungSKUDetailAdapter;
-import com.tradehero.th.fragments.billing.THSamsungStoreProductDetailView;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class THBaseSamsungInteractorRx
@@ -31,9 +31,7 @@ public class THBaseSamsungInteractorRx
                 THSamsungPurchaseOrder,
                 THSamsungOrderId,
                 THSamsungPurchase,
-                THSamsungLogicHolderRx,
-                THSamsungStoreProductDetailView,
-                THSamsungSKUDetailAdapter>
+                THSamsungLogicHolderRx>
         implements THSamsungInteractorRx
 {
     public static final String BUNDLE_KEY_ACTION = THBaseSamsungInteractorRx.class.getName() + ".action";
@@ -116,5 +114,19 @@ public class THBaseSamsungInteractorRx
     @Override public void manageSubscriptions()
     {
         THToast.show("TODO");
+    }
+
+    @NonNull @Override public Observable<List<THSamsungProductDetail>> listProduct()
+    {
+        return super.listProduct().doOnNext(new Action1<List<THSamsungProductDetail>>()
+        {
+            @Override public void call(List<THSamsungProductDetail> thiabProductDetails)
+            {
+                for (THSamsungProductDetail productDetail : thiabProductDetails)
+                {
+                    THSamsungProductDetailTuner.fineTune(productDetail);
+                }
+            }
+        });
     }
 }

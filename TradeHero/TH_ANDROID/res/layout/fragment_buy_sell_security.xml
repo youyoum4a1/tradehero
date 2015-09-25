@@ -185,9 +185,10 @@
             android:layout_centerVertical="true"
             />
 
-        <TextView
+        <EditText
             style="@style/TH.Title.Accented"
             android:id="@+id/vtrade_value"
+            android:inputType="number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -227,11 +228,11 @@
           >
 
         <TextView
+            android:id="@+id/cash_or_stock_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TH.Body"
             android:layout_centerVertical="true"
-            android:text="@string/buy_sell_cash_available"
             />
 
         <TextView

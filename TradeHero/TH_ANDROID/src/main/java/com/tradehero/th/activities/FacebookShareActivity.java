@@ -26,8 +26,8 @@ public class FacebookShareActivity extends Activity
         implements AchievementAcceptor
 {
     private static final String BUNDLE_KEY_NAME = "name";
-    private static final String BUNDLE_KEY_DESCRIPTION = "caption";
-    private static final String BUNDLE_KEY_CAPTION = "description";
+    private static final String BUNDLE_KEY_DESCRIPTION = "description";
+    private static final String BUNDLE_KEY_CAPTION = "caption";
     private static final String BUNDLE_KEY_MESSAGE = "message";
     private static final String BUNDLE_KEY_LINK = "link";
     private static final String BUNDLE_KEY_PICTURE = "picture";

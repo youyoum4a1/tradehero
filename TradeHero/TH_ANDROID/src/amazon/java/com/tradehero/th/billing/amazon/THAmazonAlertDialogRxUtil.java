@@ -1,6 +1,5 @@
 package com.tradehero.th.billing.amazon;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,10 +15,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityUtil;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.BaseBillingUtils;
-import com.tradehero.th.billing.ProductIdentifierDomain;
 import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
-import com.tradehero.th.fragments.billing.THAmazonSKUDetailAdapter;
-import com.tradehero.th.fragments.billing.THAmazonStoreProductDetailView;
 import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
 import com.tradehero.th.rx.dialog.AlertDialogButtonHandler;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
@@ -35,8 +31,6 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
         AmazonSKU,
         THAmazonProductDetail,
         THAmazonLogicHolderRx,
-        THAmazonStoreProductDetailView,
-        THAmazonSKUDetailAdapter,
         THAmazonOrderId,
         THAmazonPurchase>
         implements AmazonAlertDialogRxUtil
@@ -55,13 +49,6 @@ public class THAmazonAlertDialogRxUtil extends THBillingAlertDialogRxUtil<
     //</editor-fold>
 
     //<editor-fold desc="SKU related">
-    @Override @NonNull protected THAmazonSKUDetailAdapter createProductDetailAdapter(
-            @NonNull Activity activity,
-            @NonNull ProductIdentifierDomain skuDomain)
-    {
-        return new THAmazonSKUDetailAdapter(activity, skuDomain);
-    }
-
     @Override @NonNull public HashMap<ProductIdentifier, Boolean> getEnabledItems()
     {
         HashMap<ProductIdentifier, Boolean> enabledItems = new HashMap<>();

@@ -94,28 +94,19 @@ public class SellStockFragment extends AbstractStockTransactionFragment
         return getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
     }
 
+    @Override protected int getCashShareLabel()
+    {
+        return R.string.buy_sell_share_left;
+    }
+
+    @Override protected Boolean isBuyTransaction()
+    {
+        return false;
+    }
+
     @Override protected boolean hasValidInfo()
     {
         return hasValidInfoForSell();
-    }
-
-    @Override protected boolean isQuickButtonEnabled()
-    {
-        return usedDTO.quoteDTO != null && usedDTO.quoteDTO.bid != null && usedDTO.quoteDTO.toUSDRate != null;
-    }
-
-    @Override protected double getQuickButtonMaxValue(
-            @NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
-            @Nullable PositionDTOCompact closeablePosition)
-    {
-        Integer maxSellableShares = getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
-        if (maxSellableShares != null && usedDTO.quoteDTO != null && usedDTO.quoteDTO.bid != null)
-        {
-            // TODO see other currencies
-            return maxSellableShares * usedDTO.quoteDTO.bid * usedDTO.quoteDTO.toUSDRate;
-        }
-        return 0;
     }
 
     @Override protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO)

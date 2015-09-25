@@ -1,36 +1,26 @@
 package com.tradehero.th.billing;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Pair;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.RequestCodeHolder;
-import com.tradehero.common.billing.inventory.ProductInventoryResult;
 import com.tradehero.common.billing.restore.PurchaseRestoreResultWithError;
 import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
-import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityUtil;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
-import com.tradehero.th.fragments.billing.ProductDetailAdapter;
-import com.tradehero.th.fragments.billing.ProductDetailView;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.VersionUtils;
 import java.net.UnknownServiceException;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -41,13 +31,6 @@ abstract public class THBillingAlertDialogRxUtil<
         THProductDetailDomainInformerRxType extends THProductDetailDomainInformerRx<
                 ProductIdentifierType,
                 THProductDetailType>,
-        ProductDetailViewType extends ProductDetailView<
-                ProductIdentifierType,
-                THProductDetailType>,
-        ProductDetailAdapterType extends ProductDetailAdapter<
-                ProductIdentifierType,
-                THProductDetailType,
-                ProductDetailViewType>,
         THOrderIdType extends THOrderId,
         THProductPurchaseType extends THProductPurchase<
                 ProductIdentifierType,
@@ -163,94 +146,9 @@ abstract public class THBillingAlertDialogRxUtil<
      */
     @NonNull abstract public HashMap<ProductIdentifier, Boolean> getEnabledItems();
 
-    @NonNull abstract protected ProductDetailAdapterType createProductDetailAdapter(
-            @NonNull Activity activity,
-            @NonNull ProductIdentifierDomain skuDomain);
-
     @NonNull protected Comparator<THProductDetailType> createProductDetailComparator()
     {
         return new THProductDetailDecreasingPriceComparator<>();
-    }
-
-    @NonNull public Observable<THProductDetailType> popBuyDialogAndHandle(
-            @NonNull final Activity activityContext,
-            @NonNull final ProductIdentifierDomain domain,
-            @NonNull final THProductDetailDomainInformerRxType domainInformer)
-    {
-        return getUnusedRequestCode(domainInformer)
-                .flatMap(new Func1<Integer, Observable<? extends ProductInventoryResult<ProductIdentifierType, THProductDetailType>>>()
-                {
-                    @Override public Observable<? extends ProductInventoryResult<ProductIdentifierType, THProductDetailType>> call(
-                            Integer requestCode)
-                    {
-                        return domainInformer.getDetailsOfDomain(requestCode, domain);
-                    }
-                })
-                .flatMap(
-                        new Func1<ProductInventoryResult<ProductIdentifierType, THProductDetailType>, Observable<? extends THProductDetailType>>()
-                        {
-                            @Override public Observable<? extends THProductDetailType> call(
-                                    ProductInventoryResult<ProductIdentifierType, THProductDetailType> productResults)
-                            {
-                                List<THProductDetailType> productDetails = new ArrayList<>();
-                                for (Map.Entry<ProductIdentifierType, THProductDetailType> result : productResults.mapped.entrySet())
-                                {
-                                    productDetails.add(result.getValue());
-                                }
-                                return popBuyDialogAndHandle(activityContext, domain, productDetails);
-                            }
-                        });
-    }
-
-    @NonNull public Observable<THProductDetailType> popBuyDialogAndHandle(
-            @NonNull Activity activityContext,
-            @NonNull ProductIdentifierDomain domain,
-            @NonNull final ProductInventoryResult<ProductIdentifierType, THProductDetailType> productDetails,
-            @Nullable ProductInventoryResult<ProductIdentifierType, THProductDetailType> typeQualifier)
-    {
-        return popBuyDialog(
-                activityContext,
-                domain,
-                new ArrayList<>(productDetails.mapped.values()))
-                .map(new PairGetSecond<DialogInterface, THProductDetailType>());
-    }
-
-    @NonNull public Observable<THProductDetailType> popBuyDialogAndHandle(
-            @NonNull Activity activityContext,
-            @NonNull ProductIdentifierDomain domain,
-            @NonNull List<THProductDetailType> productDetails)
-    {
-        return popBuyDialog(activityContext, domain, productDetails)
-                .map(new PairGetSecond<DialogInterface, THProductDetailType>());
-    }
-
-    @NonNull public Observable<Pair<DialogInterface, THProductDetailType>> popBuyDialog(
-            @NonNull Activity activityContext,
-            @NonNull ProductIdentifierDomain domain,
-            @NonNull List<THProductDetailType> productDetails)
-    {
-        final ProductDetailAdapterType detailAdapter = createProductDetailAdapter(activityContext, domain);
-        //detailAdapter.setEnabledItems(enabledItems); // FIXME
-        detailAdapter.setProductDetailComparator(createProductDetailComparator());
-        detailAdapter.setItems(productDetails);
-        //noinspection unchecked
-        return buildDefault(activityContext)
-                .setTitle(domain.storeTitleResId)
-                .setCanceledOnTouchOutside(true)
-                .setSingleChoiceItems(detailAdapter, 0)
-                .setNegativeButton(R.string.store_buy_virtual_dollar_window_button_cancel)
-                .build()
-                .flatMap(new Func1<OnDialogClickEvent, Observable<Pair<DialogInterface, THProductDetailType>>>()
-                {
-                    @Override public Observable<Pair<DialogInterface, THProductDetailType>> call(OnDialogClickEvent event)
-                    {
-                        if (event.which >= 0)
-                        {
-                            return Observable.just(Pair.create(event.dialog, (THProductDetailType) detailAdapter.getItem(event.which)));
-                        }
-                        return Observable.empty();
-                    }
-                });
     }
     //</editor-fold>
 

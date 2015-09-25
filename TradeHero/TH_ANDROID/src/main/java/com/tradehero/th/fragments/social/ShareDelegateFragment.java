@@ -49,7 +49,7 @@ public class ShareDelegateFragment
     @Inject protected SocialShareHelper socialShareHelper;
 
     @Bind(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
-    @Bind({
+    @Nullable @Bind({
             R.id.btn_share_fb,
             R.id.btn_share_li,
             R.id.btn_share_tw,
@@ -74,14 +74,14 @@ public class ShareDelegateFragment
     {
         this.onDestroySubscriptions = new SubscriptionList();
         HierarchyInjector.inject(parentFragment.getActivity(), this);
-        fetchUserProfile();
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         ButterKnife.bind(this, view);
 
-        socialSharePreferenceHelper.reload();
+        socialSharePreferenceHelper.load();
+        fetchUserProfile();
         registerWeChatButton();
         registerSocialButtons();
     }

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.th.api.alert.AlertPlanDTO;
-import com.tradehero.th.billing.googleplay.THIABConstants;
 
 public class BillingSecurityAlertKnowledge extends SecurityAlertKnowledge
 {
@@ -16,20 +15,20 @@ public class BillingSecurityAlertKnowledge extends SecurityAlertKnowledge
 
     @Nullable public static IABSKU getServerEquivalentSKU(@NonNull ProductIdentifier localSKU)
     {
-        if (localSKU instanceof IABSKU)
-        {
-            switch (((IABSKU) localSKU).identifier)
-            {
-                case THBillingConstants.SERVER_ALERT_1:
-                    return new IABSKU(THIABConstants.ALERT_1);
-
-                case THBillingConstants.SERVER_ALERT_5:
-                    return new IABSKU(THIABConstants.ALERT_5);
-
-                case THBillingConstants.SERVER_ALERT_UNLIMITED:
-                    return new IABSKU(THIABConstants.ALERT_UNLIMITED);
-            }
-        }
+        //if (localSKU instanceof IABSKU)
+        //{
+        //    switch (((IABSKU) localSKU).identifier)
+        //    {
+        //        case THBillingConstants.SERVER_ALERT_1:
+        //            return new IABSKU(THIABConstants.ALERT_1);
+        //
+        //        case THBillingConstants.SERVER_ALERT_5:
+        //            return new IABSKU(THIABConstants.ALERT_5);
+        //
+        //        case THBillingConstants.SERVER_ALERT_UNLIMITED:
+        //            return new IABSKU(THIABConstants.ALERT_UNLIMITED);
+        //    }
+        //}
 
         return null;
     }

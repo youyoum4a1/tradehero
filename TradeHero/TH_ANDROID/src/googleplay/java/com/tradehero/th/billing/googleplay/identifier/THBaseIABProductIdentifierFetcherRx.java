@@ -37,23 +37,13 @@ public class THBaseIABProductIdentifierFetcherRx
     {
         // TODO hard-coded while there is nothing coming from the server.
         IABSKUList inAppIABSKUs = new IABSKUList();
-        IABSKUList subsIABSKUs = new IABSKUList();
         inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T0_KEY));
         inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T1_KEY));
         inAppIABSKUs.add(new IABSKU(THIABConstants.EXTRA_CASH_T2_KEY));
 
-        //inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_1));
-        //inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_10));
-        //inAppIABSKUs.add(new IABSKU(THIABConstants.CREDIT_20));
-
-        subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_1));
-        subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_5));
-        subsIABSKUs.add(new IABSKU(THIABConstants.ALERT_UNLIMITED));
-
         inAppIABSKUs.add(new IABSKU(THIABConstants.RESET_PORTFOLIO_0));
         Map<IABSKUListKey, IABSKUList> mapped = new HashMap<>();
         mapped.put(IABSKUListKey.getInApp(), inAppIABSKUs);
-        mapped.put(IABSKUListKey.getSubs(), subsIABSKUs);
         return Observable.just(new ProductIdentifierListResult<>(getRequestCode(), mapped));
     }
 }

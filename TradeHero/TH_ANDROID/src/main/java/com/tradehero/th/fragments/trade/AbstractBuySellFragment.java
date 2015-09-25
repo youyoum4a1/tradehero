@@ -79,14 +79,13 @@ import rx.functions.Func2;
 import rx.functions.Func3;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 abstract public class AbstractBuySellFragment extends DashboardFragment
         implements WithTutorial
 {
     private final static String BUNDLE_KEY_REQUISITE = AbstractBuySellFragment.class.getName() + ".requisite";
     private final static long MILLISECOND_QUOTE_REFRESH = 30000;
-    public static final int MS_DELAY_FOR_BG_IMAGE = 200;
-    public static final boolean DEFAULT_IS_SHARED_TO_WECHAT = false;
 
     @Inject protected CurrentUserId currentUserId;
     @Inject protected QuoteServiceWrapper quoteServiceWrapper;
@@ -101,8 +100,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Inject @ShowAskForReviewDialog protected TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog protected TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject protected BroadcastUtils broadcastUtils;
-    @Inject protected SocialSharePreferenceHelper socialSharePreferenceHelper;
-    @Inject protected Lazy<SocialSharer> socialSharerLazy;
 
     @Bind(R.id.portfolio_selector_container) protected PortfolioSelectorView selectedPortfolioContainer;
     @Bind(R.id.quote_refresh_countdown) protected ProgressBar quoteRefreshProgressBar;
@@ -274,9 +271,23 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                                 {
                                     if (ownedPortfolioIds.contains(candidate.getOwnedPortfolioId()))
                                     {
-                                        selectedPortfolioContainer.addMenuOwnedPortfolioId(new MenuOwnedPortfolioId(
+                                        MenuOwnedPortfolioId menuOwnedPortfolioId = new MenuOwnedPortfolioId(
                                                 candidate.getUserBaseKey(),
-                                                candidate));
+                                                candidate);
+
+                                        if (menuOwnedPortfolioId.title != null)
+                                        {
+                                            if (menuOwnedPortfolioId.title.equals(getString(R.string.my_stocks_con)))
+                                            {
+                                                menuOwnedPortfolioId.title = getString(R.string.trending_tab_stocks_main);
+                                            }
+                                            else if (menuOwnedPortfolioId.title.equals(getString(R.string.my_fx_con)))
+                                            {
+                                                menuOwnedPortfolioId.title = getString(R.string.my_fx);
+                                            }
+                                        }
+
+                                        selectedPortfolioContainer.addMenuOwnedPortfolioId(menuOwnedPortfolioId);
                                     }
                                 }
                                 return null;
@@ -557,8 +568,14 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                         throw new NullPointerException("Default portfolio was null");
                     }
                 })
-                .distinctUntilChanged()
-                .share();
+                .doOnNext(new Action1<OwnedPortfolioId>()
+                {
+                    @Override public void call(OwnedPortfolioId ownedPortfolioId)
+                    {
+                        Timber.d("Portfolio: %s", ownedPortfolioId.portfolioId);
+                    }
+                })
+                .distinctUntilChanged();
     }
 
     protected void popPortfolioChanged()
@@ -685,10 +702,17 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     protected void showPortfolioSelector()
     {
         onStopSubscriptions.add(selectedPortfolioContainer.createMenuObservable()
+                .map(new Func1<MenuOwnedPortfolioId, OwnedPortfolioId>()
+                {
+                    @Override public OwnedPortfolioId call(MenuOwnedPortfolioId menuOwnedPortfolioId)
+                    {
+                        return new OwnedPortfolioId(menuOwnedPortfolioId);
+                    }
+                })
                 .subscribe(
-                        new Action1<MenuOwnedPortfolioId>()
+                        new Action1<OwnedPortfolioId>()
                         {
-                            public void call(MenuOwnedPortfolioId args)
+                            public void call(OwnedPortfolioId args)
                             {
                                 requisite.onNext(args);
                             }
