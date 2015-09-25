@@ -102,7 +102,7 @@ public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerDi
             this.picasso = picasso;
         }
 
-        @Override public void display(FollowerDisplayDTO dto)
+        @Override public void onDisplay(FollowerDisplayDTO dto)
         {
             this.currentDTO = dto;
             if (dto.userFollowerDTO.picture != null)

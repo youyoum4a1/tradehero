@@ -17,7 +17,7 @@ public class ColorTagProcessor extends RichSpanTextProcessor
 
     @NonNull @Override public String getExtractionPattern(@NonNull MatchResult matchResult)
     {
-        return "$1";
+        return "$2";
     }
 
     @NonNull @Override protected Span getSpanElement(String replacement, String[] matchStrings)

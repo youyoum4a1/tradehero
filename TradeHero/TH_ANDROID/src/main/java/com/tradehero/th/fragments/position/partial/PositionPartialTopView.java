@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.OnClick;
-import android.support.annotation.Nullable;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -486,7 +486,7 @@ public class PositionPartialTopView extends LinearLayout
             return userActionSubject.asObservable();
         }
 
-        @Override public void display(Object o)
+        @Override public void onDisplay(Object o)
         {
             if (o instanceof DTO)
             {

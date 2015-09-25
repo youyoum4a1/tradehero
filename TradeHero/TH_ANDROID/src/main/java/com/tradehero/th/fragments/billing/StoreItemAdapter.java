@@ -48,7 +48,7 @@ public class StoreItemAdapter extends TypedRecyclerAdapter<StoreItemDisplayDTO>
             super(itemView);
         }
 
-        @Override public void display(StoreItemDisplayDTO storeItem)
+        @Override public void onDisplay(StoreItemDisplayDTO storeItem)
         {
             img.setImageResource(storeItem.iconResId);
             title.setText(storeItem.titleResId);

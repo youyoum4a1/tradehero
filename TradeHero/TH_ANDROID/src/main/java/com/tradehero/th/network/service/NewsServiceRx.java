@@ -60,4 +60,10 @@ public interface NewsServiceRx
     @GET("/news/seekingalpha") Observable<PaginatedDTO<NewsItemCompactDTO>> getSeekingAlpha(
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
+
+    @GET("/news/integratedgenericnews") Observable<PaginatedDTO<NewsItemCompactDTO>> getIntegratedNews(
+            @Query("countryCode") String countryCode,
+            @Query("languageCode") String languageCode,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
 }

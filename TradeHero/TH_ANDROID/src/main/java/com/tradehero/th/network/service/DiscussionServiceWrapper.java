@@ -154,4 +154,82 @@ import rx.Observable;
                 .map(new DTOProcessorDiscussion());
     }
     //</editor-fold>
+
+    //@NonNull public Observable<NewsfeedDTOList> getNewsfeed(@NonNull NewsfeedPagedDTOKey key)
+    //{
+    //    NewsfeedDTOList list = new NewsfeedDTOList();
+    //
+    //    NewsfeedNewsDTO dto = new NewsfeedNewsDTO();
+    //
+    //    dto.id = 12496937;
+    //    dto.title = "Apple's September 9 Event: Will There be a Surprise Product?";
+    //    dto.displayName = "Seeking Alpha";
+    //    dto.createdAtUTC = DateUtils.parseString("2015-09-03 14:20:00", "yyyy-MM-dd HH:mm:ss");
+    //    dto.picture = "https://pbs.twimg.com/profile_images/534299535552421888/eHacq8EQ.png";
+    //    dto.description =
+    //            "The launch of a new iPhone is a big deal, I realize, so maybe there really are 7000 people going to San Francisco to see it. My sense is that there could be much more on the menu. Not that iPhone won't still be center stage. It will.";
+    //    dto.thumbnail = "http://www.iclarified.com/images/news/32816/134572/134572-640.jpg";
+    //    dto.url = "http://seekingalpha.com/article/3474496-apples-september-9-event-will-there-be-a-surprise-product";
+    //
+    //    NewsfeedStockTwitDTO stockTwitDTO = new NewsfeedStockTwitDTO();
+    //    stockTwitDTO.id = 2;
+    //    stockTwitDTO.message =
+    //            "<$NASDAQ:AAPL,123$> It will be interesting to see if it dip tomorrow after all Tim Cook said today. {#ff0000|Bearish}";
+    //    stockTwitDTO.displayName = "Moriuchi Taka";
+    //    stockTwitDTO.createdAtUTC = DateUtils.parseString("2015-09-03 14:00:00", "yyyy-MM-dd HH:mm:ss");
+    //    stockTwitDTO.picture = "https://tuneuplyrics.files.wordpress.com/2013/08/taka.jpg";
+    //
+    //    NewsfeedNewsDTO motley = new NewsfeedNewsDTO();
+    //
+    //    motley.id = 12496937;
+    //    motley.title = "3 Things That Could Go Wrong for Apple";
+    //    motley.displayName = "The Motley Fool";
+    //    motley.createdAtUTC = DateUtils.parseString("2015-09-03 13:24:00", "yyyy-MM-dd HH:mm:ss");
+    //    motley.picture = "https://lh6.googleusercontent.com/-_nnBHgQANeU/AAAAAAAAAAI/AAAAAAAAAAA/p0jEdCySwjw/s0-c-k-no-ns/photo.jpg";
+    //    motley.description =
+    //            "The iPhone is still posting amazing growth, but the end of subsidies and slowing innovation are among the things that could cause trouble down the road.";
+    //    motley.url = "http://www.fool.com/investing/general/2015/08/30/3-things-that-could-go-wrong-for-apple.aspx";
+    //
+    //    NewsfeedStockTwitDTO chart = new NewsfeedStockTwitDTO();
+    //    chart.id = 5;
+    //    chart.message =
+    //            "These Information Technology stocks are trending on [http://www.estimize.com/csco/fq1-2016?utm_content=Information+Technology&utm_medium=popular_stocks_by_sector&utm_source=stocktwits#chart=historical](http://www.estimize.com/csco/fq1-2016?utm_content=Information+Technology&utm_medium=popular_stocks_by_sector&utm_source=stocktwits#chart=historical)";
+    //    chart.displayName = "Estimize";
+    //    chart.createdAtUTC = DateUtils.parseString("2015-09-04 14:00:00", "yyyy-MM-dd HH:mm:ss");
+    //    chart.picture = "http://avatars.stocktwits.com/production/74023/large-1381535783.png?1381535783";
+    //
+    //    StockTwitEntitiesDTO entitiesDTO = new StockTwitEntitiesDTO();
+    //    StockTwitEntitiesDTO.ChartDTO chartDto = new StockTwitEntitiesDTO.ChartDTO();
+    //    chartDto.original =
+    //            "http://www.estimize.com/csco/fq1-2016?utm_content=Information+Technology&utm_medium=popular_stocks_by_sector&utm_source=stocktwits#chart=historical";
+    //    chartDto.thumb = "http://charts.stocktwits.com/production/original_42300753.png?1441353922";
+    //
+    //    entitiesDTO.chart = chartDto;
+    //    chart.entities = entitiesDTO;
+    //
+    //    NewsfeedStockTwitDTO youtube = new NewsfeedStockTwitDTO();
+    //    youtube.id = 7;
+    //    youtube.message =
+    //            "Does anybody know what kind of \"Conflict of Interest\" does \"BOB\" have [https://www.youtube.com/watch?v=GDz5yuxfgg0&index=9&list=RDGftT_wzRJdc](https://www.youtube.com/watch?v=GDz5yuxfgg0&index=9&list=RDGftT_wzRJdc)";
+    //    youtube.displayName = "simonsaysiblog";
+    //    youtube.createdAtUTC = DateUtils.parseString("2015-09-04 14:00:00", "yyyy-MM-dd HH:mm:ss");
+    //    youtube.picture = "http://avatars.stocktwits.com/images/default_avatar_large.jpg";
+    //
+    //    StockTwitEntitiesDTO entitiesDTO2 = new StockTwitEntitiesDTO();
+    //    StockTwitEntitiesDTO.VideoDTO youtubeDto = new StockTwitEntitiesDTO.VideoDTO();
+    //    youtubeDto.original =
+    //            "https://www.youtube.com/watch?v=GDz5yuxfgg0&index=9&list=RDGftT_wzRJdc";
+    //    youtubeDto.thumb = "https://i.ytimg.com/vi/DW0VxxoCrNo/hqdefault.jpg";
+    //
+    //    entitiesDTO2.video = youtubeDto;
+    //    youtube.entities = entitiesDTO2;
+    //
+    //    list.add(dto);
+    //    list.add(stockTwitDTO);
+    //    list.add(motley);
+    //    list.add(chart);
+    //    list.add(youtube);
+    //
+    //    return Observable.just(list);
+    //}
 }
