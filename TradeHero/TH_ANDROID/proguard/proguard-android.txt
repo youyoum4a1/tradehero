@@ -248,3 +248,14 @@
 # Required by Jumio
 -keep class com.jumio.** { *; }
 -keep class jumiomobile.** { *; }
+
+# fix sdk 23 issue on proguard
+# https://github.com/square/retrofit/issues/1019
+-dontwarn org.apache.http.**
+-dontwarn android.net.http.AndroidHttpClient
+-dontwarn retrofit.client.ApacheClient$GenericEntityHttpRequest
+-dontwarn retrofit.client.ApacheClient$GenericHttpRequest
+-dontwarn retrofit.client.ApacheClient$TypedOutputEntity
+
+# old libary issue, discontinued, need find replacement
+-dontwarn com.viewpagerindicator.LinePageIndicator
