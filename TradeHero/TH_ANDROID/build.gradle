@@ -187,6 +187,5 @@ dependencies {
     } else {
         android.buildTypes.release.signingConfig = null
     }
-    compile files('libs/android-async-http-1.4.4.jar')
     compile 'com.android.support:multidex:'
 }
