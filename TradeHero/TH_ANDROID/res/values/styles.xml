@@ -33,6 +33,7 @@
 
   <style name="TradeHero.ActionBar" parent="Widget.AppCompat.Toolbar">
     <item name="android:background">?attr/colorPrimary</item>
+    <item name="android:theme">@style/ThemeOverlay.ActionBar.TradeHero</item>
     <item name="theme">@style/ThemeOverlay.ActionBar.TradeHero</item>
     <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
   </style>

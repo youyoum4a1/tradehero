@@ -14,7 +14,8 @@
       android:id="@+id/stock_type_dropdown"
       style="@style/TH.Spinner"
       android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_height="?attr/actionBarSize"
+      android:gravity="center_vertical|right"
       />
 
   <com.tradehero.th.fragments.market.ExchangeSpinner
@@ -22,9 +23,8 @@
       style="@style/TH.Spinner"
       android:layout_width="wrap_content"
       android:layout_height="?attr/actionBarSize"
-      android:layout_toRightOf="@id/switch_stock_fx"
+      android:layout_toRightOf="@id/stock_type_dropdown"
       android:gravity="center_vertical|right"
-      android:minWidth="@dimen/size_6"
       />
 
 </RelativeLayout>

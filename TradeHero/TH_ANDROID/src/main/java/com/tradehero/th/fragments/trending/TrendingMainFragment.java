@@ -221,7 +221,8 @@ public class TrendingMainFragment extends DashboardFragment
         ArrayList<AssetClassDTO> assetClassDTOs = new ArrayList<>(2);
         assetClassDTOs.add(new AssetClassDTO(AssetClass.STOCKS));
         assetClassDTOs.add(new AssetClassDTO(AssetClass.FX));
-        assetTypeAdapter = new LollipopArrayAdapter<>(getActivity(), assetClassDTOs);
+        assetTypeAdapter =
+                new LollipopArrayAdapter<>(getActivity(), R.layout.dropdown_item_title_selected, R.layout.dropdown_item_title, assetClassDTOs);
         exchangeSpinnerDTOSubject = BehaviorSubject.create();
     }
 
@@ -375,6 +376,7 @@ public class TrendingMainFragment extends DashboardFragment
     {
         assetTypeSpinner = (Spinner) view.findViewById(R.id.stock_type_dropdown);
         assetTypeSpinner.setAdapter(assetTypeAdapter);
+        assetTypeSpinner.setSelection(lastType == TrendingTabType.STOCK ? 0 : 1, false);
         onDestroyOptionsMenuSubscriptions.add(AdapterViewObservable.selects(assetTypeSpinner)
                 .ofType(OnItemSelectedEvent.class)
                 .subscribe(new Action1<OnItemSelectedEvent>()

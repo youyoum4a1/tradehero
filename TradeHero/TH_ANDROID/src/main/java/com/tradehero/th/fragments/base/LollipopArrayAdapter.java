@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.base;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -14,8 +15,13 @@ public class LollipopArrayAdapter<T> extends ArrayAdapter<T>
 {
     public LollipopArrayAdapter(Context context, List<T> objects)
     {
-        super(context, R.layout.sign_up_dropdown_item_selected, objects);
-        setDropDownViewResource(R.layout.sign_up_dropdown_item);
+        this(context, R.layout.sign_up_dropdown_item_selected, R.layout.sign_up_dropdown_item, objects);
+    }
+
+    public LollipopArrayAdapter(Context context, @LayoutRes int layoutResId, @LayoutRes int dropDownViewResId, List<T> objects)
+    {
+        super(context, layoutResId, objects);
+        setDropDownViewResource(dropDownViewResId);
     }
 
     @Override public View getView(int position, View convertView, ViewGroup parent)
