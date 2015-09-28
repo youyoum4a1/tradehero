@@ -12,6 +12,7 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
 import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
 
@@ -24,11 +25,13 @@ public class PortfolioDisplayDTO implements DTO
     public final String description;
     public final String sinceValue;
     @ViewVisibilityValue public final int sinceValueVisibility;
-    @ViewVisibilityValue public final int chartVisibility;
     @Nullable public final OwnedPortfolioId ownedPortfolioId;
     public final boolean isWatchlist;
     @Nullable public final AssetClass assetClass;
     @Nullable public final Integer providerId;
+    @Nullable public final CharSequence totalValue;
+    @Nullable public final CharSequence marginLeft;
+    public final boolean usesMargin;
 
     public PortfolioDisplayDTO(Resources resources, CurrentUserId currentUserId, DisplayablePortfolioDTO dto)
     {
@@ -52,7 +55,33 @@ public class PortfolioDisplayDTO implements DTO
             this.roiVisibility = View.VISIBLE;
             this.sinceValue = since;
             this.sinceValueVisibility = View.VISIBLE;
-            this.chartVisibility = View.VISIBLE;
+
+            if (dto.portfolioDTO.assetClass != null && dto.portfolioDTO.assetClass.equals(AssetClass.FX))
+            {
+                this.totalValue = THSignedMoney.builder(dto.portfolioDTO.nav)
+                        .currency(dto.portfolioDTO.getNiceCurrency())
+                        .boldValue()
+                        .build()
+                        .createSpanned();
+                this.marginLeft = THSignedMoney.builder(dto.portfolioDTO.marginAvailableRefCcy)
+                        .currency(dto.portfolioDTO.getNiceCurrency())
+                        .boldValue()
+                        .build()
+                        .createSpanned();
+            }
+            else
+            {
+                this.totalValue = THSignedMoney.builder(dto.portfolioDTO.totalValue)
+                        .currency(dto.portfolioDTO.getNiceCurrency())
+                        .boldValue()
+                        .build()
+                        .createSpanned();
+                this.marginLeft = THSignedMoney.builder(dto.portfolioDTO.getUsableForTransactionRefCcy())
+                        .currency(dto.portfolioDTO.getNiceCurrency())
+                        .boldValue()
+                        .build()
+                        .createSpanned();
+            }
         }
         else if (dto instanceof DummyFxDisplayablePortfolioDTO)
         {
@@ -60,7 +89,8 @@ public class PortfolioDisplayDTO implements DTO
             this.roiValue = "";
             this.sinceValue = "";
             this.sinceValueVisibility = View.GONE;
-            this.chartVisibility = View.GONE;
+            this.totalValue = null;
+            this.marginLeft = null;
         }
         else if (dto.portfolioDTO != null
                 && dto.portfolioDTO.isWatchlist)
@@ -69,7 +99,8 @@ public class PortfolioDisplayDTO implements DTO
             this.roiValue = "";
             this.sinceValue = "";
             this.sinceValueVisibility = View.GONE;
-            this.chartVisibility = View.GONE;
+            this.totalValue = null;
+            this.marginLeft = null;
         }
         else
         {
@@ -77,7 +108,8 @@ public class PortfolioDisplayDTO implements DTO
             this.roiValue = THSignedPercentage.builder(0).withOutSign().build().createSpanned();
             this.sinceValue = "";
             this.sinceValueVisibility = View.GONE;
-            this.chartVisibility = View.GONE;
+            this.totalValue = null;
+            this.marginLeft = null;
         }
 
         this.description = DisplayablePortfolioUtil.getLongSubTitle(resources, currentUserId, dto);
@@ -88,12 +120,14 @@ public class PortfolioDisplayDTO implements DTO
             this.isWatchlist = dto.portfolioDTO.isWatchlist;
             this.assetClass = dto.portfolioDTO.assetClass;
             this.providerId = dto.portfolioDTO.providerId;
+            this.usesMargin = dto.portfolioDTO.usesMargin();
         }
         else
         {
             isWatchlist = false;
             assetClass = null;
             providerId = null;
+            this.usesMargin = false;
         }
     }
 }

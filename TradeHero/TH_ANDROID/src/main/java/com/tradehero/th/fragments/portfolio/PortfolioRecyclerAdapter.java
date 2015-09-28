@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.portfolio;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import com.tradehero.th.R;
@@ -57,7 +58,9 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
         @Bind(R.id.portfolio_description) TextView description;
         @Bind(R.id.roi_value) TextView roi;
         @Bind(R.id.portfolio_roi_since) TextView roiSince;
-        @Bind(R.id.portfolio_chart) View chart;
+        @Bind(R.id.portfolio_total_value) TextView totalValue;
+        @Bind(R.id.portfolio_cash_margin_left) TextView marginLeft;
+        @Bind(R.id.grid_portfolio_values) TableLayout table;
 
         public PortfolioDisplayDTOViewHolder(View itemView)
         {
@@ -73,7 +76,16 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
             roi.setVisibility(portfolioDisplayDTO.roiVisibility);
             roiSince.setText(portfolioDisplayDTO.sinceValue);
             roiSince.setVisibility(portfolioDisplayDTO.sinceValueVisibility);
-            chart.setVisibility(portfolioDisplayDTO.chartVisibility);
+            if (portfolioDisplayDTO.marginLeft != null && portfolioDisplayDTO.totalValue != null)
+            {
+                table.setVisibility(View.VISIBLE);
+                totalValue.setText(portfolioDisplayDTO.totalValue);
+                marginLeft.setText(portfolioDisplayDTO.marginLeft);
+            }
+            else
+            {
+                table.setVisibility(View.GONE);
+            }
         }
     }
 }

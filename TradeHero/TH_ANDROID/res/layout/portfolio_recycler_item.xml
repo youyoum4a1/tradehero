@@ -26,8 +26,8 @@
         android:layout_alignParentRight="true"
         android:gravity="right"
         android:minWidth="@dimen/size_10"
-        android:paddingTop="2dp"
         android:paddingBottom="2dp"
+        android:paddingTop="2dp"
         tools:text="- 8.88%"
         />
 
@@ -46,7 +46,7 @@
 
     <TextView
         android:id="@+id/portfolio_description"
-        style="@style/TH.Subhead"
+        style="@style/TH.Caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/portfolio_title"
@@ -57,15 +57,55 @@
         tools:text="You have 2 open positions."
         />
 
-    <ImageView
-        android:id="@+id/portfolio_chart"
+    <TableLayout
+        android:id="@+id/grid_portfolio_values"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/size_10"
+        android:layout_height="wrap_content"
         android:layout_below="@id/portfolio_description"
         android:layout_marginTop="@dimen/margin_xsmall"
-        android:scaleType="fitXY"
-        android:src="@drawable/line_chart"
-        />
+        android:stretchColumns="1"
+        >
+
+      <TableRow
+          android:id="@+id/portfolio_total_value_row"
+          android:layout_marginBottom="4dp"
+          >
+
+        <TextView
+            style="@style/TH.Body"
+            android:text="@string/portfolio_header_total_value"
+            android:textAllCaps="true"
+            android:textColor="?android:attr/textColorSecondary"
+            />
+
+        <TextView
+            android:id="@+id/portfolio_total_value"
+            style="@style/TH.Body"
+            android:layout_marginLeft="4dp"
+            android:gravity="right"
+            tools:text="USD 180,000.00"
+            />
+      </TableRow>
+
+      <TableRow android:id="@+id/portfolio_cash_margin_left_row">
+
+        <TextView
+            android:id="@+id/portfolio_cash_margin_left_label"
+            style="@style/TH.Body"
+            android:text="@string/portfolio_header_margin_available_title"
+            android:textAllCaps="true"
+            android:textColor="?android:attr/textColorSecondary"
+            />
+
+        <TextView
+            android:id="@+id/portfolio_cash_margin_left"
+            style="@style/TH.Body"
+            android:layout_marginLeft="4dp"
+            android:gravity="right"
+            tools:text="USD 56,200.00"
+            />
+      </TableRow>
+    </TableLayout>
 
     <TextView
         android:id="@+id/portfolio_roi_since"
@@ -73,9 +113,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/portfolio_chart"
+        android:layout_below="@id/grid_portfolio_values"
         android:layout_marginTop="@dimen/margin_xsmall"
-        tools:text="Since incepsmall"
+        tools:text="Since inception"
         />
 
   </RelativeLayout>
