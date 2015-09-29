@@ -33,7 +33,6 @@ import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
 import com.tradehero.th.api.market.ExchangeIntegerId;
 import com.tradehero.th.api.market.ExchangeListType;
 import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.portfolio.AssetClassDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -79,7 +78,7 @@ import timber.log.Timber;
         "trending-securities",
         "trending-stocks/tab-index/:stockPageIndex",
         "trending-stocks/exchange/:exchangeId",
-        "trending-fx/tab-index/:fxPageIndex",
+        "trending-fx/:dummyFXId",
 })
 public class TrendingMainFragment extends DashboardFragment
 {
@@ -99,8 +98,8 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
 
     @RouteProperty("stockPageIndex") Integer selectedStockPageIndex;
-    @RouteProperty("fxPageIndex") Integer selectedFxPageIndex;
     @RouteProperty("exchangeId") Integer routedExchangeId;
+    @RouteProperty("dummyFXId") Integer dummyFXId;
 
     @NonNull private static TrendingTabType lastType = TrendingTabType.STOCK;
     @NonNull private static TrendingStockTabType lastStockTab = TrendingStockTabType.getDefault();
@@ -114,19 +113,16 @@ public class TrendingMainFragment extends DashboardFragment
     private final BehaviorSubject<ExchangeCompactSpinnerDTO> exchangeSpinnerDTOSubject = BehaviorSubject.create();
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
     private Spinner assetTypeSpinner;
-    private LollipopArrayAdapter<AssetClassDTO> assetTypeAdapter;
+    private LollipopArrayAdapter<TrendingTabType> assetTypeAdapter;
     private LollipopArrayAdapter<TrendingStockTabType> sortByAdapter;
 
     public static void registerAliases(@NonNull THRouter router)
     {
-        router.registerAlias("trending-fx/my-fx", "trending-fx/tab-index/" + TrendingFXTabType.Portfolio.ordinal());
-        router.registerAlias("trending-fx/trade-fx", "trending-fx/tab-index/" + TrendingFXTabType.FX.ordinal());
-        //router.registerAlias("trending-stocks/my-stocks", "trending-stocks/tab-index/" + TrendingStockTabType.StocksMain.ordinal());
-        //router.registerAlias("trending-stocks/favorites", "trending-stocks/tab-index/" + TrendingStockTabType.Favorites.ordinal());
         router.registerAlias("trending-stocks/trending", "trending-stocks/tab-index/" + TrendingStockTabType.Trending.ordinal());
         router.registerAlias("trending-stocks/price-action", "trending-stocks/tab-index/" + TrendingStockTabType.Price.ordinal());
         router.registerAlias("trending-stocks/unusual-volumes", "trending-stocks/tab-index/" + TrendingStockTabType.Volume.ordinal());
         router.registerAlias("trending-stocks/all-trending", "trending-stocks/tab-index/" + TrendingStockTabType.All.ordinal());
+        router.registerAlias("trending-fx", "trending-fx/1");
     }
 
     public static void putAssetClass(@NonNull Bundle args, @NonNull AssetClass assetClass)
@@ -207,11 +203,9 @@ public class TrendingMainFragment extends DashboardFragment
                 Timber.e(e, "Unhandled assetClass for user " + currentUserId.get());
             }
         }
-        ArrayList<AssetClassDTO> assetClassDTOs = new ArrayList<>(2);
-        assetClassDTOs.add(new AssetClassDTO(AssetClass.STOCKS));
-        assetClassDTOs.add(new AssetClassDTO(AssetClass.FX));
         assetTypeAdapter =
-                new LollipopArrayAdapter<>(getActivity(), R.layout.dropdown_item_title_selected, R.layout.dropdown_item_title, assetClassDTOs);
+                new LollipopArrayAdapter<>(getActivity(), R.layout.dropdown_item_title_selected, R.layout.dropdown_item_title,
+                        Arrays.asList(TrendingTabType.values()));
 
         exchangeAdapter = new TrendingFilterSpinnerIconAdapter(
                 getActivity(),
@@ -252,9 +246,7 @@ public class TrendingMainFragment extends DashboardFragment
         if (lastType == TrendingTabType.FX)
         {
             exchangeContainer.setVisibility(View.GONE);
-
-            Fragment created = Fragment.instantiate(getActivity(), TrendingFXFragment.class.getName());
-            getChildFragmentManager().beginTransaction().replace(R.id.trending_fragment_container, created).commit();
+            handleFXSelected();
         }
         else
         {
@@ -264,7 +256,17 @@ public class TrendingMainFragment extends DashboardFragment
             {
                 handleSortBySelected(lastStockTab);
             }
+            else
+            {
+                handleSortBySelected(TrendingStockTabType.getDefault());
+            }
         }
+    }
+
+    private void handleFXSelected()
+    {
+        Fragment created = Fragment.instantiate(getActivity(), TrendingFXFragment.class.getName());
+        getChildFragmentManager().beginTransaction().replace(R.id.trending_fragment_container, created).commit();
     }
 
     @Override public void onResume()
@@ -349,7 +351,7 @@ public class TrendingMainFragment extends DashboardFragment
     {
         assetTypeSpinner = (Spinner) view.findViewById(R.id.stock_type_dropdown);
         assetTypeSpinner.setAdapter(assetTypeAdapter);
-        assetTypeSpinner.setSelection(lastType == TrendingTabType.STOCK ? 0 : 1, false);
+        assetTypeSpinner.setSelection(lastType.ordinal(), false);
         onDestroyOptionsMenuSubscriptions.add(AdapterViewObservable.selects(assetTypeSpinner)
                 .ofType(OnItemSelectedEvent.class)
                 .subscribe(new Action1<OnItemSelectedEvent>()
@@ -357,7 +359,7 @@ public class TrendingMainFragment extends DashboardFragment
                     @Override public void call(OnItemSelectedEvent onItemSelectedEvent)
                     {
                         final TrendingTabType oldType = lastType;
-                        final AssetClassDTO assetClassDTO = assetTypeAdapter.getItem(onItemSelectedEvent.position);
+                        final TrendingTabType newType = assetTypeAdapter.getItem(onItemSelectedEvent.position);
                         final ProgressDialog progressDialog;
                         if (!fetchedFXPortfolio && userProfileCache.getCachedValue(currentUserId.toUserBaseKey()) == null)
                         {
@@ -401,7 +403,7 @@ public class TrendingMainFragment extends DashboardFragment
 
                                     @Override public void onNext(UserProfileDTO userProfileDTO)
                                     {
-                                        if (assetClassDTO.assetClass == AssetClass.FX && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
+                                        if (newType.assetClass == AssetClass.FX && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
                                         {
                                             if (fxDialogShowed)
                                             {
@@ -428,7 +430,7 @@ public class TrendingMainFragment extends DashboardFragment
                                         }
                                         else
                                         {
-                                            if (assetClassDTO.assetClass == AssetClass.STOCKS)
+                                            if (newType.assetClass == AssetClass.STOCKS)
                                             {
                                                 lastType = TrendingTabType.STOCK;
                                             }
@@ -438,7 +440,6 @@ public class TrendingMainFragment extends DashboardFragment
                                             }
                                             if (!oldType.equals(lastType))
                                             {
-                                                //clearChildFragmentManager();
                                                 initViews();
                                                 getActivity().supportInvalidateOptionsMenu();
                                             }
@@ -452,8 +453,6 @@ public class TrendingMainFragment extends DashboardFragment
     private void setupExchangeSpinner()
     {
         exchangeSpinner.setAdapter(exchangeAdapter);
-
-        //TODO set selection
 
         exchangeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
@@ -587,53 +586,20 @@ public class TrendingMainFragment extends DashboardFragment
 
     protected void handlePageRouting()
     {
-        //BaseActivity activity = (BaseActivity) getActivity();
-        //if (selectedStockPageIndex != null)
-        //{
-        //    if (lastType.equals(TrendingTabType.STOCK))
-        //    {
-        //        if (tabViewPager != null)
-        //        {
-        //            lastStockTab = TrendingStockTabType.values()[selectedStockPageIndex];
-        //            tabViewPager.setCurrentItem(selectedStockPageIndex, true);
-        //            selectedStockPageIndex = null;
-        //        }
-        //    }
-        //    else if (actionBarOwnerMixin != null && activity != null)
-        //    {
-        //        lastType = TrendingTabType.STOCK;
-        //        //stockFxSwitcher.setIsOn(false, false);
-        //    }
-        //}
-        //else if (selectedFxPageIndex != null)
-        //{
-        //    if (lastType.equals(TrendingTabType.FX))
-        //    {
-        //        if (tabViewPager != null)
-        //        {
-        //            lastFXTab = TrendingFXTabType.values()[selectedFxPageIndex];
-        //            tabViewPager.setCurrentItem(selectedFxPageIndex, true);
-        //            selectedFxPageIndex = null;
-        //        }
-        //    }
-        //    //else if (stockFxSwitcher != null)
-        //    //{
-        //    //    stockFxSwitcher.setIsOn(true, false);
-        //    //}
-        //}
-        //else if (lastType.equals(TrendingTabType.STOCK))
-        //{
-        //    tabViewPager.setCurrentItem(lastStockTab.ordinal(), true);
-        //}
-        //else if (lastType.equals(TrendingTabType.FX))
-        //{
-        //    tabViewPager.setCurrentItem(lastFXTab.ordinal(), true);
-        //}
-        //else
-        //{
-        //    throw new RuntimeException("Unhandled TrendingTabType." + lastType);
-        //}
-        //clearRoutingParam();
+        if (selectedStockPageIndex != null)
+        {
+            lastType = TrendingTabType.STOCK;
+            lastStockTab = TrendingStockTabType.values()[selectedStockPageIndex];
+            initViews();
+            selectedStockPageIndex = null;
+        }
+        else if (dummyFXId != null)
+        {
+            lastType = TrendingTabType.FX;
+            initViews();
+            dummyFXId = null;
+        }
+        clearRoutingParam();
     }
 
     private void handleExchangeRouting(@Nullable ExchangeCompactDTO defaultValue)
@@ -658,8 +624,8 @@ public class TrendingMainFragment extends DashboardFragment
     {
         //TODO to static
         getArguments().remove("stockPageIndex");
-        getArguments().remove("fxPageIndex");
         getArguments().remove("exchangeId");
+        getArguments().remove("dummyFXId");
     }
 
     public Observable<ExchangeCompactSpinnerDTO> getExchangeSelectionObservable()
