@@ -2,12 +2,12 @@ package com.tradehero.th.fragments.trending.filter;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.fragments.trending.TrendingStockTabType;
+import com.tradehero.th.fragments.trending.TrendingStockSortType;
 
 public class TrendingFilterTypeDTOFactory
 {
     @NonNull public static TrendingFilterTypeDTO create(
-            @NonNull TrendingStockTabType type,
+            @NonNull TrendingStockSortType type,
             @NonNull Resources resources)
     {
         switch (type)

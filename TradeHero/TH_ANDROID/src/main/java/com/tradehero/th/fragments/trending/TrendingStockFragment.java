@@ -88,14 +88,14 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @Inject protected THBillingInteractorRx userInteractorRx;
     private Subscription exchangeSubscription;
 
-    public static void putTabType(@NonNull Bundle args, @NonNull TrendingStockTabType tabType)
+    public static void putTabType(@NonNull Bundle args, @NonNull TrendingStockSortType tabType)
     {
         args.putInt(KEY_TAB_TYPE_ID, tabType.ordinal());
     }
 
-    @NonNull private static TrendingStockTabType getTabType(@NonNull Bundle args)
+    @NonNull private static TrendingStockSortType getTabType(@NonNull Bundle args)
     {
-        return TrendingStockTabType.values()[args.getInt(KEY_TAB_TYPE_ID, TrendingStockTabType.getDefault().ordinal())];
+        return TrendingStockSortType.values()[args.getInt(KEY_TAB_TYPE_ID, TrendingStockSortType.getDefault().ordinal())];
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

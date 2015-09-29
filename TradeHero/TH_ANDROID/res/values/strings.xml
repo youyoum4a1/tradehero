@@ -285,9 +285,9 @@
 
   <string name="stocks">Stocks</string>
   <string name="trending_tab_stocks_main">My Stocks</string>
-  <string name="trending_tab_trending">Trending</string>
+  <string name="trending_tab_trending">Popularity</string>
   <string name="trending_tab_price">Price Action</string>
-  <string name="trending_tab_volume">Unusual Volumes</string>
+  <string name="trending_tab_volume">Volumes</string>
   <string name="trending_tab_all">All</string>
   <string name="trending_tab_favorites">Favourites</string>
   <string name="my_fx">My FX</string>

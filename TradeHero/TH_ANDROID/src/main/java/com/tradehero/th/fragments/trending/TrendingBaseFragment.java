@@ -17,7 +17,7 @@ abstract public class TrendingBaseFragment extends SecurityListRxFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
 
-    @NonNull protected BehaviorSubject<TrendingTabType> trendingTabTypeBehaviorSubject;
+    @NonNull protected BehaviorSubject<TrendingAssetType> trendingTabTypeBehaviorSubject;
 
     //<editor-fold desc="Constructors">
     protected TrendingBaseFragment()
@@ -33,7 +33,7 @@ abstract public class TrendingBaseFragment extends SecurityListRxFragment
         super.onDestroy();
     }
 
-    @NonNull protected Observable<TrendingTabType> getRequestedTrendingTabTypeObservable()
+    @NonNull protected Observable<TrendingAssetType> getRequestedTrendingTabTypeObservable()
     {
         return trendingTabTypeBehaviorSubject.asObservable();
     }

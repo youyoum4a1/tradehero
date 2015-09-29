@@ -15,7 +15,7 @@
       style="@style/TH.Spinner"
       android:layout_width="wrap_content"
       android:layout_height="?attr/actionBarSize"
-      android:gravity="center_vertical|right"
+      android:gravity="center_vertical|left"
       />
 
   <com.tradehero.th.fragments.market.ExchangeSpinner

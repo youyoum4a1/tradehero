@@ -3,10 +3,10 @@
     style="@style/TH.Title.Inverse"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="?attr/dropdownListPreferredItemHeight"
     android:drawableRight="@drawable/spinner_arrow_bg"
-    android:gravity="center_vertical"
+    android:gravity="center_vertical|left"
     android:singleLine="true"
     tools:text="Option 1"
     />

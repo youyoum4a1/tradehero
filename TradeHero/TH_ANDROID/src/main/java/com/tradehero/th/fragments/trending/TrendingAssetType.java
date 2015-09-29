@@ -5,7 +5,7 @@ import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.AssetClass;
 
-enum TrendingTabType
+enum TrendingAssetType
 {
     STOCK(R.string.stocks, TrendingStockFragment.class, AssetClass.STOCKS),
     FX(R.string.fx, TrendingFXFragment.class, AssetClass.FX)
@@ -16,7 +16,7 @@ enum TrendingTabType
     @NonNull public final AssetClass assetClass;
 
     //<editor-fold desc="Constructors">
-    private TrendingTabType(
+    TrendingAssetType(
             @StringRes int titleStringResId,
             @NonNull Class<? extends TrendingBaseFragment> fragmentClass,
             @NonNull AssetClass assetClass)
@@ -27,9 +27,9 @@ enum TrendingTabType
     }
     //</editor-fold>
 
-    @NonNull static TrendingTabType getForAssetClass(@NonNull AssetClass assetClass)
+    @NonNull static TrendingAssetType getForAssetClass(@NonNull AssetClass assetClass)
     {
-        for (TrendingTabType tabType : values())
+        for (TrendingAssetType tabType : values())
         {
             if (tabType.assetClass.equals(assetClass))
             {

@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.trending;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.common.rx.PairGetSecond;
@@ -101,8 +103,8 @@ public class TrendingMainFragment extends DashboardFragment
     @RouteProperty("exchangeId") Integer routedExchangeId;
     @RouteProperty("dummyFXId") Integer dummyFXId;
 
-    @NonNull private static TrendingTabType lastType = TrendingTabType.STOCK;
-    @NonNull private static TrendingStockTabType lastStockTab = TrendingStockTabType.getDefault();
+    @NonNull private static TrendingAssetType lastType = TrendingAssetType.STOCK;
+    @NonNull private static TrendingStockSortType lastStockTab = TrendingStockSortType.getDefault();
 
     private boolean fetchedFXPortfolio = false;
     private Observable<UserProfileDTO> userProfileObservable;
@@ -113,15 +115,15 @@ public class TrendingMainFragment extends DashboardFragment
     private final BehaviorSubject<ExchangeCompactSpinnerDTO> exchangeSpinnerDTOSubject = BehaviorSubject.create();
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
     private Spinner assetTypeSpinner;
-    private LollipopArrayAdapter<TrendingTabType> assetTypeAdapter;
-    private LollipopArrayAdapter<TrendingStockTabType> sortByAdapter;
+    private LollipopArrayAdapter<TrendingAssetType> assetTypeAdapter;
+    private LollipopArrayAdapter<TrendingStockSortType> sortByAdapter;
 
     public static void registerAliases(@NonNull THRouter router)
     {
-        router.registerAlias("trending-stocks/trending", "trending-stocks/tab-index/" + TrendingStockTabType.Trending.ordinal());
-        router.registerAlias("trending-stocks/price-action", "trending-stocks/tab-index/" + TrendingStockTabType.Price.ordinal());
-        router.registerAlias("trending-stocks/unusual-volumes", "trending-stocks/tab-index/" + TrendingStockTabType.Volume.ordinal());
-        router.registerAlias("trending-stocks/all-trending", "trending-stocks/tab-index/" + TrendingStockTabType.All.ordinal());
+        router.registerAlias("trending-stocks/trending", "trending-stocks/tab-index/" + TrendingStockSortType.Trending.ordinal());
+        router.registerAlias("trending-stocks/price-action", "trending-stocks/tab-index/" + TrendingStockSortType.Price.ordinal());
+        router.registerAlias("trending-stocks/unusual-volumes", "trending-stocks/tab-index/" + TrendingStockSortType.Volume.ordinal());
+        router.registerAlias("trending-stocks/all-trending", "trending-stocks/tab-index/" + TrendingStockSortType.All.ordinal());
         router.registerAlias("trending-fx", "trending-fx/1");
     }
 
@@ -196,7 +198,7 @@ public class TrendingMainFragment extends DashboardFragment
         {
             try
             {
-                lastType = TrendingTabType.getForAssetClass(askedAssetClass);
+                lastType = TrendingAssetType.getForAssetClass(askedAssetClass);
             }
             catch (IllegalArgumentException e)
             {
@@ -204,16 +206,14 @@ public class TrendingMainFragment extends DashboardFragment
             }
         }
         assetTypeAdapter =
-                new LollipopArrayAdapter<>(getActivity(), R.layout.dropdown_item_title_selected, R.layout.dropdown_item_title,
-                        Arrays.asList(TrendingTabType.values()));
+                new TrendingAssetTypeAdapter(getActivity());
 
         exchangeAdapter = new TrendingFilterSpinnerIconAdapter(
                 getActivity(),
                 R.layout.trending_filter_spinner_item_short);
         exchangeAdapter.setDropDownViewResource(R.layout.trending_filter_spinner_dropdown_item);
 
-        sortByAdapter = new LollipopArrayAdapter<>(getActivity(), R.layout.trending_sort_item_selected, R.layout.trending_sort_item,
-                new ArrayList<>(Arrays.asList(TrendingStockTabType.values())));
+        sortByAdapter = new StockSortTypeAdapter(getActivity());
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -236,14 +236,14 @@ public class TrendingMainFragment extends DashboardFragment
     {
         if (fxPortfolioId == null)
         {
-            lastType = TrendingTabType.STOCK;
+            lastType = TrendingAssetType.STOCK;
         }
         if (lastType == null)
         {
             Timber.e(new NullPointerException("Gotcha lastType is null"), "lastType is null");
         }
 
-        if (lastType == TrendingTabType.FX)
+        if (lastType == TrendingAssetType.FX)
         {
             exchangeContainer.setVisibility(View.GONE);
             handleFXSelected();
@@ -258,7 +258,7 @@ public class TrendingMainFragment extends DashboardFragment
             }
             else
             {
-                handleSortBySelected(TrendingStockTabType.getDefault());
+                handleSortBySelected(TrendingStockSortType.getDefault());
             }
         }
     }
@@ -278,7 +278,7 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public boolean shouldShowLiveTradingToggle()
     {
-        return lastType.equals(TrendingTabType.STOCK);
+        return lastType.equals(TrendingAssetType.STOCK);
     }
 
     @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
@@ -358,8 +358,8 @@ public class TrendingMainFragment extends DashboardFragment
                 {
                     @Override public void call(OnItemSelectedEvent onItemSelectedEvent)
                     {
-                        final TrendingTabType oldType = lastType;
-                        final TrendingTabType newType = assetTypeAdapter.getItem(onItemSelectedEvent.position);
+                        final TrendingAssetType oldType = lastType;
+                        final TrendingAssetType newType = assetTypeAdapter.getItem(onItemSelectedEvent.position);
                         final ProgressDialog progressDialog;
                         if (!fetchedFXPortfolio && userProfileCache.getCachedValue(currentUserId.toUserBaseKey()) == null)
                         {
@@ -432,11 +432,11 @@ public class TrendingMainFragment extends DashboardFragment
                                         {
                                             if (newType.assetClass == AssetClass.STOCKS)
                                             {
-                                                lastType = TrendingTabType.STOCK;
+                                                lastType = TrendingAssetType.STOCK;
                                             }
                                             else
                                             {
-                                                lastType = TrendingTabType.FX;
+                                                lastType = TrendingAssetType.FX;
                                             }
                                             if (!oldType.equals(lastType))
                                             {
@@ -540,13 +540,13 @@ public class TrendingMainFragment extends DashboardFragment
                 {
                     @Override public void call(OnItemSelectedEvent onItemSelectedEvent)
                     {
-                        TrendingStockTabType tabType = sortByAdapter.getItem(onItemSelectedEvent.position);
+                        TrendingStockSortType tabType = sortByAdapter.getItem(onItemSelectedEvent.position);
                         handleSortBySelected(tabType);
                     }
                 }, new TimberOnErrorAction1("")));
     }
 
-    protected void handleSortBySelected(TrendingStockTabType tabType)
+    protected void handleSortBySelected(TrendingStockSortType tabType)
     {
         Bundle args = new Bundle();
         TrendingStockFragment.putTabType(args, tabType);
@@ -565,11 +565,11 @@ public class TrendingMainFragment extends DashboardFragment
             {
                 userProfileCache.invalidate(currentUserId.toUserBaseKey());
             }
-            lastType = TrendingTabType.FX;
+            lastType = TrendingAssetType.FX;
         }
         else
         {
-            lastType = TrendingTabType.STOCK;
+            lastType = TrendingAssetType.STOCK;
         }
         clearChildFragmentManager();
         initViews();
@@ -588,14 +588,14 @@ public class TrendingMainFragment extends DashboardFragment
     {
         if (selectedStockPageIndex != null)
         {
-            lastType = TrendingTabType.STOCK;
-            lastStockTab = TrendingStockTabType.values()[selectedStockPageIndex];
+            lastType = TrendingAssetType.STOCK;
+            lastStockTab = TrendingStockSortType.values()[selectedStockPageIndex];
             initViews();
             selectedStockPageIndex = null;
         }
         else if (dummyFXId != null)
         {
-            lastType = TrendingTabType.FX;
+            lastType = TrendingAssetType.FX;
             initViews();
             dummyFXId = null;
         }
@@ -605,12 +605,12 @@ public class TrendingMainFragment extends DashboardFragment
     private void handleExchangeRouting(@Nullable ExchangeCompactDTO defaultValue)
     {
         if (routedExchangeId != null
-                && lastType.equals(TrendingTabType.STOCK))
+                && lastType.equals(TrendingAssetType.STOCK))
         {
             exchangeSpinner.setSelectionById(new ExchangeIntegerId(routedExchangeId));
             routedExchangeId = null;
         }
-        else if (lastType.equals(TrendingTabType.STOCK) && preferredExchangeMarket.get() > 0)
+        else if (lastType.equals(TrendingAssetType.STOCK) && preferredExchangeMarket.get() > 0)
         {
             exchangeSpinner.setSelectionById(new ExchangeIntegerId(preferredExchangeMarket.get()));
         }
@@ -631,5 +631,63 @@ public class TrendingMainFragment extends DashboardFragment
     public Observable<ExchangeCompactSpinnerDTO> getExchangeSelectionObservable()
     {
         return exchangeSpinnerDTOSubject.asObservable();
+    }
+
+    private static class TrendingAssetTypeAdapter extends LollipopArrayAdapter<TrendingAssetType>
+    {
+        public TrendingAssetTypeAdapter(Context context)
+        {
+            super(context, R.layout.dropdown_item_title_selected, R.layout.dropdown_item_title,
+                    Arrays.asList(TrendingAssetType.values()));
+        }
+
+        @Override public View getView(int position, View convertView, ViewGroup parent)
+        {
+            View v = super.getView(position, convertView, parent);
+            if (v instanceof TextView)
+            {
+                ((TextView) v).setText(getItem(position).titleStringResId);
+            }
+            return v;
+        }
+
+        @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
+        {
+            View v = super.getDropDownView(position, convertView, parent);
+            if (v instanceof TextView)
+            {
+                ((TextView) v).setText(getItem(position).titleStringResId);
+            }
+            return v;
+        }
+    }
+
+    private static class StockSortTypeAdapter extends LollipopArrayAdapter<TrendingStockSortType>
+    {
+        public StockSortTypeAdapter(Context context)
+        {
+            super(context, R.layout.trending_sort_item_selected, R.layout.trending_sort_item,
+                    new ArrayList<>(Arrays.asList(TrendingStockSortType.values())));
+        }
+
+        @Override public View getView(int position, View convertView, ViewGroup parent)
+        {
+            View v = super.getView(position, convertView, parent);
+            if (v instanceof TextView)
+            {
+                ((TextView) v).setText(getItem(position).titleStringResId);
+            }
+            return v;
+        }
+
+        @Override public View getDropDownView(int position, View convertView, ViewGroup parent)
+        {
+            View v = super.getDropDownView(position, convertView, parent);
+            if (v instanceof TextView)
+            {
+                ((TextView) v).setText(getItem(position).titleStringResId);
+            }
+            return v;
+        }
     }
 }
