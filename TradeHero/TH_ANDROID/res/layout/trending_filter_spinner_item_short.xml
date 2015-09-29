@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerItemShortView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerItemShortView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center"
-    tools:background="@color/tradehero_blue"
+    android:gravity="left"
+    android:orientation="horizontal"
+    tools:background="?attr/slidingTabBackground"
     >
 
   <TextView
       android:id="@+id/trending_filter_spinner_item_label"
-      android:layout_height="wrap_content"
+      style="@style/TH.Subhead.Accented"
       android:layout_width="wrap_content"
-      style="@style/TH.Caption"
-      android:drawableRight="@drawable/spinner_arrow_bg"
-      android:textColor="@color/white"
-      android:layout_gravity="center"
-      android:gravity="center_vertical"
+      android:layout_height="wrap_content"
+      android:drawableRight="@drawable/spinner_dropdown_arrow_accented"
+      android:gravity="center_vertical|left"
       android:maxLines="1"
       tools:text="US NYSE - NYSE"
       />

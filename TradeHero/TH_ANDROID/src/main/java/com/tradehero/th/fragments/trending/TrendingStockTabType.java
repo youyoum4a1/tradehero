@@ -4,13 +4,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.position.StocksMainPositionListFragment;
-import com.tradehero.th.fragments.watchlist.MainWatchlistPositionFragment;
 
 public enum TrendingStockTabType
 {
-    StocksMain(R.string.trending_tab_stocks_main, StocksMainPositionListFragment.class, false),
-    Favorites(R.string.trending_tab_favorites, MainWatchlistPositionFragment.class, false),
     Trending(R.string.trending_tab_trending, TrendingStockFragment.class, true),
     Price(R.string.trending_tab_price, TrendingStockFragment.class, true),
     Volume(R.string.trending_tab_volume, TrendingStockFragment.class, true),

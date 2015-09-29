@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView
+    android:id="@android:id/text1"
+    style="@style/TH.Subhead.Accented"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/dropdownListPreferredItemHeight"
+    android:drawableRight="@drawable/spinner_dropdown_arrow_accented"
+    android:gravity="center_vertical"
+    android:singleLine="true"
+    tools:text="Option 1"
+    />

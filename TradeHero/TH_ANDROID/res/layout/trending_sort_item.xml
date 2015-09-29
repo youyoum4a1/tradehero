@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView
+    android:id="@android:id/text1"
+    style="@style/TH.Subhead"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/dropdownListPreferredItemHeight"
+    android:gravity="center_vertical"
+    android:padding="@dimen/margin_xsmall"
+    android:singleLine="true"
+    tools:text="Option 1"
+    />

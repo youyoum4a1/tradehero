@@ -1,23 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
-  <com.android.common.SlidingTabLayout
-      android:id="@+id/tabs"
+  <RelativeLayout
+      android:id="@+id/exchange_selection_container"
+      style="@style/TradeHero.TabContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      style="@style/TradeHero.TabContainer"/>
+      android:paddingLeft="@dimen/margin_small"
+      android:paddingRight="@dimen/margin_small"
+      >
 
-  <android.support.v4.view.ViewPager
-      android:id="@+id/pager"
+    <TextView
+        android:id="@+id/trending_main_exchange_label"
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="@string/action_exchange"
+        />
+
+    <Spinner
+        android:id="@+id/trending_sort_by"
+        style="@style/TH.Spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/clickable_element_min_dimen"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:paddingLeft="4dp"
+        tools:layout_width="112dp"
+        />
+
+    <TextView
+        android:id="@+id/trending_main_sort_label"
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/trending_sort_by"
+        android:text="@string/leaderboard_sort"
+        />
+
+    <com.tradehero.th.fragments.market.ExchangeSpinner
+        android:id="@+id/exchange_selection_menu"
+        style="@style/TH.Spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/clickable_element_min_dimen"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/trending_main_exchange_label"
+        android:gravity="center_vertical|left"
+        android:paddingLeft="4dp"
+        tools:layout_width="112dp"
+        />
+
+  </RelativeLayout>
+
+  <FrameLayout
+      android:id="@+id/trending_fragment_container"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      tools:background="@android:color/holo_red_dark"
+      android:layout_height="match_parent"
+      tools:background="@color/red"
       />
 
 </LinearLayout>
