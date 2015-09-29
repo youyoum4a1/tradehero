@@ -88,7 +88,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
         actionBar.setDisplayShowTitleEnabled(false);
 
         final StockDetailActionBarRelativeLayout actionBarLayout =
-                (StockDetailActionBarRelativeLayout) LayoutInflater.from(actionBar.getThemedContext())
+                (StockDetailActionBarRelativeLayout) LayoutInflater.from(getActivity())
                         .inflate(R.layout.stock_detail_custom_actionbar, null);
         this.actionBarLayout = actionBarLayout;
         onDestroyOptionsMenuSubscriptions.add(quoteObservable.observeOn(AndroidSchedulers.mainThread())
