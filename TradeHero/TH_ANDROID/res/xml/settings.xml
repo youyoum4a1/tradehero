@@ -128,24 +128,6 @@
   </PreferenceCategory>
 
   <PreferenceCategory
-      android:key="@string/key_settings_translations_container"
-      android:title="@string/settings_translations">
-
-    <Preference
-        android:key="@string/key_settings_translations_preferred_language"
-        android:title="@string/settings_translations_language_preferred"
-        android:icon="@drawable/language_settings"
-      />
-
-    <CheckBoxPreference
-        android:key="@string/key_settings_translations_auto_translate"
-        android:title="@string/settings_translations_auto_translate"
-        android:icon="@drawable/default_translation"
-      />
-
-  </PreferenceCategory>
-
-  <PreferenceCategory
       android:key=""
       android:title="@string/settings_notifications">
 
