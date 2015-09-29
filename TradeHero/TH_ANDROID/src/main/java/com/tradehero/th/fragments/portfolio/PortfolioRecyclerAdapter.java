@@ -67,7 +67,7 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
             super(itemView);
         }
 
-        @Override public void display(PortfolioDisplayDTO portfolioDisplayDTO)
+        @Override public void onDisplay(PortfolioDisplayDTO portfolioDisplayDTO)
         {
             title.setText(portfolioDisplayDTO.portfolioTitle);
             title.setTextColor(portfolioDisplayDTO.portfolioTitleColor);

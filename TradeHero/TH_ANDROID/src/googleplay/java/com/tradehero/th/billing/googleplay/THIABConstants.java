@@ -17,7 +17,7 @@ public class THIABConstants
     //public static final String CREDIT_20 = "com.myhero.th.20cc";
 
     public static final String RESET_PORTFOLIO_0 = "com.myhero.th.resetportfolio.0";
-    public static final String ALERT_1 = "com.myhero.th.stockalert.subscription.t0";
-    public static final String ALERT_5 = "com.myhero.th.stockalert.subscription.t1";
-    public static final String ALERT_UNLIMITED = "com.myhero.th.stockalert.subscription.t2";
+    //public static final String ALERT_1 = "com.myhero.th.stockalert.subscription.t0";
+    //public static final String ALERT_5 = "com.myhero.th.stockalert.subscription.t1";
+    //public static final String ALERT_UNLIMITED = "com.myhero.th.stockalert.subscription.t2";
 }

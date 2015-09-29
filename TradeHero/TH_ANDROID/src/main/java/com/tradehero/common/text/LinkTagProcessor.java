@@ -12,6 +12,7 @@ public class LinkTagProcessor extends ClickableTagProcessor
 {
     private static final String THMarkdownRegexLink = "\\[(.+?)\\]\\((.+?)\\)";/* "[text](link)" = add link to text */
     private static final String USER = "tradehero://user/";
+    private static final String HTTP = "http";
 
     @NonNull protected final CurrentUserId currentUserId;
 
@@ -76,7 +77,23 @@ public class LinkTagProcessor extends ClickableTagProcessor
                         userActionSubject.onNext(new UserTagProcessor.ProfileUserAction(matchStrings, new UserBaseKey(uid)));
                     }
                 }
+                //"http"
+                else if (link2 != null && link2.startsWith(HTTP))
+                {
+                    userActionSubject.onNext(new LinkTagProcessor.WebUserAction(matchStrings, link2));
+                }
             }
+        }
+    }
+
+    public class WebUserAction extends UserAction
+    {
+        public final String link;
+
+        public WebUserAction(String[] matchStrings, String link)
+        {
+            super(matchStrings);
+            this.link = link;
         }
     }
 }

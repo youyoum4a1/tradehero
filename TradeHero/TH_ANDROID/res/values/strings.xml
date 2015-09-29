@@ -254,6 +254,7 @@
   <string name="discovery_discussions">Discussions</string>
   <string name="discovery">Discover</string>
   <string name="discovery_learning">Academy</string>
+  <string name="discovery_newsfeed">Newsfeed</string>
   <string name="onboard_exchange_title">To Help Get You Started</string>
   <string name="onboard_exchange_summary1">Which exchange are you interested in ?</string>
   <string name="onboard_exchange_summary2">Which sector are you interested in ?</string>

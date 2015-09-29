@@ -118,7 +118,7 @@ public class PositionLockedView extends LinearLayout
             super(itemView);
         }
 
-        @Override public void display(Object o)
+        @Override public void onDisplay(Object o)
         {
             if (o instanceof PositionLockedView.DTO)
             {

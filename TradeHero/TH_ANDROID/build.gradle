@@ -7,7 +7,7 @@ buildscript {
     maven { url 'http://download.crashlytics.com/maven' }
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:1.2.3'
+    classpath 'com.android.tools.build:gradle:1.3.0'
     classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
     //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
   }
@@ -61,7 +61,7 @@ android {
     targetCompatibility JavaVersion.VERSION_1_7
   }
 
-  compileSdkVersion 22
+  compileSdkVersion 23
 
   buildToolsVersion "22.0.1"
   //useOldManifestMerger=true
@@ -301,6 +301,7 @@ android {
     samsungLiveNoPushDebug {
       java {
         srcDir 'src/samsungDebug/java'
+        srcDir 'src/liveDebug/java'
         srcDir 'src/dagger1LiveDebug/java'
       }
     }
@@ -364,7 +365,9 @@ android {
       }
       java {
         srcDir 'src/samsungRelease/java'
-        srcDir 'src/dagger1LiveRelease/java'
+        srcDir 'src/liveDebug/java'
+        srcDir 'src/dagger1LiveDebug/java'
+        //        srcDir 'src/dagger1LiveRelease/java'
       }
     }
 
@@ -383,6 +386,7 @@ android {
     amazonLiveNoPushDebug {
       java {
         srcDir 'src/amazonDebug/java'
+        srcDir 'src/liveDebug/java'
         srcDir 'src/dagger1LiveDebug/java'
       }
     }
@@ -456,6 +460,8 @@ android {
     exclude 'META-INF/NOTICE'
     exclude 'META-INF/services/javax.annotation.processing.Processor'
   }
+
+  useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -492,7 +498,7 @@ dependencies {
   compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
   compile "com.android.support:recyclerview-v7:${SUPPORT_V7_VERSION}"
   compile "com.android.support:design:${SUPPORT_V7_VERSION}"
-  compile "com.android.support:cardview-v7:${SUPPORT_V7_VERSION}" // For UrbanAirship proguarding
+  compile "com.android.support:cardview-v7:${SUPPORT_V7_VERSION}"
   googleplayCompile 'com.android.support:multidex:1.0.1'
   samsungCompile 'com.android.support:multidex:1.0.1'
 

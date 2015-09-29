@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/margin_xsmall"
+    android:layout_marginLeft="@dimen/margin_small"
+    android:layout_marginRight="@dimen/margin_small"
+    android:layout_marginTop="@dimen/margin_xsmall"
+    app:cardElevation="4dp"
+    >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingTop="@dimen/margin_xsmall"
+      >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/margin_xsmall"
+        android:paddingRight="@dimen/margin_xsmall"
+        >
+
+      <ImageView
+          android:id="@+id/newsfeed_item_avatar"
+          android:layout_width="@dimen/medium_image_w_h"
+          android:layout_height="@dimen/medium_image_w_h"
+          android:layout_centerVertical="true"
+          android:contentDescription="@null"
+          android:scaleType="centerCrop"
+          tools:src="@drawable/superman_facebook"
+          />
+
+      <TextView
+          android:id="@+id/newsfeed_item_time"
+          style="@style/TH.Caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          android:minHeight="@dimen/size_2"
+          tools:text="14 mins ago"
+          />
+
+      <TextView
+          android:id="@+id/newsfeed_item_name"
+          style="@style/TH.UserNameTitle"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:layout_toLeftOf="@id/newsfeed_item_time"
+          android:layout_toRightOf="@id/newsfeed_item_avatar"
+          android:ellipsize="end"
+          android:padding="@dimen/margin_xsmall"
+          android:singleLine="true"
+          tools:text="Moriuchi Takahiro"
+          />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        android:background="@color/lighter_grey"
+        android:padding="@dimen/margin_xsmall"
+        >
+
+      <ImageView
+          android:id="@+id/newsfeed_item_discussion_logo"
+          android:layout_width="@dimen/size_8"
+          android:layout_height="@dimen/medium_image_w_h"
+          android:layout_alignParentRight="true"
+          android:scaleType="fitCenter"
+          tools:src="@drawable/th_app_logo"
+          />
+
+      <com.tradehero.th.widget.MarkdownTextView
+          android:id="@+id/newsfeed_item_discussion_content"
+          style="@style/TH.Subhead"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_centerVertical="true"
+          android:layout_toLeftOf="@id/newsfeed_item_discussion_logo"
+          tools:text="Bought 15 Shares of &lt;$LSE:VOD,123$&gt; **@ US$ 659.99**"
+          />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/newsfeed_item_body"
+        style="@style/TH.Body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_xsmall"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:paddingLeft="@dimen/margin_xsmall"
+        android:paddingRight="@dimen/margin_xsmall"
+        android:textColor="?android:attr/textColorSecondary"
+        tools:text="Owwwwww YEAHHH!"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+      <include layout="@layout/discussion_action_buttons" />
+
+    </FrameLayout>
+
+  </LinearLayout>
+
+</android.support.v7.widget.CardView>

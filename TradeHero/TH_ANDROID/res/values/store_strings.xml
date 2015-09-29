@@ -90,8 +90,7 @@
     Charged monthly, cancel anytime.
   </string>
   <string name="store_buy_reset_portfolio_window_title">Reset Portfolio</string>
-  <string name="store_buy_reset_portfolio_window_message">Get a fresh start by resetting your
-    portfolio!
+  <string name="store_buy_reset_portfolio_window_message">Everybody loves a fresh start.
   </string>
 
   <string name="store_buy_virtual_dollar_window_button_cancel">@string/cancel</string>
@@ -199,5 +198,15 @@
   <string name="iap_send_support_email_restore_fail_message">We could not restore %1$d purchases. \n\nDo you mind reporting the incident to TradeHero?</string>
   <string name="iap_send_support_email_restore_fail_ok">Sure</string>
   <string name="iap_send_support_email_restore_fail_cancel">Never Mind</string>
+
+  <string name="store_virtual_dollars_10k_title">TH$ 10,0000</string>
+  <string name="store_virtual_dollars_10k_description">A bit of a boost.</string>
+
+  <string name="store_virtual_dollars_50k_title">TH$ 50,000</string>
+  <string name="store_virtual_dollars_50k_description">A sizeable stash.</string>
+
+  <string name="store_virtual_dollars_100k_title">TH$ 100,000</string>
+  <string name="store_virtual_dollars_100k_description">A mountain of money.</string>
+
 
 </resources>

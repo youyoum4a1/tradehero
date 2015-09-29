@@ -53,7 +53,7 @@ public class AllRelationsRecyclerAdapter extends PagedRecyclerAdapter<RelationIt
             this.picasso = picasso;
         }
 
-        @Override public void display(RelationItemDisplayDTO relationItemDisplayDTO)
+        @Override public void onDisplay(RelationItemDisplayDTO relationItemDisplayDTO)
         {
             this.recipientDTO = relationItemDisplayDTO.allowableRecipientDTO;
             picasso.load(relationItemDisplayDTO.picture)

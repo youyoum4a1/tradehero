@@ -23,6 +23,10 @@ public class MarkdownTextView extends TextView
         super(context, attrs);
         HierarchyInjector.inject(context, this);
         parser = new RichTextCreator(currentUserId);
+        if(isInEditMode())
+        {
+            setText(getText(), BufferType.SPANNABLE);
+        }
     }
     //</editor-fold>
 

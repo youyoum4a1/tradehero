@@ -175,8 +175,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteRefreshProgressBar.setMax((int) getMillisecondQuoteRefresh());
         quoteRefreshProgressBar.setProgress((int) getMillisecondQuoteRefresh());
         quoteRefreshProgressBar.setAnimation(progressAnimation);
-
-        listenToBuySellScreen();
     }
 
     @Override public void onStart()
@@ -787,7 +785,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
                     abstractTransactionFragment = (AbstractTransactionFragment) navigator.get().pushFragment(klass, args);
                 }
-                listenToBuySellScreen();
             }
             else
             {
@@ -814,47 +811,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
     }
 
-    protected void listenToBuySellScreen()
-    {
-        if (abstractTransactionFragment != null)
-        {
-            abstractTransactionFragment.setBuySellTransactionListener(new AbstractStockTransactionFragment.BuySellTransactionListener()
-            {
-                @Override public void onTransactionSuccessful(boolean isBuy,
-                        @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO, String commentString)
-                {
-                    showPrettyReviewAndInvite(isBuy);
-                    //shareToWeChat(commentString, isBuy);
-                    String positionType = null;
-                    if (securityPositionTransactionDTO.positions == null)
-                    {
-                        positionType = TabbedPositionListFragment.TabType.CLOSED.name();
-                    }
-                    else
-                    {
-                        if (securityPositionTransactionDTO.positions.size() == 0)
-                        {
-                            positionType = TabbedPositionListFragment.TabType.CLOSED.name();
-                        }
-                        else
-                        {
-                            positionType = securityPositionTransactionDTO.positions.get(0).positionStatus.name();
-                        }
-                    }
-                    pushPortfolioFragment(
-                            new OwnedPortfolioId(currentUserId.get(), securityPositionTransactionDTO.portfolio.id),
-                            securityPositionTransactionDTO.portfolio,
-                            positionType);
-                }
-
-                @Override public void onTransactionFailed(boolean isBuy, THException error)
-                {
-                    // TODO Toast error buy?
-                }
-            });
-        }
-    }
-
     private void showPrettyReviewAndInvite(boolean isBuy)
     {
         Double profit = abstractTransactionFragment.getProfitOrLossUsd();
@@ -867,46 +823,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             else if (mShowAskForInviteDialogPreference.isItTime())
             {
                 AskForInviteDialogFragment.showInviteDialog(getActivity().getSupportFragmentManager());
-            }
-        }
-    }
-
-    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId, PortfolioDTO portfolioDTO, String positionType)
-    {
-        if (isResumed())
-        {
-            DeviceUtil.dismissKeyboard(getActivity());
-
-            if (navigator.get().hasBackStackName(TabbedPositionListFragment.class.getName()))
-            {
-                navigator.get().popFragment(TabbedPositionListFragment.class.getName());
-            }
-            else if (navigator.get().hasBackStackName(CompetitionLeaderboardPositionListFragment.class.getName()))
-            {
-                navigator.get().popFragment(CompetitionLeaderboardPositionListFragment.class.getName());
-                // Test for other classes in the future
-            }
-            else
-            {
-                // TODO find a better way to remove this fragment from the stack
-                navigator.get().popFragment();
-
-                Bundle args = new Bundle();
-                OwnedPortfolioId applicablePortfolioId = requisite.getApplicablePortfolioIdObservable().toBlocking().first(); // TODO better
-                if (applicablePortfolioId != null)
-                {
-                    TabbedPositionListFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-                    TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
-                }
-                TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
-                TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-                TabbedPositionListFragment.putPositionType(args, positionType);
-
-                if (navigator.get().hasBackStackName(MainCompetitionFragment.class.getName()))
-                {
-                    DashboardNavigator.putReturnFragment(args, MainCompetitionFragment.class.getName());
-                }
-                navigator.get().pushFragment(TabbedPositionListFragment.class, args);
             }
         }
     }

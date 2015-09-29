@@ -51,9 +51,9 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
             super(itemView, picasso, analytics);
         }
 
-        @Override public void display(LeaderboardItemDisplayDTO dto)
+        @Override public void onDisplay(LeaderboardItemDisplayDTO dto)
         {
-            super.display(dto);
+            super.onDisplay(dto);
             if (dto instanceof CompetitionLeaderboardItemDisplayDTO)
             {
                 prizeIcon.setVisibility(((CompetitionLeaderboardItemDisplayDTO) dto).prizeIconVisibility);
@@ -77,9 +77,9 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
             super(itemView, picasso, analytics);
         }
 
-        @Override public void display(LeaderboardItemDisplayDTO dto)
+        @Override public void onDisplay(LeaderboardItemDisplayDTO dto)
         {
-            super.display(dto);
+            super.onDisplay(dto);
             if (dto instanceof CompetitionLeaderboardOwnRankingDisplayDTO)
             {
                 CompetitionLeaderboardOwnRankingDisplayDTO displayDTO = (CompetitionLeaderboardOwnRankingDisplayDTO) dto;

@@ -5,6 +5,7 @@ import dagger.Module;
 @Module(
         injects = {
                 NewsHeadlineFragment.class,
+                SecurityNewsfeedFragment.class,
                 ShareDialogLayout.class,
                 NewsDialogLayout.class,
                 NewsHeadlineViewLinear.class,

@@ -14,7 +14,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
-import com.tradehero.th.fragments.news.NewsHeadlineFragment;
+import com.tradehero.th.fragments.news.SecurityNewsfeedFragment;
 import com.tradehero.th.fragments.position.SecurityPositionListFragment;
 import com.tradehero.th.models.chart.ChartTimeSpan;
 import timber.log.Timber;
@@ -95,8 +95,8 @@ public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter
                 SecurityDiscussionFragment.putSecurityId(args, securityId);
                 break;
             case FRAGMENT_ID_NEWS:
-                fragment = new NewsHeadlineFragment();
-                NewsHeadlineFragment.putSecurityId(args, securityId);
+                fragment = new SecurityNewsfeedFragment();
+                SecurityNewsfeedFragment.putSecurityId(args, securityId);
                 break;
             case FRAGMENT_ID_HISTORY:
                 fragment = new SecurityPositionListFragment();

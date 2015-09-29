@@ -128,10 +128,6 @@ public final class SettingsFragment extends BasePreferenceFragment
     @Nullable protected CheckBoxPreference socialConnectLN;
     @Nullable protected CheckBoxPreference socialConnectWB;
 
-    @Nullable protected PreferenceCategory translationContainer;
-    @Nullable protected Preference translationPreferredLang;
-    @Nullable protected CheckBoxPreference translationAuto;
-
     @Nullable protected CheckBoxPreference emailNotification;
     @Nullable protected CheckBoxPreference pushNotification;
     @Nullable protected CheckBoxPreference pushNotificationSound;
@@ -226,7 +222,6 @@ public final class SettingsFragment extends BasePreferenceFragment
     private void initView()
     {
         initSocialConnectView();
-        initTranslationView();
         initNotificationView();
     }
 
@@ -302,28 +297,6 @@ public final class SettingsFragment extends BasePreferenceFragment
             return setCurrentSocialConnect(SocialNetworkEnum.QQ);
         }
         return null;
-    }
-
-    private void initTranslationView()
-    {
-        translationContainer = (PreferenceCategory) findPreference(getString(R.string.key_settings_translations_container));
-        translationContainer.setEnabled(false);
-        translationPreferredLang = findPreference(getString(R.string.key_settings_translations_preferred_language));
-        translationAuto = (CheckBoxPreference) findPreference(getString(R.string.key_settings_translations_auto_translate));
-
-        if (translationAuto != null)
-        {
-            translationAuto.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener()
-            {
-                @Override public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
-                    handleAutoTranslateClicked((boolean) newValue);
-                    return true;
-                }
-            });
-        }
-
-        fetchTranslationToken();
     }
 
     private void initNotificationView()
@@ -599,14 +572,6 @@ public final class SettingsFragment extends BasePreferenceFragment
         {
             handleSignOutClick();
         }
-        else if (key.equals(getString(R.string.key_settings_translations_preferred_language)))
-        {
-            handleTranslationPreferredLanguageClick();
-        }
-        else if (key.equals(getString(R.string.key_settings_translations_auto_translate)))
-        {
-            handleTranslationAutoTranslateClick();
-        }
         //No Notifications , get more in initNotificationView();
         else if (key.equals(getString(R.string.key_settings_misc_reset_help_screens)))
         {
@@ -730,16 +695,6 @@ public final class SettingsFragment extends BasePreferenceFragment
                             },
                             new EmptyAction1<Throwable>());
         }
-    }
-
-    public void handleTranslationPreferredLanguageClick()
-    {
-        navigator.get().pushFragment(TranslatableLanguageListFragment.class);
-    }
-
-    public void handleTranslationAutoTranslateClick()
-    {
-        //todo Click logic
     }
 
     public void handleResetHelpScreenClick()
@@ -906,102 +861,6 @@ public final class SettingsFragment extends BasePreferenceFragment
         } catch (IOException e)
         {
             Timber.e(e, "Failed to evict all in httpCache");
-        }
-    }
-
-    protected void handleAutoTranslateClicked(boolean newValue)
-    {
-        if (userTranslationSettingDTO != null)
-        {
-            userTranslationSettingDTO = userTranslationSettingDTO.cloneForAuto(newValue);
-            try
-            {
-                userTranslationSettingPreference.addOrReplaceSettingDTO(userTranslationSettingDTO);
-            } catch (JsonProcessingException e)
-            {
-                THToast.show(R.string.translation_error_saving_preference);
-                e.printStackTrace();
-            }
-        }
-    }
-
-    protected void fetchTranslationToken()
-    {
-        detachTranslationTokenCache();
-        TranslationTokenKey key = new TranslationTokenKey();
-        translationTokenCacheSubscription = translationTokenCache.get(key)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(createTranslationTokenObserver());
-    }
-
-    protected void detachTranslationTokenCache()
-    {
-        Subscription copy = translationTokenCacheSubscription;
-        if (copy != null)
-        {
-            copy.unsubscribe();
-        }
-        translationTokenCacheSubscription = null;
-    }
-
-    protected Observer<Pair<TranslationTokenKey, TranslationToken>> createTranslationTokenObserver()
-    {
-        return new SettingsTranslationTokenObserver();
-    }
-
-    protected class SettingsTranslationTokenObserver implements Observer<Pair<TranslationTokenKey, TranslationToken>>
-    {
-        @Override public void onNext(Pair<TranslationTokenKey, TranslationToken> pair)
-        {
-            linkWith(pair.second);
-        }
-
-        @Override public void onCompleted()
-        {
-        }
-
-        @Override public void onError(Throwable e)
-        {
-            Timber.e("Failed", e);
-        }
-    }
-
-    protected void linkWith(@NonNull TranslationToken token)
-    {
-        try
-        {
-            linkWith(userTranslationSettingPreference.getOfSameTypeOrDefault(token));
-        } catch (IOException e)
-        {
-            Timber.e(e, "Failed to get translation setting");
-        }
-    }
-
-    protected void linkWith(@Nullable UserTranslationSettingDTO userTranslationSettingDTO)
-    {
-        this.userTranslationSettingDTO = userTranslationSettingDTO;
-        if (userTranslationSettingDTO != null)
-        {
-            //noinspection ConstantConditions
-            translationContainer.setEnabled(true);
-            linkWith(LanguageDTOFactory.createFromCode(getResources(), userTranslationSettingDTO.languageCode));
-            //noinspection ConstantConditions
-            translationAuto.setChecked(userTranslationSettingDTO.autoTranslate);
-            translationAuto.setSummary(userTranslationSettingDTO.getProviderStringResId());
-        }
-    }
-
-    protected void linkWith(@NonNull LanguageDTO languageDTO)
-    {
-        String lang = getString(
-                R.string.translation_preferred_language_summary,
-                languageDTO.code,
-                languageDTO.name,
-                languageDTO.nameInOwnLang);
-        Preference translationPreferredLangCopy = translationPreferredLang;
-        if (translationPreferredLangCopy != null)
-        {
-            translationPreferredLangCopy.setSummary(lang);
         }
     }
 

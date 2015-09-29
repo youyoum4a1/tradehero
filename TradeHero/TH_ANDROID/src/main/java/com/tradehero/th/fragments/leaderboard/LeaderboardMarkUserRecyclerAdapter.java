@@ -269,9 +269,9 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
             super(itemView, picasso, analytics);
         }
 
-        @Override public void display(T dto)
+        @Override public void onDisplay(T dto)
         {
-            super.display(dto);
+            super.onDisplay(dto);
         }
     }
 
@@ -301,7 +301,7 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
             this.analytics = analytics;
         }
 
-        @Override public void display(T dto)
+        @Override public void onDisplay(T dto)
         {
             if (dto instanceof LeaderboardMarkedUserItemDisplayDto)
             {

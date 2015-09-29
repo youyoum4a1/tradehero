@@ -48,7 +48,7 @@ public class DiscoveryMainFragment extends DashboardFragment
 
     public static void registerAliases(@NonNull THRouter router)
     {
-        router.registerAlias("discovery-news", ROUTER_DISCOVERY_TAB_INDEX + DiscoveryTabType.NEWS.ordinal());
+        router.registerAlias("discovery-news", ROUTER_DISCOVERY_TAB_INDEX + DiscoveryTabType.NEWSFEED.ordinal());
         router.registerAlias("discovery-discussion", ROUTER_DISCOVERY_TAB_INDEX + DiscoveryTabType.DISCUSSION.ordinal());
         router.registerAlias("discovery-academy", ROUTER_DISCOVERY_TAB_INDEX + DiscoveryTabType.ACADEMY.ordinal());
     }

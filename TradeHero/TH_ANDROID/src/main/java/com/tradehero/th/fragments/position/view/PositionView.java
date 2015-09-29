@@ -5,8 +5,8 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.ExpandableListItem;
@@ -61,7 +61,7 @@ public class PositionView extends LinearLayout
 
     @Override public void display(DTO dto)
     {
-        topViewHolder.display(dto.topViewDTO);
+        topViewHolder.onDisplay(dto.topViewDTO);
         if (bottomView != null)
         {
             bottomView.display(dto.bottomViewDTO);

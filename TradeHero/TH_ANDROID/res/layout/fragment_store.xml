@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/store_option_list"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-
-  <ListView
-      android:id="@+id/store_option_list"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingBottom="60dp"
-      android:clipToPadding="false"
-      android:background="@null"
+    android:background="@null"
+    android:clipToPadding="false"
+    android:paddingBottom="60dp"
     />
-
-</LinearLayout>

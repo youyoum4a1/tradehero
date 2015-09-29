@@ -16,21 +16,6 @@ public class BillingSecurityAlertKnowledge extends SecurityAlertKnowledge
 
     @Nullable public static AmazonSKU getServerEquivalentSKU(@NonNull ProductIdentifier localSKU)
     {
-        if (localSKU instanceof AmazonSKU)
-        {
-            switch (((AmazonSKU) localSKU).skuId)
-            {
-                case THBillingConstants.SERVER_ALERT_1:
-                    return new AmazonSKU(THAmazonConstants.ALERT_1);
-
-                case THBillingConstants.SERVER_ALERT_5:
-                    return new AmazonSKU(THAmazonConstants.ALERT_5);
-
-                case THBillingConstants.SERVER_ALERT_UNLIMITED:
-                    return new AmazonSKU(THAmazonConstants.ALERT_UNLIMITED);
-            }
-        }
-
         return null;
     }
 }

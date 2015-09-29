@@ -85,7 +85,7 @@ public class PositionSectionHeaderItemView extends RelativeLayout
             super(itemView);
         }
 
-        @Override public void display(Object o)
+        @Override public void onDisplay(Object o)
         {
             if (o instanceof DTO)
             {
