@@ -15,8 +15,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
@@ -205,7 +205,7 @@ public class TradeListFragment extends DashboardFragment
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
 
-        actionBarLayout = (StockActionBarRelativeLayout) LayoutInflater.from(actionBar.getThemedContext())
+        actionBarLayout = (StockActionBarRelativeLayout) LayoutInflater.from(getActivity())
                 .inflate(R.layout.trade_list_custom_actionbar, null);
         onDestroyOptionsMenuSubscriptions.add(actionBarLayout.getUserActionObservable()
                 .subscribe(

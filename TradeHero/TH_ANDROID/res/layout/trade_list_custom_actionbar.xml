@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rlStockHeader"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/margin_xsmall"
-    android:paddingBottom="@dimen/margin_xsmall"
+    android:layout_height="?attr/actionBarSize"
     tools:background="@color/tradehero_blue">
 
   <ImageButton
@@ -54,7 +52,7 @@
         android:layout_height="wrap_content"
         tools:text="Facebook Inc."
         android:ellipsize="end"
-        style="@style/TH.Title"
+        style="@style/TH.Title.Inverse"
         android:singleLine="true"/>
 
     <TextView
@@ -62,7 +60,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="NASDAQ:FB"
-        style="@style/TH.Caption"
+        style="@style/TH.Caption.Inverse"
         android:ellipsize="end"
         android:singleLine="true"/>
 
