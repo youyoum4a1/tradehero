@@ -2,6 +2,7 @@ package com.tradehero.th.activities;
 
 import android.content.Context;
 import android.support.v7.widget.Toolbar;
+import com.tradehero.common.widget.CustomDrawerToggle;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.base.BaseFragmentOuterElements;
@@ -43,5 +44,10 @@ import javax.inject.Singleton;
     @Provides Toolbar provideToolbar()
     {
         return toolbar;
+    }
+
+    @Provides CustomDrawerToggle provideDrawerToggle()
+    {
+        return null;
     }
 }

@@ -12,7 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.util.TypedValue;
@@ -30,6 +29,7 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.CustomDrawerToggle;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
@@ -238,7 +238,8 @@ public class DashboardActivity extends BaseActivity
                 {
                     RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
                     activityModule.navigator.goToTab(selectedFragmentType);
-                } catch (IllegalStateException e)
+                }
+                catch (IllegalStateException e)
                 {
                     Timber.d("setOnTabChangedListener goToTab " + e.toString());
                 }
@@ -253,7 +254,8 @@ public class DashboardActivity extends BaseActivity
         try
         {
             getWindow().getDecorView().findViewById(R.id.drawer_bg_image).setBackgroundResource(R.drawable.login_bg_1);
-        } catch (Throwable e)
+        }
+        catch (Throwable e)
         {
             Timber.e(e, "Failed to set drawer background");
             getWindow().getDecorView().findViewById(R.id.left_drawer).setBackgroundColor(
@@ -261,7 +263,7 @@ public class DashboardActivity extends BaseActivity
         }
 
         //Setup Drawer Layout.
-        activityModule.drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
+        activityModule.drawerToggle = new CustomDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.setDrawerListener(activityModule.drawerToggle);
 
         if (getSupportActionBar() != null)

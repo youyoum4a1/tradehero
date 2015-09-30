@@ -2,7 +2,6 @@ package com.tradehero.th.activities;
 
 import android.content.Context;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.AbsListView;
@@ -13,6 +12,7 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnSc
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnWebViewOnScrollChangedListener;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingWebView;
+import com.tradehero.common.widget.CustomDrawerToggle;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
@@ -71,7 +71,7 @@ import javax.inject.Singleton;
 {
     DashboardNavigator navigator;
     DrawerLayout drawerLayout;
-    ActionBarDrawerToggle drawerToggle;
+    CustomDrawerToggle drawerToggle;
     DashboardTabHost dashboardTabHost;
     Toolbar toolbar;
     int tabHostHeight;
@@ -128,7 +128,7 @@ import javax.inject.Singleton;
         return drawerLayout;
     }
 
-    @Provides ActionBarDrawerToggle provideActionBarDrawerToggle()
+    @Provides CustomDrawerToggle provideActionBarDrawerToggle()
     {
         return drawerToggle;
     }

@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.base;
 
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import com.tradehero.common.widget.CustomDrawerToggle;
 import com.tradehero.th.R;
 
 public class ActionBarOwnerMixin
@@ -23,11 +25,13 @@ public class ActionBarOwnerMixin
     private static final boolean DEFAULT_SHOW_HOME_AS_UP = true;
 
     private final Fragment fragment;
+    @Nullable private final CustomDrawerToggle drawerToggle;
     private final ActionBar actionBar;
+    private ValueAnimator valueAnimator;
 
-    @NonNull public static ActionBarOwnerMixin of(@NonNull Fragment fragment)
+    @NonNull public static ActionBarOwnerMixin of(@NonNull Fragment fragment, @Nullable CustomDrawerToggle drawerToggle)
     {
-        return new ActionBarOwnerMixin(fragment);
+        return new ActionBarOwnerMixin(fragment, drawerToggle);
     }
 
     //<editor-fold desc="Arguments Passing">
@@ -87,9 +91,10 @@ public class ActionBarOwnerMixin
     }
     //</editor-fold>
 
-    private ActionBarOwnerMixin(@NonNull Fragment fragment)
+    private ActionBarOwnerMixin(@NonNull Fragment fragment, @Nullable CustomDrawerToggle drawerToggle)
     {
         this.fragment = fragment;
+        this.drawerToggle = drawerToggle;
         this.actionBar = ((AppCompatActivity) fragment.getActivity()).getSupportActionBar();
     }
 
@@ -120,14 +125,60 @@ public class ActionBarOwnerMixin
             else if (shouldShowHomeAsUp())
             {
                 actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setHomeAsUpIndicator(R.drawable.ic_actionbar_back);
+                if (drawerToggle != null)
+                {
+                    cleanupToggleAnimation();
+                    startToggleAnimation(1f);
+                }
+                else
+                {
+                    actionBar.setHomeAsUpIndicator(R.drawable.ic_actionbar_back);
+                }
             }
             else
             {
                 actionBar.setDisplayHomeAsUpEnabled(true);
-                actionBar.setHomeAsUpIndicator(R.drawable.icn_actionbar_hamburger);
+                if (drawerToggle != null)
+                {
+                    cleanupToggleAnimation();
+                    startToggleAnimation(0f);
+                }
+                else
+                {
+                    actionBar.setHomeAsUpIndicator(R.drawable.icn_action_hamburger);
+                }
             }
         }
+    }
+
+    protected void startToggleAnimation(float target)
+    {
+        valueAnimator = ValueAnimator.ofFloat(drawerToggle.getPosition(), target).setDuration(300);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override public void onAnimationUpdate(ValueAnimator animation)
+            {
+                Float f = (Float) animation.getAnimatedValue();
+                if (drawerToggle != null)
+                {
+                    drawerToggle.onDrawerSlide(null, f);
+                }
+            }
+        });
+        valueAnimator.start();
+    }
+
+    protected void cleanupToggleAnimation()
+    {
+        if (valueAnimator != null && valueAnimator.isRunning())
+        {
+            valueAnimator.end();
+        }
+    }
+
+    public void onDestroyOptionsMenu()
+    {
+        cleanupToggleAnimation();
     }
 
     public void setActionBarTitle(@StringRes int titleResId)

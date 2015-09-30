@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import android.app.Activity;
+import com.tradehero.common.widget.CustomDrawerToggle;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.utils.dagger.AppModule;
 import dagger.Module;
@@ -23,5 +24,10 @@ import dagger.Provides;
     @Provides Activity provideActivity()
     {
         return activity;
+    }
+
+    @Provides CustomDrawerToggle provideDrawerToggle()
+    {
+        return null;
     }
 }

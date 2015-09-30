@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.AbsListView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
+import com.tradehero.common.widget.CustomDrawerToggle;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.BottomTabsQuickReturnRecyclerViewListener;
@@ -24,7 +25,7 @@ public class DashboardFragmentOuterElements implements FragmentOuterElements
     @NonNull public final DashboardTabHost dashboardTabHost;
 
     @Inject public DashboardFragmentOuterElements(
-            @NonNull ActionBarDrawerToggle mDrawerToggle,
+            @NonNull CustomDrawerToggle mDrawerToggle,
             @NonNull @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsListViewScrollListener,
             @NonNull @BottomTabsQuickReturnScrollViewListener NotifyingScrollView.OnScrollChangedListener dashboardBottomTabScrollViewScrollListener,
             @NonNull @BottomTabsQuickReturnRecyclerViewListener RecyclerView.OnScrollListener dashboardBottomTabRecyclerViewScrollListener,

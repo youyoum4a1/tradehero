@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.base;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -14,18 +13,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.TextView;
-import com.tradehero.common.utils.SDKUtils;
-import com.tradehero.th.R;
+import com.tradehero.common.widget.CustomDrawerToggle;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.utils.AlertDialogUtil;
-import com.tradehero.th.utils.GraphicUtil;
 import dagger.Lazy;
-import java.util.List;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.internal.util.SubscriptionList;
@@ -50,6 +43,7 @@ public class BaseFragment extends Fragment
     protected SubscriptionList onDestroySubscriptions;
 
     @Inject protected Lazy<DashboardNavigator> navigator;
+    @Inject CustomDrawerToggle drawerToggle;
 
     public static void setHasOptionMenu(@NonNull Bundle args, boolean hasOptionMenu)
     {
@@ -94,7 +88,7 @@ public class BaseFragment extends Fragment
         {
             HierarchyInjector.inject(this);
         }
-        actionBarOwnerMixin = ActionBarOwnerMixin.of(this);
+        actionBarOwnerMixin = ActionBarOwnerMixin.of(this, drawerToggle);
 
         isOptionMenuVisible = getIsOptionMenuVisible(getArguments());
         hasOptionMenu = getHasOptionMenu(getArguments());
@@ -140,6 +134,7 @@ public class BaseFragment extends Fragment
     @Override public void onDestroy()
     {
         actionBarOwnerMixin.onDestroy();
+        //actionBarOwnerMixin = null;
         onDestroySubscriptions.unsubscribe();
         super.onDestroy();
     }
@@ -207,6 +202,7 @@ public class BaseFragment extends Fragment
         {
             onDestroyOptionsMenuSubscriptions.unsubscribe();
         }
+        actionBarOwnerMixin.onDestroyOptionsMenu();
         super.onDestroyOptionsMenu();
     }
 
