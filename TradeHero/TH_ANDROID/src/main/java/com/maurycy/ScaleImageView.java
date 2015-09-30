@@ -6,8 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import rx.Observable;
-import rx.subjects.BehaviorSubject;
 
 /**
  * This view will auto determine the width or height by determining if the height or width is set and scale the other dimension depending on the
@@ -20,7 +18,6 @@ import rx.subjects.BehaviorSubject;
 public class ScaleImageView extends ImageView
 {
     private boolean scaleToWidth = false; // this flag determines if should measure height manually dependent of width
-    private BehaviorSubject<Boolean> imageChangedToEmptySubject;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -48,27 +45,18 @@ public class ScaleImageView extends ImageView
     private void init()
     {
         this.setScaleType(ScaleType.CENTER_INSIDE);
-        imageChangedToEmptySubject = BehaviorSubject.create();
     }
 
     @Override
     public void setImageBitmap(Bitmap bm)
     {
         super.setImageBitmap(bm);
-        imageChangedToEmptySubject.onNext(bm == null);
     }
 
     @Override
     public void setImageDrawable(Drawable d)
     {
         super.setImageDrawable(d);
-        imageChangedToEmptySubject.onNext(d == null);
-    }
-
-    // a callback for when a change has been made to this imageView
-    public Observable<Boolean> getImageChangedToEmptyObservable()
-    {
-        return imageChangedToEmptySubject.asObservable();
     }
 
     @Override
