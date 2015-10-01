@@ -511,7 +511,7 @@ dependencies {
     exclude group: 'com.nineoldandroids', module: 'library'
     // exclude group: 'com.android.support', module: 'appcompat-v7'
   }
-  compile('com.etiennelawlor.quickreturn:library:1.0.2-aar@aar') {
+  compile('com.github.lawloretienne:quickreturn:0.0.1') {
     exclude group: 'com.android.support', module: 'support-v13'
     exclude group: 'com.jakewharton', module: 'butterknife'
     exclude group: 'com.squareup.picasso', module: 'picasso'
