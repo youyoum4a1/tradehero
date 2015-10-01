@@ -115,6 +115,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.position_watchlist_menu, menu);
         setActionBarTitle(R.string.watchlist_title);
     }
 
