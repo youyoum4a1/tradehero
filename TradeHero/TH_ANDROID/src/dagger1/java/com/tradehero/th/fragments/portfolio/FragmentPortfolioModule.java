@@ -12,6 +12,7 @@ import dagger.Module;
                 PortfolioListFragment.class,
                 PortfolioListItemView.class,
                 OtherUserPortfolioHeaderView.class,
+                PortfolioRecyclerAdapter.class,
         },
         library = true,
         complete = false

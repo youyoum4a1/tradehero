@@ -1,27 +1,36 @@
 package com.tradehero.th.fragments.portfolio;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import butterknife.Bind;
+import com.squareup.picasso.Picasso;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.portfolio.OwnedPortfolioIdDisplayComparator;
+import com.tradehero.th.inject.HierarchyInjector;
+import javax.inject.Inject;
 
 public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisplayDTO>
 {
-    public PortfolioRecyclerAdapter()
+    @Inject Picasso picasso;
+
+    public PortfolioRecyclerAdapter(Context context)
     {
         super(PortfolioDisplayDTO.class, new PortfolioDisplayDTOComparator());
+        HierarchyInjector.inject(context, this);
     }
 
     @Override public TypedViewHolder<PortfolioDisplayDTO> onCreateViewHolder(ViewGroup parent, int viewType)
     {
         return new PortfolioDisplayDTOViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.portfolio_recycler_item, parent, false)
+                LayoutInflater.from(parent.getContext()).inflate(R.layout.portfolio_recycler_item, parent, false),
+                picasso
         );
     }
 
@@ -68,6 +77,29 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
             {
                 return 1;
             }
+            else if (o1.isCompetition && o2.isCompetition)
+            {
+                if (o1.isVip && o2.isVip)
+                {
+                    return o1.providerId - o2.providerId;
+                }
+                else if (o1.isVip)
+                {
+                    return -1;
+                }
+                else if (o2.isVip)
+                {
+                    return 1;
+                }
+            }
+            else if (o1.isCompetition)
+            {
+                return 1;
+            }
+            else if (o2.isCompetition)
+            {
+                return -1;
+            }
             else if (o1.providerId != null && o2.providerId != null)
             {
                 return o1.providerId.compareTo(o2.providerId);
@@ -85,6 +117,10 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
 
         @Override public boolean areItemsTheSame(PortfolioDisplayDTO item1, PortfolioDisplayDTO item2)
         {
+            if (item1.isCompetition && item2.isCompetition)
+            {
+                return item1.providerId == item2.providerId;
+            }
             if (item1.ownedPortfolioId == null && item2.ownedPortfolioId != null) return false;
             if (item1.ownedPortfolioId != null && item2.ownedPortfolioId == null) return false;
             return item1.ownedPortfolioId != null && item1.ownedPortfolioId.equals(item2.ownedPortfolioId);
@@ -105,12 +141,16 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
             if (oldItem.totalValue != null && newItem.totalValue == null) return false;
             if (oldItem.totalValue == null && newItem.totalValue != null) return false;
             if (oldItem.totalValue != null && !oldItem.totalValue.toString().equals(newItem.totalValue.toString())) return false;
+            if (oldItem.joinBanner != null && newItem.joinBanner == null) return false;
+            if (oldItem.joinBanner == null && newItem.joinBanner != null) return false;
+            if (oldItem.joinBanner != null && !oldItem.joinBanner.equals(newItem.joinBanner)) return false;
             return true;
         }
     }
 
     protected static class PortfolioDisplayDTOViewHolder extends TypedViewHolder<PortfolioDisplayDTO>
     {
+        private final Picasso picasso;
         @Bind(R.id.portfolio_title) TextView title;
         @Bind(R.id.portfolio_description) TextView description;
         @Bind(R.id.roi_value) TextView roi;
@@ -118,10 +158,12 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
         @Bind(R.id.portfolio_total_value) TextView totalValue;
         @Bind(R.id.portfolio_cash_margin_left) TextView marginLeft;
         @Bind(R.id.grid_portfolio_values) TableLayout table;
+        @Bind(R.id.competition_banner) ImageView competitionBanner;
 
-        public PortfolioDisplayDTOViewHolder(View itemView)
+        public PortfolioDisplayDTOViewHolder(View itemView, Picasso picasso)
         {
             super(itemView);
+            this.picasso = picasso;
         }
 
         @Override public void onDisplay(PortfolioDisplayDTO portfolioDisplayDTO)
@@ -142,6 +184,17 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
             else
             {
                 table.setVisibility(View.GONE);
+            }
+            if (portfolioDisplayDTO.isCompetition)
+            {
+                picasso.load(portfolioDisplayDTO.joinBanner)
+                        .placeholder(R.drawable.lb_competitions_bg)
+                        .into(competitionBanner);
+            }
+            else
+            {
+                competitionBanner.setVisibility(View.GONE);
+                competitionBanner.setImageDrawable(null);
             }
         }
     }

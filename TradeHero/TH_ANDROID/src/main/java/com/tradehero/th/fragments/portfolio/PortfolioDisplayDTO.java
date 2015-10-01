@@ -1,11 +1,13 @@
 package com.tradehero.th.fragments.portfolio;
 
 import android.content.res.Resources;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.view.View;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.th.R;
+import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.portfolio.AssetClass;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
@@ -20,7 +22,7 @@ public class PortfolioDisplayDTO implements DTO
 {
     public final int portfolioId;
     public final String portfolioTitle;
-    public final int portfolioTitleColor;
+    @ColorInt public final int portfolioTitleColor;
     @ViewVisibilityValue public final int roiVisibility;
     public final CharSequence roiValue;
     public final String description;
@@ -33,9 +35,14 @@ public class PortfolioDisplayDTO implements DTO
     @Nullable public final CharSequence totalValue;
     @Nullable public final CharSequence marginLeft;
     public final boolean usesMargin;
+    public final boolean isCompetition;
+    public final String joinBanner;
+    public boolean isVip;
 
     public PortfolioDisplayDTO(Resources resources, CurrentUserId currentUserId, DisplayablePortfolioDTO dto)
     {
+        this.isCompetition = false;
+        this.isVip = false;
         if (dto.portfolioDTO != null)
         {
             this.portfolioId = dto.portfolioDTO.id;
@@ -138,6 +145,29 @@ public class PortfolioDisplayDTO implements DTO
             providerId = null;
             this.usesMargin = false;
         }
+        joinBanner = null;
+    }
+
+    public PortfolioDisplayDTO(Resources resources, ProviderDTO providerDTO)
+    {
+        this.isCompetition = true;
+        this.isVip = providerDTO.vip != null ? providerDTO.vip : false;
+        this.providerId = providerDTO.id;
+        this.joinBanner = providerDTO.getStatusSingleImageUrl();
+        this.portfolioTitle = providerDTO.name;
+        this.portfolioId = -1;
+        this.portfolioTitleColor = resources.getColor(R.color.text_primary);
+        this.roiVisibility = View.GONE;
+        this.roiValue = "";
+        this.description = DateUtils.getDisplayableDate(resources, providerDTO.startDateUtc, providerDTO.endDateUtc);
+        this.sinceValue = "";
+        this.sinceValueVisibility = View.GONE;
+        this.ownedPortfolioId = null;
+        this.isWatchlist = false;
+        this.assetClass = null;
+        this.totalValue = null;
+        this.marginLeft = null;
+        this.usesMargin = false;
     }
 
     public boolean isDefault()

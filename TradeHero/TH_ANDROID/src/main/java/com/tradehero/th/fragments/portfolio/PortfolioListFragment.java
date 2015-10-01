@@ -3,11 +3,10 @@ package com.tradehero.th.fragments.portfolio;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,17 +17,28 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
+import com.tradehero.th.api.competition.ProviderDTO;
+import com.tradehero.th.api.competition.ProviderDTOList;
 import com.tradehero.th.api.competition.ProviderId;
+import com.tradehero.th.api.competition.ProviderUtil;
+import com.tradehero.th.api.competition.key.ProviderListKey;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.watchlist.MainWatchlistPositionFragment;
+import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.intent.THIntent;
+import com.tradehero.th.models.intent.THIntentPassedListener;
+import com.tradehero.th.models.intent.competition.ProviderIntent;
+import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.models.portfolio.DisplayablePortfolioFetchAssistant;
+import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction1;
@@ -38,10 +48,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class PortfolioListFragment extends DashboardFragment
 {
@@ -50,10 +63,10 @@ public class PortfolioListFragment extends DashboardFragment
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
 
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
+    @Inject protected ProviderListCacheRx providerListCache;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject CurrentUserId currentUserId;
-    @Inject Toolbar toolbar;
-    @Inject DrawerLayout drawerLayout;
+    @Inject ProviderUtil providerUtil;
 
     @Bind(R.id.portfolio_refresh) SwipeRefreshLayout swipeRefreshLayout;
     @Bind(R.id.portfolio_list) RecyclerView portfolioList;
@@ -61,6 +74,8 @@ public class PortfolioListFragment extends DashboardFragment
 
     protected UserBaseKey shownUserBaseKey;
     protected PortfolioRecyclerAdapter portfolioRecyclerAdapter;
+    private BaseWebViewIntentFragment webFragment;
+    private THIntentPassedListener thIntentPassedListener;
 
     public static void putUserBaseKey(@NonNull Bundle bundle, @NonNull UserBaseKey userBaseKey)
     {
@@ -98,7 +113,7 @@ public class PortfolioListFragment extends DashboardFragment
             shownUserBaseKey = currentUserId.toUserBaseKey();
         }
 
-        portfolioRecyclerAdapter = new PortfolioRecyclerAdapter();
+        portfolioRecyclerAdapter = new PortfolioRecyclerAdapter(getActivity());
         portfolioRecyclerAdapter.setOnItemClickedListener(new TypedRecyclerAdapter.OnItemClickedListener<PortfolioDisplayDTO>()
         {
             @Override
@@ -108,12 +123,25 @@ public class PortfolioListFragment extends DashboardFragment
                 {
                     pushWatchlistPositionFragment();
                 }
+                else if (object.isCompetition)
+                {
+                    // HACK Just in case the user eventually enrolls
+                    portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
+                    Bundle args = new Bundle();
+                    CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
+                            new ProviderId(object.providerId)
+                    ));
+                    webFragment = navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
+                    webFragment.setThIntentPassedListener(thIntentPassedListener);
+                }
                 else if (object.ownedPortfolioId != null)
                 {
                     pushPositionListFragment(object);
                 }
             }
         });
+
+        this.thIntentPassedListener = new PortfolioTHIntentPassedListener();
     }
 
     private void pushPositionListFragment(@NonNull PortfolioDisplayDTO object)
@@ -144,6 +172,12 @@ public class PortfolioListFragment extends DashboardFragment
         navigator.get().pushFragment(MainWatchlistPositionFragment.class, args);
     }
 
+    @Override public void onResume()
+    {
+        super.onResume();
+        detachWebFragment();
+    }
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
@@ -153,6 +187,15 @@ public class PortfolioListFragment extends DashboardFragment
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_portfolios, container, false);
+    }
+
+    private void detachWebFragment()
+    {
+        if (this.webFragment != null)
+        {
+            this.webFragment.setThIntentPassedListener(null);
+        }
+        this.webFragment = null;
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
@@ -176,7 +219,8 @@ public class PortfolioListFragment extends DashboardFragment
         portfolioList.setAdapter(portfolioRecyclerAdapter);
         portfolioList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        onDestroyViewSubscriptions.add(displayablePortfolioFetchAssistant.get(shownUserBaseKey)
+        onDestroyViewSubscriptions.add(Observable.combineLatest(
+                displayablePortfolioFetchAssistant.get(shownUserBaseKey)
                         .map(new Func1<DisplayablePortfolioDTOList, List<PortfolioDisplayDTO>>()
                         {
                             @Override public List<PortfolioDisplayDTO> call(DisplayablePortfolioDTOList displayablePortfolioDTOs)
@@ -189,21 +233,88 @@ public class PortfolioListFragment extends DashboardFragment
                                 }
                                 return list;
                             }
-                        })
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<List<PortfolioDisplayDTO>>()
+                        }),
+                providerListCache.get(new ProviderListKey())
+                        .map(new Func1<Pair<ProviderListKey, ProviderDTOList>, List<PortfolioDisplayDTO>>()
                         {
-                            @Override public void call(List<PortfolioDisplayDTO> portfolioDisplayDTOs)
+                            @Override public List<PortfolioDisplayDTO> call(Pair<ProviderListKey, ProviderDTOList> providerListKeyProviderDTOListPair)
                             {
-                                if (portfolioDisplayDTOs.size() > 0)
+                                ArrayList<PortfolioDisplayDTO> list = new ArrayList<>(providerListKeyProviderDTOListPair.second.size());
+                                for (ProviderDTO providerDTO : providerListKeyProviderDTOListPair.second)
                                 {
-                                    progressBar.setVisibility(View.GONE);
+                                    if (!providerDTO.isUserEnrolled)
+                                    {
+                                        list.add(new PortfolioDisplayDTO(getResources(), providerDTO));
+                                    }
                                 }
-                                swipeRefreshLayout.setRefreshing(false);
-                                portfolioRecyclerAdapter.addAll(portfolioDisplayDTOs);
+                                return list;
                             }
-                        }, new TimberOnErrorAction1("Failed to fetch portfolio list"))
-        );
+                        })
+                , new Func2<List<PortfolioDisplayDTO>, List<PortfolioDisplayDTO>, List<PortfolioDisplayDTO>>()
+                {
+                    @Override public List<PortfolioDisplayDTO> call(List<PortfolioDisplayDTO> portfolioDisplayDTOs,
+                            List<PortfolioDisplayDTO> portfolioDisplayDTOs2)
+                    {
+                        portfolioDisplayDTOs.addAll(portfolioDisplayDTOs2);
+                        return portfolioDisplayDTOs;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<PortfolioDisplayDTO>>()
+                {
+                    @Override public void call(List<PortfolioDisplayDTO> portfolioDisplayDTOs)
+                    {
+                        finishLoading(portfolioDisplayDTOs);
+                    }
+                }, new TimberOnErrorAction1("Error fetching data")));
+    }
+
+    protected void finishLoading(List<PortfolioDisplayDTO> portfolioDisplayDTOs)
+    {
+        if (portfolioDisplayDTOs.size() > 0)
+        {
+            progressBar.setVisibility(View.GONE);
+        }
+        swipeRefreshLayout.setRefreshing(false);
+        portfolioRecyclerAdapter.addAll(portfolioDisplayDTOs);
+    }
+
+    @Override public void onDestroy()
+    {
+        this.thIntentPassedListener = null;
+        detachWebFragment();
+        super.onDestroy();
+    }
+
+    protected class PortfolioTHIntentPassedListener implements THIntentPassedListener
+    {
+        @Override public void onIntentPassed(THIntent thIntent)
+        {
+            Timber.d("LeaderboardCommunityTHIntentPassedListener " + thIntent);
+            if (thIntent instanceof ProviderIntent)
+            {
+                // Just in case the user has enrolled
+                portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
+            }
+
+            if (thIntent instanceof ProviderPageIntent)
+            {
+                Timber.d("Intent is ProviderPageIntent");
+                if (webFragment != null)
+                {
+                    Timber.d("Passing on %s", ((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                    webFragment.loadUrl(((ProviderPageIntent) thIntent).getCompleteForwardUriPath());
+                }
+                else
+                {
+                    Timber.d("WebFragment is null");
+                }
+            }
+            else
+            {
+                Timber.w("Unhandled intent %s", thIntent);
+            }
+        }
     }
 }
