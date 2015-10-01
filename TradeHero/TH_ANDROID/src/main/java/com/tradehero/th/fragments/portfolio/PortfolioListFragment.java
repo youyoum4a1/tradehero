@@ -182,8 +182,9 @@ public class PortfolioListFragment extends DashboardFragment
                             @Override public List<PortfolioDisplayDTO> call(DisplayablePortfolioDTOList displayablePortfolioDTOs)
                             {
                                 ArrayList<PortfolioDisplayDTO> list = new ArrayList<>(displayablePortfolioDTOs.size());
-                                for (DisplayablePortfolioDTO dto : displayablePortfolioDTOs)
+                                for (int i = 0; i < displayablePortfolioDTOs.size(); i++)
                                 {
+                                    DisplayablePortfolioDTO dto = displayablePortfolioDTOs.get(i);
                                     list.add(new PortfolioDisplayDTO(getResources(), currentUserId, dto));
                                 }
                                 return list;

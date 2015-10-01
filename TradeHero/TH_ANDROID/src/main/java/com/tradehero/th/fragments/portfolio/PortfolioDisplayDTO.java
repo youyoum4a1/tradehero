@@ -18,6 +18,7 @@ import com.tradehero.th.utils.DateUtils;
 
 public class PortfolioDisplayDTO implements DTO
 {
+    public final int portfolioId;
     public final String portfolioTitle;
     public final int portfolioTitleColor;
     @ViewVisibilityValue public final int roiVisibility;
@@ -35,6 +36,14 @@ public class PortfolioDisplayDTO implements DTO
 
     public PortfolioDisplayDTO(Resources resources, CurrentUserId currentUserId, DisplayablePortfolioDTO dto)
     {
+        if (dto.portfolioDTO != null)
+        {
+            this.portfolioId = dto.portfolioDTO.id;
+        }
+        else
+        {
+            this.portfolioId = -1;
+        }
         this.portfolioTitle = DisplayablePortfolioUtil.getLongTitle(resources, dto);
         this.portfolioTitleColor = DisplayablePortfolioUtil.getLongTitleTextColor(resources, dto);
 
@@ -129,5 +138,10 @@ public class PortfolioDisplayDTO implements DTO
             providerId = null;
             this.usesMargin = false;
         }
+    }
+
+    public boolean isDefault()
+    {
+        return providerId == null && !isWatchlist;
     }
 }

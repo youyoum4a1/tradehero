@@ -6,6 +6,8 @@ import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import java.io.IOException;
 
+@Deprecated
+//TODO remove this class and use portfolio to create PortfolioDisplayDTO directly
 public class DisplayablePortfolioDTO implements Comparable
 {
     @Nullable public OwnedPortfolioId ownedPortfolioId;

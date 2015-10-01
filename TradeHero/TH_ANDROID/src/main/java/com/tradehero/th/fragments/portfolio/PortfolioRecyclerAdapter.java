@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.portfolio;
 
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
+import com.tradehero.th.api.portfolio.OwnedPortfolioIdDisplayComparator;
 
 public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisplayDTO>
 {
@@ -25,18 +27,60 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
 
     protected static class PortfolioDisplayDTOComparator extends TypedRecyclerComparator<PortfolioDisplayDTO>
     {
+        @NonNull private final OwnedPortfolioIdDisplayComparator ownedPortfolioIdDisplayComparator;
+
+        public PortfolioDisplayDTOComparator()
+        {
+            this.ownedPortfolioIdDisplayComparator = new OwnedPortfolioIdDisplayComparator();
+        }
+
         @Override public int compare(PortfolioDisplayDTO o1, PortfolioDisplayDTO o2)
         {
-            if (o1.ownedPortfolioId == null)
+            if (o1.isDefault() && o2.isDefault())
             {
-                return o2.ownedPortfolioId == null ? 0 : -1;
+                if (o1.assetClass != null && o2.assetClass != null)
+                {
+                    return o1.assetClass.compareTo(o2.assetClass);
+                }
+                else if (o1.assetClass != null)
+                {
+                    return -1;
+                }
+                return 1;
             }
-            if (o2.ownedPortfolioId == null)
+            else if (o1.isDefault())
+            {
+                return -1;
+            }
+            else if (o2.isDefault())
             {
                 return 1;
             }
-
-            return o1.ownedPortfolioId.compareTo(o2.ownedPortfolioId);
+            else if (o1.isWatchlist)
+            {
+                if (o2.isWatchlist)
+                {
+                    return 0;
+                }
+                return -1;
+            }
+            else if (o2.isWatchlist)
+            {
+                return 1;
+            }
+            else if (o1.providerId != null && o2.providerId != null)
+            {
+                return o1.providerId.compareTo(o2.providerId);
+            }
+            else if (o1.providerId != null)
+            {
+                return -1;
+            }
+            else if (o2.providerId != null)
+            {
+                return 1;
+            }
+            return this.ownedPortfolioIdDisplayComparator.compare(o1.ownedPortfolioId, o2.ownedPortfolioId);
         }
 
         @Override public boolean areItemsTheSame(PortfolioDisplayDTO item1, PortfolioDisplayDTO item2)
