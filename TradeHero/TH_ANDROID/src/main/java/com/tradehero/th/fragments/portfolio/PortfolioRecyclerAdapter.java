@@ -48,7 +48,20 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
 
         @Override public boolean areContentsTheSame(PortfolioDisplayDTO oldItem, PortfolioDisplayDTO newItem)
         {
-            return super.areContentsTheSame(oldItem, newItem);
+            if (!oldItem.portfolioTitle.equals(newItem.portfolioTitle)) return false;
+            if (oldItem.portfolioTitleColor != newItem.portfolioTitleColor) return false;
+            if (!oldItem.description.equals(newItem.description)) return false;
+            if (!oldItem.roiValue.toString().equals(newItem.roiValue.toString())) return false;
+            if (oldItem.roiVisibility != newItem.roiVisibility) return false;
+            if (!oldItem.sinceValue.equals(newItem.sinceValue)) return false;
+            if (oldItem.sinceValueVisibility != newItem.sinceValueVisibility) return false;
+            if (oldItem.marginLeft != null && newItem.marginLeft == null) return false;
+            if (oldItem.marginLeft == null && newItem.marginLeft != null) return false;
+            if (oldItem.marginLeft != null && !oldItem.marginLeft.toString().equals(newItem.marginLeft.toString())) return false;
+            if (oldItem.totalValue != null && newItem.totalValue == null) return false;
+            if (oldItem.totalValue == null && newItem.totalValue != null) return false;
+            if (oldItem.totalValue != null && !oldItem.totalValue.toString().equals(newItem.totalValue.toString())) return false;
+            return true;
         }
     }
 
