@@ -298,6 +298,7 @@ public class PortfolioListFragment extends DashboardFragment
             {
                 // Just in case the user has enrolled
                 portfolioCompactListCache.invalidate(currentUserId.toUserBaseKey());
+                providerListCache.invalidateAll();
             }
 
             if (thIntent instanceof ProviderPageIntent)
