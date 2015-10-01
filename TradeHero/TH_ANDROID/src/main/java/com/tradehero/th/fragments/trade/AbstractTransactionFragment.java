@@ -79,6 +79,7 @@ import com.tradehero.th.utils.DateUtils;
 import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
+import com.tradehero.th.wxapi.WXEntryActivity;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -1295,10 +1296,10 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         {
             weChatDTO.title = commentString + '\n' + weChatDTO.title;
         }
-        socialSharerLazy.get().share(weChatDTO)
-                .subscribe(
-                        new EmptyAction1<SocialShareResult>(),
-                        new TimberAndToastOnErrorAction1("Failed to share to WeChat")); // TODO proper callback?
+
+        Intent intent = new Intent(getActivity(), WXEntryActivity.class);
+        WXEntryActivity.putWeChatDTO(intent, weChatDTO);
+        startActivity(intent);
     }
 
     private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId, PortfolioDTO portfolioDTO)
