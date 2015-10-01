@@ -211,6 +211,8 @@ public class PortfolioListFragment extends DashboardFragment
                 portfolioCompactListCache.get(shownUserBaseKey);
                 userProfileCache.get().invalidate(shownUserBaseKey);
                 userProfileCache.get().get(shownUserBaseKey);
+                providerListCache.invalidateAll();
+                providerListCache.get(new ProviderListKey());
             }
         });
 
