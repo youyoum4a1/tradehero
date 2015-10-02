@@ -143,14 +143,6 @@
           />
 
       <TextView
-          android:id="@+id/position_status"
-          style="@style/TH.Caption"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          tools:text="OPEN"
-          />
-
-      <TextView
           android:id="@+id/btn_position_close"
           style="@style/TH.FX_CLOSE"
           android:layout_width="wrap_content"

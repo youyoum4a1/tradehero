@@ -444,7 +444,6 @@ public class PositionPartialTopView extends LinearLayout
         @Bind(R.id.position_last_amount_header) @Nullable TextView positionLastAmountHeader;
         @Bind(R.id.position_last_amount) @Nullable TextView positionLastAmount;
         @Bind(R.id.btn_position_close) @Nullable TextView btnClose;
-        @Bind(R.id.position_status) @Nullable TextView positionStatus;
         @NonNull private final PublishSubject<CloseUserAction> userActionSubject;
 
         private DTO dto;
@@ -621,11 +620,6 @@ public class PositionPartialTopView extends LinearLayout
                 if (positionLastAmount != null)
                 {
                     positionLastAmount.setText(dto.lastAmount);
-                }
-
-                if (positionStatus != null)
-                {
-                    positionStatus.setText(dto.positionDTO.positionStatus.toString());
                 }
             }
         }
