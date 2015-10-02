@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discovery.newsfeed;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.CallSuper;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTO;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTOList;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.resource.ResourceUtil;
 import com.tradehero.th.widget.MarkdownTextView;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
@@ -165,10 +167,33 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
         @CallSuper
         @Override public void onDisplay(NewsfeedDisplayDTO newsfeedDisplayDTO)
         {
-            picasso.load(newsfeedDisplayDTO.picture)
-                    .placeholder(R.drawable.superman_facebook)
-                    .error(R.drawable.superman_facebook)
+            // TODO: temporary hard coded avatar url until server return avatar url
+            //picasso.load(newsfeedDisplayDTO.picture)
+            //        .placeholder(R.drawable.superman_facebook)
+            //        .error(R.drawable.superman_facebook)
+            //        .into(avatar);
+
+            int newsAvatar = R.drawable.superman_facebook;
+
+            switch (newsfeedDisplayDTO.name)
+            {
+                case "Motley Fool":
+                    newsAvatar = R.drawable.ic_icn_news_fool;
+                    break;
+                case "Seeking Alpha":
+                    newsAvatar = R.drawable.ic_icn_news_seeking_alpha;
+                    break;
+                case "Yahoo Finance":
+                    newsAvatar = R.drawable.ic_icn_news_yahoo;
+                    break;
+                case "Google Finance":
+                    newsAvatar = R.drawable.ic_icn_news_google;
+                    break;
+            }
+
+            picasso.load(newsAvatar)
                     .into(avatar);
+
             name.setText(newsfeedDisplayDTO.name);
             time.setText(newsfeedDisplayDTO.time);
             body.setText(newsfeedDisplayDTO.getBody());
