@@ -939,7 +939,7 @@ public class PositionListFragment
                     );
                 }
             };
-            inflatedView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
+            //inflatedView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
         }
 
         portfolioHeaderView.linkWith(userProfileDTO);
