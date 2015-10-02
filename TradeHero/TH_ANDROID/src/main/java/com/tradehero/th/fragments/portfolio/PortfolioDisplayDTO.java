@@ -38,6 +38,7 @@ public class PortfolioDisplayDTO implements DTO
     public final boolean isCompetition;
     public final String joinBanner;
     public boolean isVip;
+    public final String cashMarginLabel;
 
     public PortfolioDisplayDTO(Resources resources, CurrentUserId currentUserId, DisplayablePortfolioDTO dto)
     {
@@ -140,12 +141,13 @@ public class PortfolioDisplayDTO implements DTO
         }
         else
         {
-            isWatchlist = false;
-            assetClass = null;
-            providerId = null;
+            this.isWatchlist = false;
+            this.assetClass = null;
+            this.providerId = null;
             this.usesMargin = false;
         }
-        joinBanner = null;
+        this.cashMarginLabel = resources.getString(usesMargin ? R.string.portfolio_header_margin_available_title : R.string.portfolio_header_cash_value);
+        this.joinBanner = null;
     }
 
     public PortfolioDisplayDTO(Resources resources, ProviderDTO providerDTO)
@@ -168,6 +170,7 @@ public class PortfolioDisplayDTO implements DTO
         this.totalValue = null;
         this.marginLeft = null;
         this.usesMargin = false;
+        this.cashMarginLabel = "";
     }
 
     public boolean isDefault()

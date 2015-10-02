@@ -159,6 +159,7 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
         @Bind(R.id.portfolio_cash_margin_left) TextView marginLeft;
         @Bind(R.id.grid_portfolio_values) TableLayout table;
         @Bind(R.id.competition_banner) ImageView competitionBanner;
+        @Bind(R.id.portfolio_cash_margin_left_label) TextView cashMarginLabel;
 
         public PortfolioDisplayDTOViewHolder(View itemView, Picasso picasso)
         {
@@ -175,6 +176,7 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
             roi.setVisibility(portfolioDisplayDTO.roiVisibility);
             roiSince.setText(portfolioDisplayDTO.sinceValue);
             roiSince.setVisibility(portfolioDisplayDTO.sinceValueVisibility);
+            cashMarginLabel.setText(portfolioDisplayDTO.cashMarginLabel);
             if (portfolioDisplayDTO.marginLeft != null && portfolioDisplayDTO.totalValue != null)
             {
                 table.setVisibility(View.VISIBLE);
