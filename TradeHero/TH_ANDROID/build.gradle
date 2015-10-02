@@ -565,6 +565,7 @@ dependencies {
   }
 
   compile("com.flurry:FlurryAnalytics:6.1.0")
+  compile("com.flurry:FlurryAds:6.1.0")
 
   releaseCompile("com.localytics.android:library:${LOCALYTICS_VERSION}") {
     exclude group: 'com.google.android', module: 'support-v4'
