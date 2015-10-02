@@ -262,6 +262,7 @@
   <string name="discovery_discussions">社区</string>
   <string name="discovery_learning">学院</string>
   <string name="discovery_news">新闻</string>
+  <string name="discovery_newsfeed" formatted="false">动态新闻</string>
   <string name="discovery_whats_hot">热门</string>
   <string name="discussion">讨论</string>
   <string name="discussion_edit_post_subtitle">在 %s</string>
@@ -1300,6 +1301,11 @@
   <string name="store_manage_heroes">管理英雄</string>
   <string name="store_manage_stock_alerts">管理股票预警</string>
   <string name="store_option_menu_title">全民股神商店</string>
+  <string name="store_virtual_dollars_100k_description" formatted="false"/>
+  <string name="store_virtual_dollars_100k_title" formatted="false">TH$ 100,000</string>
+  <string name="store_virtual_dollars_10k_title" formatted="false">TH$ 10,0000</string>
+  <string name="store_virtual_dollars_50k_description" formatted="false"/>
+  <string name="store_virtual_dollars_50k_title" formatted="false">TH$ 50,000</string>
   <string name="suggest_to_upgrade">新的版本上线了，强烈推荐您立刻升级，现在就升级吗？</string>
   <string name="sure_to_delete_message">删除这条消息？</string>
   <string name="swipe_learn_more">点击了解更多相关知识</string>
