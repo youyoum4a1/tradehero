@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    style="@style/TH.ListItem"
+    style="@style/TH.ListItem.Clickable"
     >
 
   <include layout="@layout/position_partial_top_view_inner"/>

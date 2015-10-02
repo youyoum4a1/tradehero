@@ -56,13 +56,12 @@ import com.tradehero.th.fragments.competition.MainCompetitionFragment;
 import com.tradehero.th.fragments.discussion.SecurityDiscussionEditPostFragment;
 import com.tradehero.th.fragments.discussion.TransactionEditCommentFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
-import com.tradehero.th.fragments.position.TabbedPositionListFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.ShareDelegateFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
-import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
@@ -83,7 +82,6 @@ import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
@@ -96,7 +94,6 @@ import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.functions.Func3;
 import rx.functions.Func4;
 import rx.functions.Func6;
 import rx.subjects.BehaviorSubject;
@@ -1215,29 +1212,10 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                 shareToWeChat(mCommentsEditText.getText().toString(), isBuy);
             }
 
-            String positionType = null;
-
-            if (securityPositionDetailDTO.positions == null)
-            {
-                positionType = TabbedPositionListFragment.TabType.CLOSED.name();
-            }
-            else
-            {
-                if (securityPositionDetailDTO.positions.size() == 0)
-                {
-                    positionType = TabbedPositionListFragment.TabType.CLOSED.name();
-                }
-                else
-                {
-                    positionType = securityPositionDetailDTO.positions.get(0).positionStatus.name();
-                }
-            }
-
             navigator.get().popFragment();
             pushPortfolioFragment(
                     new OwnedPortfolioId(currentUserId.get(), securityPositionDetailDTO.portfolio.id),
-                    securityPositionDetailDTO.portfolio,
-                    positionType
+                    securityPositionDetailDTO.portfolio
                     );
         }
 
@@ -1323,13 +1301,13 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                         new TimberAndToastOnErrorAction1("Failed to share to WeChat")); // TODO proper callback?
     }
 
-    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId, PortfolioDTO portfolioDTO, String positionType)
+    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId, PortfolioDTO portfolioDTO)
     {
         DeviceUtil.dismissKeyboard(getActivity());
 
-        if (navigator.get().hasBackStackName(TabbedPositionListFragment.class.getName()))
+        if (navigator.get().hasBackStackName(PositionListFragment.class.getName()))
         {
-            navigator.get().popFragment(TabbedPositionListFragment.class.getName());
+            navigator.get().popFragment(PositionListFragment.class.getName());
         }
         else if (navigator.get().hasBackStackName(CompetitionLeaderboardPositionListFragment.class.getName()))
         {
@@ -1343,17 +1321,15 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
             Bundle args = new Bundle();
 
-            TabbedPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-            TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
-            TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
-            TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
-            TabbedPositionListFragment.putPositionType(args, positionType);
+            PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+            PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
 
             if (navigator.get().hasBackStackName(MainCompetitionFragment.class.getName()))
             {
                 DashboardNavigator.putReturnFragment(args, MainCompetitionFragment.class.getName());
             }
-            navigator.get().pushFragment(TabbedPositionListFragment.class, args);
+            navigator.get().pushFragment(PositionListFragment.class, args);
         }
     }
 

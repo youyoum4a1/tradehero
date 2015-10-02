@@ -42,7 +42,7 @@ import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLi
 import com.tradehero.th.fragments.discussion.DiscussionFragmentUtil;
 import com.tradehero.th.fragments.portfolio.SimpleOwnPortfolioListItemAdapter;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
-import com.tradehero.th.fragments.position.TabbedPositionListFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.social.follower.FollowersFragment;
 import com.tradehero.th.fragments.social.hero.HeroesFragment;
 import com.tradehero.th.fragments.watchlist.MainWatchlistPositionFragment;
@@ -507,22 +507,21 @@ abstract public class TimelineFragment extends DashboardFragment
 
         if (ownedPortfolioId.userId.equals(currentUserId.get()))
         {
-            TabbedPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+            PositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
-        TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
-        TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+        PositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+        PositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
 
         if (portfolioDTO != null)
         {
-            TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
             if (portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
             {
-                TabbedPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
+                CompetitionLeaderboardPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
                 navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
                 return;
             }
         }
-        navigator.get().pushFragment(TabbedPositionListFragment.class, args);
+        navigator.get().pushFragment(PositionListFragment.class, args);
     }
 
     private void pushWatchlistPositionFragment()

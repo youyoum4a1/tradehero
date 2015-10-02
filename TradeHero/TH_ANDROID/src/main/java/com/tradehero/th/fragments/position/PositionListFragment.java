@@ -27,6 +27,7 @@ import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
+import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.HelpActivity;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
@@ -43,6 +44,7 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.position.GetPositionsDTOKey;
 import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
 import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
@@ -50,7 +52,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
 import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
@@ -78,7 +79,6 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -102,7 +102,6 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiRecyclerScrollListener;
-import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,16 +116,14 @@ import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
+@Routable("user/:userId/portfolio/:portfolioId")
 public class PositionListFragment
         extends DashboardFragment
         implements WithTutorial
 {
     private static final String BUNDLE_KEY_SHOW_POSITION_DTO_KEY_BUNDLE = PositionListFragment.class.getName() + ".showPositionDtoKey";
     private static final String BUNDLE_KEY_SHOWN_USER_ID_BUNDLE = PositionListFragment.class.getName() + ".userBaseKey";
-    public static final String BUNDLE_KEY_FIRST_POSITION_VISIBLE = PositionListFragment.class.getName() + ".firstPositionVisible";
-    public static final String BUNDLE_KEY_POSITION_TYPE = PositionListFragment.class.getName() + ".postion.type";
     public static final String BUNDLE_KEY_SHOW_TITLE = PositionListFragment.class.getName() + ".showTitle";
-    public static final String BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO = PositionListFragment.class.getName() + ".trendingFXPortfolio";
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             PositionListFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
@@ -145,8 +142,6 @@ public class PositionListFragment
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject THBillingInteractorRx userInteractorRx;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
@@ -162,7 +157,6 @@ public class PositionListFragment
 
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected UserBaseKey shownUser;
-    private TabbedPositionListFragment.TabType positionType;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     private PortfolioHeaderView portfolioHeaderView;
@@ -172,7 +166,6 @@ public class PositionListFragment
     protected List<Object> viewDTOs;
 
     protected PositionItemAdapter positionItemAdapter;
-    private int firstPositionVisible = 0;
     private View inflatedView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
 
@@ -205,28 +198,6 @@ public class PositionListFragment
             throw new NullPointerException("ShownUser needs to be passed on");
         }
         return new UserBaseKey(userBundle);
-    }
-
-    public static void putPositionType(@NonNull Bundle args, TabbedPositionListFragment.TabType positionType)
-    {
-        args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
-    }
-
-    public static void putPositionType(@NonNull Bundle args, StocksMainPositionListFragment.TabType positionType)
-    {
-        args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
-    }
-
-    public static void putPositionType(@NonNull Bundle args, FXMainPositionListFragment.TabType positionType)
-    {
-        args.putString(BUNDLE_KEY_POSITION_TYPE, positionType.name());
-    }
-
-    @NonNull private TabbedPositionListFragment.TabType getPositionType(@NonNull Bundle args)
-    {
-        return TabbedPositionListFragment.TabType.valueOf(args.getString(
-                BUNDLE_KEY_POSITION_TYPE,
-                TabbedPositionListFragment.TabType.LONG.name()));
     }
 
     public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId ownedPortfolioId)
@@ -268,17 +239,12 @@ public class PositionListFragment
             getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
 
-        positionType = getPositionType(args);
         this.purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
         this.positionItemAdapter = createPositionItemAdapter();
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState)
     {
-        if (savedInstanceState != null)
-        {
-            firstPositionVisible = savedInstanceState.getInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
-        }
         return inflater.inflate(R.layout.fragment_positions_list, container, false);
     }
 
@@ -296,6 +262,7 @@ public class PositionListFragment
         positionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         positionRecyclerView.setHasFixedSize(true);
         positionRecyclerView.setAdapter(positionItemAdapter);
+        positionRecyclerView.addItemDecoration(new TypedRecyclerAdapter.DividerItemDecoration(getActivity()));
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
@@ -355,8 +322,7 @@ public class PositionListFragment
                             @NonNull Pair<UserProfileDTO, PortfolioHeaderView> profileAndHeaderPair,
                             @NonNull List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
                     {
-                        //TODO Translate to 0 to restore position
-                        //inflatedHeader.animate().translationY(0f).start();
+                        inflatedView.animate().translationY(0f).start();
                         return profileAndHeaderPair.second;
                     }
                 })
@@ -432,7 +398,6 @@ public class PositionListFragment
 
     @Override public void onPause()
     {
-        //firstPositionVisible = positionRecyclerView.getFirstVisiblePosition();
         super.onPause();
     }
 
@@ -445,7 +410,6 @@ public class PositionListFragment
     @Override public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
     }
 
     @SuppressLint("NewApi")
@@ -525,7 +489,7 @@ public class PositionListFragment
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
             return freeFollow(userAction.requested.getBaseKey());
         }
-        else if(userAction instanceof PortfolioHeaderView.UnFollowUserAction)
+        else if (userAction instanceof PortfolioHeaderView.UnFollowUserAction)
         {
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Unfollow));
             return unfollow(userAction.requested.getBaseKey());
@@ -596,7 +560,7 @@ public class PositionListFragment
 
     protected void updateHeaderViewFollowButton()
     {
-        if(portfolioHeaderView instanceof OtherUserPortfolioHeaderView)
+        if (portfolioHeaderView instanceof OtherUserPortfolioHeaderView)
         {
             ((OtherUserPortfolioHeaderView) portfolioHeaderView).configureFollowItemsVisibility();
         }
@@ -1076,66 +1040,77 @@ public class PositionListFragment
     {
         this.viewDTOs = dtoList;
         Object nothingDTO = new PositionNothingView.DTO(getResources(), shownUser.equals(currentUserId.toUserBaseKey()));
-        List<Object> filterViewDTOs = filterViewDTOs(dtoList, nothingDTO);
-        if (!filterViewDTOs.contains(nothingDTO) && positionItemAdapter.indexOf(nothingDTO) != RecyclerView.NO_POSITION)
+        if (this.viewDTOs.size() > 0 && positionItemAdapter.indexOf(nothingDTO) != RecyclerView.NO_POSITION)
         {
             positionItemAdapter.remove(nothingDTO);
         }
-        else if (filterViewDTOs.contains(nothingDTO))
+        else if (this.viewDTOs.isEmpty())
         {
+            this.viewDTOs.add(nothingDTO);
             positionItemAdapter.removeAll();
         }
-        positionItemAdapter.addAll(filterViewDTOs);
+
+        if (this.viewDTOs.size() > 0)
+        {
+            boolean hasPending = false, hasLong = false, hasShort = false, hasClosed = false;
+
+            for (Object object : dtoList)
+            {
+                if (object instanceof PositionPartialTopView.DTO)
+                {
+                    PositionStatus status = ((PositionPartialTopView.DTO) object).positionDTO.positionStatus;
+                    if (status != null)
+                    {
+                        switch (status)
+                        {
+                            case PENDING:
+                                hasPending = true;
+                                break;
+                            case SHORT:
+                                hasShort = true;
+                                break;
+                            case LONG:
+                                hasLong = true;
+                                break;
+                            case CLOSED:
+                            case FORCE_CLOSED:
+                                hasClosed = true;
+                                break;
+                        }
+                    }
+                }
+            }
+            if (hasPending)
+            {
+                this.viewDTOs.add(new PositionSectionHeaderItemView.DTO(getResources(), PositionStatus.PENDING, getString(R.string.position_list_header_pending),
+                        PositionSectionHeaderItemView.Type.PENDING));
+            }
+
+            if (hasLong)
+            {
+                this.viewDTOs.add(new PositionSectionHeaderItemView.DTO(getResources(), PositionStatus.LONG, getString(R.string.position_list_header_open_long),
+                        PositionSectionHeaderItemView.Type.LONG));
+            }
+
+            if (hasShort)
+            {
+                this.viewDTOs.add(new PositionSectionHeaderItemView.DTO(getResources(), PositionStatus.SHORT, getString(R.string.position_list_header_open_short),
+                        PositionSectionHeaderItemView.Type.SHORT));
+            }
+
+            if (hasClosed)
+            {
+                this.viewDTOs.add(new PositionSectionHeaderItemView.DTO(getResources(), PositionStatus.CLOSED, getString(R.string.position_list_header_closed),
+                        PositionSectionHeaderItemView.Type.CLOSED));
+            }
+        }
+
+        positionItemAdapter.addAll(this.viewDTOs);
         swipeToRefreshLayout.setRefreshing(false);
-        listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
-    }
-
-    @NonNull protected List<Object> filterViewDTOs(@NonNull List<Object> dtoList, Object nothingDTO)
-    {
-        List<Object> filtered = new ArrayList<>();
-        for (Object dto : dtoList)
+        if(listViewFlipper.getDisplayedChild() != FLIPPER_INDEX_LIST)
         {
-            if (dto instanceof PositionLockedView.DTO)
-            {
-                if (!positionType.equals(TabbedPositionListFragment.TabType.CLOSED))
-                {
-                    filtered.add(dto);
-                }
-            }
-            else if (dto instanceof PositionPartialTopView.DTO)
-            {
-                Boolean isClosed = ((PositionPartialTopView.DTO) dto).positionDTO.isClosed();
-                Integer shares = ((PositionPartialTopView.DTO) dto).positionDTO.shares;
-                boolean isShort = shares != null && shares < 0;
-
-                if (isClosed != null && isClosed)
-                {
-                    if (positionType.equals(TabbedPositionListFragment.TabType.CLOSED))
-                    {
-                        filtered.add(dto);
-                    }
-                }
-                else if (isShort)
-                {
-                    if (getArguments().getBoolean(BUNDLE_KEY_IS_TRENDING_FX_PORTFOLIO, false) || positionType.equals(
-                            TabbedPositionListFragment.TabType.SHORT))
-                    {
-                        filtered.add(dto);
-                    }
-                }
-                else if (positionType.equals(TabbedPositionListFragment.TabType.LONG))
-                {
-                    filtered.add(dto);
-                }
-            }
+            listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
         }
-
-        if (filtered.size() == 0)
-        {
-            filtered.add(nothingDTO);
-        }
-
-        return filtered;
     }
 
     protected void refreshSimplePage()

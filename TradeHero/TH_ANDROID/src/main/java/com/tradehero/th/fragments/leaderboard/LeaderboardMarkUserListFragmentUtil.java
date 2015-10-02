@@ -19,7 +19,9 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserProfileDTOUtil;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.position.TabbedPositionListFragment;
+import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
+import com.tradehero.th.fragments.position.LeaderboardPositionListFragment;
+import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -269,31 +271,31 @@ public class LeaderboardMarkUserListFragmentUtil
 
         // leaderboard mark user id, to get marking user information
         Bundle bundle = new Bundle();
-        TabbedPositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
-        TabbedPositionListFragment.putShownUser(bundle, dto.leaderboardUserDTO.getBaseKey());
+        PositionListFragment.putGetPositionsDTOKey(bundle, getPositionsDTOKey);
+        PositionListFragment.putShownUser(bundle, dto.leaderboardUserDTO.getBaseKey());
         if (leaderboardDef != null)
         {
-            TabbedPositionListFragment.putLeaderboardTimeRestricted(bundle, leaderboardDef.isTimeRestrictedLeaderboard());
+            LeaderboardPositionListFragment.putLeaderboardTimeRestricted(bundle, leaderboardDef.isTimeRestrictedLeaderboard());
         }
-        TabbedPositionListFragment.putIsFX(bundle, leaderboardType.assetClass);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf =
                 new SimpleDateFormat(fragment.getResources().getString(R.string.leaderboard_datetime_format));
         String formattedStartPeriodUtc = sdf.format(dto.leaderboardUserDTO.periodStartUtc);
-        TabbedPositionListFragment.putLeaderboardPeriodStartString(bundle, formattedStartPeriodUtc);
+        LeaderboardPositionListFragment.putLeaderboardPeriodStartString(bundle, formattedStartPeriodUtc);
 
         OwnedPortfolioId applicablePortfolioId = fragment.getApplicablePortfolioId();
         if (applicablePortfolioId != null)
         {
-            TabbedPositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
+            PositionListFragment.putApplicablePortfolioId(bundle, applicablePortfolioId);
         }
 
         if (dto instanceof CompetitionLeaderboardItemDisplayDTO)
         {
-            TabbedPositionListFragment.putProviderId(bundle,
+            CompetitionLeaderboardPositionListFragment.putProviderId(bundle,
                     ((CompetitionLeaderboardItemDisplayDTO) dto).providerDTO.getProviderId());
+            navigator.pushFragment(CompetitionLeaderboardPositionListFragment.class, bundle);
+            return;
         }
-
-        navigator.pushFragment(TabbedPositionListFragment.class, bundle);
+        navigator.pushFragment(LeaderboardPositionListFragment.class, bundle);
     }
 
     protected void handleRulesRequested(@NonNull CompetitionLeaderboardItemDisplayDTO dto)

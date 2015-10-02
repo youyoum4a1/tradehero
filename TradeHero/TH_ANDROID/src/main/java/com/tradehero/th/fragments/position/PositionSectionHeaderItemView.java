@@ -48,6 +48,15 @@ public class PositionSectionHeaderItemView extends RelativeLayout
                 @NonNull Resources resources,
                 @NonNull PositionStatus status,
                 @NonNull String header,
+                @NonNull Type type)
+        {
+            this(resources, status, header, null, null, type);
+        }
+
+        public DTO(
+                @NonNull Resources resources,
+                @NonNull PositionStatus status,
+                @NonNull String header,
                 @Nullable Date left,
                 @Nullable Date right,
                 @NonNull Type type)
@@ -72,7 +81,7 @@ public class PositionSectionHeaderItemView extends RelativeLayout
 
     public enum Type
     {
-        LONG, SHORT, CLOSED;
+        PENDING, LONG, SHORT, CLOSED;
     }
 
     public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>

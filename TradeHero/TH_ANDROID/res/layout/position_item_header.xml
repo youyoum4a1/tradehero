@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/margin_xsmall"
+    android:padding="@dimen/margin_small"
     >
 
   <TextView
@@ -16,9 +16,8 @@
       android:layout_alignParentLeft="true"
       android:layout_alignParentStart="true"
       android:layout_centerVertical="true"
-      style="@style/TH.Body"
+      style="@style/TH.Subhead"
       tools:text="Open Positions"
-      android:textAllCaps="true"
       />
 
   <TextView

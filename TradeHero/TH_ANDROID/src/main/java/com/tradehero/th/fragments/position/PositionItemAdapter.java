@@ -14,7 +14,6 @@ import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.utils.GraphicUtil;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
@@ -170,7 +169,11 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
     @Override public void onBindViewHolder(TypedViewHolder<Object> holder, int position)
     {
         super.onBindViewHolder(holder, position);
-        GraphicUtil.setEvenOddBackground(position, holder.itemView);
+        if(!isEnabled(position))
+        {
+            holder.itemView.setOnClickListener(null);
+            holder.itemView.setOnLongClickListener(null);
+        }
         if (holder instanceof PositionPartialTopView.ViewHolder)
         {
             ((PositionPartialTopView.ViewHolder) holder).getUserActionObservable().subscribe(userActionSubject);
@@ -222,7 +225,13 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
             }
             else if (o1 instanceof PositionPartialTopView.DTO && o2 instanceof PositionPartialTopView.DTO)
             {
-                return topViewComparator.compare((PositionPartialTopView.DTO) o1, (PositionPartialTopView.DTO) o2);
+                int comp = positionStatusComparator.compare(((PositionPartialTopView.DTO) o1).positionDTO.positionStatus,
+                        ((PositionPartialTopView.DTO) o2).positionDTO.positionStatus);
+                if (comp == 0)
+                {
+                    comp = topViewComparator.compare((PositionPartialTopView.DTO) o1, (PositionPartialTopView.DTO) o2);
+                }
+                return comp;
             }
             else if (o1 instanceof PositionPartialTopView.DTO && o2 instanceof PositionSectionHeaderItemView.DTO)
             {

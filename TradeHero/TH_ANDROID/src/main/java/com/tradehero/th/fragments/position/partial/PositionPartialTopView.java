@@ -101,7 +101,8 @@ public class PositionPartialTopView extends LinearLayout
         @ViewVisibilityValue public final int lastAmountHeaderVisibility;
         @NonNull public final CharSequence lastAmount;
 
-        public DTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId, @NonNull PositionDTO positionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
+        public DTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId, @NonNull PositionDTO positionDTO,
+                @NonNull SecurityCompactDTO securityCompactDTO)
         {
             this.positionDTO = positionDTO;
             this.securityCompactDTO = securityCompactDTO;
@@ -443,6 +444,7 @@ public class PositionPartialTopView extends LinearLayout
         @Bind(R.id.position_last_amount_header) @Nullable TextView positionLastAmountHeader;
         @Bind(R.id.position_last_amount) @Nullable TextView positionLastAmount;
         @Bind(R.id.btn_position_close) @Nullable TextView btnClose;
+        @Bind(R.id.position_status) @Nullable TextView positionStatus;
         @NonNull private final PublishSubject<CloseUserAction> userActionSubject;
 
         private DTO dto;
@@ -619,6 +621,11 @@ public class PositionPartialTopView extends LinearLayout
                 if (positionLastAmount != null)
                 {
                     positionLastAmount.setText(dto.lastAmount);
+                }
+
+                if (positionStatus != null)
+                {
+                    positionStatus.setText(dto.positionDTO.positionStatus.toString());
                 }
             }
         }

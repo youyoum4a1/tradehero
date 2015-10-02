@@ -10,8 +10,7 @@ import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import javax.inject.Inject;
 
-//TODO need refactor by alex
-public class CompetitionLeaderboardPositionListFragment extends TabbedPositionListFragment
+public class CompetitionLeaderboardPositionListFragment extends PositionListFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
@@ -40,7 +39,7 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
         this.providerId = getProviderId(getArguments());
     }
 
-    protected void pushTrendingFragment()
+    @Override protected void pushSecuritiesFragment()
     {
         Bundle args = new Bundle();
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId(getArguments());

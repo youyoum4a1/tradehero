@@ -33,7 +33,6 @@ import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.position.TabbedPositionListFragment;
 import com.tradehero.th.fragments.settings.SettingsFragment;
 import com.tradehero.th.fragments.social.follower.FollowersFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
@@ -108,7 +107,6 @@ import javax.inject.Singleton;
                 PushableTimelineFragment.class,
                 SettingsFragment.class,
                 StoreScreenFragment.class,
-                TabbedPositionListFragment.class,
                 TradeListFragment.class,
                 TrendingMainFragment.class,
                 UpdateCenterFragment.class,

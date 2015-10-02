@@ -65,6 +65,17 @@ public class PositionDTOCompact implements DTO
         return shares != 0;
     }
 
+    public boolean isShort()
+    {
+        return isOpen() != null && shares != null && shares < 0;
+    }
+
+    public boolean isPending()
+    {
+        //TODO
+        return false;
+    }
+
     @JsonIgnore @NonNull
     public PositionCompactId getPositionCompactId()
     {

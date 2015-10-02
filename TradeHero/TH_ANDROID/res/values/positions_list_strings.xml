@@ -6,6 +6,7 @@
   <string name="position_nothing_description_other_user">No open positions.</string>
   <string name="position_list_action_bar_header">%d Positions</string>
   <string name="position_list_action_bar_header_unknown">Positions</string>
+  <string name="position_list_header_pending">Pending Positions</string>
   <string name="position_list_header_open">Open Positions (%d)</string>
   <string name="position_list_header_open_unsure">Open Positions</string>
   <string name="position_list_header_open_long">Long Positions</string>

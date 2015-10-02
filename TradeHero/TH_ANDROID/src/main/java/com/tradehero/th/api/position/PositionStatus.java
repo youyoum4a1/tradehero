@@ -12,7 +12,7 @@ public enum PositionStatus
     SHORT(1),
     LONG(2),
     FORCE_CLOSED(3),
-    ;
+    PENDING(4),;
 
     public final int value;
 
@@ -42,6 +42,8 @@ public enum PositionStatus
         @Override public int compare(@NonNull PositionStatus lhs, @NonNull PositionStatus rhs)
         {
             if (lhs.equals(rhs)) return 0;
+            if (lhs.equals(PositionStatus.PENDING)) return -1;
+            if (rhs.equals(PositionStatus.PENDING)) return 1;
             if (lhs.equals(PositionStatus.LONG)) return -1;
             if (rhs.equals(PositionStatus.LONG)) return 1;
             if (lhs.equals(PositionStatus.SHORT)) return -1;
