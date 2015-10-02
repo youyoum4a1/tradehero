@@ -101,6 +101,11 @@ public class DashboardTabHost extends TabHost
         this.onTranslateListener = onTranslateListener;
     }
 
+    @Override public void setBottomBarVisibility(int visibility)
+    {
+        setVisibility(visibility);
+    }
+
     @Override
     public <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle)
     {

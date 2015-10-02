@@ -145,8 +145,6 @@ public class PositionListFragment
     @Inject @ShowAskForReviewDialog TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
-    @Inject THBillingInteractorRx userInteractorRx;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
@@ -525,7 +523,7 @@ public class PositionListFragment
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
             return freeFollow(userAction.requested.getBaseKey());
         }
-        else if(userAction instanceof PortfolioHeaderView.UnFollowUserAction)
+        else if (userAction instanceof PortfolioHeaderView.UnFollowUserAction)
         {
             analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Unfollow));
             return unfollow(userAction.requested.getBaseKey());
@@ -596,7 +594,7 @@ public class PositionListFragment
 
     protected void updateHeaderViewFollowButton()
     {
-        if(portfolioHeaderView instanceof OtherUserPortfolioHeaderView)
+        if (portfolioHeaderView instanceof OtherUserPortfolioHeaderView)
         {
             ((OtherUserPortfolioHeaderView) portfolioHeaderView).configureFollowItemsVisibility();
         }
@@ -972,9 +970,28 @@ public class PositionListFragment
                         fragmentElements.get().getRecyclerViewScrollListener(),
                         new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
                                 .header(inflatedView)
-                                .minHeaderTranslation(-headerHeight - 50)
+                                .minHeaderTranslation(0)
                                 .build()
                 ));
+
+                // hack to temporary fix flicker on PositionListFragment
+                positionRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+                {
+                    @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
+                    {
+                        super.onScrollStateChanged(recyclerView, newState);
+
+                        if (newState == 0)
+                        {
+                            fragmentElements.get().getMovableBottom().animateShow();
+                            fragmentElements.get().getMovableBottom().setBottomBarVisibility(View.VISIBLE);
+                        }
+                        else
+                        {
+                            fragmentElements.get().getMovableBottom().setBottomBarVisibility(View.GONE);
+                        }
+                    }
+                });
             }
         };
         inflatedView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);

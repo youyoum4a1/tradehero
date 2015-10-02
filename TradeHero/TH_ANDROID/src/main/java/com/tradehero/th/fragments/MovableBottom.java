@@ -8,4 +8,7 @@ public interface MovableBottom
     void animateHide();
     void setOnMovableBottomTranslateListener(@Nullable OnMovableBottomTranslateListener listener);
     int getHeight();
+
+    // hack to temporary fix flicker on PositionListFragment
+    void setBottomBarVisibility(int visibility);
 }
