@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
+import com.tradehero.th.api.kyc.Currency;
 import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.IdentityPromptInfoDTO;
 import com.tradehero.th.api.kyc.KYCForm;
@@ -108,7 +109,8 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
                 DummyAyondoData.TERMS_CONDITIONS_URL,
                 DummyAyondoData.RISK_WARNING_DISCLAIMER_URL,
                 DummyAyondoData.DATA_SHARING_AGREEMENT_URL,
-                AYONDO_MINIMUM_AGE);
+                AYONDO_MINIMUM_AGE,
+                Arrays.asList(Currency.values()));
         return Observable.just(options);
     }
 

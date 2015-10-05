@@ -72,6 +72,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Bind(R.id.identity_document_type) Spinner identityDocumentTypeSpinner;
     @Bind(R.id.residence_document_type) Spinner residenceDocumentTypeSpinner;
+    @Bind(R.id.currency_spinner) Spinner currencySpinner;
     @Bind(R.id.info_identity_container) ViewGroup identityContainer;
     @Bind(R.id.info_residency_container) ViewGroup residencyContainer;
     @Bind(R.id.document_action_identity) DocumentActionWidget documentActionIdentity;
@@ -122,6 +123,11 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                 getActivity(),
                                                 ResidenceDocumentDTO.createList(getResources(), kycAyondoFormOptionsDTO.residenceDocumentTypes));
                                         residenceDocumentTypeSpinner.setAdapter(residenceDocumentTypeAdapter);
+
+                                        LollipopArrayAdapter<CurrencyDTO> currencyAdapter = new LollipopArrayAdapter<>(
+                                                getActivity(),
+                                                CurrencyDTO.createList(getResources(), kycAyondoFormOptionsDTO.currencies));
+                                        currencySpinner.setAdapter(currencyAdapter);
                                     }
                                 }),
                         liveBrokerSituationDTOObservable.observeOn(AndroidSchedulers.mainThread()),
