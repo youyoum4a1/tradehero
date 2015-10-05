@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.position.PositionSectionHeaderItemView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:padding="@dimen/margin_small"
     >
 
@@ -13,9 +14,6 @@
       android:id="@+id/header_text"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_alignParentLeft="true"
-      android:layout_alignParentStart="true"
-      android:layout_centerVertical="true"
       style="@style/TH.Subhead"
       tools:text="Open Positions"
       />
@@ -24,15 +22,9 @@
       android:id="@+id/header_time_base"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_toRightOf="@id/header_text"
-      android:layout_toEndOf="@id/header_text"
-      android:layout_alignParentRight="true"
-      android:layout_alignParentEnd="true"
-      android:layout_alignBaseline="@id/header_text"
-      android:layout_centerVertical="true"
       style="@style/TH.Caption"
       android:gravity="end"
       tools:text="2 OCT 2013 - 7 NOV 2013"
       />
 
-</com.tradehero.th.fragments.position.PositionSectionHeaderItemView>
+</LinearLayout>

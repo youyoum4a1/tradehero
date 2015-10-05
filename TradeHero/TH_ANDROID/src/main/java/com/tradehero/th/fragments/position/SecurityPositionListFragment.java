@@ -33,6 +33,7 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
+import com.tradehero.th.fragments.position.partial.PositionDisplayDTO;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.trade.TradeListFragment;
@@ -266,7 +267,7 @@ public class SecurityPositionListFragment
                                 {
                                     for (PositionDTO positionDTO : positionDTOs)
                                     {
-                                        viewDtos.add(new PositionPartialTopView.DTO(
+                                        viewDtos.add(new PositionDisplayDTO(
                                                 getResources(),
                                                 currentUserId,
                                                 positionDTO,
@@ -303,10 +304,10 @@ public class SecurityPositionListFragment
         List<Object> closedList = new ArrayList<>();
         for (Object dto : dtoList)
         {
-            if (dto instanceof PositionPartialTopView.DTO)
+            if (dto instanceof PositionDisplayDTO)
             {
-                Boolean isClosed = ((PositionPartialTopView.DTO) dto).positionDTO.isClosed();
-                Integer shares = ((PositionPartialTopView.DTO) dto).positionDTO.shares;
+                Boolean isClosed = ((PositionDisplayDTO) dto).positionDTO.isClosed();
+                Integer shares = ((PositionDisplayDTO) dto).positionDTO.shares;
                 boolean isShort = shares != null && shares < 0;
 
                 if (isClosed != null && isClosed)
@@ -331,7 +332,7 @@ public class SecurityPositionListFragment
         if (!longList.isEmpty())
         {
             filtered.add(
-                    new PositionSectionHeaderItemView.DTO(
+                    new PositionSectionHeaderDisplayDTO(
                             getResources(),
                             PositionStatus.LONG,
                             getString(securityCompactDTO instanceof FxSecurityCompactDTO
@@ -339,29 +340,29 @@ public class SecurityPositionListFragment
                                     : R.string.position_list_header_open_unsure),
                             null,
                             null,
-                            PositionSectionHeaderItemView.Type.LONG));
+                            PositionSectionHeaderDisplayDTO.Type.LONG));
             filtered.addAll(longList);
         }
         if (!shortList.isEmpty())
         {
-            filtered.add(new PositionSectionHeaderItemView.DTO(
+            filtered.add(new PositionSectionHeaderDisplayDTO(
                     getResources(),
                     PositionStatus.SHORT,
                     getString(R.string.position_list_header_open_short),
                     null,
                     null,
-                    PositionSectionHeaderItemView.Type.SHORT));
+                    PositionSectionHeaderDisplayDTO.Type.SHORT));
             filtered.addAll(shortList);
         }
         if (!closedList.isEmpty())
         {
-            filtered.add(new PositionSectionHeaderItemView.DTO(
+            filtered.add(new PositionSectionHeaderDisplayDTO(
                     getResources(),
                     PositionStatus.CLOSED,
                     getString(R.string.position_list_header_closed_unsure),
                     null,
                     null,
-                    PositionSectionHeaderItemView.Type.CLOSED));
+                    PositionSectionHeaderDisplayDTO.Type.CLOSED));
             filtered.addAll(closedList);
         }
 
@@ -394,7 +395,7 @@ public class SecurityPositionListFragment
             Bundle args = new Bundle();
             // By default tries
             TradeListFragment.putPositionDTOKey(args,
-                    ((PositionPartialTopView.DTO) object).positionDTO.getPositionDTOKey());
+                    ((PositionDisplayDTO) object).positionDTO.getPositionDTOKey());
             OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
             if (ownedPortfolioId != null)
             {

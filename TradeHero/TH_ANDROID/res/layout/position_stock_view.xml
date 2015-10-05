@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/TH.ListItem.Clickable"
+    android:gravity="center_vertical">
+
+
+  <ImageView
+      android:id="@+id/stock_logo"
+      android:layout_width="@dimen/medium_image_w_h"
+      android:layout_height="@dimen/medium_image_w_h"
+      android:layout_gravity="center_vertical"
+      android:scaleType="fitCenter"
+      android:contentDescription="@null"
+      tools:src="@drawable/superman_facebook"
+      />
+
+  <RelativeLayout
+      android:id="@+id/first_part"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="@dimen/margin_small"
+      >
+
+
+    <TextView
+        android:id="@+id/stock_symbol"
+        style="@style/TH.UserNameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        tools:text="LSE:VOD"
+        />
+
+    <TextView
+        android:id="@+id/company_name"
+        style="@style/TH.COMPANY"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        tools:text="Vodaphone"
+        android:layout_below="@id/stock_symbol"
+        />
+
+
+    <TextView
+        android:id="@+id/position_percentage"
+        style="@style/TH.UserROI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        tools:text="5.8%"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        tools:visibility="visible"
+        />
+
+    <TextView
+        android:id="@+id/share_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="BUY 2,000 @ US$ 141.38"
+        android:layout_below="@id/company_name"
+        style="@style/TH.Caption"/>
+
+    <TextView
+        android:id="@+id/position_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="VALUE: US$ 282,380.00"
+        android:layout_below="@id/share_count"
+        style="@style/TH.Caption"/>
+
+
+  </RelativeLayout>
+
+</LinearLayout>

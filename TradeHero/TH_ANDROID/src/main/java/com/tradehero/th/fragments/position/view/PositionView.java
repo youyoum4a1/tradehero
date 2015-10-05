@@ -15,6 +15,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.position.partial.AbstractPartialBottomView;
+import com.tradehero.th.fragments.position.partial.PositionDisplayDTO;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
 import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
@@ -82,7 +83,7 @@ public class PositionView extends LinearLayout
 
     public static class DTO
     {
-        @NonNull public final PositionPartialTopView.DTO topViewDTO;
+        @NonNull public final PositionDisplayDTO topViewDTO;
         @NonNull public final AbstractPartialBottomView.DTO bottomViewDTO;
 
         public DTO(@NonNull Resources resources,
@@ -92,7 +93,7 @@ public class PositionView extends LinearLayout
         {
             PositionDTO positionDTO = expandablePositionDTO.getModel();
 
-            topViewDTO = new PositionPartialTopView.DTO(resources, currentUserId, positionDTO, securityCompactDTO);
+            topViewDTO = new PositionDisplayDTO(resources, currentUserId, positionDTO, securityCompactDTO);
 
             Boolean isClosed = positionDTO.isClosed();
             Boolean isOpen = positionDTO.isOpen();
