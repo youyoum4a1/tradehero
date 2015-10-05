@@ -970,7 +970,7 @@ public class PositionListFragment
                         fragmentElements.get().getRecyclerViewScrollListener(),
                         new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
                                 .header(inflatedView)
-                                .minHeaderTranslation(0)
+                                .minHeaderTranslation(-inflatedView.getHeight())
                                 .build()
                 ));
 
@@ -989,6 +989,23 @@ public class PositionListFragment
                         else
                         {
                             fragmentElements.get().getMovableBottom().setBottomBarVisibility(View.GONE);
+                        }
+                    }
+                });
+
+                // hack to temporary fix flicker on PositionListFragment
+                positionRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+                {
+                    @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+                    {
+                        super.onScrolled(recyclerView, dx, dy);
+
+                        if (recyclerView.getChildAt(0).getTop() >= inflatedView.getHeight() / 2)
+                        {
+                            headerStub.setVisibility(View.VISIBLE);
+                        }
+                        else {
+                            headerStub.setVisibility(View.GONE);
                         }
                     }
                 });
