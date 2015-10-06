@@ -902,11 +902,27 @@ public class PositionListFragment
             portfolioHeaderView = (PortfolioHeaderView) inflatedView;
 
             headerHeight = getResources().getDimensionPixelSize(PortfolioHeaderFactory.layoutHeightFor(headerLayoutId));
-            positionRecyclerView.addOnScrollListener(new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
-                            .header(inflatedView)
-                            .minHeaderTranslation(-headerHeight)
-                            .build()
-            );
+            inflatedView.postDelayed(new Runnable()
+            {
+                @Override public void run()
+                {
+                    headerHeight = inflatedView.getMeasuredHeight();
+                    positionRecyclerView.addOnScrollListener(new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
+                                    .header(inflatedView)
+                                    .minHeaderTranslation(-headerHeight)
+                                    .build()
+                    );
+                    if (positionItemAdapter.getItemCount() > 0)
+                    {
+                        Object o = positionItemAdapter.getItem(0);
+                        if (o instanceof PositionDummyHeaderDisplayDTO)
+                        {
+                            ((PositionDummyHeaderDisplayDTO) o).headerHeight = headerHeight;
+                            positionItemAdapter.notifyItemChanged(0);
+                        }
+                    }
+                }
+            }, 300);
         }
 
         portfolioHeaderView.linkWith(userProfileDTO);
