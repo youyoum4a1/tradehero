@@ -81,6 +81,7 @@
 
     <!-- This is required for persisting preferences related to push and location -->
     <provider
+        tools:replace="android:authorities, android:permission"
         android:name="com.urbanairship.UrbanAirshipProvider"
         android:authorities="${applicationId}.urbanairship.provider"
         android:permission="${applicationId}.permission.UA_DATA"

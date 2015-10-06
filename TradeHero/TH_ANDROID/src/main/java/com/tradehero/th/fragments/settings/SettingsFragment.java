@@ -53,6 +53,7 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.push.PushNotificationManager;
+import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.ServerEndpoint;
 import com.tradehero.th.network.service.SessionServiceWrapper;
@@ -79,6 +80,7 @@ import com.tradehero.th.utils.dagger.ForPicasso;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.MarketSegment;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.urbanairship.UAirship;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -485,6 +487,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");
+
 //        PackageInfo packageInfo = null;
 //        String timeStr;
 //        try
@@ -505,6 +508,10 @@ public final class SettingsFragment extends BasePreferenceFragment
 //            version.setSummary(timeStr);
 //        }
         version.setTitle(VersionUtils.getVersionId(getActivity()) + " - " + serverPath);
+
+        Preference channelId = findPreference(getString(R.string.key_settings_misc_channel_id));
+        UAirship uAirship = UrbanAirshipPushNotificationManager.getUAirship();
+        channelId.setTitle(uAirship.getPushManager().getChannelId());
     }
 
     @Override

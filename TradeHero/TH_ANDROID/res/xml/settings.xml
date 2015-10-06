@@ -184,4 +184,9 @@
       android:title="version"
       />
 
+  <Preference
+      android:key="@string/key_settings_misc_channel_id"
+      android:title="channelId"
+      />
+
 </PreferenceScreen>
