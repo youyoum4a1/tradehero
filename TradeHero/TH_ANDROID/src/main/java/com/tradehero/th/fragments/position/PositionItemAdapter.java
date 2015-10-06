@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
@@ -91,6 +90,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
     {
         int viewType = getItemViewType(position);
         return viewType != VIEW_TYPE_HEADER
+                && viewType != VIEW_TYPE_DUMMY_HEADER
                 && (viewType != VIEW_TYPE_PLACEHOLDER
                 || userProfileDTO == null
                 || userProfileDTO.getBaseKey().equals(currentUserId.toUserBaseKey()));
@@ -328,34 +328,17 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
             {
                 PositionDisplayDTO o1 = (PositionDisplayDTO) oldItem;
                 PositionDisplayDTO o2 = (PositionDisplayDTO) newItem;
-                if (o1.stockLogoVisibility != o2.stockLogoVisibility) return false;
                 if (o1.stockLogoRes != o2.stockLogoRes) return false;
-                if (o1.flagsContainerVisibility != o2.flagsContainerVisibility) return false;
                 if (o1.btnCloseVisibility != o2.btnCloseVisibility) return false;
                 if (o1.companyNameVisibility != o2.companyNameVisibility) return false;
-                if (o1.shareCountRowVisibility != o2.shareCountRowVisibility) return false;
                 if (o1.shareCountVisibility != o2.shareCountVisibility) return false;
-                if (o1.lastAmountContainerVisibility != o2.lastAmountContainerVisibility) return false;
-                if (o1.positionPercentVisibility != o2.positionPercentVisibility) return false;
-                if (o1.gainIndicator != o2.gainIndicator) return false;
-                if (o1.gainLossColor != o2.gainLossColor) return false;
-                if (o1.unrealisedPLVisibility != o2.unrealisedPLVisibility) return false;
-                if (o1.lastAmountHeaderVisibility != o2.lastAmountHeaderVisibility) return false;
                 if (o1.stockLogoUrl != null ? !o1.stockLogoUrl.equals(o2.stockLogoUrl) : o2.stockLogoUrl != null) return false;
                 if (o1.fxPair != null ? !o1.fxPair.equals(o2.fxPair) : o2.fxPair != null) return false;
                 if (!o1.stockSymbol.equals(o2.stockSymbol)) return false;
                 if (!o1.companyName.equals(o2.companyName)) return false;
-                if (!o1.lastPriceAndRise.equals(o2.lastPriceAndRise)) return false;
-                if (!o1.shareCountHeader.equals(o2.shareCountHeader)) return false;
-                if (!o1.shareCount.equals(o2.shareCount)) return false;
                 if (!o1.shareCountText.equals(o2.shareCountText)) return false;
-                if (!o1.positionPercent.equals(o2.positionPercent)) return false;
-                if (!o1.gainLossHeader.equals(o2.gainLossHeader)) return false;
-                if (!o1.gainLoss.equals(o2.gainLoss)) return false;
-                if (!o1.gainLossPercent.equals(o2.gainLossPercent)) return false;
                 if (o1.totalInvested != null ? !o1.totalInvested.equals(o2.totalInvested) : o2.totalInvested != null) return false;
-                if (!o1.unrealisedPL.equals(o2.unrealisedPL)) return false;
-                return o1.lastAmount.equals(o2.lastAmount);
+                return o1.lastValue.equals(o2.lastValue);
             }
             else
             {
@@ -398,7 +381,8 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         @Bind(R.id.stock_symbol) TextView stockSymbol;
         @Bind(R.id.company_name) TextView companyName;
         @Bind(R.id.share_count) TextView shareCount;
-        @Bind(R.id.position_value) TextView totalValue;
+        @Bind(R.id.position_value) TextView totalInvested;
+        @Bind(R.id.position_percentage) TextView positionGainLoss;
 
         private final Picasso picasso;
 
@@ -414,37 +398,38 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
             {
                 final PositionDisplayDTO dto = (PositionDisplayDTO) o;
 
-                stockLogo.setVisibility(dto.stockLogoVisibility);
-                RequestCreator request;
-                if (dto.stockLogoUrl != null)
+                if (dto.stockLogo != null)
                 {
-                    request = picasso.load(dto.stockLogoUrl);
+                    stockLogo.setImageDrawable(dto.stockLogo);
                 }
                 else
                 {
-                    request = picasso.load(dto.stockLogoRes);
+                    RequestCreator request;
+                    if (dto.stockLogoUrl != null)
+                    {
+                        request = picasso.load(dto.stockLogoUrl);
+                    }
+                    else
+                    {
+                        request = picasso.load(dto.stockLogoRes);
+                    }
+                    request.placeholder(R.drawable.default_image)
+                            .transform(new WhiteToTransparentTransformation())
+                            .error(dto.stockLogoRes)
+                            .into(stockLogo);
                 }
-                request.placeholder(R.drawable.default_image)
-                        .transform(new WhiteToTransparentTransformation())
-                        .into(stockLogo, new Callback()
-                        {
-                            @Override public void onSuccess()
-                            {
-                            }
-
-                            @Override public void onError()
-                            {
-                                stockLogo.setImageResource(dto.stockLogoRes);
-                            }
-                        });
 
                 stockSymbol.setText(dto.stockSymbol);
 
                 companyName.setVisibility(dto.companyNameVisibility);
                 companyName.setText(dto.companyName);
 
+                shareCount.setVisibility(dto.shareCountVisibility);
                 shareCount.setText(dto.shareCountText);
-                totalValue.setText(dto.unrealisedPL);
+
+                totalInvested.setText(dto.totalInvested);
+
+                positionGainLoss.setText(dto.positionGainLoss);
             }
         }
     }

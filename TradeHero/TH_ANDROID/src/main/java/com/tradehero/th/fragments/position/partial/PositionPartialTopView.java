@@ -10,10 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
-import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.position.PositionDTO;
@@ -151,139 +148,139 @@ public class PositionPartialTopView extends LinearLayout
 
         @Override public void onDisplay(Object o)
         {
-            if (o instanceof PositionDisplayDTO)
-            {
-                this.dto = (PositionDisplayDTO) o;
-
-                if (gainIndicator != null)
-                {
-                    gainIndicator.setImageResource(dto.gainIndicator);
-                }
-
-                if (stockLogo != null)
-                {
-                    stockLogo.setVisibility(dto.stockLogoVisibility);
-                    RequestCreator request;
-                    if (dto.stockLogoUrl != null)
-                    {
-                        request = picasso.load(dto.stockLogoUrl);
-                    }
-                    else
-                    {
-                        request = picasso.load(dto.stockLogoRes);
-                    }
-                    request.placeholder(R.drawable.default_image)
-                            .transform(new WhiteToTransparentTransformation())
-                            .into(stockLogo, new Callback()
-                            {
-                                @Override public void onSuccess()
-                                {
-                                }
-
-                                @Override public void onError()
-                                {
-                                    stockLogo.setImageResource(dto.stockLogoRes);
-                                }
-                            });
-                }
-
-                if (flagsContainer != null)
-                {
-                    flagsContainer.setVisibility(dto.flagsContainerVisibility);
-                    flagsContainer.display(dto.fxPair);
-                }
-
-                if (btnClose != null)
-                {
-                    btnClose.setVisibility(dto.btnCloseVisibility);
-                }
-
-                if (stockSymbol != null)
-                {
-                    stockSymbol.setText(dto.stockSymbol);
-                }
-
-                if (companyName != null)
-                {
-                    companyName.setVisibility(dto.companyNameVisibility);
-                    companyName.setText(dto.companyName);
-                }
-
-                if (lastPriceAndRise != null)
-                {
-                    lastPriceAndRise.setText(dto.lastPriceAndRise);
-                }
-
-                if (shareCountRow != null)
-                {
-                    shareCountRow.setVisibility(dto.shareCountRowVisibility);
-                }
-
-                if (shareCountHeader != null)
-                {
-                    shareCountHeader.setText(dto.shareCountHeader);
-                }
-
-                if (shareCountText != null)
-                {
-                    shareCountText.setVisibility(dto.shareCountVisibility);
-                    shareCountText.setText(dto.shareCountText);
-                }
-
-                if (shareCount != null)
-                {
-                    shareCount.setText(dto.shareCount);
-                }
-
-                if (gainLossHeader != null)
-                {
-                    gainLossHeader.setText(dto.gainLossHeader);
-                }
-
-                if (gainLoss != null)
-                {
-                    gainLoss.setText(dto.gainLoss);
-                    gainLoss.setTextColor(dto.gainLossColor);
-                }
-
-                if (gainLossPercent != null)
-                {
-                    gainLossPercent.setText(dto.gainLossPercent);
-                    gainLossPercent.setTextColor(dto.gainLossColor);
-                }
-
-                if (totalInvested != null)
-                {
-                    totalInvested.setText(dto.totalInvested);
-                }
-
-                if (positionPercent != null)
-                {
-                    positionPercent.setVisibility(dto.positionPercentVisibility);
-                    positionPercent.setText(dto.positionPercent);
-                }
-
-                if (positionUnrealisedPL != null)
-                {
-                    positionUnrealisedPL.setVisibility(dto.unrealisedPLVisibility);
-                    positionUnrealisedPL.setText(dto.unrealisedPL);
-                }
-
-                if (lastAmountContainer != null)
-                {
-                    lastAmountContainer.setVisibility(dto.lastAmountContainerVisibility);
-                }
-
-                if (positionLastAmountHeader != null)
-                {
-                    positionLastAmountHeader.setVisibility(dto.lastAmountHeaderVisibility);
-                }
-
-                if (positionLastAmount != null)
-                {
-                    positionLastAmount.setText(dto.lastAmount);
-                }
-            }
+            //if (o instanceof PositionDisplayDTO)
+            //{
+            //    this.dto = (PositionDisplayDTO) o;
+            //
+            //    if (gainIndicator != null)
+            //    {
+            //        gainIndicator.setImageResource(dto.gainIndicator);
+            //    }
+            //
+            //    if (stockLogo != null)
+            //    {
+            //        stockLogo.setVisibility(dto.stockLogoVisibility);
+            //        RequestCreator request;
+            //        if (dto.stockLogoUrl != null)
+            //        {
+            //            request = picasso.load(dto.stockLogoUrl);
+            //        }
+            //        else
+            //        {
+            //            request = picasso.load(dto.stockLogoRes);
+            //        }
+            //        request.placeholder(R.drawable.default_image)
+            //                .transform(new WhiteToTransparentTransformation())
+            //                .into(stockLogo, new Callback()
+            //                {
+            //                    @Override public void onSuccess()
+            //                    {
+            //                    }
+            //
+            //                    @Override public void onError()
+            //                    {
+            //                        stockLogo.setImageResource(dto.stockLogoRes);
+            //                    }
+            //                });
+            //    }
+            //
+            //    if (flagsContainer != null)
+            //    {
+            //        flagsContainer.setVisibility(dto.flagsContainerVisibility);
+            //        flagsContainer.display(dto.fxPair);
+            //    }
+            //
+            //    if (btnClose != null)
+            //    {
+            //        btnClose.setVisibility(dto.btnCloseVisibility);
+            //    }
+            //
+            //    if (stockSymbol != null)
+            //    {
+            //        stockSymbol.setText(dto.stockSymbol);
+            //    }
+            //
+            //    if (companyName != null)
+            //    {
+            //        companyName.setVisibility(dto.companyNameVisibility);
+            //        companyName.setText(dto.companyName);
+            //    }
+            //
+            //    if (lastPriceAndRise != null)
+            //    {
+            //        lastPriceAndRise.setText(dto.lastPriceAndRise);
+            //    }
+            //
+            //    if (shareCountRow != null)
+            //    {
+            //        shareCountRow.setVisibility(dto.shareCountRowVisibility);
+            //    }
+            //
+            //    if (shareCountHeader != null)
+            //    {
+            //        shareCountHeader.setText(dto.shareCountHeader);
+            //    }
+            //
+            //    if (shareCountText != null)
+            //    {
+            //        shareCountText.setVisibility(dto.shareCountVisibility);
+            //        shareCountText.setText(dto.shareCountText);
+            //    }
+            //
+            //    if (shareCount != null)
+            //    {
+            //        shareCount.setText(dto.shareCount);
+            //    }
+            //
+            //    if (gainLossHeader != null)
+            //    {
+            //        gainLossHeader.setText(dto.gainLossHeader);
+            //    }
+            //
+            //    if (gainLoss != null)
+            //    {
+            //        gainLoss.setText(dto.gainLoss);
+            //        gainLoss.setTextColor(dto.gainLossColor);
+            //    }
+            //
+            //    if (gainLossPercent != null)
+            //    {
+            //        gainLossPercent.setText(dto.gainLossPercent);
+            //        gainLossPercent.setTextColor(dto.gainLossColor);
+            //    }
+            //
+            //    if (totalInvested != null)
+            //    {
+            //        totalInvested.setText(dto.totalInvested);
+            //    }
+            //
+            //    if (positionPercent != null)
+            //    {
+            //        positionPercent.setVisibility(dto.positionPercentVisibility);
+            //        positionPercent.setText(dto.positionPercent);
+            //    }
+            //
+            //    if (positionUnrealisedPL != null)
+            //    {
+            //        positionUnrealisedPL.setVisibility(dto.unrealisedPLVisibility);
+            //        positionUnrealisedPL.setText(dto.unrealisedPL);
+            //    }
+            //
+            //    if (lastAmountContainer != null)
+            //    {
+            //        lastAmountContainer.setVisibility(dto.lastAmountContainerVisibility);
+            //    }
+            //
+            //    if (positionLastAmountHeader != null)
+            //    {
+            //        positionLastAmountHeader.setVisibility(dto.lastAmountHeaderVisibility);
+            //    }
+            //
+            //    if (positionLastAmount != null)
+            //    {
+            //        positionLastAmount.setText(dto.lastValue);
+            //    }
+            //}
         }
     }
 }

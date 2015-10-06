@@ -1,15 +1,19 @@
 package com.tradehero.th.fragments.position.partial;
 
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.view.View;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.th.R;
 import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionInPeriodDTO;
 import com.tradehero.th.api.position.PositionStatus;
+import com.tradehero.th.api.security.FxCurrency;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.security.key.FxPairSecurityId;
@@ -23,34 +27,19 @@ public class PositionDisplayDTO
     @NonNull public final PositionDTO positionDTO;
     @NonNull public final SecurityCompactDTO securityCompactDTO;
 
-    @ViewVisibilityValue public final int stockLogoVisibility;
+    @Nullable public final Drawable stockLogo;
     @Nullable public final String stockLogoUrl;
     @DrawableRes public final int stockLogoRes;
-    @Nullable public final FxPairSecurityId fxPair;
     @NonNull public final String stockSymbol;
-    @ViewVisibilityValue public final int flagsContainerVisibility;
-    @ViewVisibilityValue public final int btnCloseVisibility;
     @ViewVisibilityValue public final int companyNameVisibility;
     @NonNull public final String companyName;
-    @NonNull public final CharSequence lastPriceAndRise;
-    @ViewVisibilityValue public final int shareCountRowVisibility;
-    @NonNull public final CharSequence shareCountHeader;
-    @ViewVisibilityValue public final int shareCountVisibility;
-    @NonNull public final CharSequence shareCount;
     @NonNull public final CharSequence shareCountText;
-    @ViewVisibilityValue public final int lastAmountContainerVisibility;
-    @ViewVisibilityValue public final int positionPercentVisibility;
-    @NonNull public final CharSequence positionPercent;
-    @DrawableRes public final int gainIndicator;
-    @NonNull public final String gainLossHeader;
-    @NonNull public final CharSequence gainLoss;
-    @NonNull public final CharSequence gainLossPercent;
-    public final int gainLossColor;
+    @NonNull public final CharSequence positionGainLoss;
     public final CharSequence totalInvested;
-    @ViewVisibilityValue public final int unrealisedPLVisibility;
-    @NonNull public final CharSequence unrealisedPL;
-    @ViewVisibilityValue public final int lastAmountHeaderVisibility;
-    @NonNull public final CharSequence lastAmount;
+    @NonNull public final CharSequence lastValue;
+    public final FxPairSecurityId fxPair;
+    @ViewVisibilityValue public final int shareCountVisibility;
+    @ViewVisibilityValue public final int btnCloseVisibility;
 
     public PositionDisplayDTO(@NonNull Resources resources, @NonNull CurrentUserId currentUserId, @NonNull PositionDTO positionDTO,
             @NonNull SecurityCompactDTO securityCompactDTO)
@@ -59,30 +48,6 @@ public class PositionDisplayDTO
         this.securityCompactDTO = securityCompactDTO;
 
         String na = resources.getString(R.string.na);
-
-        //<editor-fold desc="Stock Logo">
-        if (securityCompactDTO.imageBlobUrl != null)
-        {
-            stockLogoVisibility = View.VISIBLE;
-            flagsContainerVisibility = View.GONE;
-            stockLogoUrl = securityCompactDTO.imageBlobUrl;
-            stockLogoRes = R.drawable.default_image;
-        }
-        else if (securityCompactDTO instanceof FxSecurityCompactDTO) // TODO Improve and show flags?
-        {
-            stockLogoVisibility = View.GONE;
-            flagsContainerVisibility = View.VISIBLE;
-            stockLogoUrl = null;
-            stockLogoRes = R.drawable.default_image;
-        }
-        else
-        {
-            stockLogoVisibility = View.VISIBLE;
-            flagsContainerVisibility = View.GONE;
-            stockLogoUrl = null;
-            stockLogoRes = securityCompactDTO.getExchangeLogoId();
-        }
-        //</editor-fold>
 
         //<editor-fold desc="Symbol and FxPair">
         if (securityCompactDTO instanceof FxSecurityCompactDTO)
@@ -94,6 +59,32 @@ public class PositionDisplayDTO
         {
             fxPair = null;
             stockSymbol = String.format("%s:%s", securityCompactDTO.exchange, securityCompactDTO.symbol);
+        }
+        //</editor-fold>
+
+        //<editor-fold desc="Stock Logo">
+        if (securityCompactDTO.imageBlobUrl != null)
+        {
+            stockLogo = null;
+            stockLogoUrl = securityCompactDTO.imageBlobUrl;
+            stockLogoRes = R.drawable.default_image;
+        }
+        else if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            LayerDrawable layer = new LayerDrawable(new Drawable[] {resources.getDrawable(FxCurrency.create(fxPair.right).flag),
+                    resources.getDrawable(FxCurrency.create(fxPair.left).flag)});
+            int padding = resources.getDimensionPixelSize(R.dimen.margin_xsmall);
+            layer.setLayerInset(0, padding, padding, 0, 0);
+            layer.setLayerInset(1, 0, 0, padding, padding);
+            stockLogo = layer;
+            stockLogoUrl = null;
+            stockLogoRes = R.drawable.default_image;
+        }
+        else
+        {
+            stockLogo = null;
+            stockLogoUrl = null;
+            stockLogoRes = securityCompactDTO.getExchangeLogoId();
         }
         //</editor-fold>
 
@@ -110,38 +101,6 @@ public class PositionDisplayDTO
         }
         //</editor-fold>
 
-        //<editor-fold desc="Last Price and Rise">
-        final CharSequence lastPrice;
-        if (securityCompactDTO.lastPrice != null)
-        {
-            lastPrice = THSignedMoney.builder(securityCompactDTO.lastPrice)
-                    .relevantDigitCount(3)
-                    .currency(securityCompactDTO.currencyDisplay)
-                    .build()
-                    .createSpanned();
-        }
-        else
-        {
-            lastPrice = resources.getString(R.string.na);
-        }
-        final String formatter = lastPrice + " (%s)";
-        if (securityCompactDTO.risePercent != null)
-        {
-            lastPriceAndRise = THSignedPercentage.builder(securityCompactDTO.risePercent * 100)
-                    .relevantDigitCount(3)
-                    .signTypeArrow()
-                    .withSign()
-                    .withDefaultColor()
-                    .format(formatter)
-                    .build()
-                    .createSpanned();
-        }
-        else
-        {
-            lastPriceAndRise = lastPrice;
-        }
-        //</editor-fold>
-
         //<editor-fold desc="Share Count">
         if ((positionDTO.positionStatus == PositionStatus.CLOSED
                 || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED))
@@ -152,21 +111,28 @@ public class PositionDisplayDTO
         {
             shareCountVisibility = View.VISIBLE;
         }
+
+        @StringRes int sharesFormat = R.string.position_share_count_qty_suffix;
+        if (securityCompactDTO instanceof FxSecurityCompactDTO)
+        {
+            sharesFormat = R.string.position_fx_count_qty_suffix;
+        }
+        String buySell = positionDTO.isPending() ? (positionDTO.isShort() ? resources.getString(R.string.sell) : resources.getString(R.string.buy))
+                : (positionDTO.isShort() ? resources.getString(R.string.sold) : resources.getString(R.string.bought));
         if (positionDTO.shares == null)
         {
-            shareCountText = resources.getString(R.string.position_share_count_qty_prefix, resources.getString(R.string.na));
+            shareCountText = resources.getString(sharesFormat, buySell, resources.getString(R.string.na));
         }
         else
         {
             shareCountText = THSignedNumber.builder(Math.abs(positionDTO.shares))
-                    .format(resources.getString(R.string.position_share_count_qty_prefix))
+                    .format(resources.getString(sharesFormat, buySell, "%1$s"))
                     .build()
                     .createSpanned();
         }
 
         if (securityCompactDTO instanceof FxSecurityCompactDTO)
         {
-            shareCountHeader = resources.getString(R.string.position_share_count_header_fx);
             if (positionDTO.positionStatus == PositionStatus.CLOSED
                     || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED
                     || currentUserId.get() != positionDTO.userId)
@@ -180,26 +146,10 @@ public class PositionDisplayDTO
         }
         else
         {
-            shareCountHeader = resources.getString(R.string.position_share_count_header);
             btnCloseVisibility = View.GONE;
         }
 
-        shareCountRowVisibility = (positionDTO.isClosed() != null && positionDTO.isClosed())
-                ? View.GONE
-                : View.VISIBLE;
-        if (positionDTO.shares == null)
-        {
-            shareCount = resources.getString(R.string.na);
-        }
-        else
-        {
-            shareCount = THSignedNumber.builder(Math.abs(positionDTO.shares))
-                    .build()
-                    .createSpanned();
-        }
         //</editor-fold>
-
-        lastAmountContainerVisibility = securityCompactDTO instanceof FxSecurityCompactDTO ? View.GONE : View.VISIBLE;
 
         final Double realisedPLRefCcy = positionDTO.realizedPLRefCcy;
         final Double unrealisedPLRefCcy = positionDTO.unrealizedPLRefCcy;
@@ -210,85 +160,19 @@ public class PositionDisplayDTO
                 : positionDTO.getROISinceInception();
         if (securityCompactDTO instanceof FxSecurityCompactDTO)
         {
-            positionPercentVisibility = View.GONE;
-            positionPercent = "";
-        }
-        else
-        {
-            positionPercentVisibility = View.VISIBLE;
-            positionPercent = gainPercent == null
-                    ? na
-                    : THSignedPercentage.builder(gainPercent * 100.0)
-                            .signTypeArrow()
-                            .withSign()
-                            .withDefaultColor()
-                            .relevantDigitCount(3)
-                            .build()
-                            .createSpanned();
-        }
-
-        if (gainPercent == null || gainPercent == 0)
-        {
-            gainIndicator = R.drawable.default_image;
-            gainLossHeader = resources.getString(R.string.position_realised_profit_header) + ":";
-        }
-        else if (gainPercent > 0)
-        {
-            gainIndicator = R.drawable.indicator_up;
-            gainLossHeader = resources.getString(R.string.position_realised_profit_header) + ":";
-        }
-        else
-        {
-            gainIndicator = R.drawable.indicator_down;
-            gainLossHeader = resources.getString(R.string.position_realised_loss_header) + ":";
-        }
-
-        final double gain = (realisedPLRefCcy != null ? realisedPLRefCcy : 0)
-                + (unrealisedPLRefCcy != null ? unrealisedPLRefCcy : 0);
-        gainLossColor = resources.getColor(gain == 0
-                ? R.color.black
-                : gain > 0
-                        ? R.color.number_up
-                        : R.color.number_down);
-        gainLoss = THSignedMoney.builder(gain)
-                .currency(positionDTO.getNiceCurrency())
-                .withOutSign()
-                .relevantDigitCount(3)
-                .build()
-                .createSpanned();
-        gainLossPercent = gainPercent == null
-                ? ""
-                : THSignedPercentage.builder(gainPercent * 100)
-                        .signTypePlusMinusAlways()
-                        .relevantDigitCount(3)
-                        .format("(%s)")
-                        .build()
-                        .createSpanned();
-        //</editor-fold>
-
-        totalInvested = THSignedMoney.builder(positionDTO.sumInvestedAmountRefCcy)
-                .currency(positionDTO.getNiceCurrency())
-                .relevantDigitCount(3)
-                .build()
-                .createSpanned();
-
-        //<editor-fold desc="Unrealised">
-        if (securityCompactDTO instanceof FxSecurityCompactDTO)
-        {
-            unrealisedPLVisibility = View.VISIBLE;
-            if (unrealisedPLRefCcy != null)
+            Double PLR;
+            if (positionDTO.positionStatus == PositionStatus.CLOSED
+                    || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
             {
-                Double PLR;
-                if (positionDTO.positionStatus == PositionStatus.CLOSED
-                        || positionDTO.positionStatus == PositionStatus.FORCE_CLOSED)
-                {
-                    PLR = realisedPLRefCcy;
-                }
-                else
-                {
-                    PLR = unrealisedPLRefCcy;
-                }
-                unrealisedPL =
+                PLR = realisedPLRefCcy;
+            }
+            else
+            {
+                PLR = unrealisedPLRefCcy;
+            }
+            if (PLR != null)
+            {
+                positionGainLoss =
                         THSignedMoney.builder(PLR)
                                 .currency(positionDTO.getNiceCurrency())
                                 .signTypePlusMinusAlways()
@@ -298,26 +182,38 @@ public class PositionDisplayDTO
             }
             else
             {
-                unrealisedPL = resources.getString(R.string.na);
+                positionGainLoss = na;
             }
         }
         else
         {
-            unrealisedPLVisibility = View.GONE;
-            unrealisedPL = resources.getString(R.string.na);
+            positionGainLoss = gainPercent == null
+                    ? na
+                    : THSignedPercentage.builder(gainPercent * 100.0)
+                            .signTypeArrow()
+                            .withSign()
+                            .withDefaultColor()
+                            .relevantDigitCount(3)
+                            .build()
+                            .createSpanned();
         }
         //</editor-fold>
+
+        String totalInvestedFormat = resources.getString(R.string.position_invested);
+        totalInvested = THSignedMoney.builder(positionDTO.sumInvestedAmountRefCcy)
+                .currency(positionDTO.getNiceCurrency())
+                .relevantDigitCount(3)
+                .format(totalInvestedFormat)
+                .build()
+                .createSpanned();
 
         //<editor-fold desc="Last Amount">
         Boolean isOpen = positionDTO.isOpen();
         Boolean isClosed = positionDTO.isClosed();
-        lastAmountHeaderVisibility = isOpen == null || isOpen
-                ? View.GONE
-                : View.VISIBLE;
         String lastAmountFormat = resources.getString(R.string.position_last_amount_header);
         if (isClosed != null && isClosed && realisedPLRefCcy != null)
         {
-            lastAmount = THSignedMoney.builder(realisedPLRefCcy)
+            lastValue = THSignedMoney.builder(realisedPLRefCcy)
                     .relevantDigitCount(3)
                     .withSign()
                     .signTypeMinusOnly()
@@ -328,7 +224,7 @@ public class PositionDisplayDTO
         }
         else if (isClosed != null && !isClosed)
         {
-            lastAmount = THSignedMoney.builder(positionDTO.marketValueRefCcy)
+            lastValue = THSignedMoney.builder(positionDTO.marketValueRefCcy)
                     .relevantDigitCount(3)
                     .withSign()
                     .signTypeMinusOnly()
@@ -339,7 +235,7 @@ public class PositionDisplayDTO
         }
         else
         {
-            lastAmount = na;
+            lastValue = na;
         }
         //</editor-fold>
     }
