@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.position;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.Space;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
     public static final int VIEW_TYPE_PLACEHOLDER = 1;
     public static final int VIEW_TYPE_LOCKED = 2;
     public static final int VIEW_TYPE_POSITION = 3;
+    public static final int VIEW_TYPE_DUMMY_HEADER = 4;
 
     protected Map<Integer, Integer> itemTypeToLayoutId;
     private UserProfileDTO userProfileDTO;
@@ -62,7 +64,11 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
     @Override public int getItemViewType(int position)
     {
         Object item = getItem(position);
-        if (item instanceof PositionLockedView.DTO)
+        if (item instanceof PositionDummyHeaderDisplayDTO)
+        {
+            return VIEW_TYPE_DUMMY_HEADER;
+        }
+        else if (item instanceof PositionLockedView.DTO)
         {
             return VIEW_TYPE_LOCKED;
         }
@@ -152,6 +158,11 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
 
     @NonNull @Override public TypedViewHolder<Object> onCreateViewHolder(ViewGroup parent, int viewType)
     {
+        if (viewType == VIEW_TYPE_DUMMY_HEADER)
+        {
+            return new DummyHeaderViewHolder(new Space(parent.getContext()));
+        }
+
         int layoutToInflate = getLayoutForViewType(viewType);
         View v = LayoutInflater.from(parent.getContext()).inflate(layoutToInflate, parent, false);
 
@@ -201,6 +212,18 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
 
         @Override public int compare(Object o1, Object o2)
         {
+            if (o1 instanceof PositionDummyHeaderDisplayDTO && o2 instanceof PositionDummyHeaderDisplayDTO)
+            {
+                return 0;
+            }
+            if (o1 instanceof PositionDummyHeaderDisplayDTO)
+            {
+                return -1;
+            }
+            if (o2 instanceof PositionDummyHeaderDisplayDTO)
+            {
+                return 1;
+            }
             if (o1 instanceof PositionNothingView.DTO && o2 instanceof PositionNothingView.DTO)
             {
                 return 0;
@@ -272,7 +295,11 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
 
         @Override public boolean areContentsTheSame(Object oldItem, Object newItem)
         {
-            if (oldItem instanceof PositionNothingView.DTO)
+            if (oldItem instanceof PositionDummyHeaderDisplayDTO)
+            {
+                return ((PositionDummyHeaderDisplayDTO) oldItem).headerHeight == ((PositionDummyHeaderDisplayDTO) newItem).headerHeight;
+            }
+            else if (oldItem instanceof PositionNothingView.DTO)
             {
                 return ((PositionNothingView.DTO) oldItem).description.equals(((PositionNothingView.DTO) newItem).description);
             }
@@ -340,6 +367,10 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         {
             if (item1.getClass().equals(item2.getClass()))
             {
+                if (item1 instanceof PositionDummyHeaderDisplayDTO)
+                {
+                    return true; //There can only be one header view
+                }
                 if (item1 instanceof PositionNothingView.DTO)
                 {
                     return true; //There can only be one empty view
@@ -442,6 +473,22 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
                 {
                     timeBaseText.setText(dto.timeBase);
                 }
+            }
+        }
+    }
+
+    public static class DummyHeaderViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
+    {
+        public DummyHeaderViewHolder(View itemView)
+        {
+            super(itemView);
+        }
+
+        @Override public void onDisplay(Object o)
+        {
+            if (o instanceof PositionDummyHeaderDisplayDTO)
+            {
+                itemView.setMinimumHeight(((PositionDummyHeaderDisplayDTO) o).headerHeight);
             }
         }
     }

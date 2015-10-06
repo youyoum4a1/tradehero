@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.portfolio.header;
 
+import android.support.annotation.DimenRes;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,7 +24,6 @@ public class PortfolioHeaderFactory
     {
         if (portfolioCompactDTO != null && portfolioCompactDTO.isFx())
         {
-            // TODO more tests
             return R.layout.portfolio_header_fx_current_user_view;
         }
         else
@@ -38,6 +38,22 @@ public class PortfolioHeaderFactory
             }
         }
         throw new IllegalArgumentException("Unhandled getPositionDTOKey type " + getPositionsDTOKey.getClass());
+    }
+
+    @DimenRes public static int layoutHeightFor(
+            @LayoutRes int layoutRes)
+    {
+        switch (layoutRes)
+        {
+            case R.layout.portfolio_header_fx_current_user_view:
+                return R.dimen.fx_positions_header_height;
+            case R.layout.portfolio_header_other_user_view:
+                return R.dimen.stock_positions_header_other_height;
+            case R.layout.portfolio_header_current_user_view:
+                return R.dimen.stock_positions_header_mine_height;
+            default:
+                throw new IllegalArgumentException("Unhandled layoutRes " + layoutRes);
+        }
     }
 
     @LayoutRes static int layoutIdForStocks(

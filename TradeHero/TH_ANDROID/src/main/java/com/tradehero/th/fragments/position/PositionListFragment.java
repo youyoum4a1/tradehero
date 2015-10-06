@@ -15,16 +15,13 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.ViewAnimator;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
@@ -167,9 +164,8 @@ public class PositionListFragment
     protected List<Object> viewDTOs;
 
     protected PositionItemAdapter positionItemAdapter;
-    protected MockAdapter mockAdapter;
     private View inflatedView;
-    private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
+    private int headerHeight;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -243,7 +239,6 @@ public class PositionListFragment
 
         this.purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
         this.positionItemAdapter = createPositionItemAdapter();
-        this.mockAdapter = new MockAdapter();
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -265,8 +260,7 @@ public class PositionListFragment
         positionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         positionRecyclerView.setHasFixedSize(true);
         positionRecyclerView.setAdapter(positionItemAdapter);
-        //positionRecyclerView.setAdapter(mockAdapter);
-        positionRecyclerView.addItemDecoration(new TypedRecyclerAdapter.DividerItemDecoration(getActivity()));
+        positionRecyclerView.addItemDecoration(new TypedRecyclerAdapter.DividerItemDecoration(getActivity(), null, false, false));
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
@@ -422,7 +416,6 @@ public class PositionListFragment
         positionRecyclerView.clearOnScrollListeners();
         positionRecyclerView.setOnTouchListener(null);
         swipeToRefreshLayout.setOnRefreshListener(null);
-        removeGlobalLayoutListener();
         portfolioHeaderView = null;
         inflatedView = null;
         ButterKnife.unbind(this);
@@ -908,59 +901,16 @@ public class PositionListFragment
             inflatedView = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedView;
 
-            globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener()
-            {
-                @SuppressLint("NewApi") @Override public void onGlobalLayout()
-                {
-                    ViewTreeObserver observer = inflatedView.getViewTreeObserver();
-                    if (observer != null)
-                    {
-                        if (SDKUtils.isJellyBeanOrHigher())
-                        {
-                            observer.removeOnGlobalLayoutListener(this);
-                        }
-                        else
-                        {
-                            observer.removeGlobalOnLayoutListener(this);
-                        }
-                    }
-                    int headerHeight = inflatedView.getMeasuredHeight();
-                    Timber.d("Header Height %d", headerHeight);
-                    //positionRecyclerView.setPadding(
-                    //        positionRecyclerView.getPaddingLeft(),
-                    //        headerHeight,
-                    //        positionRecyclerView.getPaddingRight(),
-                    //        positionRecyclerView.getPaddingBottom());
-
-                    positionRecyclerView.addOnScrollListener(new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
-                                    .header(inflatedView)
-                                    .minHeaderTranslation(-headerHeight)
-                                    .build()
-                    );
-                }
-            };
-            //inflatedView.getViewTreeObserver().addOnGlobalLayoutListener(globalLayoutListener);
+            headerHeight = getResources().getDimensionPixelSize(PortfolioHeaderFactory.layoutHeightFor(headerLayoutId));
+            positionRecyclerView.addOnScrollListener(new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
+                            .header(inflatedView)
+                            .minHeaderTranslation(-headerHeight)
+                            .build()
+            );
         }
 
         portfolioHeaderView.linkWith(userProfileDTO);
         portfolioHeaderView.linkWith(portfolioCompactDTO);
-    }
-
-    @SuppressLint("NewApi")
-    private void removeGlobalLayoutListener()
-    {
-        if (globalLayoutListener != null && inflatedView != null)
-        {
-            if (SDKUtils.isJellyBeanOrHigher())
-            {
-                inflatedView.getViewTreeObserver().removeOnGlobalLayoutListener(globalLayoutListener);
-            }
-            else
-            {
-                inflatedView.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
-            }
-        }
-        globalLayoutListener = null;
     }
 
     @NonNull protected Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> getPositionsObservable()
@@ -1041,6 +991,10 @@ public class PositionListFragment
     public void linkWith(@NonNull List<Object> dtoList)
     {
         this.viewDTOs = dtoList;
+
+        //Add the header of empty object to the list
+        this.viewDTOs.add(new PositionDummyHeaderDisplayDTO(headerHeight));
+
         Object nothingDTO = new PositionNothingView.DTO(getResources(), shownUser.equals(currentUserId.toUserBaseKey()));
         if (this.viewDTOs.size() > 0 && positionItemAdapter.indexOf(nothingDTO) != RecyclerView.NO_POSITION)
         {
@@ -1112,7 +1066,6 @@ public class PositionListFragment
         }
 
         positionItemAdapter.addAll(this.viewDTOs);
-        mockAdapter.addAll(this.viewDTOs);
         swipeToRefreshLayout.setRefreshing(false);
         if (listViewFlipper.getDisplayedChild() != FLIPPER_INDEX_LIST)
         {
@@ -1160,41 +1113,5 @@ public class PositionListFragment
     @Override public int getTutorialLayout()
     {
         return R.layout.tutorial_position_list;
-    }
-
-    static class MockAdapter extends RecyclerView.Adapter<MockViewHolder>
-    {
-        final ArrayList<Object> contents = new ArrayList<>();
-
-        @Override public MockViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-        {
-            return new MockViewHolder(LayoutInflater.from(parent.getContext()).inflate(android.R.layout.simple_list_item_1, parent, false));
-        }
-
-        @Override public void onBindViewHolder(MockViewHolder holder, int position)
-        {
-            ((TextView) holder.itemView).setText(contents.get(position).toString());
-        }
-
-        @Override public int getItemCount()
-        {
-            return contents.size();
-        }
-
-        public void addAll(List<Object> viewDTOs)
-        {
-            int pos = contents.size();
-            contents.addAll(viewDTOs);
-            notifyItemRangeInserted(pos, viewDTOs.size());
-            notifyDataSetChanged();
-        }
-    }
-
-    static class MockViewHolder extends RecyclerView.ViewHolder
-    {
-        public MockViewHolder(View itemView)
-        {
-            super(itemView);
-        }
     }
 }

@@ -3,7 +3,7 @@
 <com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/stock_positions_header_other_height"
     android:background="@color/portfolio_header_background_color"
     >
 

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/fx_positions_header_height"
     android:orientation="vertical"
     android:gravity="center_vertical"
     android:background="@drawable/trending_filter_header_background"
