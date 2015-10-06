@@ -3,6 +3,7 @@ package com.tradehero.th.api.kyc.ayondo;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
+import com.tradehero.th.api.kyc.Currency;
 import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.NetWorthRange;
 import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
@@ -28,7 +29,7 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
 
     @JsonProperty("Email") @Nullable public final String email;
     @JsonProperty("Language") @Nullable public final String language;
-    @JsonProperty("Currency") @Nullable public final String currency;
+    @JsonProperty("Currency") @Nullable public final Currency currency;
     @JsonProperty("ProductType") @Nullable public final AyondoProductType productType;
 
     @JsonProperty("SubscribeOffers") @Nullable public final Boolean subscribeOffers;
