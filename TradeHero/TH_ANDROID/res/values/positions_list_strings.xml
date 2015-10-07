@@ -37,9 +37,11 @@
   </plurals>
   <string name="position_share_count_header">Shares:</string>
   <string name="position_share_count_header_fx">Units:</string>
-  <string name="position_share_count_qty_prefix">Qty: %s</string>
+  <string name="position_share_count_qty_suffix">%1$s %2$s Shares</string>
+  <string name="position_fx_count_qty_suffix">%1$s %2$s Units</string>
   <string name="position_force_closed">Force Closed</string>
   <string name="position_last_amount_header">Val: %s</string>
+  <string name="position_invested">Invested: %s</string>
 
   <string name="error_fetch_position_list_info">There was an error when fetching the list of positions</string>
   <string name="error_lost_position_in_cache">We have lost track of this trading position</string>

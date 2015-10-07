@@ -93,8 +93,10 @@
   <string name="buy_sell_loading_ask_price">Loading ask price…</string>
   <string name="buy_sell_loading_bid_price">Loading bid price…</string>
   <string name="sell">Sell</string>
+  <string name="sold">Sold</string>
   <string name="fx_sell">SELL @\n%1$s</string>
   <string name="buy">Buy</string>
+  <string name="bought">Bought</string>
   <string name="fx_buy">BUY @\n%1$s</string>
   <string name="chart_loading_image">Loading chart image…</string>
 
