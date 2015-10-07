@@ -19,7 +19,7 @@ public class NewsfeedNewsDTO extends NewsfeedDTO
         newsfeedNewsDTO.picture = compactDTO.source.imageUrl;
         newsfeedNewsDTO.displayName = compactDTO.source.rootName;
         newsfeedNewsDTO.url = compactDTO.url;
-        newsfeedNewsDTO.thumbnail = compactDTO.thumbnail;
+        newsfeedNewsDTO.thumbnail = compactDTO.imageUrl;
         newsfeedNewsDTO.title = compactDTO.title;
         newsfeedNewsDTO.description = compactDTO.description;
         return newsfeedNewsDTO;

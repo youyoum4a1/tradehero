@@ -168,7 +168,7 @@ import rx.Observable;
     //    dto.picture = "https://pbs.twimg.com/profile_images/534299535552421888/eHacq8EQ.png";
     //    dto.description =
     //            "The launch of a new iPhone is a big deal, I realize, so maybe there really are 7000 people going to San Francisco to see it. My sense is that there could be much more on the menu. Not that iPhone won't still be center stage. It will.";
-    //    dto.thumbnail = "http://www.iclarified.com/images/news/32816/134572/134572-640.jpg";
+    //    dto.imageUrl = "http://www.iclarified.com/images/news/32816/134572/134572-640.jpg";
     //    dto.url = "http://seekingalpha.com/article/3474496-apples-september-9-event-will-there-be-a-surprise-product";
     //
     //    NewsfeedStockTwitDTO stockTwitDTO = new NewsfeedStockTwitDTO();

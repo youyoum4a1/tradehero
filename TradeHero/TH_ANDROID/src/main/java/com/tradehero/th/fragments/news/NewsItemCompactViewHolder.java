@@ -84,9 +84,9 @@ public class NewsItemCompactViewHolder
             }
             else
             {
-                if (newsItem.thumbnail != null)
+                if (newsItem.imageUrl != null)
                 {
-                    thumbnailUrl = newsItem.thumbnail;
+                    thumbnailUrl = newsItem.imageUrl;
                 }
                 else if (newsItem.source != null && newsItem.source.imageUrl != null)
                 {
