@@ -53,9 +53,9 @@ public class PositionPartialTopView extends LinearLayout
         }
     }
 
-    public static class AscendingLatestTradeDateComparator implements Comparator<PositionDisplayDTO>
+    public static class AscendingLatestTradeDateComparator implements Comparator<PositionCompactDisplayDTO>
     {
-        @Override public int compare(@NonNull PositionDisplayDTO lhs, @NonNull PositionDisplayDTO rhs)
+        @Override public int compare(@NonNull PositionCompactDisplayDTO lhs, @NonNull PositionCompactDisplayDTO rhs)
         {
             if (lhs.positionDTO.id == rhs.positionDTO.id)
             {

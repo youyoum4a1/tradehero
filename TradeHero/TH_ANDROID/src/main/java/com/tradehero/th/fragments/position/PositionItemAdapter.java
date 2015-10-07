@@ -17,6 +17,7 @@ import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.fragments.position.partial.PositionCompactDisplayDTO;
 import com.tradehero.th.fragments.position.partial.PositionDisplayDTO;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
@@ -32,11 +33,12 @@ import timber.log.Timber;
 
 public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
 {
-    public static final int VIEW_TYPE_HEADER = 0;
+    public static final int VIEW_TYPE_SECTION_HEADER = 0;
     public static final int VIEW_TYPE_PLACEHOLDER = 1;
     public static final int VIEW_TYPE_LOCKED = 2;
     public static final int VIEW_TYPE_POSITION = 3;
     public static final int VIEW_TYPE_DUMMY_HEADER = 4;
+    public static final int VIEW_TYPE_POSITION_COMPACT = 5;
 
     protected Map<Integer, Integer> itemTypeToLayoutId;
     private UserProfileDTO userProfileDTO;
@@ -75,13 +77,17 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         {
             return VIEW_TYPE_POSITION;
         }
+        else if (item instanceof PositionCompactDisplayDTO)
+        {
+            return VIEW_TYPE_POSITION_COMPACT;
+        }
         else if (item instanceof PositionNothingView.DTO)
         {
             return VIEW_TYPE_PLACEHOLDER;
         }
         else if (item instanceof PositionSectionHeaderDisplayDTO)
         {
-            return VIEW_TYPE_HEADER;
+            return VIEW_TYPE_SECTION_HEADER;
         }
         throw new IllegalArgumentException("Unhandled item " + item);
     }
@@ -89,7 +95,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
     public boolean isEnabled(int position)
     {
         int viewType = getItemViewType(position);
-        return viewType != VIEW_TYPE_HEADER
+        return viewType != VIEW_TYPE_SECTION_HEADER
                 && viewType != VIEW_TYPE_DUMMY_HEADER
                 && (viewType != VIEW_TYPE_PLACEHOLDER
                 || userProfileDTO == null
@@ -174,13 +180,17 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         {
             return new PositionNothingView.ViewHolder((PositionNothingView) v);
         }
-        else if (viewType == VIEW_TYPE_HEADER)
+        else if (viewType == VIEW_TYPE_SECTION_HEADER)
         {
             return new SectionHeaderViewHolder(v);
         }
         else if (viewType == VIEW_TYPE_POSITION)
         {
             return new PositionDisplayDTOViewHolder(v, picasso);
+        }
+        else if (viewType == VIEW_TYPE_POSITION_COMPACT)
+        {
+            return new PositionDisplayCompactDTOViewHolder(v);
         }
         return null;
     }
@@ -202,7 +212,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
     private static class PositionItemComparator extends TypedRecyclerComparator<Object>
     {
         @NonNull private final Comparator<PositionStatus> positionStatusComparator;
-        @NonNull private final Comparator<PositionDisplayDTO> topViewComparator;
+        @NonNull private final Comparator<PositionCompactDisplayDTO> topViewComparator;
 
         public PositionItemComparator()
         {
@@ -254,37 +264,37 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
                         ((PositionSectionHeaderDisplayDTO) o1).status,
                         ((PositionSectionHeaderDisplayDTO) o2).status);
             }
-            else if (o1 instanceof PositionDisplayDTO && o2 instanceof PositionDisplayDTO)
+            else if (o1 instanceof PositionCompactDisplayDTO && o2 instanceof PositionCompactDisplayDTO)
             {
-                int comp = positionStatusComparator.compare(((PositionDisplayDTO) o1).positionDTO.positionStatus,
-                        ((PositionDisplayDTO) o2).positionDTO.positionStatus);
+                int comp = positionStatusComparator.compare(((PositionCompactDisplayDTO) o1).positionDTO.positionStatus,
+                        ((PositionCompactDisplayDTO) o2).positionDTO.positionStatus);
                 if (comp == 0)
                 {
-                    comp = topViewComparator.compare((PositionDisplayDTO) o1, (PositionDisplayDTO) o2);
+                    comp = topViewComparator.compare((PositionCompactDisplayDTO) o1, (PositionCompactDisplayDTO) o2);
                 }
                 return comp;
             }
-            else if (o1 instanceof PositionDisplayDTO && o2 instanceof PositionSectionHeaderDisplayDTO)
+            else if (o1 instanceof PositionCompactDisplayDTO && o2 instanceof PositionSectionHeaderDisplayDTO)
             {
-                PositionStatus s1 = ((PositionDisplayDTO) o1).positionDTO.positionStatus;
+                PositionStatus s1 = ((PositionCompactDisplayDTO) o1).positionDTO.positionStatus;
                 PositionStatus s2 = ((PositionSectionHeaderDisplayDTO) o2).status;
                 if (s1 == null || s1.equals(s2))
                 {
                     return 1;
                 }
                 return positionStatusComparator.compare(
-                        ((PositionDisplayDTO) o1).positionDTO.positionStatus,
+                        ((PositionCompactDisplayDTO) o1).positionDTO.positionStatus,
                         ((PositionSectionHeaderDisplayDTO) o2).status);
             }
-            else if (o1 instanceof PositionSectionHeaderDisplayDTO && o2 instanceof PositionDisplayDTO)
+            else if (o1 instanceof PositionSectionHeaderDisplayDTO && o2 instanceof PositionCompactDisplayDTO)
             {
-                if (((PositionSectionHeaderDisplayDTO) o1).status.equals(((PositionDisplayDTO) o2).positionDTO.positionStatus))
+                if (((PositionSectionHeaderDisplayDTO) o1).status.equals(((PositionCompactDisplayDTO) o2).positionDTO.positionStatus))
                 {
                     return -1;
                 }
                 return positionStatusComparator.compare(
                         ((PositionSectionHeaderDisplayDTO) o1).status,
-                        ((PositionDisplayDTO) o2).positionDTO.positionStatus);
+                        ((PositionCompactDisplayDTO) o2).positionDTO.positionStatus);
             }
             else
             {
@@ -324,18 +334,28 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
                         &&
                         o1.totalInvestedValue.equals(o2.totalInvestedValue);
             }
-            else if (oldItem instanceof PositionDisplayDTO)
+            else if (oldItem instanceof PositionCompactDisplayDTO)
             {
-                PositionDisplayDTO o1 = (PositionDisplayDTO) oldItem;
-                PositionDisplayDTO o2 = (PositionDisplayDTO) newItem;
-                if (o1.stockLogoRes != o2.stockLogoRes) return false;
-                if (o1.btnCloseVisibility != o2.btnCloseVisibility) return false;
-                if (o1.companyNameVisibility != o2.companyNameVisibility) return false;
+                PositionCompactDisplayDTO o1 = (PositionCompactDisplayDTO) oldItem;
+                PositionCompactDisplayDTO o2 = (PositionCompactDisplayDTO) newItem;
+                if (oldItem instanceof PositionDisplayDTO)
+                {
+                    PositionDisplayDTO od1 = (PositionDisplayDTO) oldItem;
+                    PositionDisplayDTO od2 = (PositionDisplayDTO) newItem;
+
+                    if (od1.stockLogo != null && od2.stockLogo == null) return false;
+                    if (od1.stockLogo == null && od2.stockLogo != null) return false;
+                    if (od1.stockLogo != null && !od1.stockLogo.equals(od2.stockLogo)) return false;
+                    if (od1.stockLogoRes != od2.stockLogoRes) return false;
+                    if (od1.btnCloseVisibility != od2.btnCloseVisibility) return false;
+                    if (od1.companyNameVisibility != od2.companyNameVisibility) return false;
+                    if (od1.stockLogoUrl != null ? !od1.stockLogoUrl.equals(od2.stockLogoUrl) : od2.stockLogoUrl != null) return false;
+                    if (od1.fxPair != null ? !od1.fxPair.equals(od2.fxPair) : od2.fxPair != null) return false;
+                    if (!od1.stockSymbol.equals(od2.stockSymbol)) return false;
+                    if (!od1.companyName.equals(od2.companyName)) return false;
+                }
+
                 if (o1.shareCountVisibility != o2.shareCountVisibility) return false;
-                if (o1.stockLogoUrl != null ? !o1.stockLogoUrl.equals(o2.stockLogoUrl) : o2.stockLogoUrl != null) return false;
-                if (o1.fxPair != null ? !o1.fxPair.equals(o2.fxPair) : o2.fxPair != null) return false;
-                if (!o1.stockSymbol.equals(o2.stockSymbol)) return false;
-                if (!o1.companyName.equals(o2.companyName)) return false;
                 if (!o1.shareCountText.equals(o2.shareCountText)) return false;
                 if (o1.totalInvested != null ? !o1.totalInvested.equals(o2.totalInvested) : o2.totalInvested != null) return false;
                 return o1.lastValue.equals(o2.lastValue);
@@ -375,14 +395,37 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         }
     }
 
-    protected static class PositionDisplayDTOViewHolder extends TypedViewHolder<Object>
+    public static class PositionDisplayCompactDTOViewHolder extends TypedViewHolder<Object>
+    {
+        @Bind(R.id.share_count) TextView shareCount;
+        @Bind(R.id.position_value) TextView totalInvested;
+        @Bind(R.id.position_percentage) TextView positionGainLoss;
+
+        public PositionDisplayCompactDTOViewHolder(View itemView)
+        {
+            super(itemView);
+        }
+
+        @Override public void onDisplay(Object o)
+        {
+            if (o instanceof PositionCompactDisplayDTO)
+            {
+                final PositionCompactDisplayDTO dto = (PositionCompactDisplayDTO) o;
+                shareCount.setVisibility(dto.shareCountVisibility);
+                shareCount.setText(dto.shareCountText);
+
+                totalInvested.setText(dto.totalInvested);
+
+                positionGainLoss.setText(dto.positionGainLoss);
+            }
+        }
+    }
+
+    protected static class PositionDisplayDTOViewHolder extends PositionDisplayCompactDTOViewHolder
     {
         @Bind(R.id.stock_logo) ImageView stockLogo;
         @Bind(R.id.stock_symbol) TextView stockSymbol;
         @Bind(R.id.company_name) TextView companyName;
-        @Bind(R.id.share_count) TextView shareCount;
-        @Bind(R.id.position_value) TextView totalInvested;
-        @Bind(R.id.position_percentage) TextView positionGainLoss;
 
         private final Picasso picasso;
 
@@ -394,10 +437,12 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
 
         @Override public void onDisplay(Object o)
         {
+            super.onDisplay(o);
             if (o instanceof PositionDisplayDTO)
             {
                 final PositionDisplayDTO dto = (PositionDisplayDTO) o;
 
+                stockLogo.setVisibility(View.VISIBLE);
                 if (dto.stockLogo != null)
                 {
                     stockLogo.setImageDrawable(dto.stockLogo);
@@ -423,13 +468,6 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
 
                 companyName.setVisibility(dto.companyNameVisibility);
                 companyName.setText(dto.companyName);
-
-                shareCount.setVisibility(dto.shareCountVisibility);
-                shareCount.setText(dto.shareCountText);
-
-                totalInvested.setText(dto.totalInvested);
-
-                positionGainLoss.setText(dto.positionGainLoss);
             }
         }
     }
@@ -464,6 +502,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
 
     public static class DummyHeaderViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
     {
+
         public DummyHeaderViewHolder(View itemView)
         {
             super(itemView);

@@ -59,6 +59,7 @@ import com.tradehero.th.fragments.dashboard.RootFragmentType;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
+import com.tradehero.th.fragments.position.partial.PositionCompactDisplayDTO;
 import com.tradehero.th.fragments.position.partial.PositionDisplayDTO;
 import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
@@ -219,6 +220,14 @@ public class PositionListFragment
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
         Bundle args = getArguments();
+        initVariableFromArgs(args);
+
+        this.purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
+        this.positionItemAdapter = createPositionItemAdapter();
+    }
+
+    protected void initVariableFromArgs(Bundle args)
+    {
         if (args.containsKey(BUNDLE_KEY_SHOWN_USER_ID_BUNDLE))
         {
             shownUser = getUserBaseKey(args);
@@ -236,9 +245,6 @@ public class PositionListFragment
         {
             getPositionsDTOKey = new OwnedPortfolioId(injectedUserBaseKey.key, injectedPortfolioId.key);
         }
-
-        this.purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
-        this.positionItemAdapter = createPositionItemAdapter();
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -311,19 +317,36 @@ public class PositionListFragment
     @Override public void onStart()
     {
         super.onStart();
-        onStopSubscriptions.add(Observable.combineLatest(
-                getProfileAndHeaderObservable(),
-                getPositionsObservable(),
-                new Func2<Pair<UserProfileDTO, PortfolioHeaderView>, List<Pair<PositionDTO, SecurityCompactDTO>>, PortfolioHeaderView>()
+        fetchPositions();
+        handleClosePositionPressed();
+        handleHeaderAction();
+    }
+
+    protected void fetchPositions()
+    {
+        onStopSubscriptions.add(getPositionsObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Object>>()
                 {
-                    @Override public PortfolioHeaderView call(
-                            @NonNull Pair<UserProfileDTO, PortfolioHeaderView> profileAndHeaderPair,
-                            @NonNull List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
+                    @Override public void call(List<Object> objects)
+                    {
+                        linkWith(objects);
+                    }
+                }, new TimberOnErrorAction1("Failed to fetch positions")));
+    }
+
+    protected void handleHeaderAction()
+    {
+        onStopSubscriptions.add(getProfileAndHeaderObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<Pair<UserProfileDTO, PortfolioHeaderView>>()
+                {
+                    @Override public void call(Pair<UserProfileDTO, PortfolioHeaderView> userProfileDTOPortfolioHeaderViewPair)
                     {
                         inflatedView.animate().translationY(0f).start();
-                        return profileAndHeaderPair.second;
                     }
                 })
+                .map(new PairGetSecond<UserProfileDTO, PortfolioHeaderView>())
                 .distinctUntilChanged()
                 .flatMap(new Func1<PortfolioHeaderView, Observable<UserProfileDTO>>()
                 {
@@ -344,12 +367,12 @@ public class PositionListFragment
                                         AlertDialogRxUtil.popErrorMessage(
                                                 PositionListFragment.this.getActivity(),
                                                 e);
-                                        // TODO
                                     }
                                 });
                     }
                 })
                 .subscribe(
+
                         new Action1<UserProfileDTO>()
                         {
                             @Override public void call(UserProfileDTO newProfile)
@@ -357,8 +380,12 @@ public class PositionListFragment
                                 // Nothing to do
                             }
                         },
-                        new TimberOnErrorAction1("Failed to collect all")));
+                        new TimberOnErrorAction1("Failed to collect all")
+                ));
+    }
 
+    protected void handleClosePositionPressed()
+    {
         onStopSubscriptions.add(
                 Observable.combineLatest(
                         positionItemAdapter.getUserActionObservable()
@@ -455,13 +482,13 @@ public class PositionListFragment
         return adapter;
     }
 
-    @NonNull private Map<Integer, Integer> getLayoutResIds()
+    @NonNull protected Map<Integer, Integer> getLayoutResIds()
     {
         Map<Integer, Integer> layouts = new HashMap<>();
-        layouts.put(PositionItemAdapter.VIEW_TYPE_HEADER, R.layout.position_item_header);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_SECTION_HEADER, R.layout.position_item_header);
         layouts.put(PositionItemAdapter.VIEW_TYPE_PLACEHOLDER, R.layout.position_quick_nothing);
         layouts.put(PositionItemAdapter.VIEW_TYPE_LOCKED, R.layout.position_locked_item);
-        layouts.put(PositionItemAdapter.VIEW_TYPE_POSITION, R.layout.position_stock_view);
+        layouts.put(PositionItemAdapter.VIEW_TYPE_POSITION, R.layout.position_view);
         return layouts;
     }
 
@@ -929,7 +956,7 @@ public class PositionListFragment
         portfolioHeaderView.linkWith(portfolioCompactDTO);
     }
 
-    @NonNull protected Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> getPositionsObservable()
+    @NonNull protected Observable<List<Object>> getPositionsObservable()
     {
         return getPositionsCache.get(getPositionsDTOKey)
                 .subscribeOn(Schedulers.computation())
@@ -969,10 +996,10 @@ public class PositionListFragment
                 })
                 .observeOn(Schedulers.computation())
                 .distinctUntilChanged()
-                .flatMap(new Func1<List<Pair<PositionDTO, SecurityCompactDTO>>, Observable<List<Pair<PositionDTO, SecurityCompactDTO>>>>()
+                .flatMap(new Func1<List<Pair<PositionDTO, SecurityCompactDTO>>, Observable<List<Object>>>()
                 {
-                    @Override public Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> call(
-                            final List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
+                    @Override public Observable<List<Object>> call(
+                            List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
                     {
                         List<Object> adapterObjects = new ArrayList<>();
                         for (Pair<PositionDTO, SecurityCompactDTO> pair : pairs)
@@ -990,16 +1017,7 @@ public class PositionListFragment
                                         pair.second));
                             }
                         }
-                        return Observable.just(adapterObjects)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .map(new Func1<List<Object>, List<Pair<PositionDTO, SecurityCompactDTO>>>()
-                                {
-                                    @Override public List<Pair<PositionDTO, SecurityCompactDTO>> call(List<Object> dtoList)
-                                    {
-                                        linkWith(dtoList);
-                                        return pairs;
-                                    }
-                                });
+                        return Observable.just(adapterObjects);
                     }
                 });
     }
@@ -1028,9 +1046,9 @@ public class PositionListFragment
 
             for (Object object : dtoList)
             {
-                if (object instanceof PositionDisplayDTO)
+                if (object instanceof PositionCompactDisplayDTO)
                 {
-                    PositionStatus status = ((PositionDisplayDTO) object).positionDTO.positionStatus;
+                    PositionStatus status = ((PositionCompactDisplayDTO) object).positionDTO.positionStatus;
                     if (status != null)
                     {
                         switch (status)

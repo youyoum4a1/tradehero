@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    style="@style/TH.ListItem.Clickable"
+    android:gravity="center_vertical">
+
+  <RelativeLayout
+      android:id="@+id/first_part"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      >
+
+    <TextView
+        android:id="@+id/position_percentage"
+        style="@style/TH.UserROI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        tools:text="5.8%"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        tools:visibility="visible"
+        />
+
+    <TextView
+        android:id="@+id/share_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="BUY 2,000 @ US$ 141.38"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        style="@style/TH.Body"/>
+
+    <TextView
+        android:id="@+id/position_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="VALUE: US$ 282,380.00"
+        android:layout_below="@id/share_count"
+        style="@style/TH.Body"/>
+
+
+  </RelativeLayout>
+
+</LinearLayout>
