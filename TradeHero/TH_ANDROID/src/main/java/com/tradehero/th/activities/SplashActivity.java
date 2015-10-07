@@ -78,16 +78,6 @@ public class SplashActivity extends BaseActivity
         }
 
         deepLink = getIntent().getData();
-
-        if (deepLink != null)
-        {
-            //THToast.show(deepLink.toString());
-            ActivityHelper.handleDeepLink(this, deepLink);
-        }
-        else
-        {
-            //THToast.show("Deep link is null");
-        }
     }
 
     @Override protected void onResume()

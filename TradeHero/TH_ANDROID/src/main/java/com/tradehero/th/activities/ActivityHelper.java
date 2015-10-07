@@ -30,20 +30,4 @@ public class ActivityHelper
         fromActivity.startActivity(localIntent);
         fromActivity.overridePendingTransition(R.anim.alpha_in, R.anim.alpha_out);
     }
-
-    public static void handleDeepLink(@NonNull Activity activity, @Nullable Uri deepLink)
-    {
-        Intent localIntent = new Intent(activity.getApplicationContext(), DashboardActivity.class);
-        localIntent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-        localIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        localIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        if (deepLink != null)
-        {
-            localIntent.setData(deepLink);
-        }
-        
-        activity.startActivity(localIntent);
-        activity.overridePendingTransition(0, 0);
-    }
 }
