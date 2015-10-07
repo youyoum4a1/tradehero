@@ -1,6 +1,7 @@
 package com.tradehero.th.activities;
 
 import android.content.Context;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import com.tradehero.common.widget.CustomDrawerToggle;
 import com.tradehero.th.UIModule;
@@ -47,6 +48,11 @@ import javax.inject.Singleton;
     }
 
     @Provides CustomDrawerToggle provideDrawerToggle()
+    {
+        return null;
+    }
+
+    @Provides DrawerLayout provideDrawerLayout()
     {
         return null;
     }
