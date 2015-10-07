@@ -3,11 +3,6 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <Preference
-      android:key="@string/key_preference_top_banner"
-      android:layout="@layout/preference_top_banner"
-      />
-
   <PreferenceCategory
       android:key="@string/key_settings_sharing_group"
       android:title="@string/settings_sharing">

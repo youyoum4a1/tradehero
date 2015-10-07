@@ -527,11 +527,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     public void clickedPreference(String key)
     {
-        if (key.equals(getString(R.string.key_preference_top_banner)))
-        {
-            handleTopBannerClick();
-        }
-        else if (key.equals(getString(R.string.key_settings_primary_view_intro)))
+        if (key.equals(getString(R.string.key_settings_primary_view_intro)))
         {
             handleViewIntro();
         }
@@ -599,11 +595,6 @@ public final class SettingsFragment extends BasePreferenceFragment
         //todo replace with navigatro to viewIntro
         Timber.d("handleViewIntro");
         navigator.get().launchActivity(OnBoardActivity.class);
-    }
-
-    public void handleTopBannerClick()
-    {
-        navigator.get().pushFragment(FriendsInvitationFragment.class);
     }
 
     public void handleSendLoveClick()
