@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -30,6 +32,7 @@ import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.urbanairship.util.UriUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -75,6 +78,16 @@ public class SplashActivity extends BaseActivity
         }
 
         deepLink = getIntent().getData();
+
+        if (deepLink != null)
+        {
+            //THToast.show(deepLink.toString());
+            ActivityHelper.handleDeepLink(this, deepLink);
+        }
+        else
+        {
+            //THToast.show("Deep link is null");
+        }
     }
 
     @Override protected void onResume()

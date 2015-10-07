@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.api.BaseResponseDTO;
 import com.tradehero.th.api.system.SystemStatusDTO;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -151,6 +152,7 @@ import timber.log.Timber;
     //<editor-fold desc="Update Device">
     @NonNull public Observable<UserProfileDTO> updateDeviceRx(@NonNull String deviceId)
     {
+        //THToast.show(deviceId);
         return sessionServiceRx.updateDevice(deviceId)
                 .map(new DTOProcessorUpdateUserProfile(userProfileCache));
     }
