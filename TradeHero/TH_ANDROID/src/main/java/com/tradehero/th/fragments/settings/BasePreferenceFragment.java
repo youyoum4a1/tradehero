@@ -20,7 +20,7 @@ public class BasePreferenceFragment extends PreferenceFragment
     @Override public void onCreate(Bundle paramBundle)
     {
         super.onCreate(paramBundle);
-        actionBarOwnerMixin = ActionBarOwnerMixin.of(this, null);
+        actionBarOwnerMixin = ActionBarOwnerMixin.of(this, null, null);
     }
 
     @Override public void onStart()

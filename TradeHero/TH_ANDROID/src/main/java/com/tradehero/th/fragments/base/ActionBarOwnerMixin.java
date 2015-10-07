@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -26,12 +27,13 @@ public class ActionBarOwnerMixin
 
     private final Fragment fragment;
     @Nullable private final CustomDrawerToggle drawerToggle;
+    @Nullable private final DrawerLayout drawerLayout;
     private final ActionBar actionBar;
     private ValueAnimator valueAnimator;
 
-    @NonNull public static ActionBarOwnerMixin of(@NonNull Fragment fragment, @Nullable CustomDrawerToggle drawerToggle)
+    @NonNull public static ActionBarOwnerMixin of(@NonNull Fragment fragment, @Nullable CustomDrawerToggle drawerToggle, @Nullable DrawerLayout drawerLayout)
     {
-        return new ActionBarOwnerMixin(fragment, drawerToggle);
+        return new ActionBarOwnerMixin(fragment, drawerToggle, drawerLayout);
     }
 
     //<editor-fold desc="Arguments Passing">
@@ -91,10 +93,11 @@ public class ActionBarOwnerMixin
     }
     //</editor-fold>
 
-    private ActionBarOwnerMixin(@NonNull Fragment fragment, @Nullable CustomDrawerToggle drawerToggle)
+    private ActionBarOwnerMixin(@NonNull Fragment fragment, @Nullable CustomDrawerToggle drawerToggle, DrawerLayout drawerLayout)
     {
         this.fragment = fragment;
         this.drawerToggle = drawerToggle;
+        this.drawerLayout = drawerLayout;
         this.actionBar = ((AppCompatActivity) fragment.getActivity()).getSupportActionBar();
     }
 
@@ -127,6 +130,7 @@ public class ActionBarOwnerMixin
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 if (drawerToggle != null)
                 {
+                    lockDrawer();
                     cleanupToggleAnimation();
                     startToggleAnimation(1f);
                 }
@@ -140,6 +144,7 @@ public class ActionBarOwnerMixin
                 actionBar.setDisplayHomeAsUpEnabled(true);
                 if (drawerToggle != null)
                 {
+                    unlockDrawer();
                     cleanupToggleAnimation();
                     startToggleAnimation(0f);
                 }
@@ -148,6 +153,22 @@ public class ActionBarOwnerMixin
                     actionBar.setHomeAsUpIndicator(R.drawable.icn_action_hamburger);
                 }
             }
+        }
+    }
+
+    private void lockDrawer()
+    {
+        if(drawerLayout != null)
+        {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
+    }
+
+    private void unlockDrawer()
+    {
+        if(drawerLayout != null)
+        {
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
     }
 

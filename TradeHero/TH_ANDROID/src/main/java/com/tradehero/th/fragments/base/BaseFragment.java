@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -44,6 +45,7 @@ public class BaseFragment extends Fragment
 
     @Inject protected Lazy<DashboardNavigator> navigator;
     @Inject CustomDrawerToggle drawerToggle;
+    @Inject DrawerLayout drawerLayout;
 
     public static void setHasOptionMenu(@NonNull Bundle args, boolean hasOptionMenu)
     {
@@ -88,7 +90,7 @@ public class BaseFragment extends Fragment
         {
             HierarchyInjector.inject(this);
         }
-        actionBarOwnerMixin = ActionBarOwnerMixin.of(this, drawerToggle);
+        actionBarOwnerMixin = ActionBarOwnerMixin.of(this, drawerToggle, drawerLayout);
 
         isOptionMenuVisible = getIsOptionMenuVisible(getArguments());
         hasOptionMenu = getHasOptionMenu(getArguments());
