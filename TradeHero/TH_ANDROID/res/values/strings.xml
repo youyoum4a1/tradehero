@@ -99,6 +99,8 @@
   <string name="bought">Bought</string>
   <string name="fx_buy">BUY @\n%1$s</string>
   <string name="chart_loading_image">Loading chart image…</string>
+  <string name="security_unit">Shares</string>
+  <string name="fx_unit">Units</string>
 
   <string name="plus_symbol" translatable="false">+</string>
 

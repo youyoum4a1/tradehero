@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.trade;
 
-import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import dagger.Module;
 
 @Module(
@@ -16,7 +15,6 @@ import dagger.Module;
                 StockActionBarRelativeLayout.class,
                 StockDetailActionBarRelativeLayout.class,
                 TradeListFragment.class,
-                TradeListItemView.class,
         },
         library = true,
         complete = false

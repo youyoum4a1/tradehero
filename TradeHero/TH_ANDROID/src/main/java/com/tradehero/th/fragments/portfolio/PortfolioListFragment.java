@@ -28,6 +28,7 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
+import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.tradehero.th.fragments.position.PositionListFragment;
 import com.tradehero.th.fragments.watchlist.MainWatchlistPositionFragment;
 import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
@@ -157,8 +158,8 @@ public class PortfolioListFragment extends DashboardFragment
         //PositionListFragment.putIsFX(args, object.assetClass);
         if (object.providerId != null && object.providerId > 0)
         {
-            //PositionListFragment.putProviderId(args, new ProviderId(object.providerId));
-            //navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
+            CompetitionLeaderboardPositionListFragment.putProviderId(args, new ProviderId(object.providerId));
+            navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
             return;
         }
         navigator.get().pushFragment(PositionListFragment.class, args);

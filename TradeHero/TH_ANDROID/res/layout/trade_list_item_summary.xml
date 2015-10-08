@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableLayout
+    style="@style/TH.ListItem"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:stretchColumns="1"
+    >
+
+  <TableRow>
+
+    <TextView
+        android:id="@+id/pl_header"
+        style="@style/TH.InfoKey"
+        tools:text="Will Profit"
+        />
+
+    <TextView
+        android:id="@+id/pl_value"
+        style="@style/TH.InfoValue"
+        android:gravity="end"
+        tools:text="US$ 6.97 (-14.6%)"
+        />
+  </TableRow>
+
+  <TableRow>
+
+    <TextView
+        style="@style/TH.InfoKey"
+        android:text="@string/position_total_invested_header"
+        />
+
+    <TextView
+        android:id="@+id/total_invested_value"
+        style="@style/TH.InfoValue"
+        android:gravity="end"
+        tools:text="US$ 47.77"
+        />
+  </TableRow>
+
+  <TableRow>
+
+    <TextView
+        style="@style/TH.InfoKey"
+        android:text="@string/position_average_price_header"
+        />
+
+    <TextView
+        android:id="@id/average_price_value"
+        style="@style/TH.InfoValue"
+        android:gravity="end"
+        tools:text="US$ 2.81"
+        />
+  </TableRow>
+
+</TableLayout>

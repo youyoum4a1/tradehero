@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,16 +16,15 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnItemClick;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.OwnedPositionId;
@@ -45,7 +46,6 @@ import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.trade.view.TradeListItemView;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionCacheRx;
@@ -93,7 +93,7 @@ public class TradeListFragment extends DashboardFragment
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject Analytics analytics;
 
-    @Bind(R.id.trade_list) protected ListView tradeListView;
+    @Bind(R.id.trade_list) protected RecyclerView tradeListView;
     @Bind(R.id.btn_trade_now) protected View buttonTrade;
     protected StockActionBarRelativeLayout actionBarLayout;
 
@@ -112,7 +112,7 @@ public class TradeListFragment extends DashboardFragment
     @Nullable protected TradeDTOList tradeDTOs;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
-    protected TradeListItemAdapter adapter;
+    protected TradesRecyclerAdapter adapter;
 
     public static void putPositionDTOKey(@NonNull Bundle args, @NonNull PositionDTOKey positionDTOKey)
     {
@@ -148,7 +148,7 @@ public class TradeListFragment extends DashboardFragment
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        adapter = new TradeListItemAdapter(activity);
+        adapter = new TradesRecyclerAdapter();
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -175,8 +175,9 @@ public class TradeListFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        tradeListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        tradeListView.addItemDecoration(new TypedRecyclerAdapter.DividerItemDecoration(getActivity()));
         tradeListView.setAdapter(adapter);
-        tradeListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
     }
 
     @Override public void onStart()
@@ -351,12 +352,10 @@ public class TradeListFragment extends DashboardFragment
                                             {
                                                 TradeListFragment.this.tradeDTOs = tradeDTOs;
                                                 securityCompactDTO = scDTO;
-                                                List<Object> objects = TradeListItemAdapter.createObjects(
+                                                List<Object> objects = TradesRecyclerAdapter.createObjects(
                                                         getResources(),
-                                                        currentUserId,
                                                         pDTO,
                                                         scDTO,
-                                                        tradeId,
                                                         tradeDTOs,
                                                         prettyTime);
                                                 tradeId = null; // It is a one-time-use field
@@ -371,11 +370,7 @@ public class TradeListFragment extends DashboardFragment
                         {
                             @Override public void call(List<Object> o)
                             {
-                                adapter.setNotifyOnChange(false);
-                                adapter.clear();
                                 adapter.addAll(o);
-                                adapter.notifyDataSetChanged();
-                                adapter.setNotifyOnChange(true);
                                 displayBuySellContainer();
                                 displayActionBar();
                             }
@@ -466,12 +461,12 @@ public class TradeListFragment extends DashboardFragment
     }
 
     @SuppressWarnings("unused")
-    @OnItemClick(R.id.trade_list)
+    //TODO
     public void onTradeItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        if (view instanceof TradeListItemView)
-        {
-            ((TradeListItemView) view).toggleTradeDateLook();
-        }
+        //if (view instanceof TradeListItemView)
+        //{
+            //((TradeListItemView) view).toggleTradeDateLook();
+        //}
     }
 }

@@ -18,5 +18,6 @@
   <string name="trade_bought_quantity_verbose">Bought %1$s shares @ %2$s</string>
   <string name="trade_holding_quantity_verbose">Holding %1$s shares</string>
   <string name="trade_held_quantity_verbose">Held %1$s shares</string>
+  <string name="trade_action_format">%1$s %3$s %2$s @ %4$s</string>
 
 </resources>

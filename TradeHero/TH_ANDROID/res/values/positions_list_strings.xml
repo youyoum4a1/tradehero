@@ -22,11 +22,13 @@
   <string name="position_realised_pl_header" deprecated="true">Realized P&amp;L</string>
   <string name="position_realised_loss_header">Loss</string>
   <string name="position_realised_profit_header">Gain</string>
+  <string name="position_realised_loss_header_format">Loss: %1$s</string>
+  <string name="position_realised_profit_header_format">Gain: %1$s</string>
   <string name="position_total_invested_header">Total Invested</string>
   <string name="position_invested_header">Invested:</string>
   <string name="position_market_value_header">Market Value</string>
   <string name="position_quantity_header">Quantity</string>
-  <string name="position_average_price_header">Avg. Price</string>
+  <string name="position_average_price_header">Average Price</string>
   <plurals name="position_unit_count">
     <item quantity="one">%1$s unit</item>
     <item quantity="other">%1$s units</item>
