@@ -191,6 +191,13 @@ import timber.log.Timber;
         }
     }
 
+    @Override public String getChannelId()
+    {
+        final String channelId = uAirship.getPushManager().getChannelId();
+
+        return channelId;
+    }
+
     public static class InitialisationCompleteDTO extends PushNotificationManager.InitialisationCompleteDTO
     {
         @NonNull public final UAirship uAirship;

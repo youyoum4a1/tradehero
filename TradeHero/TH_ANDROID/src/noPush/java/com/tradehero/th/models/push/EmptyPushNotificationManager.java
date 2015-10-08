@@ -44,4 +44,9 @@ public class EmptyPushNotificationManager implements PushNotificationManager
     {
         THToast.show("SetVibrateEnabled not implemented");
     }
+
+    @Override public String getChannelId()
+    {
+        return "Build Variants: NO PUSH";
+    }
 }

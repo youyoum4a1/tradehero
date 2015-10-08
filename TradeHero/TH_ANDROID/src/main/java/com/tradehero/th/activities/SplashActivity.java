@@ -32,7 +32,6 @@ import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
 import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.urbanairship.util.UriUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
