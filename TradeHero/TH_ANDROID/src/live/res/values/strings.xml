@@ -9,7 +9,7 @@
   <string name="live">Live</string>
   <string name="go_live_span">Go %1$s !</string>
   <string name="tradehero_live">TradeHero LIVE</string>
-  <string name="live_5_steps_away">5 steps away to open an account!</string>
+  <string name="live_5_steps_away">5 steps away to open an account! Get $100 free upon successful account opening.</string>
 
   <string name="tile_live_trading_top">Open a LIVE account</string>
   <string name="tile_live_trading">Get free US$100</string>
@@ -140,5 +140,12 @@
 
   <string name="live_username_invalid">\'%1$s\' is not valid. Must be 5 – 20 alphanumeric characters</string>
   <string name="live_username_not_available">\'%1$s\' is not available</string>
-  
+
+
+  <string name="open_new_account">Open a new account</string>
+  <string name="link_existing_account">Link an existing account</string>
+  <string name="account_id">Account ID</string>
+  <string name="connect">connect</string>
+  <string name="connect_account">Connect an Account</string>
+
 </resources>

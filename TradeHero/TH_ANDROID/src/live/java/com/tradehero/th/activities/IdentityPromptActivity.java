@@ -3,6 +3,7 @@ package com.tradehero.th.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,12 +57,12 @@ public class IdentityPromptActivity extends BaseActivity
 
     @Bind(R.id.identity_prompt_passport)
     View scanPassport;
-    @Bind(R.id.live_powered_by)
-    TextView livePoweredBy;
     @Bind(R.id.identity_prompt_image_specific)
     ImageView imgPrompt;
     @Bind(R.id.identity_prompt_specific)
     TextView scanSpecificId;
+    @Bind(R.id.my_toolbar)
+    Toolbar myToolbar;
 
     @RouteProperty("brokerId") int routedBrokerId;
 
@@ -73,21 +74,13 @@ public class IdentityPromptActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity_prompt);
         ButterKnife.bind(IdentityPromptActivity.this);
+        setSupportActionBar(myToolbar);
 
         final Observable<ScannedDocument> documentObservable =
                 fastFillUtil.getScannedDocumentObservable().throttleLast(300, TimeUnit.MILLISECONDS); //HACK
 
         fastFillSubscription = getBrokerSituation()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<LiveBrokerSituationDTO>()
-                {
-                    @Override
-                    public void call(LiveBrokerSituationDTO situationDTO)
-                    {
-                        String text = getString(situationDTO.kycForm.getBrokerNameResId());
-                        livePoweredBy.setText(text);
-                    }
-                })
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
                 {
                     @Override
@@ -227,12 +220,6 @@ public class IdentityPromptActivity extends BaseActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
         fastFillUtil.onActivityResult(this, requestCode, resultCode, data);
-    }
-
-    @OnClick(android.R.id.closeButton)
-    public void onCloseClicked()
-    {
-        onBackPressed();
     }
 
     @SuppressWarnings("unused")
