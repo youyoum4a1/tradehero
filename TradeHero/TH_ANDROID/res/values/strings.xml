@@ -610,15 +610,13 @@
     <string name="trading_hint_b">TRADING..&#160;</string>
     <string name="trading_hint_c">TRADING...</string>
 
-    <!-- HAITONG SDK -->
     <string name="action_settings">Settings</string>
-    <string name="stock_bank_transfer">stock-bank transaction</string>
-    <string name="tab_main_buy_what">Buy What</string>
-    <string name="new_suggest_list">New Suggest List</string>
-    <string name="follow_chance">follow chance</string>
-    <string name="hot_stock_list">Hot Stock List</string>
-    <string name="win_rate_list">High Win Rate List</string>
-    <string name="monthly_rate">monthly rate</string>
-    <string name="follow_buy">follow buy</string>
-    <!-- HAITONG SDK -->
+    <string name="stock_bank_transfer">银证转账</string>
+    <string name="tab_main_buy_what">买什么</string>
+    <string name="new_suggest_list">新推荐榜</string>
+    <string name="follow_chance">跟买机会</string>
+    <string name="hot_stock_list">热股榜</string>
+    <string name="win_rate_list">高胜率榜</string>
+    <string name="monthly_rate">月累计收益</string>
+    <string name="follow_buy">跟买</string>
 </resources>

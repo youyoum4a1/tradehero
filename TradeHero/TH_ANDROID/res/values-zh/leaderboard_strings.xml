@@ -4,7 +4,6 @@
   <string name="leaderboard_community_by_exchange">根据交易所</string>
   <string name="leaderboard_community_by_sector">根据行业类别</string>
   <string name="leaderboard_community_friends">朋友</string>
-  <string name="leaderboard_win_ratio_title">胜率</string>
   <string name="leaderboard_performance_title">相关表现</string>
   <string name="leaderboard_consistency_title">交易持续性</string>
   <string name="leaderboard_avg_days_held">平均日持有数</string>
