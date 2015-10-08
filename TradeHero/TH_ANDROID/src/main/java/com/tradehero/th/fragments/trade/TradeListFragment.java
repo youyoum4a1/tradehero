@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -149,6 +148,17 @@ public class TradeListFragment extends DashboardFragment
     {
         super.onAttach(activity);
         adapter = new TradesRecyclerAdapter();
+        adapter.setOnItemClickedListener(new TypedRecyclerAdapter.OnItemClickedListener<Object>()
+        {
+            @Override public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<Object> viewHolder, Object object)
+            {
+                if(object instanceof TradeDisplayDTO)
+                {
+                    ((TradeDisplayDTO) object).togglePrettyDate();
+                    adapter.notifyItemChanged(position);
+                }
+            }
+        });
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -458,15 +468,5 @@ public class TradeListFragment extends DashboardFragment
                                     currentUserId));
             navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
-    }
-
-    @SuppressWarnings("unused")
-    //TODO
-    public void onTradeItemClick(AdapterView<?> parent, View view, int position, long id)
-    {
-        //if (view instanceof TradeListItemView)
-        //{
-            //((TradeListItemView) view).toggleTradeDateLook();
-        //}
     }
 }

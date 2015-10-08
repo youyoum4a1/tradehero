@@ -77,7 +77,7 @@ public class TradeDisplayDTO
 
         THSignedMoney.Builder<?> builder = THSignedMoney.builder(numberToDisplayRefCcy)
                 .withOutSign()
-                .currency(positionDTO.getNiceCurrency())
+                .currency(securityCompactDTO.currencyDisplay)
                 .with000Suffix()
                 .useShortSuffix()
                 .relevantDigitCount(4)
