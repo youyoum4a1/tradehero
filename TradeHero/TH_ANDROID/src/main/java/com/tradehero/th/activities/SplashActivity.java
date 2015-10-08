@@ -78,6 +78,11 @@ public class SplashActivity extends BaseActivity
         }
 
         deepLink = getIntent().getData();
+
+        if (deepLink != null)
+        {
+            ActivityHelper.launchDashboard(this, deepLink);
+        }
     }
 
     @Override protected void onResume()
