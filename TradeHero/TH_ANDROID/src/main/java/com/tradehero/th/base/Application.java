@@ -1,5 +1,6 @@
 package com.tradehero.th.base;
 
+import com.flurry.android.FlurryAgent;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.application.PApplication;
 import com.tradehero.common.thread.KnownExecutorServices;
@@ -37,6 +38,8 @@ public class Application extends PApplication
             Timber.plant(createTimberTree());
             timberPlanted = true;
         }
+
+        FlurryAgent.init(this, "4D4P6Y3W2JGRP3DGWFYY");
 
         //init universal image loader
         UniversalImageLoader.initImageLoader(this);

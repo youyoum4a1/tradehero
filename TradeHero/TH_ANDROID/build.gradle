@@ -133,6 +133,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
+    compile 'com.google.android.gms:play-services:8.1.0'
     compile 'com.nineoldandroids:library:2.4.0'
     compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
         exclude group: 'com.nineoldandroids', module: 'library'
@@ -187,6 +188,5 @@ dependencies {
     } else {
         android.buildTypes.release.signingConfig = null
     }
-    compile files('libs/android-async-http-1.4.4.jar')
     compile 'com.android.support:multidex:'
 }
