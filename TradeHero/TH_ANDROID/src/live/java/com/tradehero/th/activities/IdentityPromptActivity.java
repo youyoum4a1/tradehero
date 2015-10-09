@@ -264,4 +264,11 @@ public class IdentityPromptActivity extends BaseActivity
         startActivity(new Intent(this, SignUpLiveActivity.class));
         finish();
     }
+
+    @OnClick(R.id.close)
+    @SuppressWarnings("unused")
+    public void onCloseClicked(View view)
+    {
+        finish();
+    }
 }

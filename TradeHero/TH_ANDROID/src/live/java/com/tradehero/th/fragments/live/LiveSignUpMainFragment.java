@@ -54,7 +54,6 @@ public class LiveSignUpMainFragment extends BaseFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.settings_menu, menu);
-        actionBarOwnerMixin.setCustomView(LayoutInflater.from(getActivity()).inflate(R.layout.sign_up_custom_actionbar, toolbar, false));
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
