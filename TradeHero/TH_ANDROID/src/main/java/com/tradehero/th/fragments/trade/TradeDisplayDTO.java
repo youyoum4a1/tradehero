@@ -4,16 +4,17 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import com.tradehero.th.R;
-import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
+import com.tradehero.th.utils.SecurityUtils;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 import org.ocpsoft.prettytime.PrettyTime;
+import org.oshkimaadziig.george.androidutils.SpanFormatter;
 
 public class TradeDisplayDTO
 {
@@ -28,7 +29,6 @@ public class TradeDisplayDTO
     public TradeDisplayDTO(
             @NonNull Resources resources,
             @NonNull SecurityCompactDTO securityCompactDTO,
-            @NonNull PositionDTO positionDTO,
             @NonNull TradeDTO tradeDTO,
             @NonNull PrettyTime prettyTime)
     {
@@ -88,8 +88,26 @@ public class TradeDisplayDTO
             builder.withDefaultColor();
         }
 
-        subText = builder.build()
+        CharSequence sub = builder.build()
                 .createSpanned();
+
+        if (!securityCompactDTO.currencyISO.equals(SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_ISO))
+        {
+            CharSequence usdAmount = THSignedMoney.builder(numberToDisplayRefCcy * tradeDTO.exchangeRate)
+                    .currency(SecurityUtils.DEFAULT_TRANSACTION_CURRENCY_DISPLAY)
+                    .withOutSign()
+                    .with000Suffix()
+                    .useShortSuffix()
+                    .relevantDigitCount(4)
+                    .build()
+                    .createSpanned();
+
+            subText = SpanFormatter.format("%1$s (%2$s)", sub, usdAmount);
+        }
+        else
+        {
+            subText = sub;
+        }
     }
 
     @NonNull

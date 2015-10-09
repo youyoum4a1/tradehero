@@ -51,7 +51,7 @@ public class TradesRecyclerAdapter extends TypedRecyclerAdapter<Object>
             {
                 TradeDTO dto = tradeDTOs.get(i);
                 objects.add(
-                        new TradeDisplayDTO(resources, securityCompactDTO, positionDTO, dto, prettyTime));
+                        new TradeDisplayDTO(resources, securityCompactDTO, dto, prettyTime));
             }
         }
 

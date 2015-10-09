@@ -933,6 +933,10 @@ public class PositionListFragment
             {
                 @Override public void run()
                 {
+                    if(inflatedView== null)
+                    {
+                        return;
+                    }
                     headerHeight = inflatedView.getMeasuredHeight();
                     positionRecyclerView.addOnScrollListener(new QuickReturnRecyclerViewOnScrollListener.Builder(QuickReturnViewType.HEADER)
                                     .header(inflatedView)

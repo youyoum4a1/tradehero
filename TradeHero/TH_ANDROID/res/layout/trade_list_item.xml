@@ -33,7 +33,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_weight="0.5"
+        android:layout_weight="0.6"
         tools:text="Gain US$ 400"
         />
 
@@ -43,7 +43,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_weight="0.5"
+        android:layout_weight="0.4"
         android:gravity="end"
         tools:text="4 Sep 2015 16:11:13"
         />
