@@ -143,8 +143,7 @@ public class PortfolioRecyclerAdapter extends TypedRecyclerAdapter<PortfolioDisp
             if (oldItem.totalValue != null && !oldItem.totalValue.toString().equals(newItem.totalValue.toString())) return false;
             if (oldItem.joinBanner != null && newItem.joinBanner == null) return false;
             if (oldItem.joinBanner == null && newItem.joinBanner != null) return false;
-            if (oldItem.joinBanner != null && !oldItem.joinBanner.equals(newItem.joinBanner)) return false;
-            return true;
+            return !(oldItem.joinBanner != null && !oldItem.joinBanner.equals(newItem.joinBanner));
         }
     }
 

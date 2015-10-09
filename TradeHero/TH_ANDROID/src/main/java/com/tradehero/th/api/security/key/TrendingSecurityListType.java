@@ -23,7 +23,7 @@ public class TrendingSecurityListType extends SecurityListType
 
     public TrendingSecurityListType()
     {
-        this((String) null);
+        this(null);
     }
     //</editor-fold>
 

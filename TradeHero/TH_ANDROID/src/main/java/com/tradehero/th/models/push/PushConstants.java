@@ -11,12 +11,12 @@ public class PushConstants
     public static final String ACTION_NOTIFICATION_CLICKED = "com.tradehero.th.ACTION_NOTIFICATION_CLICKED";
     public static final String ACTION_MESSAGE_RECEIVED = "com.tradehero.th.ACTION_MESSAGE_RECEIVED";
 
-    public static enum THAction
+    public enum THAction
     {
         Opened, Received, RegistrationFinished, GcmDeleted
     }
 
-    public static enum PushProvider
+    public enum PushProvider
     {
         URBAN_AIRSHIP,
         BAIDU,

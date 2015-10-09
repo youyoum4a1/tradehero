@@ -52,6 +52,6 @@ public class PositionSectionHeaderDisplayDTO
 
     public enum Type
     {
-        PENDING, LONG, SHORT, CLOSED;
+        PENDING, LONG, SHORT, CLOSED
     }
 }

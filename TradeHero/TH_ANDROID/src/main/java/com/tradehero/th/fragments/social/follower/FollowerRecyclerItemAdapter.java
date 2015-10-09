@@ -78,8 +78,7 @@ public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerDi
             if (oldItem.userFollowerDTO.picture != null && newItem.userFollowerDTO.picture == null) return false;
             if (oldItem.userFollowerDTO.picture != null && !oldItem.userFollowerDTO.picture.equals(newItem.userFollowerDTO.picture)) return false;
             if (!oldItem.roiInfoText.equals(newItem.roiInfoText)) return false;
-            if (oldItem.isFollowing != newItem.isFollowing) return false;
-            return true;
+            return oldItem.isFollowing == newItem.isFollowing;
         }
     }
 

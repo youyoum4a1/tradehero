@@ -12,7 +12,7 @@ public enum TrackShareStatus
 
     public final String serialised;
 
-    private TrackShareStatus(@NonNull String serialised)
+    TrackShareStatus(@NonNull String serialised)
     {
         this.serialised = serialised;
     }

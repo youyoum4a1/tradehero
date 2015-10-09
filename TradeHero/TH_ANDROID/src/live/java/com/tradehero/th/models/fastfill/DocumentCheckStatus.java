@@ -4,5 +4,5 @@ public enum DocumentCheckStatus
 {
     PENDING,
     DONE,
-    FAILED;
+    FAILED
 }

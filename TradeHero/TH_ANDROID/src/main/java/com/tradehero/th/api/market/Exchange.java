@@ -78,7 +78,7 @@ public enum Exchange
     @DrawableRes public final int logoId;
     public final boolean isCountryDefault;
 
-    private Exchange(@DrawableRes int logoId, boolean isCountryDefault)
+    Exchange(@DrawableRes int logoId, boolean isCountryDefault)
     {
         this.logoId = logoId;
         this.isCountryDefault = isCountryDefault;

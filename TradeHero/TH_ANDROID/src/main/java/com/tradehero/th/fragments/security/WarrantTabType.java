@@ -16,7 +16,7 @@ public enum WarrantTabType
     @StringRes public final int title;
 
     //<editor-fold desc="Constructors">
-    private WarrantTabType(@Nullable WarrantType warrantType, @StringRes int title)
+    WarrantTabType(@Nullable WarrantType warrantType, @StringRes int title)
     {
         this.warrantType = warrantType;
         this.title = title;

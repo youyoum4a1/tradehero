@@ -178,7 +178,7 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
         dashboardFragmentWatchers.remove(watcher);
     }
 
-    public static interface DashboardFragmentWatcher
+    public interface DashboardFragmentWatcher
     {
         <T extends Fragment> void onFragmentChanged(FragmentActivity fragmentActivity, Class<T> fragmentClass, Bundle bundle);
     }

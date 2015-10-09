@@ -148,6 +148,6 @@ public class DragFrameLayout extends FrameLayout {
      */
     public interface DragController {
 
-        public void onDragDrop(boolean captured);
+        void onDragDrop(boolean captured);
     }
 }

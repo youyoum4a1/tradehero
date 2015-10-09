@@ -19,7 +19,7 @@ public enum WeChatMessageType
     private final int value;
     @StringRes private final int titleResId;
 
-    private WeChatMessageType(int value, @StringRes int titleResId)
+    WeChatMessageType(int value, @StringRes int titleResId)
     {
         this.value = value;
         this.titleResId = titleResId;

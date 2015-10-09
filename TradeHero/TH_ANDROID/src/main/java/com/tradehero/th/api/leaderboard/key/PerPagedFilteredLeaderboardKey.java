@@ -84,7 +84,7 @@ public class PerPagedFilteredLeaderboardKey extends PerPagedLeaderboardKey
         this.averageMonthlyTradeCount = args.containsKey(BUNDLE_KEY_AVERAGE_MONTHLY_TRADE_COUNT) ? (Float) args.getFloat(BUNDLE_KEY_AVERAGE_MONTHLY_TRADE_COUNT) : ((defaultValues != null) ? defaultValues.averageMonthlyTradeCount : null);
         this.averageHoldingDays = args.containsKey(BUNDLE_KEY_AVERAGE_HOLDING_DAYS) ? (Float) args.getFloat(BUNDLE_KEY_AVERAGE_HOLDING_DAYS) : ((defaultValues != null) ? defaultValues.averageHoldingDays : null);
         this.minSharpeRatio = args.containsKey(BUNDLE_KEY_MIN_SHARPE_RATIO) ? (Float) args.getFloat(BUNDLE_KEY_MIN_SHARPE_RATIO) : ((defaultValues != null) ? defaultValues.minSharpeRatio : null);
-        this.minConsistency = clampConsistency(args.containsKey(BUNDLE_KEY_MIN_CONSISTENCY) ? (Float) args.getFloat(BUNDLE_KEY_MIN_CONSISTENCY)
+        this.minConsistency = clampConsistency(args.containsKey(BUNDLE_KEY_MIN_CONSISTENCY) ? args.getFloat(BUNDLE_KEY_MIN_CONSISTENCY)
                 : ((defaultValues != null) ? defaultValues.minConsistency : null));
     }
 

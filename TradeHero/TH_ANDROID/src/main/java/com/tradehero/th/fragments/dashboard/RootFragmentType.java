@@ -118,7 +118,7 @@ public enum RootFragmentType
     @Nullable public final Class<? extends Activity> activityClass;
     public final String analyticsString;
 
-    private RootFragmentType(
+    RootFragmentType(
             @LayoutRes int viewResId,
             @StringRes int stringResId,
             @StringRes int stringKeyResId,

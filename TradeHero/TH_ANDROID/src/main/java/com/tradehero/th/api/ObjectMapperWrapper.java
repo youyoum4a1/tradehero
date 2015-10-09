@@ -1,7 +1,6 @@
 package com.tradehero.th.api;
 
 import android.support.annotation.NonNull;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -63,7 +62,7 @@ public class ObjectMapperWrapper extends ObjectMapper
     @Override protected Object _readMapAndClose(
             @NonNull JsonParser jp,
             @NonNull JavaType valueType)
-            throws IOException, JsonParseException, JsonMappingException
+            throws IOException, JsonMappingException
     {
         TreeNode root = readTree(jp);
         if (root instanceof ObjectNode)

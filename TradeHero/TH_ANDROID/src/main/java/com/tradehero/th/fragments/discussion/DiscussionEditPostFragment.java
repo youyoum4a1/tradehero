@@ -12,8 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.utils.EditableUtil;
@@ -354,7 +354,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         }
     }
 
-    public static interface DiscussionPostedListener
+    public interface DiscussionPostedListener
     {
         void onDiscussionPosted();
     }

@@ -9,8 +9,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -211,7 +211,7 @@ public class SocialFriendUserView extends SocialFriendItemView
         }
     }
 
-    public static interface OnElementClickListener
+    public interface OnElementClickListener
     {
         void onFollowButtonClick(@NonNull UserFriendsDTO userFriendsDTO);
         void onInviteButtonClick(@NonNull UserFriendsDTO userFriendsDTO);

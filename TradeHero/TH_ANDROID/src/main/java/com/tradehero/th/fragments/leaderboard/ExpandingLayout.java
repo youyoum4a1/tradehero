@@ -158,7 +158,7 @@ public class ExpandingLayout extends LinearLayout
         this.expandListener = expandListener;
     }
 
-    public static interface OnExpandListener
+    public interface OnExpandListener
     {
         void onExpand(boolean expand);
     }

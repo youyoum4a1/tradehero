@@ -18,7 +18,7 @@ public enum YahooTimeSpan
     public final long chartTimeSpanDuration;
 
     //<editor-fold desc="Constructors">
-    private YahooTimeSpan(@NonNull String c, long chartTimeSpanDuration)
+    YahooTimeSpan(@NonNull String c, long chartTimeSpanDuration)
     {
         code = c;
         this.chartTimeSpanDuration = chartTimeSpanDuration;

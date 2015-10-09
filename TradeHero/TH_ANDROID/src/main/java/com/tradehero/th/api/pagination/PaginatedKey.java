@@ -4,11 +4,11 @@ import com.tradehero.common.api.PagedDTOKey;
 
 public interface PaginatedKey extends PagedDTOKey
 {
-    static final String BUNDLE_PAGE = ".page";
-    static final String BUNDLE_PERPAGE = ".perPage";
+    String BUNDLE_PAGE = ".page";
+    String BUNDLE_PERPAGE = ".perPage";
 
-    static final String JSON_PAGE = "page";
-    static final String JSON_PERPAGE = "perPage";
+    String JSON_PAGE = "page";
+    String JSON_PERPAGE = "perPage";
 
     PaginatedKey next();
     PaginatedKey next(int pages);

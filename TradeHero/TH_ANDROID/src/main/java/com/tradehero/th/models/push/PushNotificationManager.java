@@ -13,7 +13,7 @@ public interface PushNotificationManager
     void setSoundEnabled(boolean enabled);
     void setVibrateEnabled(boolean enabled);
 
-    public static class InitialisationCompleteDTO
+    class InitialisationCompleteDTO
     {
         @NonNull public final String pushId;
 

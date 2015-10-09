@@ -129,12 +129,12 @@ public class THException extends Exception
         private final boolean canContinue;
         @StringRes private final int errorMessage;
 
-        private ExceptionCode(@StringRes int errorMessageResourceId)
+        ExceptionCode(@StringRes int errorMessageResourceId)
         {
             this(false, errorMessageResourceId);
         }
 
-        private ExceptionCode(boolean canContinue, @StringRes int errorMessageResourceId)
+        ExceptionCode(boolean canContinue, @StringRes int errorMessageResourceId)
         {
             this.canContinue = canContinue;
             this.errorMessage = errorMessageResourceId;
