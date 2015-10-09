@@ -5,6 +5,7 @@
     android:id="@+id/rlStockHeader"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
+    android:paddingLeft="4dp"
     tools:background="@color/tradehero_blue">
 
   <ImageButton
@@ -60,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="NASDAQ:FB"
-        style="@style/TH.Caption.Inverse"
+        style="@style/TH.Subhead.Inverse"
         android:ellipsize="end"
         android:singleLine="true"/>
 

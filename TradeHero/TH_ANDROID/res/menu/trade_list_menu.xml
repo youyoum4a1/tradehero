@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+  <item
+      android:id="@+id/add_alert"
+      android:icon="@drawable/icn_alert"
+      android:title="@string/stock_alert_add_alert"
+      app:showAsAction="always"
+      />
+
+  <item
+      android:id="@+id/add_watchlist"
+      android:icon="@drawable/icn_star"
+      android:title="@string/watchlist_add_title"
+      app:showAsAction="always"
+      />
+
+</menu>
