@@ -1100,6 +1100,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             else
             {
                 mVolume.setText(THSignedNumber.builder(securityCompactDTO.volume)
+                        .with000Suffix()
+                        .useShortSuffix()
                         .build().toString());
             }
         }
@@ -1116,6 +1118,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             else
             {
                 mAvgVolume.setText(THSignedNumber.builder(securityCompactDTO.averageDailyVolume)
+                        .with000Suffix()
+                        .useShortSuffix()
                         .build().toString());
             }
         }

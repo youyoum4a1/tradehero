@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,7 +30,6 @@ import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
-import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -58,8 +56,6 @@ public class BuySellStockFragment extends AbstractBuySellFragment
 
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
 
-    protected StockDetailActionBarRelativeLayout actionBarLayout;
-
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
@@ -82,52 +78,21 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
-
-        final StockDetailActionBarRelativeLayout actionBarLayout =
-                (StockDetailActionBarRelativeLayout) LayoutInflater.from(getActivity())
-                        .inflate(R.layout.stock_detail_custom_actionbar, null);
-        this.actionBarLayout = actionBarLayout;
-        onDestroyOptionsMenuSubscriptions.add(quoteObservable.observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<QuoteDTO, Observable<Boolean>>()
-                {
-                    @Override public Observable<Boolean> call(@NonNull QuoteDTO quoteDTO)
-                    {
-                        if (actionBarLayout.circleProgressBar != null)
-                        {
-                            return actionBarLayout.circleProgressBar.start(getMillisecondQuoteRefresh());
-                        }
-                        return Observable.just(true).delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
-                    }
-                })
-                .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean aBoolean)
-                            {
-                                // Nothing to do
-                            }
-                        },
-                        new TimberOnErrorAction1("Failed to listen to end of animation")));
-
-        onDestroyOptionsMenuSubscriptions.add(
-                securityObservable.startWith(securityCompactDTO)
+        onDestroyOptionsMenuSubscriptions.add(securityObservable.startWith(securityCompactDTO)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Action1<SecurityCompactDTO>()
                         {
                             @Override public void call(SecurityCompactDTO securityCompactDTO)
                             {
-                                actionBarLayout.display(new StockDetailActionBarRelativeLayout.Requisite(
-                                        requisite.securityId,
-                                        securityCompactDTO,
-                                        null, null));
+                                if(securityCompactDTO != null)
+                                {
+                                    setActionBarTitle(securityCompactDTO.name);
+                                    setActionBarSubtitle(securityCompactDTO.getExchangeSymbol());
+                                }
                             }
-                        }, new TimberOnErrorAction1("Failed to fetch list of watch list items")));
-        actionBar.setCustomView(actionBarLayout);
+                        }, new TimberOnErrorAction1("Failed to update title and subtitle"))
+        );
     }
 
     @Override public boolean shouldShowLiveTradingToggle()
@@ -137,7 +102,6 @@ public class BuySellStockFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        actionBarLayout = null;
         super.onDestroyOptionsMenu();
     }
 

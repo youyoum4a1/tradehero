@@ -403,7 +403,7 @@ public class TradeListFragment extends DashboardFragment
     {
         if (actionBarLayout != null && securityId != null)
         {
-            actionBarLayout.display(new StockDetailActionBarRelativeLayout.Requisite(
+            actionBarLayout.display(new StockActionBarRelativeLayout.Requisite(
                     securityId,
                     securityCompactDTO,
                     watchedList,
