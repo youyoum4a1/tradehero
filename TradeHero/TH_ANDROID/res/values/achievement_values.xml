@@ -2,8 +2,6 @@
 <resources>
   <integer name="achievement_animation_start_delay">1000</integer>
   <integer name="achievement_pulse_duration">1800</integer>
-  <integer name="achievement_pulse_delay">250</integer>
-  <integer name="achievement_pulse_delay2">600</integer>
   <integer name="achievement_zoom_in_delay">100</integer>
   <integer name="achievement_dismiss_duration">800</integer>
 
@@ -20,7 +18,6 @@
   <dimen name="achievement_description_margin_top">10dp</dimen>
   <dimen name="achievement_more_description_margin_top">5dp</dimen>
   <dimen name="achievement_progress_vertical_margin">5dp</dimen>
-  <dimen name="achievement_progress_container_height">70dp</dimen>
   <dimen name="achievement_dollar_xp_earned_horizontal_margin">10dp</dimen>
   <dimen name="achievement_dollar_xp_earned_vertical_margin">13dp</dimen>
   <dimen name="achievement_pulse_ring_size">4dp</dimen>
@@ -28,16 +25,11 @@
   <integer name="achievement_pulse_ring_num">4</integer>
   <integer name="achievement_earned_duration">1000</integer>
 
-  <integer name="achievement_level_up_start_duration">100</integer>
-  <integer name="achievement_level_up_end_start_offset">1000</integer>
-  <integer name="achievement_level_up_end_duration">300</integer>
 
   <integer name="achievement_share_button_animation_delay">2500</integer>
   <integer name="achievement_share_button_animation_duration">1000</integer>
 
   <color name="achievement_indicator_blue_bg_transparent">#241376FB</color>
-  <color name="achievement_dollars_earned_color">#F3A422</color>
-  <color name="achievement_xp_color">#407304</color>
   <color name="achievement_xp_color_brighter">#ff659b04</color>
 
   <!-- Cell view -->

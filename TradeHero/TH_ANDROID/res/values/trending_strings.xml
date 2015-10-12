@@ -3,7 +3,6 @@
 
   <!-- What's Trending -->
   <string name="trending_header">What\'s Trending</string>
-  <string name="trending_search_empty_result">Type something to search</string>
   <string name="trending_search_empty_result_for_stock">Enter a security name or symbol</string>
   <string name="trending_search_empty_result_for_forex">Enter a forex name or symbol</string>
   <string name="trending_search_empty_result_for_warrant">Enter a warrant name or symbol</string>
@@ -13,17 +12,12 @@
   <string name="trending_search_no_stock_found">No stock found</string>
   <string name="trending_search_no_forex_found">No forex found</string>
   <string name="trending_search_no_warrant_found">No warrant found</string>
-  <string name="trending_search_mode">Search mode</string>
 
   <!-- What's Trending filters -->
   <string name="trending_filter_basic_title">Trending Securities</string>
-  <string name="trending_filter_basic_description">what people are buying and selling on TradeHero</string>
   <string name="trending_filter_volume_title">Unusual Volumes</string>
-  <string name="trending_filter_volume_description">previous day volume &gt; average daily volume</string>
   <string name="trending_filter_price_title">Price Action</string>
-  <string name="trending_filter_price_description">previous day close &gt; 50 day moving average</string>
   <string name="trending_filter_all_title">All Securities</string>
-  <string name="trending_filter_all_description"> </string>
   <string name="trending_filter_exchange_all">All</string>
   <string name="trending_filter_exchange_drop_down">%2$s - %1$s</string>
 

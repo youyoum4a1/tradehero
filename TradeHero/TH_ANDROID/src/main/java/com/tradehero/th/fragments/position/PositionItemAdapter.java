@@ -14,17 +14,19 @@ import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
+import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionStatus;
+import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.position.partial.PositionCompactDisplayDTO;
 import com.tradehero.th.fragments.position.partial.PositionDisplayDTO;
-import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.inject.HierarchyInjector;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Map;
 import javax.inject.Inject;
 import rx.Observable;
@@ -44,7 +46,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
     private UserProfileDTO userProfileDTO;
 
     @NonNull protected final CurrentUserId currentUserId;
-    @NonNull protected final PublishSubject<PositionPartialTopView.CloseUserAction> userActionSubject;
+    @NonNull protected final PublishSubject<CloseUserAction> userActionSubject;
     @Inject Picasso picasso;
 
     //<editor-fold desc="Constructors">
@@ -118,7 +120,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         this.userProfileDTO = userProfileDTO;
     }
 
-    @NonNull public Observable<PositionPartialTopView.CloseUserAction> getUserActionObservable()
+    @NonNull public Observable<CloseUserAction> getUserActionObservable()
     {
         return userActionSubject.asObservable();
     }
@@ -203,10 +205,10 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
             holder.itemView.setOnClickListener(null);
             holder.itemView.setOnLongClickListener(null);
         }
-        if (holder instanceof PositionPartialTopView.ViewHolder)
-        {
-            ((PositionPartialTopView.ViewHolder) holder).getUserActionObservable().subscribe(userActionSubject);
-        }
+        //if (holder instanceof PositionPartialTopView.ViewHolder)
+        //{
+        //    ((PositionPartialTopView.ViewHolder) holder).getUserActionObservable().subscribe(userActionSubject);
+        //}
     }
 
     private static class PositionItemComparator extends TypedRecyclerComparator<Object>
@@ -217,7 +219,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
         public PositionItemComparator()
         {
             this.positionStatusComparator = new PositionStatus.StatusComparator();
-            this.topViewComparator = new PositionPartialTopView.AscendingLatestTradeDateComparator();
+            this.topViewComparator = new AscendingLatestTradeDateComparator();
         }
 
         @Override public int compare(Object o1, Object o2)
@@ -514,6 +516,32 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
             {
                 itemView.setMinimumHeight(((PositionDummyHeaderDisplayDTO) o).headerHeight);
             }
+        }
+    }
+
+    public static class AscendingLatestTradeDateComparator implements Comparator<PositionCompactDisplayDTO>
+    {
+        @Override public int compare(@NonNull PositionCompactDisplayDTO lhs, @NonNull PositionCompactDisplayDTO rhs)
+        {
+            if (lhs.positionDTO.id == rhs.positionDTO.id)
+            {
+                return 0;
+            }
+            Date lTrade = lhs.positionDTO.latestTradeUtc;
+            Date rTrade = rhs.positionDTO.latestTradeUtc;
+            return rTrade.compareTo(lTrade);
+        }
+    }
+
+    public static class CloseUserAction
+    {
+        @NonNull public final PositionDTO positionDTO;
+        @NonNull public final SecurityCompactDTO securityCompactDTO;
+
+        public CloseUserAction(@NonNull PositionDTO positionDTO, @NonNull SecurityCompactDTO securityCompactDTO)
+        {
+            this.positionDTO = positionDTO;
+            this.securityCompactDTO = securityCompactDTO;
         }
     }
 }

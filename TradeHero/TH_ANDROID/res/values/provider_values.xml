@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <color name="provider_3_colour_main">#e6ad03</color>
-  <color name="provider_3_colour_gradient">#ffce3b</color>
-
-  <color name="provider_22_colour_main">#0C2962</color>
-  <color name="provider_22_colour_gradient">#2C55A6</color>
-
   <dimen name="provider_legal_vertical_padding">12dp</dimen>
   <dimen name="provider_legal_horizontal_padding">@dimen/margin_small</dimen>
-  <dimen name="provider_legal_text_size">@dimen/text_caption</dimen>
-  <dimen name="provider_legal_mid_spacing">24dp</dimen>
 
   <dimen name="provider_preseason_popup_width">304dp</dimen>
   <dimen name="provider_preseason_prize_image_w_h">128dp</dimen>

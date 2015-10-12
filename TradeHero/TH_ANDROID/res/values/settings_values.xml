@@ -2,8 +2,6 @@
 <resources>
 
   <color name="settings_about_font_colour">#C8903E</color>
-  <dimen name="settings_about_text_margin">10dp</dimen>
-
   <dimen name="about_screen_padding_top">100dp</dimen>
   <dimen name="about_screen_fading_top">200dp</dimen>
   <integer name="about_screen_rotation_delay">1500</integer>

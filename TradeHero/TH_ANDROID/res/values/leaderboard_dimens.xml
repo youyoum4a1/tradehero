@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="leaderboard_buttonlist_radius">1dp</dimen>
-  <dimen name="leaderboard_button_border_padding">0dp</dimen>
   <dimen name="leaderboard_title_text_size">@dimen/text_subhead</dimen>
-  <dimen name="leaderboard_position_text_size">@dimen/text_title</dimen>
-  <dimen name="leaderboard_title_text_padding">@dimen/margin_small</dimen>
   <dimen name="leaderboard_user_view_profile_width">@dimen/big_image_w_h</dimen>
-  <dimen name="leaderboard_flag_icon_margin_right">10dp</dimen>
 </resources>

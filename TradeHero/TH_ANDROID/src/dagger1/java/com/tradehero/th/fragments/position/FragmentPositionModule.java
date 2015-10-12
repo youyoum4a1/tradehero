@@ -1,7 +1,5 @@
 package com.tradehero.th.fragments.position;
 
-import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
-import com.tradehero.th.fragments.position.view.PositionView;
 import dagger.Module;
 
 @Module(
@@ -11,9 +9,7 @@ import dagger.Module;
                 SecurityPositionListFragment.class,
                 LeaderboardPositionListFragment.class,
                 CompetitionLeaderboardPositionListFragment.class,
-                PositionPartialTopView.class,
                 PositionItemAdapter.class,
-                PositionView.class,
         },
         library = true,
         complete = false

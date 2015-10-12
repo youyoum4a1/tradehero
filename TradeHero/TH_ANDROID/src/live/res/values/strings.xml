@@ -16,12 +16,7 @@
   <string name="tile_live_trading">Get free US$100</string>
 
   <string name="live_identity_prompt">Which of these documents do you have with you?</string>
-  <string name="live_identity_prompt_au">Do you have your Australian Passport with you?</string>
-  <string name="live_identity_prompt_sg">Do you have your NRIC/Passport with you?</string>
 
-  <string name="live_identity_prompt_hint">This will help you to auto-fill some information</string>
-  <string name="yes">Yes</string>
-  <string name="no">No</string>
   <string name="basic_information">Basic Info</string>
   <string name="nationality">Nationality</string>
   <string name="residency">Country of Residence</string>
@@ -35,7 +30,6 @@
   <string name="submit_form_top">All done!</string>
   <string name="submit_form_bottom">Claim your US$ 100.00!</string>
   <string name="clear_all">Clear All</string>
-  <string name="hint_full_name">Full Name</string>
   <string name="previous_address">Previous Address</string>
   <string name="country">Country</string>
   <string name="title">Title</string>
@@ -66,9 +60,7 @@
   <string name="postal_code">Postal Code</string>
   <string name="address_less_than_1_year">Less than 1 year at this address?</string>
   <string name="tap_to_upload">Tap to upload</string>
-  <string name="tap_to_sign">Tap to sign</string>
   <string name="enter_manually">None, I\'ll enter manually.</string>
-  <string name="scan_it">Let\'s scan it!</string>
   <string name="any_passport">Passport\n(Any Country)</string>
 
   <string name="live_title_mr">Mr.</string>
@@ -123,18 +115,13 @@
   <string name="residence_document_type_bank_statement">A bank or credit card statement</string>
   <string name="residence_document_pick_title">For your Proof of Residence Document, Pick:</string>
 
-  <string name="live_signature_caption">Signature</string>
-
   <string name="live_agree_to_title">I agree to:</string>
   <string name="live_agree_to_terms_and_conditions">Terms and Conditions</string>
   <string name="live_agree_to_risks_and_warnings_disclaimer">Risks and Warnings Disclosure</string>
   <string name="live_agree_to_data_sharing_agreement">Data Sharing Agreement</string>
-  <string name="live_agree_read_it">Read</string>
   <string name="live_subscribe_offers">Subscribe me to Ayondo offers</string>
   <string name="live_subscribe_trade_notifications">Subscribe me to trade notifications</string>
 
-  <string name="live_username_invalid">\'%1$s\' is not valid. Must be 5 – 20 alphanumeric characters</string>
-  <string name="live_username_not_available">\'%1$s\' is not available</string>
 
 
   <string name="open_new_account">Open a new account</string>

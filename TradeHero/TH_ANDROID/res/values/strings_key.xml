@@ -5,15 +5,10 @@
 
   <string name="key_settings_sharing_group" translatable="false">key_settings_sharing_group</string>
   <string name="key_settings_sharing_facebook" translatable="false">key_settings_sharing_facebook</string>
-  <integer name="key_settings_sharing_facebook_order">0</integer>
   <string name="key_settings_sharing_twitter" translatable="false">key_settings_sharing_twitter</string>
-  <integer name="key_settings_sharing_twitter_order">1</integer>
   <string name="key_settings_sharing_linked_in" translatable="false">key_settings_sharing_linked_in</string>
-  <integer name="key_settings_sharing_linked_in_order">2</integer>
   <string name="key_settings_sharing_weibo" translatable="false">key_settings_sharing_weibo</string>
-  <integer name="key_settings_sharing_weibo_order">3</integer>
   <string name="key_settings_sharing_qq" translatable="false">key_settings_sharing_qq</string>
-  <integer name="key_settings_sharing_qq_order">4</integer>
 
   <string name="key_settings_primary_faq" translatable="false">key_settings_primary_faq</string>
   <string name="key_settings_misc_about" translatable="false">key_settings_misc_about</string>
@@ -29,9 +24,6 @@
   <string name="key_settings_primary_restore_purchases" translatable="false">key_settings_primary_restore_purchases</string>
   <string name="key_settings_primary_referral_code" translatable="false">key_settings_primary_referral_code</string>
 
-  <string name="key_settings_translations_container" translatable="false">key_settings_translations_container</string>
-  <string name="key_settings_translations_preferred_language" translatable="false">key_settings_translations_preferred_language</string>
-  <string name="key_settings_translations_auto_translate" translatable="false">key_settings_translations_auto_translate</string>
   <string name="key_settings_location" translatable="false">key_settings_location</string>
 
   <string name="key_settings_notifications_email" translatable="false">key_settings_notifications_email</string>

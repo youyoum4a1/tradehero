@@ -4,11 +4,8 @@
   <string name="following">Following</string>
   <string name="follow_all">Follow All</string>
   <string name="message">Message</string>
-  <string name="upgrade_to_premium">Upgrade to Premium</string>
-  <string name="following_premium">Following\n(Premium)</string>
   <string name="select_endpoint">Select Api Endpoint</string>
   <string name="current_endpoint">"Current Endpoint: "</string>
-  <string name="action_menu_about">About</string>
   <string name="action_search">Search</string>
   <string name="action_invite">Invite Friends</string>
   <string name="action_exchange">Exchange</string>
@@ -30,49 +27,31 @@
   <string name="upgrade_needed">Upgrade needed</string>
   <string name="update_now">Update now</string>
   <string name="update_guide">Please reinstall TradeHero</string>
-  <string name="suggest_to_upgrade">A new version is available, it is strongly recommended that you upgrade. Would you like to upgrade now?</string>
 
   <string name="please_update_token_title">Social authentication expired</string>
   <string name="please_update_token_description">Please reauthenticate with your preferred social network</string>
 
-  <string name="on">On %1$1</string>
-
   <string name="press_back_again_to_exit">Press back again to exit</string>
   <string name="discussion">Discussion</string>
-  <string name="more_character">…</string>
   <string name="buy_sell">Buy/Sell</string>
   <string name="translate">Translate</string>
   <string name="share_to">Share to…</string>
-  <string name="comment">Comment</string>
   <string name="timeline_discussion_post">@string/post</string>
   <string name="timeline_discussion_comment_box_hint">Type your comment…</string>
-  <string name="discussion_loaded">All discussions loaded</string>
-  <string name="discussion_loading">Loading</string>
-  <string name="discussion_empty">Be the first to discuss this.</string>
   <!--<string name="network_error">Sorry,network error.</string>-->
 
-  <string name="trade_list_action">Action</string>
-
   <string name="news_view_on_web">View on the Web</string>
-  <string name="add_a_comment">Add a comment…</string>
   <string name="start_new_discussion">Start a New Discussion</string>
   <string name="error_empty_comment">Comment should not be empty</string>
   <string name="error_not_enough_information">Not enough information, try again</string>
-  <string name="via">" via "</string>
 
   <string name="broadcast_success">Message sent</string>
   <string name="broadcast_error">Send message error</string>
   <string name="broadcast_message_title">Broadcast Message</string>
   <string name="broadcast_message_action_send">Send</string>
-  <string name="broadcast_message_change_type_hint">Choose follower to send message</string>
-  <string name="broadcast_message_no_follower_hint">Sorry, you cannot send any message because you don\'t have such follower type</string>
-  <string name="broadcast_message_content_length_hint">The message cannot be empty</string>
   <string name="broadcast_message_sending_hint">Sending message…</string>
   <string name="broadcast_message_waiting">Waiting</string>
-  <string name="social_followers">Followers</string>
-  <string name="social_heroes">Heroes</string>
 
-  <string name="common_loading_error">Sorry, there is something wrong</string>
   <string name="no_message">You don\'t have any message yet.</string>
   <string name="message_fetch_error">Sorry, something went wrong. \nPress to retry.</string>
   <string name="notification_list_empty">You don\'t have any notification yet. \nPlease pull to refresh your notification list!</string>
@@ -101,8 +80,6 @@
   <string name="chart_loading_image">Loading chart image…</string>
   <string name="security_unit">Shares</string>
   <string name="fx_unit">Units</string>
-
-  <string name="plus_symbol" translatable="false">+</string>
 
   <!--do not translate begin-->
   <string name="tap_stream_type_google_install" translatable="false">android-tradehero-google-install</string>
@@ -208,8 +185,6 @@
   <string name="tap_stream_type_ftp_install" translatable="false">android-tradehero-ftp-install</string>
   <string name="tap_stream_type_ftp_open" translatable="false">android-tradehero-ftp-open</string>
   <!--do not translate end-->
-  <string name="sure_to_delete_message">Delete this message?</string>
-  <string name="currency">US$</string>
   <string name="invite_social_friend">Invite %s Friends</string>
   <string name="search_social_friend_hint">Search your friend</string>
 
@@ -222,21 +197,8 @@
   <string name="invite_from_facebook">Invite from Facebook</string>
 
   <string name="social_no_friend_to_invite">No user to Invite</string>
-  <string name="social_no_friend_to_follow">No user to follow</string>
 
-  <plurals name="inbox_notification_title">
-    <item quantity="one">1 New Message</item>
-    <item quantity="other">%d
-      <b>New</b>
-      Messages
-    </item>
-  </plurals>
-
-  <string name="inbox_summary">+%d more</string>
   <string name="notification_unread_messages">You have %d unread messages</string>
-  <string name="notification_new_activities">You have %d new activities</string>
-  <string name="friend_link_social_network">Please Link Social Network.</string>
-  <string name="exit_app">Exit app</string>
 
   <string name="friends_can_be_invite">%s friends can be invited</string>
   <string name="friends_can_be_follow">%s friends can be followed</string>
@@ -253,15 +215,11 @@
   <string name="compose">Compose</string>
 
   <!-- Discovery -->
-  <string name="discovery_whats_hot">What\'s hot</string>
   <string name="discovery_news">News</string>
   <string name="discovery_discussions">Discussions</string>
   <string name="discovery">Discover</string>
   <string name="discovery_learning">Academy</string>
   <string name="discovery_newsfeed">Newsfeed</string>
-  <string name="onboard_exchange_title">To Help Get You Started</string>
-  <string name="onboard_exchange_summary1">Which exchange are you interested in ?</string>
-  <string name="onboard_exchange_summary2">Which sector are you interested in ?</string>
   <string name="ask_for_review_title">Love TradeHero?</string>
   <string name="ask_for_review_summary">Please give a rating on the App Store and let us know what
     you think.
@@ -272,7 +230,6 @@
   <string name="motley_fool" translatable="false">Motley Fool</string>
   <string name="seeking_alpha" translatable="false">Seeking Alpha</string>
   <string name="global_news">Global News</string>
-  <string name="search_regional_hint">Search country</string>
   <string name="ask_for_invite_title">More Fun with Friends !</string>
   <string name="ask_for_invite_summary1">Invite your buddies and earn</string>
   <string name="ask_for_invite_summary2">10,000 TH$</string>
@@ -280,10 +237,7 @@
 
   <!-- LeftDrawer -->
   <string name="left_drawer_footer_title">Content Partners:</string>
-  <string name="coming_soon">Coming soon!</string>
 
-  <string name="best_roi">ROI:</string>
-  <string name="content_sharing_started">Sharing&#8230;</string>
   <string name="content_shared">Shared!</string>
   <string name="retry">Retry</string>
 
@@ -293,10 +247,8 @@
   <string name="trending_tab_price">Price Action</string>
   <string name="trending_tab_volume">Volumes</string>
   <string name="trending_tab_all">All</string>
-  <string name="trending_tab_favorites">Favourites</string>
   <string name="my_fx">My FX</string>
   <string name="fx">FX</string>
-  <string name="trade_fx">Trade FX</string>
 
   <string name="warrants_all">All Warrants</string>
   <string name="fx_onboard_header_title">Virtual Forex On TradeHero</string>
@@ -317,10 +269,8 @@
   <string name="short_position_units">Short position: %1$s units</string>
   <string name="long_position_units">Long position: %1$s units</string>
   <string name="error_fx_candle_charts_load_fail">Loading of candle chart failed</string>
-  <string name="error_fetch_fx_list">Error when fetching FX list</string>
   <string name="error_fetch_fx_list_price">Error when fetching FX prices</string>
 
-  <string name="position_title_info">Info</string>
   <string name="position_short_info">The selling of a security such as a stock, commodity or currency, with the expectation that the asset will dip in value, opposite of \"Long\"</string>
   <string name="position_long_info">The buying of a security such as a stock, commodity or currency, with the expectation that the asset will rise in value, opposite of \"Short\"</string>
   <string name="position_close_info">Action of selling the entire long asset or buying the entire short asset to generate cash back to your portfolio.</string>
@@ -329,9 +279,6 @@
   <string name="transaction_title_sell">Sell %1$s</string>
 
   <string name="facebook_app_id">431745923529834</string>
-  <string name="image_load_failed">Failed to load image</string>
   <string name="video_locked_hint">Coming soon!</string>
-  <string name="history_tab_wait_message">Please wait for loading portfolio</string>
-  <string name="hero">Hero</string>
 
 </resources>

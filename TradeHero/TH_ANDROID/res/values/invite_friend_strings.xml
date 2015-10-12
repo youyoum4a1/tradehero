@@ -3,15 +3,8 @@
 
   <string name="invite">Invite</string>
   <string name="invite_number">Invite (%s)</string>
-  <string name="invite_friends">Invite Friends</string>
   <string name="invite_your_friends_now">Invite your friends now !</string>
   <string name="invite_all">Invite All</string>
-  <string name="invite_friend_refer_friend_empty_view">Your friend list is empty, link your account with Facebook, Twitter or Linkedin to refer friends</string>
-  <string name="invite_friend_send_invitations">Send Invitations</string>
-  <string name="invite_friend_refer_friend_announcement">Get FREE TradeHero Dollars for each friend who signs up for TradeHero!</string>
-  <string name="invite_friend_search_friends">Search Friends</string>
-  <string name="invite_friend_add_all">Add All</string>
-  <string name="invite_friend_remove_all">Remove All</string>
   <string name="invite_friend_success">Invite Success</string>
   <string name="invite_friend_facebook_tradehero_refer_friend_message">Join TradeHero, learn to trade, get expert tips, compete with the world top traders and earn real cash from followers, use my invitation code %1$s to get extra 10,000 TH dollars!</string>
   <string name="invite_friend_request_cancelled">Request cancelled</string>

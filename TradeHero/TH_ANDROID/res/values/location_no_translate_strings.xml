@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="location_summary" translatable="false">%1$s - %2$s</string>
-
   <string name="location_name_ad" translatable="false">Andorra</string>
   <string name="location_name_ae" translatable="false">United Arab Emirates</string>
   <string name="location_name_af" translatable="false">Afghanistan</string>
@@ -10,7 +8,6 @@
   <string name="location_name_ai" translatable="false">Anguilla</string>
   <string name="location_name_al" translatable="false">Albania</string>
   <string name="location_name_am" translatable="false">Armenia</string>
-  <string name="location_name_an" translatable="false">Netherlands Antilles</string>
   <string name="location_name_ao" translatable="false">Angola</string>
   <string name="location_name_aq" translatable="false">Antarctica</string>
   <string name="location_name_ar" translatable="false">Argentina</string>
@@ -126,7 +123,6 @@
   <string name="location_name_kn" translatable="false">Saint Kitts and Nevis</string>
   <string name="location_name_kp" translatable="false">Korea, Democratic People\'s Republic of</string>
   <string name="location_name_kr" translatable="false">Korea, Republic of</string>
-  <string name="location_name_kv" translatable="false">Kosovo</string>
   <string name="location_name_kw" translatable="false">Kuwait</string>
   <string name="location_name_ky" translatable="false">Cayman Islands</string>
   <string name="location_name_kz" translatable="false">Kazakhstan</string>

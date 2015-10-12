@@ -61,7 +61,6 @@ import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
 import com.tradehero.th.fragments.position.partial.PositionCompactDisplayDTO;
 import com.tradehero.th.fragments.position.partial.PositionDisplayDTO;
-import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.security.SecurityListRxFragment;
@@ -392,9 +391,9 @@ public class PositionListFragment
                                 .observeOn(AndroidSchedulers.mainThread()),
                         portfolioCompactListCache.getOne(currentUserId.toUserBaseKey())
                                 .observeOn(AndroidSchedulers.mainThread()),
-                        new Func2<PositionPartialTopView.CloseUserAction, Pair<UserBaseKey, PortfolioCompactDTOList>, PositionPartialTopView.CloseUserAction>()
+                        new Func2<PositionItemAdapter.CloseUserAction, Pair<UserBaseKey, PortfolioCompactDTOList>, PositionItemAdapter.CloseUserAction>()
                         {
-                            @Override public PositionPartialTopView.CloseUserAction call(PositionPartialTopView.CloseUserAction userAction,
+                            @Override public PositionItemAdapter.CloseUserAction call(PositionItemAdapter.CloseUserAction userAction,
                                     Pair<UserBaseKey, PortfolioCompactDTOList> pair)
                             {
                                 handleDialogGoToTrade(true,
@@ -411,9 +410,9 @@ public class PositionListFragment
                             }
                         })
                         .subscribe(
-                                new Action1<PositionPartialTopView.CloseUserAction>()
+                                new Action1<PositionItemAdapter.CloseUserAction>()
                                 {
-                                    @Override public void call(PositionPartialTopView.CloseUserAction userAction)
+                                    @Override public void call(PositionItemAdapter.CloseUserAction userAction)
                                     {
                                         // Nothing to do
                                     }

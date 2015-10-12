@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="user_level_progress_margin_top">10dp</dimen>
   <dimen name="user_level_progress_margin_left">28dp</dimen>
   <dimen name="user_level_progress_margin_right">30dp</dimen>
   <dimen name="user_level_current_level_w_h">36dp</dimen>
-  <dimen name="user_level_indicator_horizontal_margin">10dp</dimen>
   <dimen name="user_level_progressbar_height">14dp</dimen>
   <dimen name="user_level_level_up_badge_w_h">180dp</dimen>
   <dimen name="user_level_level_up_text_vertical_margin">10dp</dimen>
   <dimen name="user_level_next_level_w_h">42dp</dimen>
-
-  <color name="user_level_progress_current_text_color">#ffff8e0f</color>
-  <color name="user_level_progress_next_text_color">@color/text_secondary</color>
 
   <integer name="user_level_progress_bar_xp_increase_delay">1000</integer>
   <integer name="user_level_progress_bar_xp_increase_duration">1000</integer>

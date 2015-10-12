@@ -6,16 +6,13 @@
   <string name="security_open">Open</string>
   <string name="security_days_high">High</string>
   <string name="security_days_low">Low</string>
-  <string name="security_market_cap">Market Cap</string>
   <string name="security_pe_ratio">P/E Ratio</string>
   <string name="security_eps">EPS</string>
   <string name="security_volume">Volume</string>
   <string name="security_avg_volume">Avg. Volume</string>
-  <string name="security_market_status">Market status</string>
   <string name="security_info">Info</string>
   <string name="security_discussions">Discussions</string>
   <string name="security_news">News</string>
-  <string name="security_newsfeed">@string/discovery_newsfeed</string>
   <string name="security_history">History</string>
 
   <!-- Warrant info -->
@@ -24,11 +21,8 @@
   <string name="warrant_type_put">Put</string>
   <string name="warrant_type_put_only">Puts Only</string>
   <string name="warrant_price_header">Bid Price</string>
-  <string name="warrant_code_header">Code</string>
   <string name="warrant_strike_header">Strike</string>
-  <string name="warrant_strike_value">%1$s %2$.2f</string>
   <string name="warrant_expiry_header">Last Trading Date</string>
-  <string name="warrant_info_header_warrant_data">Warrant Data</string>
   <string name="warrant_info_type">Type</string>
   <string name="warrant_info_code">Code</string>
   <string name="warrant_info_expiry">Expiry</string>
@@ -39,15 +33,6 @@
   <string name="security_close">Close</string>
 
   <!--do not translate-->
-  <string name="security_action_bar_title" translatable="false">%1$s (%2$s)</string>
-
-  <string name="market_on_board_error_fetch_exchange_sector">There was an error fetching the list of exchanges and sectors</string>
-  <string name="market_on_board_exchange_interested">Which exchange are you most interested in?</string>
-  <string name="market_on_board_sector_interested">Which sector are you most interested in?</string>
-  <string name="market_on_board_country_from">What country are you from?</string>
-  <string name="security_on_board_select_invitation_title">Stocks to Watch!</string>
-  <string name="security_on_board_select_invitation_come_on">These stocks are hot! Add them to your watchlist now!</string>
-
   <string name="security_fx_enroll_button">Click to enroll in Forex</string>
 
   <string name="fx_chart_1min">1m</string>

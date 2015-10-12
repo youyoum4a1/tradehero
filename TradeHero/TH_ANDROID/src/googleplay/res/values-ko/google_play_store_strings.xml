@@ -14,16 +14,6 @@
   <string name="google_play_billing_verification_failed_window_description">구글플레이에서 불러온 정보가 일치하지 않습니다.
   </string>
   <string name="google_play_billing_verification_failed_window_title">정보 확인 불가</string>
-  <string name="google_play_consumed_purchase_cancel">Okay</string>
-  <string name="google_play_consumed_purchase_message">구매가 성공적으로 이루어졌습니다.</string>
-  <string name="google_play_consumed_purchase_message_info">\"%s\" 구매 성공</string>
-  <string name="google_play_consumed_purchase_title">구매 완료</string>
-  <string name="google_play_purchase_restored_cancel">Okay</string>
-  <string name="google_play_purchase_restored_message"> %1$d 구매복원 완료
-  </string>
-  <string name="google_play_purchase_restored_none_cancel">Okay</string>
-  <string name="google_play_purchase_restored_none_message">모든 구매가 완료되었습니다.
-  </string>
   <string name="google_play_purchase_restored_none_title">복원할 구매기록 없음</string>
   <string name="google_play_purchase_restored_title">구매기록 복원</string>
   <string name="google_play_send_support_email_chooser_title">트레이드히어로에게 도움 요청하기

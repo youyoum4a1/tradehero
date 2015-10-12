@@ -50,7 +50,7 @@
         />
 
     <TextView
-        android:id="@id/average_price_value"
+        android:id="@+id/average_price_value"
         style="@style/TH.InfoValue"
         android:gravity="end"
         tools:text="US$ 2.81"

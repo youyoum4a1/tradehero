@@ -2,26 +2,22 @@ package com.tradehero.th.fragments.timeline;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.OnClick;
-import android.support.annotation.Nullable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
 import com.tradehero.th.api.level.LevelDefDTOList;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.base.THApp;
-import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.widget.UserLevelProgressBar;
 import timber.log.Timber;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
     @Bind(R.id.portfolio_title) @Nullable protected TextView portfolioTitle;
-    @Bind(R.id.txt_total_wealth) @Nullable protected TextView totalWealth;
-    @Bind(R.id.txt_additional_cash) @Nullable protected TextView additionalCash;
-    @Bind(R.id.txt_cash_on_hand) @Nullable protected TextView cashOnHand;
     @Bind(R.id.user_profile_achievement_count) @Nullable protected TextView achievementCount;
     @Bind(R.id.user_level_progress_bar) @Nullable protected UserLevelProgressBar userLevelProgressBar;
     @Bind(R.id.user_statistic_view) @Nullable protected UserStatisticView userStatisticView;
@@ -47,54 +43,6 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
             else
             {
                 portfolioTitle.setText(R.string.na);
-            }
-        }
-
-        // Total Wealth
-        if (totalWealth != null)
-        {
-            if (userProfileDTO.portfolio != null)
-            {
-                THSignedMoney.builder(userProfileDTO.portfolio.totalValue)
-                        .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .build()
-                        .into(totalWealth);
-            }
-            else
-            {
-                totalWealth.setText(R.string.na);
-            }
-        }
-
-        // Additional Cash
-        if (additionalCash != null)
-        {
-            if (userProfileDTO.portfolio != null)
-            {
-                THSignedMoney.builder(userProfileDTO.portfolio.getTotalExtraCash())
-                        .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .build()
-                        .into(additionalCash);
-            }
-            else
-            {
-                additionalCash.setText(R.string.na);
-            }
-        }
-
-        // Cash On Hand
-        if (cashOnHand != null)
-        {
-            if (userProfileDTO.portfolio != null)
-            {
-                THSignedMoney.builder(userProfileDTO.portfolio.cashBalanceRefCcy)
-                        .currency(userProfileDTO.portfolio.getNiceCurrency())
-                        .build()
-                        .into(cashOnHand);
-            }
-            else
-            {
-                cashOnHand.setText(R.string.na);
             }
         }
 

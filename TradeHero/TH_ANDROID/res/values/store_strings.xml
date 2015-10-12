@@ -2,19 +2,7 @@
 <resources>
 
   <string name="store_option_menu_title">TradeHero Store</string>
-  <string name="store_header_in_app_purchases">In-App Purchases</string>
-  <string name="store_buy_virtual_dollars">Virtual Dollars</string>
-  <string name="store_buy_follow_credits">Follow Credits</string>
   <string name="store_buy_restore_purchases">Restore Purchases</string>
-  <string name="store_buy_stock_alerts">Stock Alerts</string>
-  <string name="store_buy_reset_portfolio">Reset Portfolio</string>
-  <string name="store_header_manage_purchases">Manage Purchases</string>
-  <string name="store_manage_heroes">Manage Heroes</string>
-  <string name="store_manage_followers">Manage Followers</string>
-  <string name="store_manage_stock_alerts">Manage Stock Alerts</string>
-
-  <string name="store_alert_are_free_title">Rejoice!</string>
-  <string name="store_alert_are_free_description">Alerts are Free for now</string>
 
   <string name="store_billing_unavailable_window_title">No store account</string>
   <string name="store_billing_unavailable_window_description">The %s will function properly when you
@@ -23,13 +11,6 @@
   <string name="store_billing_unavailable_cancel">Got it</string>
   <string name="store_billing_unavailable_act">Add an account now</string>
 
-  <string name="store_billing_error_loading_window_title">Oh!</string>
-  <string name="store_billing_error_loading_window_description">The TradeHero Store failed to load
-    properly.
-  </string>
-  <string name="store_billing_error_loading_act">Reload Please</string>
-
-  <string name="store_billing_loading_window_title">Loading&#8230;</string>
   <string name="store_billing_loading_window_description">Please give us a moment as we are loading
     some data
   </string>
@@ -42,8 +23,6 @@
   <string name="store_billing_user_cancelled_ok">Sure</string>
   <string name="store_billing_user_cancelled_cancel">No need</string>
 
-  <string name="store_billing_sku_already_owned_window_title">You already own one of this object
-  </string>
   <string name="store_billing_sku_already_owned_name_window_title">You already own one %s</string>
   <string name="store_billing_sku_already_owned_window_description">We need to account for it.
     Attempt a Restore?
@@ -82,24 +61,15 @@
   <string name="store_billing_unknown_error_cancel">No need</string>
 
   <string name="store_buy_virtual_dollar_window_title">Extra TradeHero Dollars</string>
-  <string name="store_buy_virtual_dollar_window_message">Use dollars to buy and sell stocks</string>
-  <string name="store_buy_follow_credits_window_title">TradeHero Credits</string>
-  <string name="store_buy_follow_credits_window_message">Use credits to premium-follow other users!</string>
   <string name="store_buy_stock_alerts_window_title">Stock Alerts Subscription</string>
-  <string name="store_buy_stock_alerts_window_message">Get notified when a stock price changes.
-    Charged monthly, cancel anytime.
-  </string>
   <string name="store_buy_reset_portfolio_window_title">Reset Portfolio</string>
   <string name="store_buy_reset_portfolio_window_message">Everybody loves a fresh start.
   </string>
 
-  <string name="store_buy_virtual_dollar_window_button_cancel">@string/cancel</string>
-  <string name="store_buy_virtual_dollar_window_button_buy">Buy Now!</string>
 
   <!-- Manage heroes -->
   <string name="manage_heroes_title">Heroes</string>
   <string name="manage_my_heroes_title">My Heroes</string>
-  <string name="manage_heroes_follows">Follows:</string>
 
   <string name="manage_heroes_empty_title">You Are Not Following Anyone Yet</string>
   <string name="manage_heroes_empty_description">Start following Heroes to receive all their trade activity and market commentary in real-time.\nKeep ahead of the game: pick your Heroes now!
@@ -110,71 +80,25 @@
   <string name="manage_heroes_empty_leaderboard_link">Browse Most Skilled Traders</string>
 
   <string name="manage_heroes_following_since">Following since %s</string>
-  <string name="manage_heroes_not_following_since">stopped following on %s</string>
-  <string name="manage_heroes_datetime_format">@string/data_format_dd_mmm_yyyy</string>
-  <string name="manage_heroes_active_header">Following Heroes</string>
-  <string name="manage_heroes_inactive_header">Inactive Heroes</string>
-
-  <string name="manage_heroes_alert_follow_title">Follow Hero</string>
-  <string name="manage_heroes_alert_follow_message">You are not currently following this
-    Hero.\n\nWould you like to start following?
-  </string>
-  <string name="manage_heroes_alert_follow_cancel">Not Now</string>
-  <string name="manage_heroes_alert_follow_ok">Follow!</string>
-
-  <string name="manage_heroes_follow_progress_title">Processing</string>
-  <string name="manage_heroes_follow_progress_message">Trying to follow this Hero.</string>
-  <string name="manage_heroes_follow_failed">There was an error when trying to un/follow this hero
-  </string>
 
   <string name="manage_heroes_alert_unfollow_title">Unfollow %1$s?</string>
   <string name="manage_heroes_alert_unfollow_message">You will no longer receive push notifications of this hero\'s activities</string>
   <string name="manage_heroes_alert_unfollow_cancel">@string/cancel</string>
   <string name="manage_heroes_alert_unfollow_ok">Unfollow</string>
 
-  <string name="manage_heroes_unfollow_progress_title">Processing</string>
   <string name="manage_heroes_unfollow_progress_message">Trying to unfollow this Hero.</string>
-  <string name="manage_heroes_unfollow_failed">There was an error when trying to unfollow this
-    hero
-  </string>
-  <string name="manage_heroes_unfollow_official_accounts_failed">You cannot unfollow this official account</string>
-  <string name="manage_heroes_unfollow_success">Unfollow this hero successfully</string>
 
   <!-- Manage followers -->
   <string name="manage_followers_title">Followers</string>
   <string name="manage_my_followers_title">My Followers</string>
-  <string name="manage_followers_total_revenue">Total Revenue</string>
-  <string name="manage_followers_total_amount_paid">Total Amount Paid</string>
-  <string name="manage_followers_number_followers">Followers</string>
-
-  <string name="manage_followers_payout_none">There have been no payout.</string>
-  <string name="manage_followers_payout_list_header">%d PAYOUTS</string>
-  <string name="manage_followers_payout_hero_datetime_format">
-    @string/data_format_dd_mmm_yyyy_kk_mm_z
-  </string>
 
   <string name="manage_followers_follower_none">No follower.</string>
-  <string name="manage_followers_list_header">%d FOLLOWERS</string>
-  <string name="manage_followers_revenue_follower">Revenue: %1$s %2$,.2f</string>
-  <string name="manage_followers_revenue_follower_2">Revenue: %1$s</string>
-  <string name="manage_followers_revenue_follower_3">Revenue: </string>
-
-  <!-- Manage follower payments -->
-  <string name="manage_follower_payment_transaction_list_header">Transactions</string>
-  <string name="manage_follower_payment_duration">Paid for %d days:</string>
-  <string name="manage_follower_payment_datetime_format">@string/data_format_dd_mmm_yyyy</string>
 
   <!-- Manage Alerts -->
   <string name="manage_alerts_plan">"Plan: "</string>
-  <string name="manage_alerts_with_count">%d alerts</string>
 
   <!-- In-App Purchases elements -->
   <string name="iap_send_support_email_chooser_title">Send an email to TradeHero support</string>
-
-  <string name="iap_send_support_email_report_fail_title">Purchase Report Failed</string>
-  <string name="iap_send_support_email_report_fail_message">Do you mind reporting the incident to TradeHero?</string>
-  <string name="iap_send_support_email_report_fail_ok">Sure</string>
-  <string name="iap_send_support_email_report_fail_cancel">Never Mind</string>
 
   <string name="iap_consumed_purchase_title">Purchased</string>
   <string name="iap_consumed_purchase_message">Your purchase went through OK</string>

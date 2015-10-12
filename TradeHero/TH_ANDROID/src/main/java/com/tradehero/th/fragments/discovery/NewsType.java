@@ -6,6 +6,7 @@ import android.support.annotation.StringRes;
 import com.tradehero.th.R;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 
+@Deprecated
 enum NewsType
 {
     SeekingAlpha(R.string.seeking_alpha, R.layout.news_carousel_seekingalpha, AnalyticsConstants.NewsSeekingAlpha),

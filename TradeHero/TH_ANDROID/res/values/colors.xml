@@ -104,14 +104,6 @@
   <color name="lb_header_bg_focused">#b9deeb</color>
   <color name="lb_header_bg_pressed">#7f98a1</color>
 
-  <color name="lb_item_even">@android:color/white</color>
-  <color name="lb_item_even_focused">@color/grey</color>
-  <color name="lb_item_even_pressed">@color/darker_grey</color>
-
-  <color name="lb_item_odd">#EFEFEF</color>
-  <color name="lb_item_odd_focused">@color/grey</color>
-  <color name="lb_item_odd_pressed">@color/darker_grey</color>
-
   <color name="news_seeking_alpha">#4E0A00</color>
   <color name="news_seeking_alpha_focused">#8e1200</color>
   <color name="news_seeking_alpha_pressed">#e01d00</color>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.Spanned;
@@ -14,10 +15,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
-import android.support.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.metrics.Analytics;
@@ -63,7 +63,6 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject CurrentUserId currentUserId;
 
-    @Bind(R.id.gain_indicator) @Nullable protected ImageView gainIndicator;
     @Bind(R.id.stock_logo) protected ImageView stockLogo;
     @Bind(R.id.stock_symbol) protected TextView stockSymbol;
     @Bind(R.id.company_name) protected TextView companyName;
@@ -218,30 +217,16 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         {
             gainLossLabel.setBackgroundResource(R.drawable.round_label_up);
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary_inverse));
-            if (gainIndicator != null)
-            {
-                gainIndicator.setVisibility(View.VISIBLE);
-                gainIndicator.setImageResource(R.drawable.indicator_up);
-            }
         }
         else if (roi < 0)
         {
             gainLossLabel.setBackgroundResource(R.drawable.round_label_down);
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary_inverse));
-            if (gainIndicator != null)
-            {
-                gainIndicator.setVisibility(View.VISIBLE);
-                gainIndicator.setImageResource(R.drawable.indicator_down);
-            }
         }
         else
         {
             gainLossLabel.setTextColor(getResources().getColor(R.color.text_primary));
             gainLossLabel.setBackgroundColor(getResources().getColor(R.color.transparent));
-            if (gainIndicator != null)
-            {
-                gainIndicator.setVisibility(View.INVISIBLE);
-            }
         }
     }
 

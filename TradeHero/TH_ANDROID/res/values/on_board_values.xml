@@ -13,8 +13,6 @@
     <item name="android:gravity">center_horizontal</item>
   </style>
 
-  <dimen name="on_board_last_stock_width">@dimen/size_17</dimen>
-  <dimen name="on_board_last_stock_height">@dimen/size_18</dimen>
   <item name="on_board_alpha_unselected" format="float" type="dimen">0.6</item>
   <item name="on_board_alpha_hit_box_selected" format="float" type="dimen">0.4</item>
 

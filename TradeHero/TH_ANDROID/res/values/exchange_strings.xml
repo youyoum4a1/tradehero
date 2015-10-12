@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-  <string name="exchange_market_cap_abbreviated">Mkt Cap: %s</string>
   <string name="exchange_top_stocks_header">Top Stocks:</string>
 
   <string name="market_region_unknown">Unknown</string>

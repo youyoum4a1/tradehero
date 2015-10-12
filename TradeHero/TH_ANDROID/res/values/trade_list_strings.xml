@@ -1,23 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-  <string name="trade_list_title">Trade History</string>
-  <string name="trade_list_title_with_security">%1$s:%2$s</string>
-  <string name="trade_list_avg_price">Avg. Price</string>
-  <string name="trade_list_realized_pl">Realized P&amp;L</string>
   <string name="trade_list_unrealized_pl">Unrealized P&amp;L</string>
-  <string name="trade_list_quantity">Position Quantity</string>
-  <string name="trade_list_comment">Comment</string>
   <string name="trade_list_header_history">Trade History</string>
-  <string name="trade_list_header_security_symbol">Stock Symbol</string>
-  <string name="trade_list_header_position_summary">Timeline</string>
   <string name="trade_list_header_open_summary">Open Position Summary</string>
   <string name="trade_list_header_closed_summary">Closed Position Summary</string>
-  <string name="trade_trade_value_header">Trade Value</string>
-  <string name="trade_sold_quantity_verbose">Sold %1$s shares @ %2$s</string>
-  <string name="trade_bought_quantity_verbose">Bought %1$s shares @ %2$s</string>
-  <string name="trade_holding_quantity_verbose">Holding %1$s shares</string>
-  <string name="trade_held_quantity_verbose">Held %1$s shares</string>
   <string name="trade_action_format">%1$s %3$s %2$s @ %4$s</string>
 
 </resources>

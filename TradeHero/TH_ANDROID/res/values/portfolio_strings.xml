@@ -2,32 +2,19 @@
 <resources>
 
   <!-- Portfolios list -->
-  <string name="portfolio_topbar_title">Portfolios and Watchlists</string>
-  <string name="portfolio_own_header">PORTFOLIOS</string>
-  <string name="portfolio_recently_viewed_heroes">RECENTLY VIEWED HEROES</string>
-  <string name="portfolio_recently_viewed_others">RECENTLY VIEWED USERS</string>
-  <string name="portfolio_loading_count">Loading %1$,d/%2$,d Portfolios…</string>
   <string name="portfolio_description_count_open_positions_you">You have %1$d open positions</string>
   <string name="portfolio_description_count_closed_positions_you">You have %1$d closed positions</string>
   <string name="portfolio_description_count_watch_positions_you">You are watching %1$d items</string>
   <string name="portfolio_description_count_open_positions_other">%2$s has %1$d open positions</string>
   <string name="portfolio_description_count_closed_positions_other">%2$s has %1$d closed positions</string>
   <string name="portfolio_description_count_watch_positions_other">%2$s is watching %1$d items</string>
-  <string name="portfolio_description_count_watchlist">You have %1$d items</string>
   <string name="portfolio_description_nothing">No positions</string>
-  <string name="portfolio_default_title">Main Portfolio</string>
-  <string name="portfolio_item_title_loading">Loading…</string>
   <string name="portfolio_header_total_value">Total Value</string>
-  <string name="portfolio_header_value">Value</string>
   <string name="portfolio_header_cash_value">Cash Left</string>
   <string name="portfolio_header_total_asset_value">Total Value</string>
-  <string name="portfolio_header_total_profit">Profit</string>
   <string name="portfolio_header_total_profit_fx">Profit on Open Positions</string>
-  <string name="portfolio_header_margin_title">Margin</string>
   <string name="portfolio_header_margin_available_title">Margin Available</string>
   <string name="portfolio_header_margin_used_title">Margin Used</string>
-  <string name="portfolio_header_pl_unrealised_title">Unrealised</string>
-  <string name="portfolio_header_pl_realised_title">Realised</string>
 
   <string name="portfolio_title_unnamed">Unnamed Portfolio</string>
 
@@ -35,9 +22,6 @@
   <string name="position_margin_close_out_warn">Margin is approaching closeout\u00A0\u00A0(%s)</string>
   <string name="position_margin_close_out_danger">Margin is dangerously near closeout\u00A0\u00A0(%s)</string>
 
-  <string name="portfolio_margin_call_title">Margin Call</string>
-  <string name="portfolio_margin_call_description">You have a margin call on your portfolio, close positions and avoid a forced close-out</string>
-  <string name="portfolio_margin_call_ok">Deal with it now!</string>
 
   <string name="portfolio_tap_to_enroll_fx">Tap to enroll and trade FX</string>
 

@@ -9,7 +9,6 @@
 
   <!-- For individual LeaderboardFilterValueSlider -->
   <string name="leaderboard_filter_comparator_sign_bigger_than">&gt;</string>
-  <string name="leaderboard_filter_comparator_sign_smaller_than">&lt;</string>
 
   <!-- For Monthly Activity -->
   <string name="leaderboard_filter_monthly_activity_header">Monthly Activity</string>
