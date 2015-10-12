@@ -38,6 +38,7 @@ import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.widget.LiveWidgetScrollListener;
 import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
@@ -219,6 +220,48 @@ public class MainWatchlistPositionFragment extends DashboardFragment
 
     @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
     {
+        if (getParentFragment() instanceof TrendingMainFragment)
+        {
+            return new MultiScrollListener(fragmentElements.get().getListViewScrollListener(),
+                    new AbsListView.OnScrollListener()
+                    {
+                        int maxOffsetY = 0;
+
+                        @Override
+                        public void onScrollStateChanged(AbsListView view, int scrollState)
+                        {
+                            int firstVisibleItem = view.getFirstVisiblePosition();
+                            if (firstVisibleItem == 0)
+                            {
+                                View child = view.getChildAt(firstVisibleItem);
+                                if (child != null)
+                                {
+                                    int offsetY = child.getTop();
+                                    if (offsetY > maxOffsetY)
+                                    {
+                                        maxOffsetY = offsetY;
+                                    }
+                                    watchListRefreshableContainer.setEnabled(offsetY == maxOffsetY);
+                                }
+                                else
+                                {
+                                    Timber.e(new NullPointerException(), "Child was null");
+                                }
+                            }
+                            else
+                            {
+                                watchListRefreshableContainer.setEnabled(false);
+                            }
+                        }
+
+                        @Override
+                        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+                        {
+                        }
+                    },
+                    new LiveWidgetScrollListener(fragmentElements.get(), ((TrendingMainFragment) getParentFragment()).getLiveUtil()));
+        }
+
         return new MultiScrollListener(fragmentElements.get().getListViewScrollListener(),
                 new AbsListView.OnScrollListener()
                 {

@@ -47,6 +47,7 @@ import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.position.FXMainPositionListFragment;
+import com.tradehero.th.fragments.position.StocksMainPositionListFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
@@ -205,7 +206,8 @@ public class TrendingMainFragment extends DashboardFragment
             try
             {
                 lastType = TrendingTabType.getForAssetClass(askedAssetClass);
-            } catch (IllegalArgumentException e)
+            }
+            catch (IllegalArgumentException e)
             {
                 Timber.e(e, "Unhandled assetClass for user " + currentUserId.get());
             }
@@ -242,6 +244,15 @@ public class TrendingMainFragment extends DashboardFragment
                         break;
                     default:
                         throw new RuntimeException("Unhandled TrendingTabType." + lastType);
+                }
+
+                if (lastStockTab.equals(TrendingStockTabType.StocksMain))
+                {
+                    getLiveUtil().setLiveWidgetVisibility(View.GONE);
+                }
+                else
+                {
+                    getLiveUtil().setLiveWidgetVisibility(View.VISIBLE);
                 }
             }
 
@@ -747,5 +758,10 @@ public class TrendingMainFragment extends DashboardFragment
         {
             return TrendingFXTabType.values().length;
         }
+    }
+
+    public BaseLiveFragmentUtil getLiveUtil()
+    {
+        return trendingLiveFragmentUtil;
     }
 }

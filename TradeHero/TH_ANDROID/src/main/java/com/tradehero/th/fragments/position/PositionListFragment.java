@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.position;
 
 import android.annotation.SuppressLint;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -1004,7 +1005,8 @@ public class PositionListFragment
                         {
                             headerStub.setVisibility(View.VISIBLE);
                         }
-                        else {
+                        else
+                        {
                             headerStub.setVisibility(View.GONE);
                         }
                     }

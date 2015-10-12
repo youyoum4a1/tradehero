@@ -122,4 +122,14 @@ public class BaseLiveFragmentUtil
     {
         //Do nothing
     }
+
+    public void setLiveWidgetTranslationY(float y)
+    {
+        liveWidget.setTranslationY(y);
+    }
+
+    public void setLiveWidgetVisibility(int visibility)
+    {
+        liveWidget.setVisibility(visibility);
+    }
 }

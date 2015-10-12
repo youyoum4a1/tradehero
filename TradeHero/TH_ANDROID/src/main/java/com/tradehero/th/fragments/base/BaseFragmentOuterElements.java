@@ -79,6 +79,11 @@ public class BaseFragmentOuterElements implements FragmentOuterElements
                 return 0;
             }
 
+            @Override public float getTranslationY()
+            {
+                return 0;
+            }
+
             @Override public void setBottomBarVisibility(int visibility)
             {
 
