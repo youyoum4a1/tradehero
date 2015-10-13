@@ -14,9 +14,12 @@ import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTOList;
 import com.tradehero.th.fragments.BasePagedListRxFragment;
+import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.persistence.education.PaginatedVideoCategoryCacheRx;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.widget.LiveWidgetScrollListener;
+import com.tradehero.th.widget.MultiScrollListener;
 import javax.inject.Inject;
 
 public class VideoCategoriesFragment extends BasePagedListRxFragment<
@@ -37,6 +40,12 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
     {
         super.onViewCreated(view, savedInstanceState);
         scheduleRequestData();
+
+        if (getParentFragment() instanceof DiscoveryMainFragment)
+        {
+            listView.setOnScrollListener(new MultiScrollListener(nearEndScrollListener, fragmentElements.get().getListViewScrollListener(),
+                    new LiveWidgetScrollListener(fragmentElements.get(), ((DiscoveryMainFragment) getParentFragment()).getLiveFragmentUtil())));
+        }
     }
 
     @Override public void onResume()

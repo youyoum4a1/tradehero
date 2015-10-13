@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.contestcenter;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,8 @@ import com.tradehero.th.models.intent.competition.ProviderIntent;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.tradehero.th.widget.LiveWidgetScrollListener;
+import com.tradehero.th.widget.MultiScrollListener;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.inject.Inject;
@@ -92,6 +95,17 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         currentDisplayedChildLayoutId = contest_center_content_screen.getDisplayedChildLayoutId();
         contestListView.setOnScrollListener(null);
         super.onStop();
+    }
+
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getParentFragment() instanceof ContestCenterFragment)
+        {
+            contestListView.setOnScrollListener(new MultiScrollListener(fragmentElements.get().getListViewScrollListener(),
+                    new LiveWidgetScrollListener(fragmentElements.get(), ((ContestCenterFragment) getParentFragment()).getLiveFragmentUtil())));
+        }
     }
 
     @Override public void onDestroyView()

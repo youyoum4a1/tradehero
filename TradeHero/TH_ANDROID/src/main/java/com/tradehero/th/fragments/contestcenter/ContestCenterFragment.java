@@ -109,4 +109,9 @@ public class ContestCenterFragment extends DashboardFragment
             return getString(ContestCenterTabType.values()[position].titleRes);
         }
     }
+
+    public BaseLiveFragmentUtil getLiveFragmentUtil()
+    {
+        return liveFragmentUtil;
+    }
 }

@@ -29,12 +29,14 @@ import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
 import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
+import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.tradehero.th.widget.LiveWidgetScrollListener;
 import com.tradehero.th.widget.MultiRecyclerScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
 import javax.inject.Inject;
@@ -193,7 +195,7 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
     @Override public void updateRow(LeaderboardItemDisplayDTO dto)
     {
         int position = itemViewAdapter.indexOf(dto);
-        if(position >= 0 )
+        if (position >= 0)
         {
             itemViewAdapter.notifyItemChanged(position);
         }
@@ -232,6 +234,12 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                                 scrollStateChanged = false;
                                 requestDtos();
                             }
+                        }
+
+                        if (getParentFragment() instanceof LeaderboardCommunityFragment)
+                        {
+                            ((LeaderboardCommunityFragment) getParentFragment()).getLiveFragmentUtil()
+                                    .setLiveWidgetTranslationY(fragmentElements.get().getMovableBottom().getTranslationY());
                         }
                     }
 
