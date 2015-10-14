@@ -65,7 +65,7 @@ public class SecurityOptPositionActualAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.security_opt_position_item, null);
             holder = new Holder();
             holder.stockName = (TextView)convertView.findViewById(R.id.stock_name);
-            holder.code = (TextView)convertView.findViewById(R.id.stock_code);
+            holder.code = (TextView)convertView.findViewById(R.id.stock_marketvalue);
             holder.benefit = (TextView)convertView.findViewById(R.id.stock_benefit);
             holder.percentageBenefit = (TextView)convertView.findViewById(R.id.stock_benefit_percent);
             holder.base = (TextView)convertView.findViewById(R.id.stock_base_a);

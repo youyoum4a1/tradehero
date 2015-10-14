@@ -21,4 +21,9 @@ public class DataUtils {
         DecimalFormat df = new DecimalFormat("#0.00");
         return df.format(value);
     }
+
+    public static String keepThreeDecimal(double value){
+        DecimalFormat df = new DecimalFormat("#0.000");
+        return df.format(value);
+    }
 }

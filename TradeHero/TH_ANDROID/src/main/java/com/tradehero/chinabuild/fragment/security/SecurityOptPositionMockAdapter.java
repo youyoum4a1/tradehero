@@ -60,7 +60,7 @@ public class SecurityOptPositionMockAdapter extends BaseAdapter{
             convertView = inflater.inflate(R.layout.security_opt_position_item, null);
             holder = new Holder();
             holder.stockName = (TextView)convertView.findViewById(R.id.stock_name);
-            holder.code = (TextView)convertView.findViewById(R.id.stock_code);
+            holder.marketvalue = (TextView)convertView.findViewById(R.id.stock_marketvalue);
             holder.benefit = (TextView)convertView.findViewById(R.id.stock_benefit);
             holder.percentageBenefit = (TextView)convertView.findViewById(R.id.stock_benefit_percent);
             holder.base = (TextView)convertView.findViewById(R.id.stock_base_a);
@@ -72,14 +72,15 @@ public class SecurityOptPositionMockAdapter extends BaseAdapter{
             holder = (Holder)convertView.getTag();
         }
         SecurityOptPositionMockDTO securityOptPositionDTO = getItem(i);
+        double fixRate = securityOptPositionDTO.fxRate;
         holder.stockName.setText(securityOptPositionDTO.name);
         holder.totalAccount.setText(String.valueOf(securityOptPositionDTO.shares));
         holder.availableAccount.setText(String.valueOf(securityOptPositionDTO.sellableShares));
-        holder.code.setText(securityOptPositionDTO.symbol);
+        holder.marketvalue.setText(securityOptPositionDTO.currencyDisplay + DataUtils.keepTwoDecimal(securityOptPositionDTO.marketValueRefCcy/fixRate));
         double benefit = securityOptPositionDTO.unrealizedPLRefCcy;
         double percentage = securityOptPositionDTO.roi;
         DecimalFormat df = new DecimalFormat("#0.00");
-        double fixRate = securityOptPositionDTO.fxRate;
+
         holder.benefit.setText(securityOptPositionDTO.currencyDisplay + DataUtils.keepInteger(benefit/fixRate));
         holder.percentageBenefit.setText(df.format(percentage * 100) + "%");
         if(securityOptPositionDTO.unrealizedPLRefCcy >= 0){
@@ -89,15 +90,15 @@ public class SecurityOptPositionMockAdapter extends BaseAdapter{
             holder.benefit.setTextColor(color_down);
             holder.percentageBenefit.setTextColor(color_down);
         }
-        int base = (int)(securityOptPositionDTO.averagePriceRefCcy * securityOptPositionDTO.shares);
+        double base = securityOptPositionDTO.averagePriceRefCcy * securityOptPositionDTO.shares;
         holder.base.setText(securityOptPositionDTO.currencyDisplay + DataUtils.keepInteger(base / fixRate));
-        holder.basePrice.setText(securityOptPositionDTO.currencyDisplay + DataUtils.keepTwoDecimal(securityOptPositionDTO.averagePriceRefCcy/fixRate));
+        holder.basePrice.setText(securityOptPositionDTO.currencyDisplay + DataUtils.keepThreeDecimal(securityOptPositionDTO.averagePriceRefCcy / fixRate));
         return convertView;
     }
 
     class Holder {
         public TextView stockName;
-        public TextView code;
+        public TextView marketvalue;
         public TextView benefit;
         public TextView percentageBenefit;
         public TextView base;
