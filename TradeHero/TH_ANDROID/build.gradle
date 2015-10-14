@@ -44,11 +44,6 @@ project.ext.isTravis = "true".equals(System.getenv("TRAVIS"))
 project.ext.preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
 project.ext.isIntelliJ = true
 
-project.ext.java8home = System.getenv("JAVA8_HOME")
-if (project.ext.java8home == null) {
-  // MacOS
-  project.ext.java8home = '/usr/libexec/java_home -v 1.8'.execute([], project.rootDir).text.trim()
-}
 project.ext.javahome = System.getenv("JAVA_HOME")
 if (project.ext.javahome == null) {
   // MacOS
