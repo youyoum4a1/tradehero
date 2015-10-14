@@ -3,6 +3,7 @@ package com.tradehero.th.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import com.flurry.android.FlurryAgent;
 import com.tradehero.common.utils.THLog;
 import com.tradehero.th.activities.ActivityBuildTypeUtil;
 import com.tradehero.th.inject.BaseInjector;
@@ -20,6 +21,7 @@ public class THApp extends BaseApplication
 {
     private static final int MEMORY_CACHE_SIZE = 2 * 1024 * 1024;
     private static final int DISK_CACHE_SIZE = 50 * 1024 * 1024;
+    private final String FLURRY_APIKEY = "K8Y3PD7T5M5BNM2X949X";
 
     public static Context context;
 
@@ -59,6 +61,9 @@ public class THApp extends BaseApplication
                         });
 
         THLog.showDeveloperKeyHash(this);
+
+        FlurryAgent.setLogEnabled(false);
+        FlurryAgent.init(this, FLURRY_APIKEY);
     }
 
     private void buildObjectGraphAndInject()
