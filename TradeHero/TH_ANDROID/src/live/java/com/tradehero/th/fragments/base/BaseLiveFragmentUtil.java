@@ -13,23 +13,24 @@ import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.persistence.prefs.LiveAvailability;
+import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.widget.GoLiveWidget;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
-import rx.android.view.ViewObservable;
 import rx.functions.Action1;
 import rx.functions.Func2;
 
 public class BaseLiveFragmentUtil
 {
-    @Bind(R.id.live_button_go_live) GoLiveWidget liveWidget;
+    @Bind(R.id.go_live_widget) GoLiveWidget liveWidget;
     Fragment fragment;
 
     @Inject DashboardNavigator navigator;
     @Inject FastFillUtil fastFill;
     @Inject @LiveAvailability BooleanPreference liveAvailability;
+    @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
 
     public static BaseLiveFragmentUtil createFor(Fragment fragment, View view)
     {
@@ -47,8 +48,18 @@ public class BaseLiveFragmentUtil
         ButterKnife.bind(this, view);
         HierarchyInjector.inject(f.getActivity(), this);
 
+        if (!liveAvailability.get())
+        {
+            liveWidget.setVisibility(View.GONE);
+        }
+
+        if (liveBrokerSituationPreference.get().kycForm != null)
+        {
+            liveWidget.updateButtonImage(R.drawable.live_banner_on_going_user);
+        }
+
         Observable.combineLatest(
-                ViewObservable.clicks(liveWidget),
+                liveWidget.getGoLiveButtonClickedObservable(),
                 fastFill.isAvailable(f.getActivity()),
                 new Func2<OnClickEvent, Boolean, Boolean>()
                 {
@@ -68,6 +79,16 @@ public class BaseLiveFragmentUtil
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to liveWidget in BaseLiveFragmentUtil"));
+
+        liveWidget.getDismissLiveWidgetButtonClickedObservable()
+                .subscribe(new Action1<OnClickEvent>()
+                {
+                    @Override public void call(OnClickEvent onClickEvent)
+                    {
+                        liveAvailability.set(false);
+                        liveWidget.setVisibility(View.GONE);
+                    }
+                });
     }
 
     public static void setDarkBackgroundColor(boolean isLive, View... views)

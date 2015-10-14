@@ -89,7 +89,7 @@
       >
 
     <com.tradehero.th.widget.GoLiveWidget
-        android:id="@+id/live_button_go_live"
+        android:id="@+id/go_live_widget"
         style="@style/TH.Title.Inverse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

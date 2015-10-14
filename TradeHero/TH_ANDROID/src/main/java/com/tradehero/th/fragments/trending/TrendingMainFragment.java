@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -53,6 +54,7 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
+import com.tradehero.th.persistence.prefs.LiveAvailability;
 import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
@@ -98,6 +100,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject Analytics analytics;
     @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
+    @Inject @LiveAvailability BooleanPreference liveAvailability;
 
     @RouteProperty("stockPageIndex") Integer selectedStockPageIndex;
     @RouteProperty("fxPageIndex") Integer selectedFxPageIndex;
@@ -252,7 +255,10 @@ public class TrendingMainFragment extends DashboardFragment
                 }
                 else
                 {
-                    getLiveUtil().setLiveWidgetVisibility(View.VISIBLE);
+                    if (liveAvailability.get())
+                    {
+                        getLiveUtil().setLiveWidgetVisibility(View.VISIBLE);
+                    }
                 }
             }
 

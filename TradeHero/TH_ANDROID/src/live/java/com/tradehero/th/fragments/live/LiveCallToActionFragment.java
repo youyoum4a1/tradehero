@@ -36,7 +36,7 @@ public class LiveCallToActionFragment extends DashboardFragment
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject FastFillUtil fastFill;
 
-    @Bind(R.id.live_button_go_live) View goLiveButton;
+    @Bind(R.id.go_live_widget) View goLiveButton;
     @Bind(R.id.live_description) TextView liveDescription;
     @Bind(R.id.live_powered_by) TextView livePoweredBy;
 

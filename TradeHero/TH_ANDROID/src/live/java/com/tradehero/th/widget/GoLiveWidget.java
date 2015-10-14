@@ -3,50 +3,64 @@ package com.tradehero.th.widget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import com.tradehero.th.R;
+import rx.android.view.OnClickEvent;
+import rx.Observable;
+import rx.android.view.ViewObservable;
 
-public class GoLiveWidget extends Button
+public class GoLiveWidget extends FrameLayout
 {
+    @Bind(R.id.go_live_button) ImageButton goLiveButton;
+    @Bind(R.id.dismiss_live_widget) Button dismissLiveWidgetButton;
+
     public GoLiveWidget(Context context)
     {
         super(context);
-        init();
+        //init();
     }
 
     public GoLiveWidget(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        init();
+        //init();
     }
 
     public GoLiveWidget(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
-        init();
+        //init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP) public GoLiveWidget(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)
     {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
+        //init();
     }
 
-    private void init()
+    @Override protected void onFinishInflate()
     {
-        setMinimumWidth(getResources().getDimensionPixelSize(R.dimen.size_15));
-        String imageTag = "[img]";
-        String finalString = getResources().getString(R.string.go_live_span, imageTag);
-        int start = finalString.indexOf(imageTag);
-        int end = start + imageTag.length();
-        setTransformationMethod(null);
-        SpannableStringBuilder builder = new SpannableStringBuilder(finalString);
-        ImageSpan imageSpan = new ImageSpan(getContext(), R.drawable.ic_logo_live, ImageSpan.ALIGN_BASELINE);
-        builder.setSpan(imageSpan, start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        setText(builder);
+        super.onFinishInflate();
+        ButterKnife.bind(this);
+    }
+
+    public void updateButtonImage(int resourceId)
+    {
+        goLiveButton.setImageDrawable(getResources().getDrawable(resourceId));
+    }
+
+    public Observable<OnClickEvent> getGoLiveButtonClickedObservable()
+    {
+        return ViewObservable.clicks(goLiveButton);
+    }
+
+    public Observable<OnClickEvent> getDismissLiveWidgetButtonClickedObservable()
+    {
+        return ViewObservable.clicks(dismissLiveWidgetButton);
     }
 }
