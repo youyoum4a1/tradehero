@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.base;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
