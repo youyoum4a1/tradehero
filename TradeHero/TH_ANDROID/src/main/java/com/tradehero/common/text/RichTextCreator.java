@@ -115,7 +115,7 @@ public class RichTextCreator
     private String getCachedText()
     {
         StringBuilder cachedKey = new StringBuilder();
-        cachedKey.append(richText);
+        cachedKey.append(originalText);
         for (RichTextProcessor processor: processors)
         {
             cachedKey.append('_').append(processor.key());
