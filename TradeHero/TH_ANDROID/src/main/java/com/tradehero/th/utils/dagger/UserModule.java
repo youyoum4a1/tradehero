@@ -12,6 +12,9 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.loaders.FriendListLoader;
 import com.tradehero.th.persistence.social.VisitedFriendListPrefs;
 import com.tradehero.th.wxapi.WXEntryActivity;
+
+import org.ocpsoft.prettytime.PrettyTime;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -28,7 +31,8 @@ import javax.inject.Singleton;
         staticInjections = {
                 VisitedFriendListPrefs.class,
         },
-        complete = false
+        complete = false,
+        library = true
 )
 public class UserModule
 {
@@ -47,5 +51,11 @@ public class UserModule
     @Provides @Singleton CurrentActivityHolder provideCurrentActivityHandler(@ForUIThread Handler handler)
     {
         return new CurrentActivityHolder(handler);
+    }
+
+    @Provides
+    PrettyTime providePrettyTime()
+    {
+        return new PrettyTime();
     }
 }

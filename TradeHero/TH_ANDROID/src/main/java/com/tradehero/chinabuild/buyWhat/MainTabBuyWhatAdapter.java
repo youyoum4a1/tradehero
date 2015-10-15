@@ -25,9 +25,6 @@ import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.DaggerUtils;
-import dagger.Lazy;
-import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class MainTabBuyWhatAdapter extends BaseAdapter implements View.OnClickListener {
@@ -35,13 +32,12 @@ public class MainTabBuyWhatAdapter extends BaseAdapter implements View.OnClickLi
     private LayoutInflater inflater;
     private Context mContext;
 
-    @Inject
-    public Lazy<PrettyTime> prettyTime;
+    public PrettyTime prettyTime;
 
     public MainTabBuyWhatAdapter(Context context) {
-        DaggerUtils.inject(this);
         mContext = context;
         inflater = LayoutInflater.from(context);
+        prettyTime = new PrettyTime();
     }
 
     @Override
@@ -91,7 +87,7 @@ public class MainTabBuyWhatAdapter extends BaseAdapter implements View.OnClickLi
         tradePrice.setText("成交价格 " + DataUtils.keepTwoDecimal(item.price));
 
         TextView tradeTime = (TextView) convertView.findViewById(R.id.trade_time);
-        tradeTime.setText(prettyTime.get().formatUnrounded(item.dateTimeUtc));
+        tradeTime.setText(prettyTime.formatUnrounded(item.dateTimeUtc));
 
         TextView percent = (TextView) convertView.findViewById(R.id.percent);
         String percentString = String.valueOf(item.percent * 100);
