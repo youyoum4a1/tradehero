@@ -1073,33 +1073,36 @@ public class PositionListFragment
                     }
                 }
             }
-            if (hasPending)
-            {
-                this.viewDTOs.add(new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.PENDING,
-                        getString(R.string.position_list_header_pending),
-                        PositionSectionHeaderDisplayDTO.Type.PENDING));
-            }
 
-            if (hasLong)
-            {
-                this.viewDTOs.add(
-                        new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.LONG, getString(R.string.position_list_header_open_long),
-                                PositionSectionHeaderDisplayDTO.Type.LONG));
-            }
+            // TODO: one of the getString for PositionSectionHeaderDisplayDTO is blocked by proguard, need further checking to fix it.
 
-            if (hasShort)
-            {
-                this.viewDTOs.add(new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.SHORT,
-                        getString(R.string.position_list_header_open_short),
-                        PositionSectionHeaderDisplayDTO.Type.SHORT));
-            }
-
-            if (hasClosed)
-            {
-                this.viewDTOs.add(
-                        new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.CLOSED, getString(R.string.position_list_header_closed),
-                                PositionSectionHeaderDisplayDTO.Type.CLOSED));
-            }
+            //if (hasPending)
+            //{
+            //    this.viewDTOs.add(new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.PENDING,
+            //            getString(R.string.position_list_header_pending),
+            //            PositionSectionHeaderDisplayDTO.Type.PENDING));
+            //}
+            //
+            //if (hasLong)
+            //{
+            //    this.viewDTOs.add(
+            //            new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.LONG, getString(R.string.position_list_header_open_long),
+            //                    PositionSectionHeaderDisplayDTO.Type.LONG));
+            //}
+            //
+            //if (hasShort)
+            //{
+            //    this.viewDTOs.add(new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.SHORT,
+            //            getString(R.string.position_list_header_open_short),
+            //            PositionSectionHeaderDisplayDTO.Type.SHORT));
+            //}
+            //
+            //if (hasClosed)
+            //{
+            //    this.viewDTOs.add(
+            //            new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.CLOSED, getString(R.string.position_list_header_closed),
+            //                    PositionSectionHeaderDisplayDTO.Type.CLOSED));
+            //}
         }
 
         positionItemAdapter.addAll(this.viewDTOs);
