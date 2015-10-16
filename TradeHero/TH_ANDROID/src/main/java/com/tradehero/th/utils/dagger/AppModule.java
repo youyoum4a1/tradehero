@@ -111,6 +111,7 @@ import com.tradehero.th.adapters.SearchUserListAdapter;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SecuritySearchListAdapter;
 import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
+import com.tradehero.th.adapters.StockRecommendListAdapter;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
 import com.tradehero.th.adapters.TimeLineDetailDiscussSecItem;
 import com.tradehero.th.adapters.UserFriendsListAdapter;
@@ -344,7 +345,8 @@ import javax.inject.Singleton;
                         SecurityOptPhoneNumBindFragment.class,
                         //Security Opt Actual
 
-                        StockRecommendFragment.class
+                        StockRecommendFragment.class,
+                        StockRecommendListAdapter.class
 
                         //China Build End
                 },

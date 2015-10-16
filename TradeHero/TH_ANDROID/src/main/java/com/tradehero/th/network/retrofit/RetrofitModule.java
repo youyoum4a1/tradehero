@@ -53,6 +53,7 @@ import dagger.Provides;
 import retrofit.Endpoint;
 import retrofit.Endpoints;
 import retrofit.RestAdapter;
+import retrofit.client.OkClient;
 import retrofit.converter.Converter;
 
 @Module(

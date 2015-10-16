@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.AdsDTO;
 import com.tradehero.chinabuild.data.TimeLineTotalInfo;
+import com.tradehero.th.api.stockRecommend.StockRecommendDTOList;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import java.util.List;
 import retrofit.Callback;
@@ -97,6 +98,16 @@ interface UserTimelineServiceAsync
             @Query("maxId") Integer maxId,
             @Query("minId") Integer minId,
             Callback<TimelineDTO> callback);
+    //</editor-fold>
+
+    //牛人荐股
+    @GET("/users/{userId}/timeline?type=stock")
+    void getTimelineStockRecommend(
+            @Path("userId") int userId,
+            @Query("maxCount") Integer maxCount,
+            @Query("maxId") Integer maxId,
+            @Query("minId") Integer minId,
+            Callback<StockRecommendDTOList> callback);
     //</editor-fold>
 
     //Advertisement

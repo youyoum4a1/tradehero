@@ -25,6 +25,7 @@ public class UserBaseDTO extends ExtendedDTO
     public Date memberSince;
     public boolean isAdmin;
     public Double roiSinceInception;
+    public String signature;
     @Nullable public String countryCode;
 
     public UserBaseDTO()

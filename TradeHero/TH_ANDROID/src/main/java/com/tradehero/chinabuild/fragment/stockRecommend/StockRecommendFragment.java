@@ -17,6 +17,7 @@ import com.tradehero.th.widget.MarkdownTextView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -70,5 +71,15 @@ public class StockRecommendFragment extends DashboardFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+    }
+
+    @OnClick(R.id.userClickableArea)
+    public void openUserProfile(View view) {
+        // Goto user homepage
+    }
+
+    @OnClick(R.id.userPositionClickableArea)
+    public void openUserPosition(View view) {
+        // Goto user position page
     }
 }
