@@ -58,7 +58,7 @@ android {
 
   compileSdkVersion 23
 
-  buildToolsVersion "22.0.1"
+  buildToolsVersion "23.0.1"
   //useOldManifestMerger=true
 
   dexOptions {
@@ -73,7 +73,7 @@ android {
 
   defaultConfig {
     minSdkVersion 14
-    targetSdkVersion 22
+    targetSdkVersion 23
 
     versionCode project.ext.versionBuild
     versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
