@@ -48,7 +48,7 @@
     <activity
         android:name="com.tradehero.th.activities.SignUpLiveActivity"
         android:theme="@style/TradeHero.Live"
-        android:label="@string/tradehero_live"
+        android:label="@string/tile_live_trading_top"
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"/>
 

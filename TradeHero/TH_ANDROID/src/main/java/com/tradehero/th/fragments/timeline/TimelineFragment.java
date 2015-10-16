@@ -56,6 +56,7 @@ import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.LiveWidgetScrollListener;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -226,7 +227,8 @@ abstract public class TimelineFragment extends DashboardFragment
         FlagNearEdgeScrollListener nearEndScrollListener = createNearEndScrollListener();
         nearEndScrollListener.lowerEndFlag();
         nearEndScrollListener.activateEnd();
-        timelineListView.setOnScrollListener(new MultiScrollListener(fragmentElements.get().getListViewScrollListener(), nearEndScrollListener));
+        LiveWidgetScrollListener liveWidgetScrollListener = new LiveWidgetScrollListener(fragmentElements.get(), liveFragmentUtil);
+        timelineListView.setOnScrollListener(new MultiScrollListener(fragmentElements.get().getListViewScrollListener(), nearEndScrollListener, liveWidgetScrollListener));
         swipeRefreshContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()

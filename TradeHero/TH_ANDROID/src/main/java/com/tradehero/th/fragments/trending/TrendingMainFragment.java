@@ -690,4 +690,9 @@ public class TrendingMainFragment extends DashboardFragment
             return v;
         }
     }
+
+    public BaseLiveFragmentUtil getTrendingLiveFragmentUtil()
+    {
+        return trendingLiveFragmentUtil;
+    }
 }

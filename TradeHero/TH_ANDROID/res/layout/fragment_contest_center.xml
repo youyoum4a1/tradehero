@@ -21,4 +21,13 @@
       tools:background="@android:color/holo_red_dark"
       />
 
+  <include
+      layout="@layout/live_call_to_action"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center_horizontal|bottom"
+      android:layout_marginBottom="@dimen/dashboard_tabhost_height"
+      tools:visibility="visible"
+      />
+
 </RelativeLayout>

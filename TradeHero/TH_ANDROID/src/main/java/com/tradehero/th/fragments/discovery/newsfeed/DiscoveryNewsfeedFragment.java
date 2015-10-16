@@ -3,6 +3,7 @@ package com.tradehero.th.fragments.discovery.newsfeed;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedCache;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
 import com.tradehero.th.fragments.BasePagedRecyclerRxFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.news.NewsWebFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import java.util.Locale;
@@ -43,6 +45,19 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        if (getParentFragment() instanceof DiscoveryMainFragment)
+        {
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
+            {
+                @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy)
+                {
+                    super.onScrolled(recyclerView, dx, dy);
+                    ((DiscoveryMainFragment) getParentFragment()).getLiveFragmentUtil()
+                            .setLiveWidgetTranslationY(fragmentElements.get().getMovableBottom().getTranslationY());
+                }
+            });
+        }
     }
 
     @Override public void onStart()
@@ -82,7 +97,7 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
                 {
                     @Override public void call(ClickableTagProcessor.UserAction userAction)
                     {
-                        if(userAction instanceof LinkTagProcessor.WebUserAction)
+                        if (userAction instanceof LinkTagProcessor.WebUserAction)
                         {
                             Bundle args = new Bundle();
                             WebViewFragment.putUrl(args, ((LinkTagProcessor.WebUserAction) userAction).link);

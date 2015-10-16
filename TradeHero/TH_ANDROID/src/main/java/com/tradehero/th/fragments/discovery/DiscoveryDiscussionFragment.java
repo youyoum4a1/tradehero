@@ -24,6 +24,7 @@ import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.TimelineSection;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.fragments.DashboardNavigator;
+import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
 import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
@@ -36,6 +37,7 @@ import com.tradehero.th.rx.RxLoaderManager;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.tradehero.th.widget.LiveWidgetScrollListener;
 import com.tradehero.th.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
@@ -70,6 +72,7 @@ public class DiscoveryDiscussionFragment extends Fragment
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject DiscussionFragmentUtil discussionFragmentUtil;
     @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
+    @Inject Lazy<FragmentOuterElements> fragmentOuterElements;
 
     private ProgressBar mBottomLoadingView;
 
@@ -192,18 +195,38 @@ public class DiscoveryDiscussionFragment extends Fragment
                 {
                     @Override public void call(Subscriber<? super RangeDTO> subscriber)
                     {
-                        mTimelineListView.setOnScrollListener(
-                                new MultiScrollListener(
-                                        dashboardBottomTabsScrollListener,
-                                        createNearEndScrollOperator(
-                                                subscriber,
-                                                new Func0<RangeDTO>()
-                                                {
-                                                    @Override public RangeDTO call()
+                        if (getParentFragment() instanceof DiscoveryMainFragment)
+                        {
+                            mTimelineListView.setOnScrollListener(
+                                    new MultiScrollListener(
+                                            dashboardBottomTabsScrollListener,
+                                            new LiveWidgetScrollListener(fragmentOuterElements.get(),
+                                                    ((DiscoveryMainFragment) getParentFragment()).getLiveFragmentUtil()),
+                                            createNearEndScrollOperator(
+                                                    subscriber,
+                                                    new Func0<RangeDTO>()
                                                     {
-                                                        return RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null);
-                                                    }
-                                                })));
+                                                        @Override public RangeDTO call()
+                                                        {
+                                                            return RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null);
+                                                        }
+                                                    })));
+                        }
+                        else
+                        {
+                            mTimelineListView.setOnScrollListener(
+                                    new MultiScrollListener(
+                                            dashboardBottomTabsScrollListener,
+                                            createNearEndScrollOperator(
+                                                    subscriber,
+                                                    new Func0<RangeDTO>()
+                                                    {
+                                                        @Override public RangeDTO call()
+                                                        {
+                                                            return RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null);
+                                                        }
+                                                    })));
+                        }
                     }
                 })
                 .doOnNext(new Action1<RangeDTO>()

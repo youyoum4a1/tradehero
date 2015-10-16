@@ -56,6 +56,8 @@ import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.ProfileEvent;
 import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
 import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
+import com.tradehero.th.widget.LiveWidgetScrollListener;
+import com.tradehero.th.widget.MultiScrollListener;
 import java.util.Collections;
 import java.util.Map;
 import javax.inject.Inject;
@@ -120,6 +122,13 @@ public class TrendingStockFragment extends TrendingBaseFragment
         fetchProviderList();
         fetchWatchlist();
         fetchAlertCompactList();
+
+        if (getParentFragment() instanceof  TrendingMainFragment)
+        {
+            LiveWidgetScrollListener liveWidgetScrollListener = new LiveWidgetScrollListener(fragmentElements.get(), ((TrendingMainFragment) getParentFragment()).getTrendingLiveFragmentUtil());
+            this.listView.setOnScrollListener(
+                    new MultiScrollListener(nearEndScrollListener, fragmentElements.get().getListViewScrollListener(), liveWidgetScrollListener));
+        }
     }
 
     @Override public void onResume()
@@ -190,6 +199,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         wrapperAdapter = null;
         super.onDestroy();
+    }
+
+    @Override public void onDestroyView()
+    {
+        super.onDestroyView();
     }
 
     @Override @NonNull protected SecurityPagedViewDTOAdapter createItemViewAdapter()

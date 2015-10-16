@@ -4,16 +4,25 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.IdentityPromptActivity;
 import com.tradehero.th.activities.LiveActivityUtil;
+import com.tradehero.th.activities.SignUpLiveActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.persistence.prefs.LiveAvailability;
+import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
+import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.widget.GoLiveWidget;
 import javax.inject.Inject;
+import rx.Observable;
+import rx.android.view.OnClickEvent;
+import rx.functions.Action1;
+import rx.functions.Func2;
 
 public class BaseLiveFragmentUtil
 {
@@ -25,6 +34,9 @@ public class BaseLiveFragmentUtil
     @Inject FastFillUtil fastFill;
     @Inject @LiveAvailability BooleanPreference liveAvailability;
     @Inject LiveActivityUtil liveActivityUtil;
+    @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
+
+    @Bind(R.id.go_live_widget) GoLiveWidget liveWidget;
 
     public static BaseLiveFragmentUtil createFor(Fragment fragment, View view)
     {
@@ -37,6 +49,48 @@ public class BaseLiveFragmentUtil
         fragment = f;
         ButterKnife.bind(this, view);
         HierarchyInjector.inject(f.getActivity(), this);
+
+        if (!liveAvailability.get())
+        {
+            liveWidget.setVisibility(View.GONE);
+        }
+
+        if (liveBrokerSituationPreference.get().kycForm != null)
+        {
+            liveWidget.updateButtonImage(R.drawable.live_banner_on_going_user);
+        }
+
+        Observable.combineLatest(
+                liveWidget.getGoLiveButtonClickedObservable(),
+                fastFill.isAvailable(f.getActivity()),
+                new Func2<OnClickEvent, Boolean, Boolean>()
+                {
+                    @Override public Boolean call(OnClickEvent onClickEvent, Boolean fastFillAvailable)
+                    {
+                        return fastFillAvailable;
+                    }
+                })
+                .subscribe(
+                        new Action1<Boolean>()
+                        {
+                            @Override public void call(Boolean fastFillAvailable)
+                            {
+                                navigator.launchActivity(fastFillAvailable
+                                        ? IdentityPromptActivity.class
+                                        : SignUpLiveActivity.class);
+                            }
+                        },
+                        new TimberOnErrorAction1("Failed to listen to liveWidget in BaseLiveFragmentUtil"));
+
+        liveWidget.getDismissLiveWidgetButtonClickedObservable()
+                .subscribe(new Action1<OnClickEvent>()
+                {
+                    @Override public void call(OnClickEvent onClickEvent)
+                    {
+                        liveAvailability.set(false);
+                        liveWidget.setVisibility(View.GONE);
+                    }
+                });
     }
 
     public static void setDarkBackgroundColor(boolean isLive, View... views)
@@ -85,5 +139,10 @@ public class BaseLiveFragmentUtil
         {
             liveActivityUtil.switchLive(false);
         }
+    }
+
+    public void setLiveWidgetTranslationY(float y)
+    {
+        liveWidget.setTranslationY(y);
     }
 }

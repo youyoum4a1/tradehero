@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.tradehero.th.widget.GoLiveWidget
+    android:id="@id/go_live_widget"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageButton
+        style="@style/TH.Button"
+        android:id="@+id/go_live_button"
+        android:padding="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/live_banner_new_user"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:visibility="visible"
+        tools:ignored="contentDescription"
+        />
+
+    <Button
+        style="@style/TH.Button"
+        android:id="@+id/dismiss_live_widget"
+        android:layout_width="@dimen/small_image_w_h"
+        android:layout_height="@dimen/small_image_w_h"
+        android:layout_gravity="right|center"
+        android:background="@color/transparent"
+        android:alpha="0"
+        />
+
+</com.tradehero.th.widget.GoLiveWidget>
+
