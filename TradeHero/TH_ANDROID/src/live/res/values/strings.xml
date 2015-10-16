@@ -49,6 +49,7 @@
   <string name="trading_experience">Trading Experience</string>
   <string name="postal_address">Postal Address</string>
   <string name="required_document">Additional Requirements</string>
+  <string name="account_currency">Account Currency</string>
   <string name="experience_bonds">Shares and Bonds</string>
   <string name="experience_otc_derivatives">OTC Derivatives</string>
   <string name="experience_exchange_traded_derivatives">Exchange Traded Derivatives</string>
@@ -94,6 +95,12 @@
   <string name="employment_status_retired">Retired</string>
   <string name="employment_status_student">Student</string>
   <string name="employment_status_other">Other</string>
+
+  <string name="currency_gbp">GBP</string>
+  <string name="currency_eur">EUR</string>
+  <string name="currency_usd">USD</string>
+  <string name="currency_sek">SEK</string>
+  <string name="currency_chf">CHF</string>
 
   <string name="trading_per_quarter_empty">Please select…</string>
   <string name="trading_per_quarter_none">None at all</string>

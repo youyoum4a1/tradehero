@@ -247,4 +247,17 @@ public class KYCAyondoFormFactory
         created.setSubscribeTradeNotifications(subscribeTradeNotifications.value());
         return created;
     }
+
+    @NonNull public static KYCAyondoForm fromCurrencySpinnerEvent(@NonNull OnSelectedEvent currencyEvent)
+    {
+        KYCAyondoForm created = new KYCAyondoForm();
+        if (currencyEvent instanceof OnItemSelectedEvent)
+        {
+            //noispection ConstantConditions
+            created.setCurrency(
+                    ((CurrencyDTO) currencyEvent.parent.getItemAtPosition(
+                            ((OnItemSelectedEvent) currencyEvent).position)).currency);
+        }
+        return created;
+    }
 }

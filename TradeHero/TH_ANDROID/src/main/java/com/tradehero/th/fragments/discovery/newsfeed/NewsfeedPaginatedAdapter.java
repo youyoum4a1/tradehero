@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.discovery.newsfeed;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.CallSuper;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTO;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTOList;
 import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.models.resource.ResourceUtil;
 import com.tradehero.th.widget.MarkdownTextView;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;

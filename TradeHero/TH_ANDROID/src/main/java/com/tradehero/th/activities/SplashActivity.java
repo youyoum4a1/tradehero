@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -75,6 +77,11 @@ public class SplashActivity extends BaseActivity
         }
 
         deepLink = getIntent().getData();
+
+        if (deepLink != null)
+        {
+            ActivityHelper.launchDashboard(this, deepLink);
+        }
     }
 
     @Override protected void onResume()

@@ -33,5 +33,6 @@
   <string name="key_settings_misc_reset_help_screens" translatable="false">key_settings_misc_reset_help_screens</string>
   <string name="key_settings_misc_clear_cache" translatable="false">key_settings_misc_clear_cache</string>
   <string name="key_settings_misc_version_server" translatable="false">key_settings_misc_version_server</string>
+  <string name="key_settings_misc_channel_id" translatable="false">key_settings_misc_channel_id</string>
 
 </resources>

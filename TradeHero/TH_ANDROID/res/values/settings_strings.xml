@@ -53,7 +53,7 @@
 
   <string name="settings_update_profile_successful">Profile successfully updated</string>
   <string name="settings_about_title">About</string>
-  <string name="settings_about_copyright">&#169; Copyright 2012&#8211;2014 My Manisku Pte. Ltd.</string>
+  <string name="settings_about_copyright">&#169; Copyright 2012&#8211;2015 My Manisku Pte. Ltd.</string>
   <string name="settings_paypal_header">PayPal</string>
   <string name="settings_paypal_label">PayPal Account (email address)</string>
   <string name="settings_paypal_hint">Your PayPal email address</string>

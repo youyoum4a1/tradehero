@@ -12,6 +12,8 @@ public interface PushNotificationManager
     void disablePush();
     void setSoundEnabled(boolean enabled);
     void setVibrateEnabled(boolean enabled);
+    String getChannelId();
+
 
     class InitialisationCompleteDTO
     {

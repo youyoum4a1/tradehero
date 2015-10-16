@@ -3,200 +3,200 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tradehero.th"
-    android:installLocation="auto" >
+    android:installLocation="auto">
 
-    <supports-screens android:anyDensity="true" />
+  <supports-screens android:anyDensity="true"/>
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL"/>
+  <uses-permission android:name="android.permission.VIBRATE"/>
+  <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
 
-    <!-- TODO Still necessary ? -->
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+  <!-- TODO Still necessary ? -->
+  <uses-permission android:name="android.permission.READ_CONTACTS"/>
+  <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
+  <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT"/>
+  <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+  <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+  <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
 
-    <!-- tap stream -->
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+  <!-- tap stream -->
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+  <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS"/>
 
-    <application
-        android:name=".base.THApp"
-        android:allowBackup="true"
-        tools:replace="android:allowBackup"
-        android:allowClearUserData="true"
-        android:enabled="true"
-        android:icon="@drawable/launcher"
+  <application
+      android:name=".base.THApp"
+      android:allowBackup="true"
+      tools:replace="android:allowBackup"
+      android:allowClearUserData="true"
+      android:enabled="true"
+      android:icon="@drawable/launcher"
+      android:label="@string/app_name"
+      android:largeHeap="true"
+      android:theme="@style/TradeHero">
+    <activity
+        android:name=".activities.SplashActivity"
         android:label="@string/app_name"
-        android:largeHeap="true"
-        android:theme="@style/TradeHero" >
-        <activity
-            android:name=".activities.SplashActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/TradeHero.Splash">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        android:screenOrientation="portrait"
+        android:theme="@style/TradeHero.Splash">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <data android:scheme="@string/intent_scheme"/>
+      </intent-filter>
+    </activity>
+    <activity
+        android:name=".activities.AuthenticationActivity"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.AppCompat.NoActionBar"
+        android:windowSoftInputMode="adjustResize">
+    </activity>
+    <activity
+        android:name=".activities.DashboardActivity"
+        android:configChanges="orientation|screenSize"
+        android:label="@string/app_name"
+        android:screenOrientation="portrait"
+        android:windowSoftInputMode="adjustResize"
+        android:theme="@style/TradeHero.Dashboard">
+    </activity>
+    <activity
+        android:name="com.facebook.LoginActivity"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+    <activity
+        android:name=".activities.StockChartActivity"
+        android:screenOrientation="sensorLandscape"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+    <activity
+        android:name=".activities.AlertManagerActivity"
+        android:label="@string/stock_alerts"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+    <activity
+        android:name=".activities.StoreScreenActivity"
+        android:label="@string/store_option_menu_title"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+    <activity
+        android:name=".activities.AdminSettingsActivity"
+        android:label="@string/admin_setting"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="fullSensor"
+        />
+    <activity
+        android:name=".activities.SettingsActivity"
+        android:label="@string/settings"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+    <activity
+        android:name=".activities.SettingsProfileActivity"
+        android:label="@string/settings"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+    <activity
+        android:name=".activities.FriendsInvitationActivity"
+        android:label="@string/action_invite"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+    <activity
+        android:name=".activities.UpdateCenterActivity"
+        android:label="@string/message_center_title"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+    <activity
+        android:name=".activities.PrivateDiscussionActivity"
+        android:label="@string/message_center_title"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+    <activity
+        android:name=".activities.OnBoardActivity"
+        android:label="@string/on_board_exchange_need_to_select"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+    <activity
+        android:name=".wxapi.WXEntryActivity"
+        android:exported="true"
+        android:label="@string/app_name"
+        android:launchMode="singleInstance"
+        android:theme="@android:style/Theme.Translucent"/>
+    <activity
+        android:name=".activities.FacebookShareActivity"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/intent_scheme"/>
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activities.AuthenticationActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".activities.DashboardActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/TradeHero.Dashboard">
-        </activity>
-        <activity
-            android:name="com.facebook.LoginActivity"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity
-            android:name=".activities.StockChartActivity"
-            android:screenOrientation="sensorLandscape"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-      <activity
-          android:name=".activities.AlertManagerActivity"
-          android:label="@string/stock_alerts"
-          android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="portrait"
-          />
-      <activity
-          android:name=".activities.StoreScreenActivity"
-          android:label="@string/store_option_menu_title"
-          android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="portrait"
-          />
-      <activity
-          android:name=".activities.AdminSettingsActivity"
-          android:label="@string/admin_setting"
-          android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="fullSensor"
-          />
-      <activity
-          android:name=".activities.SettingsActivity"
-          android:label="@string/settings"
-          android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="portrait"
-          />
-      <activity
-          android:name=".activities.SettingsProfileActivity"
-          android:label="@string/settings"
-          android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="portrait"
-          />
-      <activity
-          android:name=".activities.FriendsInvitationActivity"
-          android:label="@string/action_invite"
-          android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="portrait"
-          />
-      <activity
-          android:name=".activities.UpdateCenterActivity"
-          android:label="@string/message_center_title"
-          android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="portrait"
-          />
-      <activity
-          android:name=".activities.PrivateDiscussionActivity"
-          android:label="@string/message_center_title"
-          android:windowSoftInputMode="adjustResize"
-          android:screenOrientation="portrait"
-          />
-        <activity
-            android:name=".activities.OnBoardActivity"
-            android:label="@string/on_board_exchange_need_to_select"
-            android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait"
-            />
-      <activity
-            android:name=".wxapi.WXEntryActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.Translucent" />
-        <activity
-            android:name=".activities.FacebookShareActivity"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+    <!-- QQ login -->
+    <activity
+        android:name="com.tencent.tauth.AuthActivity"
+        android:launchMode="singleTask"
+        android:noHistory="true">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
 
-        <!-- QQ login -->
-        <activity
-            android:name="com.tencent.tauth.AuthActivity"
-            android:launchMode="singleTask"
-            android:noHistory="true" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
 
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
+        <data android:scheme="tencent1101331512"/>
+      </intent-filter>
+    </activity>
+    <activity
+        android:name="com.tencent.connect.common.AssistActivity"
+        android:screenOrientation="portrait"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar">
+    </activity>
 
-                <data android:scheme="tencent1101331512" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.tencent.connect.common.AssistActivity"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
+    <receiver
+        android:name="com.mobileapptracker.Tracker"
+        android:exported="true">
+      <intent-filter>
+        <action android:name="com.android.vending.INSTALL_REFERRER"/>
+      </intent-filter>
+    </receiver>
 
-        <receiver
-            android:name="com.mobileapptracker.Tracker"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
-            </intent-filter>
-        </receiver>
+    <service android:name=".auth.THAccountAuthenticatorService">
+      <intent-filter>
+        <action android:name="android.accounts.AccountAuthenticator"/>
+      </intent-filter>
 
-        <service android:name=".auth.THAccountAuthenticatorService" >
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
+      <meta-data
+          android:name="android.accounts.AccountAuthenticator"
+          android:resource="@xml/account_authenticator"/>
+    </service>
 
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/account_authenticator" />
-        </service>
+    <meta-data
+        android:name="com.crashlytics.ApiKey"
+        android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
+    <meta-data
+        android:name="com.facebook.sdk.ApplicationId"
+        android:value="@string/facebook_app_id"/>
 
-        <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf" />
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+    <receiver android:name="com.tradehero.common.utils.OnlineStateReceiver">
+      <intent-filter>
+        <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+      </intent-filter>
+    </receiver>
 
-        <receiver android:name="com.tradehero.common.utils.OnlineStateReceiver" >
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-
-        <activity
-            android:name=".activities.HelpActivity"
-            android:label="@string/help" >
-        </activity>
-    </application>
+    <activity
+        android:name=".activities.HelpActivity"
+        android:label="@string/help">
+    </activity>
+  </application>
 
 </manifest>

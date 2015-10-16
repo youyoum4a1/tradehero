@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
@@ -20,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.squareup.okhttp.Cache;
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -33,12 +31,8 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.OnBoardActivity;
-import com.tradehero.th.api.i18n.LanguageDTO;
-import com.tradehero.th.api.i18n.LanguageDTOFactory;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.SocialNetworkFormDTO;
-import com.tradehero.th.api.translation.TranslationToken;
-import com.tradehero.th.api.translation.UserTranslationSettingDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -47,8 +41,6 @@ import com.tradehero.th.auth.SocialAuth;
 import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.billing.report.PurchaseReportResult;
 import com.tradehero.th.fragments.location.LocationListFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.misc.exception.THException;
@@ -60,9 +52,6 @@ import com.tradehero.th.network.service.SocialServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
-import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
-import com.tradehero.th.persistence.translation.TranslationTokenKey;
-import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.ReplaceWithFunc1;
@@ -109,10 +98,6 @@ public final class SettingsFragment extends BasePreferenceFragment
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected UserServiceWrapper userServiceWrapper;
-    @Nullable protected UserTranslationSettingDTO userTranslationSettingDTO;
-    @Inject protected UserTranslationSettingPreference userTranslationSettingPreference;
-    @Inject protected TranslationTokenCacheRx translationTokenCache;
-    @Nullable protected Subscription translationTokenCacheSubscription;
     @Nullable protected Subscription sequenceSubscription;
     @Inject protected SocialShareHelper socialShareHelper;
     @Inject protected SocialServiceWrapper socialServiceWrapper;
@@ -481,30 +466,13 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     private void initPreferenceClickHandlers()
     {
-//        allSettingViewHolders.initViews(this);
-
         Preference version = findPreference(getString(R.string.key_settings_misc_version_server));
         String serverPath = serverEndpoint.get().replace("http://", "").replace("https://", "");
-//        PackageInfo packageInfo = null;
-//        String timeStr;
-//        try
-//        {
-//            packageInfo = getActivity().getPackageManager().getPackageInfo(
-//                    getActivity().getPackageName(), 0);
-//        }
-//        catch (PackageManager.NameNotFoundException e)
-//        {
-//            e.printStackTrace();
-//        }
-//        if (packageInfo != null)
-//        {
-//            timeStr = (String) DateFormat.format(
-//                    getActivity().getString(R.string.data_format_d_mmm_yyyy_kk_mm),
-//                    packageInfo.lastUpdateTime);
-//            timeStr = timeStr + "(" + packageInfo.lastUpdateTime + ")";
-//            version.setSummary(timeStr);
-//        }
+
         version.setTitle(VersionUtils.getVersionId(getActivity()) + " - " + serverPath);
+
+        Preference channelId = findPreference(getString(R.string.key_settings_misc_channel_id));
+        channelId.setTitle(pushNotificationManager.getChannelId());
     }
 
     @Override
@@ -520,11 +488,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     public void clickedPreference(String key)
     {
-        if (key.equals(getString(R.string.key_preference_top_banner)))
-        {
-            handleTopBannerClick();
-        }
-        else if (key.equals(getString(R.string.key_settings_primary_view_intro)))
+        if (key.equals(getString(R.string.key_settings_primary_view_intro)))
         {
             handleViewIntro();
         }
@@ -592,11 +556,6 @@ public final class SettingsFragment extends BasePreferenceFragment
         //todo replace with navigatro to viewIntro
         Timber.d("handleViewIntro");
         navigator.get().launchActivity(OnBoardActivity.class);
-    }
-
-    public void handleTopBannerClick()
-    {
-        navigator.get().pushFragment(FriendsInvitationFragment.class);
     }
 
     public void handleSendLoveClick()

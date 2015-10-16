@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
+import com.tradehero.th.api.kyc.Currency;
 import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
 import com.tradehero.th.api.kyc.NetWorthRange;
@@ -37,6 +38,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final String riskWarningDisclaimerUrl;
     @NonNull public final String dataSharingAgreementUrl;
     public final int minAge;
+    @NonNull public final List<Currency> currencies;
 
     public KYCAyondoFormOptionsDTO(
             @JsonProperty("genders") @Nullable List<Gender> genders,
@@ -54,7 +56,8 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("termsConditionsUrl") @NonNull String termsConditionsUrl,
             @JsonProperty("riskWarningDisclosureUrl") @NonNull String riskWarningDisclosureUrl,
             @JsonProperty("dataSharingAgreementUrl") @NonNull String dataSharingAgreementUrl,
-            @JsonProperty("minAge") int minAge)
+            @JsonProperty("minAge") int minAge,
+            @JsonProperty("currencies") @NonNull List<Currency> currencies)
     {
         if (genders == null)
         {
@@ -100,6 +103,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         this.riskWarningDisclaimerUrl = riskWarningDisclosureUrl;
         this.dataSharingAgreementUrl = dataSharingAgreementUrl;
         this.minAge = minAge;
+        this.currencies = Collections.unmodifiableList(currencies);
     }
 
     @NonNull public List<IdentityScannedDocumentType> getIdentityDocumentTypes()
@@ -126,6 +130,7 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
                 ", riskWarningDisclaimerUrl='" + riskWarningDisclaimerUrl + '\'' +
                 ", dataSharingAgreementUrl='" + dataSharingAgreementUrl + '\'' +
                 ", minAge=" + minAge +
+                ", currencies=" + currencies +
                 '}';
     }
 }

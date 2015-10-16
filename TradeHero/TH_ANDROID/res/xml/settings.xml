@@ -3,11 +3,6 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <Preference
-      android:key="@string/key_preference_top_banner"
-      android:layout="@layout/preference_top_banner"
-      />
-
   <PreferenceCategory
       android:key="@string/key_settings_sharing_group"
       android:title="@string/settings_sharing">
@@ -182,6 +177,11 @@
   <Preference
       android:key="@string/key_settings_misc_version_server"
       android:title="version"
+      />
+
+  <Preference
+      android:key="@string/key_settings_misc_channel_id"
+      android:title="channelId"
       />
 
 </PreferenceScreen>

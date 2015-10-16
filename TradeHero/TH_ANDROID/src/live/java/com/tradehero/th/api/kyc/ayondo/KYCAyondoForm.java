@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.AnnualIncomeRange;
+import com.tradehero.th.api.kyc.Currency;
 import com.tradehero.th.api.kyc.EmploymentStatus;
 import com.tradehero.th.api.kyc.KYCAddress;
 import com.tradehero.th.api.kyc.KYCForm;
@@ -88,9 +89,10 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean subscribeOffers;
     @Nullable private Boolean subscribeTradeNotifications;
 
+    @Nullable private Currency currency;
+
     //TODO Hardcoded for now
     private final String language = "EN";
-    private final String currency = "USD";
     private final String whiteLabel = "TradeHero";
 
     private List<StepStatus> stepStatuses;
@@ -227,6 +229,7 @@ public class KYCAyondoForm implements KYCForm
             this.identityCheckUid = ayondoForm.identityCheckUid != null ? ayondoForm.identityCheckUid : this.identityCheckUid;
             this.leadGuid = ayondoForm.leadGuid != null ? ayondoForm.leadGuid : this.leadGuid;
             this.stepStatuses = ayondoForm.stepStatuses != null ? ayondoForm.stepStatuses : this.stepStatuses;
+            this.currency = ayondoForm.getCurrency() != null ? ayondoForm.getCurrency() : this.currency;
         }
     }
 
@@ -791,9 +794,14 @@ public class KYCAyondoForm implements KYCForm
         return language;
     }
 
-    public String getCurrency()
+    @Nullable public Currency getCurrency()
     {
         return currency;
+    }
+
+    public void setCurrency(@Nullable Currency currency)
+    {
+        this.currency = currency;
     }
 
     public AyondoProductType getProductType()
@@ -953,6 +961,7 @@ public class KYCAyondoForm implements KYCForm
                     same &= stepStatuses.get(index).equals(ayondoForm.stepStatuses.get(index));
                 }
             }
+            same &= currency == null ? ayondoForm.currency == null : currency.equals(ayondoForm.currency);
         }
         else
         {
@@ -1023,6 +1032,7 @@ public class KYCAyondoForm implements KYCForm
         code ^= addressCheckUid == null ? 0 : addressCheckUid.hashCode();
         code ^= identityCheckUid == null ? 0 : identityCheckUid.hashCode();
         code ^= leadGuid == null ? 0 : leadGuid.hashCode();
+        code ^= currency == null ? 0 : currency.hashCode();
         return code;
     }
 
@@ -1081,6 +1091,7 @@ public class KYCAyondoForm implements KYCForm
                 ", identityCheckUid=" + identityCheckUid +
                 ", leadGuid=" + leadGuid +
                 ", stepStatuses=" + stepStatuses +
+                ", currency=" + currency +
                 '}';
     }
 }

@@ -29,8 +29,8 @@
 
       <ImageView
           android:id="@+id/newsfeed_item_avatar"
-          android:layout_width="@dimen/medium_image_w_h"
-          android:layout_height="@dimen/medium_image_w_h"
+          android:layout_width="@dimen/small_image_w_h"
+          android:layout_height="@dimen/small_image_w_h"
           android:layout_centerVertical="true"
           android:contentDescription="@null"
           android:scaleType="centerCrop"

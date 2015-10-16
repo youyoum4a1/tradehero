@@ -23,6 +23,7 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.kyc.BrokerApplicationDTO;
 import com.tradehero.th.api.kyc.BrokerDocumentUploadResponseDTO;
+import com.tradehero.th.api.kyc.Currency;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
@@ -72,6 +73,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Bind(R.id.identity_document_type) Spinner identityDocumentTypeSpinner;
     @Bind(R.id.residence_document_type) Spinner residenceDocumentTypeSpinner;
+    @Bind(R.id.currency_spinner) Spinner currencySpinner;
     @Bind(R.id.info_identity_container) ViewGroup identityContainer;
     @Bind(R.id.info_residency_container) ViewGroup residencyContainer;
     @Bind(R.id.document_action_identity) DocumentActionWidget documentActionIdentity;
@@ -122,6 +124,11 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                 getActivity(),
                                                 ResidenceDocumentDTO.createList(getResources(), kycAyondoFormOptionsDTO.residenceDocumentTypes));
                                         residenceDocumentTypeSpinner.setAdapter(residenceDocumentTypeAdapter);
+
+                                        LollipopArrayAdapter<CurrencyDTO> currencyAdapter = new LollipopArrayAdapter<>(
+                                                getActivity(),
+                                                CurrencyDTO.createList(getResources(), kycAyondoFormOptionsDTO.currencies));
+                                        currencySpinner.setAdapter(currencyAdapter);
                                     }
                                 }),
                         liveBrokerSituationDTOObservable.observeOn(AndroidSchedulers.mainThread()),
@@ -136,6 +143,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         kycAyondoFormOptionsDTO.getIdentityDocumentTypes()));
                                 update.pickFrom(populateResidenceDocumentType((KYCAyondoForm) situationDTO.kycForm,
                                         kycAyondoFormOptionsDTO.residenceDocumentTypes));
+                                update.pickFrom(populateCurrency((KYCAyondoForm) situationDTO.kycForm,
+                                        kycAyondoFormOptionsDTO.currencies));
                                 onNext(new LiveBrokerSituationDTO(situationDTO.broker, update));
                                 return null;
                             }
@@ -205,6 +214,14 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     @Override public KYCAyondoForm call(OnCheckedChangeEvent onCheckedChangeEvent)
                                     {
                                         return KYCAyondoFormFactory.fromSubscribeTradeNotifications(onCheckedChangeEvent);
+                                    }
+                                }),
+                        AdapterViewObservable.selects(currencySpinner)
+                                .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
+                                {
+                                    @Override public KYCAyondoForm call(OnSelectedEvent currencySelectedEvent)
+                                    {
+                                        return KYCAyondoFormFactory.fromCurrencySpinnerEvent(currencySelectedEvent);
                                     }
                                 }))
                         .withLatestFrom(brokerDTOObservable, new Func2<KYCAyondoForm, LiveBrokerDTO, LiveBrokerSituationDTO>()
@@ -764,6 +781,35 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 update.setResidenceDocumentType(chosen);
             }
         }
+        return update;
+    }
+
+    @MainThread
+    @NonNull private KYCAyondoForm populateCurrency(@NonNull KYCAyondoForm kycForm,
+            @NonNull List<Currency> currencies)
+    {
+        KYCAyondoForm update = new KYCAyondoForm();
+        Currency currency = kycForm.getCurrency();
+        Integer index = populateSpinner(currencySpinner, currency, currencies);
+
+        if (currency == null)
+        {
+            Currency chosen;
+            if (index != null)
+            {
+                chosen = currencies.get(index);
+            }
+            else
+            {
+                chosen = ((CurrencyDTO) currencySpinner.getSelectedItem()).currency;
+            }
+
+            if (chosen != null)
+            {
+                update.setCurrency(chosen);
+            }
+        }
+
         return update;
     }
 
