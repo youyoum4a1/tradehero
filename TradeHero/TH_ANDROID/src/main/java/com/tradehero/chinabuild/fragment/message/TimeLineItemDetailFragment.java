@@ -154,11 +154,11 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     @Inject Lazy<AdministratorManageTimelineServiceWrapper> administratorManageTimelineServiceWrapper;
 
-    private LinearLayout llDisscurssOrNews;
-    private ImageView imgSecurityTLUserHeader;
-    private TextView tvUserTLTimeStamp;
-    private TextView tvUserTLContent;
-    private TextView tvUserTLName;
+    protected LinearLayout llDisscurssOrNews;
+    protected ImageView imgSecurityTLUserHeader;
+    protected TextView tvUserTLTimeStamp;
+    protected TextView tvUserTLContent;
+    protected TextView tvUserTLName;
     private LinearLayout llTLPraise;
     private LinearLayout llTLPraiseDown;
     private LinearLayout llTLComment;
@@ -168,7 +168,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private TextView btnTLPraise;
     private TextView btnTLPraiseDown;
 
-    private LinearLayout mRefreshView;
+    protected LinearLayout mRefreshView;
     private TextView tvIsReward;
     private TextView tvIsEssential;
     private TextView tvUserTVTitle;
@@ -261,7 +261,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         ButterKnife.inject(this, view);
         setNeedToMonitorBackPressed(true);
         ListView lv = listTimeLine.getRefreshableView();
-        mRefreshView = (LinearLayout) inflater.inflate(R.layout.security_time_line_item_plus, null);
+        mRefreshView = getHeaderView(inflater);
         lv.addHeaderView(mRefreshView);
         initRoot(mRefreshView);
 
@@ -295,6 +295,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             }
         });
         return view;
+    }
+
+    public LinearLayout getHeaderView(LayoutInflater inflater) {
+        return (LinearLayout) inflater.inflate(R.layout.security_time_line_item_plus, null);
     }
 
     public void initRoot(View view) {
@@ -379,18 +383,21 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         tvIsReward = (TextView) mRefreshView.findViewById(R.id.tvIsReward);
         tvIsEssential = (TextView) mRefreshView.findViewById(R.id.tvIsEssential);
         tvUserTVTitle = (TextView) mRefreshView.findViewById(R.id.tvUserTVTitle);
-        if (!TextUtils.isEmpty(getHeader())) {
-            tvUserTVTitle.setVisibility(View.VISIBLE);
-            tvUserTVTitle.setText(getHeader());
-        } else {
-            tvUserTVTitle.setVisibility(View.GONE);
+        if (tvUserTVTitle != null) {
+            if (!TextUtils.isEmpty(getHeader())) {
+                tvUserTVTitle.setVisibility(View.VISIBLE);
+                tvUserTVTitle.setText(getHeader());
+            } else {
+                tvUserTVTitle.setVisibility(View.GONE);
+            }
         }
-        if (isRewardTimeLine() && !TextUtils.isEmpty(getRewardCount())) {
+
+        if (tvIsReward != null && isRewardTimeLine() && !TextUtils.isEmpty(getRewardCount())) {
             tvIsReward.setVisibility(View.VISIBLE);
             tvIsReward.setText(getRewardCount());
         }
 
-        if(isEssentialTimeLine()){
+        if(tvIsEssential != null && isEssentialTimeLine()){
             tvIsEssential.setVisibility(View.VISIBLE);
         }
     }

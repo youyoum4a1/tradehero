@@ -63,6 +63,7 @@ import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubQueryFragmen
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubSellFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityUserOptFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityUserPositionFragment;
+import com.tradehero.chinabuild.fragment.stockRecommend.StockRecommendDetailFragment;
 import com.tradehero.chinabuild.fragment.stockRecommend.StockRecommendFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.AnswerQuestionFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.AnswersSummaryFragment;
@@ -346,7 +347,8 @@ import javax.inject.Singleton;
                         //Security Opt Actual
 
                         StockRecommendFragment.class,
-                        StockRecommendListAdapter.class
+                        StockRecommendListAdapter.class,
+                        StockRecommendDetailFragment.class
 
                         //China Build End
                 },

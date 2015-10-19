@@ -1,6 +1,7 @@
 package com.tradehero.th.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,21 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
+import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
+import com.tradehero.chinabuild.fragment.stockRecommend.StockRecommendDetailFragment;
+import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.TradeHeroMainActivity;
+import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.stockRecommend.StockRecommendDTOList;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
+import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
+import com.tradehero.th.base.DashboardNavigatorActivity;
+import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import javax.inject.Inject;
@@ -77,13 +88,13 @@ public class StockRecommendListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TimelineItemDTO timelineItemDTO = (TimelineItemDTO) getItem(position);
+        final TimelineItemDTO timelineItemDTO = (TimelineItemDTO) getItem(position);
 
         if (timelineItemDTO == null) {
             return convertView;
         }
 
-        UserBaseDTO autherDTO = dtoList.getUserById(timelineItemDTO.userId);
+        final UserBaseDTO autherDTO = dtoList.getUserById(timelineItemDTO.userId);
         if (autherDTO == null) {
             return convertView;
         }
@@ -127,7 +138,46 @@ public class StockRecommendListAdapter extends BaseAdapter {
             holder.itemSeparator.setVisibility(View.GONE);
         }
 
+        // Listeners
+        holder.userClickableArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(UserMainPage.BUNDLE_USER_BASE_KEY, autherDTO.id);
+                bundle.putBoolean(UserMainPage.BUNDLE_NEED_SHOW_PROFILE, false);
+                pushFragment(UserMainPage.class, bundle);
+            }
+        });
+        holder.userPositionClickableArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(PortfolioFragment.BUNLDE_SHOW_PROFILE_USER_ID, autherDTO.id);
+                pushFragment(PortfolioFragment.class, bundle);
+            }
+        });
+        holder.articleClickableArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                Bundle discussBundle = new Bundle();
+                discussBundle.putString(TimelineItemDTOKey.BUNDLE_KEY_TYPE, DiscussionType.TIMELINE_ITEM.name());
+                discussBundle.putInt(TimelineItemDTOKey.BUNDLE_KEY_ID, timelineItemDTO.id);
+                bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, discussBundle);
+                pushFragment(StockRecommendDetailFragment.class, bundle);
+            }
+        });
+
         return convertView;
+    }
+
+    private void pushFragment(Class fragment, Bundle bundle) {
+        if (context instanceof DashboardNavigatorActivity) {
+            ((DashboardNavigatorActivity) context).getDashboardNavigator().pushFragment(fragment, bundle);
+        } else if (context instanceof TradeHeroMainActivity) {
+            bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, fragment.getName());
+            ActivityHelper.launchDashboard((TradeHeroMainActivity) context, bundle);
+        }
     }
 
     /**
@@ -136,49 +186,51 @@ public class StockRecommendListAdapter extends BaseAdapter {
      *
      * @author ButterKnifeZelezny, plugin for Android Studio by Avast Developers (http://github.com/avast)
      */
-    static class ViewHolder {
+    public static class ViewHolder {
+        @InjectView(R.id.llItemAll)
+        public LinearLayout llItemAll;
         @InjectView(R.id.userIcon)
-        RoundedImageView userIcon;
+        public RoundedImageView userIcon;
         @InjectView(R.id.userName)
-        TextView userName;
+        public TextView userName;
         @InjectView(R.id.userSignature)
-        TextView userSignature;
+        public TextView userSignature;
         @InjectView(R.id.roi)
-        TextView roi;
+        public TextView roi;
         @InjectView(R.id.userPositionClickableArea)
-        LinearLayout userPositionClickableArea;
+        public LinearLayout userPositionClickableArea;
         @InjectView(R.id.userClickableArea)
-        RelativeLayout userClickableArea;
+        public RelativeLayout userClickableArea;
         @InjectView(R.id.articleTitle)
-        MarkdownTextView articleTitle;
+        public MarkdownTextView articleTitle;
         @InjectView(R.id.articleContent)
-        MarkdownTextView articleContent;
+        public MarkdownTextView articleContent;
         @InjectView(R.id.articleClickableArea)
-        LinearLayout articleClickableArea;
+        public LinearLayout articleClickableArea;
         @InjectView(R.id.attachmentImage)
-        ImageView attachmentImage;
+        public ImageView attachmentImage;
         @InjectView(R.id.btnTLPraise)
-        TextView btnTLPraise;
+        public TextView btnTLPraise;
         @InjectView(R.id.numberRead)
-        TextView numberRead;
+        public TextView numberRead;
         @InjectView(R.id.buttonRead)
-        LinearLayout buttonRead;
+        public LinearLayout buttonRead;
         @InjectView(R.id.btnTLPraiseDown)
-        TextView btnTLPraiseDown;
+        public TextView btnTLPraiseDown;
         @InjectView(R.id.numberPraised)
-        TextView numberPraised;
+        public TextView numberPraised;
         @InjectView(R.id.buttonPraised)
-        LinearLayout buttonPraised;
+        public LinearLayout buttonPraised;
         @InjectView(R.id.numberComment)
-        TextView numberComment;
+        public TextView numberComment;
         @InjectView(R.id.buttonComment)
-        LinearLayout buttonComment;
+        public LinearLayout buttonComment;
         @InjectView(R.id.itemSeparator)
-        View itemSeparator;
+        public View itemSeparator;
         @InjectView(R.id.createTime)
-        TextView createTime;
+        public TextView createTime;
 
-        ViewHolder(View view) {
+        public ViewHolder(View view) {
             ButterKnife.inject(this, view);
         }
     }
