@@ -10,6 +10,7 @@ import dagger.Module;
                 IdentityPromptActivity.class,
                 CallToActionActivity.class,
                 ConnectAccountActivity.class,
+                LiveLoginActivity.class,
         },
         complete = false,
         library = true

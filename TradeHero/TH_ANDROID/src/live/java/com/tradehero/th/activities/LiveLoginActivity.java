@@ -1,6 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -10,16 +9,16 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.th.R;
 
-public class LiveLoginActivity extends AppCompatActivity
+public class LiveLoginActivity extends BaseActivity
 {
     @Bind(R.id.my_toolbar) Toolbar myToolbar;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_login);
-        ButterKnife.bind(this);
+        ButterKnife.bind(LiveLoginActivity.this);
         setSupportActionBar(myToolbar);
     }
 
