@@ -9,7 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
@@ -19,13 +20,8 @@ import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
-
-import org.ocpsoft.prettytime.PrettyTime;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
+import org.ocpsoft.prettytime.PrettyTime;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -35,8 +31,10 @@ public class StockRecommendListAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
     private StockRecommendDTOList dtoList;
+    private int mCount = 0;
 
-    @Inject public PrettyTime prettyTime;
+    @Inject
+    public PrettyTime prettyTime;
 
     public StockRecommendListAdapter(Context context) {
         this.context = context;
@@ -53,9 +51,14 @@ public class StockRecommendListAdapter extends BaseAdapter {
         if (dtoList == null) {
             return 0;
         }
+        if (mCount > 0) {//for buy what main page
+            return mCount;
+        }
+        return dtoList.getSize();
+    }
 
-        return 3;
-        //return dtoList.getSize();
+    public void setShowCount(int mCount) {
+        this.mCount = mCount;
     }
 
     @Override
@@ -64,7 +67,7 @@ public class StockRecommendListAdapter extends BaseAdapter {
             return null;
         }
         return dtoList.getItem(0);
-        //return dtoList.getItem(position);
+//        return dtoList.getItem(position);
     }
 
     @Override

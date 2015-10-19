@@ -87,7 +87,9 @@ public class MainTabBuyWhatAdapter extends BaseAdapter implements View.OnClickLi
         tradePrice.setText("成交价格 " + DataUtils.keepTwoDecimal(item.price));
 
         TextView tradeTime = (TextView) convertView.findViewById(R.id.trade_time);
-        tradeTime.setText(prettyTime.formatUnrounded(item.dateTimeUtc));
+        if (item.dateTimeUtc != null) {
+            tradeTime.setText(prettyTime.formatUnrounded(item.dateTimeUtc));
+        }
 
         TextView percent = (TextView) convertView.findViewById(R.id.percent);
         String percentString = String.valueOf(item.percent * 100);
