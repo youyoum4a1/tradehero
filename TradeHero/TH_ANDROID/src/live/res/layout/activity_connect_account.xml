@@ -32,7 +32,7 @@
           android:layout_width="@dimen/size_25"
           android:layout_height="@dimen/size_10"
           android:scaleType="fitCenter"
-          tools:src="@drawable/logo_text"
+          tools:src="@drawable/ayondo_logo"
           />
 
       <android.support.design.widget.TextInputLayout

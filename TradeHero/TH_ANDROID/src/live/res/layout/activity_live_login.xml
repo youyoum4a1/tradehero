@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        style="@style/TradeHero.ActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_small"
+            >
+
+            <ImageView
+                android:layout_width="@dimen/size_20"
+                android:layout_height="@dimen/size_8"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ayondo_logo"
+                android:layout_marginTop="@dimen/size_2"
+                android:layout_marginBottom="@dimen/size_2"
+                tools:ignore="contentDescription"
+                />
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                >
+
+                <EditText
+                    android:id="@+id/connect_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/account_id"
+                    android:inputType="text"
+                    tools:text="XX 1234 5678"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                >
+
+                <EditText
+                    android:id="@+id/connect_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/password"
+                    android:inputType="textPassword"
+                    tools:text="texttexxt"
+                    />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_connect"
+                style="@style/TH.Button.Inverse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_small"
+                android:layout_marginTop="@dimen/margin_large"
+                android:background="@drawable/basic_blue_selector"
+                android:padding="@dimen/margin_small"
+                android:text="@string/authentication_login"
+                />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

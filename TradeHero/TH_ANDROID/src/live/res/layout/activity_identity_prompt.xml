@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/size_5"
             android:scaleType="fitCenter"
-            tools:src="@drawable/logo_text"
+            tools:src="@drawable/ayondo_logo"
             />
 
       </LinearLayout>

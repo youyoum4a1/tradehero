@@ -2,14 +2,17 @@ package com.tradehero.th.fragments.base;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ConnectAccountActivity;
 import com.tradehero.th.activities.IdentityPromptActivity;
 import com.tradehero.th.activities.LiveActivityUtil;
+import com.tradehero.th.activities.LiveLoginActivity;
 import com.tradehero.th.activities.SignUpLiveActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
@@ -36,7 +39,7 @@ public class BaseLiveFragmentUtil
     @Inject LiveActivityUtil liveActivityUtil;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
 
-    @Bind(R.id.go_live_widget) GoLiveWidget liveWidget;
+    @Nullable @Bind(R.id.go_live_widget) GoLiveWidget liveWidget;
 
     public static BaseLiveFragmentUtil createFor(Fragment fragment, View view)
     {
@@ -50,6 +53,14 @@ public class BaseLiveFragmentUtil
         ButterKnife.bind(this, view);
         HierarchyInjector.inject(f.getActivity(), this);
 
+        if (liveWidget != null)
+        {
+            setUpLiveWidgetBanner(f);
+        }
+    }
+
+    private void setUpLiveWidgetBanner(Fragment f)
+    {
         if (!liveAvailability.get())
         {
             liveWidget.setVisibility(View.GONE);
@@ -131,6 +142,11 @@ public class BaseLiveFragmentUtil
     public void launchPrompt()
     {
         fragment.startActivityForResult(new Intent(fragment.getActivity(), IdentityPromptActivity.class), CODE_PROMPT);
+    }
+
+    public void launchLiveLogin()
+    {
+        fragment.startActivityForResult(new Intent(fragment.getActivity(), LiveLoginActivity.class), CODE_PROMPT);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)

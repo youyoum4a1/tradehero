@@ -26,6 +26,7 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
+import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
@@ -76,6 +77,7 @@ public class PortfolioListFragment extends DashboardFragment
     protected PortfolioRecyclerAdapter portfolioRecyclerAdapter;
     private BaseWebViewIntentFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
+    private BaseLiveFragmentUtil liveFragmentUtil;
 
     public static void putUserBaseKey(@NonNull Bundle bundle, @NonNull UserBaseKey userBaseKey)
     {
@@ -100,6 +102,10 @@ public class PortfolioListFragment extends DashboardFragment
     @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
         super.onLiveTradingChanged(event);
+        if (event.isOn && event.isFromUser)
+        {
+            liveFragmentUtil.launchLiveLogin();
+        }
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -270,6 +276,8 @@ public class PortfolioListFragment extends DashboardFragment
                         finishLoading(portfolioDisplayDTOs);
                     }
                 }, new TimberOnErrorAction1("Error fetching data")));
+
+        liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
     }
 
     protected void finishLoading(List<PortfolioDisplayDTO> portfolioDisplayDTOs)

@@ -52,6 +52,14 @@
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"/>
 
+    <activity android:name="com.tradehero.th.activities.LiveLoginActivity"
+        android:theme="@style/TradeHero.Live"
+        android:label="@string/tile_live_login"
+        android:windowSoftInputMode="adjustResize"
+        android:screenOrientation="portrait"
+        />
+
   </application>
 
 </manifest>
+

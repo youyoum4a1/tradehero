@@ -14,6 +14,8 @@
 
   <string name="tile_live_trading_top">Open a LIVE account</string>
   <string name="tile_live_trading">Get free US$100</string>
+  <string name="tile_live_portfolios">Live Portfolios</string>
+  <string name="tile_live_login">Live Login</string>
 
   <string name="live_identity_prompt">Which of these documents do you have with you?</string>
 
