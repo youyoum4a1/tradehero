@@ -105,6 +105,10 @@
             android:windowSoftInputMode="stateHidden|stateUnchanged"
             android:screenOrientation="portrait" />
 
+        <activity android:name="com.tradehero.th.activities.DisplayLargeImageActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="stateHidden|stateUnchanged"
+            />
 
         <activity
                 android:name="com.tradehero.th.activities.DashboardActivity"

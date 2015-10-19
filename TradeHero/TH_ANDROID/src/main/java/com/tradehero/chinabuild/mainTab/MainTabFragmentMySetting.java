@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ import com.tradehero.livetrade.services.LiveTradeManager;
 import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DisplayLargeImageActivity;
 import com.tradehero.th.activities.SecurityOptActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
@@ -223,6 +225,19 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
             if (user.picture != null && imgMeHead != null) {
                 ImageLoader.getInstance().displayImage(user.picture, imgMeHead, UniversalImageLoader.getAvatarImageLoaderOptions());
             }
+            final String avatarUrl;
+            if(user != null){
+                avatarUrl = user.picture;
+                imgMeHead.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        displayLargeImg(avatarUrl);
+                    }
+                });
+            } else {
+                imgMeHead.setOnClickListener(null);
+            }
+
             if (user.isVisitor) {
                 tvMeName.setText(R.string.guest_user);
             } else {
@@ -516,5 +531,16 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
         public void onReceive(Context context, Intent intent) {
             enterSecurityFirmBargain();
         }
+    }
+
+    private void displayLargeImg(final String url){
+        if(TextUtils.isEmpty(url)){
+            return;
+        }
+        Intent intent = new Intent(getActivity(), DisplayLargeImageActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(DisplayLargeImageActivity.KEY_LARGE_IMAGE_URL, url);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

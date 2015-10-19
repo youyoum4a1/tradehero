@@ -25,8 +25,8 @@ public class UniversalImageLoader {
                 .threadPoolSize(3)
                 .threadPriority(Thread.NORM_PRIORITY - 2)
                 .denyCacheImageMultipleSizesInMemory()
-                .memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024))
-                .memoryCacheSize(2 * 1024 * 1024)
+                .memoryCache(new UsingFreqLimitedMemoryCache(6 * 1024 * 1024))
+                .memoryCacheSize(6 * 1024 * 1024)
                 .discCacheSize(50 * 1024 * 1024)
                 .discCacheFileNameGenerator(new Md5FileNameGenerator())
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
@@ -75,6 +75,14 @@ public class UniversalImageLoader {
                 .showImageOnFail(R.drawable.avatar_default)
                 .cacheInMemory(true)
                 .cacheOnDisc(enableDiskCache)
+                .build();
+        return options;
+    }
+
+    public static DisplayImageOptions getDisplayLargeImageOptions(){
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisc(true)
                 .build();
         return options;
     }
