@@ -14,6 +14,8 @@ import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
+import com.tradehero.th.api.live.ayondo.AyondoLiveLoginFormDTO;
+import com.tradehero.th.api.live.ayondo.AyondoUserProfileDTO;
 import com.tradehero.th.api.kyc.ayondo.DummyAyondoData;
 import com.tradehero.th.api.kyc.ayondo.DummyKYCAyondoUtil;
 import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
@@ -171,5 +173,18 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
                 Country.SO,
                 Country.US
         ));
+    }
+
+    @NonNull public Observable<AyondoUserProfileDTO> loginAyondo(AyondoLiveLoginFormDTO loginFormDTO)
+    {
+        // DUMMY
+        // TODO: send to server validate, pending server
+        if (loginFormDTO.accountId.equals("LH93512762") && loginFormDTO.password.equals("abc123"))
+        {
+            AyondoUserProfileDTO ayondoUserProfileDTO = new AyondoUserProfileDTO("LH93512762", "lihao@tradehero.mobi");
+            return Observable.just(ayondoUserProfileDTO);
+        }
+
+        return Observable.just(null);
     }
 }

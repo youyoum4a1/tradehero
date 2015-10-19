@@ -45,7 +45,7 @@
                 >
 
                 <EditText
-                    android:id="@+id/connect_id"
+                    android:id="@+id/live_id"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/account_id"
@@ -62,7 +62,7 @@
                 >
 
                 <EditText
-                    android:id="@+id/connect_password"
+                    android:id="@+id/live_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/password"
@@ -73,7 +73,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/btn_connect"
+                android:id="@+id/btn_login"
                 style="@style/TH.Button.Inverse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
