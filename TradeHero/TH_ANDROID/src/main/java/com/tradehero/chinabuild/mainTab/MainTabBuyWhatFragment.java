@@ -14,25 +14,28 @@ import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.buyWhat.FollowBuyFragment;
 import com.tradehero.chinabuild.buyWhat.FragmentStockGod;
-import com.tradehero.chinabuild.buyWhat.MainTabBuyWhatAdapter;
 import com.tradehero.chinabuild.data.AdsDTO;
 import com.tradehero.chinabuild.fragment.AbsBaseFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionDetailFragment;
 import com.tradehero.chinabuild.fragment.competition.CompetitionMainFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.search.SearchUnitFragment;
+import com.tradehero.chinabuild.fragment.stockRecommend.StockRecommendFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
+import com.tradehero.th.adapters.StockRecommendListAdapter;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
 import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
+import com.tradehero.th.api.stockRecommend.StockRecommendDTOList;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
@@ -53,7 +56,7 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
     private ImageView mHotStockBtn;
     private ImageView mWinRateBtn;
     private SecurityListView mListView;
-    private MainTabBuyWhatAdapter mListViewAdapter;
+    private StockRecommendListAdapter stockRecommendListAdapter;
     private int currentPage = 0;
     private int ITEMS_PER_PAGE = 10;
     private RelativeLayout mAdLayout;
@@ -61,11 +64,10 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
     private CirclePageIndicator mAdIndicator;
 //    Button mAdCloseButton;
     private ProgressBar mProgress;
-    @Inject
-    LeaderboardCache leaderboardCache;
+    @Inject LeaderboardCache leaderboardCache;
     protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
-    @Inject
-    Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
+    @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
+    @Inject CurrentUserId currentUserId;
     private List<View> views = new ArrayList();
 //    private Timer timer;
 //    public static boolean SHOW_ADVERTISEMENT = true;
@@ -73,71 +75,68 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_tab_fragment_stockgod_new_layout, container, false);
-        initView(view);
-        fetchBuyWhatList();
+        View listHeader = inflater.inflate(R.layout.main_tab_fragment_stockgod_top_layout, null, false);
+        initView(view, listHeader);
+        fetchStockRecommendList();
         downloadAdvertisements();
         return view;
     }
 
-    private void fetchBuyWhatList() {
-        leaderboardCacheListener = new BaseLeaderboardFragmentLeaderboardCacheListener();
-        fetchLeaderboard();
+    private void fetchStockRecommendList() {
+        timelineServiceWrapper.get().getTimelineStockRecommend(currentUserId.toUserBaseKey(), 3, -1, -1, new Callback<StockRecommendDTOList>() {
+            @Override
+            public void success(StockRecommendDTOList stockRecommendDTOList, Response response) {
+                stockRecommendListAdapter.setItems(stockRecommendDTOList);
+                stockRecommendListAdapter.notifyDataSetChanged();
+                finish();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                finish();
+            }
+
+            private void finish() {
+                mProgress.setVisibility(View.INVISIBLE);
+                mListView.onRefreshComplete();
+            }
+        });
     }
 
-    protected void fetchLeaderboard() {
-        detachLeaderboardCacheListener();
-        PagedLeaderboardKey key = new PagedLeaderboardKey(new LeaderboardDefKey(LeaderboardDefKeyKnowledge.BUY_WHAT).key, PagedLeaderboardKey.FIRST_PAGE);
-        key.perPage = ITEMS_PER_PAGE;
-        key.page = 1;
-        leaderboardCache.register(key, leaderboardCacheListener);
-        leaderboardCache.getOrFetchAsync(key, true);
-    }
-
-    protected void fetchLeaderboardMore() {
-        detachLeaderboardCacheListener();
-        PagedLeaderboardKey key = new PagedLeaderboardKey(new LeaderboardDefKey(LeaderboardDefKeyKnowledge.BUY_WHAT).key, currentPage + 1);
-        key.perPage = ITEMS_PER_PAGE;
-        leaderboardCache.register(key, leaderboardCacheListener);
-        leaderboardCache.getOrFetchAsync(key, true);
-    }
-
-    protected void detachLeaderboardCacheListener() {
-        leaderboardCache.unregister(leaderboardCacheListener);
-    }
-
-    private void initView(View view) {
-        mAdLayout = (RelativeLayout) view.findViewById(R.id.ad_layout);
-        pager = (ViewPager) view.findViewById(R.id.pager);
-        mAdIndicator = (CirclePageIndicator) view.findViewById(R.id.indicator);
+    private void initView(View view, View header) {
+        mAdLayout = (RelativeLayout) header.findViewById(R.id.ad_layout);
+        pager = (ViewPager) header.findViewById(R.id.pager);
+        mAdIndicator = (CirclePageIndicator) header.findViewById(R.id.indicator);
 //        mAdCloseButton = (Button) view.findViewById(R.id.ad_close_button);
 //        mAdCloseButton.setOnClickListener(this);
-        mQueryBtn = (ImageView) view.findViewById(R.id.query_btn);
+        mQueryBtn = (ImageView) header.findViewById(R.id.query_btn);
         mQueryBtn.setOnClickListener(this);
-        mNewSuggestBtn = (ImageView) view.findViewById(R.id.new_suggest_icon);
+        mNewSuggestBtn = (ImageView) header.findViewById(R.id.new_suggest_icon);
         mNewSuggestBtn.setOnClickListener(this);
-        mFollowChanceBtn = (ImageView) view.findViewById(R.id.follow_chance_icon);
+        mFollowChanceBtn = (ImageView) header.findViewById(R.id.follow_chance_icon);
         mFollowChanceBtn.setOnClickListener(this);
-        mHotStockBtn = (ImageView) view.findViewById(R.id.hot_stock_icon);
+        mHotStockBtn = (ImageView) header.findViewById(R.id.hot_stock_icon);
         mHotStockBtn.setOnClickListener(this);
-        mWinRateBtn = (ImageView) view.findViewById(R.id.win_rate_icon);
+        mWinRateBtn = (ImageView) header.findViewById(R.id.win_rate_icon);
         mWinRateBtn.setOnClickListener(this);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
 
         mListView = (SecurityListView) view.findViewById(R.id.list);
-        if (mListViewAdapter == null) {
-            mListViewAdapter = new MainTabBuyWhatAdapter(getActivity());
+        if (stockRecommendListAdapter == null) {
+            stockRecommendListAdapter = new StockRecommendListAdapter(getActivity());
         }
-        mListView.setAdapter(mListViewAdapter);
-        mListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        mListView.setAdapter(stockRecommendListAdapter);
+        mListView.getRefreshableView().addHeaderView(header);
+        mListView.setMode(PullToRefreshBase.Mode.DISABLED);
         mListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                fetchLeaderboard();
+                // Nothing.
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                fetchLeaderboardMore();
+                // Nothing.
             }
         });
     }
@@ -155,9 +154,7 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
                 gotoDashboard(FollowBuyFragment.class.getName());
                 break;
             case R.id.hot_stock_icon:
-                Bundle args = new Bundle();
-                args.putInt(FragmentStockGod.TAB_KEY, 3);
-                gotoDashboard(FragmentStockGod.class.getName(), args);
+                gotoDashboard(StockRecommendFragment.class.getName());
                 break;
             case R.id.win_rate_icon:
                 Bundle args2 = new Bundle();
@@ -191,44 +188,8 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
 //        mAdLayout.startAnimation(animation);
 //    }
 
-    protected class BaseLeaderboardFragmentLeaderboardCacheListener implements DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> {
-        @Override
-        public void onDTOReceived(@NotNull LeaderboardKey key, @NotNull LeaderboardDTO value) {
-            setListData(key, value.users);
-            if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
-                mListView.setMode(PullToRefreshBase.Mode.BOTH);
-            }
-            mListView.onRefreshComplete();
-        }
-
-        @Override
-        public void onErrorThrown(@NotNull LeaderboardKey key, @NotNull Throwable error) {
-            if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
-                mListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
-            }
-            mListView.onRefreshComplete();
-        }
-    }
-
-    private void setListData(LeaderboardKey key, LeaderboardUserDTOList listData) {
-        if (((PagedLeaderboardKey) key).page == PagedLeaderboardKey.FIRST_PAGE) {
-            currentPage = 0;
-            mListViewAdapter.setItems(listData);
-        } else {
-            mListViewAdapter.addItems(listData);
-        }
-        mProgress.setVisibility(View.INVISIBLE);
-
-        //如果返回数据已经为空了，说明没有了下一页。
-        if (listData.size() > 0) {
-            currentPage += 1;
-        }
-        mListViewAdapter.notifyDataSetChanged();
-    }
-
     @Override
     public void onPause() {
-        detachLeaderboardCacheListener();
         super.onPause();
     }
 

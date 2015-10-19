@@ -2,6 +2,7 @@ package com.tradehero.th.network.service;
 
 import com.tradehero.chinabuild.data.AdsDTO;
 import com.tradehero.chinabuild.data.TimeLineTotalInfo;
+import com.tradehero.th.api.stockRecommend.StockRecommendDTOList;
 import com.tradehero.th.api.timeline.TimelineDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
@@ -110,19 +111,30 @@ import retrofit.Callback;
     }
 
     //公告, only one page with 20 items
-    public void getTimelineNotice(@NotNull UserBaseKey userId, @Nullable Callback<TimelineDTO> callback){
+    public void getTimelineNotice(@NotNull UserBaseKey userId, @Nullable Callback<TimelineDTO> callback)
+    {
         userTimelineServiceAsync.getTimelineNotice(userId.key, 20, -1, -1, callback);
     }
 
-    public void downloadAdvertisements(Callback<List<AdsDTO>> callback){
+    //牛人荐股
+    public @NotNull void getTimelineStockRecommend(@NotNull UserBaseKey userId, Integer maxCount, Integer maxId, Integer minId,
+                                                                     @Nullable Callback<StockRecommendDTOList> callback)
+    {
+        userTimelineServiceAsync.getTimelineStockRecommend(userId.key, maxCount, maxId, minId, callback);
+    }
+
+    public void downloadAdvertisements(Callback<List<AdsDTO>> callback)
+    {
         userTimelineServiceAsync.downloadAdvertisements(callback);
     }
 
-    public void downloadBuyWhatAdvertisements(Callback<List<AdsDTO>> callback){
+    public void downloadBuyWhatAdvertisements(Callback<List<AdsDTO>> callback)
+    {
         userTimelineServiceAsync.downloadBuyWhatAdvertisements(callback);
     }
 
-    public void retrieveTimeLineTotalInfo(Callback<TimeLineTotalInfo> callback){
+    public void retrieveTimeLineTotalInfo(Callback<TimeLineTotalInfo> callback)
+    {
         userTimelineServiceAsync.retrieveTimeLineTotalInfo(callback);
     }
 

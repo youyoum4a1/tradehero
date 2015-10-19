@@ -3,6 +3,9 @@ package com.tradehero.th.widget;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.text.Selection;
+import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.View;
@@ -76,6 +79,15 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
             text = parser.load(text.toString().trim()).create();
         }
         super.setText(text, BufferType.SPANNABLE);
+    }
+
+    @Override
+    public Parcelable onSaveInstanceState() {
+        if (getText() instanceof Spannable) {
+            Selection.removeSelection((Spannable)getText());
+        }
+
+        return super.onSaveInstanceState();
     }
 
     public boolean isClicked = false;

@@ -23,6 +23,7 @@ public class TimelineItemDTO extends AbstractDiscussionDTO
     public boolean useSysIcon;
     public boolean renderSysStyle;
     public String imageUrl;
+    public String picUrl;
 
     public UserProfileCompactDTO user;
     public boolean isHighlight;

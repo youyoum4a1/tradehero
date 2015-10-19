@@ -63,6 +63,7 @@ import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubQueryFragmen
 import com.tradehero.chinabuild.fragment.security.SecurityOptMockSubSellFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityUserOptFragment;
 import com.tradehero.chinabuild.fragment.security.SecurityUserPositionFragment;
+import com.tradehero.chinabuild.fragment.stockRecommend.StockRecommendFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.AnswerQuestionFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.AnswersSummaryFragment;
 import com.tradehero.chinabuild.fragment.stocklearning.OneQuestionFragment;
@@ -110,6 +111,7 @@ import com.tradehero.th.adapters.SearchUserListAdapter;
 import com.tradehero.th.adapters.SecurityListAdapter;
 import com.tradehero.th.adapters.SecuritySearchListAdapter;
 import com.tradehero.th.adapters.SecurityTimeLineDiscussOrNewsAdapter;
+import com.tradehero.th.adapters.StockRecommendListAdapter;
 import com.tradehero.th.adapters.TimeLineBaseAdapter;
 import com.tradehero.th.adapters.TimeLineDetailDiscussSecItem;
 import com.tradehero.th.adapters.UserFriendsListAdapter;
@@ -340,8 +342,11 @@ import javax.inject.Singleton;
                         SecurityOptActualFragment.class,
                         SecurityOptActivity.class,
                         XCTServicesWrapper.class,
-                        SecurityOptPhoneNumBindFragment.class
+                        SecurityOptPhoneNumBindFragment.class,
                         //Security Opt Actual
+
+                        StockRecommendFragment.class,
+                        StockRecommendListAdapter.class
 
                         //China Build End
                 },
