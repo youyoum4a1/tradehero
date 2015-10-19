@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.buyWhat.FollowBuyFragment;
@@ -49,6 +50,7 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
     private ImageView mFollowChanceBtn;
     private ImageView mHotStockBtn;
     private ImageView mWinRateBtn;
+    private TextView mMoreButton;
     private SecurityListView mListView;
     private StockRecommendListAdapter stockRecommendListAdapter;
     private int currentPage = 0;
@@ -115,6 +117,8 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         mWinRateBtn = (ImageView) header.findViewById(R.id.win_rate_icon);
         mWinRateBtn.setOnClickListener(this);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
+        mMoreButton = (TextView) header.findViewById(R.id.showAllStockRecommend);
+        mMoreButton.setOnClickListener(this);
 
         mListView = (SecurityListView) view.findViewById(R.id.list);
         if (stockRecommendListAdapter == null) {
@@ -139,6 +143,7 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
                 gotoDashboard(FollowBuyFragment.class.getName());
                 break;
             case R.id.stock_recommend:
+            case R.id.showAllStockRecommend:
                 gotoDashboard(StockRecommendFragment.class.getName());
                 break;
             case R.id.win_rate_icon:
