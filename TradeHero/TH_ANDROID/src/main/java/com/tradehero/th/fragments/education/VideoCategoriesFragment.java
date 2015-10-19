@@ -40,12 +40,6 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
     {
         super.onViewCreated(view, savedInstanceState);
         scheduleRequestData();
-
-        if (getParentFragment() instanceof DiscoveryMainFragment)
-        {
-            listView.setOnScrollListener(new MultiScrollListener(nearEndScrollListener, fragmentElements.get().getListViewScrollListener(),
-                    new LiveWidgetScrollListener(fragmentElements.get(), ((DiscoveryMainFragment) getParentFragment()).getLiveFragmentUtil())));
-        }
     }
 
     @Override public void onResume()

@@ -45,19 +45,6 @@ public class DiscoveryNewsfeedFragment extends BasePagedRecyclerRxFragment<
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-
-        if (getParentFragment() instanceof DiscoveryMainFragment)
-        {
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener()
-            {
-                @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy)
-                {
-                    super.onScrolled(recyclerView, dx, dy);
-                    ((DiscoveryMainFragment) getParentFragment()).getLiveFragmentUtil()
-                            .setLiveWidgetTranslationY(fragmentElements.get().getMovableBottom().getTranslationY());
-                }
-            });
-        }
     }
 
     @Override public void onStart()

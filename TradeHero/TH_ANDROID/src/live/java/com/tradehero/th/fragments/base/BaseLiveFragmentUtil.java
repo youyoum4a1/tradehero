@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.base;
 
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import butterknife.Bind;
@@ -24,7 +25,7 @@ import rx.functions.Func2;
 
 public class BaseLiveFragmentUtil
 {
-    @Bind(R.id.go_live_widget) GoLiveWidget liveWidget;
+    @Nullable @Bind(R.id.go_live_widget) GoLiveWidget liveWidget;
     Fragment fragment;
 
     @Inject DashboardNavigator navigator;
@@ -48,6 +49,14 @@ public class BaseLiveFragmentUtil
         ButterKnife.bind(this, view);
         HierarchyInjector.inject(f.getActivity(), this);
 
+        if (liveWidget != null)
+        {
+            setUpLiveWidgetBanner(f);
+        }
+    }
+
+    private void setUpLiveWidgetBanner(Fragment f)
+    {
         if (!liveAvailability.get())
         {
             liveWidget.setVisibility(View.GONE);

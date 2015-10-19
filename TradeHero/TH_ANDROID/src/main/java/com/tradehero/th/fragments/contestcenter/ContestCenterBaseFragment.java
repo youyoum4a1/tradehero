@@ -97,17 +97,6 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
         super.onStop();
     }
 
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-
-        if (getParentFragment() instanceof ContestCenterFragment)
-        {
-            contestListView.setOnScrollListener(new MultiScrollListener(fragmentElements.get().getListViewScrollListener(),
-                    new LiveWidgetScrollListener(fragmentElements.get(), ((ContestCenterFragment) getParentFragment()).getLiveFragmentUtil())));
-        }
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.unbind(this);

@@ -384,9 +384,4 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             return super.getItemId(position) + leaderboardType.hashCode();
         }
     }
-
-    public BaseLiveFragmentUtil getLiveFragmentUtil()
-    {
-        return liveFragmentUtil;
-    }
 }

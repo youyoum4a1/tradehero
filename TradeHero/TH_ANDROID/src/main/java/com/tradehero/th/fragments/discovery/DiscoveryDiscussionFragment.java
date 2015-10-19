@@ -195,38 +195,18 @@ public class DiscoveryDiscussionFragment extends Fragment
                 {
                     @Override public void call(Subscriber<? super RangeDTO> subscriber)
                     {
-                        if (getParentFragment() instanceof DiscoveryMainFragment)
-                        {
-                            mTimelineListView.setOnScrollListener(
-                                    new MultiScrollListener(
-                                            dashboardBottomTabsScrollListener,
-                                            new LiveWidgetScrollListener(fragmentOuterElements.get(),
-                                                    ((DiscoveryMainFragment) getParentFragment()).getLiveFragmentUtil()),
-                                            createNearEndScrollOperator(
-                                                    subscriber,
-                                                    new Func0<RangeDTO>()
+                        mTimelineListView.setOnScrollListener(
+                                new MultiScrollListener(
+                                        dashboardBottomTabsScrollListener,
+                                        createNearEndScrollOperator(
+                                                subscriber,
+                                                new Func0<RangeDTO>()
+                                                {
+                                                    @Override public RangeDTO call()
                                                     {
-                                                        @Override public RangeDTO call()
-                                                        {
-                                                            return RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null);
-                                                        }
-                                                    })));
-                        }
-                        else
-                        {
-                            mTimelineListView.setOnScrollListener(
-                                    new MultiScrollListener(
-                                            dashboardBottomTabsScrollListener,
-                                            createNearEndScrollOperator(
-                                                    subscriber,
-                                                    new Func0<RangeDTO>()
-                                                    {
-                                                        @Override public RangeDTO call()
-                                                        {
-                                                            return RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null);
-                                                        }
-                                                    })));
-                        }
+                                                        return RangeDTO.create(currentRangeDTO.maxCount, currentRangeDTO.minId, null);
+                                                    }
+                                                })));
                     }
                 })
                 .doOnNext(new Action1<RangeDTO>()

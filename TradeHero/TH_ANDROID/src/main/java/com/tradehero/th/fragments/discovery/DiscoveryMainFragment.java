@@ -188,9 +188,4 @@ public class DiscoveryMainFragment extends DashboardFragment
             return DiscoveryTabType.values().length;
         }
     }
-
-    public BaseLiveFragmentUtil getLiveFragmentUtil()
-    {
-        return liveFragmentUtil;
-    }
 }

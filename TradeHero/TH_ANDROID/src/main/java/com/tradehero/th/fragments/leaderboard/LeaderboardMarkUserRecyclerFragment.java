@@ -235,12 +235,6 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
                                 requestDtos();
                             }
                         }
-
-                        if (getParentFragment() instanceof LeaderboardCommunityFragment)
-                        {
-                            ((LeaderboardCommunityFragment) getParentFragment()).getLiveFragmentUtil()
-                                    .setLiveWidgetTranslationY(fragmentElements.get().getMovableBottom().getTranslationY());
-                        }
                     }
 
                     @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState)
