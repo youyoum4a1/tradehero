@@ -169,9 +169,9 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private TextView btnTLPraiseDown;
 
     protected LinearLayout mRefreshView;
-    private TextView tvIsReward;
-    private TextView tvIsEssential;
-    private TextView tvUserTVTitle;
+    protected TextView tvIsReward;
+    protected TextView tvIsEssential;
+    protected TextView tvUserTVTitle;
 
     private String strReply = "";
 

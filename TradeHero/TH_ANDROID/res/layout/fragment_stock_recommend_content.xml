@@ -131,8 +131,7 @@
         android:id="@+id/attachmentImage"
         android:layout_width="fill_parent"
         android:layout_height="149dp"
-        android:layout_gravity="center"
-        android:src="@drawable/stock_learning_question_result_success"/>
+        android:layout_gravity="center" />
 
     <LinearLayout
         android:layout_width="fill_parent"
