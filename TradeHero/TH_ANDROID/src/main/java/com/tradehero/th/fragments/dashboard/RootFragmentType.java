@@ -17,6 +17,7 @@ import com.tradehero.th.activities.UpdateCenterActivity;
 import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
 import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import com.tradehero.th.fragments.portfolio.PortfolioListFragment;
+import com.tradehero.th.fragments.portfolio.PortfolioMainFragment;
 import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.utils.Constants;
@@ -54,7 +55,7 @@ public enum RootFragmentType
             R.string.dashboard_portfolios,
             R.string.dashboard_portfolios_key,
             R.drawable.ic_tab_portfolio,
-            PortfolioListFragment.class,
+            PortfolioMainFragment.class,
             null,
             AnalyticsConstants.TabBar_ContestCenter),
     ME(R.layout.left_drawer_item,

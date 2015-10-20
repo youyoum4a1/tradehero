@@ -23,6 +23,7 @@ import com.tradehero.th.models.time.AppTiming;
 import com.tradehero.th.network.share.SocialConstants;
 import com.tradehero.th.persistence.prefs.AuthHeader;
 import com.tradehero.th.persistence.prefs.FirstLaunch;
+import com.tradehero.th.persistence.prefs.IsLiveLogIn;
 import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.Constants;
@@ -55,6 +56,9 @@ public class SplashActivity extends BaseActivity
     @Nullable Subscription userProfileSubscription;
     @Nullable Uri deepLink;
 
+    // TODO: a hack for live login now.
+    @Inject @IsLiveLogIn BooleanPreference isLiveLogin;
+
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         AppTiming.splashCreate = System.currentTimeMillis();
@@ -82,6 +86,9 @@ public class SplashActivity extends BaseActivity
         {
             ActivityHelper.launchDashboard(this, deepLink);
         }
+
+        // TODO: a hack for live login
+        isLiveLogin.set(false);
     }
 
     @Override protected void onResume()

@@ -16,10 +16,12 @@ import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.live.ayondo.AyondoLiveLoginFormDTO;
 import com.tradehero.th.api.live.ayondo.AyondoUserProfileDTO;
 import com.tradehero.th.network.service.DummyAyondoLiveServiceWrapper;
+import com.tradehero.th.persistence.prefs.IsLiveLogIn;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
@@ -30,6 +32,7 @@ import timber.log.Timber;
 public class LiveLoginActivity extends BaseActivity
 {
     @Inject DummyAyondoLiveServiceWrapper ayondoLiveServiceWrapper;
+    @Inject @IsLiveLogIn BooleanPreference isLiveLogIn;
 
     @Bind(R.id.my_toolbar) Toolbar myToolbar;
     @Bind(R.id.live_id) EditText liveId;
@@ -103,6 +106,7 @@ public class LiveLoginActivity extends BaseActivity
                         if (ayondoUserProfileDTO != null)
                         {
                             setResult(RESULT_OK);
+                            isLiveLogIn.set(true);
                             finish();
                         }
                     }

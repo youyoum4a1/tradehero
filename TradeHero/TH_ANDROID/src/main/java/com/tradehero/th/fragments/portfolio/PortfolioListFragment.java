@@ -1,7 +1,5 @@
 package com.tradehero.th.fragments.portfolio;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,8 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -28,7 +24,6 @@ import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
 import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
 import com.tradehero.th.fragments.position.CompetitionLeaderboardPositionListFragment;
@@ -45,7 +40,6 @@ import com.tradehero.th.persistence.competition.ProviderListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +55,6 @@ import timber.log.Timber;
 
 public class PortfolioListFragment extends DashboardFragment
 {
-    public static final int CODE_PROMPT = 1;
     private static final String USER_BASE_KEY_BUNDLE_KEY = PortfolioListFragment.class.getName() + ".userBaseKey";
 
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
@@ -80,7 +73,6 @@ public class PortfolioListFragment extends DashboardFragment
     protected PortfolioRecyclerAdapter portfolioRecyclerAdapter;
     private BaseWebViewIntentFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
-    private BaseLiveFragmentUtil liveFragmentUtil;
 
     public static void putUserBaseKey(@NonNull Bundle bundle, @NonNull UserBaseKey userBaseKey)
     {
@@ -95,31 +87,6 @@ public class PortfolioListFragment extends DashboardFragment
             return new UserBaseKey(userBundle);
         }
         return null;
-    }
-
-    @Override public boolean shouldShowLiveTradingToggle()
-    {
-        return true;
-    }
-
-    @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
-    {
-        super.onLiveTradingChanged(event);
-        if (event.isOn && event.isFromUser)
-        {
-            liveFragmentUtil.launchLiveLogin();
-        }
-    }
-
-    @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-        liveFragmentUtil.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == CODE_PROMPT && resultCode == Activity.RESULT_OK)
-        {
-            switchToLivePositionListFragment(portfolioRecyclerAdapter.getItem(0));
-        }
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -185,20 +152,6 @@ public class PortfolioListFragment extends DashboardFragment
         navigator.get().pushFragment(PositionListFragment.class, args);
     }
 
-    private void switchToLivePositionListFragment(@NonNull PortfolioDisplayDTO object)
-    {
-        Bundle args = new Bundle();
-
-        if (object.ownedPortfolioId.userId.equals(currentUserId.get()))
-        {
-            PositionListFragment.putApplicablePortfolioId(args, object.ownedPortfolioId);
-        }
-        PositionListFragment.putGetPositionsDTOKey(args, object.ownedPortfolioId);
-        PositionListFragment.putShownUser(args, object.ownedPortfolioId.getUserBaseKey());
-
-        navigator.get().pushFragment(PositionListFragment.class, args, null, null, true);
-    }
-
     private void pushWatchlistPositionFragment()
     {
         Bundle args = new Bundle();
@@ -210,12 +163,6 @@ public class PortfolioListFragment extends DashboardFragment
     {
         super.onResume();
         detachWebFragment();
-    }
-
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(R.string.dashboard_portfolios);
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -304,8 +251,6 @@ public class PortfolioListFragment extends DashboardFragment
                         finishLoading(portfolioDisplayDTOs);
                     }
                 }, new TimberOnErrorAction1("Error fetching data")));
-
-        liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
     }
 
     protected void finishLoading(List<PortfolioDisplayDTO> portfolioDisplayDTOs)

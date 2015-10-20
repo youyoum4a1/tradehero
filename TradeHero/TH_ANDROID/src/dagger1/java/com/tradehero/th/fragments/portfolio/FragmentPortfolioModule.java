@@ -9,6 +9,7 @@ import dagger.Module;
                 FragmentPortfolioHeaderModule.class,
         },
         injects = {
+                PortfolioMainFragment.class,
                 PortfolioListFragment.class,
                 PortfolioListItemView.class,
                 OtherUserPortfolioHeaderView.class,

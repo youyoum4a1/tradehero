@@ -21,6 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -82,6 +83,7 @@ import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.GetPositionsCacheRx;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
@@ -143,6 +145,9 @@ public class PositionListFragment
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
+
+    // TODO: for live dummy, need check if necessary in RELEASE
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
 
     @Bind(R.id.list_flipper) ViewAnimator listViewFlipper;
     @Bind(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
@@ -932,7 +937,7 @@ public class PositionListFragment
             {
                 @Override public void run()
                 {
-                    if(inflatedView== null)
+                    if (inflatedView == null)
                     {
                         return;
                     }
@@ -1123,25 +1128,32 @@ public class PositionListFragment
     {
         String title = null;
 
-        if (portfolioDTO != null)
+        if (isLiveTrading.get())
         {
-            if (portfolioDTO.title.equals(getString(R.string.my_stocks_con)))
-            {
-                title = getString(R.string.trending_tab_stocks_main);
-            }
-            else if (portfolioDTO.title.equals(getString(R.string.my_fx_con)))
-            {
-                title = getString(R.string.my_fx);
-            }
-            else
-            {
-                title = portfolioDTO.title;
-            }
+            title = getString(R.string.tile_live_portfolios);
         }
-
-        if (title == null)
+        else
         {
-            title = getString(R.string.position_list_action_bar_header_unknown);
+            if (portfolioDTO != null)
+            {
+                if (portfolioDTO.title.equals(getString(R.string.my_stocks_con)))
+                {
+                    title = getString(R.string.trending_tab_stocks_main);
+                }
+                else if (portfolioDTO.title.equals(getString(R.string.my_fx_con)))
+                {
+                    title = getString(R.string.my_fx);
+                }
+                else
+                {
+                    title = portfolioDTO.title;
+                }
+            }
+
+            if (title == null)
+            {
+                title = getString(R.string.position_list_action_bar_header_unknown);
+            }
         }
 
         if (getArguments().getBoolean(BUNDLE_KEY_SHOW_TITLE, true))
