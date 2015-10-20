@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.portfolio;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -60,6 +61,7 @@ import timber.log.Timber;
 
 public class PortfolioListFragment extends DashboardFragment
 {
+    public static final int CODE_PROMPT = 1;
     private static final String USER_BASE_KEY_BUNDLE_KEY = PortfolioListFragment.class.getName() + ".userBaseKey";
 
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
@@ -113,6 +115,11 @@ public class PortfolioListFragment extends DashboardFragment
     {
         super.onActivityResult(requestCode, resultCode, data);
         liveFragmentUtil.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == CODE_PROMPT && resultCode == Activity.RESULT_OK)
+        {
+            switchToLivePositionListFragment(portfolioRecyclerAdapter.getItem(0));
+        }
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -176,6 +183,20 @@ public class PortfolioListFragment extends DashboardFragment
             return;
         }
         navigator.get().pushFragment(PositionListFragment.class, args);
+    }
+
+    private void switchToLivePositionListFragment(@NonNull PortfolioDisplayDTO object)
+    {
+        Bundle args = new Bundle();
+
+        if (object.ownedPortfolioId.userId.equals(currentUserId.get()))
+        {
+            PositionListFragment.putApplicablePortfolioId(args, object.ownedPortfolioId);
+        }
+        PositionListFragment.putGetPositionsDTOKey(args, object.ownedPortfolioId);
+        PositionListFragment.putShownUser(args, object.ownedPortfolioId.getUserBaseKey());
+
+        navigator.get().pushFragment(PositionListFragment.class, args, null, null, true);
     }
 
     private void pushWatchlistPositionFragment()
