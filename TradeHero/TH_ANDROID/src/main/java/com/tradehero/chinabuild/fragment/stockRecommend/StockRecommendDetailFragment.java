@@ -2,10 +2,10 @@ package com.tradehero.chinabuild.fragment.stockRecommend;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
@@ -24,10 +24,17 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
     protected ViewHolder viewHolder;
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain(R.string.stock_recommend);
+    }
+
+    @Override
     public LinearLayout getHeaderView(LayoutInflater inflater) {
         return (LinearLayout) inflater.inflate(R.layout.fragment_stock_recommend_content, null);
     }
 
+    @Override
     public void initRoot(View view) {
         viewHolder = new ViewHolder(view);
         llDisscurssOrNews = viewHolder.llItemAll;
@@ -35,6 +42,7 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
         tvUserTLTimeStamp = viewHolder.createTime;
         tvUserTLContent = viewHolder.articleContent;
         tvUserTLName = viewHolder.userName;
+        btnTLPraise = viewHolder.btnTLPraise;
     }
 
     @Override
@@ -71,7 +79,7 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
             viewHolder.numberRead.setText(String.valueOf(timelineItemDTO.viewCount));
             viewHolder.numberPraised.setText(String.valueOf(timelineItemDTO.upvoteCount));
             viewHolder.numberComment.setText(String.valueOf(timelineItemDTO.commentCount));
-
+            viewHolder.btnTLPraise.setBackgroundResource(timelineItemDTO.voteDirection == 1 ? R.drawable.like_selected : R.drawable.like);
 
             // Listeners
             viewHolder.userClickableArea.setOnClickListener(new View.OnClickListener() {
@@ -91,6 +99,23 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
                     pushFragment(PortfolioFragment.class, bundle);
                 }
             });
+            viewHolder.buttonPraised.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickedPraise();
+                }
+            });
+            viewHolder.buttonComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    comments(getAbstractDiscussionCompactDTO());
+                }
+            });
         }
+    }
+
+    @Override
+    protected void setTimelineOperaterLLVisibility(int visible) {
+        super.setTimelineOperaterLLVisibility(View.GONE);
     }
 }

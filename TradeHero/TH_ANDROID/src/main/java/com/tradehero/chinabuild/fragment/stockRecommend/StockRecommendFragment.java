@@ -58,7 +58,6 @@ public class StockRecommendFragment extends DashboardFragment {
         mListView = (SecurityListView) view.findViewById(R.id.list);
         if (stockRecommendListAdapter == null) {
             stockRecommendListAdapter = new StockRecommendListAdapter(getActivity());
-            stockRecommendListAdapter.setShowCount(10);
         }
         mListView.setAdapter(stockRecommendListAdapter);
         mListView.setMode(PullToRefreshBase.Mode.BOTH);

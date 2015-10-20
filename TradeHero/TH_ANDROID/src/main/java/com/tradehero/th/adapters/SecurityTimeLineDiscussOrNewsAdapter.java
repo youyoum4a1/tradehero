@@ -138,9 +138,9 @@ public class SecurityTimeLineDiscussOrNewsAdapter extends TimeLineBaseAdapter
             holder.llTLPraise = (LinearLayout) convertView.findViewById(R.id.llTLPraise);
             holder.llTLPraiseDown = (LinearLayout)convertView.findViewById(R.id.llTLPraiseDown);
             holder.llTLComment = (LinearLayout) convertView.findViewById(R.id.llTLComment);
-            holder.btnTLPraise = (TextView) convertView.findViewById(R.id.btnTLPraise);
+            holder.btnTLPraise = (TextView) convertView.findViewById(R.id.btnTLViewCount);
             holder.tvTLPraise = (TextView) convertView.findViewById(R.id.tvTLPraise);
-            holder.btnTLPraiseDown = (TextView) convertView.findViewById(R.id.btnTLPraiseDown);
+            holder.btnTLPraiseDown = (TextView) convertView.findViewById(R.id.btnTLPraise);
             holder.tvTLPraiseDown = (TextView) convertView.findViewById(R.id.tvTLPraiseDown);
             holder.btnTLComment = (TextView) convertView.findViewById(R.id.btnTLComment);
             holder.tvTLComment = (TextView) convertView.findViewById(R.id.tvTLComment);

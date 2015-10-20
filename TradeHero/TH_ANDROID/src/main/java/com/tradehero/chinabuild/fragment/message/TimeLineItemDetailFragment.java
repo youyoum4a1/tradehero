@@ -165,7 +165,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     private TextView tvTLPraise;
     private TextView tvTLPraiseDown;
     private TextView tvTLComment;
-    private TextView btnTLPraise;
+    protected TextView btnTLPraise;
     private TextView btnTLPraiseDown;
 
     protected LinearLayout mRefreshView;
@@ -288,13 +288,20 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 }
                 int currentPosition = absListView.getFirstVisiblePosition();
                 if (currentPosition > 1) {
-                    timelineOperaterLL.setVisibility(View.VISIBLE);
+                    setTimelineOperaterLLVisibility(View.VISIBLE);
                 } else {
-                    timelineOperaterLL.setVisibility(View.GONE);
+                    setTimelineOperaterLLVisibility(View.GONE);
                 }
             }
         });
         return view;
+    }
+
+    protected void setTimelineOperaterLLVisibility(int visible) {
+        if (timelineOperaterLL == null) {
+            return;
+        }
+        timelineOperaterLL.setVisibility(visible);
     }
 
     public LinearLayout getHeaderView(LayoutInflater inflater) {
@@ -313,8 +320,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         tvTLPraise = (TextView) view.findViewById(R.id.tvTLPraise);
         tvTLPraiseDown = (TextView) view.findViewById(R.id.tvTLPraiseDown);
         tvTLComment = (TextView) view.findViewById(R.id.tvTLComment);
-        btnTLPraise = (TextView) view.findViewById(R.id.btnTLPraise);
-        btnTLPraiseDown = (TextView) view.findViewById(R.id.btnTLPraiseDown);
+        btnTLPraise = (TextView) view.findViewById(R.id.btnTLViewCount);
+        btnTLPraiseDown = (TextView) view.findViewById(R.id.btnTLPraise);
         tvUserTLName.setOnClickListener(this);
         imgSecurityTLUserHeader.setOnClickListener(this);
         llTLPraise.setOnClickListener(this);

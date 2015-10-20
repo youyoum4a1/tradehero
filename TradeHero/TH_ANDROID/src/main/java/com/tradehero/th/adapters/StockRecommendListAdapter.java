@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -12,8 +13,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import dagger.Lazy;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
 import com.tradehero.chinabuild.fragment.message.TimeLineItemDetailFragment;
 import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.stockRecommend.StockRecommendDetailFragment;
@@ -22,13 +29,18 @@ import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.TradeHeroMainActivity;
+import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.DiscussionType;
+import com.tradehero.th.api.discussion.VoteDirection;
+import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
 import com.tradehero.th.api.stockRecommend.StockRecommendDTOList;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
 import javax.inject.Inject;
@@ -39,13 +51,14 @@ import org.ocpsoft.prettytime.PrettyTime;
  */
 public class StockRecommendListAdapter extends BaseAdapter {
 
+
     private Context context;
     private LayoutInflater inflater;
     private StockRecommendDTOList dtoList;
     private int mCount = 0;
 
-    @Inject
-    public PrettyTime prettyTime;
+    @Inject PrettyTime prettyTime;
+    @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
 
     public StockRecommendListAdapter(Context context) {
         this.context = context;
@@ -62,14 +75,7 @@ public class StockRecommendListAdapter extends BaseAdapter {
         if (dtoList == null) {
             return 0;
         }
-        if (mCount > 0) {//for buy what main page
-            return mCount;
-        }
         return dtoList.getSize();
-    }
-
-    public void setShowCount(int mCount) {
-        this.mCount = mCount;
     }
 
     @Override
@@ -77,8 +83,7 @@ public class StockRecommendListAdapter extends BaseAdapter {
         if (dtoList == null) {
             return null;
         }
-        return dtoList.getItem(0);
-//        return dtoList.getItem(position);
+        return dtoList.getItem(position);
     }
 
     @Override
@@ -103,7 +108,7 @@ public class StockRecommendListAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.fragment_stock_recommend_content, null);
         }
 
-        ViewHolder holder = new ViewHolder(convertView);
+        final ViewHolder holder = new ViewHolder(convertView);
 
         // User Image
         ImageLoader.getInstance().displayImage(autherDTO.picture, holder.userIcon, UniversalImageLoader.getAvatarImageLoaderOptions());
@@ -132,6 +137,7 @@ public class StockRecommendListAdapter extends BaseAdapter {
         holder.numberRead.setText(String.valueOf(timelineItemDTO.viewCount));
         holder.numberPraised.setText(String.valueOf(timelineItemDTO.upvoteCount));
         holder.numberComment.setText(String.valueOf(timelineItemDTO.commentCount));
+        holder.btnTLPraise.setBackgroundResource(timelineItemDTO.voteDirection == 1 ? R.drawable.like_selected : R.drawable.like);
 
         // Item separator
         if (position == getCount() - 1) {
@@ -165,6 +171,51 @@ public class StockRecommendListAdapter extends BaseAdapter {
                 discussBundle.putInt(TimelineItemDTOKey.BUNDLE_KEY_ID, timelineItemDTO.id);
                 bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, discussBundle);
                 pushFragment(StockRecommendDetailFragment.class, bundle);
+            }
+        });
+        holder.buttonPraised.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                VoteDirection voteDirection;
+                if (timelineItemDTO.voteDirection == 1) {
+                    timelineItemDTO.voteDirection = 0;
+                    timelineItemDTO.upvoteCount = timelineItemDTO.upvoteCount > 0 ? (timelineItemDTO.upvoteCount - 1) : 0;
+                    voteDirection = VoteDirection.UnVote;
+                    holder.btnTLPraise.setBackgroundResource(R.drawable.like);
+                } else {
+                    timelineItemDTO.voteDirection = 1;
+                    timelineItemDTO.upvoteCount += 1;
+                    voteDirection = VoteDirection.UpVote;
+                    holder.btnTLPraise.setBackgroundResource(R.drawable.like_selected);
+                    holder.btnTLPraise.startAnimation(AnimationUtils.loadAnimation(context, R.anim.vote_praise));
+                }
+                holder.numberPraised.setText(String.valueOf(timelineItemDTO.upvoteCount));
+
+                DiscussionVoteKey discussionVoteKey = new DiscussionVoteKey(
+                        DiscussionType.TIMELINE_ITEM,
+                        timelineItemDTO.id,
+                        voteDirection);
+                discussionServiceWrapper.get().vote(discussionVoteKey, new Callback<DiscussionDTO>() {
+                    @Override
+                    public void success(DiscussionDTO discussionDTO, Response response) {
+
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
+            }
+        });
+        holder.buttonComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DiscussionKey discussionKey = timelineItemDTO.getDiscussionKey();
+                Bundle bundle = new Bundle();
+                bundle.putBundle(DiscussionKey.BUNDLE_KEY_DISCUSSION_KEY_BUNDLE,
+                        discussionKey.getArgs());
+                pushFragment(DiscussSendFragment.class, bundle);
             }
         });
 
@@ -209,14 +260,14 @@ public class StockRecommendListAdapter extends BaseAdapter {
         public LinearLayout articleClickableArea;
         @InjectView(R.id.attachmentImage)
         public ImageView attachmentImage;
-        @InjectView(R.id.btnTLPraise)
-        public TextView btnTLPraise;
+        @InjectView(R.id.btnTLViewCount)
+        public TextView btnTLViewCount;
         @InjectView(R.id.numberRead)
         public TextView numberRead;
         @InjectView(R.id.buttonRead)
         public LinearLayout buttonRead;
-        @InjectView(R.id.btnTLPraiseDown)
-        public TextView btnTLPraiseDown;
+        @InjectView(R.id.btnTLPraise)
+        public TextView btnTLPraise;
         @InjectView(R.id.numberPraised)
         public TextView numberPraised;
         @InjectView(R.id.buttonPraised)

@@ -147,11 +147,10 @@
             android:gravity="center">
 
             <TextView
-                android:id="@+id/btnTLPraise"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:background="@drawable/icon_praise_normal"
-                android:duplicateParentState="true"/>
+                android:id="@+id/btnTLViewCount"
+                android:layout_width="18dp"
+                android:layout_height="10dp"
+                android:background="@drawable/eye" />
 
             <TextView
                 android:id="@+id/numberRead"
@@ -160,7 +159,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="3dp"
                 android:duplicateParentState="true"
-                android:text="赞"
+                android:text="100"
                 android:textColor="#929292"
                 android:textSize="11sp"/>
         </LinearLayout>
@@ -173,10 +172,10 @@
             android:gravity="center">
 
             <TextView
-                android:id="@+id/btnTLPraiseDown"
+                android:id="@+id/btnTLPraise"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:background="@drawable/icon_praise_down_normal"
+                android:background="@drawable/like"
                 android:duplicateParentState="true"/>
 
             <TextView
@@ -186,7 +185,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="3dp"
                 android:duplicateParentState="true"
-                android:text="踩"
+                android:text="100"
                 android:textColor="#929292"
                 android:textSize="11sp"/>
         </LinearLayout>
@@ -201,7 +200,7 @@
             <TextView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:background="@drawable/icon_comment_xml"
+                android:background="@drawable/comments"
                 android:duplicateParentState="true"/>
 
             <TextView

@@ -123,7 +123,6 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         mListView = (SecurityListView) view.findViewById(R.id.list);
         if (stockRecommendListAdapter == null) {
             stockRecommendListAdapter = new StockRecommendListAdapter(getActivity());
-            stockRecommendListAdapter.setShowCount(3);
         }
         mListView.setAdapter(stockRecommendListAdapter);
         mListView.getRefreshableView().addHeaderView(header);
@@ -177,6 +176,13 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
 //        });
 //        mAdLayout.startAnimation(animation);
 //    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchStockRecommendList();
+    }
 
     @Override
     public void onPause() {

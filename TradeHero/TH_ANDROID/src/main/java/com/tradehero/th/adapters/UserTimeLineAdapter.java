@@ -299,9 +299,9 @@ public class UserTimeLineAdapter extends TimeLineBaseAdapter
                 holder.llTLBuy = (LinearLayout) convertView.findViewById(R.id.llTLBuy);
                 holder.btnTLBuy = (TextView) convertView.findViewById(R.id.btnTLBuy);
                 holder.tvTLBuy = (TextView) convertView.findViewById(R.id.tvTLBuy);
-                holder.btnTLPraise = (TextView) convertView.findViewById(R.id.btnTLPraise);
+                holder.btnTLPraise = (TextView) convertView.findViewById(R.id.btnTLViewCount);
                 holder.tvTLPraise = (TextView) convertView.findViewById(R.id.tvTLPraise);
-                holder.btnTLPraiseDown = (TextView) convertView.findViewById(R.id.btnTLPraiseDown);
+                holder.btnTLPraiseDown = (TextView) convertView.findViewById(R.id.btnTLPraise);
                 holder.tvTLPraiseDown = (TextView) convertView.findViewById(R.id.tvTLPraiseDown);
                 holder.btnTLComment = (TextView) convertView.findViewById(R.id.btnTLComment);
                 holder.tvTLComment = (TextView) convertView.findViewById(R.id.tvTLComment);
