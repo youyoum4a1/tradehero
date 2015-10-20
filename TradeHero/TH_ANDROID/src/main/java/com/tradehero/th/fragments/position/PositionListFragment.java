@@ -928,6 +928,12 @@ public class PositionListFragment
         {
             // portfolio header
             int headerLayoutId = PortfolioHeaderFactory.layoutIdFor(getPositionsDTOKey, portfolioCompactDTO, currentUserId);
+
+            if (isLiveTrading.get())
+            {
+                headerLayoutId = PortfolioHeaderFactory.layoutIdForLive();
+            }
+
             headerStub.setLayoutResource(headerLayoutId);
             inflatedView = headerStub.inflate();
             portfolioHeaderView = (PortfolioHeaderView) inflatedView;

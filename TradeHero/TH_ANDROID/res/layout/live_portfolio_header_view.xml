@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tradehero.th.fragments.portfolio.header.LivePortfolioHeaderView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/stock_positions_header_mine_height"
+    android:orientation="vertical"
+    style="@style/TH.ListItem"
+    android:gravity="center_vertical"
+    android:background="@color/portfolio_header_background_color"
+    >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center_vertical"
+      >
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+      <TableRow>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_xsmall"
+            android:layout_marginEnd="@dimen/margin_xsmall"
+            android:text="@string/portfolio_header_total_value"
+            android:gravity="end"
+            android:textColor="@color/portfolio_header_text_color"
+            style="@style/TH.Caption.Portfolio"
+            />
+
+        <TextView
+            android:id="@+id/header_portfolio_total_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/portfolio_header_text_color"
+            style="@style/TH.Subhead"
+            android:gravity="center"
+            tools:text="US$ 8,695"
+            />
+
+      </TableRow>
+
+      <TableRow>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_xsmall"
+            android:layout_marginEnd="@dimen/margin_xsmall"
+            android:text="@string/portfolio_header_cash_value"
+            android:gravity="end"
+            android:textColor="@color/portfolio_header_text_color"
+            style="@style/TH.Caption.Portfolio"/>
+
+        <TextView
+            android:id="@+id/header_portfolio_cash_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TH.Subhead"
+            android:textColor="@color/portfolio_header_text_color"
+            android:gravity="center"
+            tools:text="US$ 8,695"
+            />
+
+      </TableRow>
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/roi_value"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/TH.Headline"
+        tools:textColor="@color/number_green"
+        android:gravity="center_vertical|end"
+        android:textStyle="bold"
+        android:lines="1"
+        android:maxLines="1"
+        android:ellipsize="middle"
+        tools:text="+12.5%"
+        />
+
+  </LinearLayout>
+
+  <TextView
+      android:id="@+id/last_updated_date"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/margin_xsmall"
+      android:gravity="center"
+      tools:text="Last Updated: 8 Jun 2015 12:14"
+      android:ellipsize="start"
+      style="@style/TH.Caption"
+      />
+
+</com.tradehero.th.fragments.portfolio.header.LivePortfolioHeaderView>

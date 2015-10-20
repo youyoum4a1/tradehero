@@ -40,6 +40,11 @@ public class PortfolioHeaderFactory
         throw new IllegalArgumentException("Unhandled getPositionDTOKey type " + getPositionsDTOKey.getClass());
     }
 
+    @LayoutRes public static int layoutIdForLive()
+    {
+        return R.layout.live_portfolio_header_view;
+    }
+
     @DimenRes public static int layoutHeightFor(
             @LayoutRes int layoutRes)
     {
@@ -50,6 +55,8 @@ public class PortfolioHeaderFactory
             case R.layout.portfolio_header_other_user_view:
                 return R.dimen.stock_positions_header_other_height;
             case R.layout.portfolio_header_current_user_view:
+                return R.dimen.stock_positions_header_mine_height;
+            case R.layout.live_portfolio_header_view:
                 return R.dimen.stock_positions_header_mine_height;
             default:
                 throw new IllegalArgumentException("Unhandled layoutRes " + layoutRes);
