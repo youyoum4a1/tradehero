@@ -40,6 +40,7 @@ import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.UserBaseDTO;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
@@ -120,6 +121,11 @@ public class StockRecommendListAdapter extends BaseAdapter {
         } else {
             holder.userSignature.setText(autherDTO.signature);
         }
+
+        // User ROI
+        THSignedPercentage roi = THSignedPercentage.builder(autherDTO.roiSinceInception * 100).build();
+        holder.roi.setText(roi.toString());
+        holder.roi.setTextColor(context.getResources().getColor(roi.getColorResId()));
 
         // Article
         holder.articleTitle.setText(timelineItemDTO.header);

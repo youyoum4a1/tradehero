@@ -15,6 +15,7 @@ import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.StockRecommendListAdapter.ViewHolder;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
+import com.tradehero.th.models.number.THSignedPercentage;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -60,6 +61,11 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
             } else {
                 viewHolder.userSignature.setText(timelineItemDTO.user.signature);
             }
+
+            // User ROI
+            THSignedPercentage roi = THSignedPercentage.builder(timelineItemDTO.user.roiSinceInception * 100).build();
+            viewHolder.roi.setText(roi.toString());
+            viewHolder.roi.setTextColor(getActivity().getResources().getColor(roi.getColorResId()));
 
             // Article
             viewHolder.articleTitle.setText(timelineItemDTO.header);
