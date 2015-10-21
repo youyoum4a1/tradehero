@@ -542,5 +542,7 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
         bundle.putString(DisplayLargeImageActivity.KEY_LARGE_IMAGE_URL, url);
         intent.putExtras(bundle);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_right_in,R.anim.slide_right_out);
     }
+
 }

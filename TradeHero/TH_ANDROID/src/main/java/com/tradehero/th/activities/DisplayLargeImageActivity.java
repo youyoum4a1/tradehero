@@ -40,6 +40,12 @@ public class DisplayLargeImageActivity extends Activity implements ImageLoadingL
         downloadImage();
     }
 
+    @Override
+    public void onBackPressed() {
+        overridePendingTransition(R.anim.slide_left_in,R.anim.slide_left_out);
+        finish();
+    }
+
     private void downloadImage(){
         ImageLoader.getInstance().displayImage(imageUrl, displayView, UniversalImageLoader.getDisplayLargeImageOptions(),this);
     }
