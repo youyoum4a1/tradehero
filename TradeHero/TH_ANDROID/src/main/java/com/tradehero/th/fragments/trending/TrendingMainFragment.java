@@ -20,6 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -49,6 +50,8 @@ import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
 import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
 import com.tradehero.th.persistence.market.ExchangeMarketPreference;
+import com.tradehero.th.persistence.prefs.IsLiveLogIn;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
@@ -115,8 +118,14 @@ public class TrendingMainFragment extends DashboardFragment
     private final BehaviorSubject<ExchangeCompactSpinnerDTO> exchangeSpinnerDTOSubject = BehaviorSubject.create();
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
     private Spinner assetTypeSpinner;
+    private TextView liveTitleTextView;
     private LollipopArrayAdapter<TrendingAssetType> assetTypeAdapter;
     private LollipopArrayAdapter<TrendingStockSortType> sortByAdapter;
+
+    // TODO: Dummy attribute, pending server
+    @Inject @IsLiveLogIn BooleanPreference isLiveLogIn;
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
+    private String actionBarTitle = "";
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -230,6 +239,15 @@ public class TrendingMainFragment extends DashboardFragment
         setupSortBy();
         initViews();
         analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
+
+        if (isLiveTrading.get())
+        {
+            handleIsLive();
+        }
+        else
+        {
+            handleIsVirtual();
+        }
     }
 
     private void initViews()
@@ -286,8 +304,21 @@ public class TrendingMainFragment extends DashboardFragment
         super.onLiveTradingChanged(event);
         if (event.isOn && event.isFromUser)
         {
-            trendingLiveFragmentUtil.launchPrompt();
+            if (!isLiveLogIn.get())
+            {
+                trendingLiveFragmentUtil.launchPrompt();
+            }
+            else
+            {
+                handleIsLive();
+            }
         }
+        else if (!event.isOn && event.isFromUser)
+        {
+            handleIsVirtual();
+        }
+
+        liveTitleTextView.setText(actionBarTitle);
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -340,7 +371,7 @@ public class TrendingMainFragment extends DashboardFragment
         {
             View view = LayoutInflater.from(actionBarOwnerMixin.getActionBar().getThemedContext())
                     .inflate(R.layout.trending_custom_actionbar, toolbar, false);
-            setActionBarTitle("");
+            setActionBarTitle(actionBarTitle);
             setupStockFxSwitcher(view);
 
             actionBarOwnerMixin.setCustomView(view);
@@ -448,6 +479,15 @@ public class TrendingMainFragment extends DashboardFragment
                                 }));
                     }
                 }, new TimberOnErrorAction1("Error on dropdown of asset type")));
+
+        liveTitleTextView = (TextView) view.findViewById(R.id.live_title);
+        liveTitleTextView.setText(actionBarTitle);
+        assetTypeSpinner.setVisibility(View.VISIBLE);
+
+        if (isLiveTrading.get())
+        {
+            assetTypeSpinner.setVisibility(View.GONE);
+        }
     }
 
     private void setupExchangeSpinner()
@@ -694,5 +734,24 @@ public class TrendingMainFragment extends DashboardFragment
     public BaseLiveFragmentUtil getTrendingLiveFragmentUtil()
     {
         return trendingLiveFragmentUtil;
+    }
+
+    private void handleIsLive()
+    {
+        if (assetTypeSpinner != null)
+        {
+            assetTypeSpinner.setVisibility(View.GONE);
+        }
+        actionBarTitle = "CFD";
+        getActivity().invalidateOptionsMenu();
+    }
+
+    private void handleIsVirtual()
+    {
+        if (assetTypeSpinner != null)
+        {
+            assetTypeSpinner.setVisibility(View.VISIBLE);
+        }
+        actionBarTitle = "";
     }
 }

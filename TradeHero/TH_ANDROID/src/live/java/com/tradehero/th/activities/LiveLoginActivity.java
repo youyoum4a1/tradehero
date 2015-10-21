@@ -17,6 +17,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.live.ayondo.AyondoLiveLoginFormDTO;
 import com.tradehero.th.api.live.ayondo.AyondoUserProfileDTO;
@@ -85,7 +86,7 @@ public class LiveLoginActivity extends BaseActivity
     {
         AyondoLiveLoginFormDTO liveLoginFormDTO = new AyondoLiveLoginFormDTO(liveId.getText().toString(), livePassword.getText().toString());
 
-        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(livePassword.getWindowToken(), 0);
 
         isDisabledTouchEvent = true;
@@ -101,13 +102,16 @@ public class LiveLoginActivity extends BaseActivity
                     {
                         isDisabledTouchEvent = false;
                         progressBar.setVisibility(View.GONE);
-                        Timber.d(ayondoUserProfileDTO.toString());
 
                         if (ayondoUserProfileDTO != null)
                         {
                             setResult(RESULT_OK);
                             isLiveLogIn.set(true);
                             finish();
+                        }
+                        else
+                        {
+                            THToast.show("Account Id or Password is incorrect.");
                         }
                     }
                 }, new TimberAndToastOnErrorAction1("Account Id or Password is incorrect.", "Account Id or Password is incorrect."));

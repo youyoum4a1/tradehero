@@ -179,9 +179,9 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
     {
         // DUMMY
         // TODO: send to server validate, pending server
-        if (loginFormDTO.accountId.equals("LH93512762") && loginFormDTO.password.equals("abc123"))
+        if (loginFormDTO.accountId.equals("TH1234") && loginFormDTO.password.equals("abc123"))
         {
-            AyondoUserProfileDTO ayondoUserProfileDTO = new AyondoUserProfileDTO("LH93512762", "lihao@tradehero.mobi");
+            AyondoUserProfileDTO ayondoUserProfileDTO = new AyondoUserProfileDTO("TH1234", "lihao@tradehero.mobi");
             return Observable.just(ayondoUserProfileDTO);
         }
 
