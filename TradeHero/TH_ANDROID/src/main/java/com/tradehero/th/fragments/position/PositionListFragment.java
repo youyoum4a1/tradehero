@@ -1090,11 +1090,9 @@ public class PositionListFragment
                 }
             }
 
-            // TODO: one of the getString for PositionSectionHeaderDisplayDTO is blocked by proguard, need further checking to fix it.
-
             if (hasPending)
             {
-                this.viewDTOs.add(new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.PENDING,
+                this.viewDTOs.add(new PositionSectionHeaderDisplayDTO(PositionStatus.PENDING,
                         getString(R.string.position_list_header_pending),
                         PositionSectionHeaderDisplayDTO.Type.PENDING));
             }
@@ -1102,13 +1100,13 @@ public class PositionListFragment
             if (hasLong)
             {
                 this.viewDTOs.add(
-                        new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.LONG, getString(R.string.position_list_header_open_long),
+                        new PositionSectionHeaderDisplayDTO(PositionStatus.LONG, getString(R.string.position_list_header_open_long),
                                 PositionSectionHeaderDisplayDTO.Type.LONG));
             }
 
             if (hasShort)
             {
-                this.viewDTOs.add(new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.SHORT,
+                this.viewDTOs.add(new PositionSectionHeaderDisplayDTO(PositionStatus.SHORT,
                         getString(R.string.position_list_header_open_short),
                         PositionSectionHeaderDisplayDTO.Type.SHORT));
             }
@@ -1116,7 +1114,7 @@ public class PositionListFragment
             if (hasClosed)
             {
                 this.viewDTOs.add(
-                        new PositionSectionHeaderDisplayDTO(getResources(), PositionStatus.CLOSED, getString(R.string.position_list_header_closed),
+                        new PositionSectionHeaderDisplayDTO(PositionStatus.CLOSED, getString(R.string.position_list_header_closed),
                                 PositionSectionHeaderDisplayDTO.Type.CLOSED));
             }
         }
