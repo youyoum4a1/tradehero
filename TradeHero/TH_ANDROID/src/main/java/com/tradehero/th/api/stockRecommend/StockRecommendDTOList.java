@@ -1,11 +1,9 @@
 package com.tradehero.th.api.stockRecommend;
 
-import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.api.trade.TradeDTO;
 import com.tradehero.th.api.users.UserBaseDTO;
-
 import java.util.Collections;
 import java.util.List;
 

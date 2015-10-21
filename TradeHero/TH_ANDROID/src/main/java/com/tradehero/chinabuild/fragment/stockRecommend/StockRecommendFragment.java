@@ -3,68 +3,102 @@ package com.tradehero.chinabuild.fragment.stockRecommend;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.makeramen.RoundedImageView;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.DaggerUtils;
-import com.tradehero.th.widget.MarkdownTextView;
-
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
+import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
+import com.tradehero.chinabuild.listview.SecurityListView;
+import com.tradehero.th.R;
+import com.tradehero.th.adapters.StockRecommendListAdapter;
+import com.tradehero.th.api.stockRecommend.StockRecommendDTOList;
+import com.tradehero.th.api.users.CurrentUserId;
+import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.network.service.UserTimelineServiceWrapper;
+import dagger.Lazy;
+import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class StockRecommendFragment extends DashboardFragment {
-
-    @InjectView(R.id.userIcon)
-    RoundedImageView userIcon;
-    @InjectView(R.id.roi)
-    TextView roi;
-    @InjectView(R.id.userSignature)
-    TextView userSignature;
-    @InjectView(R.id.userName)
-    TextView userName;
-    @InjectView(R.id.articleTitle)
-    MarkdownTextView articleTitle;
-    @InjectView(R.id.articleContent)
-    MarkdownTextView articleContent;
-    @InjectView(R.id.attachmentImage)
-    ImageView attachmentImage;
-    @InjectView(R.id.btnTLPraise)
-    TextView btnTLPraise;
-    @InjectView(R.id.numberRead)
-    TextView numberRead;
-    @InjectView(R.id.buttonRead)
-    LinearLayout buttonRead;
-    @InjectView(R.id.btnTLPraiseDown)
-    TextView btnTLPraiseDown;
-    @InjectView(R.id.numberPraised)
-    TextView numberPraised;
-    @InjectView(R.id.buttonPraised)
-    LinearLayout buttonPraised;
-    @InjectView(R.id.numberComment)
-    TextView numberComment;
-    @InjectView(R.id.buttonComment)
-    LinearLayout buttonComment;
+    private ProgressBar mProgress;
+    private SecurityListView mListView;
+    private StockRecommendListAdapter stockRecommendListAdapter;
+    @Inject
+    Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
+    @Inject
+    CurrentUserId currentUserId;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_stock_recommend_content, container, false);
+        View view = inflater.inflate(R.layout.fragment_stock_recommend, container, false);
         ButterKnife.inject(this, view);
 
-        articleTitle.setText("我推荐[$SHA:600086](tradehero://security/57961_SHA_600086) ");
-        articleContent.setText("[$SHA:600086](tradehero://security/57961_SHA_600086) ");
-
+        initView(view);
+        fetchStockRecommendList(-1);
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        setHeadViewMiddleMain(getString(R.string.stock_recommend));
+    }
+
+    private void initView(View view) {
+        mProgress = (ProgressBar) view.findViewById(R.id.progress);
+        mListView = (SecurityListView) view.findViewById(R.id.list);
+        if (stockRecommendListAdapter == null) {
+            stockRecommendListAdapter = new StockRecommendListAdapter(getActivity());
+        }
+        mListView.setAdapter(stockRecommendListAdapter);
+        mListView.setMode(PullToRefreshBase.Mode.BOTH);
+        mListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                // Nothing.
+                fetchStockRecommendList(-1);
+            }
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                // Nothing.
+//                fetchMore();
+            }
+        });
+    }
+
+    private void fetchMore() {
+//        fetchStockRecommendList(stockRecommendListAdapter.getItem(stockRecommendListAdapter.getCount()));
+    }
+
+    private void fetchStockRecommendList(Integer maxId) {//maxId=-1 for default init page
+        timelineServiceWrapper.get().getTimelineStockRecommend(currentUserId.toUserBaseKey(), 10, maxId, -1, new Callback<StockRecommendDTOList>() {
+            @Override
+            public void success(StockRecommendDTOList stockRecommendDTOList, Response response) {
+                stockRecommendListAdapter.setItems(stockRecommendDTOList);
+                stockRecommendListAdapter.notifyDataSetChanged();
+                finish();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                finish();
+            }
+
+            private void finish() {
+                mProgress.setVisibility(View.INVISIBLE);
+                mListView.onRefreshComplete();
+            }
+        });
     }
 
     @Override
@@ -73,13 +107,4 @@ public class StockRecommendFragment extends DashboardFragment {
         ButterKnife.reset(this);
     }
 
-    @OnClick(R.id.userClickableArea)
-    public void openUserProfile(View view) {
-        // Goto user homepage
-    }
-
-    @OnClick(R.id.userPositionClickableArea)
-    public void openUserPosition(View view) {
-        // Goto user position page
-    }
 }

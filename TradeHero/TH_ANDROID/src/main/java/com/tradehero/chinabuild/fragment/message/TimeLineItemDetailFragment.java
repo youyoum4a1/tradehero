@@ -154,24 +154,24 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     @Inject Lazy<AdministratorManageTimelineServiceWrapper> administratorManageTimelineServiceWrapper;
 
-    private LinearLayout llDisscurssOrNews;
-    private ImageView imgSecurityTLUserHeader;
-    private TextView tvUserTLTimeStamp;
-    private TextView tvUserTLContent;
-    private TextView tvUserTLName;
+    protected LinearLayout llDisscurssOrNews;
+    protected ImageView imgSecurityTLUserHeader;
+    protected TextView tvUserTLTimeStamp;
+    protected TextView tvUserTLContent;
+    protected TextView tvUserTLName;
     private LinearLayout llTLPraise;
     private LinearLayout llTLPraiseDown;
     private LinearLayout llTLComment;
     private TextView tvTLPraise;
     private TextView tvTLPraiseDown;
     private TextView tvTLComment;
-    private TextView btnTLPraise;
+    protected TextView btnTLPraise;
     private TextView btnTLPraiseDown;
 
-    private LinearLayout mRefreshView;
-    private TextView tvIsReward;
-    private TextView tvIsEssential;
-    private TextView tvUserTVTitle;
+    protected LinearLayout mRefreshView;
+    protected TextView tvIsReward;
+    protected TextView tvIsEssential;
+    protected TextView tvUserTVTitle;
 
     private String strReply = "";
 
@@ -261,7 +261,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         ButterKnife.inject(this, view);
         setNeedToMonitorBackPressed(true);
         ListView lv = listTimeLine.getRefreshableView();
-        mRefreshView = (LinearLayout) inflater.inflate(R.layout.security_time_line_item_plus, null);
+        mRefreshView = getHeaderView(inflater);
         lv.addHeaderView(mRefreshView);
         initRoot(mRefreshView);
 
@@ -288,13 +288,24 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                 }
                 int currentPosition = absListView.getFirstVisiblePosition();
                 if (currentPosition > 1) {
-                    timelineOperaterLL.setVisibility(View.VISIBLE);
+                    setTimelineOperaterLLVisibility(View.VISIBLE);
                 } else {
-                    timelineOperaterLL.setVisibility(View.GONE);
+                    setTimelineOperaterLLVisibility(View.GONE);
                 }
             }
         });
         return view;
+    }
+
+    protected void setTimelineOperaterLLVisibility(int visible) {
+        if (timelineOperaterLL == null) {
+            return;
+        }
+        timelineOperaterLL.setVisibility(visible);
+    }
+
+    public LinearLayout getHeaderView(LayoutInflater inflater) {
+        return (LinearLayout) inflater.inflate(R.layout.security_time_line_item_plus, null);
     }
 
     public void initRoot(View view) {
@@ -309,8 +320,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         tvTLPraise = (TextView) view.findViewById(R.id.tvTLPraise);
         tvTLPraiseDown = (TextView) view.findViewById(R.id.tvTLPraiseDown);
         tvTLComment = (TextView) view.findViewById(R.id.tvTLComment);
-        btnTLPraise = (TextView) view.findViewById(R.id.btnTLPraise);
-        btnTLPraiseDown = (TextView) view.findViewById(R.id.btnTLPraiseDown);
+        btnTLPraise = (TextView) view.findViewById(R.id.btnTLViewCount);
+        btnTLPraiseDown = (TextView) view.findViewById(R.id.btnTLPraise);
         tvUserTLName.setOnClickListener(this);
         imgSecurityTLUserHeader.setOnClickListener(this);
         llTLPraise.setOnClickListener(this);
@@ -379,18 +390,21 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         tvIsReward = (TextView) mRefreshView.findViewById(R.id.tvIsReward);
         tvIsEssential = (TextView) mRefreshView.findViewById(R.id.tvIsEssential);
         tvUserTVTitle = (TextView) mRefreshView.findViewById(R.id.tvUserTVTitle);
-        if (!TextUtils.isEmpty(getHeader())) {
-            tvUserTVTitle.setVisibility(View.VISIBLE);
-            tvUserTVTitle.setText(getHeader());
-        } else {
-            tvUserTVTitle.setVisibility(View.GONE);
+        if (tvUserTVTitle != null) {
+            if (!TextUtils.isEmpty(getHeader())) {
+                tvUserTVTitle.setVisibility(View.VISIBLE);
+                tvUserTVTitle.setText(getHeader());
+            } else {
+                tvUserTVTitle.setVisibility(View.GONE);
+            }
         }
-        if (isRewardTimeLine() && !TextUtils.isEmpty(getRewardCount())) {
+
+        if (tvIsReward != null && isRewardTimeLine() && !TextUtils.isEmpty(getRewardCount())) {
             tvIsReward.setVisibility(View.VISIBLE);
             tvIsReward.setText(getRewardCount());
         }
 
-        if(isEssentialTimeLine()){
+        if(tvIsEssential != null && isEssentialTimeLine()){
             tvIsEssential.setVisibility(View.VISIBLE);
         }
     }

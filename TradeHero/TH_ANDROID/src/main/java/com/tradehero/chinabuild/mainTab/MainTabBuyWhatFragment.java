@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.buyWhat.FollowBuyFragment;
@@ -29,14 +29,10 @@ import com.tradehero.th.R;
 import com.tradehero.th.adapters.StockRecommendListAdapter;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
 import com.tradehero.th.api.stockRecommend.StockRecommendDTOList;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.viewpagerindicator.CirclePageIndicator;
@@ -44,7 +40,6 @@ import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
-import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -55,6 +50,7 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
     private ImageView mFollowChanceBtn;
     private ImageView mHotStockBtn;
     private ImageView mWinRateBtn;
+    private TextView mMoreButton;
     private SecurityListView mListView;
     private StockRecommendListAdapter stockRecommendListAdapter;
     private int currentPage = 0;
@@ -68,13 +64,14 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
     protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
     @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
     @Inject CurrentUserId currentUserId;
-    private List<View> views = new ArrayList();
+    private List<View> views;
+//    private List<View> views = new ArrayList();
 //    private Timer timer;
 //    public static boolean SHOW_ADVERTISEMENT = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.main_tab_fragment_stockgod_new_layout, container, false);
+        View view = inflater.inflate(R.layout.main_tab_fragment_buy_what_new_layout, container, false);
         View listHeader = inflater.inflate(R.layout.main_tab_fragment_stockgod_top_layout, null, false);
         initView(view, listHeader);
         fetchStockRecommendList();
@@ -115,11 +112,13 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         mNewSuggestBtn.setOnClickListener(this);
         mFollowChanceBtn = (ImageView) header.findViewById(R.id.follow_chance_icon);
         mFollowChanceBtn.setOnClickListener(this);
-        mHotStockBtn = (ImageView) header.findViewById(R.id.hot_stock_icon);
+        mHotStockBtn = (ImageView) header.findViewById(R.id.stock_recommend);
         mHotStockBtn.setOnClickListener(this);
         mWinRateBtn = (ImageView) header.findViewById(R.id.win_rate_icon);
         mWinRateBtn.setOnClickListener(this);
         mProgress = (ProgressBar) view.findViewById(R.id.progress);
+        mMoreButton = (TextView) header.findViewById(R.id.showAllStockRecommend);
+        mMoreButton.setOnClickListener(this);
 
         mListView = (SecurityListView) view.findViewById(R.id.list);
         if (stockRecommendListAdapter == null) {
@@ -128,17 +127,6 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         mListView.setAdapter(stockRecommendListAdapter);
         mListView.getRefreshableView().addHeaderView(header);
         mListView.setMode(PullToRefreshBase.Mode.DISABLED);
-        mListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
-            @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
-                // Nothing.
-            }
-
-            @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
-                // Nothing.
-            }
-        });
     }
 
     @Override
@@ -153,7 +141,8 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
             case R.id.follow_chance_icon:
                 gotoDashboard(FollowBuyFragment.class.getName());
                 break;
-            case R.id.hot_stock_icon:
+            case R.id.stock_recommend:
+            case R.id.showAllStockRecommend:
                 gotoDashboard(StockRecommendFragment.class.getName());
                 break;
             case R.id.win_rate_icon:
@@ -187,6 +176,13 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
 //        });
 //        mAdLayout.startAnimation(animation);
 //    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchStockRecommendList();
+    }
 
     @Override
     public void onPause() {

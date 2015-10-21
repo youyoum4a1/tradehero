@@ -18,6 +18,7 @@ import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.common.text.OnElementClickListener;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.th.activities.ActivityHelper;
+import com.tradehero.th.activities.TradeHeroMainActivity;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.base.DashboardNavigatorActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
@@ -179,19 +180,11 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
 
     private void enterFragment(Class fragmentClass, Bundle args)
     {
-        if (getNavigator() != null)
-        {
-            getNavigator().pushFragment(fragmentClass, args);
+        if (getContext() instanceof DashboardNavigatorActivity) {
+            ((DashboardNavigatorActivity) getContext()).getDashboardNavigator().pushFragment(fragmentClass, args);
+        } else if (getContext() instanceof TradeHeroMainActivity) {
+            args.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, fragmentClass.getName());
+            ActivityHelper.launchDashboard((TradeHeroMainActivity) getContext(), args);
         }
-        else
-        {
-            gotoDashboard(fragmentClass.getName(), args);
-        }
-    }
-
-    public void gotoDashboard(String strFragment, Bundle bundle)
-    {
-        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, strFragment);
-        ActivityHelper.launchDashboard((Activity) getContext(), bundle);
     }
 }

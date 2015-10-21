@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/llItemAll">
 
     <RelativeLayout
         android:id="@+id/userClickableArea"
@@ -15,62 +17,64 @@
             android:id="@+id/userIcon"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            app:corner_radius="24dp"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
-            android:layout_centerVertical="true"/>
+            app:corner_radius="24dp"/>
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@id/userIcon"
-            android:layout_centerVertical="true">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/userName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="3dp"
-                android:textSize="14sp"
+                android:text="Name"
                 android:textColor="@color/black"
-                android:textStyle="bold"
-                android:text="Name"/>
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+
             <TextView
                 android:id="@+id/userSignature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
+                android:text="I am a stock expert."
                 android:textColor="#828282"
-                android:text="I am a stock expert."/>
+                android:textSize="13sp"/>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/userPositionClickableArea"
-            android:orientation="vertical"
             android:layout_width="100dp"
             android:layout_height="48dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:gravity="center">
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/roi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="3dp"
                 android:layout_gravity="center"
-                android:textSize="15sp"
+                android:layout_marginBottom="3dp"
+                android:text="100%"
                 android:textColor="#d52625"
-                android:textStyle="bold"
-                android:text="100%"/>
+                android:textSize="15sp"
+                android:textStyle="bold"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textSize="14sp"
+                android:text="总收益率"
                 android:textColor="#828282"
-                android:text="总收益率"/>
+                android:textSize="14sp"/>
         </LinearLayout>
 
     </RelativeLayout>
@@ -78,9 +82,9 @@
     <View
         android:layout_width="wrap_content"
         android:layout_height="1px"
+        android:layout_marginBottom="5dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:background="#cecece"/>
 
@@ -97,111 +101,118 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:textColorLink="@color/timeline_item_link"
+            android:text="title"
             android:textColor="@color/black"
+            android:textColorLink="@color/timeline_item_link"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:text="title" />
+            android:textStyle="bold"/>
 
         <com.tradehero.th.widget.MarkdownTextView
             android:id="@+id/articleContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
-            android:textColorLink="@color/timeline_item_link"
+            android:text="content"
             android:textColor="#282828"
-            android:textSize="16sp"
-            android:text="content" />
+            android:textColorLink="@color/timeline_item_link"
+            android:textSize="16sp"/>
 
         <TextView
             android:id="@+id/createTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:textSize="12sp"
+            android:text="3分钟前"
             android:textColor="#828282"
-            android:text="3分钟前"/>
+            android:textSize="12sp"/>
     </LinearLayout>
 
     <ImageView
         android:id="@+id/attachmentImage"
         android:layout_width="fill_parent"
         android:layout_height="149dp"
-        android:layout_gravity="center"
-        android:src="@drawable/stock_learning_question_result_success" />
+        android:layout_gravity="center" />
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:layout_width="fill_parent"
-        android:layout_height="36dp">
+        android:layout_height="36dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
         <LinearLayout
-            android:layout_weight="1"
             android:id="@+id/buttonRead"
-            android:gravity="center"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <TextView android:id="@+id/btnTLPraise"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:duplicateParentState="true"
-                android:background="@drawable/icon_praise_normal"/>
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/btnTLViewCount"
+                android:layout_width="18dp"
+                android:layout_height="10dp"
+                android:background="@drawable/eye" />
+
             <TextView
                 android:id="@+id/numberRead"
-                android:layout_marginLeft="3dp"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textSize="11sp"
-                android:duplicateParentState="true"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="3dp"
+                android:duplicateParentState="true"
+                android:text="100"
                 android:textColor="#929292"
-                android:text="赞"/>
+                android:textSize="11sp"/>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
-            android:gravity="center"
             android:id="@+id/buttonPraised"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <TextView android:id="@+id/btnTLPraiseDown"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/btnTLPraise"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:duplicateParentState="true"
-                android:background="@drawable/icon_praise_down_normal"/>
+                android:background="@drawable/like"
+                android:duplicateParentState="true"/>
+
             <TextView
                 android:id="@+id/numberPraised"
-                android:layout_marginLeft="3dp"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textSize="11sp"
-                android:duplicateParentState="true"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="3dp"
+                android:duplicateParentState="true"
+                android:text="100"
                 android:textColor="#929292"
-                android:text="踩"/>
+                android:textSize="11sp"/>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
-            android:gravity="center"
             android:id="@+id/buttonComment"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center">
+
             <TextView
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:duplicateParentState="true"
-                android:background="@drawable/icon_comment_xml"/>
+                android:background="@drawable/comments"
+                android:duplicateParentState="true"/>
+
             <TextView
                 android:id="@+id/numberComment"
-                android:layout_marginLeft="3dp"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textSize="11sp"
-                android:duplicateParentState="true"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="3dp"
+                android:duplicateParentState="true"
+                android:text="0"
                 android:textColor="#929292"
-                android:text="0"/>
+                android:textSize="11sp"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -209,9 +220,9 @@
         android:id="@+id/itemSeparator"
         android:layout_width="wrap_content"
         android:layout_height="22px"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:background="#f0f0f0"/>
+        <!--android:layout_marginLeft="15dp"-->
+        <!--android:layout_marginRight="15dp"-->
 </LinearLayout>

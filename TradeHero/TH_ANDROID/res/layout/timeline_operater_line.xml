@@ -22,7 +22,7 @@
         android:gravity="center"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-      <TextView android:id="@+id/btnTLPraise"
+      <TextView android:id="@+id/btnTLViewCount"
           android:layout_width="15dp"
           android:layout_height="15dp"
           android:duplicateParentState="true"
@@ -52,7 +52,7 @@
         android:id="@+id/llTLPraiseDown"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-      <TextView android:id="@+id/btnTLPraiseDown"
+      <TextView android:id="@+id/btnTLPraise"
           android:layout_width="15dp"
           android:layout_height="15dp"
           android:duplicateParentState="true"
