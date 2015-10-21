@@ -3,12 +3,37 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/stock_positions_header_mine_height"
+    android:layout_height="@dimen/live_stock_positions_header_height"
     android:orientation="vertical"
     style="@style/TH.ListItem"
     android:gravity="center_vertical"
     android:background="@color/portfolio_header_background_color"
     >
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_margin="@dimen/size_1"
+      >
+
+    <ImageView
+        android:layout_width="@dimen/size_15"
+        android:layout_height="@dimen/size_6"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ayondo_logo"
+        tools:ignore="contentDescription"
+        />
+
+    <ImageButton
+        android:layout_width="@dimen/button_height_small"
+        android:layout_height="@dimen/button_height_small"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        tools:ignore="contentDescription"
+        />
+
+  </RelativeLayout>
 
   <LinearLayout
       android:layout_width="match_parent"
@@ -70,6 +95,31 @@
 
       </TableRow>
 
+      <TableRow>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_xsmall"
+            android:layout_marginEnd="@dimen/margin_xsmall"
+            android:text="@string/portfolio_header_margin_value"
+            android:gravity="end"
+            android:textColor="@color/portfolio_header_text_color"
+            style="@style/TH.Caption.Portfolio"/>
+
+        <TextView
+            android:id="@+id/header_portfolio_margin_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TH.Subhead"
+            android:textColor="@color/portfolio_header_text_color"
+            android:gravity="center"
+            android:text="US$ 8,695"
+            tools:text="US$ 8,695"
+            />
+
+      </TableRow>
+
     </TableLayout>
 
     <TextView
@@ -93,6 +143,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/margin_xsmall"
+      android:layout_marginBottom="@dimen/margin_small"
       android:gravity="center"
       tools:text="Last Updated: 8 Jun 2015 12:14"
       android:ellipsize="start"

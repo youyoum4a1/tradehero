@@ -88,8 +88,6 @@ public class PortfolioMainFragment extends DashboardFragment
         {
             handleIsVirtual();
         }
-
-        THToast.show(isLiveTrading.get().toString());
     }
 
     @Override public boolean shouldShowLiveTradingToggle()

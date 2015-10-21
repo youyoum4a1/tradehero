@@ -128,4 +128,5 @@
   <dimen name="fx_positions_header_height">129dp</dimen>
   <dimen name="stock_positions_header_mine_height">84dp</dimen>
   <dimen name="stock_positions_header_other_height">87dp</dimen>
+  <dimen name="live_stock_positions_header_height">186dp</dimen>
 </resources>
