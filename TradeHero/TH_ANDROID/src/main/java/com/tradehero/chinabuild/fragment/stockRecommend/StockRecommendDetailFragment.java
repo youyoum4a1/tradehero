@@ -1,5 +1,6 @@
 package com.tradehero.chinabuild.fragment.stockRecommend;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,6 +14,7 @@ import com.tradehero.chinabuild.fragment.portfolio.PortfolioFragment;
 import com.tradehero.chinabuild.fragment.userCenter.UserMainPage;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.DisplayLargeImageActivity;
 import com.tradehero.th.adapters.StockRecommendListAdapter.ViewHolder;
 import com.tradehero.th.api.timeline.TimelineItemDTO;
 import com.tradehero.th.models.number.THSignedPercentage;
@@ -115,6 +117,16 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
                 @Override
                 public void onClick(View v) {
                     comments(getAbstractDiscussionCompactDTO());
+                }
+            });
+            viewHolder.attachmentImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), DisplayLargeImageActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(DisplayLargeImageActivity.KEY_LARGE_IMAGE_URL, timelineItemDTO.picUrl);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
             });
         }
