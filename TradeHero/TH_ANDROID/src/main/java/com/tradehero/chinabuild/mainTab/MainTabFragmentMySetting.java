@@ -222,8 +222,12 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
         }
 
         if (user != null) {
-            if (user.picture != null && imgMeHead != null) {
-                ImageLoader.getInstance().displayImage(user.picture, imgMeHead, UniversalImageLoader.getAvatarImageLoaderOptions());
+            if (imgMeHead != null) {
+                if (user.picture != null) {
+                    ImageLoader.getInstance().displayImage(user.picture, imgMeHead, UniversalImageLoader.getAvatarImageLoaderOptions());
+                } else {
+                    imgMeHead.setImageResource(R.drawable.avatar_default);
+                }
             }
             final String avatarUrl;
             if(user != null){
@@ -542,7 +546,7 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
         bundle.putString(DisplayLargeImageActivity.KEY_LARGE_IMAGE_URL, url);
         intent.putExtras(bundle);
         startActivity(intent);
-        overridePendingTransition(R.anim.slide_right_in,R.anim.slide_right_out);
+        getActivity().overridePendingTransition(R.anim.slide_right_in,R.anim.slide_right_out);
     }
 
 }
