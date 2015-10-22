@@ -59,7 +59,14 @@
         android:screenOrientation="portrait"
         />
 
+    <activity android:name="com.tradehero.th.activities.LiveAccountSettingActivity"
+        android:label="@string/title_activity_live_account_setting"
+        android:theme="@style/TradeHero.Live"
+        />
+
   </application>
 
 </manifest>
+
+
 

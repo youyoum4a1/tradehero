@@ -11,6 +11,7 @@ import dagger.Module;
                 CallToActionActivity.class,
                 ConnectAccountActivity.class,
                 LiveLoginActivity.class,
+                LiveAccountSettingActivity.class
         },
         complete = false,
         library = true

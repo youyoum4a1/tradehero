@@ -1,6 +1,7 @@
 package com.tradehero.th.fragments.position;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,7 +29,9 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ConnectAccountActivity;
 import com.tradehero.th.activities.HelpActivity;
+import com.tradehero.th.activities.LiveAccountSettingActivity;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.competition.ProviderId;
@@ -57,6 +60,7 @@ import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.fragments.portfolio.header.LivePortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
 import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
@@ -127,6 +131,7 @@ public class PositionListFragment
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             PositionListFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
+    public static final int CODE_PROMPT = 1;
     private static final int FLIPPER_INDEX_LOADING = 0;
     private static final int FLIPPER_INDEX_LIST = 1;
     private static final int FLIPPER_INDEX_ERROR = 2;
@@ -973,6 +978,17 @@ public class PositionListFragment
 
         portfolioHeaderView.linkWith(userProfileDTO);
         portfolioHeaderView.linkWith(portfolioCompactDTO);
+
+        if (portfolioHeaderView instanceof LivePortfolioHeaderView)
+        {
+            ((LivePortfolioHeaderView)portfolioHeaderView).settingBtn.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View v)
+                {
+                    startActivityForResult(new Intent(getActivity(), LiveAccountSettingActivity.class), CODE_PROMPT);
+                }
+            });
+        }
     }
 
     @NonNull protected Observable<List<Object>> getPositionsObservable()

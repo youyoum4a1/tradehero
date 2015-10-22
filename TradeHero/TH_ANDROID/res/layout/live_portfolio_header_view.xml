@@ -25,11 +25,15 @@
         />
 
     <ImageButton
-        android:layout_width="@dimen/button_height_small"
-        android:layout_height="@dimen/button_height_small"
+        android:id="@+id/live_setting"
+        android:layout_width="@dimen/size_3"
+        android:layout_height="@dimen/size_3"
+        android:scaleType="fitCenter"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
+        android:src="@drawable/ic_portfolio_settings"
+        android:background="@color/transparent"
         tools:ignore="contentDescription"
         />
 

@@ -17,6 +17,7 @@ import com.tradehero.th.activities.SignUpLiveActivity;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.fastfill.FastFillUtil;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.prefs.LiveAvailability;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.rx.TimberOnErrorAction1;
@@ -36,6 +37,7 @@ public class BaseLiveFragmentUtil
     @Inject DashboardNavigator navigator;
     @Inject FastFillUtil fastFill;
     @Inject @LiveAvailability BooleanPreference liveAvailability;
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
     @Inject LiveActivityUtil liveActivityUtil;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
 
@@ -61,7 +63,7 @@ public class BaseLiveFragmentUtil
 
     private void setUpLiveWidgetBanner(Fragment f)
     {
-        if (!liveAvailability.get())
+        if (!liveAvailability.get() || isLiveTrading.get())
         {
             liveWidget.setVisibility(View.GONE);
         }

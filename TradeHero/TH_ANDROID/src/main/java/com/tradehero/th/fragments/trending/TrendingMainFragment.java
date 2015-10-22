@@ -306,7 +306,7 @@ public class TrendingMainFragment extends DashboardFragment
         {
             if (!isLiveLogIn.get())
             {
-                trendingLiveFragmentUtil.launchPrompt();
+                trendingLiveFragmentUtil.launchLiveLogin();
             }
             else
             {

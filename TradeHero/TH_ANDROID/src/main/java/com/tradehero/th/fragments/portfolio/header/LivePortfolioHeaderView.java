@@ -4,10 +4,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.tradehero.th.R;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
@@ -24,6 +26,7 @@ public class LivePortfolioHeaderView extends LinearLayout implements PortfolioHe
     @Bind(R.id.header_portfolio_cash_value) @Nullable protected TextView cashValueTextView;
     @Bind(R.id.roi_value) @Nullable protected TextView roiTextView;
     @Bind(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
+    @Bind(R.id.live_setting) public ImageButton settingBtn;
 
     //<editor-fold desc="Constructors">
     public LivePortfolioHeaderView(Context context)

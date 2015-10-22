@@ -81,5 +81,7 @@
     <item name="android:inputType">textPostalAddress|textCapWords</item>
     <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
   </style>
+  <style name="TradeHero.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+  <style name="TradeHero.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
 </resources>

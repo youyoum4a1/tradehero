@@ -1,5 +1,6 @@
 package com.tradehero.th.fragments.live;
 
+import com.tradehero.th.activities.LiveAccountSettingActivity;
 import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.live.ayondo.FragmentAyondoModule;
 import com.tradehero.th.fragments.trade.LiveBuySellFragment;
@@ -17,7 +18,7 @@ import dagger.Module;
                 DatePickerDialogFragment.class,
                 VerifyPhoneDialogFragment.class,
                 LiveBuySellFragment.class,
-                LiveTransactionFragment.class
+                LiveTransactionFragment.class,
         },
         library = true,
         complete = false

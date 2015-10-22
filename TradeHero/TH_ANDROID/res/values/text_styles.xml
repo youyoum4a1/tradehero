@@ -268,4 +268,8 @@
     <item name="android:background">@color/transparent</item>
   </style>
 
+  <style name="TH.Setting.Button" parent="TH.Button">
+    <item name="android:background">@color/transparent</item>
+  </style>
+
 </resources>
