@@ -13,11 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import dagger.Lazy;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.fragment.message.DiscussSendFragment;
@@ -44,8 +39,12 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.widget.MarkdownTextView;
+import dagger.Lazy;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -123,6 +122,9 @@ public class StockRecommendListAdapter extends BaseAdapter {
         }
 
         // User ROI
+        if (autherDTO.roiSinceInception == null) {
+            autherDTO.roiSinceInception = 0.0;
+        }
         THSignedPercentage roi = THSignedPercentage.builder(autherDTO.roiSinceInception * 100).build();
         holder.roi.setText(roi.toString());
         holder.roi.setTextColor(context.getResources().getColor(roi.getColorResId()));

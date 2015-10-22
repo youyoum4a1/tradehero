@@ -35,6 +35,7 @@ public class StockRecommendFragment extends DashboardFragment {
     Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
     @Inject
     CurrentUserId currentUserId;
+    private int mFreshCount = 10;
 
     @Nullable
     @Override
@@ -43,7 +44,7 @@ public class StockRecommendFragment extends DashboardFragment {
         ButterKnife.inject(this, view);
 
         initView(view);
-        fetchStockRecommendList(-1);
+        fetchStockRecommendList();
         return view;
     }
 
@@ -65,23 +66,24 @@ public class StockRecommendFragment extends DashboardFragment {
             @Override
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 // Nothing.
-                fetchStockRecommendList(-1);
+                fetchStockRecommendList();
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
                 // Nothing.
-//                fetchMore();
+                fetchMore();
             }
         });
     }
 
     private void fetchMore() {
-//        fetchStockRecommendList(stockRecommendListAdapter.getItem(stockRecommendListAdapter.getCount()));
+        mFreshCount = mFreshCount + 10;
+        fetchStockRecommendList();
     }
 
-    private void fetchStockRecommendList(Integer maxId) {//maxId=-1 for default init page
-        timelineServiceWrapper.get().getTimelineStockRecommend(currentUserId.toUserBaseKey(), 10, maxId, -1, new Callback<StockRecommendDTOList>() {
+    private void fetchStockRecommendList() {//maxId=-1 for default init page
+        timelineServiceWrapper.get().getTimelineStockRecommend(currentUserId.toUserBaseKey(), mFreshCount, -1, -1, new Callback<StockRecommendDTOList>() {
             @Override
             public void success(StockRecommendDTOList stockRecommendDTOList, Response response) {
                 stockRecommendListAdapter.setItems(stockRecommendDTOList);
