@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/size_10"
+        android:orientation="vertical"
+        >
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:padding="@dimen/margin_small"
+          >
+
+        <TextView
+            android:id="@+id/live_price"
+            style="@style/TH.Headline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_xsmall"
+            android:text="141.38"/>
+
+        <TextView
+            android:id="@+id/stock_roi"
+            style="@style/TH.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/live_price"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_toEndOf="@+id/live_price"
+            android:layout_toRightOf="@+id/live_price"
+            android:textColor="@color/number_green"
+            android:text="+1.89%"/>
+
+        <TextView
+            android:id="@+id/last_update"
+            style="@style/TH.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/live_price"
+            android:text="As of 21 October 2015 0900 GMT"/>
+
+        <ImageView
+            android:id="@+id/stock_logo"
+            android:layout_width="@dimen/size_10"
+            android:layout_height="@dimen/size_4"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/stock_placeholder"
+            tools:ignore="contentDescription"
+            />
+
+      </RelativeLayout>
+
+      <!--<com.tradehero.common.widget.BetterViewAnimator-->
+      <!--android:id="@+id/chart_image_wrapper"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="wrap_content"-->
+      <!-->-->
+
+      <!--<TextView-->
+      <!--android:layout_width="wrap_content"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:layout_gravity="center"-->
+      <!--android:gravity="center"-->
+      <!--android:minHeight="@dimen/chart_loading_text_height"-->
+      <!--android:text="@string/chart_loading_image"-->
+      <!--/>-->
+
+      <!--<com.tradehero.th.fragments.security.ChartImageView-->
+      <!--android:id="@+id/chart_imageView"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:background="@drawable/basic_transparent_selector"-->
+      <!--android:contentDescription="@null"-->
+      <!--android:paddingBottom="@dimen/chart_vertical_padding"-->
+      <!--android:paddingLeft="@dimen/chart_horizontal_padding"-->
+      <!--android:paddingRight="@dimen/chart_horizontal_padding"-->
+      <!--android:paddingTop="@dimen/chart_vertical_padding"-->
+      <!--app:aspectRatioEnabled="false"-->
+      <!--app:dominantMeasurement="width"-->
+      <!--app:includeVolume="false"-->
+      <!--/>-->
+
+      <!--</com.tradehero.common.widget.BetterViewAnimator>-->
+
+      <!-- TODO: Placeholder chart-->
+      <ImageView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:src="@drawable/chart_placeholder"
+          tools:ignore="contentDescription"
+          />
+
+      <com.tradehero.th.widget.news.TimeSpanButtonSet
+          android:id="@+id/chart_time_span_button_set"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/timespan_button_min_height"
+          android:layout_marginBottom="@dimen/timespan_vertical_margin"
+          android:layout_marginLeft="@dimen/timespan_horizontal_margin"
+          android:layout_marginRight="@dimen/timespan_horizontal_margin"
+          android:layout_marginTop="@dimen/timespan_vertical_margin"
+          android:background="@drawable/trend_price_bar"
+          android:orientation="horizontal"
+          tools:visibility="visible"
+          >
+
+        <include layout="@layout/yahoo_chart_buttons_merge"/>
+
+      </com.tradehero.th.widget.news.TimeSpanButtonSet>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:baselineAligned="false">
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_small"
+            android:layout_weight="1"
+            >
+
+          <TableRow
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              >
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="High"
+                />
+
+            <TextView
+                android:id="@+id/price_high"
+                style="@style/TH.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="141.29"
+                />
+          </TableRow>
+
+          <TableRow
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              >
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Spread per unit"
+                />
+
+            <TextView
+                android:id="@+id/spread_per_unit"
+                style="@style/TH.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="0.40"
+                />
+          </TableRow>
+
+          <TableRow
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              >
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Premium buy"
+                />
+
+            <TextView
+                android:id="@+id/premium_buy"
+                style="@style/TH.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="-0.03%"
+                />
+          </TableRow>
+
+          <TableRow
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              >
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Initial margin"
+                />
+
+            <TextView
+                android:id="@+id/initial_margin"
+                style="@style/TH.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="13.10"
+                />
+          </TableRow>
+
+          <TableRow
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              >
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Leverage"
+                />
+
+            <TextView
+                android:id="@+id/leverage"
+                style="@style/TH.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="1:20"
+                />
+          </TableRow>
+
+        </TableLayout>
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_small"
+            android:layout_weight="1"
+            >
+
+          <TableRow
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              >
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Low"
+                />
+
+            <TextView
+                android:id="@+id/price_low"
+                style="@style/TH.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="139.04"
+                />
+          </TableRow>
+
+          <TableRow
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              >
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Spread%"
+                />
+
+            <TextView
+                android:id="@+id/spread_percent"
+                style="@style/TH.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="0.28%"
+                />
+          </TableRow>
+
+          <TableRow
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              >
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Premium sell"
+                />
+
+            <TextView
+                android:id="@+id/premium_sell"
+                style="@style/TH.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="0.01%"
+                />
+          </TableRow>
+
+          <TableRow
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              >
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Maintenance Margin"
+                />
+
+            <TextView
+                android:id="@+id/maintenance_margin"
+                style="@style/TH.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="13.10"
+                />
+          </TableRow>
+
+          <TableRow
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginBottom="@dimen/margin_small"
+              >
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Expires daily"
+                />
+
+            <TextView
+                android:id="@+id/expires_daily"
+                style="@style/TH.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="No"
+                />
+          </TableRow>
+
+        </TableLayout>
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+  <LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/bottom_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:layout_alignParentBottom="true"
+      android:paddingTop="@dimen/margin_xsmall"
+      android:paddingLeft="@dimen/margin_small"
+      android:paddingRight="@dimen/margin_small"
+      android:paddingBottom="@dimen/margin_small"
+      android:animateLayoutChanges="true"
+      >
+
+    <Button
+        android:id="@+id/btn_buy"
+        style="@style/TH.Btn_Buy_Sell"
+        android:layout_marginBottom="5dp"
+        android:text="Buy&#10;141.29"
+        />
+
+    <Button
+        android:id="@+id/btn_sell"
+        style="@style/TH.Btn_Buy_Sell"
+        android:layout_marginStart="@dimen/margin_xsmall"
+        android:layout_marginLeft="@dimen/margin_xsmall"
+        android:layout_marginBottom="5dp"
+        android:text="Sell&#10;141.29"
+        android:visibility="visible"
+        />
+
+  </LinearLayout>
+
+</RelativeLayout>

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import com.android.internal.util.Predicate;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
@@ -40,6 +41,7 @@ import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.tradehero.th.fragments.trade.LiveBuySellFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -47,6 +49,7 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
@@ -89,6 +92,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @NonNull private TrendingFilterTypeDTO trendingFilterTypeDTO;
     @Inject protected THBillingInteractorRx userInteractorRx;
     private Subscription exchangeSubscription;
+
+    //TODO: Dummy temporary, pending for server
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
 
     public static void putTabType(@NonNull Bundle args, @NonNull TrendingStockSortType tabType)
     {
@@ -522,7 +528,14 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
         BuySellStockFragment.putRequisite(args, requisite);
 
-        navigator.get().pushFragment(BuySellStockFragment.class, args);
+        if (isLiveTrading.get())
+        {
+            navigator.get().pushFragment(LiveBuySellFragment.class, args);
+        }
+        else
+        {
+            navigator.get().pushFragment(BuySellStockFragment.class, args);
+        }
     }
 
     @Override protected void populateArgumentForSearch(@NonNull Bundle args)

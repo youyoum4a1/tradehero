@@ -132,11 +132,12 @@
   <string name="live_subscribe_trade_notifications">Subscribe me to trade notifications</string>
 
 
-
   <string name="open_new_account">Open a new account</string>
   <string name="link_existing_account">Link an existing account</string>
   <string name="account_id">Account ID</string>
   <string name="connect">connect</string>
   <string name="connect_account">Connect an Account</string>
+
+  <string name="live_buy_btn">Buy&#10;%1$d</string>
 
 </resources>

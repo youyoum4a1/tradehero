@@ -264,4 +264,8 @@
     <item name="android:gravity">center</item>
   </style>
 
+  <style name="TH.EditText" parent="TH.Title.Accented">
+    <item name="android:background">@color/transparent</item>
+  </style>
+
 </resources>

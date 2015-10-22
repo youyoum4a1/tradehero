@@ -1,0 +1,327 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.tradehero.th.fragments.trade.LiveTransactionFragment">
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/margin_small"
+        android:paddingLeft="@dimen/margin_small"
+        android:paddingRight="@dimen/margin_small"
+        android:paddingBottom="@dimen/size_10"
+        android:orientation="vertical"
+        >
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1">
+
+        <Spinner
+            style="@style/TH.Spinner"
+            android:id="@+id/market_price_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:layout_width="240dp"/>
+
+        <TextView
+            android:id="@+id/last_update"
+            style="@style/TH.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/market_price_spinner"
+            android:layout_marginBottom="@dimen/margin_xsmall"
+            android:text="As of 21 October 2015 0900 GMT"
+            />
+
+        <TextView
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="141.38"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/last_update"
+            android:background="@android:color/darker_gray"
+            />
+
+      </RelativeLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/margin_small"
+          android:paddingBottom="@dimen/margin_small"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+        <TextView
+            style="@style/TH.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trade Size"/>
+
+        <EditText
+            android:id="@+id/trade_size"
+            android:inputType="numberSigned"
+            style="@style/TH.EditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="0.33"/>
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/margin_small"
+          android:paddingBottom="@dimen/margin_small"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+        <TextView
+            style="@style/TH.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trade Value"/>
+
+        <EditText
+            android:id="@+id/trade_value"
+            style="@style/TH.EditText"
+            android:inputType="numberSigned"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="46.63"/>
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/margin_small"
+          android:paddingBottom="@dimen/margin_xsmall"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Margin"/>
+
+        <TextView
+            android:id="@+id/margin_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="0.00"/>
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/margin_small"
+          android:paddingBottom="@dimen/margin_xsmall"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cash Available"/>
+
+        <TextView
+            android:id="@+id/cash_available"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="US$ 874"/>
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/margin_xxlarge"
+          android:paddingBottom="@dimen/margin_small"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+        <TextView
+            style="@style/TH.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Loss"/>
+
+        <EditText
+            android:id="@+id/stop_loss"
+            style="@style/TH.EditText"
+            android:inputType="numberSigned"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="131.00"/>
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/margin_small"
+          android:paddingBottom="@dimen/margin_small"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+        <TextView
+            style="@style/TH.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Take Profit"/>
+
+        <EditText
+            android:id="@+id/take_profit"
+            style="@style/TH.EditText"
+            android:inputType="numberSigned"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="150.00"/>
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          />
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:paddingTop="@dimen/margin_xxlarge"
+          android:paddingBottom="@dimen/margin_small"
+          android:gravity="center_vertical"
+          android:orientation="horizontal">
+
+        <TextView
+            style="@style/TH.Body2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Leverage"/>
+
+        <ImageButton
+            android:layout_width="@dimen/button_height_small"
+            android:layout_height="@dimen/button_height_small"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end|center_vertical"
+            >
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginEnd="@dimen/text_xxsmall"
+              android:layout_marginRight="@dimen/text_xxsmall"
+              android:text="@string/buy_sell_times_symbol"/>
+
+          <EditText
+              android:id="@+id/leverage"
+              style="@style/TH.EditText"
+              android:inputType="numberSigned"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="20"/>
+
+        </LinearLayout>
+
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:background="@android:color/darker_gray"
+          />
+
+    </LinearLayout>
+
+  </ScrollView>
+
+  <LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:id="@+id/bottom_button"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_centerHorizontal="true"
+      android:layout_alignParentBottom="true"
+      android:paddingTop="@dimen/margin_xsmall"
+      android:paddingLeft="@dimen/margin_xxxlarge"
+      android:paddingRight="@dimen/margin_xxxlarge"
+      android:paddingBottom="@dimen/margin_small"
+      android:animateLayoutChanges="true"
+      >
+
+    <Button
+        android:id="@+id/btn_place_order"
+        style="@style/TH.Btn_Buy_Sell"
+        android:layout_marginBottom="5dp"
+        android:text="Place Order"
+        />
+
+  </LinearLayout>
+
+</RelativeLayout>
+
