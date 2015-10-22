@@ -486,6 +486,8 @@
     <string name="discovery_discuss_send_report">举报</string>
     <string name="discovery_discuss_send_delete">删帖</string>
     <string name="discovery_discuss_send_share">分享</string>
+    <string name="discovery_discuss_send_share_wechat">分享到微信</string>
+    <string name="discovery_discuss_send_share_moment">分享到朋友圈</string>
     <string name="discovery_discuss_send_comment">回复</string>
     <string name="discovery_discuss_send_apply">采纳</string>
     <string name="discovery_discuss_send_report_a">广告信息</string>

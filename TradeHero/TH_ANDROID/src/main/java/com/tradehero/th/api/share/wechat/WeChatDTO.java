@@ -14,6 +14,7 @@ public class WeChatDTO implements SocialShareFormDTO
     public int id;
     public WeChatMessageType type;
     public String title;
+    public String description;
     public String imageURL;
 
     //<editor-fold desc="Constructors">

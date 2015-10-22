@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.Window;
-
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
@@ -35,12 +34,9 @@ import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.NetworkUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-
-import org.jetbrains.annotations.NotNull;
-
-import javax.inject.Inject;
-
 import dagger.Lazy;
+import javax.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -139,7 +135,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             content = contents[0];
             url = contents[1];
         }
-        if(weChatMessageType == WeChatMessageType.Advertisement){
+        if (weChatMessageType == WeChatMessageType.Advertisement){
             WXWebpageObject sellWebPage = new WXWebpageObject();
             sellWebPage.webpageUrl = url;
             WXMediaMessage msg = new WXMediaMessage(sellWebPage);
@@ -150,13 +146,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         }
         if (weChatMessageType == WeChatMessageType.ShareSell || weChatMessageType == WeChatMessageType.ShareSellToTimeline) {
             if ((TextUtils.isEmpty(url) || !NetworkUtils.isCNTradeHeroURL(url))) {
-//                WXTextObject textObject = new WXTextObject();
-//                textObject.text = totalShare;
-//                WXMediaMessage msg = new WXMediaMessage();
-//                msg.title = title;
-//                msg.mediaObject = textObject;
-//                msg.description = textObject.text;
-//                return msg;
                 WXWebpageObject sellWebPage = new WXWebpageObject();
                 sellWebPage.webpageUrl = traget_user_millionaire_page;
                 WXMediaMessage msg = new WXMediaMessage(sellWebPage);
@@ -173,6 +162,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
                 msg.setThumbImage(thumbBmp);
                 return msg;
             }
+        }
+        if (weChatMessageType == WeChatMessageType.StockRecommendToWeChat
+                || weChatMessageType == WeChatMessageType.StockRecommendToMoment) {
+            WXWebpageObject sellWebPage = new WXWebpageObject();
+            sellWebPage.webpageUrl = "http://cn.tradehero.mobi/shr/recommend.html?timeline="+weChatDTO.id+"&type=stock";
+            WXMediaMessage msg = new WXMediaMessage(sellWebPage);
+            msg.title = weChatDTO.title;
+            msg.description = weChatDTO.description;
+            msg.setThumbImage(thumbBmp);
+            return msg;
         }
 
         WXWebpageObject webPage = new WXWebpageObject();
@@ -194,7 +193,8 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
         SendMessageToWX.Req weChatReq = new SendMessageToWX.Req();
         weChatReq.transaction = String.valueOf(System.currentTimeMillis());
         //not sure for transaction, maybe identify id?
-        if (weChatDTO.type == WeChatMessageType.Invite || weChatDTO.type == WeChatMessageType.ShareSell) {
+        if (weChatDTO.type == WeChatMessageType.Invite || weChatDTO.type == WeChatMessageType.ShareSell
+                || weChatDTO.type == WeChatMessageType.StockRecommendToWeChat) {
             weChatReq.scene = SendMessageToWX.Req.WXSceneSession;
         } else {
             weChatReq.scene = SendMessageToWX.Req.WXSceneTimeline;

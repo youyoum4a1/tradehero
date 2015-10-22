@@ -19,7 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.data.DiscussReportDTO;
@@ -87,19 +89,12 @@ import com.tradehero.th.utils.InputTools;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
-
-import org.jetbrains.annotations.NotNull;
-import org.ocpsoft.prettytime.PrettyTime;
-
+import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import dagger.Lazy;
+import org.jetbrains.annotations.NotNull;
+import org.ocpsoft.prettytime.PrettyTime;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -114,7 +109,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     public static final String BUNDLE_TIMELINE_FROM_RECENT = "BUNDLE_TIMELINE_FROM_RECENT";
     public static final String BUNDLE_TIMELINE_FROM_FAVORITE = "BUNDLE_TIMELINE_FROM_FAVORITE";
     public static final String BUNDLE_TIMELINE_FROM_REWARD = "BUNDLE_TIMELINE_FROM_REWARD";
-    private String timelineFrom = "";
+    protected String timelineFrom = "";
 
 
     @Inject protected DiscussionCache discussionCache;
@@ -136,7 +131,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     @Inject Lazy<DiscussionServiceWrapper> discussionServiceWrapper;
     @Inject DiscussionFormDTOFactory discussionFormDTOFactory;
 
-    AbstractDiscussionCompactDTO dataDto;
+    protected AbstractDiscussionCompactDTO dataDto;
 
     @Inject public Lazy<PrettyTime> prettyTime;
     private MiddleCallback<DiscussionDTO> voteCallback;
@@ -147,12 +142,12 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
     @InjectView(R.id.bvaViewAll) BetterViewAnimator betterViewAnimator;
     @InjectView(R.id.rlAllView) RelativeLayout rlAllView;
 
-    @Inject UserProfileCache userProfileCache;
-    @Inject CurrentUserId currentUserId;
-    @Inject Lazy<UserServiceWrapper> userServiceWrapper;
-    @Inject Lazy<SocialSharer> socialSharerLazy;
+    protected @Inject UserProfileCache userProfileCache;
+    protected @Inject CurrentUserId currentUserId;
+    protected @Inject Lazy<UserServiceWrapper> userServiceWrapper;
+    protected @Inject Lazy<SocialSharer> socialSharerLazy;
 
-    @Inject Lazy<AdministratorManageTimelineServiceWrapper> administratorManageTimelineServiceWrapper;
+    protected @Inject Lazy<AdministratorManageTimelineServiceWrapper> administratorManageTimelineServiceWrapper;
 
     protected LinearLayout llDisscurssOrNews;
     protected ImageView imgSecurityTLUserHeader;
@@ -177,10 +172,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
 
     public static final int ITEMS_PER_PAGE = 50;
 
-    private Dialog timeLineDetailMenuDialog;
+    protected Dialog timeLineDetailMenuDialog;
     private Dialog timeLineCommentMenuDialog;
-    private Dialog timeLineReportMenuDialog;
-    private DialogFactory dialogFactory;
+    protected Dialog timeLineReportMenuDialog;
+    protected DialogFactory dialogFactory;
 
     //Delete TimeLine confirm dialog or apply comment dialog
     private Dialog deleteOrApplyTimeLineConfirmDialog;
@@ -251,7 +246,8 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         if (isNews) {
             setHeadViewRight0(getString(R.string.discovery_discuss_send_share));
         } else {
-            setHeadViewRight0(getString(R.string.discovery_discuss_send_more));
+//            setHeadViewRight0(getString(R.string.discovery_discuss_send_more));
+            setHeadViewRight0(R.drawable.share);
         }
     }
 
@@ -941,7 +937,13 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                     }
 
                     @Override
-                    public void onShareClick() {
+                    public void onShareToWechatClick() {
+                        share();
+                        timeLineDetailMenuDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onShareToMomentClick() {
                         share();
                         timeLineDetailMenuDialog.dismiss();
                     }
@@ -988,7 +990,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                         if (dataDto == null || currentUserId == null) {
                             return;
                         }
-                        if(timelineFrom.equals("")){
+                        if (timelineFrom.equals("")) {
                             THToast.show("Please not...");
                             return;
                         }
@@ -998,7 +1000,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                             ManageTopDTO dto = new ManageTopDTO();
                             if (isTop()) {
                                 dto.stickType = UserTimeLineAdapter.toZero(originalStickType, timelineFrom);
-                            }else{
+                            } else {
                                 dto.stickType = UserTimeLineAdapter.toOne(originalStickType, timelineFrom);
                             }
                             administratorManageTimelineServiceWrapper.get().operationTop(currentUserId.toUserBaseKey().key, timeLineId, dto, new ManagerOperateCallback());
@@ -1013,10 +1015,10 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
                         }
                         if (dataDto instanceof TimelineItemDTO) {
                             int timeLineId = ((TimelineItemDTO) dataDto).id;
-                            ManageLearningDTO dto =new ManageLearningDTO();
+                            ManageLearningDTO dto = new ManageLearningDTO();
                             if (isLearning()) {
                                 dto.isGuide = false;
-                            }else{
+                            } else {
                                 dto.isGuide = true;
                             }
                             administratorManageTimelineServiceWrapper.get().operationLearning(currentUserId.toUserBaseKey().key, timeLineId, dto, new ManagerOperateCallback());
@@ -1109,7 +1111,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         shareToWechatMoment(strShare);
     }
 
-    private void sendReport(AbstractDiscussionCompactDTO dto, int position) {
+    protected void sendReport(AbstractDiscussionCompactDTO dto, int position) {
         if (dto == null) {
             return;
         }
@@ -1237,7 +1239,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         });
     }
 
-    private boolean isDeleteAllowed(AbstractDiscussionCompactDTO dto) {
+    protected boolean isDeleteAllowed(AbstractDiscussionCompactDTO dto) {
         if (dto == null) {
             return false;
         }
@@ -1259,14 +1261,14 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         return false;
     }
 
-    private boolean isReportAllowed(AbstractDiscussionCompactDTO dto) {
+    protected boolean isReportAllowed(AbstractDiscussionCompactDTO dto) {
         if (dto == null) {
             return false;
         }
         return !isDeleteAllowed(dto);
     }
 
-    private void showDeleteTimeLineConfirmDlg(final int itemId, int dialogType) {
+    protected void showDeleteTimeLineConfirmDlg(final int itemId, int dialogType) {
         if (getActivity() == null) {
             return;
         }
@@ -1430,7 +1432,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
     }
 
-    private boolean isManager() {
+    protected boolean isManager() {
         if (userProfileCache != null && currentUserId != null && Constants.isManager) {
             UserProfileDTO meProfileDTO = userProfileCache.get(currentUserId.toUserBaseKey());
             if (meProfileDTO != null && meProfileDTO.isAdmin) {
@@ -1443,8 +1445,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
     }
 
-
-    private boolean isTop() {
+    protected boolean isTop() {
         if (dataDto instanceof TimelineItemDTO) {
             return UserTimeLineAdapter.showIsTop(((TimelineItemDTO) dataDto).stickType, timelineFrom);
         } else {
@@ -1452,7 +1453,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
     }
 
-    private boolean isFavorite() {
+    protected boolean isFavorite() {
 
         if (dataDto instanceof TimelineItemDTO) {
             return ((TimelineItemDTO) dataDto).isEssential;
@@ -1461,7 +1462,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
     }
 
-    private boolean isProduction() {
+    protected boolean isProduction() {
         if (dataDto instanceof TimelineItemDTO) {
             return ((TimelineItemDTO) dataDto).isNotice;
         } else {
@@ -1469,7 +1470,7 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
         }
     }
 
-    private boolean isLearning() {
+    protected boolean isLearning() {
         if (dataDto instanceof TimelineItemDTO) {
             return ((TimelineItemDTO) dataDto).isGuide;
         } else {

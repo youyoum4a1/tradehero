@@ -18,7 +18,8 @@ import com.tradehero.th.utils.DaggerUtils;
 public class TimeLineDetailDialogLayout extends LinearLayout {
 
 
-    @InjectView(R.id.textview_discovery_discuss_send_share)TextView shareTV;
+    @InjectView(R.id.textview_discovery_discuss_send_share_wechat)TextView shareToWechat;
+    @InjectView(R.id.textview_discovery_discuss_send_share_moment)TextView shareToMoment;
     @InjectView(R.id.textview_discovery_discuss_send_delete)TextView deleteTV;
     @InjectView(R.id.textview_discovery_discuss_send_report)TextView reportTV;
     @InjectView(R.id.view_divider_discuss_delete)View deleteDividerV;
@@ -62,11 +63,19 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         ButterKnife.inject(this);
-        shareTV.setOnClickListener(new OnClickListener() {
+        shareToWechat.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (menuClickListener != null) {
-                    menuClickListener.onShareClick();
+                    menuClickListener.onShareToWechatClick();
+                }
+            }
+        });
+        shareToMoment.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (menuClickListener != null) {
+                    menuClickListener.onShareToMomentClick();
                 }
             }
         });
@@ -191,7 +200,8 @@ public class TimeLineDetailDialogLayout extends LinearLayout {
     public interface TimeLineDetailMenuClickListener {
         public void onReportClick();
         public void onDeleteClick();
-        public void onShareClick();
+        public void onShareToWechatClick();
+        public void onShareToMomentClick();
         public void onFavoriteClick();
         public void onProductionClick();
         public void onTopClick();

@@ -27,13 +27,21 @@
     <View android:layout_width="match_parent" android:layout_height="1px" android:id="@+id/view_divider_discuss_delete"
           android:background="@color/discovery_discuss_reward_gray"
             />
-    <TextView android:id="@+id/textview_discovery_discuss_send_share"
+    <TextView android:id="@+id/textview_discovery_discuss_send_share_wechat"
               android:layout_width="match_parent"
               android:layout_height="?android:attr/listPreferredItemHeight"
               android:textAppearance="?android:attr/textAppearanceListItem"
               android:gravity="center_vertical|center_horizontal"
               android:textSize="17sp"
-              android:text="@string/discovery_discuss_send_share"
+              android:text="@string/discovery_discuss_send_share_wechat"
+              android:textColor="@color/black"/>
+    <TextView android:id="@+id/textview_discovery_discuss_send_share_moment"
+              android:layout_width="match_parent"
+              android:layout_height="?android:attr/listPreferredItemHeight"
+              android:textAppearance="?android:attr/textAppearanceListItem"
+              android:gravity="center_vertical|center_horizontal"
+              android:textSize="17sp"
+              android:text="@string/discovery_discuss_send_share_moment"
               android:textColor="@color/black"/>
     <LinearLayout android:id="@+id/linearlayout_administrator_manage_timeline"
                   android:visibility="gone" android:orientation="vertical" android:layout_width="match_parent"
