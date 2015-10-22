@@ -46,6 +46,8 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(R.string.stock_recommend);
+        setHeadViewRight0("");
+        setHeadViewRight0(R.drawable.stock_recommend_share);
     }
 
     @Override
