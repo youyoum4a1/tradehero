@@ -1,126 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/contest_center_content_screen"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-  <RelativeLayout
-      android:id="@+id/photo_layout"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_marginTop="@dimen/margin_small"
-      android:background="@drawable/listview_item_selector">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@color/text_default_color"
-        android:text="@string/settings_my_photo"/>
-    <ImageView
-        android:id="@+id/photo"
-        android:layout_width="@dimen/photo_medium"
-        android:layout_height="@dimen/photo_medium"
-        android:src="@drawable/avatar_default"
-        android:layout_alignParentRight="true"
-        android:scaleType="fitXY"
-        android:layout_margin="@dimen/right_arrow_margin"/>
-    <View
+
+    <RelativeLayout
+        android:id="@+id/photo_layout"
         android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:background="@color/separate_line_color"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_below="@+id/photo"/>
-  </RelativeLayout>
-  <RelativeLayout
-      android:id="@+id/name_layout"
-      android:layout_width="fill_parent"
-      android:layout_height="@dimen/more_bang_item_height"
-      android:background="@drawable/listview_item_selector">
-    <TextView
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@color/text_default_color"
-        android:text="@string/settings_my_name"/>
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/arrow"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/text_small"
-        android:textColor="@color/color_gray"/>
-    <ImageView
-        android:id="@+id/arrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/icon_arrow_right"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/right_arrow_margin"/>
-    <View
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@drawable/listview_item_selector">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:text="@string/settings_my_photo"
+            android:textColor="@color/text_default_color"
+            android:textSize="@dimen/more_bang_text_size"/>
+
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="@dimen/photo_medium"
+            android:layout_height="@dimen/photo_medium"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/right_arrow_margin"
+            android:scaleType="fitXY"
+            android:src="@drawable/avatar_default"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_below="@+id/photo"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:background="@color/separate_line_color"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/name_layout"
         android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:background="@color/separate_line_color"
-        android:layout_alignParentBottom="true"/>
-  </RelativeLayout>
-  <RelativeLayout
-      android:id="@+id/account_layout"
-      android:layout_width="fill_parent"
-      android:layout_height="@dimen/more_bang_item_height"
-      android:background="@drawable/listview_item_selector">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@color/text_default_color"
-        android:text="@string/settings_my_account"/>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/icon_arrow_right"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/right_arrow_margin"/>
-    <View
+        android:layout_height="@dimen/more_bang_item_height"
+        android:background="@drawable/listview_item_selector">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:text="@string/settings_my_name"
+            android:textColor="@color/text_default_color"
+            android:textSize="@dimen/more_bang_text_size"/>
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_toLeftOf="@+id/arrow"
+            android:textColor="@color/color_gray"
+            android:textSize="@dimen/text_small"/>
+
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/right_arrow_margin"
+            android:background="@drawable/icon_arrow_right"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:background="@color/separate_line_color"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/sign_layout"
         android:layout_width="fill_parent"
-        android:layout_height="1px"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:background="@color/separate_line_color"
-        android:layout_alignParentBottom="true"/>
-  </RelativeLayout>
-  <RelativeLayout
-      android:id="@+id/social_layout"
-      android:layout_width="fill_parent"
-      android:layout_height="@dimen/more_bang_item_height"
-      android:background="@drawable/listview_item_selector"
-      android:visibility="gone">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_centerVertical="true"
-        android:textSize="@dimen/more_bang_text_size"
-        android:textColor="@color/text_default_color"
-        android:text="@string/settings_my_social"/>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/icon_arrow_right"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/right_arrow_margin"/>
-  </RelativeLayout>
+        android:layout_height="@dimen/more_bang_item_height"
+        android:background="@drawable/listview_item_selector">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:text="@string/settings_my_sign"
+            android:textColor="@color/text_default_color"
+            android:textSize="@dimen/more_bang_text_size"/>
+
+        <TextView
+            android:id="@+id/sign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_toLeftOf="@+id/sign_arrow"
+            android:textColor="@color/color_gray"
+            android:textSize="@dimen/text_small"/>
+
+        <ImageView
+            android:id="@+id/sign_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/right_arrow_margin"
+            android:background="@drawable/icon_arrow_right"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:background="@color/separate_line_color"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/account_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/more_bang_item_height"
+        android:background="@drawable/listview_item_selector">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:text="@string/settings_my_account"
+            android:textColor="@color/text_default_color"
+            android:textSize="@dimen/more_bang_text_size"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/right_arrow_margin"
+            android:background="@drawable/icon_arrow_right"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:background="@color/separate_line_color"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/social_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/more_bang_item_height"
+        android:background="@drawable/listview_item_selector"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:text="@string/settings_my_social"
+            android:textColor="@color/text_default_color"
+            android:textSize="@dimen/more_bang_text_size"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/right_arrow_margin"
+            android:background="@drawable/icon_arrow_right"/>
+    </RelativeLayout>
 
 </LinearLayout>
 

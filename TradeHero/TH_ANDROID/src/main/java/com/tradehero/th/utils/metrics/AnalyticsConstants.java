@@ -73,6 +73,7 @@ public class AnalyticsConstants
     //我的页面点击进去后，头像和名字的点击量
     public static final String ME_PERSONAL_INFORMATION_AVATAR = "ME_PERSONAL_INFORMATION_AVATAR";
     public static final String ME_PERSONAL_INFORMATION_NAME = "ME_PERSONAL_INFORMATION_NAME";
+    public static final String ME_PERSONAL_INFORMATION_SIGN = "ME_PERSONAL_INFORMATION_SIGN";
 
     //我的页面，总资产，股神，粉丝点击数
     public static final String ME_TOTAL_PROPERTY = "ME_TOTAL_PROPERTY";

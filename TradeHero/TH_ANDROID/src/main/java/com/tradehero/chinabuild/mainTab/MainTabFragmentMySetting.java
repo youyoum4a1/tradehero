@@ -91,6 +91,7 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
 
     @InjectView(R.id.imgMeHead) ImageView imgMeHead;
     @InjectView(R.id.tvMeName) TextView tvMeName;
+    @InjectView(R.id.my_sign) TextView mMySignText;
     @InjectView(R.id.tvAllAmount) TextView tvAllAmount;
     @InjectView(R.id.tvAllHero) TextView tvAllHero;
     @InjectView(R.id.tvAllFans) TextView tvAllFans;
@@ -246,6 +247,7 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
                 tvMeName.setText(R.string.guest_user);
             } else {
                 tvMeName.setText(user.getDisplayName());
+                mMySignText.setText(user.signature);
             }
             tvAllFans.setText(String.valueOf(user.allFollowerCount));
             tvAllHero.setText(String.valueOf(user.getAllHeroCount()));

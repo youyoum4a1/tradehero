@@ -104,6 +104,12 @@ interface UserServiceAsync
             Callback<UserProfileDTO> cb);
 
     @Multipart @PUT("/users/{userId}/updateUser")
+    void updateSign(
+            @Path("userId") int userId,
+            @Part("signature") String displayName,
+            Callback<UserProfileDTO> cb);
+
+    @Multipart @PUT("/users/{userId}/updateUser")
     void uploadCollege(
             @Path("userId") int userId,
             @Part("school") String college,

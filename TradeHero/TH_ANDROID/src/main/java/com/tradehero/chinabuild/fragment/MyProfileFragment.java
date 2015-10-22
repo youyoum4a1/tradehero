@@ -17,7 +17,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.utils.THToast;
@@ -39,14 +40,9 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-
-import java.io.File;
-
-import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
 import dagger.Lazy;
+import java.io.File;
+import javax.inject.Inject;
 
 public class MyProfileFragment extends DashboardFragment implements View.OnClickListener {
 
@@ -60,6 +56,8 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
     @InjectView(R.id.photo) ImageView mPhoto;
     @InjectView(R.id.name_layout) RelativeLayout mNameLayout;
     @InjectView(R.id.name) TextView mName;
+    @InjectView(R.id.sign_layout) RelativeLayout mSignLayout;
+    @InjectView(R.id.sign) TextView mSign;
     @InjectView(R.id.account_layout) RelativeLayout mAccountLayout;
     @InjectView(R.id.social_layout) RelativeLayout mSocialLayout;
     @Inject CurrentUserId currentUserId;
@@ -93,7 +91,11 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
         ImageLoader.getInstance().displayImage(userProfileDTO.picture, mPhoto, UniversalImageLoader.getAvatarImageLoaderOptions());
 
         mNameLayout.setOnClickListener(this);
+        mSignLayout.setOnClickListener(this);
         mName.setText(userProfileDTO.displayName);
+        if (userProfileDTO.signature != null && !userProfileDTO.signature.isEmpty()) {
+            mSign.setText(userProfileDTO.signature);
+        }
         mAccountLayout.setOnClickListener(this);
         mSocialLayout.setOnClickListener(this);
         CredentialsDTO credentials = mainCredentialsPreference.getCredentials();
@@ -146,6 +148,10 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
                 analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_PERSONAL_INFORMATION_NAME));
                 gotoEditName();
                 break;
+            case R.id.sign_layout:
+                analytics.addEvent(new MethodEvent(AnalyticsConstants.CHINA_BUILD_BUTTON_CLICKED, AnalyticsConstants.ME_PERSONAL_INFORMATION_SIGN));
+                gotoEditSign();
+                break;
             case R.id.account_layout:
                 pushFragment(MyEditAccountFragment.class, new Bundle());
                 break;
@@ -167,7 +173,17 @@ public class MyProfileFragment extends DashboardFragment implements View.OnClick
         }
     }
 
-
+    private void gotoEditSign() {
+        if (userProfileDTO == null) {
+            return;
+        }
+        if (userProfileDTO.isVisitor) {
+            dialogContent = getString(R.string.dialog_profile_suggest_signin);
+            showSuggestLoginDialogFragment(dialogContent);
+        } else {
+            pushFragment(MyEditSignFragment.class, new Bundle());
+        }
+    }
 
     private void showChooseImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

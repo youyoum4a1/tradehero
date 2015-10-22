@@ -1,178 +1,190 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical">
 
-  <RelativeLayout
-      android:id="@+id/me_layout"
-      android:layout_width="fill_parent"
-      android:layout_height="96dp"
-      android:background="@drawable/listview_item_selector">
+    <RelativeLayout
+        android:id="@+id/me_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="96dp"
+        android:background="@drawable/listview_item_selector">
 
-    <ImageView
-        android:id="@+id/imgMeHead"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_centerVertical="true"
+        <ImageView
+            android:id="@+id/imgMeHead"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/right_arrow_margin"
+            android:layout_marginRight="@dimen/right_arrow_margin"
+            android:scaleType="fitXY"/>
+
+        <TextView
+            android:id="@+id/tvMeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imgMeHead"
+            android:layout_marginTop="5dp"
+            android:layout_toLeftOf="@+id/tvUserCared"
+            android:layout_toRightOf="@+id/imgMeHead"
+            android:singleLine="true"
+            android:text="tvMeName"
+            android:textColor="@color/black"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/tvTitleEarning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvMeName"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@id/imgMeHead"
+            android:singleLine="true"
+            android:text="收益率:"
+            android:textColor="@color/text_gray_normal"
+            android:textSize="13sp"/>
+
+        <TextView
+            android:id="@+id/tvEarning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tvTitleEarning"
+            android:layout_toRightOf="@id/tvTitleEarning"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/text_gray_normal"
+            android:textSize="13sp"/>
+
+        <ImageView
+            android:id="@+id/imgArrorRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/right_arrow_margin"
+            android:background="@drawable/icon_arrow_right"/>
+
+        <TextView
+            android:id="@+id/tvUserCared"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@id/imgArrorRight"
+            android:background="@color/gray_1"
+            android:gravity="center"
+            android:text="已关注"
+            android:textColor="@color/white"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/my_sign"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvTitleEarning"
+            android:layout_toLeftOf="@id/tvUserCared"
+            android:layout_toRightOf="@id/imgMeHead"
+            android:singleLine="true"
+            android:text="@string/default_signature"
+            android:textColor="@color/text_gray_normal"
+            android:textSize="13sp"/>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
         android:layout_marginLeft="@dimen/right_arrow_margin"
         android:layout_marginRight="@dimen/right_arrow_margin"
-        android:scaleType="fitXY"
-        />
+        android:background="@color/separate_line_color"/>
 
-
-    <TextView
-        android:id="@+id/tvTitleEarning"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:layout_toRightOf="@id/imgMeHead"
-        android:textColor="@color/text_gray_normal"
-        android:textSize="13sp"
-        android:layout_alignBottom="@id/imgMeHead"
-        android:layout_marginBottom="10dp"
-        android:text="收益率:"/>
-
-    <TextView
-        android:id="@+id/tvEarning"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:layout_toRightOf="@id/tvTitleEarning"
-        android:textColor="@color/text_gray_normal"
-        android:textSize="13sp"
-        android:layout_alignBottom="@id/tvTitleEarning"
-        android:text=""/>
-
-    <ImageView
-        android:id="@+id/imgArrorRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/icon_arrow_right"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/right_arrow_margin"
-        />
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/tvUserCared"
-        android:layout_width="64dp"
-        android:layout_height="32dp"
-        android:layout_centerVertical="true"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:layout_marginRight="5dp"
-        android:layout_marginLeft="5dp"
-        android:text="已关注"
-        android:background="@color/gray_1"
-        android:layout_toLeftOf="@id/imgArrorRight"
-        />
-
-    <TextView
-        android:id="@+id/tvMeName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:singleLine="true"
-        android:layout_toRightOf="@id/imgMeHead"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        android:layout_toLeftOf="@id/tvUserCared"
-        android:layout_alignTop="@id/imgMeHead"
-        android:layout_marginTop="10dp"
-        android:text=""/>
-
-  </RelativeLayout>
-
-  <View
-      android:layout_width="fill_parent"
-      android:layout_height="1px"
-      android:layout_marginLeft="@dimen/right_arrow_margin"
-      android:layout_marginRight="@dimen/right_arrow_margin"
-      android:background="@color/separate_line_color"/>
-
-
-  <LinearLayout
-      android:layout_height="72dp"
-      android:layout_width="fill_parent"
-      android:background="@color/white"
-      android:paddingLeft="@dimen/right_arrow_margin"
-      android:paddingRight="@dimen/right_arrow_margin">
     <LinearLayout
-        android:id="@+id/llItemAllAmount"
-        android:layout_height="fill_parent"
         android:layout_width="fill_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_weight="1">
-      <TextView
-          android:id="@+id/tvAllAmount"
-          android:text=""
-          android:textSize="15sp"
-          android:textColor="@color/black"
-          android:singleLine="true"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-      </TextView>
-      <TextView
-          android:text="总资产"
-          android:textSize="15sp"
-          android:layout_marginTop="3dp"
-          android:textColor="@color/text_gray_normal"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-      </TextView>
+        android:layout_height="72dp"
+        android:background="@color/white"
+        android:paddingLeft="@dimen/right_arrow_margin"
+        android:paddingRight="@dimen/right_arrow_margin">
+
+        <LinearLayout
+            android:id="@+id/llItemAllAmount"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvAllAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="总资产"
+                android:textColor="@color/text_gray_normal"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llItemAllHero"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvAllHero"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="股神"
+                android:textColor="@color/text_gray_normal"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llItemAllFans"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvAllFans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="15sp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="粉丝"
+                android:textColor="@color/text_gray_normal"
+                android:textSize="15sp"/>
+        </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/llItemAllHero"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_weight="1">
-      <TextView
-          android:id="@+id/tvAllHero"
-          android:text=""
-          android:textColor="@color/black"
-          android:textSize="15sp"
-          android:singleLine="true"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-      </TextView>
-      <TextView
-          android:text="股神"
-          android:textSize="15sp"
-          android:layout_marginTop="3dp"
-          android:textColor="@color/text_gray_normal"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-      </TextView>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/llItemAllFans"
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_weight="1">
-      <TextView
-          android:id="@+id/tvAllFans"
-          android:text=""
-          android:textSize="15sp"
-          android:singleLine="true"
-          android:textColor="@color/black"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-      </TextView>
-      <TextView
-          android:text="粉丝"
-          android:textSize="15sp"
-          android:layout_marginTop="3dp"
-          android:textColor="@color/text_gray_normal"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content">
-      </TextView>
-    </LinearLayout>
-  </LinearLayout>
 
 </LinearLayout>

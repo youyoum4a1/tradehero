@@ -620,4 +620,6 @@
     <string name="win_rate_list">高胜率榜</string>
     <string name="monthly_rate">月累计收益</string>
     <string name="follow_buy">跟买</string>
+    <string name="default_signature">add my signature...</string>
+    <string name="settings_my_sign">Signature</string>
 </resources>

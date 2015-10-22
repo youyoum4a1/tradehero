@@ -237,5 +237,7 @@
     <string name="trading_hint_a">通讯中.&#160;</string>
     <string name="trading_hint_b">通讯中..&#160;&#160;</string>
     <string name="trading_hint_c">通讯中...</string>
+    <string name="default_signature">添加我的签名...</string>
+    <string name="settings_my_sign">个性签名</string>
 
 </resources>

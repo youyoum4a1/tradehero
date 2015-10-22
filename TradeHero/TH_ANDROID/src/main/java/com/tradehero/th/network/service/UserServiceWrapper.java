@@ -217,6 +217,19 @@ import retrofit.client.Response;
         return middleCallback;
     }
 
+    public MiddleCallback<UserProfileDTO> updateSign(
+            UserBaseKey userBaseKey,
+            UserFormDTO userFormDTO,
+            Callback<UserProfileDTO> callback)
+    {
+        MiddleCallback<UserProfileDTO> middleCallback = new BaseMiddleCallback<>(callback, createUpdateProfileProcessor());
+        userServiceAsync.updateSign(
+                userBaseKey.key,
+                userFormDTO.signature,
+                middleCallback);
+        return middleCallback;
+    }
+
     public MiddleCallback<UserProfileDTO> uploadCollege(
             UserBaseKey userBaseKey,
             UserFormDTO userFormDTO,

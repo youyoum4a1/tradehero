@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,8 +15,6 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tradehero.chinabuild.dialog.ShareSheetDialogLayout;
@@ -57,12 +57,11 @@ import com.tradehero.th.utils.AlertDialogUtil;
 import com.tradehero.th.utils.WeiboUtils;
 import com.tradehero.th.widget.TradeHeroProgressBar;
 import dagger.Lazy;
+import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
-
-import javax.inject.Inject;
 
 /**
  * Created by huhaiping on 14-9-16.
@@ -591,8 +590,12 @@ public class UserMainPage extends DashboardFragment
 
     private void linkWith(UserProfileDTO user) {
         if (user != null) {
-            if (user.picture != null && imgMeHead != null) {
-                ImageLoader.getInstance().displayImage(user.picture, imgMeHead, UniversalImageLoader.getAvatarImageLoaderOptions());
+            if (imgMeHead != null) {
+                if (user.picture != null) {
+                    ImageLoader.getInstance().displayImage(user.picture, imgMeHead, UniversalImageLoader.getAvatarImageLoaderOptions());
+                } else {
+                    imgMeHead.setImageResource(R.drawable.avatar_default);
+                }
             }
             tvMeName.setText(user.getDisplayName());
             tvAllFans.setText(String.valueOf(user.allFollowerCount));

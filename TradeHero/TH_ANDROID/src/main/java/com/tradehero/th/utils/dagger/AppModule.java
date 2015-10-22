@@ -16,6 +16,7 @@ import com.tradehero.chinabuild.fragment.InviteFriendsFragment;
 import com.tradehero.chinabuild.fragment.LoginSuggestDialogFragment;
 import com.tradehero.chinabuild.fragment.MyEditAccountFragment;
 import com.tradehero.chinabuild.fragment.MyEditNameFragment;
+import com.tradehero.chinabuild.fragment.MyEditSignFragment;
 import com.tradehero.chinabuild.fragment.MyProfileFragment;
 import com.tradehero.chinabuild.fragment.MySocialFragment;
 import com.tradehero.chinabuild.fragment.SettingFragment;
@@ -287,6 +288,7 @@ import javax.inject.Singleton;
                         InputInviteCodeFragment.class,
                         MyProfileFragment.class,
                         MyEditNameFragment.class,
+                        MyEditSignFragment.class,
                         MyEditAccountFragment.class,
                         MySocialFragment.class,
                         UserHeroesListFragment.class,

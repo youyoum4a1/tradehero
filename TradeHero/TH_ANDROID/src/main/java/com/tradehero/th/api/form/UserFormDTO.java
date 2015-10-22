@@ -16,6 +16,7 @@ public class UserFormDTO
     public String verifyCode;
     public String deviceAccessToken;
     public String school;
+    public String signature;
 
     //notifications settings
     public Boolean pushNotificationsEnabled;
