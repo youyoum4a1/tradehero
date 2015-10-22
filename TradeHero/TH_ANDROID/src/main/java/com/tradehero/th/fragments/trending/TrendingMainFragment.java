@@ -743,7 +743,16 @@ public class TrendingMainFragment extends DashboardFragment
             assetTypeSpinner.setVisibility(View.GONE);
         }
         actionBarTitle = "CFD";
-        getActivity().invalidateOptionsMenu();
+
+        for (int i=0; i < exchangeAdapter.getCount(); i++)
+        {
+            ExchangeCompactSpinnerDTO dto = exchangeAdapter.getItem(i);
+
+            if (dto.getUsableDisplayName().equals("NASDAQ"))
+            {
+                exchangeSpinner.setSelection(i);
+            }
+        }
     }
 
     private void handleIsVirtual()
