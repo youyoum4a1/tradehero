@@ -363,6 +363,12 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onActivityResult(requestCode, resultCode, data);
         trendingLiveFragmentUtil.onActivityResult(requestCode, resultCode, data);
+
+        if (isLiveTrading.get())
+        {
+            handleIsLive();
+            liveTitleTextView.setText(actionBarTitle);
+        }
     }
 
     private void inflateCustomToolbarView()
