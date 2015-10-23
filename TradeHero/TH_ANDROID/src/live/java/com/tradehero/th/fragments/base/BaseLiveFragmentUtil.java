@@ -153,14 +153,22 @@ public class BaseLiveFragmentUtil
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if(requestCode == CODE_PROMPT && resultCode == Activity.RESULT_CANCELED)
+        if (requestCode == CODE_PROMPT && resultCode == Activity.RESULT_CANCELED)
         {
             liveActivityUtil.switchLive(false);
+        }
+
+        if (liveWidget != null)
+        {
+            liveWidget.setVisibility(View.GONE);
         }
     }
 
     public void setLiveWidgetTranslationY(float y)
     {
-        liveWidget.setTranslationY(y);
+        if (liveWidget != null)
+        {
+            liveWidget.setTranslationY(y);
+        }
     }
 }

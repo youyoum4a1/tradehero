@@ -34,7 +34,7 @@
                 android:layout_height="@dimen/size_8"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ayondo_logo"
-                android:layout_marginTop="@dimen/size_2"
+                android:layout_marginTop="@dimen/size_8"
                 android:layout_marginBottom="@dimen/size_2"
                 tools:ignore="contentDescription"
                 />
@@ -93,7 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:visibility="gone"
-        android:background="@drawable/round_square"
+        android:background="@drawable/round_square_dark"
         />
 
 </RelativeLayout>

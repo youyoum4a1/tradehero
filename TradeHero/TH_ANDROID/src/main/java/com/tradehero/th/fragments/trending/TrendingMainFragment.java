@@ -486,6 +486,8 @@ public class TrendingMainFragment extends DashboardFragment
                     }
                 }, new TimberOnErrorAction1("Error on dropdown of asset type")));
 
+
+        // TODO: check if have better way after live API plug in
         liveTitleTextView = (TextView) view.findViewById(R.id.live_title);
         liveTitleTextView.setText(actionBarTitle);
         assetTypeSpinner.setVisibility(View.VISIBLE);

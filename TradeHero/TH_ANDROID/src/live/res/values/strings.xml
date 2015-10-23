@@ -141,5 +141,5 @@
   <string name="live_buy_btn">Buy&#10;%1$d</string>
 
   <string name="options">Options</string>
-  <string name="title_activity_live_account_setting">Setting</string>
+  <string name="title_activity_live_account_setting">Settings</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
