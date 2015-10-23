@@ -170,7 +170,7 @@
             android:layout_marginRight="15dp"
             android:gravity="center_vertical"
             android:text="查看所有>"
-            android:textColor="#454545"
+            android:textColor="#828282"
             android:textSize="14sp"/>
 
     </RelativeLayout>

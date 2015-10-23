@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="wrap_content">
 
-    <ImageView android:id="@+id/imageview_discuss_second_avatar" android:layout_width="30dp"
-               android:layout_height="30dp" android:layout_marginLeft="10dp" android:layout_marginBottom="10dp"
-               android:layout_marginRight="5dp"
-               android:layout_marginTop="10dp" android:src="@drawable/default_image"
-               android:scaleType="fitCenter"/>
+    <com.makeramen.RoundedImageView
+        android:id="@+id/imageview_discuss_second_avatar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        app:corner_radius="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/default_image"
+        android:scaleType="fitCenter"/>
 
     <LinearLayout android:id="@+id/linearlayout_discuss_second_allcontent"
                   android:layout_width="match_parent" android:layout_height="wrap_content"

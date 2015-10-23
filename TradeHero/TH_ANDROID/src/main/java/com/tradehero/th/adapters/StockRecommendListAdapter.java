@@ -170,9 +170,15 @@ public class StockRecommendListAdapter extends BaseAdapter {
                 pushFragment(PortfolioFragment.class, bundle);
             }
         });
-        holder.articleClickableArea.setOnClickListener(new View.OnClickListener() {
+
+        View.OnClickListener articleClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (v instanceof MarkdownTextView) {
+                    if (((MarkdownTextView) v).isClicked) {
+                        return;
+                    }
+                }
                 Bundle bundle = new Bundle();
                 Bundle discussBundle = new Bundle();
                 discussBundle.putString(TimelineItemDTOKey.BUNDLE_KEY_TYPE, DiscussionType.TIMELINE_ITEM.name());
@@ -180,7 +186,10 @@ public class StockRecommendListAdapter extends BaseAdapter {
                 bundle.putBundle(TimeLineItemDetailFragment.BUNDLE_ARGUMENT_DISCUSSION_ID, discussBundle);
                 pushFragment(StockRecommendDetailFragment.class, bundle);
             }
-        });
+        };
+        holder.articleClickableArea.setOnClickListener(articleClickListener);
+        holder.articleTitle.setOnClickListener(articleClickListener);
+        holder.articleContent.setOnClickListener(articleClickListener);
         holder.buttonPraised.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
