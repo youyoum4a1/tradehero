@@ -10,6 +10,7 @@ public class WeChatDTO implements SocialShareFormDTO
     public static final String WECHAT_MESSAGE_TYPE_KEY = "wechat_message_type_key";
     public static final String WECHAT_MESSAGE_IMAGE_URL_KEY = "wechat_message_image_url_key";
     public static final String WECHAT_MESSAGE_TITLE_KEY = "wechat_message_title_key";
+    public static final String WECHAT_MESSAGE_DESCRIPTION_KEY = "wechat_message_des_key";
 
     public int id;
     public WeChatMessageType type;
@@ -45,6 +46,7 @@ public class WeChatDTO implements SocialShareFormDTO
             type = WeChatMessageType.fromValue(args.getInt(WECHAT_MESSAGE_TYPE_KEY));
         }
         title = args.getString(WECHAT_MESSAGE_TITLE_KEY);
+        description = args.getString(WECHAT_MESSAGE_DESCRIPTION_KEY);
         imageURL = args.getString(WECHAT_MESSAGE_IMAGE_URL_KEY);
     }
     //</editor-fold>
@@ -78,6 +80,7 @@ public class WeChatDTO implements SocialShareFormDTO
             args.remove(WECHAT_MESSAGE_TYPE_KEY);
         }
         args.putString(WECHAT_MESSAGE_TITLE_KEY, title);
+        args.putString(WECHAT_MESSAGE_DESCRIPTION_KEY, description);
         args.putString(WECHAT_MESSAGE_IMAGE_URL_KEY, imageURL);
     }
 

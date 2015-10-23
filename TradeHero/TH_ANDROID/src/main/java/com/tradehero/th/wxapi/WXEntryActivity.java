@@ -168,8 +168,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler //cr
             WXWebpageObject sellWebPage = new WXWebpageObject();
             sellWebPage.webpageUrl = "http://cn.tradehero.mobi/shr/recommend.html?timeline="+weChatDTO.id+"&type=stock";
             WXMediaMessage msg = new WXMediaMessage(sellWebPage);
-            msg.title = weChatDTO.title;
-            msg.description = weChatDTO.description;
+            if (weChatDTO.title.length() > 501) {
+                msg.title = weChatDTO.title.substring(0, 500);
+            } else {
+                msg.title = weChatDTO.title;
+            }
+            if (weChatDTO.description != null && weChatDTO.description.length() > 1001) {
+                msg.description = weChatDTO.description.substring(0, 1000);
+            } else {
+                msg.description = weChatDTO.description;
+            }
             msg.setThumbImage(thumbBmp);
             return msg;
         }

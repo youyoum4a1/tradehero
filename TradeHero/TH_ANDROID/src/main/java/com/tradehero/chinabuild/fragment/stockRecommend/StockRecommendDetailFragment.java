@@ -322,7 +322,7 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
         WeChatDTO weChatDTO = new WeChatDTO();
         weChatDTO.id = mTimelineItemDTO.id;
         weChatDTO.type = WeChatMessageType.StockRecommendToMoment;
-        weChatDTO.title = mTimelineItemDTO.user.getDisplayName();
+        weChatDTO.title = mTimelineItemDTO.user.getDisplayName()+":"+mTimelineItemDTO.header + "," + mTimelineItemDTO.text;
         weChatDTO.description = mTimelineItemDTO.header + "," + mTimelineItemDTO.text;
         ((SocialSharerImpl) socialSharerLazy.get()).share(weChatDTO, getActivity());
     }
