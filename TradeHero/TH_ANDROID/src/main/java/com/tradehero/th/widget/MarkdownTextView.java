@@ -187,4 +187,9 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
             ActivityHelper.launchDashboard((TradeHeroMainActivity) getContext(), args);
         }
     }
+
+    @Override
+    public void scrollTo(int x, int y) {
+        super.scrollTo(0, 0);
+    }
 }
