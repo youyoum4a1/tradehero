@@ -184,11 +184,6 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         fetchStockRecommendList();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
     private void downloadAdvertisements() {
 //        if (!SHOW_ADVERTISEMENT) {
 //            if (mAdLayout.getVisibility() == View.VISIBLE) {
