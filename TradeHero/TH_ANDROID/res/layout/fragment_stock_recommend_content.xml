@@ -7,6 +7,11 @@
     android:orientation="vertical"
     android:id="@+id/llItemAll">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="#e1e1e1"/>
+
     <RelativeLayout
         android:id="@+id/userClickableArea"
         android:layout_width="fill_parent"
@@ -83,8 +88,6 @@
         android:layout_width="wrap_content"
         android:layout_height="1px"
         android:layout_marginBottom="5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:layout_marginTop="5dp"
         android:background="#cecece"/>
 
@@ -111,7 +114,8 @@
             android:id="@+id/articleContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:lineSpacingMultiplier="1.2"
+            android:scrollHorizontally="false"
             android:text="content"
             android:textColor="#282828"
             android:textColorLink="@color/timeline_item_link"
@@ -216,13 +220,14 @@
         </LinearLayout>
     </LinearLayout>
 
-    <View
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:src="#e1e1e1"/>
+
+    <ImageView
         android:id="@+id/itemSeparator"
-        android:layout_width="wrap_content"
-        android:layout_height="22px"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:background="#f0f0f0"/>
-        <!--android:layout_marginLeft="15dp"-->
-        <!--android:layout_marginRight="15dp"-->
+        android:layout_width="match_parent"
+        android:layout_height="11dp"
+        android:src="#f0f0f0"/>
 </LinearLayout>

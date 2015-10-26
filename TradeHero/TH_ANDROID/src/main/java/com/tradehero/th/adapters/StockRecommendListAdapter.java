@@ -2,6 +2,7 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -146,11 +147,6 @@ public class StockRecommendListAdapter extends BaseAdapter {
         holder.numberPraised.setText(String.valueOf(timelineItemDTO.upvoteCount));
         holder.numberComment.setText(String.valueOf(timelineItemDTO.commentCount));
         holder.btnTLPraise.setBackgroundResource(timelineItemDTO.voteDirection == 1 ? R.drawable.like_selected : R.drawable.like);
-
-        // Item separator
-        if (position == getCount() - 1) {
-            holder.itemSeparator.setVisibility(View.GONE);
-        }
 
         // Listeners
         holder.userClickableArea.setOnClickListener(new View.OnClickListener() {

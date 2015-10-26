@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -126,7 +127,18 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
         }
         mListView.setAdapter(stockRecommendListAdapter);
         mListView.getRefreshableView().addHeaderView(header);
-        mListView.setMode(PullToRefreshBase.Mode.DISABLED);
+        mListView.setMode(PullToRefreshBase.Mode.PULL_FROM_START);
+        mListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
+            @Override
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
+                fetchStockRecommendList();
+            }
+
+            @Override
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
+                // Do nothing.
+            }
+        });
     }
 
     @Override
