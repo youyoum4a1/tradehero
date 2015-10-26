@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/llItemAll"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/llItemAll">
+    android:orientation="vertical">
 
     <ImageView
         android:layout_width="match_parent"
@@ -104,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="title"
+            android:singleLine="true"
             android:textColor="@color/black"
             android:textColorLink="@color/timeline_item_link"
             android:textSize="16sp"
@@ -115,7 +115,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingMultiplier="1.2"
-            android:text="content"
+            android:maxLines="2"
             android:textColor="#282828"
             android:textColorLink="@color/timeline_item_link"
             android:textSize="16sp"/>
@@ -134,7 +134,7 @@
         android:id="@+id/attachmentImage"
         android:layout_width="fill_parent"
         android:layout_height="149dp"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -153,7 +153,7 @@
                 android:id="@+id/btnTLViewCount"
                 android:layout_width="18dp"
                 android:layout_height="10dp"
-                android:background="@drawable/eye" />
+                android:background="@drawable/eye"/>
 
             <TextView
                 android:id="@+id/numberRead"
