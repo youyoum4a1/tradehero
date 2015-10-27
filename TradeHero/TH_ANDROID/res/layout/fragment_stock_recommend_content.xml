@@ -111,7 +111,7 @@
             android:textStyle="bold"/>
 
         <com.tradehero.th.widget.MarkdownTextView
-            android:id="@+id/articleContent"
+            android:id="@+id/articleContentLine1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingMultiplier="1.2"
@@ -120,14 +120,33 @@
             android:textColorLink="@color/timeline_item_link"
             android:textSize="16sp"/>
 
-        <TextView
-            android:id="@+id/createTime"
+        <RelativeLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="3分钟前"
-            android:textColor="#828282"
-            android:textSize="12sp"/>
+            android:layout_height="26dp">
+            <TextView
+                android:id="@+id/createTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:text="3分钟前"
+                android:textColor="#828282"
+                android:textSize="12sp"/>
+
+            <com.tradehero.th.widget.MarkdownTextView
+                android:id="@+id/articleContentRest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.2"
+                android:text="content"
+                android:textColor="#282828"
+                android:textColorLink="@color/timeline_item_link"
+                android:textSize="16sp"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@id/createTime"
+                android:layout_marginRight="20dp"/>
+        </RelativeLayout>
+
     </LinearLayout>
 
     <ImageView
@@ -138,7 +157,7 @@
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="36dp"
+        android:layout_height="30dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 

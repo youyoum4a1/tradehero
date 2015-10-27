@@ -32,6 +32,7 @@ import timber.log.Timber;
 public class MarkdownTextView extends TextView implements OnElementClickListener
 {
     @Inject RichTextCreator parser;
+    private OnMeasureListener onMeasureListener;
     //<editor-fold desc="Constructors">
     public MarkdownTextView(Context context)
     {
@@ -140,6 +141,10 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         }
     }
 
+    public void setOnMeasureListener(OnMeasureListener listener) {
+        onMeasureListener = listener;
+    }
+
     private DashboardNavigator getNavigator()
     {
         return ((DashboardNavigatorActivity) getContext()).getDashboardNavigator();
@@ -191,5 +196,18 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
     @Override
     public void scrollTo(int x, int y) {
         super.scrollTo(0, 0);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        if (onMeasureListener != null) {
+            onMeasureListener.onMeasure();
+        }
+    }
+
+    public interface OnMeasureListener {
+        void onMeasure();
     }
 }

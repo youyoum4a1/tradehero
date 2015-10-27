@@ -2,6 +2,7 @@ package com.tradehero.th.adapters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -131,7 +132,24 @@ public class StockRecommendListAdapter extends BaseAdapter {
 
         // Article
         holder.articleTitle.setText(timelineItemDTO.header);
-        holder.articleContent.setText(timelineItemDTO.text);
+        holder.articleContentLine1.setText(timelineItemDTO.text);
+        holder.articleTitle.setMaxLines(1);
+        holder.articleContentLine1.setMaxLines(1);
+        holder.articleContentLine1.setOnMeasureListener(new MarkdownTextView.OnMeasureListener() {
+            @Override
+            public void onMeasure() {
+                if (holder.articleContentLine1.getLayout() != null) {
+                    int restStartPos = holder.articleContentLine1.getLayout().getLineStart(1) + 1;
+                    if (restStartPos < timelineItemDTO.text.length()) {
+                        holder.articleContentRest.setSingleLine();
+                        holder.articleContentRest.setEllipsize(TextUtils.TruncateAt.END);
+                        holder.articleContentRest.setText(timelineItemDTO.text.substring(restStartPos));
+                    } else {
+                        holder.articleContentRest.setVisibility(View.GONE);
+                    }
+                }
+            }
+        });
 
         // Hide the attachment image
         holder.attachmentImage.setVisibility(View.GONE);
@@ -182,7 +200,8 @@ public class StockRecommendListAdapter extends BaseAdapter {
         };
         holder.articleClickableArea.setOnClickListener(articleClickListener);
         holder.articleTitle.setOnClickListener(articleClickListener);
-        holder.articleContent.setOnClickListener(articleClickListener);
+        holder.articleContentLine1.setOnClickListener(articleClickListener);
+        holder.articleContentRest.setOnClickListener(articleClickListener);
         holder.buttonPraised.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -264,8 +283,10 @@ public class StockRecommendListAdapter extends BaseAdapter {
         public RelativeLayout userClickableArea;
         @InjectView(R.id.articleTitle)
         public MarkdownTextView articleTitle;
-        @InjectView(R.id.articleContent)
-        public MarkdownTextView articleContent;
+        @InjectView(R.id.articleContentLine1)
+        public MarkdownTextView articleContentLine1;
+        @InjectView(R.id.articleContentRest)
+        public MarkdownTextView articleContentRest;
         @InjectView(R.id.articleClickableArea)
         public LinearLayout articleClickableArea;
         @InjectView(R.id.attachmentImage)

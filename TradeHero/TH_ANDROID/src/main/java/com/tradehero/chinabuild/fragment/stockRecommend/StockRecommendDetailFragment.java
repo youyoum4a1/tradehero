@@ -60,7 +60,7 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
         llDisscurssOrNews = viewHolder.llItemAll;
         imgSecurityTLUserHeader = viewHolder.userIcon;
         tvUserTLTimeStamp = viewHolder.createTime;
-        tvUserTLContent = viewHolder.articleContent;
+        tvUserTLContent = viewHolder.articleContentLine1;
         tvUserTLName = viewHolder.userName;
         btnTLPraise = viewHolder.btnTLPraise;
     }
@@ -88,7 +88,8 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
 
             // Article
             viewHolder.articleTitle.setText(mTimelineItemDTO.header);
-            viewHolder.articleContent.setText(mTimelineItemDTO.text);
+            viewHolder.articleContentLine1.setText(mTimelineItemDTO.text);
+            viewHolder.articleContentRest.setVisibility(View.GONE);
 
             // Attachment image
             if (mTimelineItemDTO.picUrl == null) {
