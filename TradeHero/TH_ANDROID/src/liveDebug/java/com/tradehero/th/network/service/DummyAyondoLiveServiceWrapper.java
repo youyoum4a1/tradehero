@@ -14,6 +14,8 @@ import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
 import com.tradehero.th.api.kyc.StepStatus;
 import com.tradehero.th.api.kyc.StepStatusesDTO;
 import com.tradehero.th.api.kyc.TradingPerQuarter;
+import com.tradehero.th.api.live.LivePortfolioDTO;
+import com.tradehero.th.api.live.LivePortfolioId;
 import com.tradehero.th.api.live.ayondo.AyondoLiveLoginFormDTO;
 import com.tradehero.th.api.live.ayondo.AyondoUserProfileDTO;
 import com.tradehero.th.api.kyc.ayondo.DummyAyondoData;
@@ -185,5 +187,10 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
         }
 
         return Observable.just(null);
+    }
+
+    @NonNull public Observable<LivePortfolioDTO> getLivePortfolioDTO(LivePortfolioId id)
+    {
+        return Observable.just(LivePortfolioDTO.createForDummy());
     }
 }

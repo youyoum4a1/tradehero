@@ -1,6 +1,5 @@
 package com.tradehero.th.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -9,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -19,6 +17,7 @@ import butterknife.OnClick;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
+import com.tradehero.th.api.live.LivePortfolioId;
 import com.tradehero.th.api.live.ayondo.AyondoLiveLoginFormDTO;
 import com.tradehero.th.api.live.ayondo.AyondoUserProfileDTO;
 import com.tradehero.th.network.service.DummyAyondoLiveServiceWrapper;
@@ -28,11 +27,11 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import timber.log.Timber;
 
 public class LiveLoginActivity extends BaseActivity
 {
     @Inject DummyAyondoLiveServiceWrapper ayondoLiveServiceWrapper;
+    @Inject LivePortfolioId livePortfolioId;
     @Inject @IsLiveLogIn BooleanPreference isLiveLogIn;
 
     @Bind(R.id.my_toolbar) Toolbar myToolbar;
@@ -106,6 +105,7 @@ public class LiveLoginActivity extends BaseActivity
                         if (ayondoUserProfileDTO != null)
                         {
                             setResult(RESULT_OK);
+                            livePortfolioId.set(ayondoUserProfileDTO.livePortfolioDTO.id);
                             isLiveLogIn.set(true);
                             finish();
                         }
