@@ -92,6 +92,7 @@ public class UserMainPage extends DashboardFragment
 
     @InjectView(R.id.imgMeHead) ImageView imgMeHead;
     @InjectView(R.id.tvMeName) TextView tvMeName;
+    @InjectView(R.id.my_sign) TextView mMySignText;
     @InjectView(R.id.tvAllAmount) TextView tvAllAmount;
     @InjectView(R.id.tvAllHero) TextView tvAllHero;
     @InjectView(R.id.tvAllFans) TextView tvAllFans;
@@ -598,6 +599,11 @@ public class UserMainPage extends DashboardFragment
                 }
             }
             tvMeName.setText(user.getDisplayName());
+            if (user.signature == null || user.signature.isEmpty()) {
+                mMySignText.setVisibility(View.GONE);
+            } else {
+                mMySignText.setText(user.signature);
+            }
             tvAllFans.setText(String.valueOf(user.allFollowerCount));
             tvAllHero.setText(String.valueOf(user.heroIds == null ? 0 : user.heroIds.size()));
         }
