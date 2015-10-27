@@ -207,6 +207,18 @@ public class MarkdownTextView extends TextView implements OnElementClickListener
         }
     }
 
+    public int length() {
+        return parser.richTextLength();
+    }
+
+    public CharSequence subSequence(int start) {
+        return parser.subSequence(start);
+    }
+
+    public CharSequence subSequence(int start, int end) {
+        return parser.subSequence(start, end);
+    }
+
     public interface OnMeasureListener {
         void onMeasure();
     }

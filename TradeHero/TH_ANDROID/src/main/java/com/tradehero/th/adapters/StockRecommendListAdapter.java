@@ -135,17 +135,17 @@ public class StockRecommendListAdapter extends BaseAdapter {
         holder.articleContentLine1.setText(timelineItemDTO.text);
         holder.articleTitle.setMaxLines(1);
         holder.articleContentLine1.setMaxLines(1);
+        holder.articleContentRest.setVisibility(View.GONE);
         holder.articleContentLine1.setOnMeasureListener(new MarkdownTextView.OnMeasureListener() {
             @Override
             public void onMeasure() {
                 if (holder.articleContentLine1.getLayout() != null) {
-                    int restStartPos = holder.articleContentLine1.getLayout().getLineStart(1) + 1;
-                    if (restStartPos < timelineItemDTO.text.length()) {
+                    int restStartPos = holder.articleContentLine1.getLayout().getLineStart(1);
+                    if (restStartPos < holder.articleContentLine1.length()) {
+                        holder.articleContentRest.setVisibility(View.VISIBLE);
                         holder.articleContentRest.setSingleLine();
                         holder.articleContentRest.setEllipsize(TextUtils.TruncateAt.END);
-                        holder.articleContentRest.setText(timelineItemDTO.text.substring(restStartPos));
-                    } else {
-                        holder.articleContentRest.setVisibility(View.GONE);
+                        holder.articleContentRest.setText(holder.articleContentLine1.subSequence(restStartPos));
                     }
                 }
             }

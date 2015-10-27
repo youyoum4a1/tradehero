@@ -95,6 +95,7 @@ public class RichTextCreator
 
         if (cachedText != null)
         {
+            richText = (SpannableStringBuilder)cachedText;
             return cachedText;
         }
 
@@ -127,5 +128,20 @@ public class RichTextCreator
     {
         Spanned richText = create();
         textView.setText(richText);
+    }
+
+    public int richTextLength()
+    {
+        return richText.length();
+    }
+
+    public CharSequence subSequence(int start)
+    {
+        return this.subSequence(start, richText.length());
+    }
+
+    public CharSequence subSequence(int start, int end)
+    {
+        return richText.subSequence(start, end);
     }
 }
