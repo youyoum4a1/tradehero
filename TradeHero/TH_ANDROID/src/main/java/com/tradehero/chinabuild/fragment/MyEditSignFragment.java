@@ -40,6 +40,7 @@ public class MyEditSignFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(getString(R.string.settings_my_sign));
+        setHeadViewRight0(getString(R.string.submit));
     }
 
     @Override
@@ -64,7 +65,7 @@ public class MyEditSignFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onClickHeadLeft()
+    @Override public void onClickHeadRight0()
     {
         String signText = mSignText.getText().toString();
         if(TextUtils.isEmpty(signText)){
@@ -90,7 +91,6 @@ public class MyEditSignFragment extends DashboardFragment
                 return;
             }
         }
-        super.onClickHeadLeft();
     }
 
     public UserFormDTO createForm()

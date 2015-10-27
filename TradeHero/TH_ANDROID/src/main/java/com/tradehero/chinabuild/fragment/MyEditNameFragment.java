@@ -3,13 +3,13 @@ package com.tradehero.chinabuild.fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.api.form.UserFormDTO;
@@ -24,7 +24,6 @@ import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.user.UserProfileCache;
 import com.tradehero.th.utils.ProgressDialogUtil;
 import dagger.Lazy;
-
 import javax.inject.Inject;
 
 public class MyEditNameFragment extends DashboardFragment
@@ -47,6 +46,7 @@ public class MyEditNameFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setHeadViewMiddleMain(getString(R.string.settings_my_name));
+        setHeadViewRight0(getString(R.string.submit));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class MyEditNameFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onClickHeadLeft()
+    @Override public void onClickHeadRight0()
     {
         String displayNameStr = mName.getText().toString();
         if(TextUtils.isEmpty(displayNameStr)){
@@ -95,7 +95,6 @@ public class MyEditNameFragment extends DashboardFragment
                 return;
             }
         }
-        super.onClickHeadLeft();
     }
 
     public UserFormDTO createForm()
