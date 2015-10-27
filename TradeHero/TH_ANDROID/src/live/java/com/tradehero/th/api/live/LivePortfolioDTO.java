@@ -9,13 +9,10 @@ import java.util.Date;
 
 public class LivePortfolioDTO extends PortfolioDTO implements DTO
 {
-    public double margin;
-
     @Override @NonNull public String toString()
     {
         return "[LivePortfolioDTO " +
                 super.toString() +
-                ", margin =" + margin +
                 "]";
     }
 
@@ -41,7 +38,7 @@ public class LivePortfolioDTO extends PortfolioDTO implements DTO
         livePortfolioDTO.refCcyToUsdRate = 1.0;
         livePortfolioDTO.txnCostUsd = null;
         livePortfolioDTO.userId = 6627;
-        livePortfolioDTO.marginAvailableRefCcy = null;
+        livePortfolioDTO.marginAvailableRefCcy = 8695.00;
         livePortfolioDTO.marginCloseOutPercent = null;
         livePortfolioDTO.leverage = null;
         livePortfolioDTO.initialCash = 100000.0;

@@ -23,9 +23,10 @@ public class LivePortfolioHeaderView extends LinearLayout implements PortfolioHe
     protected PortfolioCompactDTO portfolioCompactDTO;
 
     @Bind(R.id.header_portfolio_total_value) protected TextView totalValueTextView;
-    @Bind(R.id.header_portfolio_cash_value) @Nullable protected TextView cashValueTextView;
-    @Bind(R.id.roi_value) @Nullable protected TextView roiTextView;
-    @Bind(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
+    @Bind(R.id.header_portfolio_cash_value) protected TextView cashValueTextView;
+    @Bind(R.id.header_portfolio_margin_value) protected TextView marginValueTextView;
+    @Bind(R.id.roi_value) protected TextView roiTextView;
+    @Bind(R.id.last_updated_date) protected TextView lastUpdatedDate;
     @Bind(R.id.live_setting) public ImageButton settingBtn;
 
     //<editor-fold desc="Constructors">
@@ -56,70 +57,49 @@ public class LivePortfolioHeaderView extends LinearLayout implements PortfolioHe
         return Observable.empty();
     }
 
-    @Override public void linkWith(PortfolioCompactDTO portfolioCompactDTO)
+    @Override public void linkWith(@NonNull PortfolioCompactDTO portfolioCompactDTO)
     {
         this.portfolioCompactDTO = portfolioCompactDTO;
 
-        displayTotalValueTextView();
-        displayCashValueTextView();
-
-        if (roiTextView != null)
+        if (portfolioCompactDTO.roiSinceInception != null)
         {
-            if (portfolioCompactDTO != null && portfolioCompactDTO.roiSinceInception != null)
-            {
-                THSignedPercentage.builder(portfolioCompactDTO.roiSinceInception * 100)
-                        .relevantDigitCount(3)
-                        .withDefaultColor()
-                        .withSign()
-                        .signTypeArrow()
-                        .build()
-                        .into(roiTextView);
-            }
+            THSignedPercentage.builder(portfolioCompactDTO.roiSinceInception * 100)
+                    .relevantDigitCount(3)
+                    .withDefaultColor()
+                    .withSign()
+                    .signTypeArrow()
+                    .build()
+                    .into(roiTextView);
         }
 
-        if (lastUpdatedDate != null)
+        if (portfolioCompactDTO.markingAsOfUtc != null)
         {
-            if (portfolioCompactDTO != null && portfolioCompactDTO.markingAsOfUtc != null)
-            {
-                DateFormat sdf = SimpleDateFormat.getDateTimeInstance();
-                lastUpdatedDate.setText(getContext().getString(
-                        R.string.watchlist_marking_date,
-                        sdf.format(portfolioCompactDTO.markingAsOfUtc)));
-                lastUpdatedDate.setVisibility(VISIBLE);
-            }
-            else
-            {
-                lastUpdatedDate.setVisibility(GONE);
-            }
+            DateFormat sdf = SimpleDateFormat.getDateTimeInstance();
+            lastUpdatedDate.setText(getContext().getString(
+                    R.string.watchlist_marking_date,
+                    sdf.format(portfolioCompactDTO.markingAsOfUtc)));
+            lastUpdatedDate.setVisibility(VISIBLE);
+        }
+        else
+        {
+            lastUpdatedDate.setVisibility(GONE);
+        }
+
+        String valueString = String.format("%s %,.0f", this.portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.totalValue);
+        totalValueTextView.setText(valueString);
+
+        String cashString = String.format("%s %,.0f", portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.cashBalanceRefCcy);
+        cashValueTextView.setText(cashString);
+
+        if (portfolioCompactDTO.marginAvailableRefCcy != null)
+        {
+            String marginString = String.format("%s %,.0f", portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.marginAvailableRefCcy);
+            marginValueTextView.setText(marginString);
         }
     }
 
     @Override public void linkWith(UserProfileDTO userProfileDTO)
     {
         // Nothing to do
-    }
-
-    public void displayTotalValueTextView()
-    {
-        if (totalValueTextView != null)
-        {
-            if (portfolioCompactDTO != null)
-            {
-                String valueString = String.format("%s %,.0f", this.portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.totalValue);
-                totalValueTextView.setText(valueString);
-            }
-        }
-    }
-
-    public void displayCashValueTextView()
-    {
-        if (cashValueTextView != null)
-        {
-            if (portfolioCompactDTO != null)
-            {
-                String cashString = String.format("%s %,.0f", portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.cashBalanceRefCcy);
-                cashValueTextView.setText(cashString);
-            }
-        }
     }
 }

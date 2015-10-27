@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.api.live.LivePositionListFragment;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -149,14 +150,14 @@ public class PortfolioMainFragment extends DashboardFragment
     {
         Bundle args = new Bundle();
 
-        if (myStockId.userId.equals(currentUserId.get()))
-        {
-            PositionListFragment.putApplicablePortfolioId(args, myStockId);
-        }
-
-        PositionListFragment.putGetPositionsDTOKey(args, myStockId);
-        PositionListFragment.putShownUser(args, myStockId.getUserBaseKey());
-        Fragment created = Fragment.instantiate(getActivity(), PositionListFragment.class.getName(), args);
+        //if (myStockId.userId.equals(currentUserId.get()))
+        //{
+        //    PositionListFragment.putApplicablePortfolioId(args, myStockId);
+        //}
+        //
+        //PositionListFragment.putGetPositionsDTOKey(args, myStockId);
+        //PositionListFragment.putShownUser(args, myStockId.getUserBaseKey());
+        Fragment created = Fragment.instantiate(getActivity(), LivePositionListFragment.class.getName(), args);
         getChildFragmentManager().beginTransaction().replace(R.id.portfolio_fragment_container, created).commitAllowingStateLoss();
     }
 }
