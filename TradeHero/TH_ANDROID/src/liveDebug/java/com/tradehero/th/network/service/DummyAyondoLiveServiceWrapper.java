@@ -181,8 +181,7 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
         // TODO: send to server validate, pending server
         if (loginFormDTO.accountId.equals("TH1234") && loginFormDTO.password.equals("abc123"))
         {
-            AyondoUserProfileDTO ayondoUserProfileDTO = new AyondoUserProfileDTO("TH1234", "lihao@tradehero.mobi");
-            return Observable.just(ayondoUserProfileDTO);
+            return Observable.just(AyondoUserProfileDTO.createForDummy());
         }
 
         return Observable.just(null);

@@ -7,11 +7,9 @@ public class LiveUserProfileDTO
     public int brokerId;
     public String accountId;
     public String email;
+    public LivePortfolioDTO livePortfolioDTO;
 
-    public LiveUserProfileDTO(int brokerId, String accountId, String email)
+    public LiveUserProfileDTO()
     {
-        this.brokerId = brokerId;
-        this.accountId = accountId;
-        this.email = email;
     }
 }
