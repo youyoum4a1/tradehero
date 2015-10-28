@@ -342,12 +342,14 @@ public class TimeLineItemDetailFragment extends DashboardFragment implements Dis
             public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 discussionListKey.setPage(1);
                 fetchDiscussList(true);
+                fetchDiscussion(timelineItemDTOKey, true);
             }
 
             @Override
             public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
                 discussionListKey = discussionListKey.next();
                 fetchDiscussList(true);
+                fetchDiscussion(timelineItemDTOKey, true);
             }
         });
 
