@@ -202,3 +202,14 @@
 
 # Retrolambda
 -dontwarn java.lang.invoke.**
+
+# Haitong
+-dontwarn org.bouncycastle.**
+-dontwarn com.starzone.**
+
+# Flurry
+-keep class com.flurry.** { *; }
+-dontwarn com.flurry.**
+
+# Google Play
+-dontwarn com.google.android.gms.internal.zzhu
