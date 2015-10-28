@@ -27,6 +27,9 @@ import com.tradehero.th.api.live.LiveBrokerId;
 import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.api.market.Country;
+import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.fastfill.Gender;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ResidenceScannedDocumentType;
@@ -46,6 +49,9 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
     public static final int AYONDO_LIVE_BROKER_ID = 1;
     private static final String AYONDO_LIVE_BROKER_NAME = "ayondo markets";
     private static final int AYONDO_MINIMUM_AGE = 21;
+
+    @Inject CurrentUserId currentUserId;
+    @Inject PositionServiceWrapper positionServiceWrapper;
 
     @Inject public DummyAyondoLiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
@@ -192,5 +198,11 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
     @NonNull public Observable<LivePortfolioDTO> getLivePortfolioDTO(LivePortfolioId id)
     {
         return Observable.just(LivePortfolioDTO.createForDummy());
+    }
+
+    @NonNull public Observable<GetPositionsDTO> getLivePositionsDTO(LivePortfolioId id)
+    {
+        // TODO: replace api for live
+        return positionServiceWrapper.getPositionsRx(new OwnedPortfolioId(currentUserId.get(), 7513));
     }
 }

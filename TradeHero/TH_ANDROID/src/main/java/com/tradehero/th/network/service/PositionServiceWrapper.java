@@ -8,6 +8,8 @@ import com.tradehero.th.api.position.GetPositionsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Action1;
+import timber.log.Timber;
 
 @Singleton public class PositionServiceWrapper
 {
@@ -52,6 +54,7 @@ import rx.Observable;
                     null,
                     null);
         }
+
         return returned;
     }
     //</editor-fold>
