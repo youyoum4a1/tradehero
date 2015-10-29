@@ -1,108 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                            android:orientation="vertical"
-                                                            android:layout_width="match_parent"
-                                                            android:layout_height="wrap_content"
-                                                            android:background="@color/white">
-    <TextView android:id="@+id/textview_discovery_discuss_send_report"
-              android:layout_width="match_parent"
-              android:layout_height="?android:attr/listPreferredItemHeight"
-              android:textAppearance="?android:attr/textAppearanceListItem"
-              android:gravity="center_vertical|center_horizontal"
-              android:textSize="17sp"
-              android:text="@string/discovery_discuss_send_report"
-              android:textColor="@color/black"/>
-    <View android:layout_width="match_parent" android:layout_height="1px" android:id="@+id/view_divider_discuss_report"
-          android:background="@color/discovery_discuss_reward_gray"
-            />
-    <TextView android:id="@+id/textview_discovery_discuss_send_delete"
-              android:layout_width="match_parent"
-              android:layout_height="?android:attr/listPreferredItemHeight"
-              android:textAppearance="?android:attr/textAppearanceListItem"
-              android:gravity="center_vertical|center_horizontal"
-              android:textSize="17sp"
-              android:text="@string/discovery_discuss_send_delete"
-              android:textColor="@color/black"/>
-    <View android:layout_width="match_parent" android:layout_height="1px" android:id="@+id/view_divider_discuss_delete"
-          android:background="@color/discovery_discuss_reward_gray"
-            />
-    <TextView android:id="@+id/textview_discovery_discuss_send_share_wechat"
-              android:layout_width="match_parent"
-              android:layout_height="?android:attr/listPreferredItemHeight"
-              android:textAppearance="?android:attr/textAppearanceListItem"
-              android:gravity="center_vertical|center_horizontal"
-              android:textSize="17sp"
-              android:text="@string/discovery_discuss_send_share_wechat"
-              android:textColor="@color/black"/>
-    <TextView android:id="@+id/textview_discovery_discuss_send_share_moment"
-              android:layout_width="match_parent"
-              android:layout_height="?android:attr/listPreferredItemHeight"
-              android:textAppearance="?android:attr/textAppearanceListItem"
-              android:gravity="center_vertical|center_horizontal"
-              android:textSize="17sp"
-              android:text="@string/discovery_discuss_send_share_moment"
-              android:textColor="@color/black"/>
-    <LinearLayout android:id="@+id/linearlayout_administrator_manage_timeline"
-                  android:visibility="gone" android:orientation="vertical" android:layout_width="match_parent"
-                  android:layout_height="wrap_content">
+<com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
 
-        <View android:layout_width="match_parent" android:layout_height="1px"
-              android:background="@color/discovery_discuss_reward_gray"
-              android:id="@+id/view_divider_administrator_top"
-                />
-        <TextView android:id="@+id/textview_administrator_top"
-                  android:layout_width="match_parent"
-                  android:layout_height="?android:attr/listPreferredItemHeight"
-                  android:textAppearance="?android:attr/textAppearanceListItem"
-                  android:gravity="center_vertical|center_horizontal"
-                  android:textSize="17sp"
-                  android:text="@string/administrator_add_top"
-                  android:textColor="@color/black"/>
-        <View android:layout_width="match_parent" android:layout_height="1px"
-              android:background="@color/discovery_discuss_reward_gray"
-                />
-        <TextView android:id="@+id/textview_administrator_favorite"
-                  android:layout_width="match_parent"
-                  android:layout_height="?android:attr/listPreferredItemHeight"
-                  android:textAppearance="?android:attr/textAppearanceListItem"
-                  android:gravity="center_vertical|center_horizontal"
-                  android:textSize="17sp"
-                  android:text="@string/administrator_add_favorite"
-                  android:textColor="@color/black"/>
-        <View android:layout_width="match_parent" android:layout_height="1px"
-              android:background="@color/discovery_discuss_reward_gray"
-                />
-        <TextView android:id="@+id/textview_administrator_production"
-                  android:layout_width="match_parent"
-                  android:layout_height="?android:attr/listPreferredItemHeight"
-                  android:textAppearance="?android:attr/textAppearanceListItem"
-                  android:gravity="center_vertical|center_horizontal"
-                  android:textSize="17sp"
-                  android:text="@string/administrator_add_production"
-                  android:textColor="@color/black"/>
-        <View android:layout_width="match_parent" android:layout_height="1px"
-              android:id="@+id/view_divider_administrator_learning"
-              android:background="@color/discovery_discuss_reward_gray"
-                />
-        <TextView android:id="@+id/textview_administrator_learning"
-                  android:layout_width="match_parent"
-                  android:layout_height="?android:attr/listPreferredItemHeight"
-                  android:textAppearance="?android:attr/textAppearanceListItem"
-                  android:gravity="center_vertical|center_horizontal"
-                  android:textSize="17sp"
-                  android:text="@string/administrator_add_learning"
-                  android:textColor="@color/black"/>
-        <View android:layout_width="match_parent" android:layout_height="1px"
-              android:background="@color/discovery_discuss_reward_gray"
-                />
-        <TextView android:id="@+id/textview_administrator_delete_timeline"
-                  android:layout_width="match_parent"
-                  android:layout_height="?android:attr/listPreferredItemHeight"
-                  android:textAppearance="?android:attr/textAppearanceListItem"
-                  android:gravity="center_vertical|center_horizontal"
-                  android:textSize="17sp"
-                  android:text="@string/administrator_delete_timeline"
-                  android:textColor="@color/black"/>
+    <TextView
+        android:id="@+id/textview_discovery_discuss_send_report"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/discovery_discuss_send_report"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textColor="@color/black"
+        android:textSize="17sp"/>
+
+    <View
+        android:id="@+id/view_divider_discuss_report"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/discovery_discuss_reward_gray"/>
+
+    <TextView
+        android:id="@+id/textview_discovery_discuss_send_delete"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/discovery_discuss_send_delete"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textColor="@color/black"
+        android:textSize="17sp"/>
+
+    <View
+        android:id="@+id/view_divider_discuss_delete"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/discovery_discuss_reward_gray"/>
+
+    <TextView
+        android:id="@+id/textview_discovery_discuss_send_share_wechat"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/discovery_discuss_send_share_wechat"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textColor="@color/black"
+        android:textSize="17sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/discovery_discuss_reward_gray"/>
+
+    <TextView
+        android:id="@+id/textview_discovery_discuss_send_share_moment"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/listPreferredItemHeight"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="@string/discovery_discuss_send_share_moment"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textColor="@color/black"
+        android:textSize="17sp"/>
+
+    <LinearLayout
+        android:id="@+id/linearlayout_administrator_manage_timeline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View
+            android:id="@+id/view_divider_administrator_top"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/discovery_discuss_reward_gray"/>
+
+        <TextView
+            android:id="@+id/textview_administrator_top"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/administrator_add_top"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="@color/black"
+            android:textSize="17sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/discovery_discuss_reward_gray"/>
+
+        <TextView
+            android:id="@+id/textview_administrator_favorite"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/administrator_add_favorite"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="@color/black"
+            android:textSize="17sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/discovery_discuss_reward_gray"/>
+
+        <TextView
+            android:id="@+id/textview_administrator_production"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/administrator_add_production"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="@color/black"
+            android:textSize="17sp"/>
+
+        <View
+            android:id="@+id/view_divider_administrator_learning"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/discovery_discuss_reward_gray"/>
+
+        <TextView
+            android:id="@+id/textview_administrator_learning"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/administrator_add_learning"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="@color/black"
+            android:textSize="17sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/discovery_discuss_reward_gray"/>
+
+        <TextView
+            android:id="@+id/textview_administrator_delete_timeline"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/listPreferredItemHeight"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/administrator_delete_timeline"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="@color/black"
+            android:textSize="17sp"/>
     </LinearLayout>
 </com.tradehero.chinabuild.dialog.TimeLineDetailDialogLayout>
