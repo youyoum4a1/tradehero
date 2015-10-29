@@ -97,7 +97,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
 
     @Override public boolean shouldShowLiveTradingToggle()
     {
-        return false;
+        return true;
     }
 
     @Override public void onDestroyOptionsMenu()

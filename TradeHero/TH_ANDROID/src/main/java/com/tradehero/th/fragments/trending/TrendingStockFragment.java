@@ -224,6 +224,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     protected void fetchListByFilter(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
+        //ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO = new ExchangeCompactSpinnerDTO();
+
+
         boolean hasChanged = !trendingFilterTypeDTO.equals(this.trendingFilterTypeDTO);
         this.trendingFilterTypeDTO = trendingFilterTypeDTO;
         if (hasChanged)
@@ -528,14 +531,16 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
         BuySellStockFragment.putRequisite(args, requisite);
 
-        if (isLiveTrading.get())
-        {
-            navigator.get().pushFragment(LiveBuySellFragment.class, args);
-        }
-        else
-        {
-            navigator.get().pushFragment(BuySellStockFragment.class, args);
-        }
+        //if (isLiveTrading.get())
+        //{
+        //    navigator.get().pushFragment(LiveBuySellFragment.class, args);
+        //}
+        //else
+        //{
+        //    navigator.get().pushFragment(BuySellStockFragment.class, args);
+        //}
+        navigator.get().pushFragment(BuySellStockFragment.class, args);
+
     }
 
     @Override protected void populateArgumentForSearch(@NonNull Bundle args)
