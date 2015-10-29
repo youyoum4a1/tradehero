@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.settings;
 
 import android.support.annotation.Nullable;
 import com.tradehero.th.fragments.TestKChartsFragment;
+import com.tradehero.th.fragments.LiveDevSettingFragment;
 import com.tradehero.th.fragments.TypographyExampleFragment;
 import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
 import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
@@ -33,4 +34,6 @@ public class AdminSettingsFragmentUtil
     {
         return TestKChartsFragment.class;
     }
+
+    @Nullable public static Class getLiveDevSettingFragment() { return LiveDevSettingFragment.class; }
 }

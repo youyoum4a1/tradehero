@@ -11,7 +11,8 @@ import dagger.Module;
         },
         injects = {
                 TypographyExampleFragment.class,
-                TestKChartsFragment.class
+                TestKChartsFragment.class,
+                LiveDevSettingFragment.class
         },
 
         complete = false,

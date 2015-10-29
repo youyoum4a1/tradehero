@@ -57,6 +57,7 @@ public class PreferenceModule
     public static final String PREF_ON_BOARDING_EXCHANGE = "PREF_ON_BOARDING_EXCHANGE";
     public static final String PREF_IS_LIVE_TRADING = "PREF_IS_LIVE_TRADING";
     public static final String PREF_IS_LIVE_LOGIN = "PREF_IS_LIVE_LOGIN";
+    public static final String PREF_IS_LIVE_COLOR_RED = "PREF_IS_LIVE_COLOR_RED";
 
     @Provides @Singleton @ForUser SharedPreferences provideUserSharePreferences(Context context)
     {
@@ -166,6 +167,11 @@ public class PreferenceModule
     @Provides @Singleton @IsLiveLogIn BooleanPreference provideIsLiveLogIn(@ForUser SharedPreferences sharedPreferences)
     {
         return new BooleanPreference(sharedPreferences, PREF_IS_LIVE_LOGIN, false);
+    }
+
+    @Provides @Singleton @IsLiveColorRed BooleanPreference provideIsLiveColorRed(@ForUser SharedPreferences sharedPreferences)
+    {
+        return new BooleanPreference(sharedPreferences, PREF_IS_LIVE_COLOR_RED, false);
     }
 
     @Provides @AuthHeader String provideAuthenticationHeader(final Context context)

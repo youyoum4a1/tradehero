@@ -50,6 +50,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
     private static final CharSequence KEY_TYPOGRAPHY_SCREEN = "show_typography_examples";
     private static final CharSequence KEY_PRESEASON = "show_preseason_dialog";
     private static final CharSequence KEY_KCHART = "show_kchart_examples";
+    private static final CharSequence KEY_SHOW_LIVE_DEV_SETTING = "show_live_dev_setting";
 
     @Inject @ServerEndpoint StringPreference serverEndpointPreference;
     @Inject THApp app;
@@ -262,6 +263,21 @@ public class AdminSettingsFragment extends BasePreferenceFragment
                 @Override public boolean onPreferenceClick(Preference preference)
                 {
                     navigator.get().pushFragment(kChartExampleFragment);
+                    return true;
+                }
+            });
+        }
+
+        final Preference showLiveDevSetting = findPreference(KEY_SHOW_LIVE_DEV_SETTING);
+        final Class liveDevSettingFragment = AdminSettingsFragmentUtil.getLiveDevSettingFragment();
+        showLiveDevSetting.setEnabled(liveDevSettingFragment != null);
+        if (liveDevSettingFragment != null)
+        {
+            showLiveDevSetting.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+            {
+                @Override public boolean onPreferenceClick(Preference preference)
+                {
+                    navigator.get().pushFragment(liveDevSettingFragment);
                     return true;
                 }
             });

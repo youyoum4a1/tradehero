@@ -81,4 +81,9 @@
       android:key="show_kchart_examples"
       android:title="show_kchart_examples"/>
 
+  <Preference
+      android:key="show_live_dev_setting"
+      android:title="show_live_dev_setting"
+    />
+
 </PreferenceScreen>

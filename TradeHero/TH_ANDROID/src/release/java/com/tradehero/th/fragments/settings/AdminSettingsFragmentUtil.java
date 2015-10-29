@@ -28,4 +28,6 @@ public class AdminSettingsFragmentUtil
     {
         return null;
     }
+
+    @Nullable public static Class getLiveDevSettingFragment() { return null; }
 }

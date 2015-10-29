@@ -5,11 +5,13 @@ import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.trending.TileType;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.DummyAyondoLiveServiceWrapper;
+import com.tradehero.th.persistence.prefs.IsLiveColorRed;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.route.THRouter;
@@ -19,6 +21,7 @@ import javax.inject.Inject;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class LiveActivityUtil
 {
@@ -26,6 +29,8 @@ public class LiveActivityUtil
     private CompositeSubscription onDestroyOptionsMenuSubscriptions;
 
     @Inject @IsLiveTrading BooleanPreference isLiveTrading;
+    @Inject @IsLiveColorRed BooleanPreference isLiveColorRed;
+
     private OffOnViewSwitcher liveSwitcher;
 
     public static Class<?> getRoutableKYC()
@@ -121,6 +126,8 @@ public class LiveActivityUtil
 
     private void changeBarColor(OffOnViewSwitcherEvent event)
     {
+        THToast.show(isLiveColorRed.get().toString());
+
         activity.getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(activity.getResources().getColor(event.isOn ? R.color.tradehero_red : R.color.tradehero_blue)));
 
