@@ -1,7 +1,6 @@
 package com.tradehero.th.fragments.live;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -15,7 +14,8 @@ import com.tradehero.th.R;
 public class LivePositionListFragmentAlertView extends LinearLayout
 {
     @Bind(R.id.stock_logo) ImageView stockImageView;
-    @Bind(R.id.stock_name) TextView stockTextView;
+    @Bind(R.id.stock_symbol) TextView stockSymbolTextView;
+    @Bind(R.id.stock_name) TextView stockNameTextView;
 
     public LivePositionListFragmentAlertView(Context context)
     {
@@ -32,22 +32,35 @@ public class LivePositionListFragmentAlertView extends LinearLayout
         super(context, attrs, defStyle);
     }
 
-
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
         ButterKnife.bind(this);
     }
 
-    public void setImage(Context context, String url)
+    public void setImage(Context context, String url, int defaultStockLogoRes)
     {
-        Picasso.with(context)
-                .load(Uri.parse(url))
-                .into(stockImageView);
+        if (url != null)
+        {
+            Picasso.with(context)
+                    .load(Uri.parse(url))
+                    .into(stockImageView);
+        }
+        else
+        {
+            Picasso.with(context)
+                    .load(defaultStockLogoRes)
+                    .into(stockImageView);
+        }
     }
 
-    public void setText(String text)
+    public void setStockSymbolText(String text)
     {
-        stockTextView.setText(text);
+        stockSymbolTextView.setText(text);
+    }
+
+    public void setStockNameText(String text)
+    {
+        stockNameTextView.setText(text);
     }
 }

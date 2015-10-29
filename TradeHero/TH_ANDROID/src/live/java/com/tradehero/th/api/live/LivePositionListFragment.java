@@ -35,6 +35,7 @@ import com.tradehero.th.api.position.PositionDTO;
 import com.tradehero.th.api.position.PositionStatus;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
+import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
@@ -50,6 +51,8 @@ import com.tradehero.th.fragments.position.partial.PositionCompactDisplayDTO;
 import com.tradehero.th.fragments.position.partial.PositionDisplayDTO;
 import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
+import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.tradehero.th.fragments.trade.FXMainFragment;
 import com.tradehero.th.fragments.trade.StockActionBarRelativeLayout;
 import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.models.position.PositionDTOUtils;
@@ -271,109 +274,24 @@ public class LivePositionListFragment extends DashboardFragment
     {
         if (item instanceof PositionDisplayDTO)
         {
-            PositionDisplayDTO positionDisplayDTO = (PositionDisplayDTO)item;
-            //final PositionDisplayDTO dto = (PositionDisplayDTO) item;
-            //onStopSubscriptions.add(Observable.zip(
-            //        userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
-            //                .subscribeOn(Schedulers.computation())
-            //                .map(new PairGetSecond<UserBaseKey, WatchlistPositionDTOList>()),
-            //        alertCompactListCache.getOneSecurityMappedAlerts(currentUserId.toUserBaseKey()),
-            //        new Func2<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>, StockActionBarRelativeLayout.Requisite>()
-            //        {
-            //            @Override public StockActionBarRelativeLayout.Requisite call(WatchlistPositionDTOList watchlistPositionDTOs,
-            //                    Map<SecurityId, AlertCompactDTO> securityIdAlertCompactDTOMap)
-            //            {
-            //                return new StockActionBarRelativeLayout.Requisite(
-            //                        dto.securityCompactDTO.getSecurityId(),
-            //                        dto.securityCompactDTO,
-            //                        watchlistPositionDTOs,
-            //                        securityIdAlertCompactDTOMap);
-            //            }
-            //        })
-            //        .retry()
-            //        .observeOn(AndroidSchedulers.mainThread())
-            //        .flatMap(new Func1<StockActionBarRelativeLayout.Requisite, Observable<StockActionBarRelativeLayout.UserAction>>()
-            //        {
-            //            @Override
-            //            public Observable<StockActionBarRelativeLayout.UserAction> call(final StockActionBarRelativeLayout.Requisite requisite)
-            //            {
-            //                final StockActionBarRelativeLayout actionView =
-            //                        (StockActionBarRelativeLayout) LayoutInflater.from(getActivity()).inflate(R.layout.position_simple_action, null);
-            //                actionView.display(requisite);
-            //                Boolean isClosed = dto.positionDTO.isClosed();
-            //                final BehaviorSubject<AlertDialog> alertDialogSubject =
-            //                        BehaviorSubject.create(); // We do this to be able to dismiss the dialog
-            //                return Observable.zip(
-            //                        alertDialogSubject.flatMap(
-            //                                new Func1<AlertDialog, Observable<StockActionBarRelativeLayout.UserAction>>()
-            //                                {
-            //                                    @Override
-            //                                    public Observable<StockActionBarRelativeLayout.UserAction> call(final AlertDialog alertDialog)
-            //                                    {
-            //                                        return actionView.getUserActionObservable()
-            //                                                .observeOn(AndroidSchedulers.mainThread())
-            //                                                .doOnNext(
-            //                                                        new Action1<StockActionBarRelativeLayout.UserAction>()
-            //                                                        {
-            //                                                            @Override public void call(
-            //                                                                    StockActionBarRelativeLayout.UserAction userAction)
-            //                                                            {
-            //                                                                handleDialogUserAction(userAction);
-            //                                                                alertDialog.dismiss();
-            //                                                            }
-            //                                                        });
-            //                                    }
-            //                                })
-            //                        ,
-            //                        AlertDialogRx.build(getActivity())
-            //                                .setView(actionView)
-            //                                .setCancelable(true)
-            //                                .setCanceledOnTouchOutside(true)
-            //                                .setPositiveButton(
-            //                                        (isClosed != null && isClosed) || !currentUserId.toUserBaseKey().equals(shownUser)
-            //                                                ? null
-            //                                                : getString(R.string.position_close_position_action))
-            //                                .setNegativeButton(R.string.timeline_trade)
-            //                                .setNeutralButton(R.string.cancel)
-            //                                .setAlertDialogObserver(alertDialogSubject)
-            //                                .build(),
-            //                        new Func2<StockActionBarRelativeLayout.UserAction, OnDialogClickEvent, StockActionBarRelativeLayout.UserAction>()
-            //                        {
-            //                            @Override
-            //                            public StockActionBarRelativeLayout.UserAction call(StockActionBarRelativeLayout.UserAction userAction,
-            //                                    OnDialogClickEvent onDialogClickEvent)
-            //                            {
-            //                                return userAction;
-            //                            }
-            //                        });
-            //            }
-            //        })
-            //        .subscribe(
-            //                new Action1<StockActionBarRelativeLayout.UserAction>()
-            //                {
-            //                    @Override public void call(StockActionBarRelativeLayout.UserAction userAction)
-            //                    {
-            //                        Timber.d("Received");
-            //                    }
-            //                },
-            //                new TimberAndToastOnErrorAction1("Failed")));
-
+            final PositionDisplayDTO positionDisplayDTO = (PositionDisplayDTO) item;
             Boolean isClosed = positionDisplayDTO.positionDTO.isClosed();
 
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            LivePositionListFragmentAlertView alertView = (LivePositionListFragmentAlertView)inflater.inflate(R.layout.live_position_list_fragment_alert_view, null);
-            alertView.setImage(getContext(), positionDisplayDTO.stockLogoUrl);
-            alertView.setText(positionDisplayDTO.stockSymbol);
+            LivePositionListFragmentAlertView alertView =
+                    (LivePositionListFragmentAlertView) inflater.inflate(R.layout.live_position_list_fragment_alert_view, null);
+            alertView.setImage(getContext(), positionDisplayDTO.stockLogoUrl, positionDisplayDTO.stockLogoRes);
+            alertView.setStockNameText(positionDisplayDTO.companyName);
+            alertView.setStockSymbolText(positionDisplayDTO.stockSymbol);
 
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext())
-                    .setTitle(positionDisplayDTO.companyName)
                     .setView(alertView)
                     .setCancelable(true)
                     .setNegativeButton(R.string.timeline_trade, new DialogInterface.OnClickListener()
                     {
                         @Override public void onClick(DialogInterface dialog, int which)
                         {
-
+                            handleAlertDialogTradeAndCloseBtn(false, positionDisplayDTO.securityCompactDTO, positionDisplayDTO.positionDTO);
                         }
                     })
                     .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener()
@@ -390,7 +308,7 @@ public class LivePositionListFragment extends DashboardFragment
                 {
                     @Override public void onClick(DialogInterface dialog, int which)
                     {
-
+                        handleAlertDialogTradeAndCloseBtn(true, positionDisplayDTO.securityCompactDTO, positionDisplayDTO.positionDTO);
                     }
                 });
             }
@@ -401,6 +319,19 @@ public class LivePositionListFragment extends DashboardFragment
         }
 
         return false;
+    }
+
+    private void handleAlertDialogTradeAndCloseBtn(boolean andClose, @NonNull SecurityCompactDTO securityCompactDTO, @NonNull PositionDTO positionDTO)
+    {
+        Bundle args = new Bundle();
+        BuySellStockFragment.putRequisite(
+                args,
+                new BuySellStockFragment.Requisite(
+                        securityCompactDTO.getSecurityId(),
+                        new OwnedPortfolioId(currentUserId.get(), 7513),
+                        andClose && positionDTO.shares != null ? positionDTO.shares : 0));
+
+        navigator.get().pushFragment(BuySellStockFragment.class, args);
     }
 
     private void setUpLiveHeader(LivePortfolioDTO livePortfolioDTO)
