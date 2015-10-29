@@ -126,17 +126,19 @@ public class LiveActivityUtil
 
     private void changeBarColor(OffOnViewSwitcherEvent event)
     {
-        THToast.show(isLiveColorRed.get().toString());
+        int baseColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red : R.color.tradehero_red;
+        int statusBarColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red_status_bar : R.color.tradehero_red_status_bar;
+//        int bottomColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red : R.drawable.tradehero_bottom_tab_indicator_red;
 
         activity.getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(activity.getResources().getColor(event.isOn ? R.color.tradehero_red : R.color.tradehero_blue)));
+                new ColorDrawable(activity.getResources().getColor(event.isOn ? baseColorRes : R.color.tradehero_blue)));
 
         //Specific to this activity?
         if (activity instanceof DashboardActivity)
         {
             DashboardActivity dashboardActivity = (DashboardActivity) activity;
             dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
-                    dashboardActivity.getResources().getColor(event.isOn ? R.color.tradehero_red_status_bar : R.color.tradehero_blue_status_bar));
+                    dashboardActivity.getResources().getColor(event.isOn ? statusBarColorRes : R.color.tradehero_blue_status_bar));
 
             for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
             {

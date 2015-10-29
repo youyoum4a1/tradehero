@@ -100,14 +100,14 @@ public class PortfolioMainFragment extends DashboardFragment
         super.onLiveTradingChanged(event);
         if (event.isOn && event.isFromUser)
         {
-            if (isLiveLogIn.get())
-            {
+//            if (isLiveLogIn.get())
+//            {
                 handleIsLive();
-            }
-            else
-            {
-                liveFragmentUtil.launchLiveLogin();
-            }
+//            }
+//            else
+//            {
+//                liveFragmentUtil.launchLiveLogin();
+//            }
         }
         else if (!event.isOn && event.isFromUser)
         {

@@ -6,4 +6,10 @@
   <color name="tradehero_red_status_bar">@color/tradehero_red</color>
   <color name="tradehero_dark_red">#18222c</color>
   <color name="sign_up_indicator_bg">#888888</color>
+
+  <color name="tradehero_test_red">#F44336</color>
+  <color name="tradehero_test_red_pressed">#a9362f</color>
+  <color name="tradehero_test_red_focused">#fa5145</color>
+  <color name="tradehero_test_red_status_bar">@color/tradehero_test_red</color>
+  <color name="tradehero_test_dark_red">#A8342A</color>
 </resources>

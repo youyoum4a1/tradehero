@@ -42,6 +42,7 @@ public class LiveDevSettingFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
 
+        toggleButton.setChecked(isLiveColorRed.get());
         toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)

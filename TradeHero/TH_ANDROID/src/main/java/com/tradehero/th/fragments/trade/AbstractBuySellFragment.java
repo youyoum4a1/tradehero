@@ -14,6 +14,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.android.internal.util.Predicate;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
@@ -43,6 +44,7 @@ import com.tradehero.th.persistence.portfolio.OwnedPortfolioIdListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionListCacheRx;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
 import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
 import com.tradehero.th.persistence.prefs.ShowMarketClosed;
@@ -89,6 +91,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Inject @ShowAskForReviewDialog protected TimingIntervalPreference mShowAskForReviewDialogPreference;
     @Inject @ShowAskForInviteDialog protected TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject protected BroadcastUtils broadcastUtils;
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
 
     @Bind(R.id.portfolio_selector_container) protected PortfolioSelectorView selectedPortfolioContainer;
     @Bind(R.id.quote_refresh_countdown) protected ProgressBar quoteRefreshProgressBar;

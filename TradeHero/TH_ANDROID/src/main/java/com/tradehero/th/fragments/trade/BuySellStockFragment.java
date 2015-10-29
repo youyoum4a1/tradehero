@@ -30,6 +30,8 @@ import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
+import com.tradehero.th.widget.OffOnViewSwitcherEvent;
+
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -67,6 +69,15 @@ public class BuySellStockFragment extends AbstractBuySellFragment
         super.onViewCreated(view, savedInstanceState);
         mSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+
+        if (isLiveTrading.get())
+        {
+            selectedPortfolioContainer.setVisibility(View.GONE);
+        }
+        else
+        {
+            selectedPortfolioContainer.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override public void onStart()
@@ -81,12 +92,10 @@ public class BuySellStockFragment extends AbstractBuySellFragment
         onDestroyOptionsMenuSubscriptions.add(securityObservable.startWith(securityCompactDTO)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<SecurityCompactDTO>()
-                        {
-                            @Override public void call(SecurityCompactDTO securityCompactDTO)
-                            {
-                                if(securityCompactDTO != null)
-                                {
+                        .subscribe(new Action1<SecurityCompactDTO>() {
+                            @Override
+                            public void call(SecurityCompactDTO securityCompactDTO) {
+                                if (securityCompactDTO != null) {
                                     setActionBarTitle(securityCompactDTO.name);
                                     setActionBarSubtitle(securityCompactDTO.getExchangeSymbol());
                                 }
@@ -217,5 +226,17 @@ public class BuySellStockFragment extends AbstractBuySellFragment
         }
         analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, requisite.securityId));
         super.handleBuySellButtonsClicked(view);
+    }
+
+    @Override public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
+    {
+        if (isLiveTrading.get())
+        {
+            selectedPortfolioContainer.setVisibility(View.GONE);
+        }
+        else
+        {
+            selectedPortfolioContainer.setVisibility(View.VISIBLE);
+        }
     }
 }
