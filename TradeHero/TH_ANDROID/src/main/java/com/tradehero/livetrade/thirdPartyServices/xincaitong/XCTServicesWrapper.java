@@ -39,7 +39,7 @@ import javax.inject.Singleton;
 @Singleton
 public class XCTServicesWrapper implements LiveTradeServices {
 
-    private static final String APK_URL = "http://fhmainstorage.blob.core.windows.net/fhres/XCT_QMGS_EXCH.apk";
+    private static final String APK_URL = "http://www.xincaitong.com/download/xct_qmgs.apk";
 
     // 第三方证券与交易模块间的接口变量定义
     // ***************************************************************************************
