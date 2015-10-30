@@ -531,15 +531,15 @@ public class TrendingStockFragment extends TrendingBaseFragment
         }
         BuySellStockFragment.putRequisite(args, requisite);
 
-        //if (isLiveTrading.get())
-        //{
-        //    navigator.get().pushFragment(LiveBuySellFragment.class, args);
-        //}
-        //else
-        //{
-        //    navigator.get().pushFragment(BuySellStockFragment.class, args);
-        //}
-        navigator.get().pushFragment(BuySellStockFragment.class, args);
+        if (isLiveTrading.get())
+        {
+            navigator.get().pushFragment(LiveBuySellFragment.class, args);
+        }
+        else
+        {
+            navigator.get().pushFragment(BuySellStockFragment.class, args);
+        }
+        //navigator.get().pushFragment(BuySellStockFragment.class, args);
 
     }
 

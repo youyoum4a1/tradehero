@@ -304,14 +304,14 @@ public class TrendingMainFragment extends DashboardFragment
         super.onLiveTradingChanged(event);
         if (event.isOn && event.isFromUser)
         {
-//            if (!isLiveLogIn.get())
-//            {
-//                trendingLiveFragmentUtil.launchLiveLogin();
-//            }
-//            else
-//            {
+            if (!isLiveLogIn.get())
+            {
+                trendingLiveFragmentUtil.launchLiveLogin();
+            }
+            else
+            {
                 handleIsLive();
-//            }
+            }
         }
         else if (!event.isOn && event.isFromUser)
         {
