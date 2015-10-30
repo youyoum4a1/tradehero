@@ -51,6 +51,7 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
     private static final int AYONDO_MINIMUM_AGE = 21;
 
     @Inject CurrentUserId currentUserId;
+    @Inject LivePortfolioId livePortfolioId;
     @Inject PositionServiceWrapper positionServiceWrapper;
 
     @Inject public DummyAyondoLiveServiceWrapper(
@@ -203,6 +204,7 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
     @NonNull public Observable<GetPositionsDTO> getLivePositionsDTO(LivePortfolioId id)
     {
         // TODO: replace api for live
+        livePortfolioId.set(7513);
         return positionServiceWrapper.getPositionsRx(new OwnedPortfolioId(currentUserId.get(), 7513));
     }
 }

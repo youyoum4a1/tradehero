@@ -53,8 +53,10 @@ import com.tradehero.th.fragments.position.view.PositionLockedView;
 import com.tradehero.th.fragments.position.view.PositionNothingView;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
 import com.tradehero.th.fragments.trade.FXMainFragment;
+import com.tradehero.th.fragments.trade.LiveBuySellFragment;
 import com.tradehero.th.fragments.trade.StockActionBarRelativeLayout;
 import com.tradehero.th.fragments.trade.TradeListFragment;
+import com.tradehero.th.models.parcelable.LiveBuySellParcelable;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.network.service.DummyAyondoLiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
@@ -324,14 +326,20 @@ public class LivePositionListFragment extends DashboardFragment
     private void handleAlertDialogTradeAndCloseBtn(boolean andClose, @NonNull SecurityCompactDTO securityCompactDTO, @NonNull PositionDTO positionDTO)
     {
         Bundle args = new Bundle();
-        BuySellStockFragment.putRequisite(
-                args,
-                new BuySellStockFragment.Requisite(
-                        securityCompactDTO.getSecurityId(),
-                        new OwnedPortfolioId(currentUserId.get(), 7513),
-                        andClose && positionDTO.shares != null ? positionDTO.shares : 0));
+        //BuySellStockFragment.putRequisite(
+        //        args,
+        //        new BuySellStockFragment.Requisite(
+        //                securityCompactDTO.getSecurityId(),
+        //                new OwnedPortfolioId(currentUserId.get(), livePortfolioId.get()),
+        //                andClose && positionDTO.shares != null ? positionDTO.shares : 0));
+        //
+        //navigator.get().pushFragment(BuySellStockFragment.class, args);
 
-        navigator.get().pushFragment(BuySellStockFragment.class, args);
+        LiveBuySellParcelable liveBuySellParcelable =
+                new LiveBuySellParcelable(securityCompactDTO.getSecurityId(), andClose && positionDTO.shares != null ? positionDTO.shares : 0);
+
+        getActivity().getIntent().putExtra("LiveBuySellParcelable", liveBuySellParcelable);
+        navigator.get().pushFragment(LiveBuySellFragment.class, args);
     }
 
     private void setUpLiveHeader(LivePortfolioDTO livePortfolioDTO)

@@ -1,6 +1,8 @@
 package com.tradehero.th.api.security;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
@@ -8,7 +10,7 @@ import com.tradehero.route.RouteProperty;
 import com.tradehero.th.api.portfolio.key.PortfolioCompactListKey;
 
 @RouteProperty
-public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
+public class SecurityId implements Comparable, PortfolioCompactListKey, DTO, Parcelable
 {
     private final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
     private final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
@@ -155,4 +157,34 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
     {
         return String.format("[SecurityId exchange=%s; securitySymbol=%s]", exchange, securitySymbol);
     }
+
+    @Override public int describeContents()
+    {
+        return 0;
+    }
+
+    @Override public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeString(this.exchange);
+        dest.writeString(this.securitySymbol);
+    }
+
+    private SecurityId(Parcel in)
+    {
+        this.exchange = in.readString();
+        this.securitySymbol = in.readString();
+    }
+
+    public static final Creator<SecurityId> CREATOR = new Creator<SecurityId>()
+    {
+        public SecurityId createFromParcel(Parcel source)
+        {
+            return new SecurityId(source);
+        }
+
+        public SecurityId[] newArray(int size)
+        {
+            return new SecurityId[size];
+        }
+    };
 }

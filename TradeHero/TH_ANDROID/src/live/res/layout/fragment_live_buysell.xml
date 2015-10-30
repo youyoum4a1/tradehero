@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_xsmall"
-            android:text="141.38"/>
+            tools:text="141.38"/>
 
         <TextView
             android:id="@+id/stock_roi"
@@ -43,7 +43,7 @@
             android:layout_toEndOf="@+id/live_price"
             android:layout_toRightOf="@+id/live_price"
             android:textColor="@color/number_green"
-            android:text="+1.89%"/>
+            tools:text="+1.89%"/>
 
         <TextView
             android:id="@+id/last_update"
@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/live_price"
-            android:text="As of 21 October 2015 0900 GMT"/>
+            tools:text="As of 21 October 2015 0900 GMT"/>
 
         <ImageView
             android:id="@+id/stock_logo"
@@ -61,7 +61,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:scaleType="fitCenter"
-            android:src="@drawable/stock_placeholder"
+            tools:src="@drawable/stock_placeholder"
             tools:ignore="contentDescription"
             />
 
@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="141.29"
+                tools:text="141.29"
                 />
           </TableRow>
 
@@ -181,7 +181,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="0.40"
+                tools:text="0.40"
                 />
           </TableRow>
 
@@ -205,7 +205,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="-0.03%"
+                tools:text="-0.03%"
                 />
           </TableRow>
 
@@ -229,7 +229,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="13.10"
+                tools:text="13.10"
                 />
           </TableRow>
 
@@ -253,7 +253,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="1:20"
+                tools:text="1:20"
                 />
           </TableRow>
 
@@ -286,7 +286,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="139.04"
+                tools:text="139.04"
                 />
           </TableRow>
 
@@ -310,7 +310,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="0.28%"
+                tools:text="0.28%"
                 />
           </TableRow>
 
@@ -334,7 +334,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="0.01%"
+                tools:text="0.01%"
                 />
           </TableRow>
 
@@ -358,7 +358,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="13.10"
+                tools:text="13.10"
                 />
           </TableRow>
 
@@ -382,7 +382,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="No"
+                tools:text="No"
                 />
           </TableRow>
 
