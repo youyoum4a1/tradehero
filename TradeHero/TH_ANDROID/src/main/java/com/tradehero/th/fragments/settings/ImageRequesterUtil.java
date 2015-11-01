@@ -6,7 +6,9 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -102,23 +104,50 @@ public class ImageRequesterUtil implements ActivityResultRequester
 
     @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, @Nullable Intent data)
     {
-        if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK
-                && data != null)
+//        if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK
+//                && data != null)
+//        {
+//            currentRequest = REQUEST_GALLERY;
+//            startPhotoZoom(activity, data.getData());
+//        }
+//        else if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK)
+//        {
+//            currentRequest = REQUEST_CAMERA;
+//            startPhotoZoom(activity, Uri.fromFile(mCurrentPhotoFile));
+//        }
+//        else if (requestCode == REQUEST_PHOTO_ZOOM && data != null)
+//        {
+//            Bundle bundle = data.getExtras();
+//            if (bundle != null)
+//            {
+//                Bitmap bitmap = bundle.getParcelable("data");
+//                if (bitmap == null || saveBitmapToFile(activity, bitmap))
+//                {
+//                    return;
+//                }
+//
+//                if (currentRequest == REQUEST_CAMERA)
+//                {
+//                    currentRequest = -1;
+//                    bitmapSubject.onNext(bitmap);
+//                }
+//                else if (currentRequest == REQUEST_GALLERY)
+//                {
+//                    currentRequest = -1;
+//                    bitmapSubject.onNext(bitmap);
+//                }
+//            }
+//        }
+        if (data != null)
         {
-            currentRequest = REQUEST_GALLERY;
-            startPhotoZoom(activity, data.getData());
-        }
-        else if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK)
-        {
-            currentRequest = REQUEST_CAMERA;
-            startPhotoZoom(activity, Uri.fromFile(mCurrentPhotoFile));
-        }
-        else if (requestCode == REQUEST_PHOTO_ZOOM && data != null)
-        {
-            Bundle bundle = data.getExtras();
-            if (bundle != null)
-            {
-                Bitmap bitmap = bundle.getParcelable("data");
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = activity.getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            if (cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String filePath = cursor.getString(columnIndex);
+                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+
                 if (bitmap == null || saveBitmapToFile(activity, bitmap))
                 {
                     return;
@@ -129,12 +158,15 @@ public class ImageRequesterUtil implements ActivityResultRequester
                     currentRequest = -1;
                     bitmapSubject.onNext(bitmap);
                 }
-                else if (currentRequest == REQUEST_GALLERY)
-                {
-                    currentRequest = -1;
-                    bitmapSubject.onNext(bitmap);
-                }
+//                else if (currentRequest == REQUEST_GALLERY)
+//                {
+//                    currentRequest = -1;
+//                    bitmapSubject.onNext(bitmap);
+//                }
+                currentRequest = -1;
+                bitmapSubject.onNext(bitmap);
             }
+            cursor.close();
         }
     }
 
