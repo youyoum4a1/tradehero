@@ -93,9 +93,18 @@ public class LiveBuySellFragment extends DashboardFragment
                     {
                         setActionBarTitle(securityCompactDTO.name);
 
-                        Picasso.with(getContext())
-                                .load(Uri.parse(securityCompactDTO.imageBlobUrl))
-                                .into(stockLogoImageView);
+                        if (securityCompactDTO.imageBlobUrl != null)
+                        {
+                            Picasso.with(getContext())
+                                    .load(Uri.parse(securityCompactDTO.imageBlobUrl))
+                                    .into(stockLogoImageView);
+                        }
+                        else
+                        {
+                            Picasso.with(getContext())
+                                    .load(securityCompactDTO.getExchangeLogoId())
+                                    .into(stockLogoImageView);
+                        }
 
                         livePriceTextView.setText(THSignedNumber.builder(securityCompactDTO.lastPrice).build().toString());
                         highTextView.setText(THSignedNumber.builder(securityCompactDTO.high).build().toString());
@@ -113,6 +122,12 @@ public class LiveBuySellFragment extends DashboardFragment
                         {
                             stockRoiTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.darker_grey));
                         }
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        Timber.e(throwable.toString());
                     }
                 });
     }
