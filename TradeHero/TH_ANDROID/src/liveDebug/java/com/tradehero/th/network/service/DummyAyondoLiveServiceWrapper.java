@@ -29,6 +29,10 @@ import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
 import com.tradehero.th.api.position.GetPositionsDTO;
+import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.tradehero.th.api.security.key.SecurityListType;
+import com.tradehero.th.api.security.key.TrendingLiveSecurityListType;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.fastfill.Gender;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
@@ -53,6 +57,7 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
     @Inject CurrentUserId currentUserId;
     @Inject LivePortfolioId livePortfolioId;
     @Inject PositionServiceWrapper positionServiceWrapper;
+    @Inject SecurityServiceRx securityServiceRx;
 
     @Inject public DummyAyondoLiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
@@ -206,5 +211,11 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
         // TODO: replace api for live
         livePortfolioId.set(7513);
         return positionServiceWrapper.getPositionsRx(new OwnedPortfolioId(currentUserId.get(), 7513));
+    }
+
+    // TODO: need handle for multiple broker
+    @NonNull public Observable<SecurityCompactDTOList> getLiveCFDSecuritiesRx(SecurityListType key)
+    {
+        return securityServiceRx.getTrendingSecurities("NASDAQ", key.page, key.perPage);
     }
 }

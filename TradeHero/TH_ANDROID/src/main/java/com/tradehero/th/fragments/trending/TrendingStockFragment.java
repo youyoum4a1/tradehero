@@ -224,9 +224,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     protected void fetchListByFilter(@NonNull TrendingFilterTypeDTO trendingFilterTypeDTO)
     {
-        //ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO = new ExchangeCompactSpinnerDTO();
-
-
         boolean hasChanged = !trendingFilterTypeDTO.equals(this.trendingFilterTypeDTO);
         this.trendingFilterTypeDTO = trendingFilterTypeDTO;
         if (hasChanged)

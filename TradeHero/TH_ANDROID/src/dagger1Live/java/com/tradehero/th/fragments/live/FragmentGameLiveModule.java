@@ -20,7 +20,8 @@ import dagger.Module;
                 VerifyPhoneDialogFragment.class,
                 LiveBuySellFragment.class,
                 LiveTransactionFragment.class,
-                LivePositionListFragment.class
+                LivePositionListFragment.class,
+                LiveTrendingFragment.class
         },
         library = true,
         complete = false

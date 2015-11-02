@@ -44,6 +44,7 @@ import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.base.LollipopArrayAdapter;
 import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
+import com.tradehero.th.fragments.live.LiveTrendingFragment;
 import com.tradehero.th.fragments.market.ExchangeSpinner;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
@@ -109,6 +110,7 @@ public class TrendingMainFragment extends DashboardFragment
     @NonNull private static TrendingAssetType lastType = TrendingAssetType.STOCK;
     @NonNull private static TrendingStockSortType lastStockTab = TrendingStockSortType.getDefault();
 
+    public static final int CODE_PROMPT = 1;
     private boolean fetchedFXPortfolio = false;
     private Observable<UserProfileDTO> userProfileObservable;
     @Nullable private OwnedPortfolioId fxPortfolioId;
@@ -364,10 +366,12 @@ public class TrendingMainFragment extends DashboardFragment
         super.onActivityResult(requestCode, resultCode, data);
         trendingLiveFragmentUtil.onActivityResult(requestCode, resultCode, data);
 
-        if (isLiveTrading.get())
+        if (requestCode == CODE_PROMPT && resultCode == Activity.RESULT_OK)
         {
-            handleIsLive();
-            liveTitleTextView.setText(actionBarTitle);
+            if (isLiveTrading.get())
+            {
+                handleIsLive();
+            }
         }
     }
 
@@ -750,17 +754,11 @@ public class TrendingMainFragment extends DashboardFragment
         {
             assetTypeSpinner.setVisibility(View.GONE);
         }
+
         actionBarTitle = "CFD";
-
-        for (int i=0; i < exchangeAdapter.getCount(); i++)
-        {
-            ExchangeCompactSpinnerDTO dto = exchangeAdapter.getItem(i);
-
-            if (dto.getUsableDisplayName().equals("NASDAQ"))
-            {
-                exchangeSpinner.setSelection(i);
-            }
-        }
+        exchangeContainer.setVisibility(View.GONE);
+        Fragment created = Fragment.instantiate(getActivity(), LiveTrendingFragment.class.getName());
+        getChildFragmentManager().beginTransaction().replace(R.id.trending_fragment_container, created).commitAllowingStateLoss();
     }
 
     private void handleIsVirtual()
@@ -769,6 +767,18 @@ public class TrendingMainFragment extends DashboardFragment
         {
             assetTypeSpinner.setVisibility(View.VISIBLE);
         }
+
         actionBarTitle = "";
+        exchangeContainer.setVisibility(View.VISIBLE);
+        int position = sortByAdapter.getPosition(lastStockTab);
+
+        if (position >= 0)
+        {
+            handleSortBySelected(lastStockTab);
+        }
+        else
+        {
+            handleSortBySelected(TrendingStockSortType.getDefault());
+        }
     }
 }
