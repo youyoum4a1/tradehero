@@ -28,6 +28,7 @@ import com.tradehero.th.activities.LiveAccountSettingActivity;
 import com.tradehero.th.adapters.TypedRecyclerAdapter;
 import com.tradehero.th.api.alert.AlertCompactDTO;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
 import com.tradehero.th.api.position.GetPositionsDTO;
@@ -59,6 +60,7 @@ import com.tradehero.th.fragments.trade.TradeListFragment;
 import com.tradehero.th.models.parcelable.LiveBuySellParcelable;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.network.service.DummyAyondoLiveServiceWrapper;
+import com.tradehero.th.network.service.PortfolioServiceWrapper;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
@@ -91,6 +93,7 @@ public class LivePositionListFragment extends DashboardFragment
     @Inject SecurityIdCache securityIdCache;
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject DummyAyondoLiveServiceWrapper ayondoLiveServiceWrapper;
+    @Inject PortfolioServiceWrapper portfolioServiceWrapper;
     @Inject CurrentUserId currentUserId;
     @Inject @IsLiveTrading BooleanPreference isLiveTrading;
 
@@ -121,57 +124,77 @@ public class LivePositionListFragment extends DashboardFragment
                     }
                 });
 
-        ayondoLiveServiceWrapper.getLivePositionsDTO(livePortfolioId).
-                subscribe(new Action1<GetPositionsDTO>()
+        portfolioServiceWrapper.getPortfoliosRx(currentUserId.toUserBaseKey(), false)
+                .subscribe(new Action1<PortfolioCompactDTOList>()
                 {
-                    @Override public void call(GetPositionsDTO getPositionsDTO)
+                    @Override public void call(PortfolioCompactDTOList portfolioCompactDTOs)
                     {
-                        if (getPositionsDTO.positions != null)
-                        {
-                            Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> listPairObservable = PositionDTOUtils.getSecuritiesSoft(
-                                    Observable.from(getPositionsDTO.positions),
-                                    securityIdCache,
-                                    securityCompactCache).toList();
+                        PortfolioCompactDTO portfolioCompactDTO = portfolioCompactDTOs.getDefaultPortfolio();
 
-                            listPairObservable.flatMap(new Func1<List<Pair<PositionDTO, SecurityCompactDTO>>, Observable<List<Object>>>()
-                            {
-                                @Override public Observable<List<Object>> call(List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
+                        // TODO: replace api for live
+                        livePortfolioId.set(portfolioCompactDTO.id);
+                        ayondoLiveServiceWrapper.getLivePositionsDTO(livePortfolioId).
+                                subscribe(new Action1<GetPositionsDTO>()
                                 {
-                                    List<Object> adapterObjects = new ArrayList<>();
-
-                                    for (Pair<PositionDTO, SecurityCompactDTO> pair : pairs)
+                                    @Override public void call(GetPositionsDTO getPositionsDTO)
                                     {
-                                        if (pair.first.isLocked())
+                                        if (getPositionsDTO.positions != null)
                                         {
-                                            adapterObjects.add(new PositionLockedView.DTO(getResources(), pair.first));
-                                        }
-                                        else
-                                        {
-                                            adapterObjects.add(new PositionDisplayDTO(
-                                                    getResources(),
-                                                    currentUserId,
-                                                    pair.first,
-                                                    pair.second));
+                                            Observable<List<Pair<PositionDTO, SecurityCompactDTO>>> listPairObservable =
+                                                    PositionDTOUtils.getSecuritiesSoft(
+                                                            Observable.from(getPositionsDTO.positions),
+                                                            securityIdCache,
+                                                            securityCompactCache).toList();
+
+                                            listPairObservable.flatMap(
+                                                    new Func1<List<Pair<PositionDTO, SecurityCompactDTO>>, Observable<List<Object>>>()
+                                                    {
+                                                        @Override
+                                                        public Observable<List<Object>> call(List<Pair<PositionDTO, SecurityCompactDTO>> pairs)
+                                                        {
+                                                            List<Object> adapterObjects = new ArrayList<>();
+
+                                                            for (Pair<PositionDTO, SecurityCompactDTO> pair : pairs)
+                                                            {
+                                                                if (pair.first.isLocked())
+                                                                {
+                                                                    adapterObjects.add(new PositionLockedView.DTO(getResources(), pair.first));
+                                                                }
+                                                                else
+                                                                {
+                                                                    adapterObjects.add(new PositionDisplayDTO(
+                                                                            getResources(),
+                                                                            currentUserId,
+                                                                            pair.first,
+                                                                            pair.second));
+                                                                }
+                                                            }
+
+                                                            return Observable.just(adapterObjects);
+                                                        }
+                                                    }).observeOn(AndroidSchedulers.mainThread())
+                                                    .subscribe(new Action1<List<Object>>()
+                                                    {
+                                                        @Override public void call(List<Object> objects)
+                                                        {
+                                                            linkWith(objects);
+                                                        }
+                                                    }, new Action1<Throwable>()
+                                                    {
+                                                        @Override public void call(Throwable throwable)
+                                                        {
+                                                            Timber.e(throwable.toString());
+                                                        }
+                                                    });
                                         }
                                     }
-
-                                    return Observable.just(adapterObjects);
-                                }
-                            }).observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(new Action1<List<Object>>()
+                                }, new Action1<Throwable>()
+                                {
+                                    @Override public void call(Throwable throwable)
                                     {
-                                        @Override public void call(List<Object> objects)
-                                        {
-                                            linkWith(objects);
-                                        }
-                                    }, new Action1<Throwable>()
-                                    {
-                                        @Override public void call(Throwable throwable)
-                                        {
-                                            Timber.e(throwable.toString());
-                                        }
-                                    });
-                        }
+                                        Timber.e(throwable.toString());
+                                    }
+                                });
                     }
                 }, new Action1<Throwable>()
                 {

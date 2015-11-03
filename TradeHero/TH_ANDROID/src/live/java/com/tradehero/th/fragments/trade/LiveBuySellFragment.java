@@ -82,6 +82,11 @@ public class LiveBuySellFragment extends DashboardFragment
         }
     }
 
+    @Override public boolean shouldHandleLiveColor()
+    {
+        return true;
+    }
+
     private void fetchSecurityData(@NonNull SecurityId securityId)
     {
         securityCompactCacheRx.get().get(securityId)

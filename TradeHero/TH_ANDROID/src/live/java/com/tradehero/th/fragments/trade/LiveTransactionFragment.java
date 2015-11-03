@@ -48,4 +48,9 @@ public class LiveTransactionFragment extends DashboardFragment
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item_transaction_fragment, new String[]{"Market Price", "Test Field", "Another Test"});
         marketPriceSpinner.setAdapter(adapter);
     }
+
+    @Override public boolean shouldHandleLiveColor()
+    {
+        return true;
+    }
 }

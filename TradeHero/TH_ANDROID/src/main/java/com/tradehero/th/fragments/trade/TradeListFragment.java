@@ -469,4 +469,9 @@ public class TradeListFragment extends DashboardFragment
             navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
     }
+
+    @Override public boolean shouldHandleLiveColor()
+    {
+        return true;
+    }
 }

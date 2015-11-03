@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import com.android.internal.util.Predicate;
-import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
@@ -41,7 +40,6 @@ import com.tradehero.th.fragments.security.SecuritySearchFragment;
 import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
 import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
 import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.fragments.trade.LiveBuySellFragment;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
 import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
 import com.tradehero.th.fragments.tutorial.WithTutorial;
@@ -49,7 +47,6 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
-import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
@@ -93,9 +90,6 @@ public class TrendingStockFragment extends TrendingBaseFragment
     @Inject protected THBillingInteractorRx userInteractorRx;
     private Subscription exchangeSubscription;
 
-    //TODO: Dummy temporary, pending for server
-    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
-
     public static void putTabType(@NonNull Bundle args, @NonNull TrendingStockSortType tabType)
     {
         args.putInt(KEY_TAB_TYPE_ID, tabType.ordinal());
@@ -129,9 +123,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
         fetchWatchlist();
         fetchAlertCompactList();
 
-        if (getParentFragment() instanceof  TrendingMainFragment)
+        if (getParentFragment() instanceof TrendingMainFragment)
         {
-            LiveWidgetScrollListener liveWidgetScrollListener = new LiveWidgetScrollListener(fragmentElements.get(), ((TrendingMainFragment) getParentFragment()).getTrendingLiveFragmentUtil());
+            LiveWidgetScrollListener liveWidgetScrollListener =
+                    new LiveWidgetScrollListener(fragmentElements.get(), ((TrendingMainFragment) getParentFragment()).getTrendingLiveFragmentUtil());
             this.listView.setOnScrollListener(
                     new MultiScrollListener(nearEndScrollListener, fragmentElements.get().getListViewScrollListener(), liveWidgetScrollListener));
         }
@@ -526,18 +521,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
                     portfolioCompactListCache,
                     currentUserId);
         }
+
         BuySellStockFragment.putRequisite(args, requisite);
-
-        if (isLiveTrading.get())
-        {
-            navigator.get().pushFragment(LiveBuySellFragment.class, args);
-        }
-        else
-        {
-            navigator.get().pushFragment(BuySellStockFragment.class, args);
-        }
-        //navigator.get().pushFragment(BuySellStockFragment.class, args);
-
+        navigator.get().pushFragment(BuySellStockFragment.class, args);
     }
 
     @Override protected void populateArgumentForSearch(@NonNull Bundle args)

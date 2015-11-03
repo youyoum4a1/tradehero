@@ -28,6 +28,8 @@ import com.tradehero.th.api.live.LiveBrokerSituationDTO;
 import com.tradehero.th.api.live.LiveTradingSituationDTO;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
+import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
 import com.tradehero.th.api.position.GetPositionsDTO;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityCompactDTOList;
@@ -46,6 +48,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
@@ -208,14 +211,12 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
 
     @NonNull public Observable<GetPositionsDTO> getLivePositionsDTO(LivePortfolioId id)
     {
-        // TODO: replace api for live
-        livePortfolioId.set(7513);
-        return positionServiceWrapper.getPositionsRx(new OwnedPortfolioId(currentUserId.get(), 7513));
+        return positionServiceWrapper.getPositionsRx(new OwnedPortfolioId(currentUserId.get(), id.get()));
     }
 
     // TODO: need handle for multiple broker
     @NonNull public Observable<SecurityCompactDTOList> getLiveCFDSecuritiesRx(SecurityListType key)
     {
-        return securityServiceRx.getTrendingSecurities("SGX", key.page, key.perPage);
+        return securityServiceRx.getTrendingSecurities("NASDAQ", key.page, key.perPage);
     }
 }

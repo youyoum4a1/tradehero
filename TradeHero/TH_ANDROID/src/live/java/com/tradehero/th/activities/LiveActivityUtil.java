@@ -2,6 +2,7 @@ package com.tradehero.th.activities;
 
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -91,6 +92,8 @@ public class LiveActivityUtil
                         },
                         new TimberOnErrorAction1("Failed to listen to liveSwitcher in LiveActivityUtil")));
 
+        boolean shouldHandleLiveColor = false;
+
         for (Fragment f : activity.getSupportFragmentManager().getFragments())
         {
             if (f instanceof DashboardFragment && f.isVisible() && ((DashboardFragment) f).shouldShowLiveTradingToggle())
@@ -98,7 +101,12 @@ public class LiveActivityUtil
                 item.setVisible(true);
                 break;
             }
+            else if (f instanceof DashboardFragment && f.isVisible())
+            {
+                shouldHandleLiveColor = ((DashboardFragment) f).shouldHandleLiveColor();
+            }
         }
+
 
         if (!item.isVisible() && isLiveTrading.get())
         {
@@ -108,7 +116,10 @@ public class LiveActivityUtil
         else
         {
             switchLive(isLiveTrading.get());
+            shouldHandleLiveColor = isLiveTrading.get();
         }
+
+        changeBarColor(new OffOnViewSwitcherEvent(false, shouldHandleLiveColor));
     }
 
     private void onLiveTradingChanged(OffOnViewSwitcherEvent event)
@@ -128,24 +139,28 @@ public class LiveActivityUtil
     {
         int baseColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red : R.color.tradehero_red;
         int statusBarColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red_status_bar : R.color.tradehero_red_status_bar;
-//        int bottomColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red : R.drawable.tradehero_bottom_tab_indicator_red;
+        //        int bottomColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red : R.drawable.tradehero_bottom_tab_indicator_red;
 
-        activity.getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(activity.getResources().getColor(event.isOn ? baseColorRes : R.color.tradehero_blue)));
+        if (activity.getSupportActionBar() != null)
+        {
+            activity.getSupportActionBar().setBackgroundDrawable(
+                    new ColorDrawable(ContextCompat.getColor(activity.getApplicationContext(), event.isOn ? baseColorRes : R.color.tradehero_blue)));
+        }
 
         //Specific to this activity?
         if (activity instanceof DashboardActivity)
         {
             DashboardActivity dashboardActivity = (DashboardActivity) activity;
             dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
-                    dashboardActivity.getResources().getColor(event.isOn ? statusBarColorRes : R.color.tradehero_blue_status_bar));
+                    ContextCompat.getColor(dashboardActivity.getApplicationContext(),
+                            event.isOn ? statusBarColorRes : R.color.tradehero_blue_status_bar));
 
-            for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
-            {
-                dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
-                        .setBackgroundResource(
-                                event.isOn ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
-            }
+            //for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
+            //{
+            //    dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
+            //            .setBackgroundResource(
+            //                    event.isOn ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
+            //}
         }
     }
 

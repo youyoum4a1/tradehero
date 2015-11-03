@@ -14,6 +14,11 @@ abstract public class DashboardFragment extends BaseFragment
         return false;
     }
 
+    public boolean shouldHandleLiveColor()
+    {
+        return false;
+    }
+
     public void onLiveTradingChanged(OffOnViewSwitcherEvent event)
     {
     }
