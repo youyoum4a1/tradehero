@@ -412,7 +412,7 @@
         android:id="@+id/btn_buy"
         style="@style/TH.Btn_Buy_Sell"
         android:layout_marginBottom="5dp"
-        android:text="Buy&#10;141.29"
+        tools:text="Buy&#10;141.29"
         />
 
     <Button
@@ -421,7 +421,7 @@
         android:layout_marginStart="@dimen/margin_xsmall"
         android:layout_marginLeft="@dimen/margin_xsmall"
         android:layout_marginBottom="5dp"
-        android:text="Sell&#10;141.29"
+        tools:text="Sell&#10;141.29"
         android:visibility="visible"
         />
 

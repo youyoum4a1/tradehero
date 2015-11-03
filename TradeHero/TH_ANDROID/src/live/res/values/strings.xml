@@ -138,11 +138,13 @@
   <string name="connect">connect</string>
   <string name="connect_account">Connect an Account</string>
 
-  <string name="live_buy_btn">Buy&#10;%1$d</string>
+  <string name="positive_roi">+ %1$s %%</string>
+  <string name="zero_roi">%1$s %%</string>
+  <string name="negative_roi">- %1$s %%</string>
+
+  <string name="live_buy_btn">Buy\n%1$s</string>
+  <string name="live_sell_btn">Sell\n%1$s</string>
 
   <string name="options">Options</string>
   <string name="title_activity_live_account_setting">Settings</string>
-
-<!-- TODO: Remove or change this placeholder text -->
-  <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

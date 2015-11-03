@@ -28,6 +28,7 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.models.parcelable.LiveBuySellParcelable;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
+import java.text.DecimalFormat;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -57,7 +58,6 @@ public class LiveBuySellFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle("Facebook Inc");
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -106,22 +106,47 @@ public class LiveBuySellFragment extends DashboardFragment
                                     .into(stockLogoImageView);
                         }
 
-                        livePriceTextView.setText(THSignedNumber.builder(securityCompactDTO.lastPrice).build().toString());
+                        if (securityCompactDTO.lastPrice != null)
+                        {
+                            livePriceTextView.setText(THSignedNumber.builder(securityCompactDTO.lastPrice).build().toString());
+                        }
+
+                        if (securityCompactDTO.lastPriceDateAndTimeUtc != null)
+                        {
+                            lastUpdateTextView.setText(securityCompactDTO.lastPriceDateAndTimeUtc.toString());
+                        }
+
                         highTextView.setText(THSignedNumber.builder(securityCompactDTO.high).build().toString());
                         lowTextView.setText(THSignedNumber.builder(securityCompactDTO.low).build().toString());
-                        lastUpdateTextView.setText(securityCompactDTO.lastPriceDateAndTimeUtc.toString());
 
                         double roi = securityCompactDTO.risePercent * 100;
-                        stockRoiTextView.setText(String.format("%.2f%", roi));
+                        int roiStringRes = R.string.positive_roi;
 
                         if (roi < 0)
                         {
+                            // TODO: handle different color for china/ hongkong/ taiwan
                             stockRoiTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+                            roiStringRes = R.string.negative_roi;
                         }
                         else if (roi == 0)
                         {
                             stockRoiTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.darker_grey));
+                            roiStringRes = R.string.zero_roi;
                         }
+
+                        stockRoiTextView.setText(getString(roiStringRes, String.format("%.2f", roi)));
+                        buyBtn.setText(getString(R.string.live_buy_btn, String.format("%.2f", securityCompactDTO.askPrice)));
+                        sellBtn.setText(getString(R.string.live_sell_btn, String.format("%.2f", securityCompactDTO.bidPrice)));
+
+                        // TODO: dummy text while pending server
+                        spreadPerUnitTextView.setText("0.40");
+                        spreadPercentTextView.setText("0.28%");
+                        premiumBuyTextView.setText("-0.03%");
+                        premiumSellTextView.setText("0.01%");
+                        initialMarginTextView.setText("13.10");
+                        maintenanceMarginTextView.setText("13.10");
+                        leverageTextView.setText("1:20");
+                        expiresDailyTextView.setText("No");
                     }
                 }, new Action1<Throwable>()
                 {

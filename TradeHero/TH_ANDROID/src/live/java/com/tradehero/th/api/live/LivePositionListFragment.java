@@ -164,8 +164,20 @@ public class LivePositionListFragment extends DashboardFragment
                                         {
                                             linkWith(objects);
                                         }
+                                    }, new Action1<Throwable>()
+                                    {
+                                        @Override public void call(Throwable throwable)
+                                        {
+                                            Timber.e(throwable.toString());
+                                        }
                                     });
                         }
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        Timber.e(throwable.toString());
                     }
                 });
     }
@@ -325,21 +337,11 @@ public class LivePositionListFragment extends DashboardFragment
 
     private void handleAlertDialogTradeAndCloseBtn(boolean andClose, @NonNull SecurityCompactDTO securityCompactDTO, @NonNull PositionDTO positionDTO)
     {
-        Bundle args = new Bundle();
-        //BuySellStockFragment.putRequisite(
-        //        args,
-        //        new BuySellStockFragment.Requisite(
-        //                securityCompactDTO.getSecurityId(),
-        //                new OwnedPortfolioId(currentUserId.get(), livePortfolioId.get()),
-        //                andClose && positionDTO.shares != null ? positionDTO.shares : 0));
-        //
-        //navigator.get().pushFragment(BuySellStockFragment.class, args);
-
         LiveBuySellParcelable liveBuySellParcelable =
                 new LiveBuySellParcelable(securityCompactDTO.getSecurityId(), andClose && positionDTO.shares != null ? positionDTO.shares : 0);
 
         getActivity().getIntent().putExtra("LiveBuySellParcelable", liveBuySellParcelable);
-        navigator.get().pushFragment(LiveBuySellFragment.class, args);
+        navigator.get().pushFragment(LiveBuySellFragment.class);
     }
 
     private void setUpLiveHeader(LivePortfolioDTO livePortfolioDTO)

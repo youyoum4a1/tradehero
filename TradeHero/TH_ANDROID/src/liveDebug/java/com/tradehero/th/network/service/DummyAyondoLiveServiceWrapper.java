@@ -216,6 +216,6 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
     // TODO: need handle for multiple broker
     @NonNull public Observable<SecurityCompactDTOList> getLiveCFDSecuritiesRx(SecurityListType key)
     {
-        return securityServiceRx.getTrendingSecurities("NASDAQ", key.page, key.perPage);
+        return securityServiceRx.getTrendingSecurities("SGX", key.page, key.perPage);
     }
 }
