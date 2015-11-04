@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="sms_verification_title">Verify your phone number</string>
+  <string name="sms_verification_title">Verify phone number</string>
   <string name="sms_verification_sms_content">Welcome to TradeHero Live\nYour verification code is %s\n\nOpen the TradeHero application and use this code to verify your phone number.</string>
-  <string name="sms_verification_description">TradeHero Live has sent an SMS to\n%s for verification.</string>
+  <string name="sms_verification_description">TradeHero has sent an SMS to\n%s for verification.</string>
   <string name="sms_verification_status">SMS Status: %s</string>
   <string name="sms_verification_action">Please enter the verification code sent via SMS.</string>
   <string name="sms_verification_resend">Resend Verification Code</string>
