@@ -139,7 +139,7 @@ public class LiveBuySellFragment extends DashboardFragment
                             roiStringRes = R.string.zero_roi;
                         }
 
-                        stockRoiTextView.setText(getString(roiStringRes, String.format("%.2f", roi)));
+                        stockRoiTextView.setText(getString(roiStringRes, String.format("%.2f", Math.abs(roi))));
                         buyBtn.setText(getString(R.string.live_buy_btn, String.format("%.2f", securityCompactDTO.askPrice)));
                         sellBtn.setText(getString(R.string.live_sell_btn, String.format("%.2f", securityCompactDTO.bidPrice)));
 
