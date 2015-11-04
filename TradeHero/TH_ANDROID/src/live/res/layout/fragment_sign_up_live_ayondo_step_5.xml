@@ -105,14 +105,6 @@
         android:orientation="vertical"
         >
 
-      <TextView
-          style="@style/TH.Caption"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="start"
-          android:text="@string/currency"
-          />
-
       <Spinner
           android:id="@+id/currency_spinner"
           style="@style/TH.Spinner"
