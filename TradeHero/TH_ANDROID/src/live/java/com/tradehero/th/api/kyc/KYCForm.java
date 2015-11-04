@@ -24,6 +24,8 @@ import java.util.List;
 
     @Nullable Country getCountry();
 
+    @Nullable String getEmail();
+
     @Nullable ScanReference getScanReference();
 
     void pickFrom(@NonNull ScannedDocument scannedDocument);

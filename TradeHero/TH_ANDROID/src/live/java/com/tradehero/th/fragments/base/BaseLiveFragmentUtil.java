@@ -14,9 +14,11 @@ import com.tradehero.th.activities.IdentityPromptActivity;
 import com.tradehero.th.activities.LiveActivityUtil;
 import com.tradehero.th.activities.LiveLoginActivity;
 import com.tradehero.th.activities.SignUpLiveActivity;
+import com.tradehero.th.api.kyc.EmptyKYCForm;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.fastfill.FastFillUtil;
+import com.tradehero.th.network.service.DummyAyondoLiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.IsLiveLogIn;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.prefs.LiveAvailability;
@@ -28,6 +30,7 @@ import rx.Observable;
 import rx.android.view.OnClickEvent;
 import rx.functions.Action1;
 import rx.functions.Func2;
+import timber.log.Timber;
 
 public class BaseLiveFragmentUtil
 {
@@ -42,6 +45,7 @@ public class BaseLiveFragmentUtil
     @Inject @IsLiveLogIn BooleanPreference isLiveLogIn;
     @Inject LiveActivityUtil liveActivityUtil;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
+    @Inject DummyAyondoLiveServiceWrapper liveServiceWrapper;
 
     @Nullable @Bind(R.id.go_live_widget) GoLiveWidget liveWidget;
 
@@ -70,8 +74,9 @@ public class BaseLiveFragmentUtil
             liveWidget.setVisibility(View.GONE);
         }
 
-        if (liveBrokerSituationPreference.get().kycForm != null)
+        if (liveBrokerSituationPreference.get().kycForm != null && liveBrokerSituationPreference.get().kycForm.getEmail() != null)
         {
+            Timber.d(liveBrokerSituationPreference.get().kycForm.toString());
             liveWidget.updateButtonImage(R.drawable.live_banner_on_going_user);
         }
 

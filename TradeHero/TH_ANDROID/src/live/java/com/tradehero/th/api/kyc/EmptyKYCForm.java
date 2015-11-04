@@ -24,6 +24,11 @@ public class EmptyKYCForm implements KYCForm
         return Country.SG;
     }
 
+    @Nullable @Override public String getEmail()
+    {
+        return null;
+    }
+
     @Nullable @Override public ScanReference getScanReference()
     {
         return null;
