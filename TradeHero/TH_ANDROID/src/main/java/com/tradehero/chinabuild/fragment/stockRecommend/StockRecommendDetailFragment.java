@@ -82,6 +82,9 @@ public class StockRecommendDetailFragment extends TimeLineItemDetailFragment {
             }
 
             // User ROI
+            if (mTimelineItemDTO.user.roiSinceInception == null) {
+                mTimelineItemDTO.user.roiSinceInception = 0.0;
+            }
             THSignedPercentage roi = THSignedPercentage.builder(mTimelineItemDTO.user.roiSinceInception * 100).build();
             viewHolder.roi.setText(roi.toString());
             viewHolder.roi.setTextColor(getActivity().getResources().getColor(roi.getColorResId()));
