@@ -19,6 +19,7 @@ import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -90,12 +91,13 @@ public class ImageRequesterUtil implements ActivityResultRequester
 
     public void onImageFromLibraryRequested(@NonNull Activity activity)
     {
-        Intent libraryIntent = new Intent(Intent.ACTION_PICK);
-        libraryIntent.setType("image/jpeg");
+        Intent libraryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        //libraryIntent.setType("image/*");
         try
         {
             activity.startActivityForResult(libraryIntent, REQUEST_GALLERY);
-        } catch (ActivityNotFoundException e)
+        }
+        catch (ActivityNotFoundException e)
         {
             Timber.e(e, "Could not request gallery");
             THToast.show(R.string.error_launch_photo_library);
@@ -104,50 +106,48 @@ public class ImageRequesterUtil implements ActivityResultRequester
 
     @Override public void onActivityResult(@NonNull Activity activity, int requestCode, int resultCode, @Nullable Intent data)
     {
-//        if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK
-//                && data != null)
-//        {
-//            currentRequest = REQUEST_GALLERY;
-//            startPhotoZoom(activity, data.getData());
-//        }
-//        else if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK)
-//        {
-//            currentRequest = REQUEST_CAMERA;
-//            startPhotoZoom(activity, Uri.fromFile(mCurrentPhotoFile));
-//        }
-//        else if (requestCode == REQUEST_PHOTO_ZOOM && data != null)
-//        {
-//            Bundle bundle = data.getExtras();
-//            if (bundle != null)
-//            {
-//                Bitmap bitmap = bundle.getParcelable("data");
-//                if (bitmap == null || saveBitmapToFile(activity, bitmap))
-//                {
-//                    return;
-//                }
-//
-//                if (currentRequest == REQUEST_CAMERA)
-//                {
-//                    currentRequest = -1;
-//                    bitmapSubject.onNext(bitmap);
-//                }
-//                else if (currentRequest == REQUEST_GALLERY)
-//                {
-//                    currentRequest = -1;
-//                    bitmapSubject.onNext(bitmap);
-//                }
-//            }
-//        }
-        if (data != null)
+        if (requestCode == REQUEST_GALLERY && resultCode == Activity.RESULT_OK
+                && data != null)
         {
+            currentRequest = REQUEST_GALLERY;
+
             Uri selectedImage = data.getData();
             String[] filePathColumn = {MediaStore.Images.Media.DATA};
-            Cursor cursor = activity.getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            if (cursor.moveToFirst()) {
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String filePath = cursor.getString(columnIndex);
-                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+            Cursor cursor = activity.getContentResolver().query(selectedImage,
+                    filePathColumn, null, null, null);
 
+            if (cursor != null)
+            {
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                cursor.close();
+                startPhotoZoom(activity, picturePath);
+            }
+        }
+        else if (requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK)
+        {
+            currentRequest = REQUEST_CAMERA;
+
+            String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = activity.getContentResolver().query(Uri.fromFile(mCurrentPhotoFile),
+                    filePathColumn, null, null, null);
+
+            if (cursor != null)
+            {
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                cursor.close();
+                startPhotoZoom(activity, picturePath);
+            }
+        }
+        else if (requestCode == REQUEST_PHOTO_ZOOM && data != null)
+        {
+            Bundle bundle = data.getExtras();
+            if (bundle != null)
+            {
+                Bitmap bitmap = bundle.getParcelable("data");
                 if (bitmap == null || saveBitmapToFile(activity, bitmap))
                 {
                     return;
@@ -158,41 +158,74 @@ public class ImageRequesterUtil implements ActivityResultRequester
                     currentRequest = -1;
                     bitmapSubject.onNext(bitmap);
                 }
-//                else if (currentRequest == REQUEST_GALLERY)
-//                {
-//                    currentRequest = -1;
-//                    bitmapSubject.onNext(bitmap);
-//                }
-                currentRequest = -1;
-                bitmapSubject.onNext(bitmap);
+                else if (currentRequest == REQUEST_GALLERY)
+                {
+                    currentRequest = -1;
+                    bitmapSubject.onNext(bitmap);
+                }
             }
-            cursor.close();
         }
     }
 
-    private void startPhotoZoom(@NonNull Activity activity, Uri data)
+    private void startPhotoZoom(@NonNull Activity activity, String dataUri)
     {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(data, "image/*");
-        intent.putExtra("crop", "true");
-        if (cropAspectX != null)
+        try
         {
-            intent.putExtra("aspectX", cropAspectX);
+            Intent intent = new Intent("com.android.camera.action.CROP");
+            //intent.setDataAndType(data, "image/*");
+            //intent.putExtra("crop", "true");
+            File f = new File(dataUri);
+
+            //BitmapFactory.Options o = new BitmapFactory.Options();
+            //o.inJustDecodeBounds = true;
+            //o.inSampleSize = 6;
+            //FileInputStream inputStream = new FileInputStream(f);
+            //BitmapFactory.decodeStream(inputStream, null, o);
+            //inputStream.close();
+            //
+            //final int REQUIRED_SIZE=75;
+            //int scale = 1;
+            //while(o.outWidth / scale / 2 >= REQUIRED_SIZE &&
+            //        o.outHeight / scale / 2 >= REQUIRED_SIZE) {
+            //    scale *= 2;
+            //}
+            //
+            //BitmapFactory.Options o2 = new BitmapFactory.Options();
+            //o2.inSampleSize = scale;
+            //inputStream = new FileInputStream(f);
+            //Bitmap selectedBitmap = BitmapFactory.decodeStream(inputStream, null, o2);
+            //inputStream.close();
+            //f.createNewFile();
+            //FileOutputStream outputStream = new FileOutputStream(f);
+            //selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100 , outputStream);
+
+            Uri contentUri = Uri.fromFile(f);
+            intent.setDataAndType(contentUri, "image/*");
+            intent.putExtra("crop", "true");
+
+            if (cropAspectX != null)
+            {
+                intent.putExtra("aspectX", cropAspectX);
+            }
+            if (cropAspectY != null)
+            {
+                intent.putExtra("aspectY", cropAspectY);
+            }
+            if (cropSizeX != null)
+            {
+                intent.putExtra("outputX", cropSizeX);
+            }
+            if (cropSizeY != null)
+            {
+                intent.putExtra("outputY", cropAspectY);
+            }
+            intent.putExtra("return-data", true);
+            activity.startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
         }
-        if (cropAspectY != null)
+        catch (Exception e)
         {
-            intent.putExtra("aspectY", cropAspectY);
+            Timber.e(e.toString());
         }
-        if (cropSizeX != null)
-        {
-            intent.putExtra("outputX", cropSizeX);
-        }
-        if (cropSizeY != null)
-        {
-            intent.putExtra("outputY", cropAspectY);
-        }
-        intent.putExtra("return-data", true);
-        activity.startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
     }
 
     //TODO Maybe make this static, such that Bitmap from netVerify can be stored in the same file
@@ -211,7 +244,8 @@ public class ImageRequesterUtil implements ActivityResultRequester
             outputStream = new FileOutputStream(croppedPhotoFile);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 75, outputStream);
             outputStream.flush();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             THToast.show(R.string.error_save_image_in_external_storage);
             return true;
@@ -222,7 +256,8 @@ public class ImageRequesterUtil implements ActivityResultRequester
                 try
                 {
                     outputStream.close();
-                } catch (IOException e)
+                }
+                catch (IOException e)
                 {
                     Timber.e(e, "Close");
                 }
@@ -243,7 +278,8 @@ public class ImageRequesterUtil implements ActivityResultRequester
                     ".jpg",         /* suffix */
                     storageDir      /* directory */
             );
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             Timber.e(e, "createImageFile");
             return null;
