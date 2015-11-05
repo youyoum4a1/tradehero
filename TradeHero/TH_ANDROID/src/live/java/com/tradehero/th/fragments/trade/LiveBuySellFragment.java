@@ -26,6 +26,7 @@ import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.models.parcelable.LiveBuySellParcelable;
+import com.tradehero.th.models.parcelable.LiveTransactionParcelable;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import java.text.DecimalFormat;
@@ -55,6 +56,8 @@ public class LiveBuySellFragment extends DashboardFragment
 
     @Inject Lazy<SecurityCompactCacheRx> securityCompactCacheRx;
 
+    private SecurityId securityId;
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
@@ -79,6 +82,7 @@ public class LiveBuySellFragment extends DashboardFragment
         if (parcelable != null)
         {
             fetchSecurityData(parcelable.getSecurityId());
+            securityId = parcelable.getSecurityId();
         }
     }
 
@@ -165,14 +169,18 @@ public class LiveBuySellFragment extends DashboardFragment
     @SuppressWarnings("unused")
     @OnClick(R.id.btn_buy) public void buyBtnOnClicked()
     {
-        Bundle args = new Bundle();
-        navigator.get().pushFragment(LiveTransactionFragment.class, args);
+        LiveTransactionParcelable liveTransactionParcelable = new LiveTransactionParcelable(securityId, 0, true);
+        getActivity().getIntent().putExtra("LiveTransactionParcelable", liveTransactionParcelable);
+
+        navigator.get().pushFragment(LiveTransactionFragment.class);
     }
 
     @SuppressWarnings("unused")
     @OnClick(R.id.btn_sell) public void sellBtnOnClicked()
     {
-        Bundle args = new Bundle();
-        navigator.get().pushFragment(LiveTransactionFragment.class, args);
+        LiveTransactionParcelable liveTransactionParcelable = new LiveTransactionParcelable(securityId, 0, false);
+        getActivity().getIntent().putExtra("LiveTransactionParcelable", liveTransactionParcelable);
+
+        navigator.get().pushFragment(LiveTransactionFragment.class);
     }
 }
