@@ -242,13 +242,16 @@ public class TrendingMainFragment extends DashboardFragment
         initViews();
         analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
 
-        if (isLiveTrading.get())
+        if (lastType == TrendingAssetType.STOCK)
         {
-            handleIsLive();
-        }
-        else
-        {
-            handleIsVirtual();
+            if (isLiveTrading.get())
+            {
+                handleIsLive();
+            }
+            else
+            {
+                handleIsVirtual();
+            }
         }
     }
 
