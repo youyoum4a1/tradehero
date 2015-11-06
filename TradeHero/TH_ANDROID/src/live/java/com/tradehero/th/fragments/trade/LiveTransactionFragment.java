@@ -51,6 +51,10 @@ public class LiveTransactionFragment extends DashboardFragment
     @Inject LivePortfolioId livePortfolioId;
     @Inject DummyAyondoLiveServiceWrapper liveServiceWrapper;
 
+    private boolean isTransactionBuy;
+    private double mTradeValue = 0.0;
+    private int mTradeSize = 0;
+
     public LiveTransactionFragment()
     {
         // Required empty public constructor
@@ -65,7 +69,7 @@ public class LiveTransactionFragment extends DashboardFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
     {
-        View view =inflater.inflate(R.layout.fragment_live_transaction, container, false);
+        View view = inflater.inflate(R.layout.fragment_live_transaction, container, false);
         ButterKnife.bind(this, view);
 
         return view;
@@ -81,12 +85,12 @@ public class LiveTransactionFragment extends DashboardFragment
         if (parcelable != null)
         {
             fetchSecurityData(parcelable);
+            isTransactionBuy = parcelable.isTransactionBuy();
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item_transaction_fragment, new String[]{"Market Price", "Test Field", "Another Test"});
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item_transaction_fragment,
+                new String[] {"Market Price", "Test Field", "Another Test"});
         marketPriceSpinner.setAdapter(adapter);
-
-        setUpEventListener();
     }
 
     @Override public boolean shouldHandleLiveColor()
@@ -119,6 +123,7 @@ public class LiveTransactionFragment extends DashboardFragment
                         stopTextEditText.setText("0");
                         takeProfitEditText.setText("0");
                         leverageEditText.setText("0");
+                        setUpEventListener(securityCompactDTO);
                     }
                 });
 
@@ -132,7 +137,7 @@ public class LiveTransactionFragment extends DashboardFragment
                 });
     }
 
-    private void setUpEventListener()
+    private void setUpEventListener(final SecurityCompactDTO securityCompactDTO)
     {
         WidgetObservable.text(tradeValueEditText)
                 .subscribe(new Action1<OnTextChangeEvent>()
@@ -143,15 +148,84 @@ public class LiveTransactionFragment extends DashboardFragment
 
                         if (!onTextChangeEvent.text().toString().equals(""))
                         {
-                            double currentTradeValue = Double.parseDouble(onTextChangeEvent.text().toString());
+                            String text = onTextChangeEvent.text().toString();
+                            double currentTradeValue = Double.parseDouble(text);
+                            double maxTradeValue = (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice) * Math.floor(
+                                    cashAvailable / (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice));
 
-                            if (currentTradeValue > cashAvailable)
+                            if (currentTradeValue > maxTradeValue)
                             {
-                                tradeValueEditText.setText(String.format("%.2f", cashAvailable));
+                                currentTradeValue = maxTradeValue;
+                                tradeValueEditText.setText(String.format("%.2f", currentTradeValue));
+                            }
+                            else if (currentTradeValue < (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice))
+                            {
+                                mTradeSize = 0;
+                                mTradeValue = 0;
+                                tradeValueEditText.setText("0");
+                            }
+                            else if (text.startsWith("0") && !text.equals("0"))
+                            {
+                                tradeValueEditText.setText(String.format("%.2f", currentTradeValue));
+                            }
+
+                            int expectedTradeSize = (int) Math.floor(
+                                    currentTradeValue / (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice));
+
+                            if (mTradeSize != expectedTradeSize)
+                            {
+                                mTradeSize = expectedTradeSize;
+                                tradeSizeEditText.setText(String.format("%d", expectedTradeSize));
                             }
                         }
                         else
                         {
+                            mTradeSize = 0;
+                            mTradeValue = 0;
+                            tradeSizeEditText.setText("0");
+                            tradeValueEditText.setText("0");
+                        }
+                    }
+                });
+
+        WidgetObservable.text(tradeSizeEditText)
+                .subscribe(new Action1<OnTextChangeEvent>()
+                {
+                    @Override public void call(OnTextChangeEvent onTextChangeEvent)
+                    {
+                        double cashAvailable = Double.parseDouble(cashAvailableTextView.getText().toString());
+
+                        if (!onTextChangeEvent.text().toString().equals(""))
+                        {
+                            String text = onTextChangeEvent.text().toString();
+                            int currentTradeSize = Integer.parseInt(text);
+                            double maxTradeSize =
+                                    Math.floor(cashAvailable / (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice));
+
+                            if (currentTradeSize > maxTradeSize)
+                            {
+                                currentTradeSize = (int) maxTradeSize;
+                                tradeSizeEditText.setText(String.format("%d", currentTradeSize));
+                            }
+                            else if (text.startsWith("0") && !text.equals("0"))
+                            {
+                                tradeSizeEditText.setText(String.format("%d", currentTradeSize));
+                            }
+
+                            double expectedTradeValue =
+                                    (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice) * currentTradeSize;
+
+                            if (mTradeValue != expectedTradeValue)
+                            {
+                                mTradeValue = expectedTradeValue;
+                                tradeValueEditText.setText(String.format("%.2f", expectedTradeValue));
+                            }
+                        }
+                        else
+                        {
+                            mTradeSize = 0;
+                            mTradeValue = 0;
+                            tradeSizeEditText.setText("0");
                             tradeValueEditText.setText("0");
                         }
                     }
