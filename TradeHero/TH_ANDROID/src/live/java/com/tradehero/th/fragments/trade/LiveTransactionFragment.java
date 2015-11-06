@@ -158,8 +158,10 @@ public class LiveTransactionFragment extends DashboardFragment
                                 currentTradeValue = maxTradeValue;
                                 tradeValueEditText.setText(String.format("%.2f", currentTradeValue));
                             }
-                            else if (currentTradeValue < (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice))
+                            else if (currentTradeValue < (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice) && currentTradeValue != 0)
                             {
+                                //FIXME cannot enter small value!
+
                                 mTradeSize = 0;
                                 mTradeValue = 0;
                                 tradeValueEditText.setText("0");
