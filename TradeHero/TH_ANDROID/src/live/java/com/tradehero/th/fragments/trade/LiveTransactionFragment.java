@@ -224,7 +224,7 @@ public class LiveTransactionFragment extends DashboardFragment
                                 currentTradeValue = maxTradeValue;
                                 tradeValueEditText.setText(String.format("%.2f", currentTradeValue));
                             }
-                            else if (text.startsWith("0") && (!text.equals("0.00") || !text.equals("0")))
+                            else if (text.startsWith("0") && !text.equals("0.00") && !text.equals("0"))
                             {
                                 tradeValueEditText.setText(String.format("%.2f", currentTradeValue));
                             }
