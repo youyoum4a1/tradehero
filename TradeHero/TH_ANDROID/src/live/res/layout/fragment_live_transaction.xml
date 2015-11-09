@@ -109,12 +109,12 @@
         <EditText
             android:id="@+id/trade_value"
             style="@style/TH.EditText"
-            android:inputType="numberSigned"
+            android:inputType="numberDecimal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:text="46.63"/>
+            tools:text="46.63"/>
 
       </LinearLayout>
 
