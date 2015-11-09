@@ -81,9 +81,26 @@ public class LiveBuySellFragment extends DashboardFragment
 
         if (parcelable != null)
         {
+            if (parcelable.getShares() > 0)
+            {
+                LiveTransactionParcelable liveTransactionParcelable = new LiveTransactionParcelable(parcelable.getSecurityId(), parcelable.getShares(), false);
+                getActivity().getIntent().putExtra("LiveTransactionParcelable", liveTransactionParcelable);
+
+                // replace the old parcelable for the new fragment come back to this fragment
+                LiveBuySellParcelable newParcelable = new LiveBuySellParcelable(parcelable.getSecurityId(), 0);
+                getActivity().getIntent().putExtra("LiveBuySellParcelable", newParcelable);
+
+                navigator.get().pushFragment(LiveTransactionFragment.class);
+            }
+
             fetchSecurityData(parcelable.getSecurityId());
             securityId = parcelable.getSecurityId();
         }
+    }
+
+    @Override public void onStart()
+    {
+        super.onStart();
     }
 
     @Override public boolean shouldHandleLiveColor()

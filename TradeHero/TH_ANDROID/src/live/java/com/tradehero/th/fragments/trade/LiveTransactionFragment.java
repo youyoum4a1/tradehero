@@ -33,6 +33,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
+import timber.log.Timber;
 
 public class LiveTransactionFragment extends DashboardFragment
 {
@@ -119,12 +120,22 @@ public class LiveTransactionFragment extends DashboardFragment
                             marketPriceTextView.setText(String.format("%.2f", securityCompactDTO.bidPrice));
                         }
 
-                        tradeSizeEditText.setText("0");
-                        tradeValueEditText.setText("0");
-                        stopTextEditText.setText("0");
+                        double tradeValue = parcelable.getShares() * (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice);
+
+                        double test = 9.11 * 771;
+
+                        tradeSizeEditText.setText(String.format("%d", parcelable.getShares()));
+                        tradeValueEditText.setText(String.format("%.2f", tradeValue));
+                        stopTextEditText.setText(String.format("%.2f", test));
                         takeProfitEditText.setText("0");
                         leverageEditText.setText("0");
                         setUpEventListener(securityCompactDTO);
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        Timber.e(throwable.toString());
                     }
                 });
 
@@ -188,12 +199,8 @@ public class LiveTransactionFragment extends DashboardFragment
                         {
                             mTradeSize = 0;
                             tradeSizeEditText.setText("0");
-
-                            if (onTextChangeEvent.view().didTouchFocusSelect())
-                            {
-                                mTradeValue = 0;
-                                tradeValueEditText.setText("0");
-                            }
+                            mTradeValue = 0;
+                            tradeValueEditText.setText("0");
                         }
                     }
                 });
@@ -217,14 +224,19 @@ public class LiveTransactionFragment extends DashboardFragment
                                 currentTradeValue = maxTradeValue;
                                 tradeValueEditText.setText(String.format("%.2f", currentTradeValue));
                             }
-                            else if (text.startsWith("0") && !text.equals("0"))
+                            else if (text.startsWith("0") && (!text.equals("0.00") || !text.equals("0")))
                             {
                                 tradeValueEditText.setText(String.format("%.2f", currentTradeValue));
                             }
 
                             int expectedTradeSize =  (int) Math.floor(
                                     currentTradeValue / (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice));
-                            tradeSizeEditText.setText(String.format("%d", expectedTradeSize));
+
+                            if (expectedTradeSize != mTradeSize)
+                            {
+                                mTradeSize = expectedTradeSize;
+                                tradeSizeEditText.setText(String.format("%d", expectedTradeSize));
+                            }
                         }
                         else
                         {
