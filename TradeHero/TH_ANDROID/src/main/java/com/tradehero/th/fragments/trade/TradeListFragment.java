@@ -18,6 +18,7 @@ import android.view.animation.AnimationUtils;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
@@ -45,9 +46,11 @@ import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
 import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
+import com.tradehero.th.models.parcelable.LiveBuySellParcelable;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionCacheRx;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCacheRx;
@@ -91,6 +94,7 @@ public class TradeListFragment extends DashboardFragment
     @Inject THRouter thRouter;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject Analytics analytics;
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
 
     @Bind(R.id.trade_list) protected RecyclerView tradeListView;
     @Bind(R.id.btn_trade_now) protected View buttonTrade;
@@ -152,7 +156,7 @@ public class TradeListFragment extends DashboardFragment
         {
             @Override public void onItemClicked(int position, TypedRecyclerAdapter.TypedViewHolder<Object> viewHolder, Object object)
             {
-                if(object instanceof TradeDisplayDTO)
+                if (object instanceof TradeDisplayDTO)
                 {
                     ((TradeDisplayDTO) object).togglePrettyDate();
                     adapter.notifyItemChanged(position);
@@ -218,6 +222,7 @@ public class TradeListFragment extends DashboardFragment
 
         actionBarLayout = (StockActionBarRelativeLayout) LayoutInflater.from(getActivity())
                 .inflate(R.layout.trade_list_custom_actionbar, null);
+
         onDestroyOptionsMenuSubscriptions.add(actionBarLayout.getUserActionObservable()
                 .subscribe(
                         new Action1<StockActionBarRelativeLayout.UserAction>()
@@ -453,20 +458,31 @@ public class TradeListFragment extends DashboardFragment
         }
         else
         {
-            Bundle args = new Bundle();
-            AbstractBuySellFragment.putRequisite(
-                    args,
-                    purchaseApplicableOwnedPortfolioId != null
-                            ? new AbstractBuySellFragment.Requisite(
-                            securityId,
-                            purchaseApplicableOwnedPortfolioId,
-                            0)
-                            : new AbstractBuySellFragment.Requisite(
-                                    securityId,
-                                    new Bundle(),
-                                    portfolioCompactListCache,
-                                    currentUserId));
-            navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
+            if (isLiveTrading.get())
+            {
+                LiveBuySellParcelable liveBuySellParcelable =
+                        new LiveBuySellParcelable(securityId, 0);
+
+                getActivity().getIntent().putExtra("LiveBuySellParcelable", liveBuySellParcelable);
+                navigator.get().pushFragment(LiveBuySellFragment.class);
+            }
+            else
+            {
+                Bundle args = new Bundle();
+                AbstractBuySellFragment.putRequisite(
+                        args,
+                        purchaseApplicableOwnedPortfolioId != null
+                                ? new AbstractBuySellFragment.Requisite(
+                                securityId,
+                                purchaseApplicableOwnedPortfolioId,
+                                0)
+                                : new AbstractBuySellFragment.Requisite(
+                                        securityId,
+                                        new Bundle(),
+                                        portfolioCompactListCache,
+                                        currentUserId));
+                navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
+            }
         }
     }
 

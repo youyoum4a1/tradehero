@@ -282,7 +282,7 @@ public class LivePositionListFragment extends DashboardFragment
                     ((PositionDisplayDTO) object).positionDTO.getPositionDTOKey());
 
             // TODO: change to live portfolio id
-            TradeListFragment.putApplicablePortfolioId(args, new OwnedPortfolioId(currentUserId.get(), 7513));
+            TradeListFragment.putApplicablePortfolioId(args, new OwnedPortfolioId(currentUserId.get(), livePortfolioId.get()));
 
             if (navigator != null)
             {

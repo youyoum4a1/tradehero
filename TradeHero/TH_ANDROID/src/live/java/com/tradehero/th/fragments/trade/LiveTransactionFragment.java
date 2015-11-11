@@ -121,7 +121,7 @@ public class LiveTransactionFragment extends DashboardFragment
                         }
 
                         double tradeValue = parcelable.getShares() * (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice);
-                        
+
                         tradeSizeEditText.setText(String.format("%d", parcelable.getShares()));
                         tradeValueEditText.setText(String.format("%.2f", tradeValue));
                         stopTextEditText.setText("0");

@@ -22,6 +22,7 @@ import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.persistence.DTO;
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -33,6 +34,7 @@ import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
 import com.tradehero.th.fragments.security.FxFlagContainer;
 import com.tradehero.th.inject.HierarchyInjector;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.utils.StringUtils;
 import java.util.Map;
 import javax.inject.Inject;
@@ -48,6 +50,7 @@ public class StockActionBarRelativeLayout extends RelativeLayout
     @ColorRes private static final int COLOR_RES_WATCHED = R.color.watchlist_button_color;
 
     @Inject Picasso picasso;
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
 
     @Bind(R.id.stock_logo) @Nullable ImageView stockLogo;
     @Bind(R.id.flags_container) @Nullable FxFlagContainer flagsContainer;
@@ -192,6 +195,10 @@ public class StockActionBarRelativeLayout extends RelativeLayout
                 btnWatched.setVisibility(INVISIBLE);
                 btnWatched.setEnabled(false);
             }
+            else if (isLiveTrading.get())
+            {
+                btnWatched.setVisibility(GONE);
+            }
             else
             {
                 btnWatched.setVisibility(VISIBLE);
@@ -215,6 +222,10 @@ public class StockActionBarRelativeLayout extends RelativeLayout
             if (dto.mappedAlerts == null
                     || dto.securityCompactDTO == null
                     || dto.securityCompactDTO instanceof FxSecurityCompactDTO)
+            {
+                btnAlerted.setVisibility(GONE);
+            }
+            else if (isLiveTrading.get())
             {
                 btnAlerted.setVisibility(GONE);
             }
