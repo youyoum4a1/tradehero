@@ -102,16 +102,26 @@ public class LiveBuySellFragment extends DashboardFragment
             securityId = parcelable.getSecurityId();
 
             securityServiceWrapper.get().getSecurityPositions(securityId)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Action1<PositionDTOList>()
                     {
                         @Override public void call(PositionDTOList positionDTOs)
                         {
-                            closeablePostionDTO = positionDTOs.get(0);
-
-                            if (closeablePostionDTO.shares != null && closeablePostionDTO.shares != 0)
+                            if (positionDTOs.size() != 0)
                             {
-                                sellBtn.setVisibility(View.VISIBLE);
+                                closeablePostionDTO = positionDTOs.get(0);
+
+                                if (closeablePostionDTO.shares != null && closeablePostionDTO.shares != 0)
+                                {
+                                    sellBtn.setVisibility(View.VISIBLE);
+                                }
                             }
+                        }
+                    }, new Action1<Throwable>()
+                    {
+                        @Override public void call(Throwable throwable)
+                        {
+                            Timber.e(throwable.toString());
                         }
                     });
         }
