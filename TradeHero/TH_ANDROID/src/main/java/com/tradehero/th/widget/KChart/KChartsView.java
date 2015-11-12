@@ -709,7 +709,7 @@ public class KChartsView extends TimesBase implements TimesBase.OnTabClickListen
 	private void setTouchMode(MotionEvent event) {
 		float daltX = Math.abs(event.getRawX() - mStartX);
 		float daltY = Math.abs(event.getRawY() - mStartY);
-		if (FloatMath.sqrt(daltX * daltX + daltY * daltY) > MIN_MOVE_DISTANCE) {
+		if (Math.sqrt(daltX * daltX + daltY * daltY) > MIN_MOVE_DISTANCE) {
 			if (daltX < daltY) {
 				TOUCH_MODE = ZOOM;
 			} else {

@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tradehero.ReactNative.ReactActivity;
 import com.tradehero.chinabuild.buyWhat.FollowBuyFragment;
 import com.tradehero.chinabuild.buyWhat.FragmentStockGod;
 import com.tradehero.chinabuild.data.AdsDTO;
@@ -27,6 +28,7 @@ import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.adapters.StockRecommendListAdapter;
 import com.tradehero.th.api.discussion.DiscussionType;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
@@ -158,9 +160,10 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
                 gotoDashboard(StockRecommendFragment.class.getName());
                 break;
             case R.id.win_rate_icon:
-                Bundle args2 = new Bundle();
-                args2.putInt(FragmentStockGod.TAB_KEY, 1);
-                gotoDashboard(FragmentStockGod.class.getName(), args2);
+//                Bundle args2 = new Bundle();
+//                args2.putInt(FragmentStockGod.TAB_KEY, 1);
+//                gotoDashboard(FragmentStockGod.class.getName(), args2);
+                ActivityHelper.presentFromActivity(this.getActivity(), ReactActivity.class);
                 break;
 //            case R.id.ad_close_button:
 //                dismissTopBanner();
