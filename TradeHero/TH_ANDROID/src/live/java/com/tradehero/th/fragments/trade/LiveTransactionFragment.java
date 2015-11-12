@@ -1,9 +1,10 @@
 package com.tradehero.th.fragments.trade;
 
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.Selection;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,11 +24,11 @@ import com.tradehero.th.api.live.LivePortfolioId;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
+import com.tradehero.th.models.parcelable.LiveBuySellParcelable;
 import com.tradehero.th.models.parcelable.LiveTransactionParcelable;
 import com.tradehero.th.network.service.DummyAyondoLiveServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
-import java.util.Objects;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.widget.OnTextChangeEvent;
@@ -52,10 +53,10 @@ public class LiveTransactionFragment extends DashboardFragment
     @Inject LivePortfolioId livePortfolioId;
     @Inject DummyAyondoLiveServiceWrapper liveServiceWrapper;
 
-    private boolean isTransactionBuy;
+    private LiveTransactionParcelable parcelable;
     private double mTradeValue = 0.0;
     private int mTradeSize = 0;
-    private boolean isTradeSizeEditTextFocussed = false;
+    private boolean isTradeSizeEditTextFocused = false;
 
     public LiveTransactionFragment()
     {
@@ -82,12 +83,11 @@ public class LiveTransactionFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
 
         Bundle data = getActivity().getIntent().getExtras();
-        LiveTransactionParcelable parcelable = data.getParcelable("LiveTransactionParcelable");
+        parcelable = data.getParcelable("LiveTransactionParcelable");
 
         if (parcelable != null)
         {
-            fetchSecurityData(parcelable);
-            isTransactionBuy = parcelable.isTransactionBuy();
+            fetchSecurityData();
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item_transaction_fragment,
@@ -100,7 +100,7 @@ public class LiveTransactionFragment extends DashboardFragment
         return true;
     }
 
-    private void fetchSecurityData(@NonNull final LiveTransactionParcelable parcelable)
+    private void fetchSecurityData()
     {
         securityCompactCacheRx.get().get(parcelable.getSecurityId())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -120,7 +120,8 @@ public class LiveTransactionFragment extends DashboardFragment
                             marketPriceTextView.setText(String.format("%.2f", securityCompactDTO.bidPrice));
                         }
 
-                        double tradeValue = parcelable.getShares() * (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice);
+                        double tradeValue =
+                                parcelable.getShares() * (parcelable.isTransactionBuy() ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice);
 
                         tradeSizeEditText.setText(String.format("%d", parcelable.getShares()));
                         tradeValueEditText.setText(String.format("%.2f", tradeValue));
@@ -153,7 +154,7 @@ public class LiveTransactionFragment extends DashboardFragment
         {
             @Override public void onFocusChange(View v, boolean hasFocus)
             {
-                isTradeSizeEditTextFocussed = hasFocus;
+                isTradeSizeEditTextFocused = hasFocus;
             }
         });
 
@@ -169,7 +170,8 @@ public class LiveTransactionFragment extends DashboardFragment
                             String text = onTextChangeEvent.text().toString();
                             int currentTradeSize = Integer.parseInt(text);
                             double maxTradeSize =
-                                    Math.floor(cashAvailable / (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice));
+                                    (parcelable.isTransactionBuy() ? Math.floor(cashAvailable / securityCompactDTO.askPrice)
+                                            : parcelable.getShares());
 
                             if (currentTradeSize > maxTradeSize)
                             {
@@ -181,10 +183,11 @@ public class LiveTransactionFragment extends DashboardFragment
                                 tradeSizeEditText.setText(String.format("%d", currentTradeSize));
                             }
 
-                            if (isTradeSizeEditTextFocussed)
+                            if (isTradeSizeEditTextFocused)
                             {
                                 double expectedTradeValue =
-                                        (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice) * currentTradeSize;
+                                        (parcelable.isTransactionBuy() ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice)
+                                                * currentTradeSize;
 
                                 if (mTradeValue != expectedTradeValue)
                                 {
@@ -214,8 +217,7 @@ public class LiveTransactionFragment extends DashboardFragment
                         {
                             String text = onTextChangeEvent.text().toString();
                             double currentTradeValue = Double.parseDouble(text);
-                            double maxTradeValue = (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice) * Math.floor(
-                                    cashAvailable / (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice));
+                            double maxTradeValue = (parcelable.isTransactionBuy() ? cashAvailable : parcelable.getShares() * securityCompactDTO.bidPrice);
 
                             if (currentTradeValue > maxTradeValue)
                             {
@@ -227,8 +229,8 @@ public class LiveTransactionFragment extends DashboardFragment
                                 tradeValueEditText.setText(String.format("%.2f", currentTradeValue));
                             }
 
-                            int expectedTradeSize =  (int) Math.floor(
-                                    currentTradeValue / (isTransactionBuy ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice));
+                            int expectedTradeSize = (int) Math.floor(
+                                    currentTradeValue / (parcelable.isTransactionBuy() ? securityCompactDTO.askPrice : securityCompactDTO.bidPrice));
 
                             if (expectedTradeSize != mTradeSize)
                             {
