@@ -19,6 +19,8 @@ import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.th.R;
+import com.tradehero.th.api.position.PositionDTO;
+import com.tradehero.th.api.position.PositionDTOList;
 import com.tradehero.th.api.security.SecurityCompactDTO;
 import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.fragments.base.DashboardFragment;
@@ -27,6 +29,7 @@ import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.models.parcelable.LiveBuySellParcelable;
 import com.tradehero.th.models.parcelable.LiveTransactionParcelable;
+import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import java.text.DecimalFormat;
@@ -55,8 +58,10 @@ public class LiveBuySellFragment extends DashboardFragment
     @Bind(R.id.btn_sell) Button sellBtn;
 
     @Inject Lazy<SecurityCompactCacheRx> securityCompactCacheRx;
+    @Inject Lazy<SecurityServiceWrapper> securityServiceWrapper;
 
     private SecurityId securityId;
+    private PositionDTO closeablePostionDTO;
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -95,6 +100,20 @@ public class LiveBuySellFragment extends DashboardFragment
 
             fetchSecurityData(parcelable.getSecurityId());
             securityId = parcelable.getSecurityId();
+
+            securityServiceWrapper.get().getSecurityPositions(securityId)
+                    .subscribe(new Action1<PositionDTOList>()
+                    {
+                        @Override public void call(PositionDTOList positionDTOs)
+                        {
+                            closeablePostionDTO = positionDTOs.get(0);
+
+                            if (closeablePostionDTO.shares != null && closeablePostionDTO.shares != 0)
+                            {
+                                sellBtn.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
         }
     }
 
@@ -195,7 +214,14 @@ public class LiveBuySellFragment extends DashboardFragment
     @SuppressWarnings("unused")
     @OnClick(R.id.btn_sell) public void sellBtnOnClicked()
     {
-        LiveTransactionParcelable liveTransactionParcelable = new LiveTransactionParcelable(securityId, 0, false);
+        Integer shares = 0;
+
+        if (closeablePostionDTO.shares != null)
+        {
+            shares = closeablePostionDTO.shares;
+        }
+
+        LiveTransactionParcelable liveTransactionParcelable = new LiveTransactionParcelable(securityId, shares, false);
         getActivity().getIntent().putExtra("LiveTransactionParcelable", liveTransactionParcelable);
 
         navigator.get().pushFragment(LiveTransactionFragment.class);
