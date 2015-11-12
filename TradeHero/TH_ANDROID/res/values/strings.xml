@@ -624,4 +624,5 @@
     <string name="follow_buy">跟买</string>
     <string name="default_signature">add my signature...</string>
     <string name="settings_my_sign">Signature</string>
+    <string name="checking_upgrade">checking upgrade</string>
 </resources>

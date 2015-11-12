@@ -239,5 +239,6 @@
     <string name="trading_hint_c">通讯中...</string>
     <string name="default_signature">添加我的签名...</string>
     <string name="settings_my_sign">个性签名</string>
+    <string name="checking_upgrade">检查更新中...</string>
 
 </resources>

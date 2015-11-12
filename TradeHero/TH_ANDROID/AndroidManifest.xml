@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tradehero.th"
-          android:versionName="3.7.1"
-          android:versionCode="10027"
-          android:installLocation="auto">
+<manifest
+    package="com.tradehero.th"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:installLocation="auto"
+    android:versionCode="10027"
+    android:versionName="3.7.1">
 
     <uses-sdk
-            android:minSdkVersion="14"
-            android:targetSdkVersion="19"/>
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19"/>
 
     <supports-screens
-            android:anyDensity="true"
-            android:resizeable="true"/>
+        android:anyDensity="true"
+        android:resizeable="true"/>
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -38,11 +39,11 @@
     <!-- 海通实盘 -->
     <!-- 超时对话框权限 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.hardware.camera" />
-    <uses-permission android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.RESTART_PACKAGES" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.hardware.camera"/>
+    <uses-permission android:name="android.hardware.camera.autofocus"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.RESTART_PACKAGES"/>
     <uses-permission android:name="android.permission.CALL_PHONE"/>
 
     <!-- 这个权限用于进行网络定位-->
@@ -54,16 +55,16 @@
     <!-- 海通实盘 -->
 
     <application
-            android:name="com.tradehero.th.base.Application"
-            android:allowBackup="true"
-            android:icon="@drawable/launcher"
-            android:label="@string/app_name"
-            android:theme="@style/TradeHero"
-            android:allowClearUserData="true"
-            android:enabled="true"
-            android:largeHeap="true"
-            android:hardwareAccelerated="true"
-            >
+        android:name="com.tradehero.th.base.Application"
+        android:allowBackup="true"
+        android:allowClearUserData="true"
+        android:enabled="true"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/TradeHero"
+        >
 
         <activity
             android:name="com.tradehero.th.activities.SplashActivity"
@@ -71,8 +72,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppBaseTheme.NoActionBar2">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
@@ -80,199 +81,232 @@
             android:name="com.tradehero.th.activities.AuthenticationActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"/>
 
         <activity
             android:name="com.tradehero.th.activities.GuideActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
 
         <activity
             android:name="com.tradehero.th.activities.RecommendStocksActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/AppBaseTheme.NoActionBar2" />
+            android:theme="@style/AppBaseTheme.NoActionBar2"/>
 
         <activity
             android:name=".activities.TradeHeroMainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.PageIndicatorDefaults"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name="com.tradehero.th.activities.SecurityOptActivity"
             android:launchMode="singleTask"
-            android:windowSoftInputMode="stateHidden|stateUnchanged"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|stateUnchanged"/>
 
-        <activity android:name="com.tradehero.th.activities.DisplayLargeImageActivity"
+        <activity
+            android:name="com.tradehero.th.activities.DisplayLargeImageActivity"
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateHidden|stateUnchanged"
             />
 
         <activity
-                android:name="com.tradehero.th.activities.DashboardActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/TradeHero.Dashboard"
-                android:windowSoftInputMode="adjustResize"
-                android:configChanges="orientation|screenSize">
+            android:name="com.tradehero.th.activities.DashboardActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/TradeHero.Dashboard"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
 
-                <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_trending"
-                      android:pathPattern=".*"/>
-                <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_community"
-                      android:pathPattern=".*"/>
-                <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_profile"
-                      android:pathPattern=".*"/>
-                <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_portfolio"
-                      android:pathPattern=".*"/>
-                <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_store"
-                      android:pathPattern=".*"/>
-                <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_user"
-                      android:pathPattern=".*"/>
-                <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_providers"
-                      android:pathPattern=".*"/>
-                <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_home"
-                      android:pathPattern=".*"/>
-                <data android:scheme="@string/intent_scheme" android:host="@string/intent_host_web"
-                      android:pathPattern=".*"/>
+                <data
+                    android:host="@string/intent_host_trending"
+                    android:pathPattern=".*"
+                    android:scheme="@string/intent_scheme"/>
+                <data
+                    android:host="@string/intent_host_community"
+                    android:pathPattern=".*"
+                    android:scheme="@string/intent_scheme"/>
+                <data
+                    android:host="@string/intent_host_profile"
+                    android:pathPattern=".*"
+                    android:scheme="@string/intent_scheme"/>
+                <data
+                    android:host="@string/intent_host_portfolio"
+                    android:pathPattern=".*"
+                    android:scheme="@string/intent_scheme"/>
+                <data
+                    android:host="@string/intent_host_store"
+                    android:pathPattern=".*"
+                    android:scheme="@string/intent_scheme"/>
+                <data
+                    android:host="@string/intent_host_user"
+                    android:pathPattern=".*"
+                    android:scheme="@string/intent_scheme"/>
+                <data
+                    android:host="@string/intent_host_providers"
+                    android:pathPattern=".*"
+                    android:scheme="@string/intent_scheme"/>
+                <data
+                    android:host="@string/intent_host_home"
+                    android:pathPattern=".*"
+                    android:scheme="@string/intent_scheme"/>
+                <data
+                    android:host="@string/intent_host_web"
+                    android:pathPattern=".*"
+                    android:scheme="@string/intent_scheme"/>
             </intent-filter>
         </activity>
 
-        <activity android:name="com.tradehero.th.activities.VideoPlayActivity"
-                android:screenOrientation="landscape"
-                android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-                android:launchMode="singleTask"/>
+        <activity
+            android:name="com.tradehero.th.activities.VideoPlayActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
 
         <activity
-                android:name="com.tradehero.th.wxapi.WXEntryActivity"
-                android:label="@string/app_name"
-                android:theme="@android:style/Theme.Translucent"
-                android:launchMode="singleInstance"
-                android:exported="true">
+            android:name="com.tradehero.th.wxapi.WXEntryActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleInstance"
+            android:theme="@android:style/Theme.Translucent">
         </activity>
 
         <!--QQ login -->
         <activity
-                android:name="com.tencent.tauth.AuthActivity"
-                android:noHistory="true"
-                android:launchMode="singleTask">
+            android:name="com.tencent.tauth.AuthActivity"
+            android:launchMode="singleTask"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
+
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+
                 <data android:scheme="tencent1101331512"/>
             </intent-filter>
         </activity>
 
         <activity
-                android:name="com.tencent.connect.common.AssistActivity"
-                android:screenOrientation="portrait"
-                android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            android:name="com.tencent.connect.common.AssistActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
         <!-- 个推推送 -->
         <service
-                android:name="com.igexin.sdk.PushService"
-                android:process=":pushservice"
-                android:exported="true"
-                android:label="NotificationCenter" >
+            android:name="com.igexin.sdk.PushService"
+            android:exported="true"
+            android:label="NotificationCenter"
+            android:process=":pushservice">
         </service>
 
-        <receiver android:name="com.igexin.sdk.PushReceiver" >
+        <receiver android:name="com.igexin.sdk.PushReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="com.igexin.sdk.action.refreshls" />
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.intent.action.USER_PRESENT"/>
+                <action android:name="com.igexin.sdk.action.refreshls"/>
             </intent-filter>
         </receiver>
         <receiver
-                android:name="com.igexin.sdk.PushManagerReceiver"
-                android:exported="false" >
+            android:name="com.igexin.sdk.PushManagerReceiver"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.igexin.sdk.action.pushmanager" />
+                <action android:name="com.igexin.sdk.action.pushmanager"/>
             </intent-filter>
         </receiver>
 
         <activity
-                android:name="com.igexin.sdk.PushActivity"
-                android:excludeFromRecents="true"
-                android:exported="false"
-                android:process=":pushservice"
-                android:taskAffinity="com.igexin.sdk.PushActivityTask"
-                android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            android:name="com.igexin.sdk.PushActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:process=":pushservice"
+            android:taskAffinity="com.igexin.sdk.PushActivityTask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
 
-        <service android:name="com.igexin.download.DownloadService" android:process=":pushservice" />
+        <service
+            android:name="com.igexin.download.DownloadService"
+            android:process=":pushservice"/>
         <receiver android:name="com.igexin.download.DownloadReceiver">
             <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
         <provider
-                android:process=":pushservice"
-                android:name="com.igexin.download.DownloadProvider"
-                android:authorities="downloads.${applicationId}"	/>
+            android:name="com.igexin.download.DownloadProvider"
+            android:authorities="downloads.${applicationId}"
+            android:process=":pushservice"/>
         <!-- android:authorities="downloads.第三方包名" -->
 
-        <activity android:name="com.igexin.getuiext.activity.GetuiExtActivity"
-                  android:configChanges="orientation|keyboard|keyboardHidden"
-                  android:excludeFromRecents="true"
-                  android:process=":pushservice"
-                  android:taskAffinity="android.task.myServicetask"
-                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
-                  android:exported="false" />
+        <activity
+            android:name="com.igexin.getuiext.activity.GetuiExtActivity"
+            android:configChanges="orientation|keyboard|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:process=":pushservice"
+            android:taskAffinity="android.task.myServicetask"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
-        <receiver android:name="com.igexin.getuiext.service.PayloadReceiver" android:exported="false" >
+        <receiver
+            android:name="com.igexin.getuiext.service.PayloadReceiver"
+            android:exported="false">
             <intent-filter>
                 <!-- 这个com.igexin.sdk.action.7fjUl2Z3LH6xYy7NQK4ni4固定，不能修改  -->
-                <action android:name="com.igexin.sdk.action.7fjUl2Z3LH6xYy7NQK4ni4" />
+                <action android:name="com.igexin.sdk.action.7fjUl2Z3LH6xYy7NQK4ni4"/>
                 <!-- android:name="com.igexin.sdk.action.第三方的appId" -->
-                <action android:name="com.igexin.sdk.action.etVyv7RHJ28BqN3KKCtKJ6" />
+                <action android:name="com.igexin.sdk.action.etVyv7RHJ28BqN3KKCtKJ6"/>
             </intent-filter>
         </receiver>
 
-        <service android:name="com.igexin.getuiext.service.GetuiExtService" android:process=":pushservice" />
+        <service
+            android:name="com.igexin.getuiext.service.GetuiExtService"
+            android:process=":pushservice"/>
         <!-- 配置的第三方参数属性 -->
         <meta-data
-                android:name="PUSH_APPID"
-                android:value="tuDsXFjpPa6tJNxsWnEkUA" />
+            android:name="PUSH_APPID"
+            android:value="tuDsXFjpPa6tJNxsWnEkUA"/>
         <meta-data
-                android:name="PUSH_APPKEY"
-                android:value="1F6q9VIJrt9n6Hm72VjVe6" />
+            android:name="PUSH_APPKEY"
+            android:value="1F6q9VIJrt9n6Hm72VjVe6"/>
         <meta-data
-                android:name="PUSH_APPSECRET"
-                android:value="Ir4k8IIlfU7beqe8VJKFQ5" />
+            android:name="PUSH_APPSECRET"
+            android:value="Ir4k8IIlfU7beqe8VJKFQ5"/>
         <meta-data
-                android:name="PUSH_GROUPID"
-                android:value="" />
+            android:name="PUSH_GROUPID"
+            android:value=""/>
         <!-- 配置第三方Receiver -->
         <receiver
-                android:name="com.tradehero.chinabuild.notification.getui.GETUIPushReceiver"
-                android:exported="false" >
+            android:name="com.tradehero.chinabuild.notification.getui.GETUIPushReceiver"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.igexin.sdk.action.tuDsXFjpPa6tJNxsWnEkUA" />
+                <action android:name="com.igexin.sdk.action.tuDsXFjpPa6tJNxsWnEkUA"/>
             </intent-filter>
         </receiver>
         <!-- 配置第三方Receiver -->
         <!-- 个推推送 -->
 
-        <meta-data android:name="com.crashlytics.ApiKey" android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
+        <meta-data
+            android:name="com.crashlytics.ApiKey"
+            android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
 
         <!-- 必须注册在微博授权，分享微博时候用到 -->
-        <activity android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
+        <activity
+            android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" >
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize">
         </activity>
-        <service android:name="com.sina.weibo.sdk.net.DownloadService"
+        <service
+            android:name="com.sina.weibo.sdk.net.DownloadService"
             android:exported="false"/>
-
 
         <!-- 实盘 -->
         <activity
@@ -283,37 +317,65 @@
             android:name="com.tradehero.th.activities.SearchSecurityActualActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"/>
 
         <!-- 海通SDK -->
         <activity
+            android:name="com.cairh.app.sjkh.MainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:name="com.cairh.app.sjkh.MainActivity">
+            android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
 
-        <activity android:name="com.cairh.app.sjkh.ui.VideoActivity"
+        <activity
+            android:name="com.cairh.app.sjkh.ui.VideoActivity"
             android:screenOrientation="portrait"/>
 
         <activity
             android:name="com.cairh.app.sjkh.ui.CameraMainActivity"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"/>
 
         <activity android:name="com.cairh.app.sjkh.SchemeActivity">
             <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="android.intent.action.VIEW" />
-                <data android:scheme="CRHSJKH" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.VIEW"/>
+                <data android:scheme="CRHSJKH"/>
             </intent-filter>
         </activity>
 
-        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote">
         </service>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="ljeTCCsVh1rap0tutGgG29Up" />
+            android:value="ljeTCCsVh1rap0tutGgG29Up"/>
         <!-- 海通SDK -->
         <!-- 实盘 -->
+
+        <!--auto upgrade from baidu store begin-->
+        <meta-data
+            android:name="BDAPPID"
+            android:value="3067515"/>
+        <meta-data
+            android:name="BDAPPKEY"
+            android:value="f3Os4GAOqxgm79GqbnkT9L8T"/>
+        <activity
+            android:name="com.baidu.autoupdatesdk.ConfirmDialoigActivity"
+            android:exported="false"
+            android:screenOrientation="sensor"
+            android:theme="@style/bdp_update_dialog_style_fullscreen"/>
+        <receiver
+            android:name="com.baidu.autoupdatesdk.receiver.BDBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.baidu.autoupdatesdk.ACTION_NEW_UPDATE"/>
+                <action android:name="com.baidu.autoupdatesdk.ACTION_DOWNLOAD_COMPLETE"/>
+                <action android:name="com.baidu.autoupdatesdk.ACTION_NEW_AS"/>
+                <action android:name="com.baidu.autoupdatesdk.ACTION_AS_DOWNLOAD_COMPLETE"/>
+            </intent-filter>
+        </receiver>
+        <!--auto upgrade from baidu store end-->
     </application>
 </manifest>

@@ -25,6 +25,7 @@ import butterknife.OnClick;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.UserLoginDTO;
@@ -38,18 +39,16 @@ import com.tradehero.th.models.user.auth.DeviceCredentialsDTO;
 import com.tradehero.th.persistence.prefs.DiviceID;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.ProgressDialogUtil;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.MethodEvent;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import timber.log.Timber;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import timber.log.Timber;
 
 public class GuideActivity extends Activity implements ViewPager.OnPageChangeListener,
         View.OnClickListener
@@ -99,11 +98,6 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
         {
             Timber.e(e, null);
         }
-    }
-
-    @Override protected void onPause()
-    {
-        super.onPause();
     }
 
     @Override protected void onDestroy()

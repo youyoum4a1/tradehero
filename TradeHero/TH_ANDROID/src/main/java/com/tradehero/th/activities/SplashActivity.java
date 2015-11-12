@@ -1,12 +1,16 @@
 package com.tradehero.th.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import com.baidu.autoupdatesdk.BDAutoUpdateSDK;
+import com.baidu.autoupdatesdk.UICheckUpdateCallback;
 import com.crashlytics.android.Crashlytics;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
@@ -29,24 +33,28 @@ import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DaggerUtils;
 import com.tradehero.th.utils.VersionUtils;
 import com.tradehero.th.utils.metrics.MetricsModule;
-
+import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
+import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import dagger.Lazy;
 import retrofit.RetrofitError;
 
 public class SplashActivity extends AppCompatActivity {
-    @Inject Lazy<Api> tapStream;
-    @Inject MobileAppTracker mobileAppTracker;
-    @Inject CurrentActivityHolder currentActivityHolder;
-    @Inject @ShareDialogKey BooleanPreference mShareDialogKeyPreference;
-    @InjectView(R.id.tips) TextView mTipsText;
+    @Inject
+    Lazy<Api> tapStream;
+    @Inject
+    MobileAppTracker mobileAppTracker;
+    @Inject
+    CurrentActivityHolder currentActivityHolder;
+    @Inject
+    @ShareDialogKey
+    BooleanPreference mShareDialogKeyPreference;
+    @InjectView(R.id.tips)
+    TextView mTipsText;
 
     private static final String TAG_TASK_FRAGMENT = "auth.task.fragment";
     TaskFragment taskFragment;
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +86,30 @@ public class SplashActivity extends AppCompatActivity {
             taskFragment = new TaskFragment();
             fm.beginTransaction().add(taskFragment, TAG_TASK_FRAGMENT).commit();
         }
+
+        //check upgrade from baidu store only for baidu store package
+        checkUpdate();
+    }
+
+    private void checkUpdate() {
+        if (Constants.TAP_STREAM_TYPE == TapStreamType.Baidu
+                || Constants.TAP_STREAM_TYPE == TapStreamType.NineOne
+                || Constants.TAP_STREAM_TYPE == TapStreamType.AZouSC) {
+            dialog = new ProgressDialog(this);
+            dialog.setIndeterminate(true);
+            dialog.setMessage(getString(R.string.checking_upgrade));
+            dialog.show();
+            BDAutoUpdateSDK.uiUpdateAction(this, new MyUICheckUpdateCallback());
+        }
+    }
+
+    private class MyUICheckUpdateCallback implements UICheckUpdateCallback {
+
+        @Override
+        public void onCheckComplete() {
+            dialog.dismiss();
+        }
+
     }
 
     @Override
@@ -95,12 +127,26 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+        super.onDestroy();
+    }
+
     public static class TaskFragment extends BaseFragment {
-        @Inject @FirstLaunch BooleanPreference firstLaunchPreference;
-        @Inject SessionServiceWrapper sessionServiceWrapper;
-        @Inject MainCredentialsPreference mainCredentialsPreference;
-        @Inject RequestHeaders requestHeaders;
-        @Inject Provider<LoginFormDTO> loginFormDTOProvider;
+        @Inject
+        @FirstLaunch
+        BooleanPreference firstLaunchPreference;
+        @Inject
+        SessionServiceWrapper sessionServiceWrapper;
+        @Inject
+        MainCredentialsPreference mainCredentialsPreference;
+        @Inject
+        RequestHeaders requestHeaders;
+        @Inject
+        Provider<LoginFormDTO> loginFormDTOProvider;
         private int userId = -1;
 
         private static final int STATUS_FIRST_LAUNCH = 1;
