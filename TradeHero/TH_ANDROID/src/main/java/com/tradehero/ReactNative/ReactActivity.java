@@ -27,7 +27,8 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
 
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        preferences.edit().putString("debug_http_host", "fhmainstorage.blob.core.windows.net/fhres").apply();
+//        preferences.edit().putString("debug_http_host", "fhmainstorage.blob.core.windows.net/fhres").apply();
+        preferences.edit().putString("debug_http_host", "192.168.20.77:8081").apply();
 
         if (mReactInstanceManager == null) {
             mReactInstanceManager = ReactInstanceManager.builder()
