@@ -27,7 +27,7 @@ import rx.subjects.PublishSubject;
 public class UserProfileCompactViewHolder
 {
     @Bind(R.id.user_profile_avatar) @Nullable public ImageView avatar;
-    @Bind(R.id.user_profile_roi) @Nullable public TextView roiSinceInception;
+//    @Bind(R.id.user_profile_roi) @Nullable public TextView roiSinceInception;
     @Bind(R.id.user_profile_followers_count) @Nullable public TextView followersCount;
     @Bind(R.id.user_profile_heroes_count) @Nullable public TextView heroesCount;
     @Bind(R.id.user_profile_display_name) @Nullable public TextView displayName;
@@ -74,25 +74,25 @@ public class UserProfileCompactViewHolder
         }
 
         // ROI Since Inception
-        if (roiSinceInception != null)
-        {
-            if (userProfileDTO.portfolio != null)
-            {
-                double roi = userProfileDTO.portfolio.roiSinceInception != null ? userProfileDTO.portfolio.roiSinceInception : 0;
-                THSignedPercentage
-                        .builder(roi * 100)
-                        .withSign()
-                        .withDefaultColor()
-                        .defaultColorForBackground()
-                        .signTypePlusMinusAlways()
-                        .build()
-                        .into(roiSinceInception);
-            }
-            else
-            {
-                roiSinceInception.setText(R.string.na);
-            }
-        }
+//        if (roiSinceInception != null)
+//        {
+//            if (userProfileDTO.portfolio != null)
+//            {
+//                double roi = userProfileDTO.portfolio.roiSinceInception != null ? userProfileDTO.portfolio.roiSinceInception : 0;
+//                THSignedPercentage
+//                        .builder(roi * 100)
+//                        .withSign()
+//                        .withDefaultColor()
+//                        .defaultColorForBackground()
+//                        .signTypePlusMinusAlways()
+//                        .build()
+//                        .into(roiSinceInception);
+//            }
+//            else
+//            {
+//                roiSinceInception.setText(R.string.na);
+//            }
+//        }
 
         // Followers Count
         if (followersCount != null)

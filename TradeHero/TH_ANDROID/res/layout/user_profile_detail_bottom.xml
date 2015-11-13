@@ -21,13 +21,6 @@
         style="@style/UserProfile.BottomButtonBar"
         >
 
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/ic_profile_followers"
-          android:layout_gravity="center_horizontal"
-          />
-
       <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -70,13 +63,6 @@
         style="@style/UserProfile.BottomButtonBar"
         >
 
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/ic_profile_heroes"
-          android:layout_gravity="center_horizontal"
-          />
-
       <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -118,13 +104,6 @@
         android:orientation="vertical"
         style="@style/UserProfile.BottomButtonBar"
         >
-
-      <ImageView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:src="@drawable/ic_profile_achievements"
-          android:layout_gravity="center_horizontal"
-          />
 
       <LinearLayout
           android:layout_width="wrap_content"
