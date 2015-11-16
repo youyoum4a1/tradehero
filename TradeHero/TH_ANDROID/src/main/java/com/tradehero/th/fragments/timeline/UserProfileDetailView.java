@@ -51,11 +51,6 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
         userProfileDetailViewHolder.display(dto);
     }
 
-    public void setLevelDef(@NonNull LevelDefDTOList levelDefDTOList)
-    {
-        userProfileDetailViewHolder.setLevelDef(levelDefDTOList);
-    }
-
     @NonNull public Observable<UserProfileCompactViewHolder.ButtonType> getButtonClickedObservable()
     {
         return userProfileDetailViewHolder.getButtonClickedObservable();

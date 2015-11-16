@@ -27,6 +27,7 @@
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="true"
         android:listSelector="@color/transparent"
+        android:paddingTop="4dp"
         android:paddingBottom="@dimen/dashboard_tabhost_height"
         android:smoothScrollbar="true"
         />

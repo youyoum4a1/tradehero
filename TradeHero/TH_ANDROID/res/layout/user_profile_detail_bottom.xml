@@ -13,86 +13,70 @@
       >
 
     <LinearLayout
-        android:id="@+id/user_profile_followers_count_wrapper"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        style="@style/UserProfile.BottomButtonBar"
-        >
-
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          >
-
-        <TextView
-            android:id="@+id/user_profile_followers_count"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            tools:text="299"
-            style="@style/UserProfile.Contained.Value"
-            android:gravity="center"
-            />
-
-        <TextView
-            android:layout_height="wrap_content"
-            tools:text="Followers"
-            android:text="@string/user_profile_count_followers"
-            android:layout_width="wrap_content"
-            style="@style/UserProfile.Contained.Header"
-            android:layout_marginLeft="@dimen/margin_xsmall"
-            android:layout_marginStart="@dimen/margin_xsmall"
-            android:gravity="center"
-            android:ellipsize="end"
-            android:lines="1"
-            android:maxLines="1"
-            />
-
-      </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/user_profile_heroes_count_wrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         style="@style/UserProfile.BottomButtonBar"
         >
 
-      <LinearLayout
+      <TextView
+          android:id="@+id/user_profile_heroes_count"
+          style="@style/UserProfile.Contained.Value"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          >
+          tools:text="32"
+          android:gravity="center"
+          />
 
-        <TextView
-            android:id="@+id/user_profile_heroes_count"
-            style="@style/UserProfile.Contained.Value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="32"
-            android:gravity="center"
-            />
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Heroes"
+          android:text="@string/user_profile_count_heroes"
+          style="@style/UserProfile.Contained.Header"
+          android:layout_marginLeft="@dimen/margin_xsmall"
+          android:layout_marginStart="@dimen/margin_xsmall"
+          android:gravity="center"
+          android:ellipsize="end"
+          android:lines="1"
+          android:maxLines="1"
+          />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Heroes"
-            android:text="@string/user_profile_count_heroes"
-            style="@style/UserProfile.Contained.Header"
-            android:layout_marginLeft="@dimen/margin_xsmall"
-            android:layout_marginStart="@dimen/margin_xsmall"
-            android:gravity="center"
-            android:ellipsize="end"
-            android:lines="1"
-            android:maxLines="1"
-            />
+    </LinearLayout>
 
-      </LinearLayout>
+    <LinearLayout
+        android:id="@+id/user_profile_followers_count_wrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        style="@style/UserProfile.BottomButtonBar"
+        >
+
+      <TextView
+          style="@style/UserProfile.Contained.Value"
+          android:id="@+id/user_profile_followers_count"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
+          android:gravity="center"
+          tools:text="299"
+          />
+
+      <TextView
+          style="@style/UserProfile.Contained.Header"
+          android:layout_height="wrap_content"
+          android:text="@string/user_profile_count_followers"
+          android:layout_width="wrap_content"
+          android:layout_marginLeft="@dimen/margin_xsmall"
+          android:layout_marginStart="@dimen/margin_xsmall"
+          android:gravity="center"
+          android:ellipsize="end"
+          android:lines="1"
+          android:maxLines="1"
+          tools:text="Followers"
+          />
 
     </LinearLayout>
 
@@ -101,40 +85,32 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         style="@style/UserProfile.BottomButtonBar"
         >
 
-      <LinearLayout
+      <TextView
+          android:id="@+id/user_profile_achievement_count"
+          style="@style/UserProfile.Contained.Value"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:orientation="horizontal"
-          >
+          android:gravity="center"
+          tools:text="132"
+          />
 
-        <TextView
-            android:id="@+id/user_profile_achievement_count"
-            style="@style/UserProfile.Contained.Value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="132"
-            android:gravity="center"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="Achievements"
-            android:gravity="center"
-            android:text="@string/user_profile_achievements_count"
-            style="@style/UserProfile.Contained.Header"
-            android:layout_marginLeft="@dimen/margin_xsmall"
-            android:layout_marginStart="@dimen/margin_xsmall"
-            android:ellipsize="end"
-            android:lines="1"
-            android:maxLines="1"
-            />
-
-      </LinearLayout>
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="Badges"
+          android:gravity="center"
+          android:text="@string/user_profile_badges_count"
+          style="@style/UserProfile.Contained.Header"
+          android:layout_marginLeft="@dimen/margin_xsmall"
+          android:layout_marginStart="@dimen/margin_xsmall"
+          android:ellipsize="end"
+          android:lines="1"
+          android:maxLines="1"
+          />
 
     </LinearLayout>
 

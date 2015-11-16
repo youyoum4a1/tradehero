@@ -6,15 +6,15 @@
     android:id="@+id/user_profile_detail_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
+    android:background="@color/white"
     android:orientation="vertical">
 
   <LinearLayout
       android:id="@+id/profile_screen_user_detail_top"
+      android:layout_marginTop="@dimen/margin_small"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical"
-      tools:background="@color/tradehero_blue">
+      android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -31,10 +31,8 @@
           android:layout_alignParentStart="true"
           android:layout_marginRight="@dimen/margin_small"
           android:layout_marginEnd="@dimen/margin_small"
-          android:background="@drawable/layout_oval"
           android:padding="0.5dp"
-          tools:src="@drawable/avatar"
-          android:contentDescription="@null"/>
+          tools:ignore="contentDescription"/>
 
       <ImageView
           android:id="@+id/user_profile_edit"
@@ -47,40 +45,42 @@
           android:background="@drawable/basic_transparent_selector"
           android:layout_marginTop="@dimen/margin_small"
           android:src="@drawable/ic_action_content_edit"
-          android:visibility="gone"/>
+          android:visibility="gone"
+          tools:ignore="contentDescription"/>
 
       <TextView
           android:id="@+id/user_profile_display_name"
-          style="@style/TH.Title.Inverse"
+          style="@style/TH.Title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:gravity="left|center_vertical"
+          android:gravity="start|center_vertical"
           android:shadowColor="@color/text_primary"
           android:shadowDy="1"
           android:shadowDx="1"
           android:shadowRadius="1"
           android:layout_marginTop="@dimen/margin_small"
-          tools:text="Lorem ipsum dolor sit amet contentulla"
           android:layout_toRightOf="@+id/user_profile_avatar"
-          android:layout_toEndOf="@+id/user_profile_avatar"/>
-
-      <!--<TextView-->
-          <!--android:id="@+id/user_profile_roi"-->
-          <!--style="@style/TH.Subhead.Inverse"-->
-          <!--android:layout_toRightOf="@+id/user_profile_avatar"-->
-          <!--android:layout_toEndOf="@+id/user_profile_avatar"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:layout_below="@id/user_profile_display_name"-->
-          <!--android:textStyle="bold"-->
-          <!--tools:text="+408%"-->
-          <!--tools:background="@color/number_up"/>-->
+          android:layout_toEndOf="@+id/user_profile_avatar"
+          tools:text="James Lai"/>
 
     </RelativeLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@color/grey"
+        tools:ignore="contentDescription"/>
 
     <include
         layout="@layout/user_profile_detail_bottom"
         />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey"
+        tools:ignore="contentDescription"/>
 
   </LinearLayout>
 

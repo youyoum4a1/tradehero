@@ -3,7 +3,7 @@
 
   <string name="user_profile_count_followers">Fans</string>
   <string name="user_profile_count_heroes">Heroes</string>
-  <string name="user_profile_achievements_count">Achievements</string>
+  <string name="user_profile_badges_count">Badges</string>
 
 
   <string name="user_profile_button_timeline">Timeline</string>

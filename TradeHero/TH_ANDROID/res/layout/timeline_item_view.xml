@@ -7,112 +7,121 @@
     android:descendantFocusability="blocksDescendants"
     >
 
-  <RelativeLayout
-      android:id="@+id/main_content_wrapper"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@drawable/card_item_top_bg"
-      android:padding="@dimen/timeline_item_padding"
-
-      >
-
-    <ImageView
-        android:id="@+id/discussion_user_picture"
-        android:layout_width="@dimen/big_image_w_h"
-        android:layout_height="@dimen/big_image_w_h"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:padding="1dp"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        tools:src="@drawable/superman_facebook"
-        />
-
-    <RelativeLayout
-        android:id="@+id/timeline_item_top_right"
-        android:layout_height="wrap_content"
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_toRightOf="@id/discussion_user_picture"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_xsmall"
+        android:layout_marginRight="@dimen/margin_xsmall"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        app:cardElevation="4dp"
         >
 
-      <ImageView
-          android:id="@+id/in_watchlist_indicator"
-          android:layout_width="15dp"
-          android:layout_height="wrap_content"
-          android:layout_alignParentRight="true"
-          android:layout_alignParentTop="true"
-          android:src="@drawable/icn_watchlist_active"
-          android:contentDescription="@null"
-          android:visibility="gone"
-          tools:visibility="visible"
-          />
+        <RelativeLayout
+            android:id="@+id/main_content_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/timeline_item_padding"
+            >
 
-      <ImageView
-          android:id="@+id/timeline_vendor_picture"
-          android:layout_width="wrap_content"
-          android:layout_height="@dimen/small_image_w_h"
-          android:scaleType="fitCenter"
-          android:layout_marginRight="5dp"
-          android:src="@null"
-          android:contentDescription="@null"
-          android:layout_toLeftOf="@id/in_watchlist_indicator"
-          android:background="@drawable/basic_transparent_selector"
-          tools:layout_width="30dp"
-          tools:layout_height="30dp"
-          />
+            <ImageView
+                android:id="@+id/discussion_user_picture"
+                android:layout_width="@dimen/big_image_w_h"
+                android:layout_height="@dimen/big_image_w_h"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:padding="1dp"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/superman_facebook"
+                />
 
-      <TextView
-          android:id="@+id/user_profile_name"
-          style="@style/TH.UserNameTitle"
-          android:layout_marginLeft="10dp"
-          android:layout_alignParentLeft="true"
-          android:layout_toLeftOf="@id/timeline_vendor_picture"
-          tools:text="Tho Nguyen"
-          />
+            <RelativeLayout
+                android:id="@+id/timeline_item_top_right"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_toRightOf="@id/discussion_user_picture"
+                >
 
-      <TextView
-          android:id="@+id/discussion_time"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="10dp"
-          style="@style/TH.Caption"
-          android:layout_alignParentLeft="true"
-          android:layout_below="@id/user_profile_name"
-          android:layout_toLeftOf="@id/timeline_vendor_picture"
-          tools:text="A moment ago"
-          />
+                <ImageView
+                    android:id="@+id/in_watchlist_indicator"
+                    android:layout_width="15dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/icn_watchlist_active"
+                    android:contentDescription="@null"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    />
 
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/timeline_vendor_picture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/small_image_w_h"
+                    android:scaleType="fitCenter"
+                    android:layout_marginRight="5dp"
+                    android:src="@null"
+                    android:contentDescription="@null"
+                    android:layout_toLeftOf="@id/in_watchlist_indicator"
+                    android:background="@drawable/basic_transparent_selector"
+                    tools:layout_width="30dp"
+                    tools:layout_height="30dp"
+                    />
 
-    <com.tradehero.th.widget.MarkdownTextView
-        android:id="@+id/discussion_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/timeline_item_top_right"
-        android:layout_marginLeft="10dip"
-        android:layout_marginTop="10dip"
-        android:layout_toRightOf="@id/discussion_user_picture"
-        tools:text="Tho Nguyen has become the best trader of the world!"
-        android:textColorLink="@color/tradehero_blue"
-        style="@style/TH.Body"
-        />
+                <TextView
+                    android:id="@+id/user_profile_name"
+                    style="@style/TH.UserNameTitle"
+                    android:layout_marginLeft="10dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/timeline_vendor_picture"
+                    tools:text="Tho Nguyen"
+                    />
 
-    <include
-        layout="@layout/discussion_translate_notice"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_below="@+id/discussion_content"
-        />
+                <TextView
+                    android:id="@+id/discussion_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    style="@style/TH.Caption"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/user_profile_name"
+                    android:layout_toLeftOf="@id/timeline_vendor_picture"
+                    tools:text="A moment ago"
+                    />
 
-  </RelativeLayout>
+            </RelativeLayout>
 
-  <FrameLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      >
+            <com.tradehero.th.widget.MarkdownTextView
+                android:id="@+id/discussion_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/timeline_item_top_right"
+                android:layout_marginLeft="10dip"
+                android:layout_marginTop="10dip"
+                android:layout_toRightOf="@id/discussion_user_picture"
+                tools:text="Tho Nguyen has become the best trader of the world!"
+                android:textColorLink="@color/tradehero_blue"
+                style="@style/TH.Body"
+                />
 
-    <include layout="@layout/discussion_action_buttons" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_below="@+id/discussion_content"
+                >
 
-  </FrameLayout>
+                <include layout="@layout/discussion_action_buttons"/>
+
+            </FrameLayout>
+
+        </RelativeLayout>
+
+
+    </android.support.v7.widget.CardView>
+
 
 </com.tradehero.th.fragments.timeline.TimelineItemViewLinear>

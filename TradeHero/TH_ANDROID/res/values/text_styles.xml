@@ -227,13 +227,12 @@
     <item name="android:textColor">@color/text_primary_inverse</item>
   </style>
 
-  <style name="UserProfile.Contained.Value" parent="TH.Title.Inverse">
+  <style name="UserProfile.Contained.Value" parent="TH.Body">
     <item name="android:textStyle">bold</item>
   </style>
 
-  <style name="UserProfile.Contained.Header" parent="TH.Caption.Inverse">
+  <style name="UserProfile.Contained.Header" parent="TH.Body">
     <item name="android:drawablePadding">3dp</item>
-    <item name="android:textStyle">bold</item>
   </style>
 
   <style name="TH.NumericalAnimatedTextView" parent="TH.Title">
