@@ -22,7 +22,6 @@ import rx.subjects.PublishSubject;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class SubTimelineAdapterNew extends DTOSetAdapter<Object>
-        implements StickyListHeadersAdapter
 {
     private static final int VIEW_TYPE_ITEM_TIMELINE = 0;
     private static final int VIEW_TYPE_TIMELINE_EMPTY = 1;
@@ -35,11 +34,7 @@ public class SubTimelineAdapterNew extends DTOSetAdapter<Object>
     @LayoutRes final int emptyResId;
     @LayoutRes final int loadingResId;
     @NonNull private final PublishSubject<UserDiscussionAction> userActionSubject;
-    @NonNull private final PublishSubject<TimelineFragment.TabType> tabTypeSubject;
 
-    @NonNull private TimelineFragment.TabType currentTabType = TimelineFragment.TabType.TIMELINE;
-
-    //<editor-fold desc="Constructors">
     public SubTimelineAdapterNew(
             @NonNull Context context,
             @LayoutRes int timelineResId,
@@ -51,7 +46,6 @@ public class SubTimelineAdapterNew extends DTOSetAdapter<Object>
         this.emptyResId = emptyResId;
         this.loadingResId = loadingResId;
         this.userActionSubject = PublishSubject.create();
-        this.tabTypeSubject = PublishSubject.create();
     }
     //</editor-fold>
 
@@ -62,7 +56,7 @@ public class SubTimelineAdapterNew extends DTOSetAdapter<Object>
         {
             objects.add(DTO_CALL_ACTION);
         }
-        else
+        else if (dtos != null)
         {
             objects.addAll(dtos);
         }
@@ -77,11 +71,6 @@ public class SubTimelineAdapterNew extends DTOSetAdapter<Object>
     @NonNull public Observable<UserDiscussionAction> getUserActionObservable()
     {
         return userActionSubject.asObservable();
-    }
-
-    @NonNull public Observable<TimelineFragment.TabType> getTabTypeObservable()
-    {
-        return tabTypeSubject.asObservable();
     }
 
     @Override public int getViewTypeCount()
@@ -205,27 +194,6 @@ public class SubTimelineAdapterNew extends DTOSetAdapter<Object>
             }
         }
         return null;
-    }
-
-    public void setCurrentTabType(@NonNull TimelineFragment.TabType currentTabType)
-    {
-        this.currentTabType = currentTabType;
-    }
-
-    @Override public View getHeaderView(int i, View convertView, ViewGroup viewGroup)
-    {
-        if (convertView == null)
-        {
-            convertView = LayoutInflater.from(context).inflate(R.layout.user_profile_detail_bottom_buttons, viewGroup, false);
-            ((TimelineHeaderButtonView) convertView).getTabTypeObservable().subscribe(tabTypeSubject);
-        }
-        ((TimelineHeaderButtonView) convertView).setActive(currentTabType);
-        return convertView;
-    }
-
-    @Override public long getHeaderId(int i)
-    {
-        return 1;
     }
 
     protected static class ObjectComparator implements Comparator<Object>
