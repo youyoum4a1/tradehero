@@ -110,7 +110,7 @@ public class AdminSettingsFragment extends BasePreferenceFragment
             {
                 int selectedIndex = serverEndpointListPreference.findIndexOfValue(serverEndpointPreference.get());
                 CharSequence[] entries = serverEndpointListPreference.getEntries();
-                if (entries != null && selectedIndex < entries.length)
+                if (entries != null && selectedIndex < entries.length && selectedIndex > 0)
                 {
                     serverEndpointListPreference.setTitle(getString(R.string.current_endpoint) + entries[selectedIndex]);
                 }

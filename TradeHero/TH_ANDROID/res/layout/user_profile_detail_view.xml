@@ -26,7 +26,6 @@
           android:id="@+id/user_profile_avatar"
           android:layout_width="@dimen/big_image_w_h"
           android:layout_height="@dimen/big_image_w_h"
-          android:layout_centerVertical="true"
           android:layout_alignParentLeft="true"
           android:layout_alignParentStart="true"
           android:layout_marginRight="@dimen/margin_small"
@@ -48,20 +47,91 @@
           android:visibility="gone"
           tools:ignore="contentDescription"/>
 
-      <TextView
-          android:id="@+id/user_profile_display_name"
-          style="@style/TH.Title"
+      <LinearLayout
           android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:gravity="start|center_vertical"
-          android:shadowColor="@color/text_primary"
-          android:shadowDy="1"
-          android:shadowDx="1"
-          android:shadowRadius="1"
-          android:layout_marginTop="@dimen/margin_small"
+          android:layout_height="@dimen/big_image_w_h"
           android:layout_toRightOf="@+id/user_profile_avatar"
           android:layout_toEndOf="@+id/user_profile_avatar"
-          tools:text="James Lai"/>
+          android:layout_gravity="center_vertical"
+          android:gravity="center_vertical"
+          android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/user_profile_display_name"
+            style="@style/TH.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="@color/text_primary"
+            android:shadowDy="1"
+            android:shadowDx="1"
+            android:shadowRadius="1"
+            tools:text="James Lai"/>
+
+        <TextView
+            style="@style/TH.Caption"
+            android:id="@+id/user_last_trading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trading since 05 May 2015"/>
+
+        <TextView
+            style="@style/TH.Caption"
+            android:id="@+id/user_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="United States"/>
+
+      </LinearLayout>
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/user_profile_avatar"
+          android:layout_marginTop="@dimen/margin_xsmall">
+
+        <TextView
+            style="@style/TH.Caption"
+            android:id="@+id/user_th_dollar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_xsmall"
+            android:layout_marginStart="@dimen/margin_xsmall"
+            android:layout_toRightOf="@+id/net_worth"
+            android:layout_toEndOf="@+id/net_worth"
+            android:textSize="20sp"
+            android:text="256,000"/>
+
+        <TextView
+            style="@style/TH.Caption"
+            android:id="@+id/net_worth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/user_th_dollar"
+            android:text="Net Worth: TH$"/>
+
+        <TextView
+            style="@style/TH.Caption"
+            android:id="@+id/user_total_roi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_xsmall"
+            android:layout_marginStart="@dimen/margin_xsmall"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="20sp"
+            android:text="256,000"/>
+
+        <TextView
+            style="@style/TH.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/user_total_roi"
+            android:layout_toStartOf="@+id/user_total_roi"
+            android:layout_alignBaseline="@+id/user_total_roi"
+            android:text="Total ROI"/>
+
+
+      </RelativeLayout>
 
     </RelativeLayout>
 
