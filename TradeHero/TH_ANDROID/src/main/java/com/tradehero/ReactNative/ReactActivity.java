@@ -12,18 +12,18 @@ import com.facebook.react.ReactRootView;
 import com.facebook.react.modules.core.DefaultHardwareBackBtnHandler;
 import com.facebook.react.shell.MainReactPackage;
 import com.tradehero.th.BuildConfig;
+import com.tradehero.th.R;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class ReactActivity extends AppCompatActivity implements DefaultHardwareBackBtnHandler {
-    private ReactRootView mReactRootView;
     private static ReactInstanceManager mReactInstanceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mReactRootView = new ReactRootView(this);
+        setContentView(R.layout.react_activity_main);
 
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -33,8 +33,8 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
         if (mReactInstanceManager == null) {
             mReactInstanceManager = ReactInstanceManager.builder()
                     .setApplication(getApplication())
-                    .setBundleAssetName("index.android.bundle")
-                    .setJSMainModuleName("index.android")
+                    .setBundleAssetName("UIExplorerApp.android.bundle")
+                    .setJSMainModuleName("Examples/UIExplorer/UIExplorerApp.android")
                     .addPackage(new MainReactPackage())
                     .setUseDeveloperSupport(true)
                     .setInitialLifecycleState(LifecycleState.RESUMED)
@@ -42,10 +42,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
         }
 
 
-        mReactRootView.startReactApplication(mReactInstanceManager, "AwesomeProject", null);
-
-        setContentView(mReactRootView);
-
+        ((ReactRootView) findViewById(R.id.react_root_view)).startReactApplication(mReactInstanceManager, "UIExplorerApp", null);
     }
 
     @Override
@@ -85,7 +82,7 @@ public class ReactActivity extends AppCompatActivity implements DefaultHardwareB
         super.onResume();
 
         if (mReactInstanceManager != null) {
-            mReactInstanceManager.onResume(this);
+            mReactInstanceManager.onResume(this, this);
         }
     }
 }

@@ -1,2 +1,3 @@
-include ':app'
+include ':app', ':ReactNative'
 project(':app').projectDir = new File('TradeHero/TH_ANDROID')
+project(':ReactNative').projectDir = new File('/Users/trdehero/react-native2/ReactAndroid')

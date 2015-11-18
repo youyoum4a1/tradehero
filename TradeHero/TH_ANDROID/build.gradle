@@ -189,5 +189,5 @@ dependencies {
         android.buildTypes.release.signingConfig = null
     }
     compile 'com.android.support:multidex:'
-    compile 'com.facebook.react:react-native:0.14.+'
+    compile project(':ReactNative')
 }
