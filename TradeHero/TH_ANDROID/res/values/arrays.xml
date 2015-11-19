@@ -19,6 +19,85 @@
         <item>股市的变化就像气候的变化一样，有冷热之分</item>
     </string-array>
 
+    <string-array name="dw_signup_employment">
+        <item>受雇/创业</item>
+        <item>退休</item>
+        <item>学生</item>
+        <item>失业中</item>
+    </string-array>
+
+    <string-array name="dw_signup_industry">
+        <item>IT通讯/电子/互联网</item>
+        <item>金融</item>
+        <item>房地产/建筑</item>
+        <item>贸易/批发/零售/租</item>
+        <item>文体教育/工艺美术</item>
+        <item>生产/加工/制造</item>
+        <item>交通/运输/物流/仓储</item>
+        <item>服务业</item>
+        <item>文化/传媒/娱乐/体育</item>
+        <item>能源/矿产/环保</item>
+        <item>政府/非盈利机构</item>
+        <item>农/林/牧/渔</item>
+        <item>其他</item>
+    </string-array>
+
+    <string-array name="dw_investment_objectives">
+        <item>增值</item>
+        <item>保值</item>
+        <item>收入</item>
+        <item>投机</item>
+    </string-array>
+
+    <string-array name="dw_investment_experience">
+        <item>丰富</item>
+        <item>良好</item>
+        <item>有限</item>
+        <item>无经验</item>
+    </string-array>
+
+    <string-array name="dw_annual_income">
+        <item>15万以下</item>
+        <item>15-30万</item>
+        <item>30-60万</item>
+        <item>60-120万</item>
+        <item>120万以上</item>
+    </string-array>
+
+    <string-array name="dw_networth_liquid">
+        <item>15万以下</item>
+        <item>15-30万</item>
+        <item>30-60万</item>
+        <item>60-120万</item>
+        <item>120万以上</item>
+    </string-array>
+
+    <string-array name="dw_networth_total">
+        <item>15万以下</item>
+        <item>15-30万</item>
+        <item>30-60万</item>
+        <item>60-120万</item>
+        <item>120万以上</item>
+    </string-array>
+
+    <string-array name="dw_risk_tolerance">
+        <item>低</item>
+        <item>中等</item>
+        <item>高</item>
+    </string-array>
+
+    <string-array name="dw_time_horizon">
+        <item>短期（小于3年）</item>
+        <item>中期（4到7年）</item>
+        <item>长期（8年以上）</item>
+    </string-array>
+
+    <string-array name="dw_liquidity_needs">
+        <item>短期（小于3年）</item>
+        <item>中期（4到7年）</item>
+        <item>长期（8年以上）</item>
+    </string-array>
+
     <string-array name="character_divider">
         <item>A</item>
         <item>B</item>

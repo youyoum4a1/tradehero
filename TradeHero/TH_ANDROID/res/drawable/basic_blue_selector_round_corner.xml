@@ -4,5 +4,7 @@
     <item android:state_pressed="true"
         android:drawable="@drawable/guide_screen_login_active"/>
 
+    <item android:drawable="@drawable/disable_button_bg" android:state_enabled="false" />
+
     <item android:drawable="@drawable/guide_screen_login"/>
 </selector>
