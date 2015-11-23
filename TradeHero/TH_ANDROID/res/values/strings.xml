@@ -283,4 +283,7 @@
 
   <string name="currency">US$</string>
 
+  <string name="profile_positive_roi">▴ %1$s %%</string>
+  <string name="profile_negative_roi">▾ %1$s %%</string>
+
 </resources>

@@ -5,6 +5,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import rx.subjects.PublishSubject;
 public class UserProfileCompactViewHolder
 {
     @Bind(R.id.user_profile_avatar) @Nullable public ImageView avatar;
+    @Bind(R.id.user_profile_roi) @Nullable public TextView roiSinceInception;
     @Bind(R.id.user_profile_followers_count) @Nullable public TextView followersCount;
     @Bind(R.id.user_profile_heroes_count) @Nullable public TextView heroesCount;
     @Bind(R.id.user_profile_display_name) @Nullable public TextView displayName;
@@ -68,10 +70,43 @@ public class UserProfileCompactViewHolder
             }
         }
 
+        if (roiSinceInception != null)
+        {
+            if (userProfileDTO.portfolio != null)
+            {
+                double roi = userProfileDTO.portfolio.roiSinceInception != null ? userProfileDTO.portfolio.roiSinceInception : 0;
+                String formatRoi = String.format("%.2f", Math.abs(roi));
+
+                if (roi > 0)
+                {
+                    roiSinceInception.setText(String.format(context.getString(R.string.profile_positive_roi), formatRoi));
+                    roiSinceInception.setTextColor(ContextCompat.getColor(context, R.color.number_up));
+                }
+                else if (roi < 0)
+                {
+                    roiSinceInception.setText(String.format(context.getString(R.string.profile_negative_roi), formatRoi));
+                    roiSinceInception.setTextColor(ContextCompat.getColor(context, R.color.number_down));
+                }
+                else
+                {
+                    roiSinceInception.setText(formatRoi);
+                }
+            }
+            else
+            {
+                roiSinceInception.setText(R.string.na);
+            }
+        }
+
         // Followers Count
         if (followersCount != null)
         {
-            followersCount.setText(THSignedNumber.builder(userProfileDTO.allFollowerCount).with000Suffix().useShortSuffix().relevantDigitCount(1).build().toString());
+            followersCount.setText(THSignedNumber.builder(userProfileDTO.allFollowerCount)
+                    .with000Suffix()
+                    .useShortSuffix()
+                    .relevantDigitCount(1)
+                    .build()
+                    .toString());
         }
 
         // Heroes Count

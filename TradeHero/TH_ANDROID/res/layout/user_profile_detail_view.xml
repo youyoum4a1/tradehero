@@ -111,7 +111,7 @@
 
         <TextView
             style="@style/TH.Caption"
-            android:id="@+id/user_total_roi"
+            android:id="@+id/user_profile_roi"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_xsmall"
@@ -119,15 +119,15 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:textSize="20sp"
-            android:text="256,000"/>
+            tools:text="▲256,000"/>
 
         <TextView
             style="@style/TH.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/user_total_roi"
-            android:layout_toStartOf="@+id/user_total_roi"
-            android:layout_alignBaseline="@+id/user_total_roi"
+            android:layout_toLeftOf="@+id/user_profile_roi"
+            android:layout_toStartOf="@+id/user_profile_roi"
+            android:layout_alignBaseline="@+id/user_profile_roi"
             android:text="Total ROI"/>
 
 
