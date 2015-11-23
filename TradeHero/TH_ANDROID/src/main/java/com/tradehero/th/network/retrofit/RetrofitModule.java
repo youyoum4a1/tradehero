@@ -8,6 +8,7 @@ import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.common.utils.RetrofitHelper;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.services.DriveWealthServiceAync;
 import com.tradehero.livetrade.thirdPartyServices.hengsheng.services.HengshengServiceAync;
 import com.tradehero.th.api.competition.ProviderCompactDTO;
 import com.tradehero.th.api.competition.ProviderCompactDTODeserialiser;
@@ -166,6 +167,11 @@ public class RetrofitModule
     @Provides @Singleton HengshengServiceAync provideHengshengService(RestAdapter.Builder builder)
     {
         return builder.setEndpoint(NetworkConstants.HENGSHENG_ENDPOINT).build().create(HengshengServiceAync.class);
+    }
+
+    @Provides @Singleton DriveWealthServiceAync provideDriveWealthService(RestAdapter.Builder builder)
+    {
+        return builder.setEndpoint(NetworkConstants.DRIVEWEALTH_ENDPOINT).build().create(DriveWealthServiceAync.class);
     }
 
     @Provides JsonDeserializer<PositionDTO> providesPositionDTODeserialiser(PositionDTODeserialiser deserialiser)

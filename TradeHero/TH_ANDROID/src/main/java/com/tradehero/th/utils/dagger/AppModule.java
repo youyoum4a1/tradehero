@@ -98,6 +98,13 @@ import com.tradehero.livetrade.SecurityOptActualSubDelegationFragment;
 import com.tradehero.livetrade.SecurityOptActualSubQueryFragment;
 import com.tradehero.livetrade.SecurityOptActualSubSellFragment;
 import com.tradehero.livetrade.SecurityOptPhoneNumBindFragment;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep1Fragment;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep2Fragment;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep3Fragment;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep4Fragment;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep5Fragment;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep6Fragment;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep7Fragment;
 import com.tradehero.livetrade.thirdPartyServices.xincaitong.XCTServicesWrapper;
 import com.tradehero.th.activities.GuideActivity;
 import com.tradehero.th.activities.SearchSecurityActualActivity;
@@ -350,7 +357,15 @@ import javax.inject.Singleton;
 
                         StockRecommendFragment.class,
                         StockRecommendListAdapter.class,
-                        StockRecommendDetailFragment.class
+                        StockRecommendDetailFragment.class,
+
+                        DriveWealthSignupStep1Fragment.class,
+                        DriveWealthSignupStep2Fragment.class,
+                        DriveWealthSignupStep3Fragment.class,
+                        DriveWealthSignupStep4Fragment.class,
+                        DriveWealthSignupStep5Fragment.class,
+                        DriveWealthSignupStep6Fragment.class,
+                        DriveWealthSignupStep7Fragment.class
 
                         //China Build End
                 },

@@ -26,6 +26,7 @@ import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthSignupStep1Fragment;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.StockRecommendListAdapter;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -159,8 +160,9 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
                 break;
             case R.id.win_rate_icon:
                 Bundle args2 = new Bundle();
-                args2.putInt(FragmentStockGod.TAB_KEY, 1);
-                gotoDashboard(FragmentStockGod.class.getName(), args2);
+//                args2.putInt(FragmentStockGod.TAB_KEY, 1);
+//                gotoDashboard(FragmentStockGod.class.getName(), args2);
+                gotoDashboard(DriveWealthSignupStep1Fragment.class.getName());
                 break;
 //            case R.id.ad_close_button:
 //                dismissTopBanner();

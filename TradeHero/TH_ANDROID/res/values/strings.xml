@@ -355,6 +355,8 @@
     <string name="invite_code">邀请码</string>
     <string name="submit">提交</string>
     <string name="signup">免费开户</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
     <string name="signup_email">电子邮箱</string>
     <string name="signup_nickname">交易昵称</string>
     <string name="signup_password1">交易密码</string>

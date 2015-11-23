@@ -118,7 +118,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"/>
+            android:layout_marginRight="15dp"
+            android:textOn="@string/yes"
+            android:textOff="@string/no"/>
     </RelativeLayout>
 
     <View
@@ -146,7 +148,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"/>
+            android:layout_marginRight="15dp"
+            android:textOn="@string/yes"
+            android:textOff="@string/no"/>
     </RelativeLayout>
 
     <View
@@ -174,7 +178,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"/>
+            android:layout_marginRight="15dp"
+            android:textOn="@string/yes"
+            android:textOff="@string/no"/>
     </RelativeLayout>
 
     <View
