@@ -1,48 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/contest_center_content_screen"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
 
-  <LinearLayout
-      android:id="@+id/llSpinner"
-      android:layout_marginLeft="20dp"
-      android:layout_marginRight="20dp"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content">
-    <Spinner
-        android:id="@+id/spinnerExchange"
-        android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/tradehero_spinner_default_holo_light"
-        />
-  </LinearLayout>
-
-
-  <RelativeLayout android:layout_width="match_parent" android:layout_height="match_parent">
-    <com.tradehero.chinabuild.listview.SecurityListView
-        xmlns:ptr="http://schemas.android.com/apk/res-auto"
-        ptr:ptrHeaderTextColor="@color/black"
-        android:id="@+id/listSecurity"
-        android:scrollingCache="false"
-        android:fadingEdge="none"
-        android:dividerHeight="1px"
-        android:divider="@color/separate_line_color"
+    <LinearLayout
+        android:id="@+id/llSpinner"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-    </com.tradehero.chinabuild.listview.SecurityListView>
-    <com.tradehero.th.widget.TradeHeroProgressBar
-        android:id="@+id/tradeheroprogressbar_hothold"
-        android:layout_width="@dimen/loading_logo_width"
-        android:layout_height="@dimen/loading_logo_height"
-        android:layout_centerInParent="true"
-        android:background="@drawable/logo" android:visibility="gone"/>
-  </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+        <Spinner
+            android:id="@+id/spinnerExchange"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/tradehero_spinner_default_holo_light"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/open_account_for_usa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/open_account"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/basic_blue_selector_round_corner"
+            android:text="@string/open_account_nasdq_title"
+            android:textColor="#ffffff"
+            android:textSize="14sp"/>
+
+        <Button
+            android:id="@+id/security_firm_bargain"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/basic_blue_selector_round_corner"
+            android:text="@string/trade_nasdq_title"
+            android:textColor="#ffffff"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tradehero.chinabuild.listview.SecurityListView
+            android:id="@+id/listSecurity"
+            xmlns:ptr="http://schemas.android.com/apk/res-auto"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="@color/separate_line_color"
+            android:dividerHeight="1px"
+            android:fadingEdge="none"
+            android:scrollingCache="false"
+            ptr:ptrHeaderTextColor="@color/black">
+        </com.tradehero.chinabuild.listview.SecurityListView>
+
+        <com.tradehero.th.widget.TradeHeroProgressBar
+            android:id="@+id/tradeheroprogressbar_hothold"
+            android:layout_width="@dimen/loading_logo_width"
+            android:layout_height="@dimen/loading_logo_height"
+            android:layout_centerInParent="true"
+            android:background="@drawable/logo"
+            android:visibility="gone"/>
+    </RelativeLayout>
 
 </LinearLayout>
 

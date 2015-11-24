@@ -259,6 +259,12 @@ abstract public class DashboardFragment extends BaseFragment {
         return null;
     }
 
+    public void gotoDashboard(Class Fragment) {
+        Bundle bundle = new Bundle();
+        bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, Fragment.getName());
+        ActivityHelper.launchDashboard(this.getActivity(), bundle);
+    }
+
     public void gotoDashboard(Class Fragment, Bundle bundle) {
         bundle.putString(DashboardFragment.BUNDLE_OPEN_CLASS_NAME, Fragment.getName());
         ActivityHelper.launchDashboard(this.getActivity(), bundle);

@@ -3,6 +3,8 @@ package com.tradehero.chinabuild.fragment.trade;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,14 +13,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import android.view.Menu;
-import android.view.MenuInflater;
 import com.handmark.pulltorefresh.library.pulltorefresh.PullToRefreshBase;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.competition.CompetitionUtils;
 import com.tradehero.chinabuild.fragment.security.SecurityDetailFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.common.persistence.DTOCacheNew;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep1Fragment;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.TradeHeroMainActivity;
@@ -41,8 +42,7 @@ import javax.inject.Inject;
 import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
 
-public class TradeOfTypeBaseFragment extends DashboardFragment
-{
+public class TradeOfTypeBaseFragment extends DashboardFragment implements View.OnClickListener {
     @Inject Lazy<SecurityCompactListCache> securityCompactListCache;
 
     public DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList> securityListTypeCacheListener;
@@ -53,6 +53,9 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     @InjectView(R.id.spinnerExchange) Spinner spinnerExchange;
     @InjectView(R.id.listSecurity) SecurityListView listSecurity;
     @InjectView(R.id.tradeheroprogressbar_hothold) TradeHeroProgressBar pbHotHold;
+    private View mShowUSALayout;
+    private View mOpenAccount;
+    private View mUSARealTrade;
 
     private SecurityListAdapter adapterSecurity;
 
@@ -89,7 +92,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         spinnerSelectListener = createSpinnerItemSelectListener();
         securityListTypeCacheListener = createSecurityListFetchListener();
         listSecurity.setAdapter(adapterSecurity);
-        initView();
+        initView(view);
 
         if (getTradeType() == TrendingAllSecurityListType.ALL_SECURITY_LIST_TYPE_HOLD)
         {
@@ -109,9 +112,18 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         return inflater.inflate(R.layout.trade_of_type_base_layout, container, false);
     }
 
-    protected void initView()
+    protected void initView(View view)
     {
         initSpinnerView(CompetitionUtils.getExchangeList());
+        mShowUSALayout = (View)view.findViewById(R.id.open_account_for_usa);
+        mOpenAccount = (View)view.findViewById(R.id.open_account);
+        if (mOpenAccount != null) {
+            mOpenAccount.setOnClickListener(this);
+        }
+        mUSARealTrade = (View)view.findViewById(R.id.security_firm_bargain);
+        if (mUSARealTrade != null) {
+            mUSARealTrade.setOnClickListener(this);
+        }
         initListView();
     }
 
@@ -125,31 +137,25 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
         listSecurity.setMode(getRefreshMode());
 
-        listSecurity.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>()
-        {
+        listSecurity.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener2<ListView>() {
             @Override
-            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+            public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
                 Timber.d("下拉刷新");
                 fetchSecurityList(currentPosition, true);
             }
 
             @Override
-            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView)
-            {
+            public void onPullUpToRefresh(PullToRefreshBase<ListView> refreshView) {
                 Timber.d("上拉加载更多");
                 fetchSecurityList();
             }
         });
 
-        listSecurity.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
+        listSecurity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int id, long position)
-            {
+            public void onItemClick(AdapterView<?> adapterView, View view, int id, long position) {
                 SecurityCompactDTO dto = (SecurityCompactDTO) adapterSecurity.getItem((int) position);
-                if (dto != null)
-                {
+                if (dto != null) {
                     Timber.d("list item clicked %s", dto.name);
                     enterSecurity(dto.getSecurityId(), dto.name);
                 }
@@ -183,13 +189,10 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
     private void showLoadingProgress()
     {
         Handler handler = new Handler();
-        handler.post(new Runnable()
-        {
+        handler.post(new Runnable() {
             @Override
-            public void run()
-            {
-                if (pbHotHold != null)
-                {
+            public void run() {
+                if (pbHotHold != null) {
                     pbHotHold.setVisibility(View.VISIBLE);
                     pbHotHold.startLoading();
                 }
@@ -237,6 +240,17 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
         return new TrendingSecurityListFetchListener();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.open_account:
+                gotoDashboard(DriveWealthSignupStep1Fragment.class);
+                break;
+            case R.id.security_firm_bargain:
+                break;
+        }
+    }
+
     protected class TrendingSecurityListFetchListener implements DTOCacheNew.Listener<SecurityListType, SecurityCompactDTOList>
     {
         @Override
@@ -274,6 +288,7 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
                     selectedTV.setTextColor(tradehero_blue);
                 }
                 getExchangSecurity(position);
+                showOpenAccountForUSA(position);
             }
 
             @Override
@@ -282,6 +297,18 @@ public class TradeOfTypeBaseFragment extends DashboardFragment
 
             }
         };
+    }
+
+    private void showOpenAccountForUSA(int position) {
+        if (position > 3 && position < 8) {
+            if (mShowUSALayout != null) {
+                mShowUSALayout.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (mShowUSALayout != null) {
+                mShowUSALayout.setVisibility(View.GONE);
+            }
+        }
     }
 
     //</editor-fold>
