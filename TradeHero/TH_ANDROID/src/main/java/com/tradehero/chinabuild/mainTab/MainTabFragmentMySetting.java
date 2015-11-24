@@ -98,6 +98,7 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
 
     private View openAccountBtn;
     private View loginAccountBtn;
+    private View nasdaqOpenAccountBtn;
 
     @Inject Analytics analytics;
     @Inject LiveTradeManager tradeManager;
@@ -117,9 +118,11 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
         ButterKnife.inject(this, view);
 
         openAccountBtn = (View)view.findViewById(R.id.security_open_account);
-        loginAccountBtn = (View)view.findViewById(R.id.security_firm_bargain);
         openAccountBtn.setOnClickListener(this);
+        loginAccountBtn = (View)view.findViewById(R.id.security_firm_bargain);
         loginAccountBtn.setOnClickListener(this);
+        nasdaqOpenAccountBtn = (View)view.findViewById(R.id.nasdaq_open_account);
+        nasdaqOpenAccountBtn.setOnClickListener(this);
 
         userProfileCacheListener = new UserProfileFetchListener();
         portfolioFetchListener = new PortfolioCacheListener();
@@ -159,6 +162,9 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
                 break;
             case R.id.security_firm_bargain:
                 enterSecurityFirmBargain();
+                break;
+            case R.id.nasdaq_open_account:
+                //TODO
                 break;
         }
     }

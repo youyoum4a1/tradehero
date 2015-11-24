@@ -220,7 +220,7 @@ import javax.inject.Singleton;
                         MainTabFragmentDiscovery.class,
                         FragmentStockGod.class,
                         MainTabBuyWhatAdapter.class,
-                        MainTabBuyWhatFragment.class,
+                        MainTabFragmentBuyWhat.class,
                         MainTabFragmentCompetition.class,
                         FollowBuyFragment.class,
 

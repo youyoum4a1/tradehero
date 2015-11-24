@@ -72,6 +72,7 @@
                     android:orientation="horizontal">
 
                     <RelativeLayout
+                        android:id="@+id/nasdaq_open_account"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1">
@@ -81,7 +82,7 @@
                             android:layout_height="27dp"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentTop="true"
-                            android:src="@drawable/new_icon"/>
+                            android:src="@drawable/new_flag"/>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -121,7 +122,7 @@
                             android:layout_height="27dp"
                             android:layout_alignParentRight="true"
                             android:layout_alignParentTop="true"
-                            android:src="@drawable/new_icon"/>
+                            android:src="@drawable/new_flag"/>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -214,6 +215,7 @@
                 android:id="@+id/rlMeDynamic"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/more_bang_item_height"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/listview_item_selector">
 
                 <ImageView

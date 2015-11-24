@@ -25,11 +25,6 @@ import com.tradehero.chinabuild.fragment.stockRecommend.StockRecommendFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
-<<<<<<< HEAD:TradeHero/TH_ANDROID/src/main/java/com/tradehero/chinabuild/mainTab/MainTabBuyWhatFragment.java
-import com.tradehero.common.persistence.DTOCacheNew;
-import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthSignupStep1Fragment;
-=======
->>>>>>> 4.2 add nasdq entrance:TradeHero/TH_ANDROID/src/main/java/com/tradehero/chinabuild/mainTab/MainTabFragmentBuyWhat.java
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.StockRecommendListAdapter;
 import com.tradehero.th.api.discussion.DiscussionType;
@@ -45,6 +40,8 @@ import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
+
+//import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthSignupStep1Fragment;
 
 public class MainTabFragmentBuyWhat extends AbsBaseFragment implements View.OnClickListener {
     private ImageView mQueryBtn;
@@ -162,7 +159,7 @@ public class MainTabFragmentBuyWhat extends AbsBaseFragment implements View.OnCl
                 Bundle args2 = new Bundle();
 //                args2.putInt(FragmentStockGod.TAB_KEY, 1);
 //                gotoDashboard(FragmentStockGod.class.getName(), args2);
-                gotoDashboard(DriveWealthSignupStep1Fragment.class.getName());
+//                gotoDashboard(DriveWealthSignupStep1Fragment.class.getName());
                 break;
 //            case R.id.ad_close_button:
 //                dismissTopBanner();

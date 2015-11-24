@@ -30,7 +30,7 @@ import com.tradehero.chinabuild.data.LoginContinuallyTimesDTO;
 import com.tradehero.chinabuild.data.sp.THSharePreferenceManager;
 import com.tradehero.chinabuild.fragment.ShareDialogFragment;
 import com.tradehero.chinabuild.fragment.discovery.DiscoverySquareFragment;
-import com.tradehero.chinabuild.mainTab.MainTabBuyWhatFragment;
+import com.tradehero.chinabuild.mainTab.MainTabFragmentBuyWhat;
 import com.tradehero.chinabuild.mainTab.MainTabFragmentCompetition;
 import com.tradehero.chinabuild.mainTab.MainTabFragmentDiscovery;
 import com.tradehero.chinabuild.mainTab.MainTabFragmentMySetting;
@@ -126,7 +126,7 @@ public class TradeHeroMainActivity extends AppCompatActivity {
      */
     private Class fragmentArray[] = {
             MainTabFragmentTrade.class,
-            MainTabBuyWhatFragment.class,
+            MainTabFragmentBuyWhat.class,
             MainTabFragmentDiscovery.class,
             MainTabFragmentCompetition.class,
             MainTabFragmentMySetting.class
