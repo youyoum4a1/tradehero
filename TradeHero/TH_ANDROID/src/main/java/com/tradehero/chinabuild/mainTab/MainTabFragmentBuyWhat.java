@@ -41,7 +41,6 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-//import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthSignupStep1Fragment;
 
 public class MainTabFragmentBuyWhat extends AbsBaseFragment implements View.OnClickListener {
     private ImageView mQueryBtn;

@@ -37,6 +37,7 @@ import com.tradehero.livetrade.SecurityOptPhoneNumBindFragment;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
 import com.tradehero.livetrade.services.LiveTradeManager;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep1Fragment;
 import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
@@ -164,7 +165,7 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
                 enterSecurityFirmBargain();
                 break;
             case R.id.nasdaq_open_account:
-                //TODO
+                gotoDashboard(DriveWealthSignupStep1Fragment.class.getName());
                 break;
         }
     }
