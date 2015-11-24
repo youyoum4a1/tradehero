@@ -245,5 +245,7 @@
     <string name="open_account_nasdq_detail">全程中文服务，免费开户</string>
     <string name="trade_nasdq_title">美股实盘交易</string>
     <string name="trade_nasdq_detail">每笔交易仅4.95美元起付</string>
+    <string name="a_stock_open_summary">手机开户，立享万2.5佣金！</string>
+    <string name="a_stock_trade_summary">我已有股票账号</string>
 
 </resources>

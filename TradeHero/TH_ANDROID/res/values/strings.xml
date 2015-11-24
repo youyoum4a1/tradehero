@@ -684,4 +684,6 @@
     <string name="open_account_nasdq_detail">all chinese service, free open account</string>
     <string name="trade_nasdq_title">trade nasdaq</string>
     <string name="trade_nasdq_detail">trade nasdaq</string>
+    <string name="a_stock_open_summary">open account, get 0.025% fee</string>
+    <string name="a_stock_trade_summary">I have account</string>
 </resources>

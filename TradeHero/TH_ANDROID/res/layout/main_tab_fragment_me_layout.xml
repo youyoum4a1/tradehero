@@ -152,26 +152,40 @@
             <RelativeLayout
                 android:id="@+id/security_open_account"
                 android:layout_width="fill_parent"
-                android:layout_height="@dimen/more_bang_item_height"
+                android:layout_height="69dp"
                 android:background="@drawable/listview_item_selector">
 
                 <ImageView
                     android:id="@+id/security_open_account_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="18dp"
                     android:layout_marginRight="12dp"
-                    android:background="@drawable/icon_me_dynamic"/>
+                    android:background="@drawable/a_stock_icon"/>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/security_open_account_icon"
-                    android:text="A股开户"
-                    android:textColor="@color/text_default_color"
-                    android:textSize="@dimen/more_bang_text_size"/>
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="A股开户"
+                        android:textColor="@color/text_default_color"
+                        android:textSize="18sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/a_stock_open_summary"
+                        android:textColor="#a8a8a8"
+                        android:textSize="13sp"/>
+
+                </LinearLayout>
 
                 <View
                     android:layout_width="fill_parent"
@@ -180,29 +194,43 @@
                     android:layout_toRightOf="@id/security_open_account_icon"
                     android:background="@color/separate_line_color"/>
             </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/security_firm_bargain"
                 android:layout_width="fill_parent"
-                android:layout_height="@dimen/more_bang_item_height"
+                android:layout_height="69dp"
                 android:background="@drawable/listview_item_selector">
 
                 <ImageView
                     android:id="@+id/security_firm_bargain_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="18dp"
                     android:layout_marginRight="12dp"
-                    android:background="@drawable/icon_me_dynamic"/>
+                    android:background="@drawable/a_stock_open_account_icon"/>
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_toRightOf="@id/security_firm_bargain_icon"
-                    android:text="A股实盘交易"
-                    android:textColor="@color/text_default_color"
-                    android:textSize="@dimen/more_bang_text_size"/>
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="A股实盘交易"
+                        android:textColor="@color/text_default_color"
+                        android:textSize="18sp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/a_stock_trade_summary"
+                        android:textColor="#a8a8a8"
+                        android:textSize="13sp"/>
+                </LinearLayout>
 
                 <View
                     android:layout_width="fill_parent"
@@ -211,6 +239,7 @@
                     android:layout_toRightOf="@id/security_firm_bargain_icon"
                     android:background="@color/separate_line_color"/>
             </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/rlMeDynamic"
                 android:layout_width="fill_parent"
