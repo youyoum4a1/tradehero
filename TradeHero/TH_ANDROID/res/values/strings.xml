@@ -323,7 +323,7 @@
     <string name="login_account_hint">Email or Mobile Number</string>
     <string name="login_email_hint">请输入邮箱地址</string>
     <string name="login_nickname_hint">请输入昵称</string>
-    <string name="login_password1_hint">请输入密码</string>
+    <string name="login_password1_hint">8-20位字母和数字组合</string>
     <string name="login_password2_hint">请确认密码</string>
     <string name="last_name_hint">请输入中文姓氏，例如“张”</string>
     <string name="first_name_hint">请输入中文名字，例如“三”</string>
@@ -332,7 +332,7 @@
     <string name="id_number_hint">请输入18位第二代身份证号码</string>
     <string name="address_hint">请输入与身份证相同的地址信息</string>
     <string name="company_hint">请填写您所在公司的中文或英文名称</string>
-    <string name="signature_hint">请输入中文姓名</string>
+    <string name="signature_hint">电子签名需与个人资料中姓名相同</string>
     <string name="phone_bind_hint">Please enter mobile Number</string>
     <string name="login_password_hint">6-20 Letters or Numbers</string>
     <string name="agreed">Agreed</string>

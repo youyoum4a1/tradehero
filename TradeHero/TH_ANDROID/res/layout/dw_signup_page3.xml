@@ -2,7 +2,6 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sign_up_form_wrapper"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -36,7 +35,8 @@
             android:hint="@string/login_email_hint"
             android:textColorHint="#bfbfbf"
             android:textColor="#000000"
-            android:background="@color/white"/>
+            android:background="@color/white"
+            android:password="true"/>
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
@@ -159,7 +159,8 @@
             android:hint="@string/login_password2_hint"
             android:textColorHint="#bfbfbf"
             android:textColor="#000000"
-            android:background="@color/white"/>
+            android:background="@color/white"
+            android:password="true"/>
     </RelativeLayout>
 
     <View
@@ -177,7 +178,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/basic_blue_selector_round_corner"
-        android:text="@string/signup"
+        android:text="@string/save_next_step"
         android:textColor="@color/th_white"
         android:gravity="center"
         android:textSize="17sp"/>

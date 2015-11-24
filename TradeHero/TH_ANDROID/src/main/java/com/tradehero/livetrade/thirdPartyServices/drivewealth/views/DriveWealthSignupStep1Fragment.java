@@ -135,13 +135,8 @@ public class DriveWealthSignupStep1Fragment extends DashboardFragment {
         });
     }
 
-    @OnTextChanged(R.id.phone_number)
-    public void onPhoneNumberChanged(CharSequence text) {
-        checkNEnableNextButton();
-    }
-
-    @OnTextChanged(R.id.verify_code)
-    public void onVerifyCodeChanged(CharSequence text) {
+    @OnTextChanged({R.id.phone_number, R.id.verify_code})
+    public void onEditTextChanged(CharSequence text) {
         checkNEnableNextButton();
     }
 
