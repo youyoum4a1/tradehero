@@ -240,5 +240,10 @@
     <string name="default_signature">添加我的签名...</string>
     <string name="settings_my_sign">个性签名</string>
     <string name="checking_upgrade">检查更新中...</string>
+    <string name="play_usa_stock">玩转美股</string>
+    <string name="open_account_nasdq_title">美股开户</string>
+    <string name="open_account_nasdq_detail">全程中文服务，免费开户</string>
+    <string name="trade_nasdq_title">美股实盘交易</string>
+    <string name="trade_nasdq_detail">每笔交易仅4.95美元起付</string>
 
 </resources>

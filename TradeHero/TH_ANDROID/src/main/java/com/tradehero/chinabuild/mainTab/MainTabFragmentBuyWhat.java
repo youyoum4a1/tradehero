@@ -25,18 +25,18 @@ import com.tradehero.chinabuild.fragment.stockRecommend.StockRecommendFragment;
 import com.tradehero.chinabuild.fragment.web.WebViewFragment;
 import com.tradehero.chinabuild.listview.SecurityListView;
 import com.tradehero.chinabuild.utils.UniversalImageLoader;
+<<<<<<< HEAD:TradeHero/TH_ANDROID/src/main/java/com/tradehero/chinabuild/mainTab/MainTabBuyWhatFragment.java
 import com.tradehero.common.persistence.DTOCacheNew;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthSignupStep1Fragment;
+=======
+>>>>>>> 4.2 add nasdq entrance:TradeHero/TH_ANDROID/src/main/java/com/tradehero/chinabuild/mainTab/MainTabFragmentBuyWhat.java
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.StockRecommendListAdapter;
 import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
 import com.tradehero.th.api.stockRecommend.StockRecommendDTOList;
 import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.network.service.UserTimelineServiceWrapper;
-import com.tradehero.th.persistence.leaderboard.LeaderboardCache;
 import com.viewpagerindicator.CirclePageIndicator;
 import dagger.Lazy;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnClickListener {
+public class MainTabFragmentBuyWhat extends AbsBaseFragment implements View.OnClickListener {
     private ImageView mQueryBtn;
     private ImageView mNewSuggestBtn;
     private ImageView mFollowChanceBtn;
@@ -55,15 +55,15 @@ public class MainTabBuyWhatFragment extends AbsBaseFragment implements View.OnCl
     private TextView mMoreButton;
     private SecurityListView mListView;
     private StockRecommendListAdapter stockRecommendListAdapter;
-    private int currentPage = 0;
-    private int ITEMS_PER_PAGE = 10;
+//    private int currentPage = 0;
+//    private int ITEMS_PER_PAGE = 10;
     private RelativeLayout mAdLayout;
     private ViewPager pager;
     private CirclePageIndicator mAdIndicator;
 //    Button mAdCloseButton;
     private ProgressBar mProgress;
-    @Inject LeaderboardCache leaderboardCache;
-    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
+//    @Inject LeaderboardCache leaderboardCache;
+//    protected DTOCacheNew.Listener<LeaderboardKey, LeaderboardDTO> leaderboardCacheListener;
     @Inject Lazy<UserTimelineServiceWrapper> timelineServiceWrapper;
     @Inject CurrentUserId currentUserId;
     private List<View> views;

@@ -679,4 +679,9 @@
     <string name="default_signature">add my signature...</string>
     <string name="settings_my_sign">Signature</string>
     <string name="checking_upgrade">checking upgrade</string>
+    <string name="play_usa_stock">play NASDQ</string>
+    <string name="open_account_nasdq_title">open account nasdqa</string>
+    <string name="open_account_nasdq_detail">all chinese service, free open account</string>
+    <string name="trade_nasdq_title">trade nasdaq</string>
+    <string name="trade_nasdq_detail">trade nasdaq</string>
 </resources>

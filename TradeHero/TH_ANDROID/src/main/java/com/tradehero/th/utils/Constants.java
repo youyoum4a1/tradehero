@@ -30,7 +30,7 @@ public class Constants {
     public static final String LOCALYTICS_APP_KEY_RELEASE = "10a8a8e1d386d096bfe1641-8b2cc16e-5b52-11e4-a386-005cf8cbabd8";
     public static final String LOCALYTICS_APP_KEY_DEBUG =   "8f24cffb81cc32757a011bd-a6396038-58f6-11e4-a5f7-009c5fda0a25";
 
-    private static final int VERSION = 101;
+    private static final int VERSION = 1;
     public static final TapStreamType TAP_STREAM_TYPE = TapStreamType.fromType(VERSION);
 
     public static final int SHARE_WEIBO_CONTENT_LENGTH_LIMIT = 140;

@@ -104,12 +104,10 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private class MyUICheckUpdateCallback implements UICheckUpdateCallback {
-
         @Override
         public void onCheckComplete() {
             dialog.dismiss();
         }
-
     }
 
     @Override

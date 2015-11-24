@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="#f0f0f0"
     android:orientation="vertical">
 
     <TextView
@@ -20,43 +21,195 @@
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <include layout="@layout/user_main_page_header"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
-                android:orientation="horizontal">
+                android:layout_height="95dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/security_open_account"
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/basic_blue_selector_round_corner"
-                    android:text="开通实盘"
-                    android:textColor="#ffffff"
-                    android:textSize="14sp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/security_firm_bargain"
-                    android:layout_width="0dp"
-                    android:layout_height="35dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/basic_blue_selector_round_corner"
-                    android:text="实盘交易"
-                    android:textColor="#ffffff"
-                    android:textSize="14sp"/>
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:background="#f0f0f0"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/play_usa_stock"
+                        android:textColor="#686868"
+                        android:textSize="12sp"/>
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="1"
+                        android:background="#f0f0f0"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="61dp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="27dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:src="@drawable/new_icon"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/open_account_nasdq_title"
+                                android:textSize="18sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/open_account_nasdq_detail"
+                                android:textColor="#99969a"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#f0f0f0"/>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_width="26dp"
+                            android:layout_height="27dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"
+                            android:src="@drawable/new_icon"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/trade_nasdq_title"
+                                android:textSize="18sp"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/trade_nasdq_detail"
+                                android:textColor="#99969a"
+                                android:textSize="12sp"/>
+                        </LinearLayout>
+                    </RelativeLayout>
+                </LinearLayout>
             </LinearLayout>
 
+            <RelativeLayout
+                android:id="@+id/security_open_account"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/more_bang_item_height"
+                android:background="@drawable/listview_item_selector">
+
+                <ImageView
+                    android:id="@+id/security_open_account_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/icon_me_dynamic"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/security_open_account_icon"
+                    android:text="A股开户"
+                    android:textColor="@color/text_default_color"
+                    android:textSize="@dimen/more_bang_text_size"/>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@id/security_open_account_icon"
+                    android:background="@color/separate_line_color"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/security_firm_bargain"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/more_bang_item_height"
+                android:background="@drawable/listview_item_selector">
+
+                <ImageView
+                    android:id="@+id/security_firm_bargain_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginRight="12dp"
+                    android:background="@drawable/icon_me_dynamic"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/security_firm_bargain_icon"
+                    android:text="A股实盘交易"
+                    android:textColor="@color/text_default_color"
+                    android:textSize="@dimen/more_bang_text_size"/>
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="1px"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toRightOf="@id/security_firm_bargain_icon"
+                    android:background="@color/separate_line_color"/>
+            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/rlMeDynamic"
                 android:layout_width="fill_parent"

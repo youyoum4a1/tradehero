@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -97,15 +96,14 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
     @InjectView(R.id.tvAllFans) TextView tvAllFans;
     @InjectView(R.id.tvEarning) TextView tvEarning;
 
-    private Button openAccountBtn;
-    private Button loginAccountBtn;
+    private View openAccountBtn;
+    private View loginAccountBtn;
 
     @Inject Analytics analytics;
     @Inject LiveTradeManager tradeManager;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        userProfileCacheListener = createUserProfileFetchListener();
         portfolioCompactListFetchListener = createPortfolioCompactListFetchListener();
         fetchUserProfile();
         setHasOptionsMenu(true);
@@ -118,13 +116,13 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
         View view = inflater.inflate(R.layout.main_tab_fragment_me_layout, container, false);
         ButterKnife.inject(this, view);
 
-        openAccountBtn = (Button)view.findViewById(R.id.security_open_account);
-        loginAccountBtn = (Button)view.findViewById(R.id.security_firm_bargain);
+        openAccountBtn = (View)view.findViewById(R.id.security_open_account);
+        loginAccountBtn = (View)view.findViewById(R.id.security_firm_bargain);
         openAccountBtn.setOnClickListener(this);
         loginAccountBtn.setOnClickListener(this);
 
-        userProfileCacheListener = createUserProfileFetchListener();
-        portfolioFetchListener = createPortfolioCacheListener();
+        userProfileCacheListener = new UserProfileFetchListener();
+        portfolioFetchListener = new PortfolioCacheListener();
         return view;
     }
 
@@ -146,26 +144,10 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
 
     @Override public void onDestroyView() {
         ButterKnife.reset(this);
-        detachUserProfileCache();
+        userProfileCache.get().unregister(userProfileCacheListener);
         userProfileCacheListener = null;
         portfolioFetchListener = null;
         super.onDestroyView();
-    }
-
-
-    private void detachUserProfileCache()
-    {
-        userProfileCache.get().unregister(userProfileCacheListener);
-    }
-
-    protected void detachPortfolioCache()
-    {
-        portfolioCache.unregister(portfolioFetchListener);
-    }
-
-    protected DTOCacheNew.Listener<UserBaseKey, UserProfileDTO> createUserProfileFetchListener()
-    {
-        return new UserProfileFetchListener();
     }
 
     @Override
@@ -197,11 +179,6 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
         {
 
         }
-    }
-
-    protected DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO> createPortfolioCacheListener()
-    {
-        return new PortfolioCacheListener();
     }
 
     protected class PortfolioCacheListener implements DTOCacheNew.Listener<OwnedPortfolioId, PortfolioDTO>
@@ -331,7 +308,7 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
 
     protected void fetchUserProfile()
     {
-        detachUserProfileCache();
+        userProfileCache.get().unregister(userProfileCacheListener);
         userProfileCache.get().register(currentUserId.toUserBaseKey(), userProfileCacheListener);
         //Get user profile from cache
         userProfileCache.get().getOrFetchAsync(currentUserId.toUserBaseKey(), false);
@@ -347,8 +324,6 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
 
     }
 
-
-
     protected void fetchPortfolio()
     {
         if (getApplicablePortfolioId() instanceof OwnedPortfolioId)
@@ -358,7 +333,7 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
                 PortfolioCompactDTO cached = portfolioCompactCache.get((getApplicablePortfolioId()).getPortfolioIdKey());
                 if (cached == null)
                 {
-                    detachPortfolioCache();
+                    portfolioCache.unregister(portfolioFetchListener);
                     portfolioCache.register(getApplicablePortfolioId(), portfolioFetchListener);
                     portfolioCache.get(getApplicablePortfolioId());
                 }
