@@ -157,9 +157,8 @@ public class MainTabFragmentBuyWhat extends AbsBaseFragment implements View.OnCl
                 break;
             case R.id.win_rate_icon:
                 Bundle args2 = new Bundle();
-//                args2.putInt(FragmentStockGod.TAB_KEY, 1);
-//                gotoDashboard(FragmentStockGod.class.getName(), args2);
-//                gotoDashboard(DriveWealthSignupStep1Fragment.class.getName());
+                args2.putInt(FragmentStockGod.TAB_KEY, 1);
+                gotoDashboard(FragmentStockGod.class.getName(), args2);
                 break;
 //            case R.id.ad_close_button:
 //                dismissTopBanner();
