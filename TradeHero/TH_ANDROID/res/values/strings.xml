@@ -686,4 +686,10 @@
     <string name="trade_nasdq_detail">trade nasdaq</string>
     <string name="a_stock_open_summary">open account, get 0.025% fee</string>
     <string name="a_stock_trade_summary">I have account</string>
+    <string name="verifying_phonenum">checking phoneNum</string>
+    <string name="dw_check_phoneNum_status">Please input your phonenum then check open account status</string>
+    <string name="checking_phonenum_account_status">Checking account status</string>
+    <string name="query">Query</string>
+    <string name="open_account_right_now">Go to open account</string>
+    <string name="login_open_account_right_now">Login right now</string>
 </resources>

@@ -15,6 +15,7 @@ import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.password.PhoneNumberBindDTO;
+import com.tradehero.th.api.users.password.PhoneNumberVerifyDTO;
 import com.tradehero.th.api.users.password.ResetPasswordDTO;
 import com.tradehero.th.api.users.password.ResetPasswordFormDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
@@ -230,5 +231,17 @@ interface UserServiceAsync
 
     @GET("/stockQuestions/download")
     void downloadQuestions(@Query("updatedAtTicks")long updatedAtTicks, Callback<QuestionDTO> questionDTOCallback);
+
+    @GET("/cn/v2/users/verifyCode")
+    void verifyPhoneNumber(
+            @Query("phoneNumber") String phoneNumber,
+            @Query("code") String verifyCode,
+            Callback<PhoneNumberVerifyDTO> cb);
+
+    @GET("/cn/v2/users/verifyBroker")
+    void checkPhoneNumberAccountStatus(
+            @Query("brokerName") String phoneNumber,
+            @Query("phoneNumber") String verifyCode,
+            Callback<PhoneNumberVerifyDTO> cb);
 
 }

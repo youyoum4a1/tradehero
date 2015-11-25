@@ -11,6 +11,15 @@
     android:gravity="top"
     android:orientation="vertical">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="@string/dw_check_phoneNum_status"
+        android:textColor="#949393"
+        android:textSize="@dimen/text_medium"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +64,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1px"
+            android:layout_height="1dp"
             android:background="#bfbfbf"/>
 
         <RelativeLayout
@@ -110,6 +119,16 @@
             android:background="#bfbfbf"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/error_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/red"
+        android:textSize="@dimen/text_medium"
+        android:visibility="gone"/>
+
     <Button
         android:id="@+id/btn_next"
         android:layout_width="fill_parent"
@@ -119,42 +138,9 @@
         android:layout_marginTop="30dp"
         android:background="@drawable/basic_blue_selector_round_corner"
         android:gravity="center"
-        android:text="@string/signup"
+        android:text="@string/query"
         android:textColor="@color/th_white"
         android:textSize="17sp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:text="@string/dw_agreenment"
-        android:textColor="#949393"
-        android:textSize="@dimen/text_medium"/>
-
-    <TextView
-        android:id="@+id/txt_term_of_service_signin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/dw_agreenment_name"
-        android:textColor="#1789d5"
-        android:textSize="@dimen/text_medium"
-        />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
-
-    <TextView
-        android:id="@+id/signup_status_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_gravity="center"
-        android:text="@string/signup_status_check"
-        android:textColor="#1789d5"/>
 
 </LinearLayout>
 

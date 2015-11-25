@@ -98,6 +98,7 @@ import com.tradehero.livetrade.SecurityOptActualSubDelegationFragment;
 import com.tradehero.livetrade.SecurityOptActualSubQueryFragment;
 import com.tradehero.livetrade.SecurityOptActualSubSellFragment;
 import com.tradehero.livetrade.SecurityOptPhoneNumBindFragment;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthCheckSignupStatusFragment;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep1Fragment;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep2Fragment;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep3Fragment;
@@ -365,8 +366,8 @@ import javax.inject.Singleton;
                         DriveWealthSignupStep4Fragment.class,
                         DriveWealthSignupStep5Fragment.class,
                         DriveWealthSignupStep6Fragment.class,
-                        DriveWealthSignupStep7Fragment.class
-
+                        DriveWealthSignupStep7Fragment.class,
+                        DriveWealthCheckSignupStatusFragment.class,
                         //China Build End
                 },
         staticInjections =
@@ -376,30 +377,30 @@ import javax.inject.Singleton;
         complete = false,
         library = true
 )
-public class AppModule
-{
+public class AppModule {
     private final Application application;
 
-    public AppModule(Application application)
-    {
+    public AppModule(Application application) {
         this.application = application;
     }
 
     // We should not use like this. Instead use like CurrentActivityHolder
     @Deprecated
-    @Provides Context provideContext()
-    {
+    @Provides
+    Context provideContext() {
         return application.getApplicationContext();
     }
 
-    @Provides @LanguageCode String provideCurrentLanguageCode(Context context)
-    {
+    @Provides
+    @LanguageCode
+    String provideCurrentLanguageCode(Context context) {
         Locale locale = context.getResources().getConfiguration().locale;
         return String.format("%s-%s", locale.getLanguage(), locale.getCountry());
     }
 
-    @Provides @Singleton Application provideApplication()
-    {
+    @Provides
+    @Singleton
+    Application provideApplication() {
         return application;
     }
 }

@@ -27,6 +27,7 @@ import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.password.PhoneNumberBindDTO;
+import com.tradehero.th.api.users.password.PhoneNumberVerifyDTO;
 import com.tradehero.th.api.users.password.ResetPasswordDTO;
 import com.tradehero.th.api.users.password.ResetPasswordFormDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
@@ -547,5 +548,20 @@ import retrofit.client.Response;
     //Download questions
     public void downloadQuestions(long updatedAtTicks, Callback<QuestionDTO> callback){
         userServiceAsync.downloadQuestions(updatedAtTicks, callback);
+    }
+
+    //verify phoneNum
+    public MiddleCallback<PhoneNumberVerifyDTO> verifyPhoneNum(String phoneNumber, String verifyCode, Callback<PhoneNumberVerifyDTO> callback)
+    {
+        MiddleCallback<PhoneNumberVerifyDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.verifyPhoneNumber(phoneNumber, verifyCode, middleCallback);
+        return middleCallback;
+    }
+
+    public MiddleCallback<PhoneNumberVerifyDTO> checkPhoneNumberAccountStatus(String phoneNumber, Callback<PhoneNumberVerifyDTO> callback)
+    {
+        MiddleCallback<PhoneNumberVerifyDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        userServiceAsync.checkPhoneNumberAccountStatus("DW", phoneNumber, middleCallback);
+        return middleCallback;
     }
 }

@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
@@ -19,14 +21,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnFocusChange;
-import butterknife.OnTextChanged;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -146,5 +141,12 @@ public class DriveWealthSignupStep1Fragment extends DashboardFragment {
         } else {
             btnNext.setEnabled(false);
         }
+    }
+
+    @OnClick(R.id.signup_status_check)
+    public void checkPhoneNumStatus() {
+        Bundle bundle = new Bundle();
+        bundle.putString(DashboardFragment.BUNDLE_KEY_TITLE, getString(R.string.signup_status_check));
+        pushFragment(DriveWealthCheckSignupStatusFragment.class, bundle);
     }
 }

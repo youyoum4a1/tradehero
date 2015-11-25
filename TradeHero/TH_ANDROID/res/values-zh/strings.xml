@@ -247,5 +247,11 @@
     <string name="trade_nasdq_detail">每笔交易仅4.95美元起付</string>
     <string name="a_stock_open_summary">手机开户，立享万2.5佣金！</string>
     <string name="a_stock_trade_summary">我已有股票账号</string>
+    <string name="verifying_phonenum">正在核对手机号码</string>
+    <string name="dw_check_phoneNum_status">请输入手机号码查询您的开户状态</string>
+    <string name="checking_phonenum_account_status">正在检查开户状态</string>
+    <string name="query">查询</string>
+    <string name="open_account_right_now">立即开户</string>
+    <string name="login_open_account_right_now">立即登录</string>
 
 </resources>
