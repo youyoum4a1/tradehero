@@ -223,8 +223,9 @@
                         android:layout_gravity="center"
                         android:text="@string/dw_signup_idcard_front"/>
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/idcard_front"
+                        android:layout_width="160dp"
+                        android:layout_height="100dp"
                         android:background="@drawable/id_card_front" />
                 </LinearLayout>
 
@@ -241,8 +242,9 @@
                         android:text="@string/dw_signup_idcard_back"/>
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/idcard_back"
+                        android:layout_width="160dp"
+                        android:layout_height="100dp"
                         android:background="@drawable/id_card_back"/>
                 </LinearLayout>
             </RelativeLayout>

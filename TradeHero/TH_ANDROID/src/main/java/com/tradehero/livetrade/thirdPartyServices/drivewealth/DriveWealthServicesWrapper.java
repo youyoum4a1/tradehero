@@ -23,10 +23,13 @@ import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSi
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupLiveBody;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupResultDTO;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthUploadResultDTO;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.services.DriveWealthServiceAync;
 import com.tradehero.th.R;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -35,7 +38,9 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
+import retrofit.mime.TypedFile;
 import retrofit.mime.TypedInput;
+import retrofit.mime.TypedString;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -180,7 +185,7 @@ import retrofit.mime.TypedInput;
 
             @Override
             public void success(DriveWealthSignupResultDTO driveWealthSessionResultDTO, Response response) {
-                THToast.show("Success: " + driveWealthSessionResultDTO.userID);
+                uploadIdCardFront();
             }
 
             @Override
@@ -214,6 +219,56 @@ import retrofit.mime.TypedInput;
                         networthTotalArray[formDTO.networthTotalIdx], riskToleranceArray[formDTO.riskToleranceIdx],
                         timeHorizonArray[formDTO.timeHorizonIdx], liquidityNeedsArray[formDTO.liquidityNeedsIdx],
                         formDTO.ackSignedBy),
+                cb);
+    }
+
+    private void uploadIdCardFront() {
+        DriveWealthSignupFormDTO formDTO = mManager.getSignupFormDTO();
+
+        Callback<DriveWealthUploadResultDTO> cb = new Callback<DriveWealthUploadResultDTO>() {
+
+            @Override
+            public void success(DriveWealthUploadResultDTO driveWealthSessionResultDTO, Response response) {
+                uploadIdCardBack();
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
+                DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+                THToast.show(dwError.message);
+            }
+        };
+
+        mServices.uploadFile(mManager.getSessionKey(),
+                new TypedString(mManager.getUserID()),
+                new TypedString("Picture ID_Proof of address"),
+                new TypedFile("image/png", new File(formDTO.idcardFront.getPath())),
+                cb);
+    }
+
+    private void uploadIdCardBack() {
+        DriveWealthSignupFormDTO formDTO = mManager.getSignupFormDTO();
+
+        Callback<DriveWealthUploadResultDTO> cb = new Callback<DriveWealthUploadResultDTO>() {
+
+            @Override
+            public void success(DriveWealthUploadResultDTO driveWealthSessionResultDTO, Response response) {
+                THToast.show("开户提交成功，在三个工作日之内我们将完成审核工作！");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
+                DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+                THToast.show(dwError.message);
+            }
+        };
+
+        mServices.uploadFile(mManager.getSessionKey(),
+                new TypedString(mManager.getUserID()),
+                new TypedString("Picture ID_Proof of address"),
+                new TypedFile("image/png", new File(formDTO.idcardBack.getPath())),
                 cb);
     }
 }

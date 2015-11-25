@@ -14,6 +14,7 @@ import retrofit.converter.Converter;
 import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
+import retrofit.mime.TypedString;
 import timber.log.Timber;
 
 public class JacksonConverter implements Converter
@@ -29,6 +30,10 @@ public class JacksonConverter implements Converter
 
     @Override public Object fromBody(TypedInput body, final Type type) throws ConversionException
     {
+        if (body.length() == 0) {
+            body = new TypedString("{}");
+        }
+        
         try
         {
             final JavaType javaType = TypeFactory.defaultInstance().constructType(type);

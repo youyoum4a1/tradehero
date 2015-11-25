@@ -78,7 +78,7 @@ public interface DriveWealthServiceAync {
     @Multipart
     void uploadFile(
             @Header("x-mysolomeo-session-key") String authorization,
-            @Part("userID") TypedString userID,
+            @Part("token") TypedString userID,
             @Part("documentType") TypedString documentType,
             @Part("documentImage") TypedFile documentImage,
 

@@ -1,5 +1,11 @@
 package com.tradehero.livetrade.thirdPartyServices.drivewealth.data;
 
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.net.Uri;
+
+import java.io.File;
+
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
@@ -30,6 +36,8 @@ public class DriveWealthSignupFormDTO {
     public int timeHorizonIdx;
     public int liquidityNeedsIdx;
     public String ackSignedBy;
+    public Uri idcardFront;
+    public Uri idcardBack;
 
     public DriveWealthSignupFormDTO() {
         phoneNumber = "13816631019";
@@ -37,13 +45,14 @@ public class DriveWealthSignupFormDTO {
         email = "sam@tradehero.mobi";
         userName = "samyu";
         password = "welcome0";
-        firstName = "";
-        lastName = "";
+        firstName = "123";
+        lastName = "456";
         firstNameInEng = "Zheng";
         lastNameInEng = "Yu";
         employerCompany = "MyHero";
         ackSignedBy = "Yu Zheng";
         idNO = "310101198210121074";
         address = "哈尔滨路160号";
+
     }
 }
