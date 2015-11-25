@@ -11,8 +11,11 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthServicesWrapper;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -22,6 +25,8 @@ import butterknife.OnClick;
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class DriveWealthSignupStep7Fragment extends DashboardFragment {
+
+    @Inject DriveWealthServicesWrapper mServices;
 
     @Nullable
     @Override
@@ -39,6 +44,6 @@ public class DriveWealthSignupStep7Fragment extends DashboardFragment {
 
     @OnClick(R.id.btn_next)
     public void onNextClick() {
-
+        mServices.processSignupLive(getActivity());
     }
 }

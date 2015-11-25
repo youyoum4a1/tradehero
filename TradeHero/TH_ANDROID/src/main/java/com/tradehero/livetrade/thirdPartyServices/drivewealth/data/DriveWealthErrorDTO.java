@@ -3,9 +3,9 @@ package com.tradehero.livetrade.thirdPartyServices.drivewealth.data;
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
-public class DriveWealthSignupResultDTO {
+public class DriveWealthErrorDTO {
 
-    public String password;
-    public String userID;
-    public String username;
+    public int code;
+    public String message;
+
 }

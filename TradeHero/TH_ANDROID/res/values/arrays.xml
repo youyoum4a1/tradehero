@@ -26,6 +26,13 @@
         <item>失业中</item>
     </string-array>
 
+    <string-array name="dw_signup_employment_in_eng">
+        <item>Employed/Self-Employed</item>
+        <item>Retired</item>
+        <item>Student</item>
+        <item>Not Employed</item>
+    </string-array>
+
     <string-array name="dw_signup_industry">
         <item>IT通讯/电子/互联网</item>
         <item>金融</item>
@@ -42,6 +49,22 @@
         <item>其他</item>
     </string-array>
 
+    <string-array name="dw_signup_industry_in_eng">
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+        <item>Other</item>
+    </string-array>
+
     <string-array name="dw_investment_objectives">
         <item>增值</item>
         <item>保值</item>
@@ -49,11 +72,25 @@
         <item>投机</item>
     </string-array>
 
+    <string-array name="dw_investment_objectives_in_eng">
+        <item>Growth</item>
+        <item>Capital Preservation</item>
+        <item>Income</item>
+        <item>Speculation</item>
+    </string-array>
+
     <string-array name="dw_investment_experience">
         <item>丰富</item>
         <item>良好</item>
         <item>有限</item>
         <item>无经验</item>
+    </string-array>
+
+    <string-array name="dw_investment_experience_in_eng">
+        <item>Extensive</item>
+        <item>Good</item>
+        <item>Limited</item>
+        <item>None</item>
     </string-array>
 
     <string-array name="dw_annual_income">
@@ -86,16 +123,34 @@
         <item>高</item>
     </string-array>
 
+    <string-array name="dw_risk_tolerance_in_eng">
+        <item>Conservative</item>
+        <item>Moderate</item>
+        <item>Aggressive</item>
+    </string-array>
+
     <string-array name="dw_time_horizon">
         <item>短期（小于3年）</item>
         <item>中期（4到7年）</item>
         <item>长期（8年以上）</item>
     </string-array>
 
+    <string-array name="dw_time_horizon_in_eng">
+        <item>Short (Less than 3 years)</item>
+        <item>Medium (4 to 7 years)</item>
+        <item>Long (more than 8 years)</item>
+    </string-array>
+
     <string-array name="dw_liquidity_needs">
         <item>短期（小于3年）</item>
         <item>中期（4到7年）</item>
         <item>长期（8年以上）</item>
+    </string-array>
+
+    <string-array name="dw_liquidity_needs_in_eng">
+        <item>Short (Less than 3 years)</item>
+        <item>Medium (4 to 7 years)</item>
+        <item>Long (more than 8 years)</item>
     </string-array>
 
     <string-array name="character_divider">

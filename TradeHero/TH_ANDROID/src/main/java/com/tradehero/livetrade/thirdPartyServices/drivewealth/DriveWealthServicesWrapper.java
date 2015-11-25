@@ -2,6 +2,9 @@ package com.tradehero.livetrade.thirdPartyServices.drivewealth;
 
 import android.app.Activity;
 
+import com.tradehero.common.utils.JacksonConverter;
+import com.tradehero.common.utils.THJsonAdapter;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.data.LiveTradeBalanceDTO;
 import com.tradehero.livetrade.data.LiveTradeDealQueryDTO;
 import com.tradehero.livetrade.data.LiveTradeEntrustCancelDTO;
@@ -11,14 +14,28 @@ import com.tradehero.livetrade.data.LiveTradePendingEntrustQueryDTO;
 import com.tradehero.livetrade.data.LiveTradePositionDTO;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
+import com.tradehero.livetrade.services.LiveTradeConstants;
 import com.tradehero.livetrade.services.LiveTradeServices;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthErrorDTO;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthLoginBody;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSessionResultDTO;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupBody;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupLiveBody;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupResultDTO;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.services.DriveWealthServiceAync;
+import com.tradehero.th.R;
 
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedByteArray;
+import retrofit.mime.TypedInput;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -45,8 +62,25 @@ import javax.inject.Singleton;
     }
 
     @Override
-    public void login(Activity activity, String account, String password, LiveTradeCallback<LiveTradeSessionDTO> callback) {
+    public void login(Activity activity, String account, String password, final LiveTradeCallback<LiveTradeSessionDTO> callback) {
+        Callback<DriveWealthSessionResultDTO> cb = new Callback<DriveWealthSessionResultDTO>() {
 
+            @Override
+            public void success(DriveWealthSessionResultDTO driveWealthSessionResultDTO, Response response) {
+                mManager.setUserID(driveWealthSessionResultDTO.userID);
+                mManager.setSessionKey(driveWealthSessionResultDTO.sessionKey);
+                callback.onSuccess(new LiveTradeSessionDTO());
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
+                DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+                callback.onError(String.valueOf(dwError.code), dwError.message);
+            }
+        };
+
+        mServices.login(new DriveWealthLoginBody(account, password), cb);
     }
 
     @Override
@@ -99,9 +133,87 @@ import javax.inject.Singleton;
 
     }
 
-    public void signupFree() {
+    public void processSignupLive(final Activity activity) {
         DriveWealthSignupFormDTO formDTO = mManager.getSignupFormDTO();
 
+        login(activity, formDTO.userName, formDTO.password, new LiveTradeCallback<LiveTradeSessionDTO>() {
+            @Override
+            public void onSuccess(LiveTradeSessionDTO liveTradeSessionDTO) {
+                // Use the existing account to sign up Live.
+                signupLive(activity);
+            }
 
+            @Override
+            public void onError(String errorCode, String errorContent) {
+                // Sign up a free account then to sign up Live.
+                signupFree(activity);
+            }
+        });
+    }
+
+    private void signupFree(final Activity activity) {
+        DriveWealthSignupFormDTO formDTO = mManager.getSignupFormDTO();
+
+        Callback<DriveWealthSignupResultDTO> cb = new Callback<DriveWealthSignupResultDTO>() {
+
+            @Override
+            public void success(DriveWealthSignupResultDTO driveWealthSessionResultDTO, Response response) {
+                mManager.setUserID(driveWealthSessionResultDTO.userID);
+                signupLive(activity);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
+                DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+                THToast.show(dwError.message);
+            }
+        };
+
+        mServices.signup(new DriveWealthSignupBody(formDTO.email, formDTO.firstNameInEng, formDTO.lastNameInEng, formDTO.userName, formDTO.password), cb);
+    }
+
+    private void signupLive(final Activity activity) {
+        DriveWealthSignupFormDTO formDTO = mManager.getSignupFormDTO();
+
+        Callback<DriveWealthSignupResultDTO> cb = new Callback<DriveWealthSignupResultDTO>() {
+
+            @Override
+            public void success(DriveWealthSignupResultDTO driveWealthSessionResultDTO, Response response) {
+                THToast.show("Success: " + driveWealthSessionResultDTO.userID);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
+                DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+                THToast.show(dwError.message);
+            }
+        };
+
+        String[] employmentArray = activity.getResources().getStringArray(R.array.dw_signup_employment_in_eng);
+        String[] businessArray = activity.getResources().getStringArray(R.array.dw_signup_industry_in_eng);
+        String[] investObjArray = activity.getResources().getStringArray(R.array.dw_investment_objectives_in_eng);
+        String[] investExpArray = activity.getResources().getStringArray(R.array.dw_investment_experience_in_eng);
+        String[] incomeArray = activity.getResources().getStringArray(R.array.dw_annual_income);
+        String[] networthLiquidArray = activity.getResources().getStringArray(R.array.dw_networth_liquid);
+        String[] networthTotalArray = activity.getResources().getStringArray(R.array.dw_networth_total);
+        String[] riskToleranceArray = activity.getResources().getStringArray(R.array.dw_risk_tolerance_in_eng);
+        String[] timeHorizonArray = activity.getResources().getStringArray(R.array.dw_time_horizon_in_eng);
+        String[] liquidityNeedsArray = activity.getResources().getStringArray(R.array.dw_liquidity_needs_in_eng);
+
+        mServices.signupLive(
+                new DriveWealthSignupLiveBody(
+                        mManager.getUserID(), formDTO.firstNameInEng, formDTO.lastNameInEng,
+                        formDTO.idNO, formDTO.address, formDTO.email,
+                        employmentArray[formDTO.employmentStatusIdx], businessArray[formDTO.employerBusinessIdx],
+                        formDTO.employerCompany, formDTO.employerIsBroker,
+                        formDTO.director, formDTO.politicallyExposed,
+                        investObjArray[formDTO.investmentObjectivesIdx], investExpArray[formDTO.investmentExperienceIdx],
+                        incomeArray[formDTO.annualIncomeIdx], networthLiquidArray[formDTO.networthLiquidIdx],
+                        networthTotalArray[formDTO.networthTotalIdx], riskToleranceArray[formDTO.riskToleranceIdx],
+                        timeHorizonArray[formDTO.timeHorizonIdx], liquidityNeedsArray[formDTO.liquidityNeedsIdx],
+                        formDTO.ackSignedBy),
+                cb);
     }
 }

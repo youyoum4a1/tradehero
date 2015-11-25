@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthServicesWrapper;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;

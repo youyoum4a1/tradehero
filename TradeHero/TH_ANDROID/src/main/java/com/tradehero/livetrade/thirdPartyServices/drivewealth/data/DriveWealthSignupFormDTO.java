@@ -30,4 +30,20 @@ public class DriveWealthSignupFormDTO {
     public int timeHorizonIdx;
     public int liquidityNeedsIdx;
     public String ackSignedBy;
+
+    public DriveWealthSignupFormDTO() {
+        phoneNumber = "13816631019";
+        phoneVerificationToken = "1234";
+        email = "sam@tradehero.mobi";
+        userName = "samyu";
+        password = "welcome0";
+        firstName = "";
+        lastName = "";
+        firstNameInEng = "Zheng";
+        lastNameInEng = "Yu";
+        employerCompany = "MyHero";
+        ackSignedBy = "Yu Zheng";
+        idNO = "310101198210121074";
+        address = "哈尔滨路160号";
+    }
 }

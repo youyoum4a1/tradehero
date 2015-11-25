@@ -12,6 +12,8 @@ import javax.inject.Singleton;
 @Singleton public class DriveWealthManager {
 
     private DriveWealthSignupFormDTO mSignupFormDTO;
+    private String mUserID;
+    private String mSessionKey;
 
     @Inject public DriveWealthManager() {
         mSignupFormDTO = new DriveWealthSignupFormDTO();
@@ -19,5 +21,21 @@ import javax.inject.Singleton;
 
     public DriveWealthSignupFormDTO getSignupFormDTO() {
         return mSignupFormDTO;
+    }
+
+    public String getSessionKey() {
+        return mSessionKey;
+    }
+
+    public void setSessionKey(String mSessionKey) {
+        this.mSessionKey = mSessionKey;
+    }
+
+    public String getUserID() {
+        return mUserID;
+    }
+
+    public void setUserID(String mUserID) {
+        this.mUserID = mUserID;
     }
 }
