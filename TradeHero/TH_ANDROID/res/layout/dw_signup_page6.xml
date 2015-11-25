@@ -24,6 +24,7 @@
             android:text="@string/dw_signup_investment_objectives"
             android:textSize="@dimen/text_medium"/>
         <Spinner
+            android:id="@+id/investmentObjectives"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -50,6 +51,7 @@
             android:text="@string/dw_signup_investment_experience"
             android:textSize="@dimen/text_medium"/>
         <Spinner
+            android:id="@+id/investmentExperience"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -76,6 +78,7 @@
             android:text="@string/dw_signup_annual_income"
             android:textSize="@dimen/text_medium"/>
         <Spinner
+            android:id="@+id/annualIncome"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -102,6 +105,7 @@
             android:text="@string/dw_signup_networth_liquid"
             android:textSize="@dimen/text_medium"/>
         <Spinner
+            android:id="@+id/networthLiquid"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -128,6 +132,7 @@
             android:text="@string/dw_signup_networth_total"
             android:textSize="@dimen/text_medium"/>
         <Spinner
+            android:id="@+id/networthTotal"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -154,12 +159,13 @@
             android:text="@string/dw_signup_risk_tolerance"
             android:textSize="@dimen/text_medium"/>
         <Spinner
+            android:id="@+id/riskTolerance"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
-            android:entries="@array/dw_annual_income"/>
+            android:entries="@array/dw_risk_tolerance"/>
     </RelativeLayout>
     <View
         android:layout_width="match_parent"
@@ -180,6 +186,7 @@
             android:text="@string/dw_signup_time_horizon"
             android:textSize="@dimen/text_medium"/>
         <Spinner
+            android:id="@+id/timeHorizon"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -206,6 +213,7 @@
             android:text="@string/dw_signup_liquidity_needs"
             android:textSize="@dimen/text_medium"/>
         <Spinner
+            android:id="@+id/liqudityNeeds"
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

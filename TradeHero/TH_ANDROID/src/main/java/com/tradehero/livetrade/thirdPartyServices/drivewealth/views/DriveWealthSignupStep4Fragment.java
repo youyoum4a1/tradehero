@@ -194,6 +194,8 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                checkNEnableNextButton();
             }
         }
     }
@@ -243,17 +245,18 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
         intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 8);
         intent.putExtra("aspectY", 5);
-        intent.putExtra("outputX", 320);
-        intent.putExtra("outputY", 200);
+        intent.putExtra("outputX", 640);
+        intent.putExtra("outputY", 400);
         intent.putExtra("return-data", true);
         startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
     }
 
-
     private void checkNEnableNextButton() {
+        DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
         if (lastName.getText().length() > 0 && firstName.getText().length() > 0 &&
                 lastNameEnglish.getText().length() > 0 && firstNameEnglish.getText().length() > 0 &&
-                idNumber.getText().length() > 0 && address.getText().length() > 0) {
+                idNumber.getText().length() > 0 && address.getText().length() > 0 &&
+                formDTO.idcardFront != null && formDTO.idcardBack != null) {
             btnNext.setEnabled(true);
         } else {
             btnNext.setEnabled(false);

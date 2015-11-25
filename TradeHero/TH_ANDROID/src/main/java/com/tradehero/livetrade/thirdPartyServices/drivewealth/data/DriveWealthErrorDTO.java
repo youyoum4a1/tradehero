@@ -6,6 +6,6 @@ package com.tradehero.livetrade.thirdPartyServices.drivewealth.data;
 public class DriveWealthErrorDTO {
 
     public int code;
-    public String message;
+    public String message = "";
 
 }
