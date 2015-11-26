@@ -8,19 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
-import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthServicesWrapper;
-import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.DashboardFragment;
-
-import javax.inject.Inject;
-
+import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
+import com.tradehero.th.R;
+import com.tradehero.th.fragments.base.DashboardFragment;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.inject.Inject;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -39,6 +38,8 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
     EditText password2;
     @InjectView(R.id.btn_next)
     Button btnNext;
+    @InjectView(R.id.error_msg)
+    TextView mErrorMsgText;
 
     @Nullable
     @Override
@@ -72,12 +73,43 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
 
     @OnClick(R.id.btn_next)
     public void onNextClick() {
-        DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
-        formDTO.email = email.getText().toString();
-        formDTO.userName = nickname.getText().toString();
-        formDTO.password = password1.getText().toString();
+        if (!checkInfo()) {
+            return;
+        }
+            DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
+            formDTO.email = email.getText().toString();
+            formDTO.userName = nickname.getText().toString();
+            formDTO.password = password1.getText().toString();
 
-        pushFragment(DriveWealthSignupStep4Fragment.class, new Bundle());
+            pushFragment(DriveWealthSignupStep4Fragment.class, new Bundle());
+    }
+
+    private boolean checkInfo() {
+        if (!isEmail(email.getText().toString())) {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            mErrorMsgText.setText(R.string.email_error);
+            return false;
+        }
+        if (password1.getText().toString().isEmpty() ||
+                !password1.getText().toString().equalsIgnoreCase(password2.getText().toString())) {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            if (password1.getText().toString().length() < 8
+                    || password1.getText().toString().length() > 20) {
+                mErrorMsgText.setText(R.string.password_length_error);
+            } else {
+                mErrorMsgText.setText(R.string.password_error);
+            }
+            return false;
+        }
+        mErrorMsgText.setVisibility(View.GONE);
+        return true;
+    }
+
+    private boolean isEmail(String email) {
+        String str = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+        Pattern p = Pattern.compile(str);
+        Matcher m = p.matcher(email);
+        return m.matches();
     }
 
     @OnTextChanged({R.id.email, R.id.nickname, R.id.password1, R.id.password2})

@@ -253,5 +253,8 @@
     <string name="query">查询</string>
     <string name="open_account_right_now">立即开户</string>
     <string name="login_open_account_right_now">立即登录</string>
+    <string name="email_error">Email地址出错</string>
+    <string name="password_error">密码出错</string>
+    <string name="password_length_error">密码长度为8-20位</string>
 
 </resources>

@@ -692,4 +692,7 @@
     <string name="query">Query</string>
     <string name="open_account_right_now">Go to open account</string>
     <string name="login_open_account_right_now">Login right now</string>
+    <string name="email_error">email error</string>
+    <string name="password_error">password error</string>
+    <string name="password_length_error">password length error</string>
 </resources>
