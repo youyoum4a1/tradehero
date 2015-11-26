@@ -256,5 +256,6 @@
     <string name="email_error">Email地址出错</string>
     <string name="password_error">密码出错</string>
     <string name="password_length_error">密码长度为8-20位</string>
+    <string name="name_error">姓氏和名字必须为中文</string>
 
 </resources>

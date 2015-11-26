@@ -21,23 +21,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
+import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
-
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Calendar;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -62,6 +58,8 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
     ImageView idcardFront;
     @InjectView(R.id.idcard_back)
     ImageView idcardBack;
+    @InjectView(R.id.error_msg)
+    TextView mErrorMsgText;
     @InjectView(R.id.btn_next)
     Button btnNext;
 
@@ -137,6 +135,14 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
 
     @OnClick(R.id.btn_next)
     public void onNextClick() {
+        if (isChinese(firstName.getText().toString())
+                && isChinese(lastName.getText().toString())) {
+            mErrorMsgText.setVisibility(View.GONE);
+        } else {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            mErrorMsgText.setText(R.string.name_error);
+            return;
+        }
         DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
         formDTO.firstName = firstName.getText().toString();
         formDTO.lastName = lastName.getText().toString();
@@ -146,6 +152,25 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
         formDTO.address = address.getText().toString();
 
         pushFragment(DriveWealthSignupStep5Fragment.class, new Bundle());
+    }
+
+    public boolean isChinese(String str){
+        char[] chars=str.toCharArray();
+        boolean isGB2312=false;
+        for(int i=0;i<chars.length;i++){
+            byte[] bytes=(""+chars[i]).getBytes();
+            if(bytes.length==2){
+                int[] ints=new int[2];
+                ints[0]=bytes[0]& 0xff;
+                ints[1]=bytes[1]& 0xff;
+                if(ints[0]>=0x81 && ints[0]<=0xFE &&
+                        ints[1]>=0x40 && ints[1]<=0xFE){
+                    isGB2312=true;
+                    break;
+                }
+            }
+        }
+        return isGB2312;
     }
 
     @OnTextChanged({R.id.lastName, R.id.firstName, R.id.lastNameEnglish, R.id.firstNameEnglish, R.id.idNumber, R.id.address})

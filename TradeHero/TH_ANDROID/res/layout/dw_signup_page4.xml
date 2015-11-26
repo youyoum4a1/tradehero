@@ -164,6 +164,7 @@
                     android:textSize="@dimen/text_medium"
                     android:singleLine="true"
                     android:hint="@string/id_number_hint"
+                    android:maxLength="18"
                     android:textColorHint="#bfbfbf"
                     android:textColor="#000000"
                     android:background="@color/white"/>
@@ -248,7 +249,15 @@
                         android:background="@drawable/id_card_back"/>
                 </LinearLayout>
             </RelativeLayout>
-
+            <TextView
+                android:id="@+id/error_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/red"
+                android:textSize="@dimen/text_medium"
+                android:visibility="gone"/>
             <Button
                 android:id="@+id/btn_next"
                 android:layout_width="fill_parent"
