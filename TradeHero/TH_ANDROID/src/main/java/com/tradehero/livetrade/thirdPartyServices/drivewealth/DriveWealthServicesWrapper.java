@@ -168,7 +168,7 @@ import retrofit.mime.TypedString;
             @Override
             public void success(DriveWealthSignupResultDTO driveWealthSessionResultDTO, Response response) {
                 mManager.setUserID(driveWealthSessionResultDTO.userID);
-                signupLive(activity);
+                processSignupLive(activity);
             }
 
             @Override
