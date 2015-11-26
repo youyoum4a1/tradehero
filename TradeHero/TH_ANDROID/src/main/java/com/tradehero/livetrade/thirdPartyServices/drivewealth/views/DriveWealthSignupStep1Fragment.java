@@ -1,6 +1,8 @@
 package com.tradehero.livetrade.thirdPartyServices.drivewealth.views;
 
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -15,9 +17,11 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
 import com.tradehero.th.R;
+import com.tradehero.th.api.users.password.PhoneNumberVerifyDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
@@ -45,6 +49,8 @@ public class DriveWealthSignupStep1Fragment extends DashboardFragment {
     TextView txtTermOfServiceSignin;
     @InjectView(R.id.signup_status_check)
     TextView signupStatusCheck;
+
+    private ProgressDialog mProgressDialog;
 
     public static long last_time_request_verify_code = -1;
     public final static long duration_verify_code = 60;
@@ -99,12 +105,63 @@ public class DriveWealthSignupStep1Fragment extends DashboardFragment {
 
     @OnClick(R.id.btn_next)
     public void onNextClick() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(getActivity());
+        } else {
+            mProgressDialog.dismiss();
+        }
+        mProgressDialog.setMessage(getString(R.string.verifying_phonenum));
+        mProgressDialog.show();
 
-        DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
-        formDTO.phoneNumber = phoneNumber.getText().toString();
-        formDTO.phoneVerificationToken = verifyCode.getText().toString();
+        userServiceWrapper.verifyPhoneNum(phoneNumber.getText().toString(),
+                verifyCode.getText().toString(),
+                new Callback<PhoneNumberVerifyDTO>() {
+                    @Override
+                    public void success(PhoneNumberVerifyDTO phoneNumberVerifyDTO, Response response) {
+                        if (phoneNumberVerifyDTO.success) {
+                            userServiceWrapper.checkPhoneNumberAccountStatus(
+                                    phoneNumber.getText().toString(), new Callback<PhoneNumberVerifyDTO>() {
+                                        @Override
+                                        public void success(PhoneNumberVerifyDTO phoneNumberVerifyDTO, Response response) {
+                                            mProgressDialog.dismiss();
+                                            if (phoneNumberVerifyDTO.success) {
+                                                THDialog.showCenterDialog(getActivity(), "", phoneNumberVerifyDTO.reason, getString(R.string.cancel),
+                                                        getString(R.string.login_open_account_right_now), new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                if (which == DialogInterface.BUTTON_POSITIVE) {
+                                                                    THToast.show("新功能正在开发中");
+                                                                }
+                                                            }
+                                                        });
+                                            } else {
+                                                DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
+                                                formDTO.phoneNumber = phoneNumber.getText().toString();
+                                                formDTO.phoneVerificationToken = verifyCode.getText().toString();
 
-        pushFragment(DriveWealthSignupStep2Fragment.class, new Bundle());
+                                                pushFragment(DriveWealthSignupStep2Fragment.class, new Bundle());
+                                            }
+                                        }
+
+                                        @Override
+                                        public void failure(RetrofitError error) {
+                                            THToast.show(error.getLocalizedMessage());
+                                            mProgressDialog.dismiss();
+
+                                        }
+                                    });
+                        } else {
+                            THToast.show(phoneNumberVerifyDTO.reason);
+                            mProgressDialog.dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        THToast.show(error.getLocalizedMessage());
+                        mProgressDialog.dismiss();
+                    }
+                });
     }
 
     @OnClick(R.id.get_verify_code_button)

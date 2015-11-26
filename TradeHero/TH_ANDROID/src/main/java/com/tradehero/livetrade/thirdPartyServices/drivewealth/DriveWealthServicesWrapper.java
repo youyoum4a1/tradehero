@@ -1,6 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.drivewealth;
 
 import android.app.Activity;
+import android.content.Intent;
 
 import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.common.utils.THJsonAdapter;
@@ -49,6 +50,9 @@ import retrofit.mime.TypedString;
 
     private DriveWealthServiceAync mServices;
     private DriveWealthManager mManager;
+
+    public static final String DW_SIGNUP_SUCCESS = "DWSignup.success";
+    public static final String DW_SIGNUP_FAILED = "DWSignup.failed";
 
     @Inject public DriveWealthServicesWrapper(@NotNull DriveWealthServiceAync service,
                                               @NotNull DriveWealthManager manager) {
@@ -172,6 +176,7 @@ import retrofit.mime.TypedString;
                 String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
                 DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
                 THToast.show(dwError.message);
+                activity.sendBroadcast(new Intent(DW_SIGNUP_FAILED));
             }
         };
 
@@ -185,7 +190,7 @@ import retrofit.mime.TypedString;
 
             @Override
             public void success(DriveWealthSignupResultDTO driveWealthSessionResultDTO, Response response) {
-                uploadIdCardFront();
+                uploadIdCardFront(activity);
             }
 
             @Override
@@ -193,6 +198,7 @@ import retrofit.mime.TypedString;
                 String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
                 DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
                 THToast.show(dwError.message);
+                activity.sendBroadcast(new Intent(DW_SIGNUP_FAILED));
             }
         };
 
@@ -222,14 +228,14 @@ import retrofit.mime.TypedString;
                 cb);
     }
 
-    private void uploadIdCardFront() {
+    private void uploadIdCardFront(final Activity activity) {
         DriveWealthSignupFormDTO formDTO = mManager.getSignupFormDTO();
 
         Callback<DriveWealthUploadResultDTO> cb = new Callback<DriveWealthUploadResultDTO>() {
 
             @Override
             public void success(DriveWealthUploadResultDTO driveWealthSessionResultDTO, Response response) {
-                uploadIdCardBack();
+                uploadIdCardBack(activity);
             }
 
             @Override
@@ -237,6 +243,7 @@ import retrofit.mime.TypedString;
                 String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
                 DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
                 THToast.show(dwError.message);
+                activity.sendBroadcast(new Intent(DW_SIGNUP_FAILED));
             }
         };
 
@@ -247,7 +254,7 @@ import retrofit.mime.TypedString;
                 cb);
     }
 
-    private void uploadIdCardBack() {
+    private void uploadIdCardBack(final Activity activity) {
         DriveWealthSignupFormDTO formDTO = mManager.getSignupFormDTO();
 
         Callback<DriveWealthUploadResultDTO> cb = new Callback<DriveWealthUploadResultDTO>() {
@@ -255,6 +262,7 @@ import retrofit.mime.TypedString;
             @Override
             public void success(DriveWealthUploadResultDTO driveWealthSessionResultDTO, Response response) {
                 THToast.show("开户提交成功，在三个工作日之内我们将完成审核工作！");
+                activity.sendBroadcast(new Intent(DW_SIGNUP_SUCCESS));
             }
 
             @Override
@@ -262,6 +270,7 @@ import retrofit.mime.TypedString;
                 String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
                 DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
                 THToast.show(dwError.message);
+                activity.sendBroadcast(new Intent(DW_SIGNUP_FAILED));
             }
         };
 

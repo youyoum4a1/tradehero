@@ -245,8 +245,8 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
         intent.putExtra("crop", "true");
         intent.putExtra("aspectX", 8);
         intent.putExtra("aspectY", 5);
-        intent.putExtra("outputX", 640);
-        intent.putExtra("outputY", 400);
+        intent.putExtra("outputX", 320);
+        intent.putExtra("outputY", 200);
         intent.putExtra("return-data", true);
         startActivityForResult(intent, REQUEST_PHOTO_ZOOM);
     }

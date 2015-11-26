@@ -19,6 +19,6 @@ public class DriveWealthSignupBody{
         this.username = username;
         this.password = password;
         this.usCitizen = false;
-        this.utm_campaign = "campaign";
+        this.utm_campaign = "Tradehero";
     }
 }

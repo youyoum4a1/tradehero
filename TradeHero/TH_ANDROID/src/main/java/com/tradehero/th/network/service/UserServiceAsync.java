@@ -12,6 +12,7 @@ import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.social.UserFriendsDTOList;
 import com.tradehero.th.api.users.UpdateReferralCodeDTO;
 import com.tradehero.th.api.users.UserProfileDTO;
+import com.tradehero.th.api.users.password.BindBrokerDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.password.PhoneNumberBindDTO;
@@ -243,5 +244,14 @@ interface UserServiceAsync
             @Query("brokerName") String phoneNumber,
             @Query("phoneNumber") String verifyCode,
             Callback<PhoneNumberVerifyDTO> cb);
+
+    @POST("/cn/v2/users/bindBroker")
+    @FormUrlEncoded
+    void bindBroker(
+            @Field("phoneNumber") String phoneNumber,
+            @Field("brokerName") String brokerName,
+            @Field("brokerUserId") String brokerUserId,
+            Callback<BindBrokerDTO> cb
+    );
 
 }

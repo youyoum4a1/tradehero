@@ -24,6 +24,7 @@ import com.tradehero.th.api.users.UserListType;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.users.UserSearchResultDTOList;
 import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
+import com.tradehero.th.api.users.password.BindBrokerDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordDTO;
 import com.tradehero.th.api.users.password.ForgotPasswordFormDTO;
 import com.tradehero.th.api.users.password.PhoneNumberBindDTO;
@@ -563,5 +564,10 @@ import retrofit.client.Response;
         MiddleCallback<PhoneNumberVerifyDTO> middleCallback = new BaseMiddleCallback<>(callback);
         userServiceAsync.checkPhoneNumberAccountStatus("DW", phoneNumber, middleCallback);
         return middleCallback;
+    }
+
+    public void bindBroker(String phoneNumber, String userID, Callback<BindBrokerDTO> callback)
+    {
+        userServiceAsync.bindBroker(phoneNumber, "DW", userID, callback);
     }
 }
