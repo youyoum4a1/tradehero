@@ -4,6 +4,8 @@ package com.tradehero.livetrade.thirdPartyServices.drivewealth.views;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,6 +19,19 @@ import butterknife.OnClick;
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class DriveWealthSignupStep2Fragment extends DashboardFragment {
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        setHeadViewMiddleMain("开户准备(2/7)");
+        setHeadViewRight0(getString(R.string.cancel));
+    }
+
+    @Override
+    public void onClickHeadRight0() {
+        getActivity().finish();
+    }
 
     @Nullable
     @Override

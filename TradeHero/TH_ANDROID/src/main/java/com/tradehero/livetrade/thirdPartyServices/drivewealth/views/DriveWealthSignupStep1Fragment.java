@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -77,6 +79,19 @@ public class DriveWealthSignupStep1Fragment extends DashboardFragment {
         }
     };
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        setHeadViewMiddleMain("手机验证(1/7)");
+        setHeadViewRight0(getString(R.string.cancel));
+    }
+
+    @Override
+    public void onClickHeadRight0() {
+        getActivity().finish();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -124,22 +139,23 @@ public class DriveWealthSignupStep1Fragment extends DashboardFragment {
                                         @Override
                                         public void success(PhoneNumberVerifyDTO phoneNumberVerifyDTO, Response response) {
                                             mProgressDialog.dismiss();
-                                            if (phoneNumberVerifyDTO.success) {
-                                                THDialog.showCenterDialog(getActivity(), "", phoneNumberVerifyDTO.reason, getString(R.string.cancel),
-                                                        getString(R.string.login_open_account_right_now), new DialogInterface.OnClickListener() {
-                                                            @Override
-                                                            public void onClick(DialogInterface dialog, int which) {
-                                                                if (which == DialogInterface.BUTTON_POSITIVE) {
-                                                                    THToast.show("新功能正在开发中");
-                                                                }
-                                                            }
-                                                        });
-                                            } else {
+                                            if (phoneNumberVerifyDTO.code == PhoneNumberVerifyDTO.CODE_NO_SUCH_ACCOUNT) {
                                                 DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
                                                 formDTO.phoneNumber = phoneNumber.getText().toString();
                                                 formDTO.phoneVerificationToken = verifyCode.getText().toString();
 
                                                 pushFragment(DriveWealthSignupStep2Fragment.class, new Bundle());
+                                            } else {
+                                                THDialog.showCenterDialog(getActivity(), "", "此手机号已经开户\n请直接登录。",
+                                                        null, getString(R.string.ok),
+                                                         new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                if (which == DialogInterface.BUTTON_POSITIVE) {
+                                                                    getActivity().finish();
+                                                                }
+                                                            }
+                                                        });
                                             }
                                         }
 

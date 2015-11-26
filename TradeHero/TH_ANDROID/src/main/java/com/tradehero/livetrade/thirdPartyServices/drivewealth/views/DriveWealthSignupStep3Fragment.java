@@ -4,6 +4,8 @@ package com.tradehero.livetrade.thirdPartyServices.drivewealth.views;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -40,6 +42,19 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
     Button btnNext;
     @InjectView(R.id.error_msg)
     TextView mErrorMsgText;
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        setHeadViewMiddleMain("登陆信息(3/7)");
+        setHeadViewRight0(getString(R.string.cancel));
+    }
+
+    @Override
+    public void onClickHeadRight0() {
+        getActivity().finish();
+    }
 
     @Nullable
     @Override

@@ -14,6 +14,8 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -69,6 +71,19 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
 
     private int mLoadImageforId = 0;
     private File mFile;
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        setHeadViewMiddleMain("个人资料(4/7)");
+        setHeadViewRight0(getString(R.string.cancel));
+    }
+
+    @Override
+    public void onClickHeadRight0() {
+        getActivity().finish();
+    }
 
     @Nullable
     @Override
