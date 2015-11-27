@@ -17,8 +17,12 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-
-import com.tradehero.chinabuild.fragment.MyProfileFragment;
+import android.widget.TextView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthServicesWrapper;
@@ -27,14 +31,7 @@ import com.tradehero.th.R;
 import com.tradehero.th.api.users.password.BindBrokerDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -54,8 +51,9 @@ public class DriveWealthSignupStep7Fragment extends DashboardFragment {
     CheckBox agreement2;
     @InjectView(R.id.signature)
     EditText signature;
-    @InjectView(R.id.btn_next)
-    Button btnNext;
+    @InjectView(R.id.error_msg)
+    TextView mErrorMsgText;
+    @InjectView(R.id.btn_next) Button btnNext;
     @InjectView(R.id.progressBar)
     ProgressBar progressBar;
 
@@ -143,6 +141,13 @@ public class DriveWealthSignupStep7Fragment extends DashboardFragment {
 
     @OnClick(R.id.btn_next)
     public void onNextClick() {
+        if (isChinese(signature.getText().toString())) {
+            mErrorMsgText.setVisibility(View.GONE);
+        } else {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            mErrorMsgText.setText(R.string.name_error);
+            return;
+        }
         final DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
         formDTO.ackSignedBy = signature.getText().toString();
 
@@ -155,6 +160,25 @@ public class DriveWealthSignupStep7Fragment extends DashboardFragment {
         mProgressDialog.show();
 
         mServices.processSignupLive(getActivity());
+    }
+
+    public boolean isChinese(String str){
+        char[] chars=str.toCharArray();
+        boolean isGB2312=false;
+        for(int i=0;i<chars.length;i++){
+            byte[] bytes=(""+chars[i]).getBytes();
+            if(bytes.length==2){
+                int[] ints=new int[2];
+                ints[0]=bytes[0]& 0xff;
+                ints[1]=bytes[1]& 0xff;
+                if(ints[0]>=0x81 && ints[0]<=0xFE &&
+                        ints[1]>=0x40 && ints[1]<=0xFE){
+                    isGB2312=true;
+                    break;
+                }
+            }
+        }
+        return isGB2312;
     }
 
     @OnTextChanged(R.id.signature)
