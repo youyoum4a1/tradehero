@@ -7,6 +7,8 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -61,6 +63,14 @@ public class DriveWealthCheckSignupStatusFragment extends DashboardFragment impl
         checkNEnableNextButton();
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        setHeadViewMiddleMain("开户查询");
+        setHeadViewRight0(getString(R.string.cancel));
     }
 
     private void initView(View view) {
