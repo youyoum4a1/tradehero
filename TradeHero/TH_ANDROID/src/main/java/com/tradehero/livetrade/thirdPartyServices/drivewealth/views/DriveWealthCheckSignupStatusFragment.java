@@ -44,7 +44,6 @@ public class DriveWealthCheckSignupStatusFragment extends DashboardFragment impl
 
     public static long last_time_request_verify_code = -1;
     public final static long duration_verify_code = 60;
-    private String requestVerifyCodeStr = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,9 +67,7 @@ public class DriveWealthCheckSignupStatusFragment extends DashboardFragment impl
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
         setHeadViewMiddleMain("开户查询");
-        setHeadViewRight0(getString(R.string.cancel));
     }
 
     private void initView(View view) {
@@ -138,7 +135,7 @@ public class DriveWealthCheckSignupStatusFragment extends DashboardFragment impl
                 handler.postDelayed(refreshVerifyCodeRunnable, 1000);
             } else {
                 mGetVerifyCodeButton.setClickable(true);
-                mGetVerifyCodeButton.setText(requestVerifyCodeStr);
+                mGetVerifyCodeButton.setText("获取验证码");
                 mGetVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng);
                 last_time_request_verify_code = -1;
             }

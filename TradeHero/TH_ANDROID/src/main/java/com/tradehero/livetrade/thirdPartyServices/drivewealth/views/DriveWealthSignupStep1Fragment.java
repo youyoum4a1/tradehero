@@ -56,7 +56,6 @@ public class DriveWealthSignupStep1Fragment extends DashboardFragment {
 
     public static long last_time_request_verify_code = -1;
     public final static long duration_verify_code = 60;
-    private String requestVerifyCodeStr = "";
     private Runnable refreshVerifyCodeRunnable = new Runnable() {
         @Override
         public void run() {
@@ -72,7 +71,7 @@ public class DriveWealthSignupStep1Fragment extends DashboardFragment {
                 handler.postDelayed(refreshVerifyCodeRunnable, 1000);
             } else {
                 getVerifyCodeButton.setClickable(true);
-                getVerifyCodeButton.setText(requestVerifyCodeStr);
+                getVerifyCodeButton.setText("获取验证码");
                 getVerifyCodeButton.setBackgroundResource(R.drawable.yanzheng);
                 last_time_request_verify_code = -1;
             }
