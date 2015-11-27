@@ -173,13 +173,15 @@ public class DriveWealthCheckSignupStatusFragment extends DashboardFragment impl
                                             if (phoneNumberVerifyDTO.success) {
                                                 THDialog.showCenterDialog(getActivity(), "", phoneNumberVerifyDTO.reason, getString(R.string.cancel),
                                                         getString(R.string.login_open_account_right_now), new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        if (which == DialogInterface.BUTTON_POSITIVE) {
-                                                            THToast.show("新功能正在开发中");
-                                                        }
-                                                    }
-                                                });
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                if (which == DialogInterface.BUTTON_POSITIVE) {
+                                                                    THToast.show("新功能正在开发中");
+                                                                }
+                                                            }
+                                                        });
+                                            } else if (phoneNumberVerifyDTO.code == 1) {
+                                                THDialog.showCenterDialog(getActivity(), "", phoneNumberVerifyDTO.reason, null, null, null);
                                             } else {
                                                 THDialog.showCenterDialog(getActivity(), "", phoneNumberVerifyDTO.reason, getString(R.string.cancel),
                                                         getString(R.string.open_account_right_now), new DialogInterface.OnClickListener() {
