@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.net.Uri;
 
+import com.tradehero.th.BuildConfig;
+
 import java.io.File;
 
 /**
@@ -40,19 +42,20 @@ public class DriveWealthSignupFormDTO {
     public Uri idcardBack;
 
     public DriveWealthSignupFormDTO() {
-        phoneNumber = "13816631019";
-        phoneVerificationToken = "1234";
-        email = "sam@tradehero.mobi";
-        userName = "samyu";
-        password = "welcome0";
-        firstName = "123";
-        lastName = "456";
-        firstNameInEng = "Zheng";
-        lastNameInEng = "Yu";
-        employerCompany = "MyHero";
-        ackSignedBy = "Yu Zheng";
-        idNO = "310101198210121074";
-        address = "哈尔滨路160号";
-
+        if (BuildConfig.DEBUG) {
+            phoneNumber = "13816631019";
+            phoneVerificationToken = "1234";
+            email = "sam@tradehero.mobi";
+            userName = "samyu";
+            password = "welcome0";
+            firstName = "123";
+            lastName = "456";
+            firstNameInEng = "Zheng";
+            lastNameInEng = "Yu";
+            employerCompany = "MyHero";
+            ackSignedBy = "Yu Zheng";
+            idNO = "310101198210121074";
+            address = "哈尔滨路160号";
+        }
     }
 }
