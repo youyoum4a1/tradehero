@@ -165,9 +165,14 @@ public class DriveWealthSignupStep7Fragment extends DashboardFragment {
     }
 
     private boolean isChinese(String text) {
-        Pattern p= Pattern.compile("[\u4e00-\u9fa5]");
-        Matcher m=p.matcher(text);
-        return m.matches();
+        for (int i=0;i<text.length();i++) {
+            Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+            Matcher m = p.matcher(String.valueOf(text.charAt(i)));
+            if (!m.matches() && !String.valueOf(text.charAt(i)).matches(" ")) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @OnTextChanged(R.id.signature)
