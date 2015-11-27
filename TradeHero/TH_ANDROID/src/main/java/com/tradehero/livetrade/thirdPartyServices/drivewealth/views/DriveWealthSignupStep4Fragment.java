@@ -145,6 +145,13 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
             mErrorMsgText.setText(R.string.name_error);
             return;
         }
+        if (idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            mErrorMsgText.setText(R.string.id_number_hint);
+            return;
+        } else {
+            mErrorMsgText.setVisibility(View.GONE);
+        }
         DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
         formDTO.firstName = firstName.getText().toString();
         formDTO.lastName = lastName.getText().toString();
