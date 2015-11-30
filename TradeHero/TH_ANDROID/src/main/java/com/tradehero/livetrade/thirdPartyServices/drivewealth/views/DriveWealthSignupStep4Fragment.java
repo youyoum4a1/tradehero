@@ -90,7 +90,7 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dw_signup_page4, container, false);
         ButterKnife.inject(this, view);
-
+        initView();
         DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
         if (formDTO.firstName != null) {
             firstName.setText(formDTO.firstName);
@@ -127,6 +127,36 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
         checkNEnableNextButton();
 
         return view;
+    }
+
+    private void initView() {
+        firstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (isChinese(firstName.getText().toString())) {
+                        THToast.show(R.string.name_error);
+                    }
+                }
+            }
+        });
+        lastName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (isChinese(lastName.getText().toString())) {
+                        THToast.show(R.string.name_error);
+                    }
+                }
+            }
+        });
+        idNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
+                        THToast.show(R.string.id_number_hint);
+                    }
+                }
+            }
+        });
     }
 
     @Override

@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
 import com.tradehero.th.R;
@@ -61,7 +62,7 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dw_signup_page3, container, false);
         ButterKnife.inject(this, view);
-
+        initView();
         DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
         if (formDTO.email != null) {
             email.setText(formDTO.email);
@@ -78,6 +79,39 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
 
         checkNEnableNextButton();
         return view;
+    }
+
+    private void initView() {
+        email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (!isEmail(email.getText().toString())) {
+                        THToast.show(R.string.email_error);
+                    }
+                }
+            }
+        });
+        password1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (password1.getText().toString().length() < 8
+                            || password1.getText().toString().length() > 20) {
+                        THToast.show(R.string.password_length_error);
+                    }
+                }
+            }
+        });
+        password2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (password2.getText().toString().length() < 8 || password2.getText().toString().length() > 20) {
+                        THToast.show(R.string.password_length_error);
+                    } else if (!password1.getText().toString().equalsIgnoreCase(password2.getText().toString())) {
+                        THToast.show(R.string.password_not_same_error);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -105,15 +139,11 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
             mErrorMsgText.setText(R.string.email_error);
             return false;
         }
-        if (password1.getText().toString().isEmpty() ||
+        if (password1.getText().toString().isEmpty() || password1.getText().toString().length() < 8
+                || password1.getText().toString().length() > 20 ||
                 !password1.getText().toString().equalsIgnoreCase(password2.getText().toString())) {
             mErrorMsgText.setVisibility(View.VISIBLE);
-            if (password1.getText().toString().length() < 8
-                    || password1.getText().toString().length() > 20) {
-                mErrorMsgText.setText(R.string.password_length_error);
-            } else {
-                mErrorMsgText.setText(R.string.password_error);
-            }
+            mErrorMsgText.setText(R.string.password_length_error);
             return false;
         }
         mErrorMsgText.setVisibility(View.GONE);

@@ -697,4 +697,5 @@
     <string name="password_error">password error</string>
     <string name="password_length_error">password length error</string>
     <string name="name_error">first or last name error</string>
+    <string name="password_not_same_error">password not same</string>
 </resources>

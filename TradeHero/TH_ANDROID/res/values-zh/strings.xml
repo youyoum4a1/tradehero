@@ -258,5 +258,6 @@
     <string name="password_length_error">密码长度为8-20位</string>
     <string name="name_error">姓氏和名字必须为中文</string>
     <string name="name_signature_mismatch">电子签名与姓氏和名字不匹配</string>
+    <string name="password_not_same_error">两次密码输入不一致</string>
 
 </resources>
