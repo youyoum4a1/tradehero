@@ -144,14 +144,19 @@ public class DriveWealthSignupStep7Fragment extends DashboardFragment {
 
     @OnClick(R.id.btn_next)
     public void onNextClick() {
-        if (isChinese(signature.getText().toString())) {
-            mErrorMsgText.setVisibility(View.GONE);
-        } else {
+        DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
+        if (!isChinese(signature.getText().toString())) {
             mErrorMsgText.setVisibility(View.VISIBLE);
             mErrorMsgText.setText(R.string.name_error);
             return;
+        } else if (!signature.getText().toString().equals(formDTO.lastName + formDTO.firstName)) {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            mErrorMsgText.setText(R.string.name_signature_mismatch);
+            return;
+        } else {
+            mErrorMsgText.setVisibility(View.GONE);
         }
-        final DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
+
         formDTO.ackSignedBy = signature.getText().toString();
 
         if (mProgressDialog == null) {
