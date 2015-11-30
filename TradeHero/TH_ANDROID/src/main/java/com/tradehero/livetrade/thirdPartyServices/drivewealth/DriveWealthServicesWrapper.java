@@ -261,7 +261,6 @@ import retrofit.mime.TypedString;
 
             @Override
             public void success(DriveWealthUploadResultDTO driveWealthSessionResultDTO, Response response) {
-                THToast.show("开户提交成功，在三个工作日之内我们将完成审核工作！");
                 activity.sendBroadcast(new Intent(DW_SIGNUP_SUCCESS));
             }
 

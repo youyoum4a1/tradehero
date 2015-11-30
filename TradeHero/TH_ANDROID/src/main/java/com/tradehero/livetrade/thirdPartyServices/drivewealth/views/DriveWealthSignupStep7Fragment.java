@@ -72,6 +72,7 @@ public class DriveWealthSignupStep7Fragment extends DashboardFragment {
             userServiceWrapper.bindBroker(formDTO.phoneNumber, mDriveWealthManager.getUserID(), new Callback<BindBrokerDTO>() {
                 @Override
                 public void success(BindBrokerDTO bindBrokerDTO, Response response) {
+                    THToast.show("开户提交成功，在三个工作日之内我们将完成审核工作！");
                     getActivity().finish();
                 }
 
