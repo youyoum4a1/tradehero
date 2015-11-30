@@ -3,6 +3,8 @@ package com.tradehero.livetrade.thirdPartyServices.drivewealth.views;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -27,6 +29,8 @@ import com.tradehero.th.api.users.password.PhoneNumberVerifyDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
+import com.tradehero.th.utils.DeviceUtil;
+
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -117,8 +121,16 @@ public class DriveWealthSignupStep1Fragment extends DashboardFragment {
         ButterKnife.reset(this);
     }
 
+    @OnClick(R.id.txt_term_of_service_signin)
+    public void onTermClicked() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://drivewealth.com/zh-hans/customer-account-agreement/"));
+        startActivity(browserIntent);
+    }
+
     @OnClick(R.id.btn_next)
     public void onNextClick() {
+        DeviceUtil.dismissKeyboard(getActivity());
+
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getActivity());
         } else {
