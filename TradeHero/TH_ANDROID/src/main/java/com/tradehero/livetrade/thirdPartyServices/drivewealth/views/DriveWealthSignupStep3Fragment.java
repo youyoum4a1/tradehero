@@ -98,6 +98,9 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
                             || password1.getText().toString().length() > 20) {
                         THToast.show(R.string.password_length_error);
                     }
+                    if (!isPassword(password1.getText().toString())) {
+                        THToast.show(R.string.login_password1_hint);
+                    }
                 }
             }
         });
@@ -108,6 +111,8 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
                         THToast.show(R.string.password_length_error);
                     } else if (!password1.getText().toString().equalsIgnoreCase(password2.getText().toString())) {
                         THToast.show(R.string.password_not_same_error);
+                    } else if (!isPassword(password2.getText().toString())) {
+                        THToast.show(R.string.login_password1_hint);
                     }
                 }
             }
@@ -125,12 +130,12 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
         if (!checkInfo()) {
             return;
         }
-            DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
-            formDTO.email = email.getText().toString();
-            formDTO.userName = nickname.getText().toString();
-            formDTO.password = password1.getText().toString();
+        DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
+        formDTO.email = email.getText().toString();
+        formDTO.userName = nickname.getText().toString();
+        formDTO.password = password1.getText().toString();
 
-            pushFragment(DriveWealthSignupStep4Fragment.class, new Bundle());
+        pushFragment(DriveWealthSignupStep4Fragment.class, new Bundle());
     }
 
     private boolean checkInfo() {
@@ -147,6 +152,10 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
             mErrorMsgText.setVisibility(View.VISIBLE);
             mErrorMsgText.setText(R.string.password_not_same_error);
             return false;
+        } else if (!isPassword(password2.getText().toString())) {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            mErrorMsgText.setText(R.string.login_password1_hint);
+            return false;
         }
         mErrorMsgText.setVisibility(View.GONE);
         return true;
@@ -157,6 +166,23 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
         Pattern p = Pattern.compile(str);
         Matcher m = p.matcher(email);
         return m.matches();
+    }
+
+    private boolean isPassword(String text) {
+        boolean isLetter = false, isDigit = false;
+        for (int i = 0; i < text.length(); i++) {
+            Pattern p = Pattern.compile("[0-9]*");
+            Pattern p2 = Pattern.compile("[a-zA-Z]");
+            Matcher m = p.matcher(String.valueOf(text.charAt(i)));
+            Matcher m2 = p2.matcher(String.valueOf(text.charAt(i)));
+            if (m.matches()) {
+                isDigit = true;
+            }
+            if (m2.matches()) {
+                isLetter = true;
+            }
+        }
+        return isLetter && isDigit;
     }
 
     @OnTextChanged({R.id.email, R.id.nickname, R.id.password1, R.id.password2})
