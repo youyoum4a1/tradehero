@@ -133,7 +133,7 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
         firstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (isChinese(firstName.getText().toString())) {
+                    if (!isChinese(firstName.getText().toString())) {
                         THToast.show(R.string.name_error);
                     }
                 }
@@ -142,7 +142,7 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
         lastName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (isChinese(lastName.getText().toString())) {
+                    if (!isChinese(lastName.getText().toString())) {
                         THToast.show(R.string.name_error);
                     }
                 }
