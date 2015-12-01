@@ -84,7 +84,7 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
     private void initView() {
         email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
+                if (!hasFocus && email != null) {
                     if (!isEmail(email.getText().toString())) {
                         THToast.show(R.string.email_error);
                     }
@@ -93,7 +93,7 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
         });
         password1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
+                if (!hasFocus && password1 != null) {
                     if (password1.getText().toString().length() < 8
                             || password1.getText().toString().length() > 20) {
                         THToast.show(R.string.password_length_error);
@@ -103,7 +103,7 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
         });
         password2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
+                if (!hasFocus && password2 != null && password1 != null) {
                     if (password2.getText().toString().length() < 8 || password2.getText().toString().length() > 20) {
                         THToast.show(R.string.password_length_error);
                     } else if (!password1.getText().toString().equalsIgnoreCase(password2.getText().toString())) {
@@ -139,11 +139,13 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
             mErrorMsgText.setText(R.string.email_error);
             return false;
         }
-        if (password1.getText().toString().isEmpty() || password1.getText().toString().length() < 8
-                || password1.getText().toString().length() > 20 ||
-                !password1.getText().toString().equalsIgnoreCase(password2.getText().toString())) {
+        if (password2.getText().toString().length() < 8 || password2.getText().toString().length() > 20) {
             mErrorMsgText.setVisibility(View.VISIBLE);
             mErrorMsgText.setText(R.string.password_length_error);
+            return false;
+        } else if (!password1.getText().toString().equalsIgnoreCase(password2.getText().toString())) {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            mErrorMsgText.setText(R.string.password_not_same_error);
             return false;
         }
         mErrorMsgText.setVisibility(View.GONE);
