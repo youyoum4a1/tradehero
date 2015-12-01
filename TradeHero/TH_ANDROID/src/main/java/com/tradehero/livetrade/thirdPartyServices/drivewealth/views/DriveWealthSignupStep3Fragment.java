@@ -14,22 +14,18 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -203,9 +199,10 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
             Matcher m2 = p2.matcher(String.valueOf(text.charAt(i)));
             if (m.matches()) {
                 isDigit = true;
-            }
-            if (m2.matches()) {
+            } else if (m2.matches()) {
                 isLetter = true;
+            } else {
+                return false;
             }
         }
         return isLetter && isDigit;
