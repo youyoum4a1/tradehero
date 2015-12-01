@@ -3,40 +3,55 @@ package com.tradehero.livetrade.thirdPartyServices.drivewealth.views;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
+
 import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
 public class DriveWealthSignupStep3Fragment extends DashboardFragment {
 
-    @Inject DriveWealthManager mDriveWealthManager;
-
+    @Inject
+    DriveWealthManager mDriveWealthManager;
     @InjectView(R.id.email)
     EditText email;
     @InjectView(R.id.nickname)
     EditText nickname;
+    @InjectView(R.id.password_checkbox)
+    CheckBox passwordCheckbox;
+    @InjectView(R.id.showPassword)
+    RelativeLayout showPassword;
     @InjectView(R.id.password1)
     EditText password1;
+    @InjectView(R.id.confirm_checkbox)
+    CheckBox confirmCheckbox;
+    @InjectView(R.id.passwordOK)
+    RelativeLayout passwordOK;
     @InjectView(R.id.password2)
     EditText password2;
     @InjectView(R.id.btn_next)
@@ -125,6 +140,17 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
         ButterKnife.reset(this);
     }
 
+    @OnClick({R.id.password_checkbox})
+    public void showPasswordClick() {
+        if (passwordCheckbox.isChecked()) {
+            password1.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            password2.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        } else {
+            password1.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            password2.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        }
+    }
+
     @OnClick(R.id.btn_next)
     public void onNextClick() {
         if (!checkInfo()) {
@@ -185,8 +211,18 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
         return isLetter && isDigit;
     }
 
-    @OnTextChanged({R.id.email, R.id.nickname, R.id.password1, R.id.password2})
+    @OnTextChanged({R.id.email, R.id.nickname})
     public void onEditTextChanged(CharSequence text) {
+        checkNEnableNextButton();
+    }
+
+    @OnTextChanged({R.id.password1, R.id.password2})
+    public void onPasswordConfirmChanged(CharSequence text) {
+        if (password1.getText().toString().equals(password2.getText().toString())) {
+            confirmCheckbox.setChecked(true);
+        } else {
+            confirmCheckbox.setChecked(false);
+        }
         checkNEnableNextButton();
     }
 
