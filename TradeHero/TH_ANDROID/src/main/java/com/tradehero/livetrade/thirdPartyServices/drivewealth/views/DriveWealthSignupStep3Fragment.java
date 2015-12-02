@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,7 +23,6 @@ import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthService
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthErrorDTO;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
 import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
@@ -123,7 +120,8 @@ public class DriveWealthSignupStep3Fragment extends DriveWealthSignupBaseFragmen
                             @Override public void success(DriveWealthErrorDTO driveWealthErrorDTO, Response response) {
                                 mProgressDialog.dismiss();
                                 if (driveWealthErrorDTO.code == 200) {//"Username found [username=youyoum4a1]"
-                                    THToast.show(driveWealthErrorDTO.message.replace("Username found", "1交易昵称已被使用，请更改交易昵称"));
+                                    THToast.show("昵称已存在");
+//                                    THToast.show(driveWealthErrorDTO.message.replace("Username found", "交易昵称已被使用，请更改交易昵称"));
                                     mUserNameChecked = false;
                                 } else {
                                     mUserNameChecked = true;
