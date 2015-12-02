@@ -39,7 +39,7 @@ import retrofit.client.Response;
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
-public class DriveWealthSignupStep1Fragment extends DashboardFragment {
+public class DriveWealthSignupStep1Fragment extends DriveWealthSignupBaseFragment {
 
     @Inject DriveWealthManager mDriveWealthManager;
     @Inject UserServiceWrapper userServiceWrapper;
@@ -83,16 +83,8 @@ public class DriveWealthSignupStep1Fragment extends DashboardFragment {
     };
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        setHeadViewMiddleMain("手机验证(1/7)");
-        setHeadViewRight0(getString(R.string.cancel));
-    }
-
-    @Override
-    public void onClickHeadRight0() {
-        getActivity().finish();
+    public String getTitle() {
+        return "手机验证(1/7)";
     }
 
     @Nullable

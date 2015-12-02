@@ -41,7 +41,7 @@ import retrofit.client.Response;
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
-public class DriveWealthSignupStep7Fragment extends DashboardFragment {
+public class DriveWealthSignupStep7Fragment extends DriveWealthSignupBaseFragment {
 
     @Inject DriveWealthServicesWrapper mServices;
     @Inject DriveWealthManager mDriveWealthManager;
@@ -94,16 +94,8 @@ public class DriveWealthSignupStep7Fragment extends DashboardFragment {
     };
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        setHeadViewMiddleMain("提交申请(7/7)");
-        setHeadViewRight0(getString(R.string.cancel));
-    }
-
-    @Override
-    public void onClickHeadRight0() {
-        getActivity().finish();
+    public String getTitle() {
+        return "提交申请(7/7)";
     }
 
     @Nullable

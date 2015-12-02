@@ -30,7 +30,7 @@ import javax.inject.Inject;
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
-public class DriveWealthSignupStep3Fragment extends DashboardFragment {
+public class DriveWealthSignupStep3Fragment extends DriveWealthSignupBaseFragment {
 
     @Inject
     DriveWealthManager mDriveWealthManager;
@@ -56,16 +56,8 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
     TextView mErrorMsgText;
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        setHeadViewMiddleMain("登陆信息(3/7)");
-        setHeadViewRight0(getString(R.string.cancel));
-    }
-
-    @Override
-    public void onClickHeadRight0() {
-        getActivity().finish();
+    public String getTitle() {
+        return "登陆信息(3/7)";
     }
 
     @Nullable
@@ -116,7 +108,8 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
             }
         });
         password2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override public void onFocusChange(View v, boolean hasFocus) {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus && password2 != null && password1 != null) {
                     if (password2.getText().toString().length() < 8 || password2.getText().toString().length() > 20) {
                         THToast.show(R.string.password_length_error);
@@ -215,7 +208,7 @@ public class DriveWealthSignupStep3Fragment extends DashboardFragment {
 
     @OnTextChanged({R.id.password1, R.id.password2})
     public void onPasswordConfirmChanged(CharSequence text) {
-        if (password1.getText().toString().equals(password2.getText().toString())) {
+        if (isPassword(password1.getText().toString()) && password1.getText().toString().equals(password2.getText().toString())) {
             confirmCheckbox.setChecked(true);
         } else {
             confirmCheckbox.setChecked(false);

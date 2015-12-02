@@ -25,7 +25,7 @@ import javax.inject.Inject;
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
-public class DriveWealthSignupStep5Fragment extends DashboardFragment {
+public class DriveWealthSignupStep5Fragment extends DriveWealthSignupBaseFragment {
 
     @Inject DriveWealthManager mDriveWealthManager;
 
@@ -38,16 +38,8 @@ public class DriveWealthSignupStep5Fragment extends DashboardFragment {
     @InjectView(R.id.btn_next) Button btnNext;
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        setHeadViewMiddleMain("工作信息(5/7)");
-        setHeadViewRight0(getString(R.string.cancel));
-    }
-
-    @Override
-    public void onClickHeadRight0() {
-        getActivity().finish();
+    public String getTitle() {
+        return "工作信息(5/7)";
     }
 
     @Nullable

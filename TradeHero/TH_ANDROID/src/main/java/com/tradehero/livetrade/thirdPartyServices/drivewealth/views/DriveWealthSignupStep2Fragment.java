@@ -18,19 +18,11 @@ import butterknife.OnClick;
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
-public class DriveWealthSignupStep2Fragment extends DashboardFragment {
+public class DriveWealthSignupStep2Fragment extends DriveWealthSignupBaseFragment {
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        setHeadViewMiddleMain("开户准备(2/7)");
-        setHeadViewRight0(getString(R.string.cancel));
-    }
-
-    @Override
-    public void onClickHeadRight0() {
-        getActivity().finish();
+    public String getTitle() {
+        return "开户准备(2/7)";
     }
 
     @Nullable

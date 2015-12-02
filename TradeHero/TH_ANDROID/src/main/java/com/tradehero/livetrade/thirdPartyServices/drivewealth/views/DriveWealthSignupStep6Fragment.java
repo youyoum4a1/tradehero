@@ -25,7 +25,7 @@ import butterknife.OnClick;
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
-public class DriveWealthSignupStep6Fragment extends DashboardFragment {
+public class DriveWealthSignupStep6Fragment extends DriveWealthSignupBaseFragment {
 
     @Inject
     DriveWealthManager mDriveWealthManager;
@@ -49,16 +49,8 @@ public class DriveWealthSignupStep6Fragment extends DashboardFragment {
     Button btnNext;
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        setHeadViewMiddleMain("投资习惯(6/7)");
-        setHeadViewRight0(getString(R.string.cancel));
-    }
-
-    @Override
-    public void onClickHeadRight0() {
-        getActivity().finish();
+    public String getTitle() {
+        return "投资习惯(6/7)";
     }
 
     @Nullable

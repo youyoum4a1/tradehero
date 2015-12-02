@@ -40,7 +40,7 @@ import javax.inject.Inject;
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
  */
-public class DriveWealthSignupStep4Fragment extends DashboardFragment {
+public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragment {
 
     @Inject DriveWealthManager mDriveWealthManager;
 
@@ -73,16 +73,8 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
     private File mFile;
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        setHeadViewMiddleMain("个人资料(4/7)");
-        setHeadViewRight0(getString(R.string.cancel));
-    }
-
-    @Override
-    public void onClickHeadRight0() {
-        getActivity().finish();
+    public String getTitle() {
+        return "个人资料(4/7)";
     }
 
     @Nullable
@@ -149,7 +141,8 @@ public class DriveWealthSignupStep4Fragment extends DashboardFragment {
             }
         });
         idNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override public void onFocusChange(View v, boolean hasFocus) {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     if (idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
                         THToast.show(R.string.id_number_hint);
