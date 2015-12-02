@@ -2,8 +2,6 @@ package com.tradehero.livetrade.thirdPartyServices.drivewealth;
 
 import android.app.Activity;
 import android.content.Intent;
-
-import com.tradehero.common.utils.JacksonConverter;
 import com.tradehero.common.utils.THJsonAdapter;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.data.LiveTradeBalanceDTO;
@@ -15,7 +13,6 @@ import com.tradehero.livetrade.data.LiveTradePendingEntrustQueryDTO;
 import com.tradehero.livetrade.data.LiveTradePositionDTO;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
-import com.tradehero.livetrade.services.LiveTradeConstants;
 import com.tradehero.livetrade.services.LiveTradeServices;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthErrorDTO;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthLoginBody;
@@ -27,20 +24,17 @@ import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSi
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthUploadResultDTO;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.services.DriveWealthServiceAync;
 import com.tradehero.th.R;
-
-import org.jetbrains.annotations.NotNull;
-
+import com.tradehero.th.network.retrofit.BaseMiddleCallback;
+import com.tradehero.th.network.retrofit.MiddleCallback;
 import java.io.File;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
+import org.jetbrains.annotations.NotNull;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedFile;
-import retrofit.mime.TypedInput;
 import retrofit.mime.TypedString;
 
 /**
@@ -278,5 +272,12 @@ import retrofit.mime.TypedString;
                 new TypedString("Picture ID_Proof of address"),
                 new TypedFile("image/png", new File(formDTO.idcardBack.getPath())),
                 cb);
+    }
+
+    public MiddleCallback<DriveWealthErrorDTO> checkUserName(String userName, Callback<DriveWealthErrorDTO> callback)
+    {
+        MiddleCallback<DriveWealthErrorDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        mServices.checkUserName(userName, middleCallback);
+        return middleCallback;
     }
 }

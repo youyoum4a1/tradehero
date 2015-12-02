@@ -259,5 +259,7 @@
     <string name="name_error">姓氏和名字必须为中文</string>
     <string name="name_signature_mismatch">电子签名与姓氏和名字不匹配</string>
     <string name="password_not_same_error">两次密码输入不一致</string>
+    <string name="username_error">用户昵称只能是字母和数字的组合</string>
+    <string name="verifying_username">正在检查用户名是否重复</string>
 
 </resources>

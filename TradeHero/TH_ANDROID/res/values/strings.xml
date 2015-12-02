@@ -698,4 +698,6 @@
     <string name="password_length_error">password length error</string>
     <string name="name_error">first or last name error</string>
     <string name="password_not_same_error">password not same</string>
+    <string name="username_error">username should be letter or digital</string>
+    <string name="verifying_username">verifying username</string>
 </resources>

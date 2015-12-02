@@ -1,21 +1,21 @@
 package com.tradehero.livetrade.thirdPartyServices.drivewealth.services;
 
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthErrorDTO;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthLoginBody;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSessionResultDTO;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupBody;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupLiveBody;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupResultDTO;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthUploadResultDTO;
-
 import retrofit.Callback;
 import retrofit.http.Body;
-import retrofit.http.Field;
-import retrofit.http.FormUrlEncoded;
+import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
 import retrofit.http.Part;
+import retrofit.http.Query;
 import retrofit.mime.TypedFile;
 import retrofit.mime.TypedString;
 
@@ -83,5 +83,11 @@ public interface DriveWealthServiceAync {
             @Part("documentImage") TypedFile documentImage,
 
             Callback<DriveWealthUploadResultDTO> cb
+    );
+
+    @GET("/v1/users")
+    void checkUserName(
+            @Query("username") String userName,
+            Callback<DriveWealthErrorDTO> cb
     );
 }

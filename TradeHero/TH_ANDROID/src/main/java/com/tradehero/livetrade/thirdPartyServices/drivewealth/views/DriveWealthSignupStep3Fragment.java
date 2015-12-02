@@ -1,6 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.drivewealth.views;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
@@ -20,12 +21,17 @@ import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthServicesWrapper;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthErrorDTO;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -37,7 +43,7 @@ public class DriveWealthSignupStep3Fragment extends DriveWealthSignupBaseFragmen
     @InjectView(R.id.email)
     EditText email;
     @InjectView(R.id.nickname)
-    EditText nickname;
+    EditText username;
     @InjectView(R.id.password_checkbox)
     CheckBox passwordCheckbox;
     @InjectView(R.id.showPassword)
@@ -54,6 +60,9 @@ public class DriveWealthSignupStep3Fragment extends DriveWealthSignupBaseFragmen
     Button btnNext;
     @InjectView(R.id.error_msg)
     TextView mErrorMsgText;
+    @Inject DriveWealthServicesWrapper mDriveWealthServicesWrapper;
+    private boolean mUserNameChecked = false;
+    private ProgressDialog mProgressDialog;
 
     @Override
     public String getTitle() {
@@ -72,7 +81,7 @@ public class DriveWealthSignupStep3Fragment extends DriveWealthSignupBaseFragmen
         }
 
         if (formDTO.userName != null) {
-            nickname.setText(formDTO.userName);
+            username.setText(formDTO.userName);
         }
 
         if (formDTO.password != null) {
@@ -91,6 +100,47 @@ public class DriveWealthSignupStep3Fragment extends DriveWealthSignupBaseFragmen
                     if (!isEmail(email.getText().toString())) {
                         THToast.show(R.string.email_error);
                     }
+                }
+            }
+        });
+        username.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus && username != null) {
+                    if (!isUserName(username.getText().toString())) {
+                        THToast.show(R.string.username_error);
+                        mUserNameChecked = false;
+                        checkNEnableNextButton();
+                    } else {
+                        if (mProgressDialog == null) {
+                            mProgressDialog = new ProgressDialog(getActivity());
+                        } else {
+                            mProgressDialog.dismiss();
+                        }
+                        mProgressDialog.setMessage(getString(R.string.verifying_username));
+                        mProgressDialog.show();
+
+                        mDriveWealthServicesWrapper.checkUserName(username.getText().toString(), new Callback<DriveWealthErrorDTO>() {
+                            @Override public void success(DriveWealthErrorDTO driveWealthErrorDTO, Response response) {
+                                mProgressDialog.dismiss();
+                                if (driveWealthErrorDTO.code == 200) {//"Username found [username=youyoum4a1]"
+                                    THToast.show(driveWealthErrorDTO.message.replace("Username found", "1交易昵称已被使用，请更改交易昵称"));
+                                    mUserNameChecked = false;
+                                } else {
+                                    mUserNameChecked = true;
+                                }
+                                checkNEnableNextButton();
+                            }
+
+                            @Override public void failure(RetrofitError error) {
+                                mProgressDialog.dismiss();
+                                if (error.getResponse().getStatus() == 404) {//"Username not found [username=youyoum4a2]"
+                                    mUserNameChecked = true;
+                                }
+                                checkNEnableNextButton();
+                            }
+                        });
+                    }
+
                 }
             }
         });
@@ -147,7 +197,7 @@ public class DriveWealthSignupStep3Fragment extends DriveWealthSignupBaseFragmen
         }
         DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
         formDTO.email = email.getText().toString();
-        formDTO.userName = nickname.getText().toString();
+        formDTO.userName = username.getText().toString();
         formDTO.password = password1.getText().toString();
 
         pushFragment(DriveWealthSignupStep4Fragment.class, new Bundle());
@@ -201,7 +251,25 @@ public class DriveWealthSignupStep3Fragment extends DriveWealthSignupBaseFragmen
         return isLetter && isDigit;
     }
 
-    @OnTextChanged({R.id.email, R.id.nickname})
+    private boolean isUserName(String text) {
+        boolean isLetter = false, isDigit = false;
+        for (int i = 0; i < text.length(); i++) {
+            Pattern p = Pattern.compile("[0-9]*");
+            Pattern p2 = Pattern.compile("[a-zA-Z]");
+            Matcher m = p.matcher(String.valueOf(text.charAt(i)));
+            Matcher m2 = p2.matcher(String.valueOf(text.charAt(i)));
+            if (m.matches()) {
+                isDigit = true;
+            } else if (m2.matches()) {
+                isLetter = true;
+            } else {
+                return false;
+            }
+        }
+        return isLetter || isDigit;
+    }
+
+    @OnTextChanged({R.id.email})
     public void onEditTextChanged(CharSequence text) {
         checkNEnableNextButton();
     }
@@ -217,8 +285,8 @@ public class DriveWealthSignupStep3Fragment extends DriveWealthSignupBaseFragmen
     }
 
     private void checkNEnableNextButton() {
-        if (email.getText().length() > 0 && nickname.getText().length() > 0 &&
-                password1.getText().length() > 0 && password2.getText().length() > 0) {
+        if (email.getText().length() > 0 && username.getText().length() > 0 &&
+                password1.getText().length() > 0 && password2.getText().length() > 0 && mUserNameChecked) {
             btnNext.setEnabled(true);
         } else {
             btnNext.setEnabled(false);

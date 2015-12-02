@@ -24,13 +24,13 @@ import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.dialog.THDialog;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
+import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.password.PhoneNumberVerifyDTO;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.utils.DeviceUtil;
-
 import javax.inject.Inject;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -122,7 +122,10 @@ public class DriveWealthSignupStep1Fragment extends DriveWealthSignupBaseFragmen
     @OnClick(R.id.btn_next)
     public void onNextClick() {
         DeviceUtil.dismissKeyboard(getActivity());
-
+        if (BuildConfig.DEBUG) {
+            pushFragment(DriveWealthSignupStep2Fragment.class, new Bundle());
+            return;
+        }
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(getActivity());
         } else {
@@ -151,7 +154,7 @@ public class DriveWealthSignupStep1Fragment extends DriveWealthSignupBaseFragmen
                                             } else {
                                                 THDialog.showCenterDialog(getActivity(), "", "此手机号已经开户\n请直接登录。",
                                                         null, getString(R.string.ok),
-                                                         new DialogInterface.OnClickListener() {
+                                                        new DialogInterface.OnClickListener() {
                                                             @Override
                                                             public void onClick(DialogInterface dialog, int which) {
                                                                 if (which == DialogInterface.BUTTON_POSITIVE) {
