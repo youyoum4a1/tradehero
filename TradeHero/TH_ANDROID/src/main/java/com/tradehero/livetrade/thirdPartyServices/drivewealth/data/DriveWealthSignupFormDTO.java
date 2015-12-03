@@ -42,7 +42,7 @@ public class DriveWealthSignupFormDTO {
     public Uri idcardBack;
 
     public DriveWealthSignupFormDTO() {
-        if (true) {
+        if (BuildConfig.DEBUG) {
             phoneNumber = "13816631019";
             phoneVerificationToken = "1234";
             email = "sam@tradehero.mobi";
