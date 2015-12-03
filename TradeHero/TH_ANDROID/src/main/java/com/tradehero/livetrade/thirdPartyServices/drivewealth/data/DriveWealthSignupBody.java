@@ -11,6 +11,7 @@ public class DriveWealthSignupBody{
     private String password;
     private boolean usCitizen;
     private String utm_campaign;
+    private String referralCode;
 
     public DriveWealthSignupBody(String emailAddress1, String firstName, String lastName, String username, String password) {
         this.emailAddress1 = emailAddress1;
@@ -20,5 +21,6 @@ public class DriveWealthSignupBody{
         this.password = password;
         this.usCitizen = false;
         this.utm_campaign = "Tradehero";
+        referralCode = "RUA4RR";
     }
 }
