@@ -77,8 +77,7 @@ import retrofit.mime.TypedString;
 
             @Override
             public void failure(RetrofitError error) {
-                String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
-                DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+                DriveWealthErrorDTO dwError = retrofitErrorToDriveWealthError(error);
                 callback.onError(String.valueOf(dwError.code), dwError.message);
             }
         };
@@ -136,6 +135,13 @@ import retrofit.mime.TypedString;
 
     }
 
+    public MiddleCallback<DriveWealthErrorDTO> checkUserName(String userName, Callback<DriveWealthErrorDTO> callback)
+    {
+        MiddleCallback<DriveWealthErrorDTO> middleCallback = new BaseMiddleCallback<>(callback);
+        mServices.checkUserName(userName, middleCallback);
+        return middleCallback;
+    }
+
     public void processSignupLive(final Activity activity) {
         DriveWealthSignupFormDTO formDTO = mManager.getSignupFormDTO();
 
@@ -167,8 +173,7 @@ import retrofit.mime.TypedString;
 
             @Override
             public void failure(RetrofitError error) {
-                String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
-                DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+                DriveWealthErrorDTO dwError = retrofitErrorToDriveWealthError(error);
                 THToast.show(dwError.message);
                 activity.sendBroadcast(new Intent(DW_SIGNUP_FAILED));
             }
@@ -189,8 +194,7 @@ import retrofit.mime.TypedString;
 
             @Override
             public void failure(RetrofitError error) {
-                String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
-                DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+                DriveWealthErrorDTO dwError = retrofitErrorToDriveWealthError(error);
                 THToast.show(dwError.message);
                 activity.sendBroadcast(new Intent(DW_SIGNUP_FAILED));
             }
@@ -234,8 +238,7 @@ import retrofit.mime.TypedString;
 
             @Override
             public void failure(RetrofitError error) {
-                String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
-                DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+                DriveWealthErrorDTO dwError = retrofitErrorToDriveWealthError(error);
                 THToast.show(dwError.message);
                 activity.sendBroadcast(new Intent(DW_SIGNUP_FAILED));
             }
@@ -260,8 +263,7 @@ import retrofit.mime.TypedString;
 
             @Override
             public void failure(RetrofitError error) {
-                String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
-                DriveWealthErrorDTO dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+                DriveWealthErrorDTO dwError = retrofitErrorToDriveWealthError(error);
                 THToast.show(dwError.message);
                 activity.sendBroadcast(new Intent(DW_SIGNUP_FAILED));
             }
@@ -274,10 +276,18 @@ import retrofit.mime.TypedString;
                 cb);
     }
 
-    public MiddleCallback<DriveWealthErrorDTO> checkUserName(String userName, Callback<DriveWealthErrorDTO> callback)
-    {
-        MiddleCallback<DriveWealthErrorDTO> middleCallback = new BaseMiddleCallback<>(callback);
-        mServices.checkUserName(userName, middleCallback);
-        return middleCallback;
+    private DriveWealthErrorDTO retrofitErrorToDriveWealthError(RetrofitError error) {
+        DriveWealthErrorDTO dwError = new DriveWealthErrorDTO();
+
+        if (error != null &&
+                error.getResponse() != null &&
+                error.getResponse().getBody() != null) {
+            String bodyString = new String(((TypedByteArray) error.getResponse().getBody()).getBytes());
+            if (bodyString != null) {
+                dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
+            }
+        }
+
+        return dwError;
     }
 }
