@@ -277,7 +277,7 @@ import retrofit.mime.TypedString;
     }
 
     private DriveWealthErrorDTO retrofitErrorToDriveWealthError(RetrofitError error) {
-        DriveWealthErrorDTO dwError = new DriveWealthErrorDTO();
+        DriveWealthErrorDTO dwError = null;
 
         if (error != null &&
                 error.getResponse() != null &&
@@ -286,6 +286,12 @@ import retrofit.mime.TypedString;
             if (bodyString != null) {
                 dwError = (DriveWealthErrorDTO) THJsonAdapter.getInstance().fromBody(bodyString, DriveWealthErrorDTO.class);
             }
+        }
+
+        if (dwError == null) {
+            dwError = new DriveWealthErrorDTO();
+            dwError.code = error.getResponse().getStatus();
+            dwError.message = error.getLocalizedMessage();
         }
 
         return dwError;
