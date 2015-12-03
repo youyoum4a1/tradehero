@@ -1,12 +1,7 @@
 package com.tradehero.livetrade.thirdPartyServices.drivewealth.data;
 
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.net.Uri;
-
 import com.tradehero.th.BuildConfig;
-
-import java.io.File;
 
 /**
  * @author <a href="mailto:sam@tradehero.mobi"> Sam Yu </a>
@@ -22,6 +17,7 @@ public class DriveWealthSignupFormDTO {
     public String firstNameInEng;
     public String lastNameInEng;
     public String idNO;
+    public String dob;
     public String address;
     public int employmentStatusIdx;
     public int employerBusinessIdx;
@@ -43,8 +39,8 @@ public class DriveWealthSignupFormDTO {
 
     public DriveWealthSignupFormDTO() {
         if (BuildConfig.DEBUG) {
-            phoneNumber = "13816631019";
-            phoneVerificationToken = "1234";
+            phoneNumber = "13816672325";
+            phoneVerificationToken = "2516";
             email = "sam@tradehero.mobi";
             userName = "samyu";
             password = "welcome0";
