@@ -38,8 +38,8 @@ public class DriveWealthSignupFormDTO {
     public int timeHorizonIdx;
     public int liquidityNeedsIdx;
     public String ackSignedBy;
-    public Uri idcardFront;
-    public Uri idcardBack;
+    public transient Uri idcardFront;
+    public transient Uri idcardBack;
 
     public DriveWealthSignupFormDTO() {
         if (BuildConfig.DEBUG) {

@@ -57,10 +57,14 @@ import javax.inject.Singleton;
     public void retriveSignupInfo(Context context) {
         THDatabaseHelper dbHelper = new THDatabaseHelper(context);
         String phoneNumber = mSignupFormDTO.phoneNumber;
+        String phoneVerificationToken = mSignupFormDTO.phoneVerificationToken;
         String infoString = dbHelper.retrieveDWSignupInfo(phoneNumber);
         if (infoString.length() > 0) {
             mSignupFormDTO = (DriveWealthSignupFormDTO) THJsonAdapter.getInstance().fromBody(infoString, DriveWealthSignupFormDTO.class);
-            mSignupFormDTO.phoneNumber = phoneNumber;
+        } else {
+            mSignupFormDTO = new DriveWealthSignupFormDTO();
         }
+        mSignupFormDTO.phoneNumber = phoneNumber;
+        mSignupFormDTO.phoneVerificationToken = phoneVerificationToken;
     }
 }

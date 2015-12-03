@@ -159,7 +159,7 @@ public class DriveWealthSignupStep7Fragment extends DriveWealthSignupBaseFragmen
         mProgressDialog.setMessage(getString(R.string.dw_signup_in_progress));
         mProgressDialog.show();
 
-        //mDriveWealthManager.storeSignupInfo(getActivity());
+        mDriveWealthManager.storeSignupInfo(getActivity());
         mServices.processSignupLive(getActivity());
     }
 
