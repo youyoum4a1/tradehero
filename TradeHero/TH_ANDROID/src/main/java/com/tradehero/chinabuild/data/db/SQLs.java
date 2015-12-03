@@ -85,4 +85,13 @@ public class SQLs {
             + LB_TOTALWEALTH+"' DOUBLE, '"
             + LB_ROIINPERIOD+"' DOUBLE)";
 
+    // DW Sign up info.
+    public final static String TABLE_DW_SIGNUP = "dwsignup";
+    public final static String DW_SIGNUP_PHONE = "dwsignup_phone";
+    public final static String DW_SIGNUP_INFO = "dwsignup_info";
+    public final static String SQL_CREATE_DW_SIGNUP_INFO =
+            "CREATE TABLE '" + TABLE_DW_SIGNUP +
+                    "' ('" + DW_SIGNUP_PHONE + "' TEXT NOT NULL , '" +
+                    DW_SIGNUP_INFO + "' TEXT NOT NULL)";
+
 }

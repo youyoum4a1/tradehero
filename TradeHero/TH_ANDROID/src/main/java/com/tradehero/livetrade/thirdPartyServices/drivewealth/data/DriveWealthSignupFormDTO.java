@@ -42,18 +42,18 @@ public class DriveWealthSignupFormDTO {
     public Uri idcardBack;
 
     public DriveWealthSignupFormDTO() {
-        if (BuildConfig.DEBUG) {
+        if (true) {
             phoneNumber = "13816631019";
             phoneVerificationToken = "1234";
             email = "sam@tradehero.mobi";
             userName = "samyu";
             password = "welcome0";
-            firstName = "123";
-            lastName = "456";
+            firstName = "三";
+            lastName = "张";
             firstNameInEng = "Zheng";
             lastNameInEng = "Yu";
             employerCompany = "MyHero";
-            ackSignedBy = "Yu Zheng";
+            ackSignedBy = "张三";
             idNO = "310101198210121074";
             address = "哈尔滨路160号";
         }

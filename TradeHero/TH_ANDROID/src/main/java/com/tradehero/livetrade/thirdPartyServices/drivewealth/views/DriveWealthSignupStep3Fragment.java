@@ -284,7 +284,7 @@ public class DriveWealthSignupStep3Fragment extends DriveWealthSignupBaseFragmen
 
     private void checkNEnableNextButton() {
         if (email.getText().length() > 0 && username.getText().length() > 0 &&
-                password1.getText().length() > 0 && password2.getText().length() > 0 && mUserNameChecked) {
+                password1.getText().length() > 0 && password2.getText().length() > 0) {
             btnNext.setEnabled(true);
         } else {
             btnNext.setEnabled(false);

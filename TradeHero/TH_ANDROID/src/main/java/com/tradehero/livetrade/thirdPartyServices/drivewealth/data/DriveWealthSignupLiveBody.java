@@ -14,7 +14,7 @@ public class DriveWealthSignupLiveBody {
     private String firstName;
     private String lastName;
     private String idNo;
-    private String address;
+    private String addressLine1;
     private String emailAddress1;
     private boolean usCitizen;
     private String countryID;
@@ -45,9 +45,10 @@ public class DriveWealthSignupLiveBody {
     private boolean ackSigned;
     private String ackSignedBy;
     private String ackSignedWhen;
+    private String referralCode;
 
     public DriveWealthSignupLiveBody(String userID, String firstName, String lastName,
-                                     String idNo, String address, String emailAddress,
+                                     String idNo, String addressLine1, String emailAddress,
                                      String employmentStatus, String employerBusiness,
                                      String employerCompany, boolean employerIsBroker,
                                      boolean director, boolean politicallyExposed,
@@ -63,7 +64,7 @@ public class DriveWealthSignupLiveBody {
         this.firstName = firstName;
         this.lastName = lastName;
         this.idNo = idNo;
-        this.address = address;
+        this.addressLine1 = addressLine1;
         this.emailAddress1 = emailAddress;
         this.usCitizen = false;
         this.countryID = "CHN";
@@ -93,5 +94,7 @@ public class DriveWealthSignupLiveBody {
 
         java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         this.ackSignedWhen = format.format(Calendar.getInstance().getTime());
+
+        referralCode = "RUA4RR";
     }
 }

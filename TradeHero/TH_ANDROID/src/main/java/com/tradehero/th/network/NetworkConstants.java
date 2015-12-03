@@ -21,7 +21,7 @@ public class NetworkConstants
     public static final String TRADEHERO_QA_API_ENDPOINT = TRADEHERO_QA_ENDPOINT + "api/";
 
     public static final String HENGSHENG_ENDPOINT = "https://sandbox.hs.net";
-    public static final String DRIVEWEALTH_ENDPOINT = "https://api.drivewealth.net";
+    public static final String DRIVEWEALTH_ENDPOINT = "https://api.drivewealth.io";
 
     public static String getApiEndPointInUse()
     {

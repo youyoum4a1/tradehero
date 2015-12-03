@@ -22,7 +22,7 @@ import java.util.ArrayList;
  */
 public class THDatabaseHelper extends SQLiteOpenHelper {
 
-    private final static int VERSION = 2;
+    private final static int VERSION = 3;
 
     public THDatabaseHelper(Context context) {
         super(context, SQLs.SQL_DB_NAME, null, VERSION);
@@ -34,12 +34,18 @@ public class THDatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQLs.SQL_CREATE_TABLE_QUESTION_GROUP);
         db.execSQL(SQLs.SQL_CREATE_TABLE_QUESTION);
         db.execSQL(SQLs.SQL_CREATE_TABLE_LEADERBOARD);
+        db.execSQL(SQLs.SQL_CREATE_DW_SIGNUP_INFO);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (newVersion > oldVersion) {
-            db.execSQL(SQLs.SQL_CREATE_TABLE_LEADERBOARD);
+            if (oldVersion < 2) {
+                db.execSQL(SQLs.SQL_CREATE_TABLE_LEADERBOARD);
+            }
+            if (oldVersion < 3) {
+                db.execSQL(SQLs.SQL_CREATE_DW_SIGNUP_INFO);
+            }
         }
     }
 
@@ -330,5 +336,41 @@ public class THDatabaseHelper extends SQLiteOpenHelper {
         return leaderboardUserDTOList;
     }
 
+
+    public void storeDWSignupInfo(String phoneNumber, String signupInfo) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(SQLs.DW_SIGNUP_PHONE, phoneNumber);
+        cv.put(SQLs.DW_SIGNUP_INFO, signupInfo);
+
+
+        Cursor cursor = db.query(SQLs.TABLE_DW_SIGNUP, null, SQLs.DW_SIGNUP_PHONE + " =? ",
+                new String[]{String.valueOf(phoneNumber)}, null, null, null);
+
+        if (cursor.getCount() == 0) {
+            db.insert(SQLs.TABLE_DW_SIGNUP, null, cv);
+        } else {
+
+            db.update(SQLs.TABLE_DW_SIGNUP, cv, SQLs.DW_SIGNUP_PHONE + " =?",
+                    new String[]{String.valueOf(phoneNumber)});
+        }
+
+        db.close();
+    }
+
+    public String retrieveDWSignupInfo(String phoneNumber) {
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(SQLs.TABLE_DW_SIGNUP, null, SQLs.DW_SIGNUP_PHONE + " =? ",
+                new String[]{String.valueOf(phoneNumber)}, null, null, null);
+
+        String result = "";
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            result = cursor.getString(cursor.getColumnIndex(SQLs.DW_SIGNUP_INFO));
+        }
+
+        db.close();
+        return result;
+    }
 
 }

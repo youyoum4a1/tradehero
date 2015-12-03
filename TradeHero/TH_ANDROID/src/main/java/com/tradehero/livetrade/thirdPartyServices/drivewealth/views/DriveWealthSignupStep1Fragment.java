@@ -145,13 +145,7 @@ public class DriveWealthSignupStep1Fragment extends DriveWealthSignupBaseFragmen
                                         @Override
                                         public void success(PhoneNumberVerifyDTO phoneNumberVerifyDTO, Response response) {
                                             mProgressDialog.dismiss();
-                                            if (phoneNumberVerifyDTO.code == PhoneNumberVerifyDTO.CODE_NO_SUCH_ACCOUNT) {
-                                                DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
-                                                formDTO.phoneNumber = phoneNumber.getText().toString();
-                                                formDTO.phoneVerificationToken = verifyCode.getText().toString();
-
-                                                pushFragment(DriveWealthSignupStep2Fragment.class, new Bundle());
-                                            } else {
+                                            if (phoneNumberVerifyDTO.success == true) {
                                                 THDialog.showCenterDialog(getActivity(), "", "此手机号已经开户\n请直接登录。",
                                                         null, getString(R.string.ok),
                                                         new DialogInterface.OnClickListener() {
@@ -162,6 +156,14 @@ public class DriveWealthSignupStep1Fragment extends DriveWealthSignupBaseFragmen
                                                                 }
                                                             }
                                                         });
+                                            } else {
+                                                DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
+                                                formDTO.phoneNumber = phoneNumber.getText().toString();
+                                                formDTO.phoneVerificationToken = verifyCode.getText().toString();
+
+                                                mDriveWealthManager.retriveSignupInfo(getActivity());
+
+                                                pushFragment(DriveWealthSignupStep2Fragment.class, new Bundle());
                                             }
                                         }
 

@@ -25,6 +25,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
@@ -125,7 +126,7 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         firstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (!isChinese(firstName.getText().toString())) {
+                    if (firstName.getText() == null || !isChinese(firstName.getText().toString())) {
                         THToast.show(R.string.name_error);
                     }
                 }
@@ -134,7 +135,7 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         lastName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (!isChinese(lastName.getText().toString())) {
+                    if (lastName.getText() == null || !isChinese(lastName.getText().toString())) {
                         THToast.show(R.string.name_error);
                     }
                 }
@@ -144,7 +145,7 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
+                    if (idNumber.getText() == null || idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
                         THToast.show(R.string.id_number_hint);
                     }
                 }
