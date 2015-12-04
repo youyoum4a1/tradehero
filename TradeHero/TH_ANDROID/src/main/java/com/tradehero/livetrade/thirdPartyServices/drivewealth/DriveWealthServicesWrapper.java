@@ -290,7 +290,6 @@ import retrofit.mime.TypedString;
 
         if (dwError == null) {
             dwError = new DriveWealthErrorDTO();
-            dwError.code = error.getResponse().getStatus();
             dwError.message = error.getLocalizedMessage();
         }
 
