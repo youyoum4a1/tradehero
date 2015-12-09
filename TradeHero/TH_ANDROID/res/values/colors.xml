@@ -24,6 +24,14 @@
   <color name="tradehero_grid_border_color">@color/darker_grey</color>
   <color name="tradehero_reside_menu_bg">#ff00a2e0</color>
 
+  <!--Rabbit Colors-->
+  <color name="rabbit_color">#f07200</color>
+  <color name="rabbit_pressed">#ff912e</color>
+  <color name="rabbit_focused">#ffd4ae</color>
+  <color name="rabbit_status_bar">@color/rabbit_color</color>
+  <color name="rabbit_status_bar_700">#b35500</color>
+  <color name="rabbit_dark_color">#763800</color>
+
   <color name="tradehero_highlight">#b7b7b7</color>
 
   <color name="number_green">#ff20ae1e</color>

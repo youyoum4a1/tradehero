@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -70,6 +71,7 @@ import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.ui.LeftDrawerMenuItemClickListener;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.DeviceUtil;
+import com.tradehero.th.utils.THThemeManager;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
@@ -316,7 +318,8 @@ public class DashboardActivity extends BaseActivity
                         },
                         new TimberOnErrorAction1("Failed to load drawer")));
 
-        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.tradehero_blue_status_bar));
+//        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.tradehero_blue_status_bar));
+        drawerLayout.setStatusBarBackgroundColor(THThemeManager.getManager().getCurrentTheme(getApplicationContext()).statusBarColor());
 
         int width = DeviceUtil.getScreenWidth(this);
         Integer actionBarHeight = getActionBarHeight();

@@ -48,6 +48,7 @@ import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
 import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
+import com.tradehero.th.utils.THThemeManager;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
@@ -63,6 +64,7 @@ import javax.inject.Singleton;
         },
         injects = {
                 LiveActivityUtil.class,
+                THThemeManager.class
         },
         library = true,
         complete = false,
