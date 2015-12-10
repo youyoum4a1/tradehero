@@ -38,9 +38,9 @@
 
     <string-array name="dw_signup_marital">
         <item>单身</item>
-        <item>离婚</item>
-        <item>结婚</item>
-        <item>丧偶</item>
+        <item>离异</item>
+        <item>已婚</item>
+        <item>寡居</item>
     </string-array>
 
     <string-array name="dw_signup_marital_in_eng">
