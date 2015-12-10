@@ -15,6 +15,7 @@ import com.tradehero.th.network.service.DummyAyondoLiveServiceWrapper;
 import com.tradehero.th.persistence.prefs.IsLiveColorRed;
 import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.utils.THThemeManager;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.OffOnViewSwitcher;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
@@ -143,8 +144,10 @@ public class LiveActivityUtil
 
         if (activity.getSupportActionBar() != null)
         {
+            //activity.getSupportActionBar().setBackgroundDrawable(
+            //        new ColorDrawable(ContextCompat.getColor(activity.getApplicationContext(), event.isOn ? baseColorRes : R.color.tradehero_blue)));
             activity.getSupportActionBar().setBackgroundDrawable(
-                    new ColorDrawable(ContextCompat.getColor(activity.getApplicationContext(), event.isOn ? baseColorRes : R.color.tradehero_blue)));
+                    new ColorDrawable(THThemeManager.getManager().getCurrentTheme(activity.getApplicationContext()).mainColor()));
         }
 
         //Specific to this activity?

@@ -4,12 +4,16 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
 
+import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.th.R;
+import com.tradehero.th.persistence.prefs.IsLiveTrading;
+import javax.inject.Inject;
 
 public class THTheme {
 
-    private Context context;
+    @Inject @IsLiveTrading BooleanPreference isLiveTrading;
 
+    private Context context;
     private THThemeSetting setting;
 
     public THTheme(Context context, THThemeSetting setting) {
@@ -22,6 +26,17 @@ public class THTheme {
     }
 
     public int mainColor() {
+
+        if (isLiveTrading.get()) {
+            //switch (setting) {
+            //    case RABBIT_SETTING:
+            //        return ContextCompat.getColor(context, R.color.rabbit_color);
+            //    default:
+            //        return ContextCompat.getColor(context, R.color.tradehero_blue);
+            //}
+            return ContextCompat.getColor(context, R.color.live_color);
+        }
+
         switch (setting) {
             case RABBIT_SETTING:
                 return ContextCompat.getColor(context, R.color.rabbit_color);

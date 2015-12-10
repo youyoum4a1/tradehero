@@ -28,6 +28,8 @@ import com.tradehero.th.fragments.trending.FragmentTrendingModule;
 import com.tradehero.th.fragments.updatecenter.FragmentUpdateCenterModule;
 import com.tradehero.th.fragments.watchlist.FragmentWatchlistModule;
 import com.tradehero.th.fragments.web.FragmentWebModule;
+import com.tradehero.th.utils.THTheme;
+import com.tradehero.th.utils.THThemeManager;
 import dagger.Module;
 
 @Module(
@@ -62,6 +64,8 @@ import dagger.Module;
         },
         injects = {
                 DashboardFragment.class,
+                THThemeManager.class,
+                THTheme.class,
         },
         library = true,
         complete = false

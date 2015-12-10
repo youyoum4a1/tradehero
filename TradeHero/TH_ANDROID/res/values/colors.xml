@@ -25,6 +25,14 @@
   <color name="tradehero_reside_menu_bg">#ff00a2e0</color>
 
   <!--Rabbit Colors-->
+  <color name="live_color">#E74C3C</color>
+  <color name="live_pressed">#EE7E72</color>
+  <color name="live_focused">#FCE6E4</color>
+  <color name="live_status_bar">@color/rabbit_color</color>
+  <color name="live_status_bar_700">#CD2A19</color>
+  <color name="live_dark_color">#961F12</color>
+
+  <!-- New Live Color-->
   <color name="rabbit_color">#f07200</color>
   <color name="rabbit_pressed">#ff912e</color>
   <color name="rabbit_focused">#ffd4ae</color>

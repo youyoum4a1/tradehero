@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_medium"
+        >
+
+      <ImageView
+          android:layout_width="@dimen/size_25"
+          android:layout_height="wrap_content"
+          android:scaleType="fitCenter"
+          android:src="@drawable/ic_th_live_banner"
+          />
+
+        <ImageView
+            android:layout_width="@dimen/size_22"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_rabbit_call_action"
+            />
+
+      <TextView
+          style="@style/TH.Body"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/margin_medium"
+          android:layout_marginTop="@dimen/margin_medium"
+          android:gravity="center"
+          android:textColor="?android:textColorSecondary"
+          android:text="@string/start_live"
+          />
+
+        <Button
+            android:id="@+id/btn_start_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/margin_large"
+            android:paddingLeft="@dimen/margin_large"
+            android:paddingEnd="@dimen/margin_large"
+            android:paddingRight="@dimen/margin_large"
+            android:background="@color/rabbit_color"
+            android:textColor="@color/white"
+            android:text="Start Now!"/>
+
+        <Button
+            style="@style/TH.Button.Link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_medium"
+            android:textSize="12sp"
+            android:textAllCaps="false"
+            android:background="?attr/selectableItemBackground"
+            android:text="Maybe later"/>
+
+      <!--<Button-->
+          <!--android:id="@+id/btn_open_account"-->
+          <!--style="@style/TH.Button.Link"-->
+          <!--android:layout_width="match_parent"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--android:background="?attr/selectableItemBackground"-->
+          <!--android:padding="@dimen/margin_small"-->
+          <!--android:text="@string/open_new_account"-->
+          <!--/>-->
+
+      <!--<Button-->
+          <!--android:id="@+id/btn_connect_account"-->
+          <!--style="@style/TH.Button.Link"-->
+          <!--android:layout_width="match_parent"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--android:background="?attr/selectableItemBackground"-->
+          <!--android:padding="@dimen/margin_small"-->
+          <!--android:text="@string/link_existing_account"-->
+          <!--/>-->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:text="@string/powered_by"
+                />
+
+            <ImageView
+                android:layout_width="@dimen/size_10"
+                android:layout_height="@dimen/size_5"
+                android:scaleType="fitCenter"
+                tools:src="@drawable/ayondo_logo"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+  </ScrollView>
+
+
+</LinearLayout>

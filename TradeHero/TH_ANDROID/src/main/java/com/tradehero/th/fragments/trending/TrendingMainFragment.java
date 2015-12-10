@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
+import com.tradehero.th.activities.CallToActionActivity;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
@@ -123,6 +125,7 @@ public class TrendingMainFragment extends DashboardFragment
     private TextView liveTitleTextView;
     private LollipopArrayAdapter<TrendingAssetType> assetTypeAdapter;
     private LollipopArrayAdapter<TrendingStockSortType> sortByAdapter;
+    private CallToActionActivity callToActionFragment;
 
     // TODO: Dummy attribute, pending server
     @Inject @IsLiveLogIn BooleanPreference isLiveLogIn;
@@ -311,7 +314,14 @@ public class TrendingMainFragment extends DashboardFragment
         {
             if (!isLiveLogIn.get())
             {
-                trendingLiveFragmentUtil.launchLiveLogin();
+                //trendingLiveFragmentUtil.launchLiveLogin();
+                if (callToActionFragment == null) {
+                    callToActionFragment = new CallToActionActivity();
+                }
+
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.add(R.id.trending_main_container, callToActionFragment);
+                fragmentTransaction.commit();
             }
             else
             {
@@ -320,6 +330,12 @@ public class TrendingMainFragment extends DashboardFragment
         }
         else if (!event.isOn && event.isFromUser)
         {
+            if (callToActionFragment != null) {
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.remove(callToActionFragment);
+                fragmentTransaction.commit();
+            }
+
             handleIsVirtual();
         }
 
