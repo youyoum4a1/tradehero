@@ -204,6 +204,9 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
     }
 
     private boolean isDate(String date) {
+        if (date.length() < 10) {
+            return false;
+        }
         String year = date.substring(0, 4);
         String month = date.substring(5, 7);
         String day = date.substring(8, 10);
