@@ -215,7 +215,7 @@ public class AuthenticationActivity extends AppCompatActivity
                 }
                 break;
 
-            case R.id.txt_term_of_service_signin:
+            case R.id.txt_term_of_service:
                 Uri uri = Uri.parse(Constants.PRIVACY_TERMS_OF_SERVICE);
                 Intent it = new Intent(Intent.ACTION_VIEW, uri);
                 try {

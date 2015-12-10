@@ -18,7 +18,7 @@
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/margin_small"/>
   <TextView
-      android:id="@+id/txt_term_of_service_signin"
+      android:id="@+id/txt_term_of_service"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/margin_xmedium"

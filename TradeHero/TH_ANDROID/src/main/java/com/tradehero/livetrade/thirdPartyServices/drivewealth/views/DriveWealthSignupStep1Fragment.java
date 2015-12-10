@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -51,10 +49,6 @@ public class DriveWealthSignupStep1Fragment extends DriveWealthSignupBaseFragmen
     TextView getVerifyCodeButton;
     @InjectView(R.id.btn_next)
     Button btnNext;
-    @InjectView(R.id.txt_term_of_service_signin)
-    TextView txtTermOfServiceSignin;
-    @InjectView(R.id.signup_status_check)
-    TextView signupStatusCheck;
 
     private ProgressDialog mProgressDialog;
 
@@ -113,9 +107,15 @@ public class DriveWealthSignupStep1Fragment extends DriveWealthSignupBaseFragmen
         ButterKnife.reset(this);
     }
 
-    @OnClick(R.id.txt_term_of_service_signin)
+    @OnClick(R.id.txt_term_of_service)
     public void onTermClicked() {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://drivewealth.com/zh-hans/customer-account-agreement/"));
+        startActivity(browserIntent);
+    }
+
+    @OnClick(R.id.txt_term_of_additional_service)
+    public void onAdditionalTermClicked() {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://drivewealth.com/zh-hans/account-disclosures/"));
         startActivity(browserIntent);
     }
 

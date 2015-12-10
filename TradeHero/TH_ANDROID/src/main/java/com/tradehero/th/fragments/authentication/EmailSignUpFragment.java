@@ -208,7 +208,7 @@ public class EmailSignUpFragment extends EmailSignInOrUpFragment implements View
         this.mAgreeLayout = (LinearLayout) view.findViewById(R.id.authentication_agreement);
         mAgreeLayout.setOnClickListener(this);
 
-        this.mServiceText = (TextView) view.findViewById(R.id.txt_term_of_service_signin);
+        this.mServiceText = (TextView) view.findViewById(R.id.txt_term_of_service);
         mServiceText.setOnClickListener(onClickListener);
 
         this.signButton = (Button) view.findViewById(R.id.authentication_sign_up_button);

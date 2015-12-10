@@ -133,15 +133,36 @@
         android:textColor="#949393"
         android:textSize="@dimen/text_medium"/>
 
-    <TextView
-        android:id="@+id/txt_term_of_service_signin"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/dw_agreenment_name"
-        android:textColor="#1789d5"
-        android:textSize="@dimen/text_medium"
-        />
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+        <TextView
+            android:id="@+id/txt_term_of_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/dw_agreenment_name"
+            android:textColor="#1789d5"
+            android:textSize="@dimen/text_medium" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="和"
+            android:textColor="#949393"
+            android:textSize="@dimen/text_medium" />
+        <TextView
+            android:id="@+id/txt_term_of_additional_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/dw_agreenment_additional"
+            android:textColor="#1789d5"
+            android:textSize="@dimen/text_medium" />
+    </LinearLayout>
+
 
     <View
         android:layout_width="match_parent"

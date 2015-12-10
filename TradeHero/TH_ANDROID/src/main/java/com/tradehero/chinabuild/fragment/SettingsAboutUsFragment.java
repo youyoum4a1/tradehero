@@ -21,7 +21,7 @@ import com.tradehero.th.utils.Constants;
 public class SettingsAboutUsFragment extends DashboardFragment implements View.OnClickListener
 {
     @InjectView(R.id.app_version) TextView mVersionCode;
-    @InjectView(R.id.txt_term_of_service_signin) TextView mServiceText;
+    @InjectView(R.id.txt_term_of_service) TextView mServiceText;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -66,7 +66,7 @@ public class SettingsAboutUsFragment extends DashboardFragment implements View.O
     {
         switch (view.getId())
         {
-            case R.id.txt_term_of_service_signin:
+            case R.id.txt_term_of_service:
                 Uri uri = Uri.parse(Constants.PRIVACY_TERMS_OF_SERVICE);
                 Intent it = new Intent(Intent.ACTION_VIEW, uri);
                 try

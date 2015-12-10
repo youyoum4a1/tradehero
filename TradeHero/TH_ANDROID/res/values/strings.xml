@@ -332,6 +332,9 @@
     <string name="id_number_hint">请输入18位第二代身份证号码</string>
     <string name="address_hint">请输入与身份证相同的地址信息</string>
     <string name="company_hint">请填写您所在公司的中文或英文名称</string>
+    <string name="stock_company_hint">请填写您持股上市公司名称</string>
+    <string name="stock_company_code_hint">请填写您持股上市公司股票代码</string>
+    <string name="immediate_family_name_hint">请填写您直系亲属的姓名</string>
     <string name="signature_hint">电子签名需与个人资料中姓名相同</string>
     <string name="phone_bind_hint">Please enter mobile Number</string>
     <string name="login_password_hint">6-20 Letters or Numbers</string>
@@ -372,6 +375,9 @@
     <string name="signup_status_check">开户查询</string>
     <string name="dw_agreenment">点击上面“免费开户”按钮，即表示您同意</string>
     <string name="dw_agreenment_name">嘉维证券开户协议</string>
+    <string name="dw_agreenment_additional">附加协议</string>
+    <string name="stock_company_code">股票代码</string>
+    <string name="immediate_family_name">直系亲属姓名</string>
     <string name="dw_signup_preparation">开户准备</string>
     <string name="dw_signup_preparation_idcard">准备好您的二代身份证,您必须年满18周岁</string>
     <string name="dw_signup_preparation_wifi">开户需要上传图片等大流量数据，建议使用\nWIFI,4G或者3G网络</string>
@@ -381,6 +387,7 @@
     <string name="dw_signup_industry">所属行业</string>
     <string name="dw_signup_company">公司名称</string>
     <string name="dw_signup_stock_related_employee">您是否受雇于证券相关行业，如FINRA或FINRA成员公司</string>
+    <string name="dw_signup_stock_related_employee_note">您和DriveWealth有义务告知受雇证券公司</string>
     <string name="dw_signup_stock_holder">您是否为上市公司的持股股东</string>
     <string name="dw_signup_gov_officer">您是否曾近或现在是政府官员</string>
     <string name="dw_signup_investment_objectives">投资目标</string>
