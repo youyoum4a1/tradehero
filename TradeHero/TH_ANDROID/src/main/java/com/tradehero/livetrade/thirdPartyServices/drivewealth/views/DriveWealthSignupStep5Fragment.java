@@ -3,6 +3,7 @@ package com.tradehero.livetrade.thirdPartyServices.drivewealth.views;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,6 +63,7 @@ public class DriveWealthSignupStep5Fragment extends DriveWealthSignupBaseFragmen
     @InjectView(R.id.btn_next)
     Button btnNext;
 
+    private static final char DIRECTOR_DELIMITER = ',';
 
     @Override
     public String getTitle() {
@@ -105,6 +107,17 @@ public class DriveWealthSignupStep5Fragment extends DriveWealthSignupBaseFragmen
             immediateFamilyName.setVisibility(View.GONE);
         }
 
+        if (formDTO.directorOf != null) {
+            TextUtils.SimpleStringSplitter splitter = new TextUtils.SimpleStringSplitter(DIRECTOR_DELIMITER);
+            splitter.setString(formDTO.directorOf);
+            stockCompanyNameInput.setText(splitter.next());
+            stockCompanyCodeInput.setText(splitter.next());
+        }
+
+        if (formDTO.politicallyExposedNames != null) {
+            immediateFamilyNameInput.setText(formDTO.politicallyExposedNames);
+        }
+
         checkNEnableNextButton();
 
         return view;
@@ -124,7 +137,7 @@ public class DriveWealthSignupStep5Fragment extends DriveWealthSignupBaseFragmen
         formDTO.employerBusinessIdx = industry.getSelectedItemPosition();
         formDTO.employerIsBroker = isStockRelatedEmployee.isChecked();
         formDTO.director = isStockHolder.isChecked();
-        formDTO.directorOf = stockCompanyNameInput.getText().toString() + ", " + stockCompanyCodeInput.getText().toString();
+        formDTO.directorOf = stockCompanyNameInput.getText().toString() + DIRECTOR_DELIMITER + stockCompanyCodeInput.getText().toString();
         formDTO.politicallyExposed = isGovOfficer.isChecked();
         formDTO.politicallyExposedNames = immediateFamilyNameInput.getText().toString();
 
@@ -162,7 +175,7 @@ public class DriveWealthSignupStep5Fragment extends DriveWealthSignupBaseFragmen
         checkNEnableNextButton();
     }
 
-    @OnTextChanged({R.id.company})
+    @OnTextChanged({R.id.company, R.id.stockCompanyCodeInput, R.id.stockCompanyNameInput, R.id.immediateFamilyNameInput})
     public void onEditTextChanged(CharSequence text) {
         checkNEnableNextButton();
     }
