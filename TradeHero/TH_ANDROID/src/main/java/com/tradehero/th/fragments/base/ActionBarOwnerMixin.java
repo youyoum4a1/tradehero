@@ -33,7 +33,8 @@ public class ActionBarOwnerMixin
     private final ActionBar actionBar;
     private ValueAnimator valueAnimator;
 
-    @NonNull public static ActionBarOwnerMixin of(@NonNull Fragment fragment, @Nullable CustomDrawerToggle drawerToggle, @Nullable DrawerLayout drawerLayout)
+    @NonNull
+    public static ActionBarOwnerMixin of(@NonNull Fragment fragment, @Nullable CustomDrawerToggle drawerToggle, @Nullable DrawerLayout drawerLayout)
     {
         return new ActionBarOwnerMixin(fragment, drawerToggle, drawerLayout);
     }
@@ -157,12 +158,15 @@ public class ActionBarOwnerMixin
             }
         }
 
-        actionBar.setBackgroundDrawable(new ColorDrawable(THThemeManager.getManager().getCurrentTheme(actionBar.getThemedContext()).mainColor()));
+        if (actionBar != null)
+        {
+            actionBar.setBackgroundDrawable(new ColorDrawable(THThemeManager.getManager().getCurrentTheme(actionBar.getThemedContext()).mainColor()));
+        }
     }
 
     private void lockDrawer()
     {
-        if(drawerLayout != null)
+        if (drawerLayout != null)
         {
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         }
@@ -170,7 +174,7 @@ public class ActionBarOwnerMixin
 
     private void unlockDrawer()
     {
-        if(drawerLayout != null)
+        if (drawerLayout != null)
         {
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }

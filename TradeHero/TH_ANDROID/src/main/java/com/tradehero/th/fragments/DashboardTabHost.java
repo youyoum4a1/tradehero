@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TabHost;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.tradehero.th.utils.THThemeManager;
 import com.tradehero.th.widget.THTabView;
 import java.util.Collection;
 
@@ -22,10 +23,12 @@ public class DashboardTabHost extends TabHost
     private Animation slideInAnimation;
     private Animation slideOutAnimation;
     private OnMovableBottomTranslateListener onTranslateListener;
+    private Context context;
 
     public DashboardTabHost(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        this.context = context;
     }
 
     @Override public void setup()
@@ -51,7 +54,7 @@ public class DashboardTabHost extends TabHost
     private void addNewTab(RootFragmentType tabType)
     {
         THTabView indicator = THTabView.inflateWith(getTabWidget());
-        indicator.setBackgroundResource(R.drawable.tradehero_bottom_tab_indicator);
+        indicator.setBackgroundResource(THThemeManager.getManager().getCurrentTheme(context).tabBarColor());
         indicator.setIcon(tabType.drawableResId);
         addTab(makeTabSpec(tabType)
                 .setIndicator(indicator));

@@ -23,6 +23,7 @@ import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
 import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.utils.Constants;
+import com.tradehero.th.utils.THThemeManager;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
 import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
@@ -77,7 +78,7 @@ public class DiscoveryMainFragment extends DashboardFragment
 
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setDistributeEvenly(true);
-        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+        pagerSlidingTabStrip.setSelectedIndicatorColors(THThemeManager.getManager().getCurrentTheme(getActivity().getApplicationContext()).mainColor());
         pagerSlidingTabStrip.setViewPager(tabViewPager);
 
         beginTime = System.currentTimeMillis();

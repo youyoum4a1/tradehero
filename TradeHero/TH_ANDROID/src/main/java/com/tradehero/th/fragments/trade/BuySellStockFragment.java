@@ -28,6 +28,8 @@ import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
 import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.utils.THTheme;
+import com.tradehero.th.utils.THThemeManager;
 import com.tradehero.th.utils.metrics.events.BuySellEvent;
 import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
@@ -68,7 +70,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     {
         super.onViewCreated(view, savedInstanceState);
         mSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
-        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+        mSlidingTabLayout.setSelectedIndicatorColors(THThemeManager.getManager().getCurrentTheme(getContext()).mainColor());
 
         if (isLiveTrading.get())
         {

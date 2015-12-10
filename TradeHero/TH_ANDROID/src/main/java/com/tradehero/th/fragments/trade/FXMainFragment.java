@@ -39,6 +39,7 @@ import com.tradehero.th.models.number.THSignedFXRate;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.THColorUtils;
+import com.tradehero.th.utils.THThemeManager;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;
@@ -77,7 +78,7 @@ public class FXMainFragment extends AbstractBuySellFragment
         super.onViewCreated(view, savedInstanceState);
 
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
-        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+        pagerSlidingTabStrip.setSelectedIndicatorColors(THThemeManager.getManager().getCurrentTheme(getContext()).mainColor());
         pagerSlidingTabStrip.setDistributeEvenly(true);
     }
 

@@ -45,6 +45,7 @@ import com.tradehero.th.persistence.prefs.THPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.tradehero.th.utils.THThemeManager;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.OffOnViewSwitcher;
@@ -132,7 +133,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
         tabViewPager.setAdapter(adapter);
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
-        pagerSlidingTabStrip.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+        pagerSlidingTabStrip.setSelectedIndicatorColors(THThemeManager.getManager().getCurrentTheme(getActivity().getApplicationContext()).mainColor());
         pagerSlidingTabStrip.setViewPager(tabViewPager);
         tabViewPager.setCurrentItem(lastTabPosition, true);
         pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
