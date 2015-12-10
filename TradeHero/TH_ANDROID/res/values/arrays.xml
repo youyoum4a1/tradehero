@@ -34,34 +34,52 @@
     </string-array>
 
     <string-array name="dw_signup_industry">
-        <item>IT通讯/电子/互联网</item>
+        <item>汽车－零件</item>
+        <item>资本货物</item>
+        <item>建筑</item>
+        <item>能源</item>
         <item>金融</item>
-        <item>房地产/建筑</item>
-        <item>贸易/批发/零售/租</item>
-        <item>文体教育/工艺美术</item>
-        <item>生产/加工/制造</item>
-        <item>交通/运输/物流/仓储</item>
-        <item>服务业</item>
-        <item>文化/传媒/娱乐/体育</item>
-        <item>能源/矿产/环保</item>
-        <item>政府/非盈利机构</item>
-        <item>农/林/牧/渔</item>
+        <item>餐饮</item>
+        <item>公务员</item>
+        <item>酒店餐厅</item>
+        <item>家常个人用品</item>
+        <item>医药健康机器－服务</item>
+        <item>原料</item>
+        <item>媒体</item>
+        <item>制药-生物技术</item>
+        <item>专业服务</item>
+        <item>地产</item>
+        <item>零售店</item>
+        <item>计算机软件</item>
+        <item>计算机硬件</item>
+        <item>通讯服务</item>
+        <item>交通</item>
+        <item>公用事业</item>
         <item>其他</item>
     </string-array>
 
     <string-array name="dw_signup_industry_in_eng">
-        <item>Other</item>
-        <item>Other</item>
-        <item>Other</item>
-        <item>Other</item>
-        <item>Other</item>
-        <item>Other</item>
-        <item>Other</item>
-        <item>Other</item>
-        <item>Other</item>
-        <item>Other</item>
-        <item>Other</item>
-        <item>Other</item>
+        <item>Automobiles - Components</item>
+        <item>Capital Goods</item>
+        <item>Construction</item>
+        <item>Energy</item>
+        <item>Financial Services</item>
+        <item>Food and Beverage</item>
+        <item>Government</item>
+        <item>Hotels Restaurants - Leisure</item>
+        <item>Household - Personal Products</item>
+        <item>Health Care Equipment - Services</item>
+        <item>Materials</item>
+        <item>Media</item>
+        <item>Pharmaceuticals - Biotechnology</item>
+        <item>Professional Services</item>
+        <item>Real Estate</item>
+        <item>Retail Shops and Services</item>
+        <item>Software - Services</item>
+        <item>Technology Hardware - Equipment</item>
+        <item>Telecommunication Services</item>
+        <item>Transportation</item>
+        <item>Utilities</item>
         <item>Other</item>
     </string-array>
 
@@ -94,27 +112,39 @@
     </string-array>
 
     <string-array name="dw_annual_income">
-        <item>15万以下</item>
-        <item>15-30万</item>
-        <item>30-60万</item>
+        <item>60万以下</item>
         <item>60-120万</item>
         <item>120万以上</item>
+    </string-array>
+
+    <string-array name="dw_annual_income_in_eng">
+        <item>$0 - $99,999</item>
+        <item>$100,000 - $199,999</item>
+        <item>$200,000+</item>
     </string-array>
 
     <string-array name="dw_networth_liquid">
-        <item>15万以下</item>
-        <item>15-30万</item>
-        <item>30-60万</item>
+        <item>60万以下</item>
         <item>60-120万</item>
         <item>120万以上</item>
     </string-array>
 
+    <string-array name="dw_networth_liquid_in_eng">
+        <item>$0 - $99,999</item>
+        <item>$100,000 - $199,999</item>
+        <item>$200,000+</item>
+    </string-array>
+
     <string-array name="dw_networth_total">
-        <item>15万以下</item>
-        <item>15-30万</item>
-        <item>30-60万</item>
+        <item>60万以下</item>
         <item>60-120万</item>
         <item>120万以上</item>
+    </string-array>
+
+    <string-array name="dw_networth_total_in_eng">
+        <item>$0 - $99,999</item>
+        <item>$100,000 - $199,999</item>
+        <item>$200,000+</item>
     </string-array>
 
     <string-array name="dw_risk_tolerance">
@@ -122,6 +152,7 @@
         <item>中等</item>
         <item>高</item>
     </string-array>
+
 
     <string-array name="dw_risk_tolerance_in_eng">
         <item>Conservative</item>
