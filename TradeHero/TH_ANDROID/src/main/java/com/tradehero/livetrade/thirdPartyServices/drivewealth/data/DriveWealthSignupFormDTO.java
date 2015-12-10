@@ -16,6 +16,8 @@ public class DriveWealthSignupFormDTO {
     public String lastName;
     public String firstNameInEng;
     public String lastNameInEng;
+    public String gender;
+    public String martialStatus;
     public String idNO;
     public String dob;
     public String address;
@@ -24,7 +26,9 @@ public class DriveWealthSignupFormDTO {
     public String employerCompany;
     public boolean employerIsBroker;
     public boolean director;
+    public String directorOf;
     public boolean politicallyExposed;
+    public String politicallyExposedNames;
     public int investmentObjectivesIdx;
     public int investmentExperienceIdx;
     public int annualIncomeIdx;

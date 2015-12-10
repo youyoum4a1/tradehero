@@ -13,6 +13,9 @@ public class DriveWealthSignupLiveBody {
 
     private String firstName;
     private String lastName;
+    private String dob;
+    private String gender;
+    private String martialStatus;
     private String idNo;
     private String addressLine1;
     private String emailAddress1;
@@ -25,7 +28,9 @@ public class DriveWealthSignupLiveBody {
     private String employerCompany;
     private boolean employerIsBroker;
     private boolean director;
+    private String directorOf;
     private boolean politicallyExposed;
+    private String politicallyExposedNames;
 
     private String investmentObjectives;
     private String investmentExperience;
@@ -48,10 +53,12 @@ public class DriveWealthSignupLiveBody {
     private String referralCode;
 
     public DriveWealthSignupLiveBody(String userID, String firstName, String lastName,
+                                     String dob, String gender, String martialStatus,
                                      String idNo, String addressLine1, String emailAddress,
                                      String employmentStatus, String employerBusiness,
                                      String employerCompany, boolean employerIsBroker,
-                                     boolean director, boolean politicallyExposed,
+                                     boolean director, String directorOf,
+                                     boolean politicallyExposed, String politicallyExposedNames,
                                      String investmentObjectives, String investmentExperience,
                                      String annualIncome, String networthLiquid,
                                      String networthTotal, String riskTolerance,
@@ -63,6 +70,9 @@ public class DriveWealthSignupLiveBody {
         this.languageID = "zh_CN";
         this.firstName = firstName;
         this.lastName = lastName;
+        this.dob = dob;
+        this.gender = gender;
+        this.martialStatus = martialStatus;
         this.idNo = idNo;
         this.addressLine1 = addressLine1;
         this.emailAddress1 = emailAddress;
@@ -74,7 +84,9 @@ public class DriveWealthSignupLiveBody {
         this.employerCompany = employerCompany;
         this.employerIsBroker = employerIsBroker;
         this.director = director;
+        this.directorOf = directorOf;
         this.politicallyExposed = politicallyExposed;
+        this.politicallyExposedNames = politicallyExposedNames;
         this.investmentObjectives = investmentObjectives;
         this.investmentExperience = investmentExperience;
         this.annualIncome = annualIncome;

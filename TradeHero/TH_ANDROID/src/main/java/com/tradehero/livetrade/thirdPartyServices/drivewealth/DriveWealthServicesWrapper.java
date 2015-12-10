@@ -214,10 +214,12 @@ import retrofit.mime.TypedString;
         mServices.signupLive(
                 new DriveWealthSignupLiveBody(
                         mManager.getUserID(), formDTO.firstNameInEng, formDTO.lastNameInEng,
+                        formDTO.dob, formDTO.gender, formDTO.martialStatus,
                         formDTO.idNO, formDTO.address, formDTO.email,
                         employmentArray[formDTO.employmentStatusIdx], businessArray[formDTO.employerBusinessIdx],
                         formDTO.employerCompany, formDTO.employerIsBroker,
-                        formDTO.director, formDTO.politicallyExposed,
+                        formDTO.director, formDTO.directorOf,
+                        formDTO.politicallyExposed, formDTO.politicallyExposedNames,
                         investObjArray[formDTO.investmentObjectivesIdx], investExpArray[formDTO.investmentExperienceIdx],
                         incomeArray[formDTO.annualIncomeIdx], networthLiquidArray[formDTO.networthLiquidIdx],
                         networthTotalArray[formDTO.networthTotalIdx], riskToleranceArray[formDTO.riskToleranceIdx],
