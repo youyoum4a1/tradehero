@@ -200,6 +200,8 @@ import retrofit.mime.TypedString;
             }
         };
 
+        String[] genderArray = activity.getResources().getStringArray(R.array.dw_signup_gender_in_eng);
+        String[] martialStatusArray = activity.getResources().getStringArray(R.array.dw_signup_marital_in_eng);
         String[] employmentArray = activity.getResources().getStringArray(R.array.dw_signup_employment_in_eng);
         String[] businessArray = activity.getResources().getStringArray(R.array.dw_signup_industry_in_eng);
         String[] investObjArray = activity.getResources().getStringArray(R.array.dw_investment_objectives_in_eng);
@@ -214,7 +216,7 @@ import retrofit.mime.TypedString;
         mServices.signupLive(
                 new DriveWealthSignupLiveBody(
                         mManager.getUserID(), formDTO.firstNameInEng, formDTO.lastNameInEng,
-                        formDTO.dob, String.valueOf(formDTO.gender), String.valueOf(formDTO.martialStatus),
+                        formDTO.dob, genderArray[formDTO.genderIdx], martialStatusArray[formDTO.martialStatusIdx],
                         formDTO.idNO, formDTO.address, formDTO.email,
                         employmentArray[formDTO.employmentStatusIdx], businessArray[formDTO.employerBusinessIdx],
                         formDTO.employerCompany, formDTO.employerIsBroker,

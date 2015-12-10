@@ -16,8 +16,9 @@ public class DriveWealthSignupFormDTO {
     public String lastName;
     public String firstNameInEng;
     public String lastNameInEng;
-    public int gender;
-    public int martialStatus;
+    public int genderIdx;
+    public int martialStatusIdx;
+    public String countryName;
     public String idNO;
     public String dob;
     public String address;

@@ -293,13 +293,14 @@
                     android:textSize="@dimen/text_medium"/>
 
                 <EditText
+                    android:id="@+id/countryName"
                     android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
                     android:background="@color/white"
-                    android:hint="@string/marital_hint"
+                    android:hint="@string/country_hint"
                     android:singleLine="true"
                     android:textColor="#000000"
                     android:textColorHint="#bfbfbf"
@@ -445,6 +446,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/basic_blue_selector_round_corner"
                 android:gravity="center"
                 android:text="@string/save_next_step"

@@ -31,11 +31,23 @@
         <item>女</item>
     </string-array>
 
+    <string-array name="dw_signup_gender_in_eng">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
     <string-array name="dw_signup_marital">
         <item>单身</item>
         <item>离婚</item>
         <item>结婚</item>
         <item>丧偶</item>
+    </string-array>
+
+    <string-array name="dw_signup_marital_in_eng">
+        <item>Single</item>
+        <item>Divorced</item>
+        <item>Married</item>
+        <item>Widowed</item>
     </string-array>
 
     <string-array name="dw_signup_employment_in_eng">
