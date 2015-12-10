@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -48,8 +49,8 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
     @InjectView(R.id.lastNameEnglish) EditText lastNameEnglish;
     @InjectView(R.id.firstNameEnglish) EditText firstNameEnglish;
     @InjectView(R.id.birth_date) EditText mBirthDateEditText;
-    @InjectView(R.id.gender) EditText mGenderEditText;
-    @InjectView(R.id.marital) EditText mMaritalEditText;
+    @InjectView(R.id.gender) Spinner mGenderEditText;
+    @InjectView(R.id.marital) Spinner mMaritalEditText;
     @InjectView(R.id.idNumber)
     EditText idNumber;
     @InjectView(R.id.address)
@@ -101,12 +102,12 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         if (formDTO.dob != null) {
             mBirthDateEditText.setText(formDTO.dob);
         }
-        if (formDTO.gender != null) {
-            mGenderEditText.setText(formDTO.gender);
-        }
-        if (formDTO.martialStatus != null) {
-            mMaritalEditText.setText(formDTO.martialStatus);
-        }
+//        if (formDTO.gender != null) {
+//            mGenderEditText.setText(formDTO.gender);
+//        }
+//        if (formDTO.martialStatus != null) {
+//            mMaritalEditText.setText(formDTO.martialStatus);
+//        }
 
         if (formDTO.idNO != null) {
             idNumber.setText(formDTO.idNO);
@@ -158,24 +159,24 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
                 }
             }
         });
-        mGenderEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (mGenderEditText != null && mGenderEditText.getText() == null || !isGender(mGenderEditText.getText().toString())) {
-                        THToast.show(R.string.gender_error);
-                    }
-                }
-            }
-        });
-        mMaritalEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (mMaritalEditText != null && mMaritalEditText.getText() == null || !isMarital(mMaritalEditText.getText().toString())) {
-                        THToast.show(R.string.marital_error);
-                    }
-                }
-            }
-        });
+//        mGenderEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override public void onFocusChange(View v, boolean hasFocus) {
+//                if (!hasFocus) {
+//                    if (mGenderEditText != null && mGenderEditText.getText() == null || !isGender(mGenderEditText.getText().toString())) {
+//                        THToast.show(R.string.gender_error);
+//                    }
+//                }
+//            }
+//        });
+//        mMaritalEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override public void onFocusChange(View v, boolean hasFocus) {
+//                if (!hasFocus) {
+//                    if (mMaritalEditText != null && mMaritalEditText.getText() == null || !isMarital(mMaritalEditText.getText().toString())) {
+//                        THToast.show(R.string.marital_error);
+//                    }
+//                }
+//            }
+//        });
 
         idNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -257,20 +258,20 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
             mErrorMsgText.setText(R.string.date_error);
             return;
         }
-        if (mGenderEditText.getText() != null && isGender(mGenderEditText.getText().toString())) {
-            mErrorMsgText.setVisibility(View.GONE);
-        } else {
-            mErrorMsgText.setVisibility(View.VISIBLE);
-            mErrorMsgText.setText(R.string.gender_error);
-            return;
-        }
-        if (mMaritalEditText.getText() != null && isMarital(mMaritalEditText.getText().toString())) {
-            mErrorMsgText.setVisibility(View.GONE);
-        } else {
-            mErrorMsgText.setVisibility(View.VISIBLE);
-            mErrorMsgText.setText(R.string.marital_error);
-            return;
-        }
+//        if (mGenderEditText.getText() != null && isGender(mGenderEditText.getText().toString())) {
+//            mErrorMsgText.setVisibility(View.GONE);
+//        } else {
+//            mErrorMsgText.setVisibility(View.VISIBLE);
+//            mErrorMsgText.setText(R.string.gender_error);
+//            return;
+//        }
+//        if (mMaritalEditText.getText() != null && isMarital(mMaritalEditText.getText().toString())) {
+//            mErrorMsgText.setVisibility(View.GONE);
+//        } else {
+//            mErrorMsgText.setVisibility(View.VISIBLE);
+//            mErrorMsgText.setText(R.string.marital_error);
+//            return;
+//        }
 
         if (idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
             mErrorMsgText.setVisibility(View.VISIBLE);
@@ -285,8 +286,10 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         formDTO.firstNameInEng = firstNameEnglish.getText().toString();
         formDTO.lastNameInEng = lastNameEnglish.getText().toString();
         formDTO.dob = mBirthDateEditText.getText().toString();
-        formDTO.gender = mGenderEditText.getText().toString();
-        formDTO.martialStatus = mMaritalEditText.getText().toString();
+        formDTO.gender = mGenderEditText.getSelectedItemPosition();
+        formDTO.martialStatus = mMaritalEditText.getSelectedItemPosition();
+//        formDTO.gender = mGenderEditText.getText().toString();
+//        formDTO.martialStatus = mMaritalEditText.getText().toString();
         formDTO.idNO = idNumber.getText().toString();
         formDTO.address = address.getText().toString();
 

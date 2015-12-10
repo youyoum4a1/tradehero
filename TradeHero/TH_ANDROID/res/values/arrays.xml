@@ -26,6 +26,18 @@
         <item>失业中</item>
     </string-array>
 
+    <string-array name="dw_signup_gender">
+        <item>男</item>
+        <item>女</item>
+    </string-array>
+
+    <string-array name="dw_signup_marital">
+        <item>单身</item>
+        <item>离婚</item>
+        <item>结婚</item>
+        <item>丧偶</item>
+    </string-array>
+
     <string-array name="dw_signup_employment_in_eng">
         <item>Employed/Self-Employed</item>
         <item>Retired</item>

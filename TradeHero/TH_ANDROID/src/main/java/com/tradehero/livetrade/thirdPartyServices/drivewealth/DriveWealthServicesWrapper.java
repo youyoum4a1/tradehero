@@ -214,7 +214,7 @@ import retrofit.mime.TypedString;
         mServices.signupLive(
                 new DriveWealthSignupLiveBody(
                         mManager.getUserID(), formDTO.firstNameInEng, formDTO.lastNameInEng,
-                        formDTO.dob, formDTO.gender, formDTO.martialStatus,
+                        formDTO.dob, String.valueOf(formDTO.gender), String.valueOf(formDTO.martialStatus),
                         formDTO.idNO, formDTO.address, formDTO.email,
                         employmentArray[formDTO.employmentStatusIdx], businessArray[formDTO.employerBusinessIdx],
                         formDTO.employerCompany, formDTO.employerIsBroker,
