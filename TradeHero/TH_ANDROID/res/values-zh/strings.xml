@@ -261,5 +261,14 @@
     <string name="password_not_same_error">两次密码输入不一致</string>
     <string name="username_error">用户昵称只能是字母和数字的组合</string>
     <string name="verifying_username">正在检查用户名是否重复</string>
+    <string name="signup_birth_date">出生日期</string>
+    <string name="birth_date_hint">例如 1990-01-12</string>
+    <string name="signup_gender">性别</string>
+    <string name="gender_hint">例如 男/女</string>
+    <string name="signup_marital">婚姻状况</string>
+    <string name="marital_hint">例如 已婚/未婚</string>
+    <string name="gender_error">性别错误</string>
+    <string name="marital_error">婚姻状况错误</string>
+    <string name="date_error">出生日期错误</string>
 
 </resources>

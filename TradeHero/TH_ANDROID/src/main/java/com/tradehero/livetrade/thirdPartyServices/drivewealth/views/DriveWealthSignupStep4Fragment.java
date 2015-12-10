@@ -45,10 +45,11 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
     EditText lastName;
     @InjectView(R.id.firstName)
     EditText firstName;
-    @InjectView(R.id.lastNameEnglish)
-    EditText lastNameEnglish;
-    @InjectView(R.id.firstNameEnglish)
-    EditText firstNameEnglish;
+    @InjectView(R.id.lastNameEnglish) EditText lastNameEnglish;
+    @InjectView(R.id.firstNameEnglish) EditText firstNameEnglish;
+    @InjectView(R.id.birth_date) EditText mBirthDateEditText;
+    @InjectView(R.id.gender) EditText mGenderEditText;
+    @InjectView(R.id.marital) EditText mMaritalEditText;
     @InjectView(R.id.idNumber)
     EditText idNumber;
     @InjectView(R.id.address)
@@ -97,6 +98,16 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
             lastNameEnglish.setText(formDTO.lastNameInEng);
         }
 
+        if (formDTO.dob != null) {
+            mBirthDateEditText.setText(formDTO.dob);
+        }
+        if (formDTO.gender != null) {
+            mGenderEditText.setText(formDTO.gender);
+        }
+        if (formDTO.martialStatus != null) {
+            mMaritalEditText.setText(formDTO.martialStatus);
+        }
+
         if (formDTO.idNO != null) {
             idNumber.setText(formDTO.idNO);
         }
@@ -122,7 +133,7 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         firstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (firstName.getText() == null || !isChinese(firstName.getText().toString())) {
+                    if (firstName != null && firstName.getText() == null || !isChinese(firstName.getText().toString())) {
                         THToast.show(R.string.name_error);
                     }
                 }
@@ -131,22 +142,93 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         lastName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (lastName.getText() == null || !isChinese(lastName.getText().toString())) {
+                    if (lastName != null && lastName.getText() == null || !isChinese(lastName.getText().toString())) {
                         THToast.show(R.string.name_error);
                     }
                 }
             }
         });
+
+        mBirthDateEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (mBirthDateEditText != null && mBirthDateEditText.getText() == null || !isDate(mBirthDateEditText.getText().toString())) {
+                        THToast.show(R.string.date_error);
+                    }
+                }
+            }
+        });
+        mGenderEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (mGenderEditText != null && mGenderEditText.getText() == null || !isGender(mGenderEditText.getText().toString())) {
+                        THToast.show(R.string.gender_error);
+                    }
+                }
+            }
+        });
+        mMaritalEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    if (mMaritalEditText != null && mMaritalEditText.getText() == null || !isMarital(mMaritalEditText.getText().toString())) {
+                        THToast.show(R.string.marital_error);
+                    }
+                }
+            }
+        });
+
         idNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
-                    if (idNumber.getText() == null || idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
+                    if (idNumber != null && idNumber.getText() == null || idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
                         THToast.show(R.string.id_number_hint);
                     }
                 }
             }
         });
+    }
+
+    private boolean isMarital(String s) {
+        if (s.matches("已婚") || s.matches("未婚")) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isGender(String s) {
+        if (s.matches("男") || s.matches("女")) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isDate(String date) {
+        String year = date.substring(0, 4);
+        String month = date.substring(5, 7);
+        String day = date.substring(8, 10);
+        if (isNumber(year) && isNumber(month) && isNumber(day) && date.charAt(4) == '-' && date.charAt(7) == '-') {
+            if (year.substring(0, 2).matches("19") || year.substring(0, 2).matches("20")) {
+                if ((month.charAt(0) == '0' && month.charAt(1) != '0') ||
+                        (month.charAt(0) == '1' && month.charAt(1) < '3')) {
+                    if (day.charAt(0) < '3' || (day.charAt(0) == '3' && day.charAt(1) < '2')) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isNumber(String s) {
+        for (int i = 0; i < s.length(); i++) {
+            Pattern p = Pattern.compile("[0-9]*");
+            Matcher m = p.matcher(String.valueOf(s.charAt(i)));
+            if (!m.matches()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -165,6 +247,28 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
             mErrorMsgText.setText(R.string.name_error);
             return;
         }
+        if (mBirthDateEditText.getText() != null && isDate(mBirthDateEditText.getText().toString())) {
+            mErrorMsgText.setVisibility(View.GONE);
+        } else {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            mErrorMsgText.setText(R.string.date_error);
+            return;
+        }
+        if (mGenderEditText.getText() != null && isGender(mGenderEditText.getText().toString())) {
+            mErrorMsgText.setVisibility(View.GONE);
+        } else {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            mErrorMsgText.setText(R.string.gender_error);
+            return;
+        }
+        if (mMaritalEditText.getText() != null && isMarital(mMaritalEditText.getText().toString())) {
+            mErrorMsgText.setVisibility(View.GONE);
+        } else {
+            mErrorMsgText.setVisibility(View.VISIBLE);
+            mErrorMsgText.setText(R.string.marital_error);
+            return;
+        }
+
         if (idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
             mErrorMsgText.setVisibility(View.VISIBLE);
             mErrorMsgText.setText(R.string.id_number_hint);
@@ -177,18 +281,17 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         formDTO.lastName = lastName.getText().toString();
         formDTO.firstNameInEng = firstNameEnglish.getText().toString();
         formDTO.lastNameInEng = lastNameEnglish.getText().toString();
+        formDTO.dob = mBirthDateEditText.getText().toString();
+        formDTO.gender = mGenderEditText.getText().toString();
+        formDTO.martialStatus = mMaritalEditText.getText().toString();
         formDTO.idNO = idNumber.getText().toString();
-        String year = idNumber.getText().toString().substring(6, 10);
-        String month = idNumber.getText().toString().substring(10, 12);
-        String day = idNumber.getText().toString().substring(12, 14);
-        formDTO.dob = year+"-"+month+"-"+day;
         formDTO.address = address.getText().toString();
 
         pushFragment(DriveWealthSignupStep5Fragment.class, new Bundle());
     }
 
     private boolean isChinese(String text) {
-        for (int i=0;i<text.length();i++) {
+        for (int i = 0; i < text.length(); i++) {
             Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
             Matcher m = p.matcher(String.valueOf(text.charAt(i)));
             if (!m.matches() && !String.valueOf(text.charAt(i)).matches(" ")) {
@@ -219,12 +322,12 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
 
         if (requestCode == REQUEST_GALLERY && data != null) {
             startPhotoZoom(data.getData());
-        } else if(requestCode == REQUEST_CAMERA && mFile != null){
+        } else if (requestCode == REQUEST_CAMERA && mFile != null) {
             startPhotoZoom(Uri.fromFile(mFile));
         } else if (requestCode == REQUEST_PHOTO_ZOOM) {
 
             Bundle bundle = data.getExtras();
-            if(bundle != null){
+            if (bundle != null) {
                 DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
 
                 Bitmap photo = (Bitmap) bundle.get("data");
@@ -237,12 +340,12 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
                 ImageView image = idcardFront;
                 if (mLoadImageforId == R.id.idcard_front) {
                     image = idcardFront;
-                    mypath = new File(directory,"idcard_front.jpg");
+                    mypath = new File(directory, "idcard_front.jpg");
                     formDTO.idcardFront = Uri.fromFile(mypath);
 
                 } else if (mLoadImageforId == R.id.idcard_back) {
                     image = idcardBack;
-                    mypath = new File(directory,"idcard_back.jpg");
+                    mypath = new File(directory, "idcard_back.jpg");
                     formDTO.idcardBack = Uri.fromFile(mypath);
                 }
 
@@ -304,7 +407,7 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         startActivityForResult(cameraIntent, REQUEST_CAMERA);
     }
 
-    private void startPhotoZoom(Uri data){
+    private void startPhotoZoom(Uri data) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(data, "image/*");
         intent.putExtra("crop", "true");
