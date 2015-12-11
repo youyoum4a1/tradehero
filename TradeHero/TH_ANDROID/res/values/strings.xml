@@ -400,8 +400,14 @@
     <string name="dw_signup_liquidity_needs">流动性需求</string>
     <string name="dw_signup_agreement1">本人授权本人的经纪商和交割公司在申请开户时和开户后获取本人的用户信息</string>
     <string name="dw_signup_agreement2">如果本人的账户因用户信息确认被交割公司所拒，授权交割公司提供被拒原因给本人的经纪商</string>
-    <string name="dw_signup_w_8ben_title">W-8BEN(非美国公民)</string>
+    <string name="dw_signup_agree_all">本人同意以下所有内容</string>
+    <string name="dw_signup_disclosures_title">(1)账户公开申明</string>
+    <string name="dw_signup_customer_account_agreement_title">(2)客户账户协议 – 保证金账户</string>
+    <string name="dw_signup_bats_subscriber_agreement_title">(3)市场数据使用合约</string>
+    <string name="dw_signup_foreign_finder_disclosure_title">(4)境外代理声明</string>
+    <string name="dw_signup_w_8ben_title">(5)W-8BEN(非美国公民)</string>
     <string name="dw_signup_signature">电子签名</string>
+    <string name="dw_signup_foreign_finder_disclosure">作为嘉维证券的客户，我 /我们在此确认我/我们了解嘉维证券和美国境外代理之间的报酬安排。具体细节将被分别提供给美国证券证券交易法\n证券交易法第14b-1(c)条规定，证券发行者有权向我们索取拥有其证券的顾客姓名、地址及持股等资料，作为企业通讯之用</string>
     <string name="dw_signup_w_8ben">在作伪证会被惩罚的法律制裁下，本人声明已详细检查此表格上所有信息，据本人所知及所信，本表格的内容是真实、正确、完整的。本人进一步声明以下内容为实，否则愿受法律制裁:\n本人为此表格所涉及全部收入之受益人（或受益人授权之签署人）或本人使用此表格记录个人拥有外国金融机构账户,\n此表格第一栏所列人为非美国人士,\n本表格所涉收入:\n与在美国境内之贸易和商业无实际关系,\n有实际关系，但依所得税减免互惠协定无须扣缴所得税, 或\n为合伙商的有实际关系收入的合伙人所应得部分,\n此表格所列之人为互惠协定国居民，与美国之间有所得税减免互惠协定国家（如果有）列在此表格上, 及\n就经纪交易或以物易物交易而言，受益人为此表说明中界定的获豁免外国人。\n此外，本人授权此表格交予任何控制、收到或托管本人为受益人之收入的预扣税代理，或任何可以就本人为受益人的收入支付或作出付款的预扣税代理。 本人同意在30天内提交一份新表格若此表格中任何证明有误。</string>
     <string name="invite_friend_fail">您的邀请码输入有误</string>
     <string name="copy">复制</string>

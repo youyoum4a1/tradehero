@@ -6,11 +6,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,22 +17,25 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.InjectView;
-import butterknife.OnCheckedChanged;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
+
 import com.tradehero.common.utils.THToast;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthManager;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.DriveWealthServicesWrapper;
 import com.tradehero.livetrade.thirdPartyServices.drivewealth.data.DriveWealthSignupFormDTO;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.password.BindBrokerDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.network.service.UserServiceWrapper;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -51,11 +53,20 @@ public class DriveWealthSignupStep7Fragment extends DriveWealthSignupBaseFragmen
     CheckBox agreement1;
     @InjectView(R.id.agreement2)
     CheckBox agreement2;
+    @InjectView(R.id.agreeAll)
+    CheckBox agreeAll;
+    @InjectView(R.id.account_disclosures)
+    TextView accountDisclosures;
+    @InjectView(R.id.customer_account_agreement)
+    TextView customerAccountAgreement;
+    @InjectView(R.id.bats_subscriber_agreement)
+    TextView batsSubscriberAgreement;
     @InjectView(R.id.signature)
     EditText signature;
     @InjectView(R.id.error_msg)
     TextView mErrorMsgText;
-    @InjectView(R.id.btn_next) Button btnNext;
+    @InjectView(R.id.btn_next)
+    Button btnNext;
     @InjectView(R.id.progressBar)
     ProgressBar progressBar;
 
@@ -134,6 +145,27 @@ public class DriveWealthSignupStep7Fragment extends DriveWealthSignupBaseFragmen
         ButterKnife.reset(this);
     }
 
+    @OnClick({R.id.account_disclosures, R.id.customer_account_agreement, R.id.bats_subscriber_agreement})
+    public void onDocumentClicked(View view) {
+        Intent browserIntent;
+        switch (view.getId()) {
+            case R.id.account_disclosures:
+                browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://drivewealth.com/zh-hans/account-disclosures/"));
+                startActivity(browserIntent);
+                break;
+
+            case R.id.customer_account_agreement:
+                browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://drivewealth.com/zh-hans/customer-account-agreement/"));
+                startActivity(browserIntent);
+                break;
+
+            case R.id.bats_subscriber_agreement:
+                browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://drivewealth.com/bats-subscriber-agreement/"));
+                startActivity(browserIntent);
+                break;
+        }
+    }
+
     @OnClick(R.id.btn_next)
     public void onNextClick() {
         DriveWealthSignupFormDTO formDTO = mDriveWealthManager.getSignupFormDTO();
@@ -164,7 +196,7 @@ public class DriveWealthSignupStep7Fragment extends DriveWealthSignupBaseFragmen
     }
 
     private boolean isChinese(String text) {
-        for (int i=0;i<text.length();i++) {
+        for (int i = 0; i < text.length(); i++) {
             Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
             Matcher m = p.matcher(String.valueOf(text.charAt(i)));
             if (!m.matches() && !String.valueOf(text.charAt(i)).matches(" ")) {
@@ -179,14 +211,14 @@ public class DriveWealthSignupStep7Fragment extends DriveWealthSignupBaseFragmen
         checkNEnableNextButton();
     }
 
-    @OnCheckedChanged({R.id.agreement1, R.id.agreement2})
+    @OnCheckedChanged({R.id.agreement1, R.id.agreement2, R.id.agreeAll})
     public void onCheckChanged() {
         checkNEnableNextButton();
     }
 
     private void checkNEnableNextButton() {
         if (signature.getText().length() > 0 &&
-                agreement1.isChecked() && agreement2.isChecked()) {
+                agreement1.isChecked() && agreement2.isChecked() && agreeAll.isChecked()) {
             btnNext.setEnabled(true);
         } else {
             btnNext.setEnabled(false);

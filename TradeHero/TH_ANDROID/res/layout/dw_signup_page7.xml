@@ -17,8 +17,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:background="@color/white">
+                android:layout_marginTop="10dp">
 
                 <CheckBox
                     android:id="@+id/agreement1"
@@ -44,8 +43,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/white">
+                android:layout_height="50dp">
 
                 <CheckBox
                     android:id="@+id/agreement2"
@@ -62,12 +60,141 @@
                     android:text="@string/dw_signup_agreement2"
                     android:textSize="@dimen/text_small"/>
             </RelativeLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1px"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:background="#bfbfbf"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <CheckBox
+                    android:id="@+id/agreeAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="15dp"/>
+                <TextView
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"
+                    android:text="@string/dw_signup_agree_all"
+                    android:textSize="@dimen/text_small"/>
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:background="#bfbfbf"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/dw_signup_disclosures_title"
+                android:textSize="@dimen/text_large"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/account_disclosures"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:singleLine="true"
+                android:text="https://drivewealth.com/zh-hans/account-disclosures/"
+                android:textColor="@color/timeline_item_link"
+                android:textSize="@dimen/text_xsmall"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/dw_signup_customer_account_agreement_title"
+                android:textSize="@dimen/text_large"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/customer_account_agreement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:singleLine="true"
+                android:text="https://drivewealth.com/zh-hans/customer-account-agreement/"
+                android:textColor="@color/timeline_item_link"
+                android:textSize="@dimen/text_xsmall"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/dw_signup_bats_subscriber_agreement_title"
+                android:textSize="@dimen/text_large"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/bats_subscriber_agreement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:singleLine="true"
+                android:text="https://drivewealth.com/bats-subscriber-agreement/"
+                android:textColor="@color/timeline_item_link"
+                android:textSize="@dimen/text_xsmall"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/dw_signup_foreign_finder_disclosure_title"
+                android:textSize="@dimen/text_large"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:text="@string/dw_signup_foreign_finder_disclosure"
+                android:textSize="@dimen/text_xsmall"/>
 
             <TextView
                 android:layout_width="wrap_content"
