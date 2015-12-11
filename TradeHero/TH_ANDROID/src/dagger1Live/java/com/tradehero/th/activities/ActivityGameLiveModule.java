@@ -1,5 +1,6 @@
 package com.tradehero.th.activities;
 
+import com.tradehero.th.fragments.CallToActionFragment;
 import dagger.Module;
 
 @Module(
@@ -8,7 +9,7 @@ import dagger.Module;
         injects = {
                 SignUpLiveActivity.class,
                 IdentityPromptActivity.class,
-                CallToActionActivity.class,
+                CallToActionFragment.class,
                 ConnectAccountActivity.class,
                 LiveLoginActivity.class,
                 LiveAccountSettingActivity.class

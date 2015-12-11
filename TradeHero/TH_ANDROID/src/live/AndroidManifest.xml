@@ -19,7 +19,7 @@
         android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
 
     <activity
-        android:name="com.tradehero.th.activities.CallToActionActivity"
+        android:name="com.tradehero.th.fragments.CallToActionFragment"
         android:theme="@style/TradeHero.Live"
         android:label="@string/live_trading_title"
         android:windowSoftInputMode="adjustResize"

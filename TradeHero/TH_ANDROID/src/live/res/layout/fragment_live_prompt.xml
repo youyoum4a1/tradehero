@@ -25,6 +25,7 @@
           android:layout_height="wrap_content"
           android:scaleType="fitCenter"
           android:src="@drawable/ic_th_live_banner"
+          tools:ignore="contentDescription"
           />
 
         <ImageView
@@ -33,6 +34,7 @@
             android:layout_marginTop="@dimen/margin_small"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_rabbit_call_action"
+            tools:ignore="contentDescription"
             />
 
       <TextView
@@ -56,7 +58,7 @@
             android:paddingRight="@dimen/margin_large"
             android:background="@color/rabbit_color"
             android:textColor="@color/white"
-            android:text="Start Now!"/>
+            android:text="@string/start_now"/>
 
         <Button
             style="@style/TH.Button.Link"
@@ -66,27 +68,7 @@
             android:textSize="12sp"
             android:textAllCaps="false"
             android:background="?attr/selectableItemBackground"
-            android:text="Maybe later"/>
-
-      <!--<Button-->
-          <!--android:id="@+id/btn_open_account"-->
-          <!--style="@style/TH.Button.Link"-->
-          <!--android:layout_width="match_parent"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:background="?attr/selectableItemBackground"-->
-          <!--android:padding="@dimen/margin_small"-->
-          <!--android:text="@string/open_new_account"-->
-          <!--/>-->
-
-      <!--<Button-->
-          <!--android:id="@+id/btn_connect_account"-->
-          <!--style="@style/TH.Button.Link"-->
-          <!--android:layout_width="match_parent"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:background="?attr/selectableItemBackground"-->
-          <!--android:padding="@dimen/margin_small"-->
-          <!--android:text="@string/link_existing_account"-->
-          <!--/>-->
+            android:text="@string/maybe_later"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -99,6 +81,7 @@
                 style="@style/TH.Caption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:text="@string/powered_by"
                 />
@@ -107,7 +90,7 @@
                 android:layout_width="@dimen/size_10"
                 android:layout_height="@dimen/size_5"
                 android:scaleType="fitCenter"
-                tools:src="@drawable/ayondo_logo"
+                android:src="@drawable/ayondo_logo"
                 />
         </LinearLayout>
 

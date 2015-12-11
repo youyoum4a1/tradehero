@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.tradehero.th.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,9 +9,9 @@ import butterknife.ButterKnife;
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseFragment;
 
-public class CallToActionActivity extends BaseFragment
+public class CallToActionFragment extends BaseFragment
 {
-    @Nullable @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+    @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_live_prompt, container, false);
         ButterKnife.bind(this, view);

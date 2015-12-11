@@ -108,7 +108,6 @@ public class LiveActivityUtil
             }
         }
 
-
         if (!item.isVisible() && isLiveTrading.get())
         {
             //There's no fragment that can handle live trading, disable it.
@@ -142,28 +141,26 @@ public class LiveActivityUtil
         int statusBarColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red_status_bar : R.color.tradehero_red_status_bar;
         //        int bottomColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red : R.drawable.tradehero_bottom_tab_indicator_red;
 
-        if (activity.getSupportActionBar() != null)
-        {
+        //if (activity.getSupportActionBar() != null)
+        //{
             //activity.getSupportActionBar().setBackgroundDrawable(
             //        new ColorDrawable(ContextCompat.getColor(activity.getApplicationContext(), event.isOn ? baseColorRes : R.color.tradehero_blue)));
-            activity.getSupportActionBar().setBackgroundDrawable(
-                    new ColorDrawable(THThemeManager.getManager().getCurrentTheme(activity.getApplicationContext()).mainColor()));
-        }
+            //activity.getSupportActionBar().setBackgroundDrawable(
+            //        new ColorDrawable(THThemeManager.getManager().getCurrentTheme(activity).mainColor()));
+        //}
 
         //Specific to this activity?
         if (activity instanceof DashboardActivity)
         {
             DashboardActivity dashboardActivity = (DashboardActivity) activity;
-            dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
-                    ContextCompat.getColor(dashboardActivity.getApplicationContext(),
-                            event.isOn ? statusBarColorRes : R.color.tradehero_blue_status_bar));
+            //dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
+            //        ContextCompat.getColor(activity, THThemeManager.getManager().getCurrentTheme(activity).statusBarColor());
 
-            //for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
-            //{
-            //    dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
-            //            .setBackgroundResource(
-            //                    event.isOn ? R.drawable.tradehero_bottom_tab_indicator_red : R.drawable.tradehero_bottom_tab_indicator);
-            //}
+            for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
+            {
+                dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
+                        .setBackgroundResource(THThemeManager.getManager().getCurrentTheme(activity).tabBarColor());
+            }
         }
     }
 

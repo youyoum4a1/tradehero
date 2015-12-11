@@ -65,7 +65,7 @@ import dagger.Module;
         injects = {
                 DashboardFragment.class,
                 THThemeManager.class,
-                THTheme.class,
+                THTheme.class
         },
         library = true,
         complete = false

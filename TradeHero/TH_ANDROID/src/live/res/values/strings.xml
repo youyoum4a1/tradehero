@@ -147,4 +147,7 @@
 
   <string name="options">Options</string>
   <string name="title_activity_live_account_setting">Settings</string>
+
+  <string name="start_now">Start Now!</string>
+  <string name="maybe_later">Maybe later</string>
 </resources>

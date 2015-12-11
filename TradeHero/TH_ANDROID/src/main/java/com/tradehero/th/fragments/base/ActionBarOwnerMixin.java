@@ -2,6 +2,7 @@ package com.tradehero.th.fragments.base;
 
 import android.animation.ValueAnimator;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -160,7 +161,14 @@ public class ActionBarOwnerMixin
 
         if (actionBar != null)
         {
-            actionBar.setBackgroundDrawable(new ColorDrawable(THThemeManager.getManager().getCurrentTheme(actionBar.getThemedContext()).mainColor()));
+            actionBar.setBackgroundDrawable(new ColorDrawable(THThemeManager.getManager().getCurrentTheme(fragment.getContext()).mainColor()));
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            fragment.getActivity().getWindow().setStatusBarColor(THThemeManager.getManager().getCurrentTheme(fragment.getContext()).statusBarColor());
+        } else {
+
         }
     }
 

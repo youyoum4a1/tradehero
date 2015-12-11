@@ -78,7 +78,7 @@ public class DiscoveryMainFragment extends DashboardFragment
 
         pagerSlidingTabStrip.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabStrip.setDistributeEvenly(true);
-        pagerSlidingTabStrip.setSelectedIndicatorColors(THThemeManager.getManager().getCurrentTheme(getActivity().getApplicationContext()).mainColor());
+        pagerSlidingTabStrip.setSelectedIndicatorColors(THThemeManager.getManager().getCurrentTheme(getContext()).mainColor());
         pagerSlidingTabStrip.setViewPager(tabViewPager);
 
         beginTime = System.currentTimeMillis();

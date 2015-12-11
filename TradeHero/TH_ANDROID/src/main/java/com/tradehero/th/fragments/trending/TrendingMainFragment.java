@@ -24,11 +24,12 @@ import butterknife.ButterKnife;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
+import com.tradehero.common.widget.CustomDrawerToggle;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.CallToActionActivity;
+import com.tradehero.th.fragments.CallToActionFragment;
 import com.tradehero.th.adapters.DTOAdapterNew;
 import com.tradehero.th.api.market.Country;
 import com.tradehero.th.api.market.ExchangeCompactDTO;
@@ -101,6 +102,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject THRouter thRouter;
     @Inject Toolbar toolbar;
+    @Inject CustomDrawerToggle drawerToggle;
     @Inject Analytics analytics;
     @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
@@ -125,7 +127,7 @@ public class TrendingMainFragment extends DashboardFragment
     private TextView liveTitleTextView;
     private LollipopArrayAdapter<TrendingAssetType> assetTypeAdapter;
     private LollipopArrayAdapter<TrendingStockSortType> sortByAdapter;
-    private CallToActionActivity callToActionFragment;
+    private CallToActionFragment callToActionFragment;
 
     // TODO: Dummy attribute, pending server
     @Inject @IsLiveLogIn BooleanPreference isLiveLogIn;
@@ -315,13 +317,15 @@ public class TrendingMainFragment extends DashboardFragment
             if (!isLiveLogIn.get())
             {
                 //trendingLiveFragmentUtil.launchLiveLogin();
-                if (callToActionFragment == null) {
-                    callToActionFragment = new CallToActionActivity();
+                if (callToActionFragment == null)
+                {
+                    callToActionFragment = new CallToActionFragment();
                 }
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.add(R.id.trending_main_container, callToActionFragment);
                 fragmentTransaction.commit();
+                drawerToggle.setDrawerIndicatorEnabled(true);
             }
             else
             {
@@ -330,7 +334,8 @@ public class TrendingMainFragment extends DashboardFragment
         }
         else if (!event.isOn && event.isFromUser)
         {
-            if (callToActionFragment != null) {
+            if (callToActionFragment != null)
+            {
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.remove(callToActionFragment);
                 fragmentTransaction.commit();
@@ -508,7 +513,6 @@ public class TrendingMainFragment extends DashboardFragment
                                 }));
                     }
                 }, new TimberOnErrorAction1("Error on dropdown of asset type")));
-
 
         // TODO: check if have better way after live API plug in
         liveTitleTextView = (TextView) view.findViewById(R.id.live_title);

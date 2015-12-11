@@ -1,6 +1,5 @@
 package com.tradehero.th.fragments.live;
 
-import com.tradehero.th.activities.LiveAccountSettingActivity;
 import com.tradehero.th.api.live.LivePositionListFragment;
 import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
 import com.tradehero.th.fragments.live.ayondo.FragmentAyondoModule;

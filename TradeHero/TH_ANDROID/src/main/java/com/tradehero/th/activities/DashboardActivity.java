@@ -211,7 +211,7 @@ public class DashboardActivity extends BaseActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
         {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(THThemeManager.getManager().getCurrentTheme(getApplicationContext()).statusBarColor());
+            window.setStatusBarColor(THThemeManager.getManager().getCurrentTheme(this).statusBarColor());
         }
     }
 
@@ -333,7 +333,7 @@ public class DashboardActivity extends BaseActivity
                         new TimberOnErrorAction1("Failed to load drawer")));
 
 //        drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.tradehero_blue_status_bar));
-        drawerLayout.setStatusBarBackgroundColor(THThemeManager.getManager().getCurrentTheme(getApplicationContext()).statusBarColor());
+        drawerLayout.setStatusBarBackgroundColor(THThemeManager.getManager().getCurrentTheme(this).statusBarColor());
 
         int width = DeviceUtil.getScreenWidth(this);
         Integer actionBarHeight = getActionBarHeight();
