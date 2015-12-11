@@ -223,7 +223,7 @@
                 <!--android:background="@color/white"/>-->
                 <Spinner
                     android:id="@+id/gender"
-                    android:layout_width="235dp"
+                    android:layout_width="225dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
@@ -265,7 +265,7 @@
                 <!--android:background="@color/white"/>-->
                 <Spinner
                     android:id="@+id/marital"
-                    android:layout_width="235dp"
+                    android:layout_width="225dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
