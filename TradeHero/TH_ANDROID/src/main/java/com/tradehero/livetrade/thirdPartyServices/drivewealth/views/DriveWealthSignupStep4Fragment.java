@@ -131,11 +131,12 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         return view;
     }
 
+
     private void initView() {
         firstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (firstName != null && firstName.getText() == null || !isChinese(firstName.getText().toString())) {
+                if (!hasFocus && firstName != null) {
+                    if (firstName.getText() == null || !isChinese(firstName.getText().toString())) {
                         THToast.show(R.string.name_error);
                     }
                 }
@@ -143,8 +144,8 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         });
         lastName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (lastName != null && lastName.getText() == null || !isChinese(lastName.getText().toString())) {
+                if (!hasFocus && lastName != null) {
+                    if (lastName.getText() == null || !isChinese(lastName.getText().toString())) {
                         THToast.show(R.string.name_error);
                     }
                 }
@@ -153,8 +154,8 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
 
         mBirthDateEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (mBirthDateEditText != null && mBirthDateEditText.getText() == null || !isDate(mBirthDateEditText.getText().toString())) {
+                if (!hasFocus && mBirthDateEditText != null) {
+                    if (mBirthDateEditText.getText() == null || !isDate(mBirthDateEditText.getText().toString())) {
                         THToast.show(R.string.date_error);
                     }
                 }
@@ -164,8 +165,8 @@ public class DriveWealthSignupStep4Fragment extends DriveWealthSignupBaseFragmen
         idNumber.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    if (idNumber != null && idNumber.getText() == null || idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
+                if (!hasFocus && idNumber != null) {
+                    if (idNumber.getText() == null || idNumber.getText().toString().isEmpty() || idNumber.getText().toString().length() < 18) {
                         THToast.show(R.string.id_number_hint);
                     }
                 }

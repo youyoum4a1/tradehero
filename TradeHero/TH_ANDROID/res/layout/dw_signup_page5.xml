@@ -97,6 +97,7 @@
                     android:hint="@string/company_hint"
                     android:textColorHint="#bfbfbf"
                     android:textColor="#000000"
+                    android:gravity="center"
                     android:background="@color/white"/>
             </RelativeLayout>
 
@@ -189,7 +190,7 @@
                         android:textSize="@dimen/text_medium" />
                     <EditText
                         android:id="@+id/stockCompanyNameInput"
-                        android:layout_width="260dp"
+                        android:layout_width="230dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
@@ -199,6 +200,7 @@
                         android:hint="@string/stock_company_hint"
                         android:textColorHint="#bfbfbf"
                         android:textColor="#000000"
+                        android:gravity="center"
                         android:background="@color/white" />
                 </RelativeLayout>
                 <RelativeLayout
@@ -216,7 +218,7 @@
                         android:textSize="@dimen/text_medium" />
                     <EditText
                         android:id="@+id/stockCompanyCodeInput"
-                        android:layout_width="260dp"
+                        android:layout_width="230dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
@@ -226,6 +228,7 @@
                         android:hint="@string/stock_company_code_hint"
                         android:textColorHint="#bfbfbf"
                         android:textColor="#000000"
+                        android:gravity="center"
                         android:background="@color/white"/>
                 </RelativeLayout>
             </LinearLayout>
@@ -278,7 +281,7 @@
                         android:textSize="@dimen/text_medium" />
                     <EditText
                         android:id="@+id/immediateFamilyNameInput"
-                        android:layout_width="220dp"
+                        android:layout_width="230dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
@@ -288,6 +291,7 @@
                         android:hint="@string/immediate_family_name_hint"
                         android:textColorHint="#bfbfbf"
                         android:textColor="#000000"
+                        android:gravity="center"
                         android:background="@color/white"/>
                 </RelativeLayout>
             </LinearLayout>
