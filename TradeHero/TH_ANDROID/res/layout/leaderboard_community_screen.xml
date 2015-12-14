@@ -37,6 +37,15 @@
         tools:background="@android:color/holo_red_dark"
         />
 
+      <include
+          layout="@layout/go_live_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentBottom="true"
+          android:layout_centerHorizontal="true"
+          android:layout_marginBottom="@dimen/margin_xxxxlarge"
+          />
+
   </RelativeLayout>
 
 
@@ -49,4 +58,6 @@
       />
 
 </com.tradehero.common.widget.BetterViewAnimator>
+
+
 

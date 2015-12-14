@@ -72,8 +72,16 @@ public class BaseLiveFragmentUtil
             setUpLiveWidgetBanner(f);
         }
 
-        if (liveButtonWidget != null) {
-            liveButtonWidget.setVisibility(View.GONE);
+        if (liveButtonWidget != null)
+        {
+            if (isLiveTrading.get() && !isLiveLogIn.get())
+            {
+                liveButtonWidget.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                liveButtonWidget.setVisibility(View.GONE);
+            }
         }
     }
 
