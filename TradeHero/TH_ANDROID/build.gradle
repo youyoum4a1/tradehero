@@ -31,7 +31,7 @@ repositories {
   mavenCentral()
   maven { url 'http://download.crashlytics.com/maven' }
   maven { url "https://github.com/dahlgren/pulltorefresh-aar/raw/master" }
-  maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
+//  maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
   maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
   maven { url 'http://ooo-maven.googlecode.com/hg/repository' }
   maven { url 'http://mobile-sdk.jumio.com' }
@@ -501,11 +501,11 @@ dependencies {
   compile("se.emilsjolander:stickylistheaders:${STICKY_LIST_HEADERS_VERSION}@aar") {
     exclude group: 'com.google.android', module: 'support-v4'
   }
-  compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
-    transitive = true
-    exclude group: 'com.nineoldandroids', module: 'library'
-    // exclude group: 'com.android.support', module: 'appcompat-v7'
-  }
+//  compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
+//    transitive = true
+//    exclude group: 'com.nineoldandroids', module: 'library'
+//    // exclude group: 'com.android.support', module: 'appcompat-v7'
+//  }
   compile('com.github.lawloretienne:quickreturn:0.0.1') {
     exclude group: 'com.android.support', module: 'support-v13'
     exclude group: 'com.jakewharton', module: 'butterknife'
