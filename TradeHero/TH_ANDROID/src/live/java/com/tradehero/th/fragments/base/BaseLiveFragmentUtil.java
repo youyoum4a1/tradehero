@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -15,6 +16,7 @@ import com.tradehero.th.activities.LiveActivityUtil;
 import com.tradehero.th.activities.LiveLoginActivity;
 import com.tradehero.th.activities.SignUpLiveActivity;
 import com.tradehero.th.api.kyc.EmptyKYCForm;
+import com.tradehero.th.fragments.CallToActionFragment;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.fastfill.FastFillUtil;
@@ -24,6 +26,7 @@ import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.persistence.prefs.LiveAvailability;
 import com.tradehero.th.persistence.prefs.LiveBrokerSituationPreference;
 import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.tradehero.th.widget.GoLiveButtonWidget;
 import com.tradehero.th.widget.GoLiveWidget;
 import javax.inject.Inject;
 import rx.Observable;
@@ -48,6 +51,9 @@ public class BaseLiveFragmentUtil
     @Inject DummyAyondoLiveServiceWrapper liveServiceWrapper;
 
     @Nullable @Bind(R.id.go_live_widget) GoLiveWidget liveWidget;
+    @Nullable @Bind(R.id.go_live_button_widget) GoLiveButtonWidget liveButtonWidget;
+
+    private CallToActionFragment callToActionFragment;
 
     public static BaseLiveFragmentUtil createFor(Fragment fragment, View view)
     {
@@ -64,6 +70,10 @@ public class BaseLiveFragmentUtil
         if (liveWidget != null)
         {
             setUpLiveWidgetBanner(f);
+        }
+
+        if (liveButtonWidget != null) {
+            liveButtonWidget.setVisibility(View.GONE);
         }
     }
 
@@ -158,6 +168,50 @@ public class BaseLiveFragmentUtil
     public void launchLiveLogin()
     {
         fragment.startActivityForResult(new Intent(fragment.getActivity(), LiveLoginActivity.class), CODE_PROMPT);
+    }
+
+    public void launchEngagementView()
+    {
+        if (callToActionFragment == null)
+        {
+            callToActionFragment = new CallToActionFragment();
+
+            if (fragment instanceof BaseFragment)
+            {
+                BaseFragment base = (BaseFragment) fragment;
+                callToActionFragment.setFragment(base);
+            }
+        }
+
+        FragmentTransaction fragmentTransaction = fragment.getFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.trending_main_container, callToActionFragment);
+        fragmentTransaction.commit();
+    }
+
+    public void dismissEngagementView()
+    {
+        if (callToActionFragment != null)
+        {
+            FragmentTransaction fragmentTransaction = fragment.getFragmentManager().beginTransaction();
+            fragmentTransaction.remove(callToActionFragment);
+            fragmentTransaction.commit();
+        }
+
+        if (isLiveTrading.get() && !isLiveLogIn.get())
+        {
+            if (liveButtonWidget != null)
+            {
+                liveButtonWidget.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    public void setGoLiveButtonWidgetVisibility(int visibility)
+    {
+        if (liveButtonWidget != null)
+        {
+            liveButtonWidget.setVisibility(visibility);
+        }
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data)

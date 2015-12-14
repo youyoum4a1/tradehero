@@ -37,7 +37,7 @@ public class CallToActionFragment extends BaseFragment
                 mainFragment.handleIsLive();
             }
         }
-        
+
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 

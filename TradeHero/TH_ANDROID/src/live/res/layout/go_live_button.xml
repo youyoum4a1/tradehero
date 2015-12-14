@@ -2,6 +2,7 @@
 
 <com.tradehero.th.widget.GoLiveButtonWidget
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/go_live_button_widget"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/basic_green_selector"

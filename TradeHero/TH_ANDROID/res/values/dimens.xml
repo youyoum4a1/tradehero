@@ -22,6 +22,7 @@
   <dimen name="margin_xlarge">@dimen/size_5</dimen>
   <dimen name="margin_xxlarge">@dimen/size_6</dimen>
   <dimen name="margin_xxxlarge">@dimen/size_7</dimen>
+  <dimen name="margin_xxxxlarge">@dimen/size_9</dimen>
 
   <!-- Size is a multiple of 8dp as suggested by Google Design Spec -->
   <!-- http://www.google.com/design/spec/layout/metrics-keylines.html#metrics-keylines-keylines-spacing -->
