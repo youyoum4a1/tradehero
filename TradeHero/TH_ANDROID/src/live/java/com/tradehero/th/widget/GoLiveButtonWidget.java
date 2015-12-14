@@ -12,9 +12,12 @@ import com.tradehero.th.R;
 
 public class GoLiveButtonWidget extends Button
 {
+    private Context context;
+
     public GoLiveButtonWidget(Context context)
     {
         super(context);
+        this.context = context;
         init();
     }
 

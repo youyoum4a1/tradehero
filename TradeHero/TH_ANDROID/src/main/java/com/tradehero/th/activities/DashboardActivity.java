@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -135,6 +136,7 @@ public class DashboardActivity extends BaseActivity
 
     @Bind(R.id.my_toolbar) Toolbar toolbar;
     @Bind(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
+    @Bind(R.id.content_frame) RelativeLayout layout;
     @Bind(R.id.drawer_content_container) ViewGroup drawerContents;
     @Bind(R.id.left_drawer) ViewGroup leftDrawerContainer;
     @Bind(android.R.id.tabhost) DashboardTabHost dashboardTabHost;
@@ -708,5 +710,15 @@ public class DashboardActivity extends BaseActivity
         Fragment currentFragmentName = activityModule.navigator.getCurrentFragment();
         Timber.e(new RuntimeException("LowMemory " + currentFragmentName), "%s", currentFragmentName);
         ActivityBuildTypeUtil.flagLowMemory();
+    }
+
+    public DashboardTabHost getDashboardTabHost()
+    {
+        return dashboardTabHost;
+    }
+
+    public RelativeLayout getLayout()
+    {
+        return layout;
     }
 }

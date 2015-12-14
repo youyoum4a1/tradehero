@@ -320,6 +320,7 @@ public class TrendingMainFragment extends DashboardFragment
                 if (callToActionFragment == null)
                 {
                     callToActionFragment = new CallToActionFragment();
+                    callToActionFragment.setFragment(this);
                 }
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -771,7 +772,7 @@ public class TrendingMainFragment extends DashboardFragment
         return trendingLiveFragmentUtil;
     }
 
-    private void handleIsLive()
+    public void handleIsLive()
     {
         if (assetTypeSpinner != null)
         {

@@ -5,6 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.RelativeLayout;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.th.R;
@@ -17,6 +20,7 @@ import com.tradehero.th.persistence.prefs.IsLiveTrading;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.THThemeManager;
 import com.tradehero.th.utils.route.THRouter;
+import com.tradehero.th.widget.GoLiveButtonWidget;
 import com.tradehero.th.widget.OffOnViewSwitcher;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
 import javax.inject.Inject;
@@ -137,8 +141,8 @@ public class LiveActivityUtil
 
     private void changeBarColor(OffOnViewSwitcherEvent event)
     {
-        int baseColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red : R.color.tradehero_red;
-        int statusBarColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red_status_bar : R.color.tradehero_red_status_bar;
+        //int baseColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red : R.color.tradehero_red;
+        //int statusBarColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red_status_bar : R.color.tradehero_red_status_bar;
         //        int bottomColorRes = isLiveColorRed.get() ? R.color.tradehero_test_red : R.drawable.tradehero_bottom_tab_indicator_red;
 
         //if (activity.getSupportActionBar() != null)
@@ -161,6 +165,16 @@ public class LiveActivityUtil
                 dashboardActivity.dashboardTabHost.getTabWidget().getChildAt(i)
                         .setBackgroundResource(THThemeManager.getManager().getCurrentTheme(activity).tabBarColor());
             }
+
+            //RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            //params.setMargins(0, 0, 0, 100);
+            //params.addRule(RelativeLayout.ABOVE, dashboardActivity.getDashboardTabHost().getId());
+            //params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            //
+            //GoLiveButtonWidget button = new GoLiveButtonWidget(dashboardActivity.getBaseContext());
+            //button.setLayoutParams(params);
+            //
+            //dashboardActivity.getLayout().addView(button);
         }
     }
 

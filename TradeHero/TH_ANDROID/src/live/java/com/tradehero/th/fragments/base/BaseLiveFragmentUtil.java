@@ -71,12 +71,14 @@ public class BaseLiveFragmentUtil
     {
         if (isLiveTrading.get() || isLiveLogIn.get())
         {
-            liveWidget.setVisibility(View.GONE);
+            if (liveWidget != null)
+            {
+                liveWidget.setVisibility(View.GONE);
+            }
         }
 
         if (liveBrokerSituationPreference.get().kycForm != null && liveBrokerSituationPreference.get().kycForm.getEmail() != null)
         {
-            Timber.d(liveBrokerSituationPreference.get().kycForm.toString());
             liveWidget.updateButtonImage(R.drawable.live_banner_on_going_user);
         }
 
@@ -113,13 +115,13 @@ public class BaseLiveFragmentUtil
                 });
     }
 
-    public static void setDarkBackgroundColor(boolean isLive, View... views)
-    {
-        for (View v : views)
-        {
-            v.setBackgroundColor(v.getContext().getResources().getColor(isLive ? R.color.tradehero_dark_red : R.color.tradehero_dark_blue));
-        }
-    }
+    //public static void setDarkBackgroundColor(boolean isLive, View... views)
+    //{
+    //    for (View v : views)
+    //    {
+    //        v.setBackgroundColor(v.getContext().getResources().getColor(isLive ? R.color.tradehero_dark_red : R.color.tradehero_dark_blue));
+    //    }
+    //}
 
     public static void setBackgroundColor(boolean isLive, View... views)
     {
@@ -129,13 +131,13 @@ public class BaseLiveFragmentUtil
         }
     }
 
-    public static void setSelectableBackground(boolean isLive, View... views)
-    {
-        for (View v : views)
-        {
-            v.setBackgroundResource(isLive ? R.drawable.basic_red_selector : R.drawable.basic_blue_selector);
-        }
-    }
+    //public static void setSelectableBackground(boolean isLive, View... views)
+    //{
+    //    for (View v : views)
+    //    {
+    //        v.setBackgroundResource(isLive ? R.drawable.basic_red_selector : R.drawable.basic_blue_selector);
+    //    }
+    //}
 
     public void onDestroyView()
     {
