@@ -3,6 +3,7 @@ package com.tradehero.th.widget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -14,6 +15,7 @@ import rx.android.view.OnClickEvent;
 import rx.Observable;
 import rx.android.view.ViewObservable;
 
+// Live Call to action Banner - pre 3.4
 public class GoLiveWidget extends FrameLayout
 {
     @Bind(R.id.go_live_button) ImageButton goLiveButton;
@@ -51,7 +53,7 @@ public class GoLiveWidget extends FrameLayout
 
     public void updateButtonImage(int resourceId)
     {
-        goLiveButton.setImageDrawable(getResources().getDrawable(resourceId));
+        goLiveButton.setImageDrawable(ContextCompat.getDrawable(getContext(), resourceId));
     }
 
     public Observable<OnClickEvent> getGoLiveButtonClickedObservable()
