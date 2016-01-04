@@ -1,6 +1,14 @@
 package com.tradehero.th.fragments.security;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -11,6 +19,7 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -22,6 +31,7 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.utils.DateUtils;
+import com.tradehero.th.utils.picasso.GrayscaleTransformation;
 import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
@@ -39,6 +49,7 @@ public class SecurityItemView extends RelativeLayout
     @Bind(R.id.country_logo) @Nullable ImageView countryLogo;
     @Bind(R.id.date) @Nullable TextView date;
     @Bind(R.id.sec_type) @Nullable TextView securityType;
+    @Bind(R.id.layout) RelativeLayout layout;
 
     protected SecurityCompactDTO securityCompactDTO;
     protected Map<SecurityId, AlertCompactDTO> alerts;
@@ -320,6 +331,31 @@ public class SecurityItemView extends RelativeLayout
         {
             picasso.load(securityCompactDTO.imageBlobUrl)
                     .into(stockLogo);
+
+            Picasso.with(getContext()).load(securityCompactDTO.imageBlobUrl)
+                    //.transform(new GrayscaleTransformation(Picasso.with(getContext())))
+                    .resize(600, 400)
+                    .centerInside()
+                    .into(new Target()
+                    {
+                        @Override public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from)
+                        {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                            {
+                                layout.setBackground(new BitmapDrawable(getResources(), bitmap));
+                            }
+                        }
+
+                        @Override public void onBitmapFailed(Drawable errorDrawable)
+                        {
+
+                        }
+
+                        @Override public void onPrepareLoad(Drawable placeHolderDrawable)
+                        {
+
+                        }
+                    });
         }
         else
         {
