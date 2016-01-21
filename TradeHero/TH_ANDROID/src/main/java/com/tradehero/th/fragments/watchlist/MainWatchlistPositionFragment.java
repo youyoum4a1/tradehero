@@ -19,9 +19,6 @@ import android.widget.AbsListView;
 import android.widget.ProgressBar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.fortysevendeg.swipelistview.BaseSwipeListViewListener;
-import com.fortysevendeg.swipelistview.SwipeListView;
-import com.fortysevendeg.swipelistview.SwipeListViewListener;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.metrics.Analytics;
@@ -56,11 +53,11 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     @Inject Analytics analytics;
 
     @Bind(android.R.id.empty) @Nullable protected ProgressBar progressBar;
-    @Bind(R.id.watchlist_swipe_listview) SwipeListView watchlistPositionListView;
+    //@Bind(R.id.watchlist_swipe_listview) SwipeListView watchlistPositionListView;
     @Bind(R.id.swipe_container) SwipeRefreshLayout watchListRefreshableContainer;
 
     private WatchlistAdapter watchListAdapter;
-    private BroadcastReceiver broadcastReceiver;
+    //private BroadcastReceiver broadcastReceiver;
 
     private WatchlistPositionDTOList watchlistPositionDTOs;
 
@@ -78,7 +75,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     {
         super.onCreate(savedInstanceState);
         watchListAdapter = createWatchlistAdapter();
-        broadcastReceiver = createBroadcastReceiver();
+        //broadcastReceiver = createBroadcastReceiver();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -91,17 +88,17 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        watchlistPositionListView.post(new Runnable()
-        {
-            @Override public void run()
-            {
-                MainWatchlistPositionFragment.this.setWatchlistOffset();
-            }
-        });
-        watchlistPositionListView.setEmptyView(view.findViewById(R.id.watchlist_position_list_empty_view));
-        watchlistPositionListView.setOnScrollListener(createListViewScrollListener());
-        watchlistPositionListView.setAdapter(watchListAdapter);
-        watchlistPositionListView.setSwipeListViewListener(createSwipeListViewListener());
+        //watchlistPositionListView.post(new Runnable()
+        //{
+        //    @Override public void run()
+        //    {
+        //        MainWatchlistPositionFragment.this.setWatchlistOffset();
+        //    }
+        //});
+        //watchlistPositionListView.setEmptyView(view.findViewById(R.id.watchlist_position_list_empty_view));
+        //watchlistPositionListView.setOnScrollListener(createListViewScrollListener());
+        //watchlistPositionListView.setAdapter(watchListAdapter);
+        //watchlistPositionListView.setSwipeListViewListener(createSwipeListViewListener());
         watchListRefreshableContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
@@ -156,23 +153,23 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     {
         super.onResume();
         analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_List));
-        LocalBroadcastManager.getInstance(this.getActivity())
-                .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
+        //LocalBroadcastManager.getInstance(this.getActivity())
+        //        .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
     }
 
     @Override public void onPause()
     {
         super.onPause();
-        LocalBroadcastManager.getInstance(this.getActivity())
-                .unregisterReceiver(broadcastReceiver);
+        //LocalBroadcastManager.getInstance(this.getActivity())
+        //        .unregisterReceiver(broadcastReceiver);
     }
 
     @Override public void onDestroyView()
     {
-        watchlistPositionListView.removeCallbacks(null);
-        watchlistPositionListView.setOnScrollListener(null);
-        watchlistPositionListView.setSwipeListViewListener(null);
-        watchlistPositionListView.removeCallbacks(null);
+        //watchlistPositionListView.removeCallbacks(null);
+        //watchlistPositionListView.setOnScrollListener(null);
+        //watchlistPositionListView.setSwipeListViewListener(null);
+        //watchlistPositionListView.removeCallbacks(null);
 
         watchListRefreshableContainer.setRefreshing(false);
         watchListRefreshableContainer.setOnRefreshListener(null);
@@ -183,7 +180,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
 
     @Override public void onDestroy()
     {
-        broadcastReceiver = null;
+        //broadcastReceiver = null;
         watchListAdapter = null;
 
         super.onDestroy();
@@ -194,28 +191,28 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         return new WatchlistAdapter(getActivity(), R.layout.watchlist_item_view);
     }
 
-    @NonNull protected BroadcastReceiver createBroadcastReceiver()
-    {
-        return new BroadcastReceiver()
-        {
-            @Override public void onReceive(Context context, Intent intent)
-            {
-                if (watchlistPositionListView != null)
-                {
-                    SecurityId deletedSecurityId = WatchlistItemView.getDeletedSecurityId(intent);
-                    if (deletedSecurityId != null)
-                    {
-                        WatchlistAdapter adapter = (WatchlistAdapter) watchlistPositionListView.getAdapter();
-                        adapter.remove(deletedSecurityId);
-                        adapter.notifyDataSetChanged();
-                        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Delete));
-                        watchlistPositionListView.closeOpenedItems();
-                        fetchWatchlistPositionList();
-                    }
-                }
-            }
-        };
-    }
+    //@NonNull protected BroadcastReceiver createBroadcastReceiver()
+    //{
+    //    return new BroadcastReceiver()
+    //    {
+    //        @Override public void onReceive(Context context, Intent intent)
+    //        {
+    //            if (watchlistPositionListView != null)
+    //            {
+    //                SecurityId deletedSecurityId = WatchlistItemView.getDeletedSecurityId(intent);
+    //                if (deletedSecurityId != null)
+    //                {
+    //                    WatchlistAdapter adapter = (WatchlistAdapter) watchlistPositionListView.getAdapter();
+    //                    adapter.remove(deletedSecurityId);
+    //                    adapter.notifyDataSetChanged();
+    //                    analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_Delete));
+    //                    watchlistPositionListView.closeOpenedItems();
+    //                    fetchWatchlistPositionList();
+    //                }
+    //            }
+    //        }
+    //    };
+    //}
 
     @NonNull protected AbsListView.OnScrollListener createListViewScrollListener()
     {
@@ -258,41 +255,41 @@ public class MainWatchlistPositionFragment extends DashboardFragment
                 });
     }
 
-    public void setWatchlistOffset()
-    {
-        if (watchlistPositionListView != null)
-        {
-            watchlistPositionListView.setOffsetLeft(watchlistPositionListView.getWidth() -
-                    getResources().getDimension(R.dimen.watchlist_item_button_width)
-                            * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
-        }
-    }
-
-    protected SwipeListViewListener createSwipeListViewListener()
-    {
-        return new WatchlistPositionFragmentSwipeListViewListener();
-    }
-
-    protected class WatchlistPositionFragmentSwipeListViewListener extends BaseSwipeListViewListener
-    {
-        @Override public void onClickFrontView(int position)
-        {
-            super.onClickFrontView(position);
-            openWatchlistItemEditor(position);
-        }
-
-        @Override public void onStartOpen(int position, int action, boolean right)
-        {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_CellSwipe));
-            super.onStartOpen(position, action, right);
-        }
-
-        @Override public void onDismiss(int[] reverseSortedPositions)
-        {
-            super.onDismiss(reverseSortedPositions);
-            fetchWatchlistPositionList();
-        }
-    }
+    //public void setWatchlistOffset()
+    //{
+    //    if (watchlistPositionListView != null)
+    //    {
+    //        watchlistPositionListView.setOffsetLeft(watchlistPositionListView.getWidth() -
+    //                getResources().getDimension(R.dimen.watchlist_item_button_width)
+    //                        * NUMBER_OF_WATCHLIST_SWIPE_BUTTONS_BEHIND);
+    //    }
+    //}
+    //
+    //protected SwipeListViewListener createSwipeListViewListener()
+    //{
+    //    return new WatchlistPositionFragmentSwipeListViewListener();
+    //}
+    //
+    //protected class WatchlistPositionFragmentSwipeListViewListener extends BaseSwipeListViewListener
+    //{
+    //    @Override public void onClickFrontView(int position)
+    //    {
+    //        super.onClickFrontView(position);
+    //        openWatchlistItemEditor(position);
+    //    }
+    //
+    //    @Override public void onStartOpen(int position, int action, boolean right)
+    //    {
+    //        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_CellSwipe));
+    //        super.onStartOpen(position, action, right);
+    //    }
+    //
+    //    @Override public void onDismiss(int[] reverseSortedPositions)
+    //    {
+    //        super.onDismiss(reverseSortedPositions);
+    //        fetchWatchlistPositionList();
+    //    }
+    //}
 
     protected void fetchWatchlistPositionList()
     {
