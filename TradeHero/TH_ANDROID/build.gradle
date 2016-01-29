@@ -23,7 +23,6 @@ apply plugin: 'crashlytics'
 
 repositories {
     jcenter()
-    maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
     maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
     maven { url 'http://download.crashlytics.com/maven' }
 }
@@ -134,9 +133,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
     compile 'com.nineoldandroids:library:2.4.0'
-    compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
-        exclude group: 'com.nineoldandroids', module: 'library'
-    }
     compile('se.emilsjolander:stickylistheaders:2.5.2@aar') {
         exclude group: 'com.google.android', module: 'support-v4'
     }
