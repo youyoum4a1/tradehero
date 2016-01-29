@@ -29,6 +29,7 @@ import com.tradehero.livetrade.SecurityOptPhoneNumBindFragment;
 import com.tradehero.livetrade.data.LiveTradeSessionDTO;
 import com.tradehero.livetrade.services.LiveTradeCallback;
 import com.tradehero.livetrade.services.LiveTradeManager;
+import com.tradehero.livetrade.thirdPartyServices.drivewealth.views.DriveWealthSignupStep1Fragment;
 import com.tradehero.livetrade.thirdPartyServices.haitong.HaitongUtils;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.TradeHeroMainActivity;
@@ -324,10 +325,10 @@ public class TradeOfMineFragment extends DashboardFragment implements View.OnCli
                 enterSecurityOptRecall();
                 break;
             case R.id.security_firm_bargain:
-                enterSecurityFirmBargain();
+                // TODO US stock live trade
                 break;
             case R.id.security_open_account:
-                enterSecurityOpenAccount();
+                gotoDashboard(DriveWealthSignupStep1Fragment.class);
                 break;
         }
     }

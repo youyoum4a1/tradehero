@@ -54,8 +54,6 @@ public class CompetitionCreateFragment extends DashboardFragment
     @InjectView(R.id.spCreateCompetitionPeriod) Spinner spCompetitionPerid;
     @InjectView(R.id.cbCreateCompetitionInvite) CheckBox cbCompetitionInvite;
 
-    @InjectView(R.id.cbExchangeCH) CheckBox cbExchangeCH;
-    @InjectView(R.id.cbExchangeHK) CheckBox cbExchangeHK;
     @InjectView(R.id.cbExchangeAM) CheckBox cbExchangeAM;
 
     public SpinnerExchangeIconAdapter spinnerIconAdapterPeriod;
@@ -129,7 +127,7 @@ public class CompetitionCreateFragment extends DashboardFragment
 
     public int[] getExchangeIds()
     {
-        return CompetitionUtils.getExchanges(cbExchangeCH.isChecked(), cbExchangeHK.isChecked(), cbExchangeAM.isChecked());
+        return CompetitionUtils.getExchanges(false, false, cbExchangeAM.isChecked());
     }
 
     public void showErrorCreateCompetition()
@@ -171,7 +169,7 @@ public class CompetitionCreateFragment extends DashboardFragment
         tradehero_blue = getActivity().getResources().getColor(R.color.tradehero_blue);
         initSpinnerViewPeriod();
         cbCompetitionInvite.setChecked(true);
-        cbExchangeCH.setChecked(true);
+        cbExchangeAM.setChecked(true);
     }
     @Override public void onDestroyView()
     {
@@ -259,7 +257,7 @@ public class CompetitionCreateFragment extends DashboardFragment
         {
             return CREATE_COMPETITION_ERROR_INTRO;
         }
-        if ((!cbExchangeAM.isChecked()) && (!cbExchangeHK.isChecked()) && (!cbExchangeCH.isChecked()))
+        if (!cbExchangeAM.isChecked())
         {
             return CREATE_COMPETITION_ERROR_EXCHANGE;
         }

@@ -116,18 +116,6 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                     <CheckBox
-                            android:id="@+id/cbExchangeCH"
-                            style="@style/CustomCheckboxTheme"
-                            android:layout_marginTop="5dp"
-                            android:textSize="16sp"
-                            android:text="  沪深-沪市，深市"/>
-                    <CheckBox
-                            android:id="@+id/cbExchangeHK"
-                            style="@style/CustomCheckboxTheme"
-                            android:layout_marginTop="5dp"
-                            android:textSize="16sp"
-                            android:text="  港股-港交所"/>
-                    <CheckBox
                             android:id="@+id/cbExchangeAM"
                             style="@style/CustomCheckboxTheme"
                             android:layout_marginTop="5dp"

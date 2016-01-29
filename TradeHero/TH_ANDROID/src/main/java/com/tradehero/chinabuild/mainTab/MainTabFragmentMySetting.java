@@ -118,11 +118,7 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
         View view = inflater.inflate(R.layout.main_tab_fragment_me_layout, container, false);
         ButterKnife.inject(this, view);
 
-        openAccountBtn = (View)view.findViewById(R.id.security_open_account);
-        openAccountBtn.setOnClickListener(this);
-        loginAccountBtn = (View)view.findViewById(R.id.security_firm_bargain);
-        loginAccountBtn.setOnClickListener(this);
-        nasdaqOpenAccountBtn = (View)view.findViewById(R.id.nasdaq_open_account);
+        nasdaqOpenAccountBtn = view.findViewById(R.id.nasdaq_open_account);
         nasdaqOpenAccountBtn.setOnClickListener(this);
 
         userProfileCacheListener = new UserProfileFetchListener();
@@ -158,12 +154,6 @@ public class MainTabFragmentMySetting extends AbsBaseFragment implements View.On
     public void onClick(View view) {
         int viewId = view.getId();
         switch (viewId){
-            case R.id.security_open_account:
-                enterSecurityOpenAccount();
-                break;
-            case R.id.security_firm_bargain:
-                enterSecurityFirmBargain();
-                break;
             case R.id.nasdaq_open_account:
                 gotoDashboard(DriveWealthSignupStep1Fragment.class.getName());
                 break;

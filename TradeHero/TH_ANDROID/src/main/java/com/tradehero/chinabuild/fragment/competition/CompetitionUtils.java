@@ -171,35 +171,10 @@ public class CompetitionUtils
         else
         {
             exchangeCompactDTOs = new ExchangeCompactDTOList();
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(26,"SHA","CN",0,"中国上海 SHA",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(27,"SHE","CN",0,"中国深圳 SHE",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(9,"HKEX","HK",0,"香港 HKEX",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(1,"NYSE","US",0,"美国 NYSE",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(6,"OTCBB","US",0,"美国 OTCBB",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(20,"AMEX","US",0,"美国 AMEX",false,true,false));
             exchangeCompactDTOs.add(new ExchangeCompactDTO(4,"NASDAQ","US",0,"美国 NASDAQ",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(2,"LSE","GB",0,"英国 LSE",false,true,false));
-            //exchangeCompactDTOs.add(new ExchangeCompactDTO(43,"INDEX","GB",0,"英国 INDEX",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(3,"SGX","SG",0,"新加坡 SGX",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(5,"ASX","AU",0,"澳大利亚 ASX",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(10,"PAR","FR",0,"法国 PAR",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(11,"AMS","NL",0,"荷兰 AMS",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(12,"BRU","BE",0,"比利时 BRU",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(13,"LIS","PT",0,"葡萄牙 LIS",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(16,"MLSE","IT",0,"意大利 MLSE",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(18,"TSX","CA",0,"加拿大 TSX",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(19,"TSXV","CA",0,"加拿大 TSXV",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(25,"NZX","NZ",0,"新西兰 NZX",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(29,"JKT","ID",0,"印尼 JKT",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(32,"KDQ","KR",0,"韩国 KDQ",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(34,"KRX","KR",0,"韩国 KRX",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(37,"TPE","TW",0,"台湾 TPE",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(38,"SET","TH",0,"泰国 SET",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(39,"PSE","PH",0,"菲律宾 PSE",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(41,"MYX","MY",0,"马来西亚 MYX",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(42,"NSE","IN",0,"印度 NSE",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(44,"BSE","IN",0,"印度 BSE",false,true,false));
-            exchangeCompactDTOs.add(new ExchangeCompactDTO(45,"TSE","JP",0,"日本 TSE",false,true,false));
             return exchangeCompactDTOs;
         }
     }
