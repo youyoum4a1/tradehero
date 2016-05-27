@@ -16,9 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.android.internal.util.Predicate;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
@@ -27,7 +25,6 @@ import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.StockChartActivity;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -64,15 +61,18 @@ import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.news.TimeSpanButtonSet;
-import dagger.Lazy;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import dagger.Lazy;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -143,7 +143,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Inject SecurityCompactCacheRx securityCompactCacheRx;
     @Inject Picasso picasso;
     @Inject ChartDTOFactory chartDTOFactory;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject FragmentOuterElements fragmentElements;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
@@ -268,7 +269,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         {
             @Override public void onTimeSpanButtonSelected(ChartTimeSpan selected)
             {
-                analytics.fireEvent(new ChartTimeEvent(securityId, selected));
+                //TODO Change Analytics
+                //analytics.fireEvent(new ChartTimeEvent(securityId, selected));
                 linkWith(selected);
             }
         };
@@ -614,12 +616,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         WatchlistEditFragment.putSecurityId(args, securityId);
         if (isAdd)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
             ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
         }
         else
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
             ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
         }
         if (navigator != null)

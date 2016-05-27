@@ -1,18 +1,21 @@
 package com.tradehero.th.utils.metrics;
 
 import android.content.Context;
+
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.base.THApp;
 import com.tradehero.th.utils.Constants;
-import dagger.Module;
-import dagger.Provides;
+
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 import static com.tradehero.th.utils.Constants.DOGFOOD_BUILD;
 import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_DEBUG;
@@ -44,13 +47,11 @@ public class MetricsModule
         return predefinedDimensions;
     }
 
-    @Provides @Singleton public Analytics provideAnalytics(Context context)
+    @Provides @Singleton public Void provideAnalytics(Context context)
     {
-        return Analytics.with(THApp.get(context))
-                .withLocalytics(LOCALYTICS_KEY)
-//                .withLocalytics(LOCALYTICS_KEY, LOCALYTICS_PUSH_ENABLED)
-                .withTalkingData(TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name())
-                .build();
+        //TODO Change Analytics
+        //return Analytics.with(THApp.get(context)).withLocalytics(LOCALYTICS_KEY).withTalkingData(TD_APP_ID_KEY, Constants.TAP_STREAM_TYPE.name()).build();
+        return null;
     }
 
     // TapStream

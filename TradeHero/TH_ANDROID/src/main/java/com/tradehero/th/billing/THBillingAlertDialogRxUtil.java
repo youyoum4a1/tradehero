@@ -9,7 +9,6 @@ import com.tradehero.common.billing.RequestCodeHolder;
 import com.tradehero.common.billing.restore.PurchaseRestoreResultWithError;
 import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityUtil;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -40,16 +39,19 @@ abstract public class THBillingAlertDialogRxUtil<
     public static final int MAX_RANDOM_RETRIES = 50;
 
     @NonNull protected final CurrentUserId currentUserId;
-    @NonNull protected final Analytics analytics;
+    //TODO Change Analytics
+    //@NonNull protected final Analytics analytics;
     protected String storeName;
 
     //<editor-fold desc="Constructors">
     public THBillingAlertDialogRxUtil(
-            @NonNull CurrentUserId currentUserId,
-            @NonNull Analytics analytics)
+            @NonNull CurrentUserId currentUserId)
     {
         this.currentUserId = currentUserId;
-        this.analytics = analytics;
+
+        //TODO Change Analytics
+        //Part of constructor
+        //this.analytics = analytics;
     }
     //</editor-fold>
 

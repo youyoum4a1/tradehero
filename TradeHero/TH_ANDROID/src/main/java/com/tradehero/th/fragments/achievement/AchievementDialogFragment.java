@@ -9,8 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
-import com.tradehero.metrics.Analytics;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.achievement.AchievementCategoryDTO;
 import com.tradehero.th.api.achievement.UserAchievementDTO;
@@ -21,11 +20,14 @@ import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.utils.SecurityUtils;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.AttributesEvent;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -39,7 +41,8 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject AchievementCategoryCacheRx achievementCategoryCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     //<editor-fold desc="Constructors">
     public AchievementDialogFragment()
@@ -149,7 +152,8 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
         collections.put(AnalyticsConstants.Trigger, AnalyticsConstants.Clicked);
         collections.put(AnalyticsConstants.Type, userAchievementDTOCopy.achievementDef.thName);
         collections.put(AnalyticsConstants.Level, String.valueOf(userAchievementDTOCopy.achievementDef.achievementLevel));
-        analytics.fireEvent(new AttributesEvent(AnalyticsConstants.AchievementNotificationScreen, collections));
+        //TODO Change Analytics
+        //analytics.fireEvent(new AttributesEvent(AnalyticsConstants.AchievementNotificationScreen, collections));
     }
 
     protected class AchievementValueAnimatorUpdateListener extends AbstractAchievementValueAnimatorUpdateListener

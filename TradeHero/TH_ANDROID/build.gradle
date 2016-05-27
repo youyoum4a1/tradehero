@@ -4,11 +4,17 @@ import java.util.regex.Pattern
 buildscript {
   repositories {
     mavenCentral()
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'https://maven.fabric.io/public' }
+    //crashlytics is fabric now
+    //maven { url 'http://download.crashlytics.com/maven' }
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:1.3.0'
-    classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+    classpath 'com.android.tools.build:gradle:2.1.0'
+    classpath 'io.fabric.tools:gradle:1.+'
+    //crashlytics is fabric now
+    //classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+
+
     //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
   }
 }
@@ -24,12 +30,12 @@ project.ext.versionPatch = Integer.parseInt((String) versionProps['VERSION_PATCH
 project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD'])
 
 apply plugin: 'com.android.application'
-apply plugin: 'crashlytics'
+apply plugin: 'io.fabric'
 
 repositories {
   maven { url "http://dl.bintray.com/populov/maven" }
   mavenCentral()
-  maven { url 'http://download.crashlytics.com/maven' }
+  maven { url 'https://maven.fabric.io/public' }
   maven { url "https://github.com/dahlgren/pulltorefresh-aar/raw/master" }
 //  maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
   maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
@@ -119,7 +125,7 @@ android {
 
   productFlavors {
     googleplay {
-      flavorDimension "marketSegment"
+      dimension "marketSegment"
       buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
 
       // Enabling multidex support.
@@ -127,7 +133,7 @@ android {
     }
 
     samsung {
-      flavorDimension "marketSegment"
+      dimension "marketSegment"
 
       // Enabling multidex support.
       multiDexEnabled true
@@ -136,26 +142,26 @@ android {
     }
 
     amazon {
-      flavorDimension "marketSegment"
+      dimension "marketSegment"
       proguardFile 'proguard/proguard-android-amazon.txt'
       // https://github.com/TradeHero/TH_ANDROID/wiki/Amazon
       //compileSdkVersion = [ 20 , "Amazon.com:Amazon Fire Phone SDK Addon:17" ]
     }
 
     game {
-      flavorDimension "liveOrNot"
+      dimension "liveOrNot"
     }
 
     live {
-      flavorDimension "liveOrNot"
+      dimension "liveOrNot"
     }
 
     airship {
-      flavorDimension "pushProvider"
+      dimension "pushProvider"
     }
 
     noPush {
-      flavorDimension "pushProvider"
+      dimension "pushProvider"
     }
   }
 
@@ -540,7 +546,11 @@ dependencies {
 
   compile("in.srain.cube:grid-view-with-header-footer:${GRID_VIEW_WITH_HEADER_VERSION}")
 
-  compile 'com.tradehero:metrics:2.1.1-SNAPSHOT'
+  //Dont need these anymore
+
+  //Deleted the dependency
+  //compile 'com.tradehero:metrics:2.1.1-SNAPSHOT'
+
   compile "com.squareup.dagger:dagger:${DAGGER_VERSION}"
   provided "com.squareup.dagger:dagger-compiler:${DAGGER_VERSION}"
   compile "io.reactivex:rxandroid:${RX_ANDROID_VERSION}"
@@ -553,7 +563,10 @@ dependencies {
   compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
   compile "com.android.support:support-annotations:${SUPPORT_V7_VERSION}"
-  releaseCompile 'com.crashlytics.android:crashlytics:1.+'
+  //releaseCompile 'com.crashlytics.android:crashlytics:1.+'
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+        transitive = true;
+    }
   compile("oauth.signpost:signpost-core:${SIGNPOST_VERSION}") {
     exclude group: 'commons-codec', module: 'commons-codec'
   }

@@ -18,14 +18,12 @@ import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ViewAnimator;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.HelpActivity;
@@ -50,7 +48,6 @@ import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.users.UserProfileDTO;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.billing.THBillingInteractorRx;
 import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
 import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
 import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
@@ -78,7 +75,6 @@ import com.tradehero.th.fragments.tutorial.WithTutorial;
 import com.tradehero.th.models.position.PositionDTOUtils;
 import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
@@ -98,16 +94,18 @@ import com.tradehero.th.rx.dialog.AlertDialogRx;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiRecyclerScrollListener;
-import dagger.Lazy;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -137,7 +135,8 @@ public class PositionListFragment
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
     @Inject GetPositionsCacheRx getPositionsCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject SecurityIdCache securityIdCache;
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCacheRx portfolioCache;
@@ -520,12 +519,14 @@ public class PositionListFragment
         }
         else if (userAction instanceof PortfolioHeaderView.FollowUserAction)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
             return freeFollow(userAction.requested.getBaseKey());
         }
         else if (userAction instanceof PortfolioHeaderView.UnFollowUserAction)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Unfollow));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Unfollow));
             return unfollow(userAction.requested.getBaseKey());
         }
         throw new IllegalArgumentException("Unhandled PortfolioHeaderView.UserAction " + userAction);
@@ -779,12 +780,14 @@ public class PositionListFragment
             WatchlistEditFragment.putSecurityId(args, userAction.securityId);
             if (((StockActionBarRelativeLayout.WatchlistUserAction) userAction).add)
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
             }
             else
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
             }
             if (navigator != null)

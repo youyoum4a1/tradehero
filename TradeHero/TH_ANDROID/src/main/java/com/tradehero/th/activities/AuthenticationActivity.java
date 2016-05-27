@@ -8,10 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.Window;
+
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.social.SocialNetworkEnum;
 import com.tradehero.th.api.users.LoginSignUpFormDTO;
@@ -28,16 +28,17 @@ import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
+
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -53,7 +54,8 @@ import timber.log.Timber;
 
 public class AuthenticationActivity extends BaseActivity
 {
-    @Inject Analytics analytics;
+    //TODO Add code for Google Analytics
+    //@Inject Analytics analytics;
     @Inject DTOCacheUtilRx dtoCacheUtil;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> enumToAuthProviderMap;
     @Inject @SocialAuth Set<ActivityResultRequester> activityResultRequesters;
@@ -96,8 +98,9 @@ public class AuthenticationActivity extends BaseActivity
     @Override protected void onResume()
     {
         super.onResume();
-        analytics.tagScreen(AnalyticsConstants.Login_Register);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));
+        //TODO Add code for Google Analytics
+        //analytics.tagScreen(AnalyticsConstants.Login_Register);
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));
 
         if (socialButtonsSubscription == null || socialButtonsSubscription.isUnsubscribed())
         {

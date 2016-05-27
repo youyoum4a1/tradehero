@@ -3,8 +3,8 @@ package com.tradehero.th.fragments.leaderboard;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
@@ -28,10 +28,11 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
 import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
+
 import java.text.SimpleDateFormat;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
@@ -46,7 +47,8 @@ public class LeaderboardMarkUserListFragmentUtil
     @NonNull private final DashboardNavigator navigator;
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final LeaderboardDefCacheRx leaderboardDefCache;
-    @NonNull private final Analytics analytics;
+    //TODO Change Analytics
+    //@NonNull private final Analytics analytics;
     @NonNull private final ProviderUtil providerUtil;
 
     private BaseLeaderboardPagedRecyclerRxFragment fragment;
@@ -54,17 +56,19 @@ public class LeaderboardMarkUserListFragmentUtil
     private SubscriptionList onStopSubscriptions;
 
     //<editor-fold desc="Constructors">
+    //TODO Change Analytics
+    //4th argument was analytics
     @Inject public LeaderboardMarkUserListFragmentUtil(
             @NonNull DashboardNavigator navigator,
             @NonNull CurrentUserId currentUserId,
             @NonNull LeaderboardDefCacheRx leaderboardDefCache,
-            @NonNull Analytics analytics,
             @NonNull ProviderUtil providerUtil)
     {
         this.navigator = navigator;
         this.currentUserId = currentUserId;
         this.leaderboardDefCache = leaderboardDefCache;
-        this.analytics = analytics;
+        //TODO Change Analytics
+        //this.analytics = analytics;
         this.providerUtil = providerUtil;
     }
     //</editor-fold>
@@ -221,9 +225,10 @@ public class LeaderboardMarkUserListFragmentUtil
                                            int followType = userProfileDTO.getFollowType(userBaseDTO);
                                            if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
                                            {
-                                               analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success,
-                                                       AnalyticsConstants.Leaderboard));
+                                               //TODO Change Analytics
+                                               //analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
                                            }
+                                           //Previous codebase comments 3.3.1
                                            //else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
                                            //{
                                            //    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success,

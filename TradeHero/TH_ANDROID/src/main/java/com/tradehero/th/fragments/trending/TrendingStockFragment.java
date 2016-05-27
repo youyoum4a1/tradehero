@@ -11,11 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
 import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.LiveActivityUtil;
 import com.tradehero.th.api.alert.AlertCompactDTO;
@@ -52,13 +52,11 @@ import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ProfileEvent;
-import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
-import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
-import java.util.Collections;
+
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -75,7 +73,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private static final String KEY_TAB_TYPE_ID = TrendingMainFragment.class.getName() + ".tabTypeId";
 
     @Inject ProviderListCacheRx providerListCache;
-    @Inject Analytics analytics;
+    ////TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject ProviderUtil providerUtil;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
@@ -141,12 +140,12 @@ public class TrendingStockFragment extends TrendingBaseFragment
                             {
                                 @Override public void call(TrendingFilterTypeDTO trendingFilterTypeDTO)
                                 {
-                                    analytics.fireEvent(new TrendingFilterEvent(trendingFilterTypeDTO));
+                                    //TODO Change Analytics
+                                    //analytics.fireEvent(new TrendingFilterEvent(trendingFilterTypeDTO));
                                     if (Constants.RELEASE)
                                     {
-                                        analytics.localytics().setProfileAttribute(new ProfileEvent(
-                                                AnalyticsConstants.InterestedExchange,
-                                                Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
+                                        //TODO Change Analytics
+                                        //analytics.localytics().setProfileAttribute(new ProfileEvent(AnalyticsConstants.InterestedExchange, Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
                                     }
                                 }
                             })
@@ -486,7 +485,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleSecurityItemOnClick(@NonNull SecurityCompactDTO securityCompactDTO)
     {
-        analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
+        //TODO Change Analytics
+        //analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
         Bundle args = new Bundle();
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();

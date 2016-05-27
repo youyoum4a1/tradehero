@@ -15,12 +15,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
+
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
@@ -54,14 +50,20 @@ import com.tradehero.th.persistence.security.SecurityIdCache;
 import com.tradehero.th.persistence.trade.TradeListCacheRx;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
+
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -91,7 +93,8 @@ public class TradeListFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @Bind(R.id.trade_list) protected ListView tradeListView;
     @Bind(R.id.btn_trade_now) protected View buttonTrade;
@@ -412,12 +415,14 @@ public class TradeListFragment extends DashboardFragment
         WatchlistEditFragment.putSecurityId(args, userAction.securityId);
         if (userAction.add)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
             ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
         }
         else
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
             ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
         }
         if (navigator != null)

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.text.Spanned;
@@ -14,13 +15,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnClick;
-import android.support.annotation.Nullable;
+
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.DTOView;
 import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
@@ -37,11 +34,15 @@ import com.tradehero.th.models.number.THSignedPercentage;
 import com.tradehero.th.network.service.WatchlistServiceWrapper;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
+
 import java.text.DecimalFormat;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import dagger.Lazy;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
@@ -59,7 +60,8 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject Lazy<WatchlistServiceWrapper> watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject CurrentUserId currentUserId;
 
@@ -146,7 +148,8 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                                 Bundle args = new Bundle();
                                 BuySellStockFragment.putRequisite(args, requisite);
                                 navigator.get().pushFragment(BuySellStockFragment.class, args);
-                                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
+                                //TODO Change Analytics
+                                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to clicks")));

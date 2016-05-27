@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
 import com.tradehero.th.api.education.PagedVideoCategories;
@@ -15,8 +15,7 @@ import com.tradehero.th.api.education.VideoCategoryDTO;
 import com.tradehero.th.api.education.VideoCategoryDTOList;
 import com.tradehero.th.fragments.BasePagedListRxFragment;
 import com.tradehero.th.persistence.education.PaginatedVideoCategoryCacheRx;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
+
 import javax.inject.Inject;
 
 public class VideoCategoriesFragment extends BasePagedListRxFragment<
@@ -26,7 +25,8 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
         PaginatedVideoCategoryDTO>
 {
     @Inject PaginatedVideoCategoryCacheRx paginatedVideoCategoryCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -42,7 +42,8 @@ public class VideoCategoriesFragment extends BasePagedListRxFragment<
     @Override public void onResume()
     {
         super.onResume();
-        analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Academy));
+        //TODO Change Analytics
+        //analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Academy));
     }
 
     @Override @NonNull protected PagedViewDTOAdapterImpl<VideoCategoryDTO, VideoCategoryView> createItemViewAdapter()

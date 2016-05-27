@@ -1,13 +1,8 @@
 package com.tradehero.th.fragments.watchlist;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,13 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityId;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
 import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
@@ -33,10 +25,12 @@ import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
 import com.tradehero.th.fragments.security.WatchlistEditFragment;
 import com.tradehero.th.fragments.trending.TrendingMainFragment;
 import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiScrollListener;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -50,7 +44,8 @@ public class MainWatchlistPositionFragment extends DashboardFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @Bind(android.R.id.empty) @Nullable protected ProgressBar progressBar;
     //@Bind(R.id.watchlist_swipe_listview) SwipeListView watchlistPositionListView;
@@ -152,9 +147,9 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_List));
-        //LocalBroadcastManager.getInstance(this.getActivity())
-        //        .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_List));
+
     }
 
     @Override public void onPause()

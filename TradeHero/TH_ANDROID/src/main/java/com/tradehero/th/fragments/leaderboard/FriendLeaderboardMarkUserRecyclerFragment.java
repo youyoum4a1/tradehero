@@ -6,13 +6,12 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
+
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.rx.PairGetFirst;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.api.BaseResponseDTO;
@@ -34,12 +33,13 @@ import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.dialog.AlertDialogRx;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
+
 import java.util.Arrays;
+
 import javax.inject.Inject;
+
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -52,7 +52,8 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
         LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>,
         ProcessableLeaderboardFriendsDTO>
 {
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardFriendsCacheRx leaderboardFriendsCache;
     @Inject LeaderboardMarkUserListFragmentUtil fragmentUtil;
@@ -167,7 +168,8 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
     @Override public void onResume()
     {
         super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.FriendsLeaderboard_Filter_FoF));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.FriendsLeaderboard_Filter_FoF));
     }
 
     @Override public void onStop()
@@ -228,7 +230,8 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
 
     @NonNull protected Observable<Boolean> invite(@NonNull UserFriendsDTO userFriendsDTO)
     {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, userFriendsDTO.getAnalyticsTag()));
+        //TODO Change Analytics
+        //analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, userFriendsDTO.getAnalyticsTag()));
         if (userFriendsDTO instanceof UserFriendsLinkedinDTO || userFriendsDTO instanceof UserFriendsTwitterDTO)
         {
             InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();

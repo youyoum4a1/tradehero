@@ -20,8 +20,8 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Gallery;
 import android.widget.TextView;
+
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
@@ -45,14 +45,16 @@ import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.AnalyticsDuration;
-import com.tradehero.th.utils.metrics.events.AttributesEvent;
 import com.tradehero.th.utils.route.THRouter;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -77,7 +79,8 @@ public class NewsWebFragment extends WebViewFragment
 
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject protected SecurityMultiFetchAssistant securityMultiFetchAssistant;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject FragmentOuterElements fragmentElements;
     @Inject THRouter thRouter;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
@@ -336,7 +339,8 @@ public class NewsWebFragment extends WebViewFragment
         Map<String, String> collections = new HashMap<>();
         collections.put(AnalyticsConstants.PreviousScreen, previousScreen);
         collections.put(AnalyticsConstants.TimeOnScreen, AnalyticsDuration.sinceTimeMillis(beginTime).toString());
-        analytics.fireEvent(new AttributesEvent(AnalyticsConstants.NewsItem_Show, collections));
+        //TODO Change Analytics
+        //analytics.fireEvent(new AttributesEvent(AnalyticsConstants.NewsItem_Show, collections));
     }
 
     class CompactSecurityListAdapter extends ArrayAdapter<SecurityCompactDTO>

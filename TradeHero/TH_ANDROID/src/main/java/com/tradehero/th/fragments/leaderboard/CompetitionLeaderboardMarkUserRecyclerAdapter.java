@@ -14,12 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.OnClick;
+
 import com.squareup.picasso.Picasso;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+
+import butterknife.Bind;
+import butterknife.OnClick;
 
 public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO>
 {
@@ -32,23 +33,28 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
     @NonNull @Override
     protected LbmuHeaderViewHolder<LeaderboardItemDisplayDTO> createOwnRankingLbmuViewHolder(ViewGroup parent)
     {
-        return new CompetitionLbmuHeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(ownRankingRes, parent, false), picasso,
-                analytics);
+        //TODO Change Analytics
+        //3rd argument was analytics
+        return new CompetitionLbmuHeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(ownRankingRes, parent, false), picasso);
     }
 
     @NonNull @Override
     protected LbmuItemViewHolder<LeaderboardItemDisplayDTO> createLbmuItemViewholder(ViewGroup parent)
     {
-        return new CompetitionLbmuItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(itemLayoutRes, parent, false), picasso, analytics);
+        //TODO Change Analytics
+        //3rd argument was analytics
+        return new CompetitionLbmuItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(itemLayoutRes, parent, false), picasso);
     }
 
     public static class CompetitionLbmuItemViewHolder extends LbmuItemViewHolder<LeaderboardItemDisplayDTO>
     {
         @Bind(R.id.lbmu_item_prize) ImageView prizeIcon;
 
-        public CompetitionLbmuItemViewHolder(View itemView, Picasso picasso, Analytics analytics)
+        //TODO Change Analytics
+        // 3rd argument was analytics
+        public CompetitionLbmuItemViewHolder(View itemView, Picasso picasso)
         {
-            super(itemView, picasso, analytics);
+            super(itemView, picasso);
         }
 
         @Override public void onDisplay(LeaderboardItemDisplayDTO dto)
@@ -72,9 +78,11 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
         @Bind(R.id.lbmu_item_prize) ImageView prizeIcon;
         private ClickableSpan clickableSpan;
 
-        public CompetitionLbmuHeaderViewHolder(View itemView, Picasso picasso, Analytics analytics)
+        //TODO Change Analytics
+        //3rd argument is analytics
+        public CompetitionLbmuHeaderViewHolder(View itemView, Picasso picasso)
         {
-            super(itemView, picasso, analytics);
+            super(itemView, picasso);
         }
 
         @Override public void onDisplay(LeaderboardItemDisplayDTO dto)

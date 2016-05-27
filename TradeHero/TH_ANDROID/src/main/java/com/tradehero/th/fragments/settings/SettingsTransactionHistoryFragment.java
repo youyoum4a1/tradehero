@@ -10,10 +10,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import butterknife.ButterKnife;
-import butterknife.Bind;
+
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserTransactionHistoryDTOList;
@@ -22,9 +20,11 @@ import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.persistence.user.UserTransactionHistoryListCacheRx;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.rx.view.DismissDialogAction1;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -36,7 +36,8 @@ public class SettingsTransactionHistoryFragment extends BaseFragment
 
     @Inject UserTransactionHistoryListCacheRx userTransactionHistoryListCache;
     @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @Override public void onAttach(Activity activity)
     {
@@ -69,7 +70,8 @@ public class SettingsTransactionHistoryFragment extends BaseFragment
     @Override public void onStart()
     {
         super.onStart();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_TransactionHistory));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_TransactionHistory));
         fetchTransactionList();
     }
 

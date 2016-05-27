@@ -12,13 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnTextChanged;
+
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.MessageType;
@@ -38,11 +35,13 @@ import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.utils.metrics.events.TypeEvent;
-import dagger.Lazy;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnTextChanged;
+import dagger.Lazy;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -61,7 +60,8 @@ public class SendMessageFragment extends BaseFragment
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject protected MentionTaggedStockHandler mentionTaggedStockHandler;
 
     protected UserProfileDTO currentUserProfileDTO;
@@ -80,7 +80,8 @@ public class SendMessageFragment extends BaseFragment
     {
         super.onCreate(savedInstanceState);
         messageType = getMessageType(getArguments());
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.MessageComposer_Show));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.MessageComposer_Show));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -284,7 +285,8 @@ public class SendMessageFragment extends BaseFragment
     protected void handleDiscussionPosted(@NonNull DiscussionDTO discussionDTO)
     {
         THToast.show(R.string.broadcast_success);
-        analytics.addEvent(new TypeEvent(AnalyticsConstants.MessageComposer_Send, messageType.localyticsResource));
+        //TODO Change Analytics
+        //analytics.addEvent(new TypeEvent(AnalyticsConstants.MessageComposer_Send, messageType.localyticsResource));
         navigator.get().popFragment();
     }
 

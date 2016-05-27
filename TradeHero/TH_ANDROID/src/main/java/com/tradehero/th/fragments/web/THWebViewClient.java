@@ -10,21 +10,25 @@ import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.persistence.competition.ProviderListCacheRx;
-import dagger.Lazy;
+
 import java.util.List;
+
 import javax.inject.Inject;
+
+import dagger.Lazy;
 import timber.log.Timber;
 
 public class THWebViewClient extends WebViewClient
 {
     @Inject protected Lazy<ProviderListCacheRx> providerListCache;
     @Inject protected DashboardNavigator navigator;
-    @Inject protected Analytics analytics;
+    //TODO Change Analytics
+    //@Inject protected Analytics analytics;
     protected final Context context;
 
     private boolean clearCacheAfterFinishRequest = true;

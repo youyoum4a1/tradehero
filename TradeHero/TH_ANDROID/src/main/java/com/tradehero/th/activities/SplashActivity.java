@@ -1,20 +1,18 @@
 package com.tradehero.th.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.widget.TextView;
+
 import com.facebook.AppEventsLogger;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -27,14 +25,12 @@ import com.tradehero.th.persistence.prefs.ResetHelpScreens;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.MetricsModule;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
-import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.urbanairship.util.UriUtils;
-import dagger.Lazy;
+
 import javax.inject.Inject;
+
+import dagger.Lazy;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
@@ -47,7 +43,9 @@ public class SplashActivity extends BaseActivity
 
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject
+    //Analytics analytics;
     @Inject @AuthHeader String authToken;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
@@ -89,7 +87,8 @@ public class SplashActivity extends BaseActivity
     {
         super.onResume();
 
-        analytics.tagScreen(AnalyticsConstants.Loading);
+        //TODO Add code for Google Analytics
+        //analytics.tagScreen(AnalyticsConstants.Loading);
 
         AppEventsLogger.activateApp(this, SocialConstants.FACEBOOK_APP_ID);
 
@@ -105,9 +104,8 @@ public class SplashActivity extends BaseActivity
         {
             VersionUtils.logScreenMeasurements(this);
         }
-
-        analytics.addEvent(new AppLaunchEvent())
-                .addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
+        //TODO Add code for Google Analytics
+        //analytics.addEvent(new AppLaunchEvent()).addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
 
         if (firstLaunchPreference.get() || resetHelpScreens.get() || authToken == null)
         {

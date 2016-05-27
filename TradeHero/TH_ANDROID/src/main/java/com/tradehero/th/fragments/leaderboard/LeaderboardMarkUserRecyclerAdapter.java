@@ -11,11 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.OnClick;
+
 import com.squareup.picasso.Picasso;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.metrics.AnalyticsEvent;
 import com.tradehero.th.R;
 import com.tradehero.th.adapters.PagedRecyclerAdapter;
 import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
@@ -26,10 +23,12 @@ import com.tradehero.th.fragments.timeline.UserStatisticView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.models.user.follow.FollowUserAssistant;
 import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MarkdownTextView;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -46,7 +45,8 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
     @Nullable protected OwnedPortfolioId applicablePortfolioId;
 
     @Inject Picasso picasso;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @NonNull protected final PublishSubject<LeaderboardItemUserAction> userActionPublishSubject;
 
@@ -178,12 +178,14 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
     @NonNull protected LbmuHeaderViewHolder<T> createOwnRankingLbmuViewHolder(ViewGroup parent)
     {
-        return new LbmuHeaderViewHolder<>(LayoutInflater.from(parent.getContext()).inflate(ownRankingRes, parent, false), picasso, analytics);
+        //TODO Change Analytics
+        //3rd parameter was analytics
+        return new LbmuHeaderViewHolder<>(LayoutInflater.from(parent.getContext()).inflate(ownRankingRes, parent, false), picasso);
     }
 
     @NonNull protected LbmuItemViewHolder<T> createLbmuItemViewholder(ViewGroup parent)
     {
-        return new LbmuItemViewHolder<>(LayoutInflater.from(parent.getContext()).inflate(itemLayoutRes, parent, false), picasso, analytics);
+        return new LbmuItemViewHolder<>(LayoutInflater.from(parent.getContext()).inflate(itemLayoutRes, parent, false), picasso);
     }
 
     @Override public void onBindViewHolder(TypedViewHolder<T> holder, int position)
@@ -264,9 +266,13 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
     public static class LbmuHeaderViewHolder<T extends LeaderboardItemDisplayDTO> extends LbmuItemViewHolder<T>
     {
-        public LbmuHeaderViewHolder(View itemView, Picasso picasso, Analytics analytics)
+        //TODO Change Analytics
+        //3rd parameter was analytics
+        public LbmuHeaderViewHolder(View itemView, Picasso picasso)
         {
-            super(itemView, picasso, analytics);
+            //TODO Change Analytics
+            //3rd argument was analytics
+            super(itemView, picasso);
         }
 
         @Override public void onDisplay(T dto)
@@ -277,7 +283,8 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
 
     public static class LbmuItemViewHolder<T extends LeaderboardItemDisplayDTO> extends TypedViewHolder<T>
     {
-        private final Analytics analytics;
+        //TODO Change Analytics
+        //private final Analytics analytics;
         private final Picasso picasso;
         protected final PublishSubject<LeaderboardItemUserAction> userActionSubject;
 
@@ -293,12 +300,14 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         @Bind(R.id.leaderboard_user_item_follow) ImageButton lbmuFollowUser;
         @Nullable protected LeaderboardMarkedUserItemDisplayDto currentDto;
 
-        public LbmuItemViewHolder(View itemView, Picasso picasso, Analytics analytics)
+        public LbmuItemViewHolder(View itemView, Picasso picasso)
         {
             super(itemView);
             this.picasso = picasso;
             userActionSubject = PublishSubject.create();
-            this.analytics = analytics;
+            //TODO Change Analytics
+            //Part of constructor
+            //this.analytics = analytics;
         }
 
         @Override public void onDisplay(T dto)
@@ -369,7 +378,8 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         {
             if (this.currentDto != null)
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Profile));
                 userActionSubject.onNext(new LeaderboardItemUserAction(this.currentDto, UserActionType.PROFILE));
             }
         }
@@ -380,7 +390,8 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         {
             if (this.currentDto != null)
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Positions));
                 userActionSubject.onNext(new LeaderboardItemUserAction(this.currentDto, UserActionType.POSITIONS));
             }
         }
@@ -391,20 +402,23 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         {
             if (this.currentDto != null)
             {
-                AnalyticsEvent event;
+                //TODO Change Analytics
+                //AnalyticsEvent event;
                 LeaderboardItemUserAction userAction;
 
                 if (this.currentDto.isFollowing())
                 {
-                    event = new SimpleEvent(AnalyticsConstants.Leaderboard_Unfollow);
+                    //TODO Change Analytics
+                    //event = new SimpleEvent(AnalyticsConstants.Leaderboard_Unfollow);
                     userAction = new LeaderboardItemUserAction(this.currentDto, UserActionType.UNFOLLOW);
                 }
                 else
                 {
-                    event = new SimpleEvent(AnalyticsConstants.Leaderboard_Follow);
+                    //TODO Change Analytics
+                    //event = new SimpleEvent(AnalyticsConstants.Leaderboard_Follow);
                     userAction = new LeaderboardItemUserAction(this.currentDto, UserActionType.FOLLOW);
                 }
-                analytics.addEvent(event);
+                //analytics.addEvent(event);
                 userActionSubject.onNext(userAction);
             }
         }

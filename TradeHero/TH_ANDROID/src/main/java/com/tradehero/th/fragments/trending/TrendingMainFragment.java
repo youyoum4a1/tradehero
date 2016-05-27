@@ -18,12 +18,10 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.android.common.SlidingTabLayout;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
@@ -58,13 +56,16 @@ import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.OffOnViewSwitcher;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
+
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.app.AppObservable;
@@ -94,7 +95,8 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject THRouter thRouter;
     @Inject Toolbar toolbar;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
 
@@ -251,7 +253,8 @@ public class TrendingMainFragment extends DashboardFragment
         });
 
         initViews();
-        analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
+        //TODO Change Analytics
+        //analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
     }
 
     private void initViews()
