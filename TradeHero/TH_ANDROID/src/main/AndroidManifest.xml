@@ -181,11 +181,13 @@
     </service>
 
     <meta-data
-        android:name="com.crashlytics.ApiKey"
-        android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"/>
+        android:name="io.fabric.ApiKey"
+        android:value="3c3ead4115907f8dbc3133b7ed3c8c66f05daebf"
+        />
     <meta-data
         android:name="com.facebook.sdk.ApplicationId"
         android:value="@string/facebook_app_id"/>
+
 
     <receiver android:name="com.tradehero.common.utils.OnlineStateReceiver">
       <intent-filter>
