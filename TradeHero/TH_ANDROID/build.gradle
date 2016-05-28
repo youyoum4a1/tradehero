@@ -32,6 +32,7 @@ project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
+
 repositories {
   maven { url "http://dl.bintray.com/populov/maven" }
   mavenCentral()

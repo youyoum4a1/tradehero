@@ -22,6 +22,7 @@ import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
 import com.tradehero.th.UIModule;
 import com.tradehero.th.fragments.DashboardNavigator;
 import com.tradehero.th.fragments.DashboardTabHost;
+import com.tradehero.th.fragments.NavigationAnalyticsReporter;
 import com.tradehero.th.fragments.base.DashboardFragmentOuterElements;
 import com.tradehero.th.fragments.base.FragmentOuterElements;
 import com.tradehero.th.fragments.billing.StoreScreenFragment;
@@ -49,6 +50,7 @@ import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragm
 import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
 import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.dagger.AppModule;
+import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
 
 import javax.inject.Provider;
@@ -177,13 +179,13 @@ import dagger.Provides;
                 .build();
     }
 
-    /*@Provides @ForAnalytics
+    @Provides @ForAnalytics
     DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()
     {
-        //TODO Add code for Google Analytics
-        return new NavigationAnalyticsReporter(analytics, dashboardTabHost);
+        //TODO Add code for Google Analytics as second argument
+        return new NavigationAnalyticsReporter(dashboardTabHost);
 
-    }*/
+    }
 
     @Provides LiveActivityUtil provideLiveActivityUtil()
     {

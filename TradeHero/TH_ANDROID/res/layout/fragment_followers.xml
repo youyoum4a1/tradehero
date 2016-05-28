@@ -20,7 +20,6 @@
         android:fadingEdge="none"
         android:paddingBottom="@dimen/size_6"
         android:scrollbarStyle="outsideOverlay"
-        android:scrollbars="vertical"
         />
 
   </android.support.v4.widget.SwipeRefreshLayout>
