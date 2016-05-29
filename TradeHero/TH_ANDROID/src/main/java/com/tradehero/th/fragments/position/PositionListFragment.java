@@ -149,8 +149,9 @@ public class PositionListFragment
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
 
     @Bind(R.id.list_flipper) ViewAnimator listViewFlipper;
-    @Bind(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
-    @Bind(R.id.position_recycler_view) RecyclerView positionRecyclerView;
+    SwipeRefreshLayout swipeToRefreshLayout;
+    RecyclerView positionRecyclerView;
+
     @Bind(R.id.btn_help) ImageView btnHelp;
     @Bind(R.id.position_list_header_stub) ViewStub headerStub;
 
@@ -275,6 +276,8 @@ public class PositionListFragment
         if (savedInstanceState != null)
         {
             firstPositionVisible = savedInstanceState.getInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
+
+
         }
         return inflater.inflate(R.layout.fragment_positions_list, container, false);
     }
@@ -288,9 +291,19 @@ public class PositionListFragment
             @Override public void onClick(View v)
             {
                 HelpActivity.slideInFromRight(getActivity());
+                //viewpager
+                //Position chutiye maen dekhna hae
+                //inside files
+                //lot of shit
+                //try more breakpoints
             }
         });
-        positionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        swipeToRefreshLayout = (SwipeRefreshLayout) view.findViewById((R.id.swipe_to_refresh_layout));
+        positionRecyclerView = (RecyclerView) view.findViewById(R.id.position_recycler_view);
+
+        positionRecyclerView.setLayoutManager(layoutManager);
         positionRecyclerView.setHasFixedSize(true);
         positionRecyclerView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
@@ -300,6 +313,7 @@ public class PositionListFragment
                 PositionListFragment.this.refreshSimplePage();
             }
         });
+
     }
 
     protected void pushSecuritiesFragment()

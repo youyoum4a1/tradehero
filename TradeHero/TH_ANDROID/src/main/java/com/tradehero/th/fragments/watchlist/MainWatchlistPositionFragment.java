@@ -3,7 +3,6 @@ package com.tradehero.th.fragments.watchlist;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,7 +48,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
 
     @Bind(android.R.id.empty) @Nullable protected ProgressBar progressBar;
     //@Bind(R.id.watchlist_swipe_listview) SwipeListView watchlistPositionListView;
-    @Bind(R.id.swipe_container) SwipeRefreshLayout watchListRefreshableContainer;
+    //@Bind(R.id.swipe_container) SwipeRefreshLayout watchListRefreshableContainer;
 
     private WatchlistAdapter watchListAdapter;
     //private BroadcastReceiver broadcastReceiver;
@@ -94,13 +93,13 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         //watchlistPositionListView.setOnScrollListener(createListViewScrollListener());
         //watchlistPositionListView.setAdapter(watchListAdapter);
         //watchlistPositionListView.setSwipeListViewListener(createSwipeListViewListener());
-        watchListRefreshableContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        /*watchListRefreshableContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
             {
                 MainWatchlistPositionFragment.this.refreshValues();
             }
-        });
+        });*/
     }
 
     //<editor-fold desc="ActionBar Menu Actions">
@@ -166,8 +165,8 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         //watchlistPositionListView.setSwipeListViewListener(null);
         //watchlistPositionListView.removeCallbacks(null);
 
-        watchListRefreshableContainer.setRefreshing(false);
-        watchListRefreshableContainer.setOnRefreshListener(null);
+        //watchListRefreshableContainer.setRefreshing(false);
+        //watchListRefreshableContainer.setOnRefreshListener(null);
 
         ButterKnife.unbind(this);
         super.onDestroyView();
@@ -230,7 +229,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
                                 {
                                     maxOffsetY = offsetY;
                                 }
-                                watchListRefreshableContainer.setEnabled(offsetY == maxOffsetY);
+                                //watchListRefreshableContainer.setEnabled(offsetY == maxOffsetY);
                             }
                             else
                             {
@@ -239,7 +238,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
                         }
                         else
                         {
-                            watchListRefreshableContainer.setEnabled(false);
+                            //watchListRefreshableContainer.setEnabled(false);
                         }
                     }
 
@@ -305,7 +304,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
                         {
                             @Override public void call(Throwable e)
                             {
-                                watchListRefreshableContainer.setRefreshing(false);
+                                //watchListRefreshableContainer.setRefreshing(false);
                                 if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
                                 {
                                     THToast.show(MainWatchlistPositionFragment.this.getString(R.string.error_fetch_portfolio_watchlist));
@@ -326,7 +325,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         watchListAdapter.clear();
         watchListAdapter.addAll(watchlistPositionDTOs);
         watchListAdapter.notifyDataSetChanged();
-        watchListRefreshableContainer.setRefreshing(false);
+        //watchListRefreshableContainer.setRefreshing(false);
     }
 
     private void openWatchlistItemEditor(int position)
