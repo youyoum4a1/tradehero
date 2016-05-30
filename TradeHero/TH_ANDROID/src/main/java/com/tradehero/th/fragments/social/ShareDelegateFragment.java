@@ -7,8 +7,7 @@ import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ToggleButton;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.SocialLinkToggleButton;
 import com.tradehero.th.R;
@@ -27,8 +26,13 @@ import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.ViewArrayObservable;
 import com.tradehero.th.utils.SocialAlertDialogRxUtil;
+
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -51,8 +55,6 @@ public class ShareDelegateFragment
     @Bind(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
     @Nullable @Bind({
             R.id.btn_share_fb,
-            R.id.btn_share_li,
-            R.id.btn_share_tw,
             R.id.btn_share_wb})
     SocialLinkToggleButton[] socialLinkingButtons;
 

@@ -21,7 +21,7 @@
       app:networkType="facebook"
       />
 
-  <com.tradehero.common.widget.SocialLinkToggleButton
+  <!--<com.tradehero.common.widget.SocialLinkToggleButton
       android:id="@+id/btn_share_tw"
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_share_tw"
@@ -35,7 +35,7 @@
       android:background="@drawable/ic_share_li"
       android:visibility="invisible"
       app:networkType="linkedin"
-      />
+      />-->
 
   <ToggleButton
       android:id="@+id/btn_share_wechat"

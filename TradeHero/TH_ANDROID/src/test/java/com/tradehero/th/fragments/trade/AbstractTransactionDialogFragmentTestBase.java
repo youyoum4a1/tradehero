@@ -45,8 +45,8 @@ public abstract class AbstractTransactionDialogFragmentTestBase
     protected AbstractStockTransactionFragment abstractTransactionDialogFragment;
 
     @Nullable @Bind(R.id.btn_share_fb) protected ToggleButton mBtnShareFb;
-    @Bind(R.id.btn_share_li) protected ToggleButton mBtnShareLn;
-    @Nullable @Bind(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
+    //@Bind(R.id.btn_share_li) protected ToggleButton mBtnShareLn;
+    //@Nullable @Bind(R.id.btn_share_tw) protected ToggleButton mBtnShareTw;
     @Bind(R.id.btn_share_wb) protected ToggleButton mBtnShareWb;
     @Bind(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
 

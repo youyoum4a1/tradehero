@@ -25,7 +25,7 @@
       app:networkType="facebook"
       />
 
-  <Space android:layout_width="0dp"
+  <!--<Space android:layout_width="0dp"
       android:layout_weight="1"
       android:layout_height="wrap_content"/>
 
@@ -59,7 +59,7 @@
       android:textOn=""
       android:enabled="false"
       app:networkType="linkedin"
-      />
+      />-->
 
   <Space android:layout_width="0dp"
       android:layout_weight="1"
