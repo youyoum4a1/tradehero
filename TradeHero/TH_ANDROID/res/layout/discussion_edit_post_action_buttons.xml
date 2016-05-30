@@ -26,12 +26,14 @@
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_share_tw"
       app:networkType="twitter"
+      android:visibility="invisible"
       />
 
   <com.tradehero.common.widget.SocialLinkToggleButton
       android:id="@+id/btn_share_li"
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_share_li"
+      android:visibility="invisible"
       app:networkType="linkedin"
       />
 

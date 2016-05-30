@@ -28,8 +28,8 @@ public class ShareDestinationFactoryByResources implements ShareDestinationFacto
     {
         ArrayList<ShareDestination> allDestinations = new ArrayList<>();
         addIfListed(allDestinations, new FacebookShareDestination(), destinationIds);
-        addIfListed(allDestinations, new LinkedInShareDestination(), destinationIds);
-        addIfListed(allDestinations, new TwitterShareDestination(), destinationIds);
+        //addIfListed(allDestinations, new LinkedInShareDestination(), destinationIds);
+        //addIfListed(allDestinations, new TwitterShareDestination(), destinationIds);
         addIfListed(allDestinations, new WeChatShareDestination(), destinationIds);
         addIfListed(allDestinations, new WeiboShareDestination(), destinationIds);
         return allDestinations;

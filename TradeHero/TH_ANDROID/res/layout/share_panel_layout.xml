@@ -39,12 +39,14 @@
       android:checked="false"
       android:textOff=""
       android:textOn=""
+      android:visibility="invisible"
       android:enabled="false"
       app:networkType="twitter"
       />
 
   <Space android:layout_width="0dp"
       android:layout_weight="1"
+      android:visibility="invisible"
       android:layout_height="wrap_content"/>
 
   <com.tradehero.common.widget.SocialLinkToggleButton
@@ -57,12 +59,14 @@
       android:checked="false"
       android:textOff=""
       android:textOn=""
+      android:visibility="invisible"
       android:enabled="false"
       app:networkType="linkedin"
       />
 
   <Space android:layout_width="0dp"
       android:layout_weight="1"
+      android:visibility="invisible"
       android:layout_height="wrap_content"/>
 
   <ToggleButton

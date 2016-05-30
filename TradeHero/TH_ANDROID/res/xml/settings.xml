@@ -14,9 +14,10 @@
         android:enabled="false"
         />
 
-    <CheckBoxPreference
+    <!--<CheckBoxPreference
         android:key="@string/key_settings_sharing_twitter"
         android:title="@string/settings_sharing_twitter"
+        android:visibility="invisible"
         android:icon="@drawable/settings_tweet_normal"
         android:enabled="false"
         />
@@ -24,9 +25,10 @@
     <CheckBoxPreference
         android:key="@string/key_settings_sharing_linked_in"
         android:title="@string/settings_sharing_linked_in"
+        android:visibility="invisible"
         android:icon="@drawable/settings_linkedin_normal"
         android:enabled="false"
-        />
+        />-->
 
     <CheckBoxPreference
         android:key="@string/key_settings_sharing_weibo"
