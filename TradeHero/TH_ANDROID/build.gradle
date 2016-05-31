@@ -72,7 +72,7 @@ android {
 
   compileSdkVersion 23
 
-  buildToolsVersion "22.0.1"
+  buildToolsVersion "23.0.3"
   //useOldManifestMerger=true
 
   dexOptions {

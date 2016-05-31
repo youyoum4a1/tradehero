@@ -12,8 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -35,12 +34,16 @@ import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
 import com.tradehero.th.rx.EmptyAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.widget.KYCAddressWidget;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -294,7 +297,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             Context context = getActivity().getApplicationContext();
-            getParentFragment().startActivityForResult(builder.build(context), requestCode);
+            getParentFragment().startActivityForResult(builder.build(getActivity()), requestCode);
         }
         catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e)
         {
