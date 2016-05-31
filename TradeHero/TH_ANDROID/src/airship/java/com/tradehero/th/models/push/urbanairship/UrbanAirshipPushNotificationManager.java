@@ -60,7 +60,8 @@ import timber.log.Timber;
     @NonNull @Override public Observable<PushNotificationManager.InitialisationCompleteDTO> initialise()
     {
         final long before = System.nanoTime();
-        UAirship.takeOff(THApp.context(), options);
+        UrbanAirshipPushModule a = new UrbanAirshipPushModule();
+        UAirship.takeOff(THApp.context(), a.provideAirshipConfigOptions(THApp.context));
         while (UAirship.shared() == null)
         {
             // We have to use the direct takeOff and do this to avoid a silly NPE in com.urbanairship.analytics.EventService

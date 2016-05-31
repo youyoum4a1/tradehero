@@ -564,7 +564,7 @@ dependencies {
   //compile 'io.reactivex:rxjava-joins:0.21.0'
   compile "com.jakewharton.timber:timber:${TIMBER_VERSION}"
 
-  compile 'com.urbanairship.android:urbanairship-sdk:7.0.+'
+  compile "com.urbanairship.android:urbanairship-sdk:${URBAN_AIRSHIP_VERSION}@aar"
   amazonCompile "com.amazon:amazon-device-messaging:${AMAZON_DEVICE_MESSAGING_VERSION}" // Should be amazonAirshipCompile, if Gradle was better
 
   compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
@@ -631,11 +631,11 @@ dependencies {
   }
 
   // Remove those when building for Amazon
-  releaseCompile "com.google.android.gms:play-services-base:${PLAY_SERVICES_VERSION}" // This one has fewer methods
-  releaseCompile "com.google.android.gms:play-services-gcm:${PLAY_SERVICES_VERSION}"
-  releaseCompile "com.google.android.gms:play-services-ads:${PLAY_SERVICES_VERSION}"
-  releaseCompile "com.google.android.gms:play-services-analytics:${PLAY_SERVICES_VERSION}"
-  liveCompile "com.google.android.gms:play-services-location:${PLAY_SERVICES_VERSION}"
+  compile "com.google.android.gms:play-services-base:${PLAY_SERVICES_VERSION}" // This one has fewer methods
+  compile "com.google.android.gms:play-services-gcm:${PLAY_SERVICES_VERSION}"
+  compile "com.google.android.gms:play-services-ads:${PLAY_SERVICES_VERSION}"
+  compile "com.google.android.gms:play-services-analytics:${PLAY_SERVICES_VERSION}"
+  compile "com.google.android.gms:play-services-location:${PLAY_SERVICES_VERSION}"
   //releaseCompile 'com.google.android.gms:play-services:6.1.+'
 }
 
