@@ -80,7 +80,7 @@ import timber.log.Timber;
                     {
                         final String channelId = uAirship.getPushManager().getChannelId();
                         UrbanAirshipPushNotificationManager.uAirship = uAirship;
-                        uAirship.getPushManager().setDeviceTagsEnabled(false);
+                        uAirship.getPushManager().setChannelTagRegistrationEnabled(false);
                         Timber.i("My UrbanAirship Application Channel ID below");
                         Timber.i("My UrbanAirship Application Channel ID: %s", channelId);
                         uAirship.getPushManager().setPushEnabled(true);

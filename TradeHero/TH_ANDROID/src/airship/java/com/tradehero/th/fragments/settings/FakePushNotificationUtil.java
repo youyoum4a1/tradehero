@@ -123,7 +123,7 @@ public class FakePushNotificationUtil
             message = "Value: " + actionResult.getValue();
         }
         return AlertDialogRx.build(activityContext)
-                .setTitle(actionResult.getStatus().name())
+                .setTitle(actionResult.getStatus())
                 .setMessage(message)
                 .setPositiveButton(R.string.ok)
                 .setCancelable(true)

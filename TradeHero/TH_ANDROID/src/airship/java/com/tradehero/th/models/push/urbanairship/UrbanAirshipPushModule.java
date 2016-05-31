@@ -20,16 +20,18 @@ public class UrbanAirshipPushModule
         AirshipConfigOptions options = null;
         try
         {
-            options = AirshipConfigOptions.loadDefaultOptions(context);
+            options = new AirshipConfigOptions.Builder().applyDefaultProperties(context).build();
+            //options = AirshipConfigOptions.loadDefaultOptions(context);
         } catch (Exception e)
         {
             Timber.e(e, "Failed to loadDefaultOptions");
-            return new AirshipConfigOptions();
+            return new AirshipConfigOptions.Builder().build();
         }
         if (Constants.DOGFOOD_BUILD)
         {
-            options.inProduction = false;
-            options.gcmSender = Constants.GCM_STAGING_SENDER;
+            //options.inProduction = false;
+            //options.gcmSender = Constants.GCM_STAGING_SENDER;
+            options = new AirshipConfigOptions.Builder().applyDefaultProperties(context).setInProduction(false).setGcmSender(Constants.GCM_STAGING_SENDER).build();
         }
         return options;
     }

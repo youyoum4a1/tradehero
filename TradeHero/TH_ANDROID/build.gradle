@@ -5,13 +5,14 @@ buildscript {
   repositories {
     mavenCentral()
     maven { url 'https://maven.fabric.io/public' }
+
     //crashlytics is fabric now
     //maven { url 'http://download.crashlytics.com/maven' }
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:2.1.0'
     classpath 'io.fabric.tools:gradle:1.+'
-    //classpath 'com.google.gms:google-services:3.0.0'
+    classpath 'com.google.gms:google-services:3.0.0'
     //crashlytics is fabric now
     //classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
 
@@ -32,7 +33,7 @@ project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
 
 
 repositories {
@@ -44,6 +45,7 @@ repositories {
   maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
   maven { url 'http://ooo-maven.googlecode.com/hg/repository' }
   maven { url 'http://mobile-sdk.jumio.com' }
+  maven { url  "https://urbanairship.bintray.com/android" }
 }
 
 project.ext.gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
@@ -86,9 +88,9 @@ android {
   }
 
   defaultConfig {
-    minSdkVersion 14
+    minSdkVersion 16
     targetSdkVersion 22
-
+    applicationId "com.tradehero.th"
     versionCode project.ext.versionBuild
     versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
 
@@ -109,7 +111,9 @@ android {
       proguardFile 'proguard/proguard-android-fast.txt'
       //zipAlign true
       // versionNameSuffix interferes with the version the server receives
-      applicationIdSuffix '.dev'
+      //This changes the package name and exception is thrown(Package not found exception for play services)
+      //We either have to register new play services with package name suffixed with .dev or just comment out this line
+      //applicationIdSuffix '.dev'
       versionNameSuffix '-dev'
 
       // Enabling multidex support.
@@ -560,7 +564,7 @@ dependencies {
   //compile 'io.reactivex:rxjava-joins:0.21.0'
   compile "com.jakewharton.timber:timber:${TIMBER_VERSION}"
 
-  airshipCompile "com.urbanairship:urbanairship-lib:${URBAN_AIRSHIP_VERSION}@aar"
+  compile 'com.urbanairship.android:urbanairship-sdk:7.0.+'
   amazonCompile "com.amazon:amazon-device-messaging:${AMAZON_DEVICE_MESSAGING_VERSION}" // Should be amazonAirshipCompile, if Gradle was better
 
   compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
