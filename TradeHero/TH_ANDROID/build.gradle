@@ -597,8 +597,8 @@ dependencies {
   releaseCompile "com.appsflyer:library:${APPS_FLYER_VERSION}"
   //provided 'com.kenai.nbpwr:edu-umd-cs-findbugs-annotations:1.3.2-201002241900'
 
-  liveCompile "com.jumio.android:jumio-mobile-sdk:${JUMIO_SDK_VERSION}@aar"
-  liveCompile "com.jumio.android:netverify-resources:${JUMIO_SDK_VERSION}@aar"
+  compile "com.jumio.android:core:${JUMIO_SDK_VERSION}@aar"
+  compile "com.jumio.android:nv:${JUMIO_SDK_VERSION}@aar"
   //  liveCompile "com.jumio.android:netswipe-resources:${JUMIO_SDK_VERSION}@aar"
   liveCompile "com.neovisionaries:nv-i18n:${NV_I18N_VERSION}"
   liveCompile "com.googlecode.libphonenumber:libphonenumber:${LIB_PHONE_NUMBER_VERSION}"
