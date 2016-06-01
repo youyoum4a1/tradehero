@@ -1,4 +1,4 @@
-package com.tradehero.th.api.purchase;
+package com.ayondo.academy.api.purchase;
 
 public class CreditPlanDTO
 {

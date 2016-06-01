@@ -1,16 +1,16 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.api.alert.UserAlertPlanDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.UserLeaderboardRankingDTO;
-import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.purchase.UserCreditPlanDTO;
-import com.tradehero.th.api.system.PriceDTO;
-import com.tradehero.th.api.users.specific.UserBaseKeyConstants;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.ayondo.academy.api.alert.UserAlertPlanDTO;
+import com.ayondo.academy.api.leaderboard.LeaderboardDTO;
+import com.ayondo.academy.api.leaderboard.UserLeaderboardRankingDTO;
+import com.ayondo.academy.api.leaderboard.key.UserOnLeaderboardKey;
+import com.ayondo.academy.api.portfolio.PortfolioDTO;
+import com.ayondo.academy.api.purchase.UserCreditPlanDTO;
+import com.ayondo.academy.api.system.PriceDTO;
+import com.ayondo.academy.api.users.specific.UserBaseKeyConstants;
+import com.ayondo.academy.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 import java.util.ArrayList;
 import java.util.List;
 

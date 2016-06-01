@@ -1,4 +1,4 @@
-package com.tradehero.th.api.discussion.newsfeed;
+package com.ayondo.academy.api.discussion.newsfeed;
 
 public class NewsfeedDiscussionDTO extends NewsfeedDTO
 {

@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.competition.zone.dto;
+package com.ayondo.academy.fragments.competition.zone.dto;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderDisplayCellDTO;
 
 public class CompetitionZoneWizardDTO extends CompetitionZoneDTO
 {

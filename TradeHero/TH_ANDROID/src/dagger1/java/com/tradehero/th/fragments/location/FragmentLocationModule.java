@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.location;
+package com.ayondo.academy.fragments.location;
 
 import dagger.Module;
 

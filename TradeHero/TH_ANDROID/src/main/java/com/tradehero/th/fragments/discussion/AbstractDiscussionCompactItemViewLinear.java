@@ -1,16 +1,16 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
-import com.tradehero.th.models.share.SocialShareTranslationHelper;
-import com.tradehero.th.network.share.dto.SocialDialogResult;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.models.share.SocialShareTranslationHelper;
+import com.ayondo.academy.network.share.dto.SocialDialogResult;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;

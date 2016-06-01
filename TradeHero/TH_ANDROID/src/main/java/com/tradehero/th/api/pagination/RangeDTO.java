@@ -1,4 +1,4 @@
-package com.tradehero.th.api.pagination;
+package com.ayondo.academy.api.pagination;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

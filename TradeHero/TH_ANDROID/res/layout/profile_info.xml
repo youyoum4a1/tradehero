@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-  <com.tradehero.th.fragments.settings.ProfileInfoView
+  <com.ayondo.academy.fragments.settings.ProfileInfoView
       android:orientation="vertical"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -13,7 +13,7 @@
       tools:background="@color/black"
       >
 
-    <com.tradehero.th.widget.validation.ValidatedText
+    <com.ayondo.academy.widget.validation.ValidatedText
         android:id="@+id/authentication_sign_up_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         app:delayValidationByMilliSec="500"
         />
 
-    <com.tradehero.th.widget.validation.PasswordValidatedText
+    <com.ayondo.academy.widget.validation.PasswordValidatedText
         android:id="@+id/authentication_sign_up_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
         app:delayValidationByMilliSec="1000"
         />
 
-    <com.tradehero.th.widget.validation.MatchingPasswordText
+    <com.ayondo.academy.widget.validation.MatchingPasswordText
         android:id="@+id/authentication_sign_up_confirm_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/margin_small">
 
-      <com.tradehero.th.widget.validation.DisplayNameValidatedText
+      <com.ayondo.academy.widget.validation.DisplayNameValidatedText
           android:id="@+id/authentication_sign_up_username"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
           app:delayValidationByMilliSec="500"
           app:progressIndicator="@+id/authentication_sign_up_username_validator"
           >
-      </com.tradehero.th.widget.validation.DisplayNameValidatedText>
+      </com.ayondo.academy.widget.validation.DisplayNameValidatedText>
 
       <ProgressBar
           android:id="@+id/authentication_sign_up_username_validator"
@@ -172,6 +172,6 @@
 
     </RelativeLayout>
 
-  </com.tradehero.th.fragments.settings.ProfileInfoView>
+  </com.ayondo.academy.fragments.settings.ProfileInfoView>
 
 </merge>

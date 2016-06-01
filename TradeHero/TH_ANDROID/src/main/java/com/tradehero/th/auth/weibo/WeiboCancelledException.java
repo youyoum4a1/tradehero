@@ -1,4 +1,4 @@
-package com.tradehero.th.auth.weibo;
+package com.ayondo.academy.auth.weibo;
 
 import java.util.concurrent.CancellationException;
 

@@ -1,16 +1,16 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.notification.NotificationListKey;
-import com.tradehero.th.api.notification.PaginatedNotificationDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.notification.DTOProcessorNotificationAllRead;
-import com.tradehero.th.models.notification.DTOProcessorNotificationRead;
-import com.tradehero.th.persistence.notification.NotificationCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.notification.NotificationDTO;
+import com.ayondo.academy.api.notification.NotificationKey;
+import com.ayondo.academy.api.notification.NotificationListKey;
+import com.ayondo.academy.api.notification.PaginatedNotificationDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.models.notification.DTOProcessorNotificationAllRead;
+import com.ayondo.academy.models.notification.DTOProcessorNotificationRead;
+import com.ayondo.academy.persistence.notification.NotificationCacheRx;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;

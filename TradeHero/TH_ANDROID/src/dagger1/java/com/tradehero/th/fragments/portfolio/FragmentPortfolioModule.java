@@ -1,7 +1,7 @@
-package com.tradehero.th.fragments.portfolio;
+package com.ayondo.academy.fragments.portfolio;
 
-import com.tradehero.th.fragments.portfolio.header.FragmentPortfolioHeaderModule;
-import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
+import com.ayondo.academy.fragments.portfolio.header.FragmentPortfolioHeaderModule;
+import com.ayondo.academy.fragments.portfolio.header.OtherUserPortfolioHeaderView;
 import dagger.Module;
 
 @Module(

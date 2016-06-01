@@ -1,4 +1,4 @@
-package com.tradehero.th.api.system;
+package com.ayondo.academy.api.system;
 
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKey;

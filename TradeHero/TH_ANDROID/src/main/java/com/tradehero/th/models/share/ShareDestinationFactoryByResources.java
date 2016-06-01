@@ -1,4 +1,4 @@
-package com.tradehero.th.models.share;
+package com.ayondo.academy.models.share;
 
 import android.content.Context;
 import android.content.res.Resources;

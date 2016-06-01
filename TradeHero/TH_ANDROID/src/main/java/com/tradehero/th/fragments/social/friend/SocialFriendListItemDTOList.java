@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.ayondo.academy.api.social.UserFriendsDTO;
+import com.ayondo.academy.api.social.UserFriendsDTOList;
 import java.util.ArrayList;
 import java.util.Collection;
 

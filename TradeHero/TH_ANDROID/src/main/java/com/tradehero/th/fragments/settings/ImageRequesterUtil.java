@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -15,7 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

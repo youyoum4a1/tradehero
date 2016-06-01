@@ -1,7 +1,7 @@
-package com.tradehero.th.models.social;
+package com.ayondo.academy.models.social;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class FollowRequest
 {

@@ -1,6 +1,6 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.alert.AlertPlanStatusDTO;
+import com.ayondo.academy.api.alert.AlertPlanStatusDTO;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;

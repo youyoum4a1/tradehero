@@ -1,4 +1,4 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,11 +13,11 @@ import com.jumio.nv.NetverifyDocumentData;
 import com.jumio.nv.NetverifySDK;
 import com.jumio.nv.data.document.NVDocumentType;
 import com.neovisionaries.i18n.CountryCode;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.models.fastfill.FastFillUtil;
-import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
-import com.tradehero.th.models.fastfill.ScannedDocument;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.models.fastfill.FastFillUtil;
+import com.ayondo.academy.models.fastfill.IdentityScannedDocumentType;
+import com.ayondo.academy.models.fastfill.ScannedDocument;
 
 import java.util.ArrayList;
 import java.util.HashMap;

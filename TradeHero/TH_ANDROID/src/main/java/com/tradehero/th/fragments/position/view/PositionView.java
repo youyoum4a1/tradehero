@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position.view;
+package com.ayondo.academy.fragments.position.view;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -8,17 +8,17 @@ import android.widget.LinearLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.position.partial.AbstractPartialBottomView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomClosedView;
-import com.tradehero.th.fragments.position.partial.PositionPartialBottomOpenView;
-import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.ExpandableListItem;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.position.PositionDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.fragments.position.partial.AbstractPartialBottomView;
+import com.ayondo.academy.fragments.position.partial.PositionPartialBottomClosedView;
+import com.ayondo.academy.fragments.position.partial.PositionPartialBottomOpenView;
+import com.ayondo.academy.fragments.position.partial.PositionPartialTopView;
+import com.ayondo.academy.inject.HierarchyInjector;
 import javax.inject.Inject;
 import timber.log.Timber;
 

@@ -1,12 +1,12 @@
-package com.tradehero.th.models.user.payment;
+package com.ayondo.academy.models.user.payment;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
-import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
-import com.tradehero.th.models.ThroughDTOProcessor;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.api.users.payment.UpdateAlipayAccountDTO;
+import com.ayondo.academy.api.users.payment.UpdateAlipayAccountFormDTO;
+import com.ayondo.academy.models.ThroughDTOProcessor;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 
 public class DTOProcessorUpdateAlipayAccount extends ThroughDTOProcessor<UpdateAlipayAccountDTO>
 {

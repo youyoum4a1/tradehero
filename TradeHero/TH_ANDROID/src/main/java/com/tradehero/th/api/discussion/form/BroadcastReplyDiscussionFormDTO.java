@@ -1,9 +1,9 @@
-package com.tradehero.th.api.discussion.form;
+package com.ayondo.academy.api.discussion.form;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.BroadcastDiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.key.BroadcastDiscussionKey;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
 
 public class BroadcastReplyDiscussionFormDTO extends ReplyDiscussionFormDTO
 {

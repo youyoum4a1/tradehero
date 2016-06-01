@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.authentication;
+package com.ayondo.academy.fragments.authentication;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.Button;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
 
 public class AuthenticationButton extends Button
 {

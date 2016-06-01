@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -13,17 +13,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedRecyclerAdapter;
-import com.tradehero.th.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.fragments.leaderboard.LeaderboardItemUserAction.UserActionType;
-import com.tradehero.th.fragments.timeline.UserStatisticView;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.widget.MarkdownTextView;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.PagedRecyclerAdapter;
+import com.ayondo.academy.api.leaderboard.key.FriendsPerPagedLeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardKey;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.fragments.leaderboard.LeaderboardItemUserAction.UserActionType;
+import com.ayondo.academy.fragments.timeline.UserStatisticView;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.user.follow.FollowUserAssistant;
+import com.ayondo.academy.utils.GraphicUtil;
+import com.ayondo.academy.widget.MarkdownTextView;
 
 import javax.inject.Inject;
 

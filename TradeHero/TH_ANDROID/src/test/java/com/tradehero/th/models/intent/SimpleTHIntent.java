@@ -1,8 +1,8 @@
-package com.tradehero.th.models.intent;
+package com.ayondo.academy.models.intent;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
 
 public class SimpleTHIntent extends THIntent
 {

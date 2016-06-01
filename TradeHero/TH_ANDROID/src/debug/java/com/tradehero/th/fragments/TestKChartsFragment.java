@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
-import com.tradehero.th.api.fx.FXCandleDTO;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.widget.KChartsView;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.fx.FXCandleDTO;
+import com.ayondo.academy.fragments.base.BaseFragment;
+import com.ayondo.academy.widget.KChartsView;
 import java.util.ArrayList;
 import java.util.List;
 

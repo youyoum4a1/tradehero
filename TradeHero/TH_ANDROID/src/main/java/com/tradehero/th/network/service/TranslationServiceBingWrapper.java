@@ -1,8 +1,8 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.translation.bing.BingTranslationResult;
-import com.tradehero.th.api.translation.bing.BingTranslationToken;
+import com.ayondo.academy.api.translation.bing.BingTranslationResult;
+import com.ayondo.academy.api.translation.bing.BingTranslationToken;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

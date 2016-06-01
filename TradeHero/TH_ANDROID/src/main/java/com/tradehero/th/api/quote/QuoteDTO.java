@@ -1,13 +1,13 @@
-package com.tradehero.th.api.quote;
+package com.ayondo.academy.api.quote;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.api.RawResponseKeeper;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.security.SecurityIntegerId;
+import com.ayondo.academy.api.RawResponseKeeper;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.security.SecurityIntegerId;
 import java.util.Date;
 import timber.log.Timber;
 

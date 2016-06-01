@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung.identifier;
+package com.ayondo.academy.billing.samsung.identifier;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,7 +7,7 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.billing.samsung.identifier.BaseSamsungProductIdentifierFetcherHolderRx;
-import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
+import com.ayondo.academy.billing.samsung.exception.THSamsungExceptionFactory;
 import javax.inject.Inject;
 
 public class THBaseSamsungProductIdentifierFetcherHolderRx

@@ -1,7 +1,7 @@
-package com.tradehero.th.api.education;
+package com.ayondo.academy.api.education;
 
 import com.tradehero.common.persistence.ContainerDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.ayondo.academy.api.pagination.PaginatedDTO;
 import java.util.List;
 
 public class PaginatedVideoCategoryDTO extends PaginatedDTO<VideoCategoryDTO>

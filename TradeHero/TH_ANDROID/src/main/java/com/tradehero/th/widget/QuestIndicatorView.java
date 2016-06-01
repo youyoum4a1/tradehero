@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -15,9 +15,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.achievement.QuestBonusDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.achievement.QuestBonusDTO;
 
 public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestBonusDTO>
 {

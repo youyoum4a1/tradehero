@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.social;
+package com.ayondo.academy.persistence.social;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonCreator;

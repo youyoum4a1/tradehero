@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung;
+package com.ayondo.academy.billing.samsung;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import org.junit.Ignore;

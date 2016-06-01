@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trade;
+package com.ayondo.academy.fragments.trade;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,17 +17,17 @@ import android.widget.RelativeLayout;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
-import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.position.PositionDTO;
+import com.ayondo.academy.api.quote.QuoteDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.fragments.security.BuySellBottomStockPagerAdapter;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
 
 import java.util.concurrent.TimeUnit;
 

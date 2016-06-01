@@ -1,4 +1,4 @@
-package com.tradehero.th.models.sms.twilio;
+package com.ayondo.academy.models.sms.twilio;
 
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;

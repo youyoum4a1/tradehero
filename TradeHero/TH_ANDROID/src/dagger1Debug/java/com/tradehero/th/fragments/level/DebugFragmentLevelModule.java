@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.level;
+package com.ayondo.academy.fragments.level;
 
 import dagger.Module;
 

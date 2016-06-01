@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.news;
+package com.ayondo.academy.fragments.news;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -14,10 +14,10 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.R;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.share.ShareDestination;
-import com.tradehero.th.models.share.ShareDestinationFactory;
+import com.ayondo.academy.R;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.share.ShareDestination;
+import com.ayondo.academy.models.share.ShareDestinationFactory;
 import java.util.Comparator;
 import javax.inject.Inject;
 import rx.Observable;

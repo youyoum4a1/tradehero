@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <com.tradehero.th.fragments.timeline.UserStatisticView
+  <com.ayondo.academy.fragments.timeline.UserStatisticView
       android:id="@+id/user_statistic_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -109,6 +109,6 @@
 
     </LinearLayout>
 
-  </com.tradehero.th.fragments.timeline.UserStatisticView>
+  </com.ayondo.academy.fragments.timeline.UserStatisticView>
 
 </merge>

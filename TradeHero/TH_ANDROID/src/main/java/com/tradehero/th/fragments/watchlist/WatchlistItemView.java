@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.watchlist;
+package com.ayondo.academy.fragments.watchlist;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,22 +18,22 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.trade.AbstractBuySellFragment;
+import com.ayondo.academy.fragments.trade.BuySellStockFragment;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.number.THSignedPercentage;
+import com.ayondo.academy.network.service.WatchlistServiceWrapper;
+import com.ayondo.academy.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
 
 import java.text.DecimalFormat;
 

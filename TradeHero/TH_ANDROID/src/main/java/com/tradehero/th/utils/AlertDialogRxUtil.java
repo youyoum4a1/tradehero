@@ -1,11 +1,11 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.rx.dialog.AlertDialogRx;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.misc.exception.THException;
+import com.ayondo.academy.rx.dialog.AlertDialogRx;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
 import java.util.concurrent.CancellationException;
 import rx.Observable;
 

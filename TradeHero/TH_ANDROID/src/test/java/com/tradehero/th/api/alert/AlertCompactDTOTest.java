@@ -1,11 +1,11 @@
-package com.tradehero.th.api.alert;
+package com.ayondo.academy.api.alert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.BaseApiTestClass;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.BaseApiTestClass;
+import com.ayondo.academy.base.TestTHApp;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;

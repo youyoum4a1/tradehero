@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.competition.zone;
+package com.ayondo.academy.fragments.competition.zone;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
-import com.tradehero.th.widget.list.BaseListHeaderView;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.ayondo.academy.widget.list.BaseListHeaderView;
 
 public class CompetitionZoneHeaderView extends BaseListHeaderView
     implements DTOView<CompetitionZoneDTO>

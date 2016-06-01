@@ -1,4 +1,4 @@
-package com.tradehero.th.auth.tencent_qq;
+package com.ayondo.academy.auth.tencent_qq;
 
 import com.tencent.tauth.UiError;
 

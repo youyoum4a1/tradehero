@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trade.view;
+package com.ayondo.academy.fragments.trade.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,9 +8,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.models.portfolio.MenuOwnedPortfolioId;
 import java.util.Set;
 import java.util.TreeSet;
 import rx.Observable;

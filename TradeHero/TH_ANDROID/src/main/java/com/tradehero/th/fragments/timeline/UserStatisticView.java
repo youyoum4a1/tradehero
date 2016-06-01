@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.timeline;
+package com.ayondo.academy.fragments.timeline;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,11 +10,11 @@ import butterknife.Bind;
 import android.support.annotation.Nullable;
 import com.tradehero.common.widget.GaugeView;
 import com.tradehero.common.widget.NumericalAnimatedTextView;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.models.number.THSignedNumber;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.leaderboard.LeaderboardDTO;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.models.number.THSignedNumber;
 import timber.log.Timber;
 
 public class UserStatisticView extends LinearLayout

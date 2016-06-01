@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.web;
+package com.ayondo.academy.fragments.web;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,12 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.WebView;
 
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.models.intent.THIntentFactory;
-import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderUtil;
+import com.ayondo.academy.models.intent.THIntent;
+import com.ayondo.academy.models.intent.THIntentFactory;
+import com.ayondo.academy.models.intent.THIntentPassedListener;
+import com.ayondo.academy.models.intent.competition.ProviderPageIntent;
 
 import javax.inject.Inject;
 
@@ -90,7 +90,7 @@ public class THWebViewIntentClient extends THWebViewClient
                         return true;
                     }
                 }
-                // Need to return true, coz it will be handled by THRouter, see {@link com.tradehero.th.models.intent.THIntentFactoryImpl#create()}
+                // Need to return true, coz it will be handled by THRouter, see {@link com.ayondo.academy.models.intent.THIntentFactoryImpl#create()}
                 return true;
             }
         }

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.level.key;
+package com.ayondo.academy.api.level.key;
 
 import com.tradehero.common.persistence.DTOKey;
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class LiveRewardWidget extends LinearLayout
 {

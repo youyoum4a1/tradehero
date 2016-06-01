@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -23,26 +23,26 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.BitmapTypedOutput;
-import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.widget.validation.DisplayNameValidatedText;
-import com.tradehero.th.widget.validation.DisplayNameValidator;
-import com.tradehero.th.widget.validation.MatchingPasswordText;
-import com.tradehero.th.widget.validation.PasswordConfirmTextValidator;
-import com.tradehero.th.widget.validation.PasswordValidatedText;
-import com.tradehero.th.widget.validation.TextValidator;
-import com.tradehero.th.widget.validation.ValidatedText;
-import com.tradehero.th.widget.validation.ValidatedView;
-import com.tradehero.th.widget.validation.ValidationMessage;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.form.UserFormDTO;
+import com.ayondo.academy.api.users.UserBaseDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.graphics.BitmapTypedOutput;
+import com.ayondo.academy.models.graphics.ForUserPhoto;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.utils.AlertDialogRxUtil;
+import com.ayondo.academy.utils.GraphicUtil;
+import com.ayondo.academy.widget.validation.DisplayNameValidatedText;
+import com.ayondo.academy.widget.validation.DisplayNameValidator;
+import com.ayondo.academy.widget.validation.MatchingPasswordText;
+import com.ayondo.academy.widget.validation.PasswordConfirmTextValidator;
+import com.ayondo.academy.widget.validation.PasswordValidatedText;
+import com.ayondo.academy.widget.validation.TextValidator;
+import com.ayondo.academy.widget.validation.ValidatedText;
+import com.ayondo.academy.widget.validation.ValidatedView;
+import com.ayondo.academy.widget.validation.ValidationMessage;
 import java.io.File;
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -57,7 +57,7 @@ import rx.functions.Func8;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
+import static com.ayondo.academy.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
 
 public class ProfileInfoView extends LinearLayout
         implements ActivityResultRequester

@@ -1,6 +1,6 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.translation.TranslationToken;
+import com.ayondo.academy.api.translation.TranslationToken;
 import retrofit.http.GET;
 import rx.Observable;
 

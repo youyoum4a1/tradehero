@@ -1,11 +1,11 @@
-package com.tradehero.th.api.discussion.key;
+package com.ayondo.academy.api.discussion.key;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.news.key.NewsItemDTOKey;
-import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.MessageHeaderDTO;
+import com.ayondo.academy.api.news.key.NewsItemDTOKey;
+import com.ayondo.academy.api.timeline.key.TimelineItemDTOKey;
 
 public class DiscussionKeyFactory
 {

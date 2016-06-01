@@ -1,4 +1,4 @@
-package com.tradehero.th.api.portfolio;
+package com.ayondo.academy.api.portfolio;
 
 public class DummyFxDisplayablePortfolioDTO extends DisplayablePortfolioDTO
 {

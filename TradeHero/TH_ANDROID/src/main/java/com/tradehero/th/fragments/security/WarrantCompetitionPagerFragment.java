@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,10 +13,10 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.security.WarrantType;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.security.WarrantType;
+import com.ayondo.academy.fragments.base.DashboardFragment;
 
 public class WarrantCompetitionPagerFragment extends DashboardFragment
 {

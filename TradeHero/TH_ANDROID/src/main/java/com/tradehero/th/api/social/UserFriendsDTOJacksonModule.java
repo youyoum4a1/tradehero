@@ -1,4 +1,4 @@
-package com.tradehero.th.api.social;
+package com.ayondo.academy.api.social;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonDeserializer;

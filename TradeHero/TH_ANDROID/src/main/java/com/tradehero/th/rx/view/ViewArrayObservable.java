@@ -1,4 +1,4 @@
-package com.tradehero.th.rx.view;
+package com.ayondo.academy.rx.view;
 
 import android.support.annotation.NonNull;
 import android.view.View;

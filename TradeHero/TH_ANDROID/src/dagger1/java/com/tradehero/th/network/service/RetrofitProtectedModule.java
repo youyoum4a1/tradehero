@@ -1,6 +1,6 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.network.NetworkConstants;
+import com.ayondo.academy.network.NetworkConstants;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon.identifier;
+package com.ayondo.academy.billing.amazon.identifier;
 
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;

@@ -1,4 +1,4 @@
-package com.tradehero.th.models.translation;
+package com.ayondo.academy.models.translation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

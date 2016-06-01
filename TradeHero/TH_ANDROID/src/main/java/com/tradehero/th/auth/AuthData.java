@@ -1,7 +1,7 @@
-package com.tradehero.th.auth;
+package com.ayondo.academy.auth;
 
 import android.util.Base64;
-import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;

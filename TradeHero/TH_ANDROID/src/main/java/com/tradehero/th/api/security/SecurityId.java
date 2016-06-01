@@ -1,11 +1,11 @@
-package com.tradehero.th.api.security;
+package com.ayondo.academy.api.security;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.api.portfolio.key.PortfolioCompactListKey;
+import com.ayondo.academy.api.portfolio.key.PortfolioCompactListKey;
 
 @RouteProperty
 public class SecurityId implements Comparable, PortfolioCompactListKey, DTO

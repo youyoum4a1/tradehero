@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence;
+package com.ayondo.academy.persistence;
 
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import dagger.Module;

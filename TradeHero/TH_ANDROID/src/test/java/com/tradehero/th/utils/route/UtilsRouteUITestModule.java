@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.route;
+package com.ayondo.academy.utils.route;
 
 import dagger.Module;
 

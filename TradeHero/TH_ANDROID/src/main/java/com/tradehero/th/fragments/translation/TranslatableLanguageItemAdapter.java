@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.translation;
+package com.ayondo.academy.fragments.translation;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.adapters.ArrayDTOAdapterNew;
-import com.tradehero.th.api.i18n.LanguageDTO;
-import com.tradehero.th.api.translation.UserTranslationSettingDTO;
+import com.ayondo.academy.adapters.ArrayDTOAdapterNew;
+import com.ayondo.academy.api.i18n.LanguageDTO;
+import com.ayondo.academy.api.translation.UserTranslationSettingDTO;
 
 public class TranslatableLanguageItemAdapter extends ArrayDTOAdapterNew<LanguageDTO, TranslatableLanguageItemLinearView>
 {

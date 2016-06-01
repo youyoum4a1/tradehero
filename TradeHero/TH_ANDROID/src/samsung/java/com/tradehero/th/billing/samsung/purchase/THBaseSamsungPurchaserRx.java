@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung.purchase;
+package com.ayondo.academy.billing.samsung.purchase;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,9 +6,9 @@ import com.samsung.android.sdk.iap.lib.vo.PurchaseVo;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.purchase.BaseSamsungPurchaserRx;
-import com.tradehero.th.billing.samsung.THSamsungOrderId;
-import com.tradehero.th.billing.samsung.THSamsungPurchase;
-import com.tradehero.th.billing.samsung.THSamsungPurchaseOrder;
+import com.ayondo.academy.billing.samsung.THSamsungOrderId;
+import com.ayondo.academy.billing.samsung.THSamsungPurchase;
+import com.ayondo.academy.billing.samsung.THSamsungPurchaseOrder;
 
 public class THBaseSamsungPurchaserRx
         extends BaseSamsungPurchaserRx<

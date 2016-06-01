@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay.identifier;
+package com.ayondo.academy.billing.googleplay.identifier;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,7 +8,7 @@ import com.tradehero.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.identifier.BaseIABProductIdentiferFetcherRx;
 import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
-import com.tradehero.th.billing.googleplay.THIABConstants;
+import com.ayondo.academy.billing.googleplay.THIABConstants;
 import java.util.HashMap;
 import java.util.Map;
 import rx.Observable;

@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;

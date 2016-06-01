@@ -1,4 +1,4 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;

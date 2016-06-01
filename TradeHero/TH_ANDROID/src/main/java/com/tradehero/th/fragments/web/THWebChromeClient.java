@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.web;
+package com.ayondo.academy.fragments.web;
 
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;

@@ -1,4 +1,4 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
 import android.animation.Keyframe;
 import android.animation.PropertyValuesHolder;
@@ -26,8 +26,8 @@ import android.view.View;
 import android.widget.ImageView;
 import com.tradehero.common.graphics.RotateTransformation;
 import com.tradehero.common.utils.SDKUtils;
-import com.tradehero.th.R;
-import com.tradehero.th.models.graphics.BitmapTypedOutput;
+import com.ayondo.academy.R;
+import com.ayondo.academy.models.graphics.BitmapTypedOutput;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

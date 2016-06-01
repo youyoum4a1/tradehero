@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.authentication;
+package com.ayondo.academy.fragments.authentication;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -16,14 +16,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.inject.Injector;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.GraphicUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.AuthenticationActivity;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.inject.Injector;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.GraphicUtil;
 import com.viewpagerindicator.PageIndicator;
 
 import javax.inject.Inject;

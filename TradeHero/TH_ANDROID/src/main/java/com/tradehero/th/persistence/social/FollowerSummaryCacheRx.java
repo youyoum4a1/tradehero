@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.social;
+package com.ayondo.academy.persistence.social;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.social.FollowerSummaryDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.service.FollowerServiceWrapper;
+import com.ayondo.academy.api.social.FollowerSummaryDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.network.service.FollowerServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

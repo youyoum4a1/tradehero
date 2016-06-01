@@ -1,6 +1,6 @@
-package com.tradehero.th;
+package com.ayondo.academy;
 
-import com.tradehero.th.api.SamsungApiTestModule;
+import com.ayondo.academy.api.SamsungApiTestModule;
 import dagger.Module;
 
 @Module(

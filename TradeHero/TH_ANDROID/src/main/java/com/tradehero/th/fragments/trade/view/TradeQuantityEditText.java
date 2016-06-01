@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trade.view;
+package com.ayondo.academy.fragments.trade.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

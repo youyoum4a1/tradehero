@@ -1,10 +1,10 @@
-package com.tradehero.th.models.level;
+package com.ayondo.academy.models.level;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.level.LevelDefDTO;
-import com.tradehero.th.api.level.LevelDefDTOList;
-import com.tradehero.th.persistence.level.LevelDefListCacheRx;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.level.LevelDefDTO;
+import com.ayondo.academy.api.level.LevelDefDTOList;
+import com.ayondo.academy.persistence.level.LevelDefListCacheRx;
 import java.util.Random;
 import javax.inject.Inject;
 import org.junit.Test;

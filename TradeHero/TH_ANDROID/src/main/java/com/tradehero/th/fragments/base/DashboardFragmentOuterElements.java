@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.base;
+package com.ayondo.academy.fragments.base;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -6,12 +6,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.AbsListView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
-import com.tradehero.th.BottomTabs;
-import com.tradehero.th.BottomTabsQuickReturnListViewListener;
-import com.tradehero.th.BottomTabsQuickReturnRecyclerViewListener;
-import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
-import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.MovableBottom;
+import com.ayondo.academy.BottomTabs;
+import com.ayondo.academy.BottomTabsQuickReturnListViewListener;
+import com.ayondo.academy.BottomTabsQuickReturnRecyclerViewListener;
+import com.ayondo.academy.BottomTabsQuickReturnScrollViewListener;
+import com.ayondo.academy.fragments.DashboardTabHost;
+import com.ayondo.academy.fragments.MovableBottom;
 import javax.inject.Inject;
 
 public class DashboardFragmentOuterElements implements FragmentOuterElements

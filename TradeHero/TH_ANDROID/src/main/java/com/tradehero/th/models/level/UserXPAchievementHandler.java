@@ -1,4 +1,4 @@
-package com.tradehero.th.models.level;
+package com.ayondo.academy.models.level;
 
 import android.app.Application;
 import android.content.Context;
@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import com.tradehero.common.rx.LifecycleEventWithActivity;
 import com.tradehero.common.rx.LifecycleObservableUtil;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.AchievementAcceptor;
-import com.tradehero.th.api.level.UserXPAchievementDTO;
-import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
-import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import com.tradehero.th.widget.XpToast;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.AchievementAcceptor;
+import com.ayondo.academy.api.level.UserXPAchievementDTO;
+import com.ayondo.academy.fragments.achievement.AbstractAchievementDialogFragment;
+import com.ayondo.academy.utils.broadcast.BroadcastUtils;
+import com.ayondo.academy.widget.XpToast;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;

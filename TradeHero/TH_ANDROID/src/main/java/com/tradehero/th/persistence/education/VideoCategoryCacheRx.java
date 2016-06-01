@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.education;
+package com.ayondo.academy.persistence.education;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.education.VideoCategoryDTO;
-import com.tradehero.th.api.education.VideoCategoryId;
+import com.ayondo.academy.api.education.VideoCategoryDTO;
+import com.ayondo.academy.api.education.VideoCategoryId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

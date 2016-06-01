@@ -1,12 +1,12 @@
-package com.tradehero.th.api.kyc;
+package com.ayondo.academy.api.kyc;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
-import com.tradehero.th.api.kyc.kenanga.KYCKenangaFormOptionsDTO;
-import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
+import com.ayondo.academy.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.ayondo.academy.api.kyc.kenanga.KYCKenangaFormOptionsDTO;
+import com.ayondo.academy.models.fastfill.IdentityScannedDocumentType;
 import java.util.List;
 
 @JsonTypeInfo(

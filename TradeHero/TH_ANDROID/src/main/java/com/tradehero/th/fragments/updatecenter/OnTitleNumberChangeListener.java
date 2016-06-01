@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.updatecenter;
+package com.ayondo.academy.fragments.updatecenter;
 
 import android.support.annotation.NonNull;
 

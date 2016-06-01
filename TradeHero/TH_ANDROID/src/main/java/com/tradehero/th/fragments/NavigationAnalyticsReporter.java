@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
 
 public class NavigationAnalyticsReporter implements DashboardNavigator.DashboardFragmentWatcher
 {

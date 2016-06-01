@@ -1,8 +1,8 @@
-package com.tradehero.th.api.translation.bing;
+package com.ayondo.academy.api.translation.bing;
 
 import com.tradehero.common.persistence.HasExpiration;
-import com.tradehero.th.R;
-import com.tradehero.th.api.translation.TranslationToken;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.translation.TranslationToken;
 import java.util.Calendar;
 import java.util.Date;
 

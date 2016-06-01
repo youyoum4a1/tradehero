@@ -1,17 +1,17 @@
-package com.tradehero.th;
+package com.ayondo.academy;
 
-import com.tradehero.th.api.ApiTestModule;
-import com.tradehero.th.auth.AuthenticationTestModule;
-import com.tradehero.th.base.BaseTestModule;
-import com.tradehero.th.fragments.FragmentAppTestModule;
-import com.tradehero.th.models.ModelsTestModule;
-import com.tradehero.th.network.NetworkTestModule;
-import com.tradehero.th.network.retrofit.RetrofitTestModule;
-import com.tradehero.th.persistence.PersistenceTestModule;
-import com.tradehero.th.ui.GraphicTestModule;
-import com.tradehero.th.utils.UtilsTestModule;
-import com.tradehero.th.utils.metrics.MetricsModule;
-import com.tradehero.th.widget.WidgetTestModule;
+import com.ayondo.academy.api.ApiTestModule;
+import com.ayondo.academy.auth.AuthenticationTestModule;
+import com.ayondo.academy.base.BaseTestModule;
+import com.ayondo.academy.fragments.FragmentAppTestModule;
+import com.ayondo.academy.models.ModelsTestModule;
+import com.ayondo.academy.network.NetworkTestModule;
+import com.ayondo.academy.network.retrofit.RetrofitTestModule;
+import com.ayondo.academy.persistence.PersistenceTestModule;
+import com.ayondo.academy.ui.GraphicTestModule;
+import com.ayondo.academy.utils.UtilsTestModule;
+import com.ayondo.academy.utils.metrics.MetricsModule;
+import com.ayondo.academy.widget.WidgetTestModule;
 import dagger.Module;
 
 @Module(

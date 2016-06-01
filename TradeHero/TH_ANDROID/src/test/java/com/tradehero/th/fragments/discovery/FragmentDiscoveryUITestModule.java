@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discovery;
+package com.ayondo.academy.fragments.discovery;
 
 import dagger.Module;
 

@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.googleplay;
+package com.ayondo.academy.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.BaseIABProductDetailComparator;
-import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.ayondo.academy.billing.ProductIdentifierDomain;
 
 class THIABProductDetailComparator<THIABProductDetailType extends THIABProductDetail>
         extends BaseIABProductDetailComparator<THIABProductDetailType>

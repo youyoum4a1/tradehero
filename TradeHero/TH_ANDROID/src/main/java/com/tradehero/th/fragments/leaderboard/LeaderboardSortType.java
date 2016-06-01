@@ -1,6 +1,6 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 @Deprecated
 public enum LeaderboardSortType

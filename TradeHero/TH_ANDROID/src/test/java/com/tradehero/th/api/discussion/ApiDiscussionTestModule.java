@@ -1,6 +1,6 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
-import com.tradehero.th.api.discussion.form.MessageCreateFormDTOTest;
+import com.ayondo.academy.api.discussion.form.MessageCreateFormDTOTest;
 import dagger.Module;
 
 @Module(

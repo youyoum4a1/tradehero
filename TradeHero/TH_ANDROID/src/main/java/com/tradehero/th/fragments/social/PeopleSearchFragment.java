@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social;
+package com.ayondo.academy.fragments.social;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,18 +10,18 @@ import android.widget.EditText;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.SearchUserListType;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserListType;
-import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.api.users.UserSearchResultDTOList;
-import com.tradehero.th.fragments.BaseSearchRxFragment;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trending.PeopleItemViewAdapter;
-import com.tradehero.th.persistence.user.UserBaseKeyListCacheRx;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.SearchUserListType;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserListType;
+import com.ayondo.academy.api.users.UserSearchResultDTO;
+import com.ayondo.academy.api.users.UserSearchResultDTOList;
+import com.ayondo.academy.fragments.BaseSearchRxFragment;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.timeline.MeTimelineFragment;
+import com.ayondo.academy.fragments.timeline.PushableTimelineFragment;
+import com.ayondo.academy.fragments.trending.PeopleItemViewAdapter;
+import com.ayondo.academy.persistence.user.UserBaseKeyListCacheRx;
 
 import javax.inject.Inject;
 

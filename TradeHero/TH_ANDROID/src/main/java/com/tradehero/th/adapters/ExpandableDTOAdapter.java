@@ -1,4 +1,4 @@
-package com.tradehero.th.adapters;
+package com.ayondo.academy.adapters;
 
 import android.content.Context;
 import android.support.annotation.IdRes;
@@ -6,9 +6,9 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.fragments.leaderboard.ExpandingLayout;
 import java.util.List;
 
 public abstract class ExpandableDTOAdapter<

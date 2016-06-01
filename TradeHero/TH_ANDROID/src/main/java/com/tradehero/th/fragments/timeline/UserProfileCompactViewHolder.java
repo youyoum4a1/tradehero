@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.timeline;
+package com.ayondo.academy.fragments.timeline;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -14,12 +14,12 @@ import butterknife.OnLongClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.number.THSignedPercentage;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.graphics.ForUserPhoto;
+import com.ayondo.academy.models.number.THSignedNumber;
+import com.ayondo.academy.models.number.THSignedPercentage;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.subjects.PublishSubject;

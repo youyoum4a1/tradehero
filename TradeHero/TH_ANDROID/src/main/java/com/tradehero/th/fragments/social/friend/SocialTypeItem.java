@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
 
 public class SocialTypeItem
 {

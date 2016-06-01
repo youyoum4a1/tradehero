@@ -1,4 +1,4 @@
-package com.tradehero.th.api.achievement.key;
+package com.ayondo.academy.api.achievement.key;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

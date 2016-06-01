@@ -32,7 +32,7 @@
 
   </LinearLayout>
 
-  <com.tradehero.th.fragments.portfolio.header.MarginCloseOutStatusTextView
+  <com.ayondo.academy.fragments.portfolio.header.MarginCloseOutStatusTextView
       android:id="@+id/margin_close_out_status"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -75,14 +75,14 @@
             android:text="@string/chart_loading_image"
             />
 
-        <com.tradehero.th.widget.KChartsView
+        <com.ayondo.academy.widget.KChartsView
             android:id="@+id/my_charts_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
       </com.tradehero.common.widget.BetterViewAnimator>
 
-      <com.tradehero.th.widget.news.TimeSpanButtonSet
+      <com.ayondo.academy.widget.news.TimeSpanButtonSet
           android:id="@+id/chart_time_span_button_set"
           android:layout_width="match_parent"
           android:layout_height="@dimen/timespan_button_min_height"
@@ -97,7 +97,7 @@
 
         <include layout="@layout/fx_chart_buttons_merge"/>
 
-      </com.tradehero.th.widget.news.TimeSpanButtonSet>
+      </com.ayondo.academy.widget.news.TimeSpanButtonSet>
 
     </LinearLayout>
 

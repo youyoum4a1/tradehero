@@ -1,15 +1,15 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.content.Intent;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.notification.NotificationType;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
-import com.tradehero.th.persistence.notification.NotificationCacheRx;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.notification.NotificationDTO;
+import com.ayondo.academy.api.notification.NotificationKey;
+import com.ayondo.academy.api.notification.NotificationType;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.social.message.ReplyPrivateMessageFragment;
+import com.ayondo.academy.persistence.notification.NotificationCacheRx;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Ignore;

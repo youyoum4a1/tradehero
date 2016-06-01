@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.competition.zone;
+package com.ayondo.academy.fragments.competition.zone;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.ayondo.academy.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
 
 public class CompetitionZonePortfolioView extends CompetitionZoneListItemView

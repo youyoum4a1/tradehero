@@ -1,4 +1,4 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;

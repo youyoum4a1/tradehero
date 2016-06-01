@@ -1,10 +1,10 @@
-package com.tradehero.th.widget.list;
+package com.ayondo.academy.widget.list;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class BaseListHeaderView extends RelativeLayout
 {

@@ -1,11 +1,11 @@
-package com.tradehero.th.models.user;
+package com.ayondo.academy.models.user;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.social.HeroListCacheRx;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.persistence.social.HeroListCacheRx;
+import com.ayondo.academy.persistence.user.UserMessagingRelationshipCacheRx;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 
 public class DTOProcessorFollowPremiumUser extends AbstractDTOProcessorFollowUser
 {

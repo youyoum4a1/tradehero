@@ -1,7 +1,7 @@
-package com.tradehero.th.api.competition.key;
+package com.ayondo.academy.api.competition.key;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.competition.ProviderId;
+import com.ayondo.academy.api.competition.ProviderId;
 
 public class SearchProviderSecurityListType extends ProviderSecurityListType
 {

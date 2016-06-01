@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.fxonboard;
+package com.ayondo.academy.fragments.fxonboard;
 
 import dagger.Module;
 

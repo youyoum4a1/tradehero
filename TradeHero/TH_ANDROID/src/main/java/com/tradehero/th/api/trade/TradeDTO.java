@@ -1,4 +1,4 @@
-package com.tradehero.th.api.trade;
+package com.ayondo.academy.api.trade;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;

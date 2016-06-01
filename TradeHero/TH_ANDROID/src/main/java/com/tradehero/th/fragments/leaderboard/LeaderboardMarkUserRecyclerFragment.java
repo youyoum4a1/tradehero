@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,24 +17,24 @@ import android.view.ViewGroup;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
-import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
-import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
-import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
-import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.widget.MultiRecyclerScrollListener;
-import com.tradehero.th.widget.list.SingleExpandingListViewListener;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.LeaderboardDTO;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.PagedLeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.PerPagedLeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.UserOnLeaderboardKey;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.fragments.leaderboard.filter.LeaderboardFilterFragment;
+import com.ayondo.academy.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
+import com.ayondo.academy.persistence.leaderboard.LeaderboardCacheRx;
+import com.ayondo.academy.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
+import com.ayondo.academy.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.widget.MultiRecyclerScrollListener;
+import com.ayondo.academy.widget.list.SingleExpandingListViewListener;
 
 import javax.inject.Inject;
 

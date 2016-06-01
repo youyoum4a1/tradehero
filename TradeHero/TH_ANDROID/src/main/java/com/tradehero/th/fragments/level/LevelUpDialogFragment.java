@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.level;
+package com.ayondo.academy.fragments.level;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -24,11 +24,11 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.api.level.LevelDefDTO;
-import com.tradehero.th.api.level.key.LevelDefId;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
-import com.tradehero.th.persistence.level.LevelDefCacheRx;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.level.LevelDefDTO;
+import com.ayondo.academy.api.level.key.LevelDefId;
+import com.ayondo.academy.fragments.base.BaseDialogFragment;
+import com.ayondo.academy.persistence.level.LevelDefCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Observer;

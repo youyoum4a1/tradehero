@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding;
+package com.ayondo.academy.fragments.onboarding;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,8 +10,8 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.misc.exception.THException;
+import com.ayondo.academy.R;
+import com.ayondo.academy.misc.exception.THException;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;

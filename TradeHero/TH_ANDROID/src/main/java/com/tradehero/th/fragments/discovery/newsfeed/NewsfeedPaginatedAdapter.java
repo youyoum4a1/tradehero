@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discovery.newsfeed;
+package com.ayondo.academy.fragments.discovery.newsfeed;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -12,14 +12,14 @@ import android.widget.TextView;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.text.ClickableTagProcessor;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedRecyclerAdapter;
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTO;
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTOList;
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.resource.ResourceUtil;
-import com.tradehero.th.widget.MarkdownTextView;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.PagedRecyclerAdapter;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedDTO;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedDTOList;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedPagedDTOKey;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.resource.ResourceUtil;
+import com.ayondo.academy.widget.MarkdownTextView;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;

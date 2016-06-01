@@ -1,14 +1,14 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.alert.AlertCompactDTOList;
-import com.tradehero.th.api.alert.AlertDTO;
-import com.tradehero.th.api.alert.AlertFormDTO;
-import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.alert.AlertCacheRx;
-import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
+import com.ayondo.academy.api.alert.AlertCompactDTO;
+import com.ayondo.academy.api.alert.AlertCompactDTOList;
+import com.ayondo.academy.api.alert.AlertDTO;
+import com.ayondo.academy.api.alert.AlertFormDTO;
+import com.ayondo.academy.api.alert.AlertId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.persistence.alert.AlertCacheRx;
+import com.ayondo.academy.persistence.alert.AlertCompactListCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;

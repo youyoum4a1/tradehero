@@ -1,7 +1,7 @@
-package com.tradehero.th.models.number;
+package com.ayondo.academy.models.number;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;

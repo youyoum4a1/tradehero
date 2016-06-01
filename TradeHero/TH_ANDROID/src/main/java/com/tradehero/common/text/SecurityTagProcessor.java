@@ -2,8 +2,8 @@ package com.tradehero.common.text;
 
 import android.support.annotation.NonNull;
 import android.view.View;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.utils.SecurityUtils;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.utils.SecurityUtils;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 

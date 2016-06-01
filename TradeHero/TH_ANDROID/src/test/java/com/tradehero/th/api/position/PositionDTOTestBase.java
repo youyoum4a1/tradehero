@@ -1,4 +1,4 @@
-package com.tradehero.th.api.position;
+package com.ayondo.academy.api.position;
 
 abstract public class PositionDTOTestBase extends PositionDTOCompactTestBase
 {

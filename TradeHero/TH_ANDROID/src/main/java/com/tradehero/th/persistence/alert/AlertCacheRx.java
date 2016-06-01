@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.alert;
+package com.ayondo.academy.persistence.alert;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.alert.AlertDTO;
-import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.network.service.AlertServiceWrapper;
+import com.ayondo.academy.api.alert.AlertDTO;
+import com.ayondo.academy.api.alert.AlertId;
+import com.ayondo.academy.network.service.AlertServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;

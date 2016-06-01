@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -6,13 +6,13 @@ import android.support.annotation.Nullable;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import com.tradehero.common.annotation.ViewVisibilityValue;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.number.THSignedNumber;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderDTO;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.api.leaderboard.competition.CompetitionLeaderboardDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.models.number.THSignedNumber;
 
 public class CompetitionLeaderboardOwnRankingDisplayDTO extends CompetitionLeaderboardItemDisplayDTO
 {

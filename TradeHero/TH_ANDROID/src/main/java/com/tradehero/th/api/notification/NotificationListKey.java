@@ -1,9 +1,9 @@
-package com.tradehero.th.api.notification;
+package com.ayondo.academy.api.notification;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
-import com.tradehero.th.api.Querylizable;
+import com.ayondo.academy.api.Querylizable;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,19 +1,19 @@
-package com.tradehero.th.models.level;
+package com.ayondo.academy.models.level;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.achievement.key.UserAchievementId;
-import com.tradehero.th.api.level.UserXPAchievementDTO;
-import com.tradehero.th.fragments.achievement.AbstractAchievementDialogFragment;
+import com.ayondo.academy.api.achievement.key.UserAchievementId;
+import com.ayondo.academy.api.level.UserXPAchievementDTO;
+import com.ayondo.academy.fragments.achievement.AbstractAchievementDialogFragment;
 import rx.Observable;
 import rx.functions.Func1;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.XP_INTENT_FILTER;
 import static rx.android.content.ContentObservable.fromLocalBroadcast;
 
 public class UserXPAchievementUtil

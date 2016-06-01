@@ -2,10 +2,10 @@ package com.tradehero.routable;
 
 import android.app.Activity;
 import android.content.Intent;
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.route.Router;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.activities.DashboardActivity;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.activities.DashboardActivity;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;

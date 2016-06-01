@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,17 +8,17 @@ import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
 import com.tradehero.common.fragment.HasSelectedItem;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.timeline.form.PublishableFormDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.share.SocialShareHelper;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceHelper;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.timeline.form.PublishableFormDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.api.users.UserProfileDTOUtil;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.share.SocialShareHelper;
+import com.ayondo.academy.models.share.preference.SocialSharePreferenceHelper;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.EmptyAction1;
 
 import javax.inject.Inject;
 

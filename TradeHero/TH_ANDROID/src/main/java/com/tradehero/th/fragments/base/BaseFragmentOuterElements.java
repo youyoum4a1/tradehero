@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.base;
+package com.ayondo.academy.fragments.base;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,8 +7,8 @@ import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.ScrollView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
-import com.tradehero.th.fragments.MovableBottom;
-import com.tradehero.th.fragments.OnMovableBottomTranslateListener;
+import com.ayondo.academy.fragments.MovableBottom;
+import com.ayondo.academy.fragments.OnMovableBottomTranslateListener;
 
 public class BaseFragmentOuterElements implements FragmentOuterElements
 {

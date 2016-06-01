@@ -1,10 +1,10 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.VoteDirection;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.VoteDirection;
 
 public class VoteUpView extends VoteView
 {

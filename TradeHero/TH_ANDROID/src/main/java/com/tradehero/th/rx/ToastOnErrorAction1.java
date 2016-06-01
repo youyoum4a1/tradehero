@@ -1,8 +1,8 @@
-package com.tradehero.th.rx;
+package com.ayondo.academy.rx;
 
 import android.support.annotation.Nullable;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.misc.exception.THException;
+import com.ayondo.academy.misc.exception.THException;
 import rx.functions.Action1;
 
 public class ToastOnErrorAction1 implements Action1<Throwable>

@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;

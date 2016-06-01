@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.live;
+package com.ayondo.academy.fragments.live;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -9,8 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.DatePicker;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.base.BaseDialogFragment;
 import java.util.Calendar;
 import java.util.Date;
 

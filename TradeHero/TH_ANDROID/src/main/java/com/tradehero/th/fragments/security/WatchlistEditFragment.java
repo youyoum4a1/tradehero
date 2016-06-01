@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -16,21 +16,21 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.SecurityUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.api.watchlist.WatchlistPositionFormDTO;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.misc.exception.THException;
+import com.ayondo.academy.models.number.THSignedNumber;
+import com.ayondo.academy.network.service.WatchlistServiceWrapper;
+import com.ayondo.academy.persistence.security.SecurityCompactCacheRx;
+import com.ayondo.academy.persistence.watchlist.WatchlistPositionCacheRx;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.rx.view.DismissDialogAction0;
+import com.ayondo.academy.utils.DeviceUtil;
+import com.ayondo.academy.utils.SecurityUtils;
 
 import javax.inject.Inject;
 

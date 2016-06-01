@@ -53,7 +53,7 @@
         android:paddingRight="0dp"
         />
 
-    <com.tradehero.th.fragments.DashboardTabHost
+    <com.ayondo.academy.fragments.DashboardTabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dashboard_tabhost_height"
@@ -74,7 +74,7 @@
           android:layout_weight="0"
           />
 
-    </com.tradehero.th.fragments.DashboardTabHost>
+    </com.ayondo.academy.fragments.DashboardTabHost>
 
     <include
         android:id="@+id/xp_toast_box"

@@ -1,12 +1,12 @@
-package com.tradehero.th.api.discussion.newsfeed;
+package com.ayondo.academy.api.discussion.newsfeed;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.network.service.NewsServiceWrapper;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.pagination.PaginatedDTO;
+import com.ayondo.academy.network.service.NewsServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

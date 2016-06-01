@@ -1,8 +1,8 @@
-package com.tradehero.th.api.security;
+package com.ayondo.academy.api.security;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import timber.log.Timber;
 
 public enum FxCurrency

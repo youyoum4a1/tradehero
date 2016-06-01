@@ -1,12 +1,12 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseProductIdentifierList;
 import com.tradehero.common.billing.BillingLogicHolderRx;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
-import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
-import com.tradehero.th.billing.report.PurchaseReportResult;
+import com.ayondo.academy.billing.inventory.THProductDetailDomainInformerRx;
+import com.ayondo.academy.billing.report.PurchaseReportResult;
 import rx.Observable;
 
 public interface THBillingLogicHolderRx<

@@ -1,17 +1,17 @@
-package com.tradehero.th.billing.samsung.report;
+package com.ayondo.academy.billing.samsung.report;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.billing.report.THBasePurchaseReporterHolderRx;
-import com.tradehero.th.billing.samsung.THSamsungOrderId;
-import com.tradehero.th.billing.samsung.THSamsungProductDetail;
-import com.tradehero.th.billing.samsung.THSamsungPurchase;
-import com.tradehero.th.network.service.AlertPlanCheckServiceWrapper;
-import com.tradehero.th.network.service.AlertPlanServiceWrapper;
-import com.tradehero.th.network.service.PortfolioServiceWrapper;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.ayondo.academy.billing.report.THBasePurchaseReporterHolderRx;
+import com.ayondo.academy.billing.samsung.THSamsungOrderId;
+import com.ayondo.academy.billing.samsung.THSamsungProductDetail;
+import com.ayondo.academy.billing.samsung.THSamsungPurchase;
+import com.ayondo.academy.network.service.AlertPlanCheckServiceWrapper;
+import com.ayondo.academy.network.service.AlertPlanServiceWrapper;
+import com.ayondo.academy.network.service.PortfolioServiceWrapper;
+import com.ayondo.academy.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 

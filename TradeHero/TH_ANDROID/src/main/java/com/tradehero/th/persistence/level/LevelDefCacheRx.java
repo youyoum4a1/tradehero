@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.level;
+package com.ayondo.academy.persistence.level;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.level.LevelDefDTO;
-import com.tradehero.th.api.level.key.LevelDefId;
+import com.ayondo.academy.api.level.LevelDefDTO;
+import com.ayondo.academy.api.level.key.LevelDefId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

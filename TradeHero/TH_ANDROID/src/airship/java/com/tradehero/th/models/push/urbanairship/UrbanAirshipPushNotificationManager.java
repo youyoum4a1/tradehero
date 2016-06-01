@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push.urbanairship;
+package com.ayondo.academy.models.push.urbanairship;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -6,15 +6,15 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.network.service.SessionServiceWrapper;
-import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ReplaceWithFunc1;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.models.push.PushNotificationManager;
+import com.ayondo.academy.network.service.SessionServiceWrapper;
+import com.ayondo.academy.persistence.prefs.SavedPushDeviceIdentifier;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
 import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.actions.Action;

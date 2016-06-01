@@ -1,6 +1,6 @@
-package com.tradehero.th.api.share;
+package com.ayondo.academy.api.share;
 
-import com.tradehero.th.api.social.HasSocialNetworkEnum;
+import com.ayondo.academy.api.social.HasSocialNetworkEnum;
 
 public interface SocialShareFormDTOWithEnum
     extends SocialShareFormDTO, HasSocialNetworkEnum

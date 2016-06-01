@@ -1,4 +1,4 @@
-package com.tradehero.th.rx.dialog;
+package com.ayondo.academy.rx.dialog;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -9,7 +9,7 @@ import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.ListAdapter;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;

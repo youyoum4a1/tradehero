@@ -1,4 +1,4 @@
-package com.tradehero.th.api;
+package com.ayondo.academy.api;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -11,16 +11,16 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.tradehero.th.api.achievement.UserAchievementDTOList;
-import com.tradehero.th.api.level.UserXPAchievementDTO;
-import com.tradehero.th.api.level.UserXPAchievementDTOList;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
-import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
-import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.broadcast.BroadcastUtils;
+import com.ayondo.academy.api.achievement.UserAchievementDTOList;
+import com.ayondo.academy.api.level.UserXPAchievementDTO;
+import com.ayondo.academy.api.level.UserXPAchievementDTOList;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.persistence.achievement.AchievementCategoryCacheRx;
+import com.ayondo.academy.persistence.achievement.AchievementCategoryListCacheRx;
+import com.ayondo.academy.persistence.achievement.UserAchievementCacheRx;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import java.io.IOException;
 import java.util.Iterator;
@@ -28,8 +28,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_ACHIEVEMENT_NODE;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_NODE;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.KEY_ACHIEVEMENT_NODE;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.KEY_XP_NODE;
 
 public class ObjectMapperWrapper extends ObjectMapper
 {

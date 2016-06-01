@@ -9,7 +9,7 @@ import com.tradehero.common.billing.BaseRequestCodeActor;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academy.BuildConfig;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;

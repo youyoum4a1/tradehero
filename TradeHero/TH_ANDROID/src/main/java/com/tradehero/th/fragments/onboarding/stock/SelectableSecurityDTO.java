@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.onboarding.stock;
+package com.ayondo.academy.fragments.onboarding.stock;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.api.SelectableDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
 
 public class SelectableSecurityDTO extends SelectableDTO<SecurityCompactDTO>
 {

@@ -1,10 +1,10 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.api.ExtendedDTO;
-import com.tradehero.th.api.market.Country;
+import com.ayondo.academy.api.ExtendedDTO;
+import com.ayondo.academy.api.market.Country;
 import java.util.Date;
 import timber.log.Timber;
 

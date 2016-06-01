@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.security;
+package com.ayondo.academy.persistence.security;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.api.security.SecurityIntegerIdList;
-import com.tradehero.th.network.service.SecurityServiceWrapper;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityIntegerId;
+import com.ayondo.academy.api.security.SecurityIntegerIdList;
+import com.ayondo.academy.network.service.SecurityServiceWrapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

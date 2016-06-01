@@ -1,13 +1,13 @@
-package com.tradehero.th.models.discussion;
+package com.ayondo.academy.models.discussion;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.ThroughDTOProcessor;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.discussion.MessageHeaderDTO;
+import com.ayondo.academy.api.pagination.ReadablePaginatedDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.models.ThroughDTOProcessor;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 
 public class DTOProcessorReadablePaginatedMessageReceived<
         MessageHeaderDTOType extends MessageHeaderDTO,

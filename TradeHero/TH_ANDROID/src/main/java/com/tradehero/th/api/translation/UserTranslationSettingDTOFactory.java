@@ -1,4 +1,4 @@
-package com.tradehero.th.api.translation;
+package com.ayondo.academy.api.translation;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -8,8 +8,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.annotation.ForApp;
-import com.tradehero.th.api.translation.bing.BingTranslationToken;
-import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
+import com.ayondo.academy.api.translation.bing.BingTranslationToken;
+import com.ayondo.academy.api.translation.bing.BingUserTranslationSettingDTO;
 import java.io.IOException;
 import javax.inject.Inject;
 import timber.log.Timber;

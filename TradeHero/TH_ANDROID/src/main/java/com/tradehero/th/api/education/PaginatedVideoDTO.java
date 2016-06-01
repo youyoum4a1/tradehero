@@ -1,6 +1,6 @@
-package com.tradehero.th.api.education;
+package com.ayondo.academy.api.education;
 
-import com.tradehero.th.api.pagination.PaginatedDTO;
+import com.ayondo.academy.api.pagination.PaginatedDTO;
 
 public class PaginatedVideoDTO extends PaginatedDTO<VideoDTO>
 {

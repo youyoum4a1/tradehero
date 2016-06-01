@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.leaderboard;
+package com.ayondo.academy.persistence.leaderboard;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardUserId;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;

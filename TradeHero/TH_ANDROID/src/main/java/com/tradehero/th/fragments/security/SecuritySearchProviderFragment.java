@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.key.SearchProviderSecurityListType;
-import com.tradehero.th.api.security.key.SecurityListType;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.competition.key.SearchProviderSecurityListType;
+import com.ayondo.academy.api.security.key.SecurityListType;
 import javax.inject.Inject;
 
 public class SecuritySearchProviderFragment extends SecuritySearchFragment

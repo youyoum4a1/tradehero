@@ -1,7 +1,7 @@
-package com.tradehero.th.utils.metrics.events;
+package com.ayondo.academy.utils.metrics.events;
 
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.security.SecurityId;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.security.SecurityId;
 
 import java.util.Map;
 

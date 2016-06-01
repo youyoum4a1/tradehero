@@ -1,7 +1,7 @@
-package com.tradehero.th.filter.security;
+package com.ayondo.academy.filter.security;
 
 import com.tradehero.common.widget.filter.CharSequencePredicate;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
 
 public class SecurityCompactSymbolCIPredicate<SecurityCompactType extends SecurityCompactDTO>
         implements CharSequencePredicate<SecurityCompactType>

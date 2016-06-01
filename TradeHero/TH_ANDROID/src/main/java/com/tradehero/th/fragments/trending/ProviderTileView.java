@@ -1,18 +1,18 @@
-package com.tradehero.th.fragments.trending;
+package com.ayondo.academy.fragments.trending;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTOList;
-import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForExtraTileBackground;
-import com.tradehero.th.persistence.competition.ProviderListCacheRx;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.competition.ProviderDTO;
+import com.ayondo.academy.api.competition.ProviderDTOList;
+import com.ayondo.academy.api.competition.key.ProviderListKey;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.graphics.ForExtraTileBackground;
+import com.ayondo.academy.persistence.competition.ProviderListCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.metrics;
+package com.ayondo.academy.utils.metrics;
 
 public class AnalyticsConstants
 {

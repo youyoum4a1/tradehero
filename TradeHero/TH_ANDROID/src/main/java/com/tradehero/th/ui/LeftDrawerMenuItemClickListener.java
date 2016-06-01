@@ -1,9 +1,9 @@
-package com.tradehero.th.ui;
+package com.ayondo.academy.ui;
 
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
 import dagger.Lazy;
 import javax.inject.Inject;
 

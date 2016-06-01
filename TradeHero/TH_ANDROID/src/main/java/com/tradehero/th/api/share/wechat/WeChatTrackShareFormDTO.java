@@ -1,6 +1,6 @@
-package com.tradehero.th.api.share.wechat;
+package com.ayondo.academy.api.share.wechat;
 
-import com.tradehero.th.api.share.SocialShareResultDTO;
+import com.ayondo.academy.api.share.SocialShareResultDTO;
 
 public class WeChatTrackShareFormDTO implements SocialShareResultDTO
 {

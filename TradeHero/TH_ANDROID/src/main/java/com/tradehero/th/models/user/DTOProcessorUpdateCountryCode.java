@@ -1,14 +1,14 @@
-package com.tradehero.th.models.user;
+package com.ayondo.academy.models.user;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.users.UpdateCountryCodeDTO;
-import com.tradehero.th.api.users.UpdateCountryCodeFormDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.ThroughDTOProcessor;
-import com.tradehero.th.persistence.competition.ProviderListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.competition.key.ProviderListKey;
+import com.ayondo.academy.api.users.UpdateCountryCodeDTO;
+import com.ayondo.academy.api.users.UpdateCountryCodeFormDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.models.ThroughDTOProcessor;
+import com.ayondo.academy.persistence.competition.ProviderListCacheRx;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 
 public class DTOProcessorUpdateCountryCode extends ThroughDTOProcessor<UpdateCountryCodeDTO>
 {

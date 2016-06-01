@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.level;
+package com.ayondo.academy.fragments.level;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,12 +11,12 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.level.UserXPAchievementDTO;
-import com.tradehero.th.api.level.UserXPMultiplierDTO;
-import com.tradehero.th.api.level.UserXPMultiplierDTOList;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.utils.broadcast.BroadcastUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.level.UserXPAchievementDTO;
+import com.ayondo.academy.api.level.UserXPMultiplierDTO;
+import com.ayondo.academy.api.level.UserXPMultiplierDTOList;
+import com.ayondo.academy.fragments.base.BaseFragment;
+import com.ayondo.academy.utils.broadcast.BroadcastUtils;
 import java.util.List;
 import javax.inject.Inject;
 

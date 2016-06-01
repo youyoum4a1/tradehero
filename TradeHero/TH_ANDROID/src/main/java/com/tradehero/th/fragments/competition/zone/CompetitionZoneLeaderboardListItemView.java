@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.competition.zone;
+package com.ayondo.academy.fragments.competition.zone;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.ayondo.academy.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 
 public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListItemView
 {

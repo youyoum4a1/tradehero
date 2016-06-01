@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.metrics.events;
+package com.ayondo.academy.utils.metrics.events;
 
 /**
  *  by tho: Ok, I'm not sure about what is the meaning of "method" string here, according to @alex, it is requested by marketing team (?).

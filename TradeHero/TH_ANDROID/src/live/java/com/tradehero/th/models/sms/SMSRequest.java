@@ -1,4 +1,4 @@
-package com.tradehero.th.models.sms;
+package com.ayondo.academy.models.sms;
 
 import android.support.annotation.NonNull;
 

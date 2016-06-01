@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.exchange;
+package com.ayondo.academy.fragments.onboarding.exchange;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
@@ -13,10 +13,10 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.market.Country;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
-import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.market.Country;
+import com.ayondo.academy.api.market.ExchangeCompactDTO;
+import com.ayondo.academy.fragments.onboarding.OnBoardSelectableViewLinear;
 import javax.inject.Inject;
 
 public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<ExchangeCompactDTO, SelectableDTO<ExchangeCompactDTO>>

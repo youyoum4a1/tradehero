@@ -1,8 +1,8 @@
-package com.tradehero.th.api.discussion.key;
+package com.ayondo.academy.api.discussion.key;
 
 import android.os.Bundle;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.VoteDirection;
 
 public class DiscussionVoteKey extends DiscussionListKey
 {

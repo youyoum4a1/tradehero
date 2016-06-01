@@ -12,7 +12,7 @@ import timber.log.Timber;
 
 public class OnlineStateReceiver extends BroadcastReceiver
 {
-    public static final String ONLINE_STATE_CHANGED = "com.tradehero.th.network.ALERT";
+    public static final String ONLINE_STATE_CHANGED = "com.ayondo.academy.network.ALERT";
 
     @Nullable private static Boolean online = null;
 

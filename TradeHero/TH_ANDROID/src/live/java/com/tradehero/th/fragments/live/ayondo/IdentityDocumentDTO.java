@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.live.ayondo;
+package com.ayondo.academy.fragments.live.ayondo;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
+import com.ayondo.academy.models.fastfill.IdentityScannedDocumentType;
 import java.util.ArrayList;
 import java.util.List;
 

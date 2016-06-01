@@ -1,11 +1,11 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.kyc.BrokerDocumentUploadResponseDTO;
-import com.tradehero.th.api.kyc.KYCForm;
-import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
-import com.tradehero.th.api.kyc.StepStatusesDTO;
-import com.tradehero.th.api.kyc.ayondo.UsernameValidationResultDTO;
-import com.tradehero.th.api.live.LiveTradingSituationDTO;
+import com.ayondo.academy.api.kyc.BrokerDocumentUploadResponseDTO;
+import com.ayondo.academy.api.kyc.KYCForm;
+import com.ayondo.academy.api.kyc.KYCFormOptionsDTO;
+import com.ayondo.academy.api.kyc.StepStatusesDTO;
+import com.ayondo.academy.api.kyc.ayondo.UsernameValidationResultDTO;
+import com.ayondo.academy.api.live.LiveTradingSituationDTO;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Multipart;

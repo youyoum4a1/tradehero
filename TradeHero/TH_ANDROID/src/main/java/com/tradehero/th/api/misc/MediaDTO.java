@@ -1,4 +1,4 @@
-package com.tradehero.th.api.misc;
+package com.ayondo.academy.api.misc;
 
 public class MediaDTO
 {

@@ -1,7 +1,7 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.models.fastfill.FastFillException;
+import com.ayondo.academy.models.fastfill.FastFillException;
 
 public class FastFillNetverifyError extends RuntimeException
     implements FastFillException

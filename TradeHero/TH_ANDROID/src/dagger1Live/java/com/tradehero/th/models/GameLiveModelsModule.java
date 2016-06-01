@@ -1,7 +1,7 @@
-package com.tradehero.th.models;
+package com.ayondo.academy.models;
 
-import com.tradehero.th.models.fastfill.FastFillModule;
-import com.tradehero.th.models.sms.SMSModule;
+import com.ayondo.academy.models.fastfill.FastFillModule;
+import com.ayondo.academy.models.sms.SMSModule;
 import dagger.Module;
 
 @Module(

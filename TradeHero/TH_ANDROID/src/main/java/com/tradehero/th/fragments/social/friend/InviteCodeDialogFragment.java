@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.base.BaseDialogFragment;
 import javax.inject.Inject;
 
 public class InviteCodeDialogFragment extends BaseDialogFragment

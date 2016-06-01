@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import butterknife.OnClick;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import timber.log.Timber;
 
 public class HelpActivity extends AppCompatActivity

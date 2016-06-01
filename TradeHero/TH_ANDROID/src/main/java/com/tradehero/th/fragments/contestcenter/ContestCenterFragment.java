@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.contestcenter;
+package com.ayondo.academy.fragments.contestcenter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,9 +15,9 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.android.common.SlidingTabLayout;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
-import com.tradehero.th.fragments.base.DashboardFragment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.base.BaseLiveFragmentUtil;
+import com.ayondo.academy.fragments.base.DashboardFragment;
 import javax.inject.Inject;
 
 public class ContestCenterFragment extends DashboardFragment

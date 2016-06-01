@@ -1,8 +1,8 @@
-package com.tradehero.th.api.news;
+package com.ayondo.academy.api.news;
 
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.ExtendedDTO;
-import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.ayondo.academy.api.ExtendedDTO;
+import com.ayondo.academy.api.news.key.NewsItemDTOKey;
 import java.util.Collections;
 import java.util.List;
 

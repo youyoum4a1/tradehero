@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.th.persistence.prefs.IsVisitedReferralCodeSettings;
+import com.ayondo.academy.persistence.prefs.IsVisitedReferralCodeSettings;
 import javax.inject.Inject;
 
 public class UnreadSettingPreferenceHolder

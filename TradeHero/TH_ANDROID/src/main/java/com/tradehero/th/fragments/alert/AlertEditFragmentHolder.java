@@ -1,18 +1,18 @@
-package com.tradehero.th.fragments.alert;
+package com.ayondo.academy.fragments.alert;
 
 import android.app.Activity;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.alert.AlertDTO;
-import com.tradehero.th.api.alert.AlertFormDTO;
-import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
-import com.tradehero.th.network.service.AlertServiceWrapper;
-import com.tradehero.th.network.service.QuoteServiceWrapper;
-import com.tradehero.th.persistence.alert.AlertCacheRx;
+import com.ayondo.academy.api.alert.AlertCompactDTO;
+import com.ayondo.academy.api.alert.AlertDTO;
+import com.ayondo.academy.api.alert.AlertFormDTO;
+import com.ayondo.academy.api.alert.AlertId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.models.alert.SecurityAlertCountingHelper;
+import com.ayondo.academy.network.service.AlertServiceWrapper;
+import com.ayondo.academy.network.service.QuoteServiceWrapper;
+import com.ayondo.academy.persistence.alert.AlertCacheRx;
 import dagger.Lazy;
 import rx.Observable;
 

@@ -1,20 +1,20 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.AlertDialogRxUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.utils.AlertDialogRxUtil;
 import timber.log.Timber;
 
 abstract class GooglePlayMarketUtilBase
 {
     // Google PlayStore
-    public static final String PLAYSTORE_APP_ID = "com.tradehero.th";
+    public static final String PLAYSTORE_APP_ID = "com.ayondo.academy";
     private static final String PLAYSTORE_URL = "https://play.google.com/store/apps/details?id=";
     public static final int REQUEST_CODE_UPDATE_PLAY_SERVICE = 43;
 

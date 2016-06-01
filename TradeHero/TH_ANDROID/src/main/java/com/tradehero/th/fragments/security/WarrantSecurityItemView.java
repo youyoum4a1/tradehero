@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.compact.WarrantDTO;
-import com.tradehero.th.models.number.THSignedMoney;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.compact.WarrantDTO;
+import com.ayondo.academy.models.number.THSignedMoney;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 

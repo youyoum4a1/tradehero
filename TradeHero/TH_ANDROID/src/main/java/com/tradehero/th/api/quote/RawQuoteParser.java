@@ -1,9 +1,9 @@
-package com.tradehero.th.api.quote;
+package com.ayondo.academy.api.quote;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.RawResponseParser;
-import com.tradehero.th.api.SignatureContainer;
+import com.ayondo.academy.api.RawResponseParser;
+import com.ayondo.academy.api.SignatureContainer;
 import java.io.IOException;
 import javax.inject.Inject;
 import retrofit.client.Response;

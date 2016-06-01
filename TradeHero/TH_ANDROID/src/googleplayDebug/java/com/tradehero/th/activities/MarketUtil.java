@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;

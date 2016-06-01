@@ -1,4 +1,4 @@
-package com.tradehero.th.api.trade;
+package com.ayondo.academy.api.trade;
 
 import com.tradehero.common.persistence.DTOKey;
 

@@ -1,10 +1,10 @@
-package com.tradehero.th.api.billing;
+package com.ayondo.academy.api.billing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
-import com.tradehero.th.api.BaseApiTestClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.BaseApiTestClass;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;

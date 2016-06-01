@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
@@ -10,13 +10,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.social.UserFriendsDTOList;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.social.UserFriendsDTO;
+import com.ayondo.academy.api.social.UserFriendsDTOList;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;

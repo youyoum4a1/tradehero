@@ -1,8 +1,8 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
 import android.support.annotation.ColorRes;
-import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
+import com.ayondo.academy.R;
+import com.ayondo.academy.base.THApp;
 
 public class THColorUtils
 {

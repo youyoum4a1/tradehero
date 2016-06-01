@@ -1,8 +1,8 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.ayondo.academy.R;
+import com.ayondo.academy.billing.ProductIdentifierDomain;
 import timber.log.Timber;
 
 public class THAmazonProductDetailTuner

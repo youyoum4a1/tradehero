@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;

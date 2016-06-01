@@ -1,8 +1,8 @@
-package com.tradehero.th.models.position;
+package com.ayondo.academy.models.position;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.position.GetPositionsDTO;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardMarkUserId;
+import com.ayondo.academy.api.position.GetPositionsDTO;
 import rx.functions.Func1;
 
 public class DTOProcessorGetPositions implements Func1<GetPositionsDTO, GetPositionsDTO>

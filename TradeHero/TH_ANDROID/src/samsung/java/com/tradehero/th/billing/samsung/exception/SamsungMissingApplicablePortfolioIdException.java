@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.samsung.exception;
+package com.ayondo.academy.billing.samsung.exception;
 
 import com.tradehero.common.billing.samsung.exception.SamsungOneCodeException;
-import com.tradehero.th.billing.samsung.THSamsungConstants;
+import com.ayondo.academy.billing.samsung.THSamsungConstants;
 
 public class SamsungMissingApplicablePortfolioIdException extends SamsungOneCodeException
 {

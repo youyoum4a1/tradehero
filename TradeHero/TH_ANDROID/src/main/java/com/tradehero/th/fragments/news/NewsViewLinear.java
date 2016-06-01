@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.news;
+package com.ayondo.academy.fragments.news;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import java.util.List;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;

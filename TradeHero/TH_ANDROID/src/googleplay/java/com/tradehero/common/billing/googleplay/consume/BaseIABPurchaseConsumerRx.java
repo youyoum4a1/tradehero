@@ -12,7 +12,7 @@ import com.tradehero.common.billing.googleplay.IABServiceResult;
 import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABMissingTokenException;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academy.BuildConfig;
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;

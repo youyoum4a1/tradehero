@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push.urbanairship;
+package com.ayondo.academy.models.push.urbanairship;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

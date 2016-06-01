@@ -1,9 +1,9 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.models.fastfill.DocumentCheckStatus;
-import com.tradehero.th.models.fastfill.ScanStatus;
+import com.ayondo.academy.models.fastfill.DocumentCheckStatus;
+import com.ayondo.academy.models.fastfill.ScanStatus;
 import java.util.Date;
 
 public class NetverifyScanStatus implements ScanStatus

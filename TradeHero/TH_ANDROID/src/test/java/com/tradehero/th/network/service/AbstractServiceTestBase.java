@@ -1,4 +1,4 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
 import com.android.internal.util.Predicate;

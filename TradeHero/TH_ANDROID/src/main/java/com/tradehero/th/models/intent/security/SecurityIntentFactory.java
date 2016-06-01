@@ -1,10 +1,10 @@
-package com.tradehero.th.models.intent.security;
+package com.ayondo.academy.models.intent.security;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.models.intent.THIntentSubFactory;
+import com.ayondo.academy.R;
+import com.ayondo.academy.models.intent.THIntentSubFactory;
 import java.util.List;
 import javax.inject.Inject;
 

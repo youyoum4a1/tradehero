@@ -1,18 +1,18 @@
-package com.tradehero.th.api.leaderboard;
+package com.ayondo.academy.api.leaderboard;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.adapters.ExpandableItem;
-import com.tradehero.th.api.leaderboard.key.LeaderboardUserId;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
-import com.tradehero.th.api.social.FollowDetailsDTO;
-import com.tradehero.th.api.social.FollowStatesDTO;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.utils.SecurityUtils;
+import com.ayondo.academy.adapters.ExpandableItem;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardUserId;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardMarkUserId;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.position.GetPositionsDTOKey;
+import com.ayondo.academy.api.social.FollowDetailsDTO;
+import com.ayondo.academy.api.social.FollowStatesDTO;
+import com.ayondo.academy.api.users.UserBaseDTO;
+import com.ayondo.academy.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
 

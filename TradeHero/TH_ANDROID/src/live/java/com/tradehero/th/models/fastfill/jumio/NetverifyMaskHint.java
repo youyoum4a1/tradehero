@@ -1,4 +1,4 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 public enum NetverifyMaskHint
 {

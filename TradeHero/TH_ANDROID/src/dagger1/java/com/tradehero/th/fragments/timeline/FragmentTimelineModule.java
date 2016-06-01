@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.timeline;
+package com.ayondo.academy.fragments.timeline;
 
 import dagger.Module;
 

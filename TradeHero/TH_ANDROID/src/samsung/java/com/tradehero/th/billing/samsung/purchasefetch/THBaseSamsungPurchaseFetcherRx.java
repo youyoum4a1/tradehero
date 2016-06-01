@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung.purchasefetch;
+package com.ayondo.academy.billing.samsung.purchasefetch;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,10 +7,10 @@ import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.purchasefetch.BaseSamsungPurchaseFetcherRx;
 import com.tradehero.common.billing.samsung.rx.InboxListQueryGroup;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.billing.samsung.THSamsungConstants;
-import com.tradehero.th.billing.samsung.THSamsungOrderId;
-import com.tradehero.th.billing.samsung.THSamsungPurchase;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.billing.samsung.THSamsungConstants;
+import com.ayondo.academy.billing.samsung.THSamsungOrderId;
+import com.ayondo.academy.billing.samsung.THSamsungPurchase;
 import java.util.Collections;
 import java.util.List;
 

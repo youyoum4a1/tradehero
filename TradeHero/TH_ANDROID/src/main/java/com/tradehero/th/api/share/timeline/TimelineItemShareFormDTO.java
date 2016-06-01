@@ -1,10 +1,10 @@
-package com.tradehero.th.api.share.timeline;
+package com.ayondo.academy.api.share.timeline;
 
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.api.share.SocialShareFormDTOWithEnum;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.ayondo.academy.api.discussion.key.DiscussionListKey;
+import com.ayondo.academy.api.share.SocialShareFormDTOWithEnum;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.timeline.TimelineItemShareRequestDTO;
 
 public class TimelineItemShareFormDTO implements SocialShareFormDTOWithEnum
 {

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.achievement;
+package com.ayondo.academy.api.achievement;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,13 +11,13 @@ import java.util.ListIterator;
 public class QuestBonusDTOList extends BaseArrayList<QuestBonusDTO> implements DTO
 {
     /**
-     * Get <i>next</i> number of {@link com.tradehero.th.api.achievement.QuestBonusDTO} inclusive of <i>currentLevel</i>
+     * Get <i>next</i> number of {@link com.ayondo.academy.api.achievement.QuestBonusDTO} inclusive of <i>currentLevel</i>
      *
      * <p> If the <i>currentLevel</i> + <i>next</i> is greater than list's size, it will return a list with size of less than <i>next</i> </p>
      *
      * @param currentLevel currentLevel
-     * @param next number of {@link com.tradehero.th.api.achievement.QuestBonusDTO} to be retrieved
-     * @return {@link java.util.List} of {@link com.tradehero.th.api.achievement.QuestBonusDTO}
+     * @param next number of {@link com.ayondo.academy.api.achievement.QuestBonusDTO} to be retrieved
+     * @return {@link java.util.List} of {@link com.ayondo.academy.api.achievement.QuestBonusDTO}
      */
     @NonNull public List<QuestBonusDTO> getNextInclusive(int currentLevel, int next)
     {
@@ -37,11 +37,11 @@ public class QuestBonusDTOList extends BaseArrayList<QuestBonusDTO> implements D
     }
 
     /**
-     * Get <i>numOfItems</i> - or less if the size of the list is less than <i>numOfItems</i> - {@link com.tradehero.th.api.achievement.QuestBonusDTO}
-     * which includes the {@link com.tradehero.th.api.achievement.QuestBonusDTO} with <i>currentLevel</i>
+     * Get <i>numOfItems</i> - or less if the size of the list is less than <i>numOfItems</i> - {@link com.ayondo.academy.api.achievement.QuestBonusDTO}
+     * which includes the {@link com.ayondo.academy.api.achievement.QuestBonusDTO} with <i>currentLevel</i>
      *
      * @param currentLevel currentLevel
-     * @return {@link java.util.List} of {@link com.tradehero.th.api.achievement.QuestBonusDTO}
+     * @return {@link java.util.List} of {@link com.ayondo.academy.api.achievement.QuestBonusDTO}
      */
     public List<QuestBonusDTO> getInclusive(int currentLevel, int numOfItems)
     {

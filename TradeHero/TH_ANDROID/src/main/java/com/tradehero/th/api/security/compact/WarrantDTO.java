@@ -1,11 +1,11 @@
-package com.tradehero.th.api.security.compact;
+package com.ayondo.academy.api.security.compact;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.WarrantType;
-import com.tradehero.th.api.security.WarrantTypeShortCode;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.WarrantType;
+import com.ayondo.academy.api.security.WarrantTypeShortCode;
 import java.util.Date;
 
 public class WarrantDTO extends SecurityCompactDTO

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,13 +9,13 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UpdateReferralCodeDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UpdateReferralCodeDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.misc.exception.THException;
+import com.ayondo.academy.network.service.UserServiceWrapper;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;

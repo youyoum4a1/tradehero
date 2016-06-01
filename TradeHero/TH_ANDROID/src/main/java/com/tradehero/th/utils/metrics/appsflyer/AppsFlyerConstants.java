@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.metrics.appsflyer;
+package com.ayondo.academy.utils.metrics.appsflyer;
 
 public class AppsFlyerConstants
 {

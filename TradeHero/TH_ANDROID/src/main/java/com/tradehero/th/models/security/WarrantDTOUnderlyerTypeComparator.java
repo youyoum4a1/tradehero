@@ -1,7 +1,7 @@
-package com.tradehero.th.models.security;
+package com.ayondo.academy.models.security;
 
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.compact.WarrantDTO;
 import java.util.Comparator;
 import javax.inject.Inject;
 import javax.inject.Singleton;

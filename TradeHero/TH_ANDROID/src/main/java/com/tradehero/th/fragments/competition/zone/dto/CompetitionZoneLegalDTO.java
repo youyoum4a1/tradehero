@@ -1,7 +1,7 @@
-package com.tradehero.th.fragments.competition.zone.dto;
+package com.ayondo.academy.fragments.competition.zone.dto;
 
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class CompetitionZoneLegalDTO extends CompetitionZoneDTO
 {

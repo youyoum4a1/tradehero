@@ -1,14 +1,14 @@
-package com.tradehero.th.persistence.notification;
+package com.ayondo.academy.persistence.notification;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.notification.NotificationListKey;
-import com.tradehero.th.api.notification.PaginatedNotificationDTO;
-import com.tradehero.th.network.service.NotificationServiceWrapper;
-import com.tradehero.th.persistence.ListCacheMaxSize;
+import com.ayondo.academy.api.notification.NotificationListKey;
+import com.ayondo.academy.api.notification.PaginatedNotificationDTO;
+import com.ayondo.academy.network.service.NotificationServiceWrapper;
+import com.ayondo.academy.persistence.ListCacheMaxSize;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -1,13 +1,13 @@
-package com.tradehero.th.models.discussion;
+package com.ayondo.academy.models.discussion;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
-import com.tradehero.th.persistence.user.UserMessagingRelationshipCacheRx;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.persistence.discussion.DiscussionCacheRx;
+import com.ayondo.academy.persistence.user.UserMessagingRelationshipCacheRx;
 
 public class DTOProcessorDiscussionCreate extends DTOProcessorDiscussion
 {

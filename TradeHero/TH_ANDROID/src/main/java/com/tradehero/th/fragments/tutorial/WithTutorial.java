@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.tutorial;
+package com.ayondo.academy.fragments.tutorial;
 
 public interface WithTutorial
 {

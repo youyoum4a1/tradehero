@@ -1,5 +1,5 @@
 
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,8 +12,8 @@ import com.tradehero.common.social.facebook.FacebookObservable;
 import com.tradehero.common.social.facebook.WebDialogConstants;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
-import com.tradehero.th.misc.exception.THException;
+import com.ayondo.academy.R;
+import com.ayondo.academy.misc.exception.THException;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;

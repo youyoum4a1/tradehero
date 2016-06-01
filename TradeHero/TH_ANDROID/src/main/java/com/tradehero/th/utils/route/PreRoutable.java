@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.route;
+package com.ayondo.academy.utils.route;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

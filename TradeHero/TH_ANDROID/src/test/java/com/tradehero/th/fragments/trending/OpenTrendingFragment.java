@@ -1,6 +1,6 @@
-package com.tradehero.th.fragments.trending;
+package com.ayondo.academy.fragments.trending;
 
-import com.tradehero.th.billing.THBillingInteractorRx;
+import com.ayondo.academy.billing.THBillingInteractorRx;
 
 public class OpenTrendingFragment extends TrendingStockFragment
 {

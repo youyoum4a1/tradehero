@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard;
+package com.ayondo.academy.api.leaderboard;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.BaseHasExpiration;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardKey;
 import java.util.Date;
 
 public class LeaderboardDTO extends BaseHasExpiration

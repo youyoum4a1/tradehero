@@ -1,4 +1,4 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
 import java.util.ArrayList;
 import java.util.Collection;

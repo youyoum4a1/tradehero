@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.metrics.events;
+package com.ayondo.academy.utils.metrics.events;
 
 /*public abstract class THAnalyticsEvent extends AnalyticsEvent
 {

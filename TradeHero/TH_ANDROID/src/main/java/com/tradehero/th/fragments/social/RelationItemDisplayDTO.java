@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.social;
+package com.ayondo.academy.fragments.social;
 
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.ayondo.academy.api.users.AllowableRecipientDTO;
 
 public class RelationItemDisplayDTO implements DTO
 {

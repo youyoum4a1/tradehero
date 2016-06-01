@@ -1,14 +1,14 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.social.BatchFollowFormDTO;
-import com.tradehero.th.api.social.InviteFormDTO;
-import com.tradehero.th.api.social.InviteFormUserDTO;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.social.BatchFollowFormDTO;
+import com.ayondo.academy.api.social.InviteFormDTO;
+import com.ayondo.academy.api.social.InviteFormUserDTO;
+import com.ayondo.academy.api.social.UserFriendsDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.network.service.UserServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

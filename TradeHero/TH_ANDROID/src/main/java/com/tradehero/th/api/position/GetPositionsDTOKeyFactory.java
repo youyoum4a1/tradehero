@@ -1,15 +1,15 @@
-package com.tradehero.th.api.position;
+package com.ayondo.academy.api.position;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.leaderboard.position.PagedLeaderboardMarkUserId;
-import com.tradehero.th.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
-import com.tradehero.th.api.trade.OwnedTradeId;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardMarkUserId;
+import com.ayondo.academy.api.leaderboard.position.PagedLeaderboardMarkUserId;
+import com.ayondo.academy.api.leaderboard.position.PerPagedLeaderboardMarkUserId;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PagedOwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PerPagedOwnedPortfolioId;
+import com.ayondo.academy.api.trade.OwnedTradeId;
 
 public class GetPositionsDTOKeyFactory
 {

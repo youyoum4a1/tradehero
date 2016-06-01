@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.alert;
+package com.ayondo.academy.fragments.alert;
 
 import dagger.Module;
 

@@ -1,11 +1,11 @@
-package com.tradehero.th.models.security;
+package com.ayondo.academy.models.security;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
+import com.ayondo.academy.api.portfolio.PortfolioDTO;
+import com.ayondo.academy.api.position.SecurityPositionTransactionDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.persistence.portfolio.PortfolioCacheRx;
 
 public class DTOProcessorSecurityPositionTransactionUpdated extends DTOProcessorSecurityPositionTransactionReceived
 {

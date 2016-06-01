@@ -1,10 +1,10 @@
 package com.tradehero.common.persistence;
 
 import android.os.AsyncTask;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.persistence.alert.AlertCompactListCacheRx;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadPoolExecutor;
 import javax.inject.Inject;

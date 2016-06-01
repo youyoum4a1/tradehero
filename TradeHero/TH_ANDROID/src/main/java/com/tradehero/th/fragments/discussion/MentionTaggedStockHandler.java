@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,10 +8,10 @@ import android.widget.TextView;
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.text.RichTextCreator;
 import com.tradehero.common.utils.EditableUtil;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.users.AllowableRecipientDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserSearchResultDTO;
 import javax.inject.Inject;
 import timber.log.Timber;
 

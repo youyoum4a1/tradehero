@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.achievement;
+package com.ayondo.academy.persistence.achievement;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.achievement.QuestBonusDTO;
-import com.tradehero.th.api.achievement.QuestBonusDTOList;
-import com.tradehero.th.api.achievement.key.QuestBonusId;
+import com.ayondo.academy.api.achievement.QuestBonusDTO;
+import com.ayondo.academy.api.achievement.QuestBonusDTOList;
+import com.ayondo.academy.api.achievement.key.QuestBonusId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

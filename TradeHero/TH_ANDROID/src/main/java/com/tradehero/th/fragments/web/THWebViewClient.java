@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.web;
+package com.ayondo.academy.fragments.web;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,9 +12,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.competition.ProviderListCacheRx;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.persistence.competition.ProviderListCacheRx;
 
 import java.util.List;
 

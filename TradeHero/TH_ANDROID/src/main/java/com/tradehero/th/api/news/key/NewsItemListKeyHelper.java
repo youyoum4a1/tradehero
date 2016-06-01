@@ -1,6 +1,6 @@
-package com.tradehero.th.api.news.key;
+package com.ayondo.academy.api.news.key;
 
-import com.tradehero.th.api.pagination.PaginationDTO;
+import com.ayondo.academy.api.pagination.PaginationDTO;
 
 /**
  * Created by thonguyen on 28/10/14.

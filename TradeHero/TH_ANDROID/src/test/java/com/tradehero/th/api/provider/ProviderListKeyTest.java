@@ -1,8 +1,8 @@
-package com.tradehero.th.api.provider;
+package com.ayondo.academy.api.provider;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.competition.key.ProviderListKey;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.competition.key.ProviderListKey;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

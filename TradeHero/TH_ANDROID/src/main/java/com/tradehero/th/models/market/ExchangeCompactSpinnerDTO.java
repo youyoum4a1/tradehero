@@ -1,4 +1,4 @@
-package com.tradehero.th.models.market;
+package com.ayondo.academy.models.market;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.R;
-import com.tradehero.th.api.market.Country;
-import com.tradehero.th.api.market.Exchange;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.market.Country;
+import com.ayondo.academy.api.market.Exchange;
+import com.ayondo.academy.api.market.ExchangeCompactDTO;
 import timber.log.Timber;
 
 public class ExchangeCompactSpinnerDTO extends ExchangeCompactDTO implements CharSequence

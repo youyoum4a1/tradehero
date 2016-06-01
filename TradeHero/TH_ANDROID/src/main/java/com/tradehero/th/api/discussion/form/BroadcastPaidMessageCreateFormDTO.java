@@ -1,7 +1,7 @@
-package com.tradehero.th.api.discussion.form;
+package com.ayondo.academy.api.discussion.form;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.discussion.MessageType;
+import com.ayondo.academy.api.discussion.MessageType;
 
 public class BroadcastPaidMessageCreateFormDTO extends MessageCreateFormDTO
 {

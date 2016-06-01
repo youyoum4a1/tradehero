@@ -1,6 +1,6 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
-import com.tradehero.th.api.social.UserFriendsDTO;
+import com.ayondo.academy.api.social.UserFriendsDTO;
 
 class SocialFriendListItemUserDTO implements SocialFriendListItemDTO
 {

@@ -1,9 +1,9 @@
-package com.tradehero.th.billing.samsung;
+package com.ayondo.academy.billing.samsung;
 
 import com.samsung.android.sdk.iap.lib.helper.SamsungIapHelper;
 import com.tradehero.common.billing.samsung.SamsungConstants;
-import com.tradehero.th.billing.THBillingConstants;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.billing.THBillingConstants;
+import com.ayondo.academy.utils.Constants;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

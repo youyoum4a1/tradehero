@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung.identifier;
+package com.ayondo.academy.billing.samsung.identifier;
 
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;

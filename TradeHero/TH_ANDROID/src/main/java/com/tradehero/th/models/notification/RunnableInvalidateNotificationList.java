@@ -1,8 +1,8 @@
-package com.tradehero.th.models.notification;
+package com.ayondo.academy.models.notification;
 
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.notification.NotificationListCacheRx;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.persistence.notification.NotificationListCacheRx;
 import javax.inject.Inject;
 
 public class RunnableInvalidateNotificationList implements Runnable

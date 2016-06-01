@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,13 +9,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;

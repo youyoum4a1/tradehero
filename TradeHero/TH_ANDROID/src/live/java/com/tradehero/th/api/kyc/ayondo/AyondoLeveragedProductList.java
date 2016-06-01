@@ -1,4 +1,4 @@
-package com.tradehero.th.api.kyc.ayondo;
+package com.ayondo.academy.api.kyc.ayondo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.utils.StringUtils;
+import com.ayondo.academy.utils.StringUtils;
 import java.util.ArrayList;
 
 public class AyondoLeveragedProductList implements DTO

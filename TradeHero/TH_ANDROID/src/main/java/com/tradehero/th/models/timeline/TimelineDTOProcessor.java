@@ -1,12 +1,12 @@
-package com.tradehero.th.models.timeline;
+package com.ayondo.academy.models.timeline;
 
 import android.support.annotation.NonNull;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.ayondo.academy.api.timeline.TimelineDTO;
+import com.ayondo.academy.api.timeline.TimelineItemDTO;
+import com.ayondo.academy.api.users.UserProfileCompactDTO;
+import com.ayondo.academy.persistence.discussion.DiscussionCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import rx.functions.Action1;

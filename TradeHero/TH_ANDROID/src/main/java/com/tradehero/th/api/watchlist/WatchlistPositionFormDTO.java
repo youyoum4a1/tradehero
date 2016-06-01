@@ -1,7 +1,7 @@
-package com.tradehero.th.api.watchlist;
+package com.ayondo.academy.api.watchlist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.api.security.SecurityIntegerId;
+import com.ayondo.academy.api.security.SecurityIntegerId;
 
 public class WatchlistPositionFormDTO
 {

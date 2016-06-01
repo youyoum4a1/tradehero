@@ -1,4 +1,4 @@
-package com.tradehero.th.widget.validation;
+package com.ayondo.academy.widget.validation;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -6,7 +6,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import java.util.regex.Pattern;
 
 public class ValidationDTO

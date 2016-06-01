@@ -1,18 +1,18 @@
-package com.tradehero.th.persistence.achievement;
+package com.ayondo.academy.persistence.achievement;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.achievement.AchievementDefDTO;
-import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.achievement.key.UserAchievementId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.network.service.AchievementServiceWrapper;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.utils.broadcast.BroadcastTaskNew;
-import com.tradehero.th.utils.broadcast.BroadcastUtils;
+import com.ayondo.academy.api.achievement.AchievementDefDTO;
+import com.ayondo.academy.api.achievement.UserAchievementDTO;
+import com.ayondo.academy.api.achievement.key.UserAchievementId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.network.service.AchievementServiceWrapper;
+import com.ayondo.academy.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.ayondo.academy.utils.broadcast.BroadcastTaskNew;
+import com.ayondo.academy.utils.broadcast.BroadcastUtils;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;

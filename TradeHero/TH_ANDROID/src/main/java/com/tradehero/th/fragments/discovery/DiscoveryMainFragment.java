@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discovery;
+package com.ayondo.academy.fragments.discovery;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,13 +16,13 @@ import android.view.ViewGroup;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.AnalyticsDuration;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.base.ActionBarOwnerMixin;
+import com.ayondo.academy.fragments.base.BaseLiveFragmentUtil;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.metrics.AnalyticsDuration;
+import com.ayondo.academy.utils.route.THRouter;
 
 import javax.inject.Inject;
 

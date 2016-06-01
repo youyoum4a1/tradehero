@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import com.tradehero.th.api.DTOView;
+import com.ayondo.academy.api.DTOView;
 
 abstract public class SocialFriendItemView extends LinearLayout
         implements DTOView<SocialFriendListItemDTO>

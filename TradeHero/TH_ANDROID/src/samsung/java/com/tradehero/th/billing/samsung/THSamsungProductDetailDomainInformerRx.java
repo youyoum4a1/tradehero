@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.samsung;
+package com.ayondo.academy.billing.samsung;
 
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
+import com.ayondo.academy.billing.inventory.THProductDetailDomainInformerRx;
 
 public interface THSamsungProductDetailDomainInformerRx
         extends THProductDetailDomainInformerRx<SamsungSKU, THSamsungProductDetail>

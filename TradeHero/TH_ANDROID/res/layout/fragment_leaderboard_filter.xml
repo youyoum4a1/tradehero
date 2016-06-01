@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-  <com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer
+  <com.ayondo.academy.fragments.leaderboard.filter.LeaderboardFilterSliderContainer
       android:id="@+id/leaderboard_filter_slider_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -53,6 +53,6 @@
         android:text="@string/leaderboard_filter_reset_filter"
         style="@style/LeaderboardFilter.Button"/>
 
-  </com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer>
+  </com.ayondo.academy.fragments.leaderboard.filter.LeaderboardFilterSliderContainer>
 
 </ScrollView>

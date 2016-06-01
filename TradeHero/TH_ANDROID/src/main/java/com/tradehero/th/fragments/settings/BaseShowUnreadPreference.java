@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public abstract class BaseShowUnreadPreference extends Preference
     implements ShowUnreadPreference

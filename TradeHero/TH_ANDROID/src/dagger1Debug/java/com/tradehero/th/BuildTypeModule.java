@@ -1,6 +1,6 @@
-package com.tradehero.th;
+package com.ayondo.academy;
 
-import com.tradehero.th.network.NetworkDebugModule;
+import com.ayondo.academy.network.NetworkDebugModule;
 import dagger.Module;
 
 @Module(

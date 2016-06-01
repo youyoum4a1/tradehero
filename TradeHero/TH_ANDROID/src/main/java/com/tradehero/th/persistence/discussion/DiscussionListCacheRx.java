@@ -1,18 +1,18 @@
-package com.tradehero.th.persistence.discussion;
+package com.ayondo.academy.persistence.discussion;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.api.discussion.key.MessageDiscussionListKey;
-import com.tradehero.th.api.discussion.key.PaginatedDiscussionListKey;
-import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.network.service.DiscussionServiceWrapper;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.discussion.key.DiscussionListKey;
+import com.ayondo.academy.api.discussion.key.MessageDiscussionListKey;
+import com.ayondo.academy.api.discussion.key.PaginatedDiscussionListKey;
+import com.ayondo.academy.api.pagination.PaginatedDTO;
+import com.ayondo.academy.network.service.DiscussionServiceWrapper;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;

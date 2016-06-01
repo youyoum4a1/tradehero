@@ -1,4 +1,4 @@
-package com.tradehero.th.models.leaderboard;
+package com.ayondo.academy.models.leaderboard;
 
 import dagger.Module;
 

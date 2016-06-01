@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position.partial;
+package com.ayondo.academy.fragments.position.partial;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -8,13 +8,13 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import android.support.annotation.Nullable;
 import com.tradehero.common.annotation.ViewVisibilityValue;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.position.PositionInPeriodDTO;
-import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DateUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.position.PositionDTO;
+import com.ayondo.academy.api.position.PositionInPeriodDTO;
+import com.ayondo.academy.models.number.THSignedMoney;
+import com.ayondo.academy.models.number.THSignedPercentage;
+import com.ayondo.academy.utils.DateUtils;
 
 public class PositionPartialBottomInPeriodViewHolder implements DTOView<PositionPartialBottomInPeriodViewHolder.DTO>
 {

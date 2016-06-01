@@ -1,10 +1,10 @@
-package com.tradehero.th.api.leaderboard.def;
+package com.ayondo.academy.api.leaderboard.def;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.leaderboard.CountryCodeList;
-import com.tradehero.th.api.leaderboard.LeaderboardSortTypeDTOList;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.ayondo.academy.api.leaderboard.CountryCodeList;
+import com.ayondo.academy.api.leaderboard.LeaderboardSortTypeDTOList;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardDefKey;
 import java.util.Date;
 
 public class LeaderboardDefDTO implements DTO

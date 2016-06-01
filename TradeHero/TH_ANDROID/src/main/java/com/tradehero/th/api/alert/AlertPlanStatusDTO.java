@@ -1,4 +1,4 @@
-package com.tradehero.th.api.alert;
+package com.ayondo.academy.api.alert;
 
 public class AlertPlanStatusDTO
 {

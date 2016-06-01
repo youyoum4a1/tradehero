@@ -1,12 +1,12 @@
-package com.tradehero.th.billing.samsung;
+package com.ayondo.academy.billing.samsung;
 
 import android.support.annotation.NonNull;
 import com.samsung.android.sdk.iap.lib.vo.ItemVo;
 import com.tradehero.common.billing.samsung.BaseSamsungProductDetail;
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.R;
-import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THProductDetail;
+import com.ayondo.academy.R;
+import com.ayondo.academy.billing.ProductIdentifierDomain;
+import com.ayondo.academy.billing.THProductDetail;
 
 public class THSamsungProductDetail
         extends BaseSamsungProductDetail<SamsungSKU>

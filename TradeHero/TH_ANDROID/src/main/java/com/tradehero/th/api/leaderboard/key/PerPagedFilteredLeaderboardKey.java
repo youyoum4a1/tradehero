@@ -1,9 +1,9 @@
-package com.tradehero.th.api.leaderboard.key;
+package com.ayondo.academy.api.leaderboard.key;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
 import java.util.Iterator;
 import java.util.Set;
 

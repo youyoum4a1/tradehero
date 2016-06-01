@@ -1,4 +1,4 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import retrofit.Callback;
 

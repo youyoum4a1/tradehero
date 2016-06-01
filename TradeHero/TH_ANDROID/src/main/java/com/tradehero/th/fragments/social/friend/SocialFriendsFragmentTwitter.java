@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.content.Context;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
 import javax.inject.Inject;
 
 public class SocialFriendsFragmentTwitter extends SocialFriendsFragment

@@ -1,12 +1,12 @@
-package com.tradehero.th.models.discussion;
+package com.ayondo.academy.models.discussion;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.message.MessageHeaderCacheRx;
-import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.discussion.key.MessageHeaderId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.persistence.message.MessageHeaderCacheRx;
+import com.ayondo.academy.persistence.message.MessageHeaderListCacheRx;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 
 public class DTOProcessorMessageDeleted extends DTOProcessorMessageRead
 {

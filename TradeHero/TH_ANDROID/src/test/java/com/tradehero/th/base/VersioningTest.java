@@ -1,9 +1,9 @@
-package com.tradehero.th.base;
+package com.ayondo.academy.base;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
 import javax.inject.Inject;
 import org.junit.Test;
 import org.junit.runner.RunWith;

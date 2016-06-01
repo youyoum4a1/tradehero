@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.translation;
+package com.ayondo.academy.persistence.translation;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.SystemCache;
-import com.tradehero.th.api.translation.TranslationResult;
-import com.tradehero.th.network.service.TranslationServiceWrapper;
+import com.ayondo.academy.api.translation.TranslationResult;
+import com.ayondo.academy.network.service.TranslationServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Pair;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
-import com.tradehero.th.api.discussion.form.SecurityReplyDiscussionFormDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.form.DiscussionFormDTO;
+import com.ayondo.academy.api.discussion.form.SecurityReplyDiscussionFormDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;

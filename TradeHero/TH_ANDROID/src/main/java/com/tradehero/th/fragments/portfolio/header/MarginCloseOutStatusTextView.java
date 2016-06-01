@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.portfolio.header;
+package com.ayondo.academy.fragments.portfolio.header;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
@@ -10,11 +10,11 @@ import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
 import android.widget.TextView;
-import com.tradehero.th.api.portfolio.MarginCloseOutState;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedPercentage;
+import com.ayondo.academy.api.portfolio.MarginCloseOutState;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOUtil;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.number.THSignedPercentage;
 
 public class MarginCloseOutStatusTextView extends TextView
 {

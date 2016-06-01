@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,14 +9,14 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.fragments.news.NewsViewLinear;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.news.NewsItemDTO;
+import com.ayondo.academy.fragments.news.NewsViewLinear;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;

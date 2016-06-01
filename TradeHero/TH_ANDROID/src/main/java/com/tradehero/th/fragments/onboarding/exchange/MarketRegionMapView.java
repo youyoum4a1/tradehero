@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.exchange;
+package com.ayondo.academy.fragments.onboarding.exchange;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,9 +12,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.market.MarketRegion;
-import com.tradehero.th.models.market.MarketRegionDisplayUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.market.MarketRegion;
+import com.ayondo.academy.models.market.MarketRegionDisplayUtil;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

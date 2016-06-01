@@ -1,8 +1,8 @@
-package com.tradehero.th.filter.security;
+package com.ayondo.academy.filter.security;
 
 import android.widget.Filter;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
 import java.util.List;
 import timber.log.Timber;
 
@@ -36,7 +36,7 @@ abstract public class SecurityCompactDTOFilter<SecurityCompactDTOType extends Se
     {
         // TODO make a new instance instead of casting as it appears the FilterResults can be passed later,
         // for instance after a sleep.
-        // https://www.crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/539106b0e3de5099ba4db214
+        // https://www.crashlytics.com/tradehero/android/apps/com.ayondo.academy/issues/539106b0e3de5099ba4db214
         publishResults(charSequence, (SecurityFilterResults<SecurityCompactDTOType>) filterResults);
     }
 

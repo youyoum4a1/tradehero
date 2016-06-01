@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.ayondo.academy.api.discussion.AbstractDiscussionDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.persistence.discussion.DiscussionCacheRx;
 
 public class PrivateDiscussionSetAdapter extends DiscussionSetAdapter
 {

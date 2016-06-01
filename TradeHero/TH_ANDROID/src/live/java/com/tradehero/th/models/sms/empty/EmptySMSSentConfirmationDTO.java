@@ -1,9 +1,9 @@
-package com.tradehero.th.models.sms.empty;
+package com.ayondo.academy.models.sms.empty;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import com.tradehero.th.models.sms.SMSId;
-import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
+import com.ayondo.academy.models.sms.SMSId;
+import com.ayondo.academy.models.sms.SMSSentConfirmationDTO;
 
 public class EmptySMSSentConfirmationDTO implements SMSSentConfirmationDTO
 {

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.alert;
+package com.ayondo.academy.fragments.alert;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -9,10 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.ViewDTOSetAdapter;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.ViewDTOSetAdapter;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.inject.HierarchyInjector;
 import java.util.Comparator;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 

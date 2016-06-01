@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tradehero.th.auth.weibo;
+package com.ayondo.academy.auth.weibo;
 
 import android.content.Context;
 import android.content.SharedPreferences;

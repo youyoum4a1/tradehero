@@ -1,4 +1,4 @@
-package com.tradehero.th.models.resource;
+package com.ayondo.academy.models.resource;
 
 import android.content.res.Resources;
 import android.support.annotation.DimenRes;

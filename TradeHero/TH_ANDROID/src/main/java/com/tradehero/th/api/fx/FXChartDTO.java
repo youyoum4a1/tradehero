@@ -1,4 +1,4 @@
-package com.tradehero.th.api.fx;
+package com.ayondo.academy.api.fx;
 
 import com.tradehero.common.persistence.DTO;
 import java.util.List;

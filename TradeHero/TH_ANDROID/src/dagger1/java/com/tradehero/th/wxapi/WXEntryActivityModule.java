@@ -1,13 +1,13 @@
-package com.tradehero.th.wxapi;
+package com.ayondo.academy.wxapi;
 
 import android.app.Activity;
 import android.content.Context;
 import android.widget.AbsListView;
-import com.tradehero.th.BottomTabsQuickReturnListViewListener;
-import com.tradehero.th.UIModule;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.utils.dagger.AppModule;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.BottomTabsQuickReturnListViewListener;
+import com.ayondo.academy.UIModule;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.utils.dagger.AppModule;
+import com.ayondo.academy.utils.route.THRouter;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Provider;

@@ -1,14 +1,14 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.th.api.alert.UserAlertPlanDTO;
-import com.tradehero.th.api.discussion.MessageType;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.billing.BillingSecurityAlertKnowledge;
-import com.tradehero.th.persistence.prefs.FirstShowOnBoardDialog;
-import com.tradehero.th.persistence.timing.TimingIntervalPreference;
+import com.ayondo.academy.api.alert.UserAlertPlanDTO;
+import com.ayondo.academy.api.discussion.MessageType;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.billing.BillingSecurityAlertKnowledge;
+import com.ayondo.academy.persistence.prefs.FirstShowOnBoardDialog;
+import com.ayondo.academy.persistence.timing.TimingIntervalPreference;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;

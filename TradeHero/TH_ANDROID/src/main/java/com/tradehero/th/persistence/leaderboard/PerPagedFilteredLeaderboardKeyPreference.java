@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.leaderboard;
+package com.ayondo.academy.persistence.leaderboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.PerPagedLeaderboardKey;
 import java.util.Set;
 
 public class PerPagedFilteredLeaderboardKeyPreference extends PerPagedLeaderboardKeyPreference

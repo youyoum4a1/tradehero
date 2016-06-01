@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.widget.Button;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class GoLiveWidget extends Button
 {

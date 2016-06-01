@@ -1,12 +1,12 @@
-package com.tradehero.th.api.position;
+package com.ayondo.academy.api.position;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.common.utils.IOUtils;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.BaseApiTestClass;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.BaseApiTestClass;
+import com.ayondo.academy.base.TestTHApp;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;

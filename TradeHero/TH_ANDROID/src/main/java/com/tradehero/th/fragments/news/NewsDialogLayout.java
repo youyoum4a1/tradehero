@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.news;
+package com.ayondo.academy.fragments.news;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -15,12 +15,12 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.AbstractDiscussionDTO;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.news.NewsItemDTO;
 import rx.Observable;
 
 public class NewsDialogLayout extends ShareDialogLayout

@@ -1,4 +1,4 @@
-package com.tradehero.th.models.number;
+package com.ayondo.academy.models.number;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;

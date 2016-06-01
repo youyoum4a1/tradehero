@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.googleplay;
+package com.ayondo.academy.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABConstants;
-import com.tradehero.th.billing.THBillingConstants;
+import com.ayondo.academy.billing.THBillingConstants;
 
 public class THIABConstants
         extends IABConstants

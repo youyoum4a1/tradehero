@@ -1,18 +1,18 @@
-package com.tradehero.th.billing.amazon.report;
+package com.ayondo.academy.billing.amazon.report;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.AmazonSKU;
-import com.tradehero.th.billing.amazon.THAmazonOrderId;
-import com.tradehero.th.billing.amazon.THAmazonProductDetail;
-import com.tradehero.th.billing.amazon.THAmazonPurchase;
-import com.tradehero.th.billing.report.THBasePurchaseReporterHolderRx;
-import com.tradehero.th.network.service.AlertPlanCheckServiceWrapper;
-import com.tradehero.th.network.service.AlertPlanServiceWrapper;
-import com.tradehero.th.network.service.PortfolioServiceWrapper;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.billing.THAmazonProductDetailCacheRx;
+import com.ayondo.academy.billing.amazon.THAmazonOrderId;
+import com.ayondo.academy.billing.amazon.THAmazonProductDetail;
+import com.ayondo.academy.billing.amazon.THAmazonPurchase;
+import com.ayondo.academy.billing.report.THBasePurchaseReporterHolderRx;
+import com.ayondo.academy.network.service.AlertPlanCheckServiceWrapper;
+import com.ayondo.academy.network.service.AlertPlanServiceWrapper;
+import com.ayondo.academy.network.service.PortfolioServiceWrapper;
+import com.ayondo.academy.network.service.UserServiceWrapper;
+import com.ayondo.academy.persistence.billing.THAmazonProductDetailCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 

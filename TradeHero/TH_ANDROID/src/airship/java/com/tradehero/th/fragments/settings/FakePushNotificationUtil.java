@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,11 +7,11 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.models.push.urbanairship.ActionRunnerOperator;
-import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
-import com.tradehero.th.rx.dialog.AlertDialogRx;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.models.push.urbanairship.ActionRunnerOperator;
+import com.ayondo.academy.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+import com.ayondo.academy.rx.dialog.AlertDialogRx;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
 import com.urbanairship.UAirship;
 import com.urbanairship.actions.ActionArguments;
 import com.urbanairship.actions.ActionResult;
@@ -65,9 +65,9 @@ public class FakePushNotificationUtil
                     @Override public Observable<? extends ActionResult> call(Pair<String, ActionArguments> pair)
                     {
                         activityContext.sendBroadcast(new Intent("com.urbanairship.push.RECEIVED")
-                                .addCategory("com.tradehero.th.dev"));
+                                .addCategory("com.ayondo.academy.dev"));
                         activityContext.sendBroadcast(new Intent("com.urbanairship.push.RECEIVED")
-                                .addCategory("com.tradehero.th"));
+                                .addCategory("com.ayondo.academy"));
                         return Observable.create(new ActionRunnerOperator(
                                 pair.first,
                                 pair.second));

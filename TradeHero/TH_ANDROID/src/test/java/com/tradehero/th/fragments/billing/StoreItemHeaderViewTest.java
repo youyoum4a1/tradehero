@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.billing;
+package com.ayondo.academy.fragments.billing;
 
 import android.content.Context;
 import android.widget.TextView;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.R;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.R;
+import com.ayondo.academy.base.TestTHApp;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.Receipt;

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.users.payment;
+package com.ayondo.academy.api.users.payment;
 
 public class UpdateAlipayAccountFormDTO
 {

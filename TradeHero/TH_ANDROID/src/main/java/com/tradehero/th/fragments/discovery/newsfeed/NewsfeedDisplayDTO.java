@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.discovery.newsfeed;
+package com.ayondo.academy.fragments.discovery.newsfeed;
 
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTO;
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedDiscussionDTO;
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedNewsDTO;
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedStockTwitDTO;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedDTO;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedDiscussionDTO;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedNewsDTO;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedStockTwitDTO;
 import java.util.Date;
 import org.ocpsoft.prettytime.PrettyTime;
 

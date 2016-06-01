@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay;
+package com.ayondo.academy.billing.googleplay;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,15 +12,15 @@ import com.tradehero.common.billing.googleplay.exception.IABInvalidConsumptionEx
 import com.tradehero.common.billing.googleplay.exception.IABItemAlreadyOwnedException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.billing.googleplay.exception.IABResultErrorException;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityUtil;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.BaseBillingUtils;
-import com.tradehero.th.billing.BillingUtils;
-import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
-import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
-import com.tradehero.th.rx.ReplaceWithFunc1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.ActivityUtil;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.billing.BaseBillingUtils;
+import com.ayondo.academy.billing.BillingUtils;
+import com.ayondo.academy.billing.THBillingAlertDialogRxUtil;
+import com.ayondo.academy.persistence.billing.googleplay.THIABPurchaseCacheRx;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
 
 import java.util.HashMap;
 

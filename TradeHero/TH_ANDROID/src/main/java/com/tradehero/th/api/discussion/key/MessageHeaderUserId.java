@@ -1,7 +1,7 @@
-package com.tradehero.th.api.discussion.key;
+package com.ayondo.academy.api.discussion.key;
 
 import android.os.Bundle;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class MessageHeaderUserId extends MessageHeaderId
 {

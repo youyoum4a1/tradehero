@@ -1,7 +1,7 @@
-package com.tradehero.th.models;
+package com.ayondo.academy.models;
 
-import com.tradehero.th.models.share.ModelsShareUITestModule;
-import com.tradehero.th.models.user.ModelsUserUITestModule;
+import com.ayondo.academy.models.share.ModelsShareUITestModule;
+import com.ayondo.academy.models.user.ModelsUserUITestModule;
 import dagger.Module;
 
 @Module(

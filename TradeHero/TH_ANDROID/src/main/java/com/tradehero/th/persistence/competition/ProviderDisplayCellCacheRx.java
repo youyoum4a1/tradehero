@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.competition;
+package com.ayondo.academy.persistence.competition;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.competition.ProviderDisplayCellDTO;
-import com.tradehero.th.api.competition.key.ProviderDisplayCellId;
+import com.ayondo.academy.api.competition.ProviderDisplayCellDTO;
+import com.ayondo.academy.api.competition.key.ProviderDisplayCellId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

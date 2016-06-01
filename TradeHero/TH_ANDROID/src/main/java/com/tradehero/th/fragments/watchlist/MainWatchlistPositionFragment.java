@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.watchlist;
+package com.ayondo.academy.fragments.watchlist;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,17 +14,17 @@ import android.widget.ProgressBar;
 
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.trending.TrendingMainFragment;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.widget.MultiScrollListener;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTOList;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.fragments.security.SecuritySearchWatchlistFragment;
+import com.ayondo.academy.fragments.security.WatchlistEditFragment;
+import com.ayondo.academy.fragments.trending.TrendingMainFragment;
+import com.ayondo.academy.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.ayondo.academy.widget.MultiScrollListener;
 
 import javax.inject.Inject;
 

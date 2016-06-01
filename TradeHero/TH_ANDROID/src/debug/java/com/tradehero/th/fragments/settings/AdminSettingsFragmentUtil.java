@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.support.annotation.Nullable;
-import com.tradehero.th.fragments.TestKChartsFragment;
-import com.tradehero.th.fragments.TypographyExampleFragment;
-import com.tradehero.th.fragments.achievement.AchievementListTestingFragment;
-import com.tradehero.th.fragments.achievement.QuestListTestingFragment;
-import com.tradehero.th.fragments.level.XpTestingFragment;
+import com.ayondo.academy.fragments.TestKChartsFragment;
+import com.ayondo.academy.fragments.TypographyExampleFragment;
+import com.ayondo.academy.fragments.achievement.AchievementListTestingFragment;
+import com.ayondo.academy.fragments.achievement.QuestListTestingFragment;
+import com.ayondo.academy.fragments.level.XpTestingFragment;
 
 public class AdminSettingsFragmentUtil
 {

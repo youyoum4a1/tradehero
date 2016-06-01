@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.metrics.events;
+package com.ayondo.academy.utils.metrics.events;
 
 /** This event is incomplete **/
 public abstract class ProviderEvent //extends THAnalyticsEvent

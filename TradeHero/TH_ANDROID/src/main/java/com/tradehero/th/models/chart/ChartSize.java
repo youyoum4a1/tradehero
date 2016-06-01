@@ -1,4 +1,4 @@
-package com.tradehero.th.models.chart;
+package com.ayondo.academy.models.chart;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

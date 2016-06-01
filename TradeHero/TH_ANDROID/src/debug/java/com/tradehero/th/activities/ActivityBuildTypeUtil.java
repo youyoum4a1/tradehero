@@ -1,8 +1,8 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class ActivityBuildTypeUtil
 {

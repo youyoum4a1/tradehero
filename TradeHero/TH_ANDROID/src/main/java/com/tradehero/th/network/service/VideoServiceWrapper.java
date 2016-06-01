@@ -1,13 +1,13 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.education.PagedVideoCategories;
-import com.tradehero.th.api.education.PagedVideoCategoryId;
-import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
-import com.tradehero.th.api.education.PaginatedVideoDTO;
-import com.tradehero.th.api.education.VideoCategoryId;
-import com.tradehero.th.api.education.VideoDTO;
+import com.ayondo.academy.api.education.PagedVideoCategories;
+import com.ayondo.academy.api.education.PagedVideoCategoryId;
+import com.ayondo.academy.api.education.PaginatedVideoCategoryDTO;
+import com.ayondo.academy.api.education.PaginatedVideoDTO;
+import com.ayondo.academy.api.education.VideoCategoryId;
+import com.ayondo.academy.api.education.VideoDTO;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

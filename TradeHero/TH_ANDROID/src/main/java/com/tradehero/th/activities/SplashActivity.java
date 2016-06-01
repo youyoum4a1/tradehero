@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -13,20 +13,20 @@ import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.network.share.SocialConstants;
-import com.tradehero.th.persistence.prefs.AuthHeader;
-import com.tradehero.th.persistence.prefs.FirstLaunch;
-import com.tradehero.th.persistence.prefs.ResetHelpScreens;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.metrics.MetricsModule;
-import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.models.time.AppTiming;
+import com.ayondo.academy.network.share.SocialConstants;
+import com.ayondo.academy.persistence.prefs.AuthHeader;
+import com.ayondo.academy.persistence.prefs.FirstLaunch;
+import com.ayondo.academy.persistence.prefs.ResetHelpScreens;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.VersionUtils;
+import com.ayondo.academy.utils.metrics.MetricsModule;
+import com.ayondo.academy.utils.metrics.appsflyer.THAppsFlyer;
 
 import javax.inject.Inject;
 

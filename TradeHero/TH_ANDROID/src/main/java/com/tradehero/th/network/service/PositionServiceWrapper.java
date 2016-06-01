@@ -1,10 +1,10 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PagedOwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PerPagedOwnedPortfolioId;
-import com.tradehero.th.api.position.GetPositionsDTO;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PagedOwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PerPagedOwnedPortfolioId;
+import com.ayondo.academy.api.position.GetPositionsDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

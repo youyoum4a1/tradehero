@@ -1,10 +1,10 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import com.tradehero.common.persistence.LoadingDTO;
-import com.tradehero.th.api.DTOView;
+import com.ayondo.academy.api.DTOView;
 
 public class LoadingItemView extends LinearLayout implements DTOView<LoadingDTO>
 {

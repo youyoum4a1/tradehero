@@ -1,4 +1,4 @@
-package com.tradehero.th.api.competition.key;
+package com.ayondo.academy.api.competition.key;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

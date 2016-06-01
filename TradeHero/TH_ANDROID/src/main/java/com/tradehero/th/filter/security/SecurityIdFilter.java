@@ -1,8 +1,8 @@
-package com.tradehero.th.filter.security;
+package com.ayondo.academy.filter.security;
 
 import android.widget.Filter;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
-import com.tradehero.th.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityId;
 import java.util.List;
 import timber.log.Timber;
 

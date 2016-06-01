@@ -1,10 +1,10 @@
-package com.tradehero.th.models.leaderboard.key;
+package com.ayondo.academy.models.leaderboard.key;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardDefKey;
 
 public class LeaderboardDefIconKnowledge extends LeaderboardDefKeyKnowledge
 {

@@ -1,17 +1,17 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
-import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardFriendsKey;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 import rx.Observable;
 import rx.functions.Func2;
 

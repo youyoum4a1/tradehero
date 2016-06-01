@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.timing;
+package com.ayondo.academy.persistence.timing;
 
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;

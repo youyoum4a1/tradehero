@@ -1,12 +1,12 @@
-package com.tradehero.th.widget.news.fx;
+package com.ayondo.academy.widget.news.fx;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import com.tradehero.th.R;
-import com.tradehero.th.api.fx.FXChartGranularity;
-import com.tradehero.th.models.chart.ChartTimeSpan;
-import com.tradehero.th.widget.news.TimeSpanButton;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.fx.FXChartGranularity;
+import com.ayondo.academy.models.chart.ChartTimeSpan;
+import com.ayondo.academy.widget.news.TimeSpanButton;
 
 public class FXGranularityButton extends TimeSpanButton
 {

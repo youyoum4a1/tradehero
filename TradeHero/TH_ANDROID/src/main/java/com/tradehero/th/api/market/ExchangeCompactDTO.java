@@ -1,4 +1,4 @@
-package com.tradehero.th.api.market;
+package com.ayondo.academy.api.market;
 
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;

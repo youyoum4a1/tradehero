@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.competition.zone;
+package com.ayondo.academy.fragments.competition.zone;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.fragments.competition.zone.dto.CompetitionZoneDTO;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;

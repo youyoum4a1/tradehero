@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard;
+package com.ayondo.academy.api.leaderboard;
 
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;

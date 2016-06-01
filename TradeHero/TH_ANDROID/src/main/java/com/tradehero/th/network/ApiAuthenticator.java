@@ -1,4 +1,4 @@
-package com.tradehero.th.network;
+package com.ayondo.academy.network;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -8,15 +8,15 @@ import android.content.Context;
 import com.squareup.okhttp.Authenticator;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.utils.Constants;
 import java.io.IOException;
 import java.net.Proxy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
-import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
+import static com.ayondo.academy.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
+import static com.ayondo.academy.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
 @Singleton
 public class ApiAuthenticator implements Authenticator

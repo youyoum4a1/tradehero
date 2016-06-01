@@ -1,6 +1,6 @@
-package com.tradehero.th.models.chart;
+package com.ayondo.academy.models.chart;
 
-import com.tradehero.th.models.chart.yahoo.YahooChartDTOFactory;
+import com.ayondo.academy.models.chart.yahoo.YahooChartDTOFactory;
 import dagger.Module;
 import dagger.Provides;
 

@@ -1,16 +1,16 @@
-package com.tradehero.th.models.portfolio;
+package com.ayondo.academy.models.portfolio;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOList;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.portfolio.PortfolioDTOList;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.portfolio.DisplayablePortfolioDTOList;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.portfolio.PortfolioDTOList;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.persistence.portfolio.PortfolioCacheRx;
+import com.ayondo.academy.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;

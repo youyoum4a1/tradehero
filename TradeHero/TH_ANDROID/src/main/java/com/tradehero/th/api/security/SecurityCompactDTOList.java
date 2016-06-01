@@ -1,4 +1,4 @@
-package com.tradehero.th.api.security;
+package com.ayondo.academy.api.security;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.api.BaseArrayList;

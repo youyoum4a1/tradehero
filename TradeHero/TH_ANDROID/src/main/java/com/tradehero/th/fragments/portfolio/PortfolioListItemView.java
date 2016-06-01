@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.portfolio;
+package com.ayondo.academy.fragments.portfolio;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,18 +13,18 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioUtil;
-import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.GraphicUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.portfolio.DisplayablePortfolioDTO;
+import com.ayondo.academy.api.portfolio.DisplayablePortfolioUtil;
+import com.ayondo.academy.api.portfolio.DummyFxDisplayablePortfolioDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOUtil;
+import com.ayondo.academy.api.portfolio.PortfolioDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.number.THSignedPercentage;
+import com.ayondo.academy.utils.DateUtils;
+import com.ayondo.academy.utils.GraphicUtil;
 import javax.inject.Inject;
 import rx.Subscription;
 

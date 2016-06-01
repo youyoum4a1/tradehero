@@ -1,11 +1,11 @@
-package com.tradehero.th.models.number;
+package com.ayondo.academy.models.number;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Spanned;
 import android.text.TextUtils;
-import com.tradehero.th.utils.SecurityUtils;
+import com.ayondo.academy.utils.SecurityUtils;
 
 public class THSignedMoney extends THSignedNumber
 {

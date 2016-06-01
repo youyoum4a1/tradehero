@@ -1,5 +1,5 @@
 
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,9 +8,9 @@ import android.text.TextUtils;
 import com.jumio.nv.NetverifyDocumentData;
 import com.jumio.nv.enums.EPassportStatus;
 import com.neovisionaries.i18n.CountryCode;
-import com.tradehero.th.models.fastfill.Gender;
-import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
-import com.tradehero.th.models.fastfill.ScannedDocument;
+import com.ayondo.academy.models.fastfill.Gender;
+import com.ayondo.academy.models.fastfill.IdentityScannedDocumentType;
+import com.ayondo.academy.models.fastfill.ScannedDocument;
 
 import java.util.Date;
 

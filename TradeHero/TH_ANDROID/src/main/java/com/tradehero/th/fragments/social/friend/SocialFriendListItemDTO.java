@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 interface SocialFriendListItemDTO
 {

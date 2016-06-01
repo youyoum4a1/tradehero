@@ -1,6 +1,6 @@
-package com.tradehero.th.network;
+package com.ayondo.academy.network;
 
-import com.tradehero.th.network.retrofit.RetrofitStubModule;
+import com.ayondo.academy.network.retrofit.RetrofitStubModule;
 import dagger.Module;
 
 @Module(

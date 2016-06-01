@@ -1,4 +1,4 @@
-package com.tradehero.th.models.share;
+package com.ayondo.academy.models.share;
 
 public interface ShareDestination
 {

@@ -1,6 +1,6 @@
-package com.tradehero.th.network;
+package com.ayondo.academy.network;
 
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.utils.Constants;
 
 public class NetworkConstants
 {

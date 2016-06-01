@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.base;
+package com.ayondo.academy.fragments.base;
 
 import android.view.MenuItem;
 import dagger.Lazy;

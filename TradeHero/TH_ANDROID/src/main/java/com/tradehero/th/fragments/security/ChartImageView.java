@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import com.squareup.widgets.AspectRatioImageView;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class ChartImageView extends AspectRatioImageView
 {

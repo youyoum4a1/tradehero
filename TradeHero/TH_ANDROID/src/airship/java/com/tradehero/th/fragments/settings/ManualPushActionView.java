@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tradehero.th.R;
-import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+import com.ayondo.academy.R;
+import com.ayondo.academy.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.urbanairship.UAirship;
 import com.urbanairship.actions.Action;
 import com.urbanairship.actions.ActionArguments;

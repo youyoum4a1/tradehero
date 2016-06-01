@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import java.io.Serializable;
 import java.util.Comparator;

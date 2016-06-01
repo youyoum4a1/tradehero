@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.portfolio.header;
+package com.ayondo.academy.fragments.portfolio.header;
 
 public class PortfolioHeaderFactoryException extends RuntimeException
 {

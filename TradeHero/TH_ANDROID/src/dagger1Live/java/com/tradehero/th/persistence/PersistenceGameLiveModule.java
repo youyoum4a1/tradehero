@@ -1,7 +1,7 @@
-package com.tradehero.th.persistence;
+package com.ayondo.academy.persistence;
 
 import com.tradehero.common.persistence.DTOCacheUtilRx;
-import com.tradehero.th.persistence.kyc.KYCFormOptionsCache;
+import com.ayondo.academy.persistence.kyc.KYCFormOptionsCache;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

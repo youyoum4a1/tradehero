@@ -1,10 +1,10 @@
-package com.tradehero.th.models.intent.competition;
+package com.ayondo.academy.models.intent.competition;
 
 import android.content.res.Resources;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.models.intent.THIntent;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
+import com.ayondo.academy.models.intent.THIntent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

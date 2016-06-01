@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.live.ayondo;
+package com.ayondo.academy.fragments.live.ayondo;
 
 import dagger.Module;
 

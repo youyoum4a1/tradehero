@@ -41,7 +41,7 @@
           tools:src="@drawable/launcher"
           />
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.ayondo.academy.widget.MarkdownTextView
           android:id="@+id/preseason_prize_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
           android:layout_margin="@dimen/margin_small"
           />
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.ayondo.academy.widget.MarkdownTextView
           android:id="@+id/preseason_prize_description"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

@@ -1,9 +1,9 @@
-package com.tradehero.th.filter.security;
+package com.ayondo.academy.filter.security;
 
 import com.tradehero.common.widget.filter.BaseListCharSequencePredicateFilter;
 import com.tradehero.common.widget.filter.CharSequencePredicate;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
-import com.tradehero.th.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityId;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;

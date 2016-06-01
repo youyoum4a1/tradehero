@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.alert.AlertSecurityProfile
+<com.ayondo.academy.fragments.alert.AlertSecurityProfile
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,7 +19,7 @@
       android:padding="@dimen/margin_xsmall"
       >
 
-    <com.tradehero.th.fragments.security.SecurityCircleProgressBar
+    <com.ayondo.academy.fragments.security.SecurityCircleProgressBar
         android:layout_width="@dimen/alert_item_view_logo_width"
         android:layout_height="@dimen/alert_item_view_logo_width"
         android:id="@+id/security_circle"
@@ -168,4 +168,4 @@
 
   </TableLayout>
 
-</com.tradehero.th.fragments.alert.AlertSecurityProfile>
+</com.ayondo.academy.fragments.alert.AlertSecurityProfile>

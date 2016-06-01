@@ -78,7 +78,7 @@
           tools:src="@drawable/th_app_logo"
           />
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.ayondo.academy.widget.MarkdownTextView
           android:id="@+id/newsfeed_item_discussion_content"
           style="@style/TH.Subhead"
           android:layout_width="match_parent"

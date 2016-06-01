@@ -1,10 +1,10 @@
-package com.tradehero.th.api.social;
+package com.ayondo.academy.api.social;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.utils.StringUtils;
+import com.ayondo.academy.api.users.UserBaseDTO;
+import com.ayondo.academy.utils.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,7 +1,7 @@
-package com.tradehero.th.models.sms;
+package com.ayondo.academy.models.sms;
 
-import com.tradehero.th.models.sms.twilio.TwilioModule;
-import com.tradehero.th.models.sms.twilio.TwilioServiceWrapper;
+import com.ayondo.academy.models.sms.twilio.TwilioModule;
+import com.ayondo.academy.models.sms.twilio.TwilioServiceWrapper;
 import dagger.Module;
 import dagger.Provides;
 

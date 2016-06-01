@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.trade;
+package com.ayondo.academy.fragments.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
+import com.ayondo.academy.models.number.THSignedMoney;
+import com.ayondo.academy.models.number.THSignedNumber;
 
 public abstract class AbstractFXTransactionFragment extends AbstractTransactionFragment
 {

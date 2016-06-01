@@ -1,10 +1,10 @@
-package com.tradehero.th.api.discussion.key;
+package com.ayondo.academy.api.discussion.key;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.Querylizable;
-import com.tradehero.th.api.discussion.DiscussionType;
+import com.ayondo.academy.api.Querylizable;
+import com.ayondo.academy.api.discussion.DiscussionType;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -15,7 +15,7 @@ import com.tradehero.common.billing.googleplay.exception.IABException;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.billing.inventory.ProductInventoryResult;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academy.BuildConfig;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

@@ -1,8 +1,8 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.competition.CompetitionDTO;
-import com.tradehero.th.api.competition.CompetitionDTOList;
-import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
+import com.ayondo.academy.api.competition.CompetitionDTO;
+import com.ayondo.academy.api.competition.CompetitionDTOList;
+import com.ayondo.academy.api.leaderboard.competition.CompetitionLeaderboardDTO;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;

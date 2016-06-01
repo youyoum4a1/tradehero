@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.live;
+package com.ayondo.academy.fragments.live;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
@@ -16,11 +16,11 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.tradehero.common.utils.SDKUtils;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.live.CountryUtil;
-import com.tradehero.th.api.market.Country;
-import com.tradehero.th.utils.GraphicUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.live.CountryUtil;
+import com.ayondo.academy.api.market.Country;
+import com.ayondo.academy.utils.GraphicUtil;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

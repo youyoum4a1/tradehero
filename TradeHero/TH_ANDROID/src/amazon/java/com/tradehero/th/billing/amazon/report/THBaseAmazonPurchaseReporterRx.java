@@ -1,17 +1,17 @@
-package com.tradehero.th.billing.amazon.report;
+package com.ayondo.academy.billing.amazon.report;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.AmazonSKU;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.amazon.THAmazonOrderId;
-import com.tradehero.th.billing.amazon.THAmazonProductDetail;
-import com.tradehero.th.billing.amazon.THAmazonPurchase;
-import com.tradehero.th.billing.report.PurchaseReportResult;
-import com.tradehero.th.billing.report.THBasePurchaseReporterRx;
-import com.tradehero.th.network.service.AlertPlanCheckServiceWrapper;
-import com.tradehero.th.network.service.AlertPlanServiceWrapper;
-import com.tradehero.th.network.service.PortfolioServiceWrapper;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.billing.amazon.THAmazonOrderId;
+import com.ayondo.academy.billing.amazon.THAmazonProductDetail;
+import com.ayondo.academy.billing.amazon.THAmazonPurchase;
+import com.ayondo.academy.billing.report.PurchaseReportResult;
+import com.ayondo.academy.billing.report.THBasePurchaseReporterRx;
+import com.ayondo.academy.network.service.AlertPlanCheckServiceWrapper;
+import com.ayondo.academy.network.service.AlertPlanServiceWrapper;
+import com.ayondo.academy.network.service.PortfolioServiceWrapper;
+import com.ayondo.academy.network.service.UserServiceWrapper;
 import dagger.Lazy;
 
 public class THBaseAmazonPurchaseReporterRx

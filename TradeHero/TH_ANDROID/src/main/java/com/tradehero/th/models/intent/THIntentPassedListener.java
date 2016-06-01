@@ -1,4 +1,4 @@
-package com.tradehero.th.models.intent;
+package com.ayondo.academy.models.intent;
 
 public interface THIntentPassedListener
 {

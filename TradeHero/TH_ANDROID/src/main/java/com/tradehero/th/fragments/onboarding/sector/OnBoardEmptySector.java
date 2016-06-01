@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.onboarding.sector;
+package com.ayondo.academy.fragments.onboarding.sector;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import com.tradehero.th.api.DTOView;
+import com.ayondo.academy.api.DTOView;
 
 public class OnBoardEmptySector extends TextView
     implements DTOView<SelectableSectorDTO>

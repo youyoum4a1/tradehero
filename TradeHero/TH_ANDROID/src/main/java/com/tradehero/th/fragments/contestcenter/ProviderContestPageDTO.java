@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.contestcenter;
+package com.ayondo.academy.fragments.contestcenter;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.ayondo.academy.api.competition.ProviderDTO;
 
 class ProviderContestPageDTO implements ContestPageDTO
 {

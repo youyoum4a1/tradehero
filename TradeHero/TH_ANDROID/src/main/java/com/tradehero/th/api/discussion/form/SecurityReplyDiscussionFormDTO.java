@@ -1,9 +1,9 @@
-package com.tradehero.th.api.discussion.form;
+package com.ayondo.academy.api.discussion.form;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.SecurityDiscussionKey;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.discussion.key.SecurityDiscussionKey;
 
 public class SecurityReplyDiscussionFormDTO extends ReplyDiscussionFormDTO
 {

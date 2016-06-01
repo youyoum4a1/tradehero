@@ -1,4 +1,4 @@
-package com.tradehero.th.api.users.password;
+package com.ayondo.academy.api.users.password;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

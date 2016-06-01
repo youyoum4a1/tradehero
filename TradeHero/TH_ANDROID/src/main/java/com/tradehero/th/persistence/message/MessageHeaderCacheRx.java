@@ -1,14 +1,14 @@
-package com.tradehero.th.persistence.message;
+package com.ayondo.academy.persistence.message;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
-import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.SingleCacheMaxSize;
+import com.ayondo.academy.api.discussion.MessageHeaderDTO;
+import com.ayondo.academy.api.discussion.key.MessageHeaderId;
+import com.ayondo.academy.network.service.MessageServiceWrapper;
+import com.ayondo.academy.persistence.SingleCacheMaxSize;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

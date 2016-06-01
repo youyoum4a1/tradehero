@@ -1,7 +1,7 @@
-package com.tradehero.th.api.billing;
+package com.ayondo.academy.api.billing;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.billing.amazon.THBaseAmazonPurchase;
+import com.ayondo.academy.billing.amazon.THBaseAmazonPurchase;
 
 public class AmazonPurchaseReportDTO implements PurchaseReportDTO
 {

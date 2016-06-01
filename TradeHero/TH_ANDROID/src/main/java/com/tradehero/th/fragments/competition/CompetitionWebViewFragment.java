@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.competition;
+package com.ayondo.academy.fragments.competition;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -9,16 +9,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.competition.ProviderUtil;
+import com.ayondo.academy.fragments.web.BaseWebViewIntentFragment;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.intent.THIntent;
+import com.ayondo.academy.models.intent.THIntentPassedListener;
+import com.ayondo.academy.models.intent.competition.ProviderPageIntent;
+import com.ayondo.academy.utils.broadcast.BroadcastUtils;
+import com.ayondo.academy.utils.route.THRouter;
 import javax.inject.Inject;
 import timber.log.Timber;
 

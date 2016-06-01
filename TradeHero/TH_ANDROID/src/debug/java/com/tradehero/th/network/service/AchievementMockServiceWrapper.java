@@ -1,8 +1,8 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.achievement.key.MockQuestBonusId;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.achievement.key.MockQuestBonusId;
 import javax.inject.Inject;
 import rx.Observable;
 

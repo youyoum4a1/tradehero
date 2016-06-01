@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.portfolio.header;
+package com.ayondo.academy.fragments.portfolio.header;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.models.number.THSignedMoney;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.models.number.THSignedMoney;
 
 /**
  * Header displayed on a Portfolio owned by the authenticated user.

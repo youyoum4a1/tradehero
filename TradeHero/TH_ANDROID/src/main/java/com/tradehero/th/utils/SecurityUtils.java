@@ -1,7 +1,7 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityId;
 
 public class SecurityUtils
 {

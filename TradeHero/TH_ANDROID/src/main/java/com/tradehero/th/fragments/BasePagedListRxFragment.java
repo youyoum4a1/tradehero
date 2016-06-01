@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -17,10 +17,10 @@ import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedDTOAdapter;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.widget.MultiScrollListener;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.PagedDTOAdapter;
+import com.ayondo.academy.fragments.billing.BasePurchaseManagerFragment;
+import com.ayondo.academy.widget.MultiScrollListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

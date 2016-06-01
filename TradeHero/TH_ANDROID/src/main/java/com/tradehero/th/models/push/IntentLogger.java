@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push;
+package com.ayondo.academy.models.push;
 
 import android.content.Intent;
 import android.os.Bundle;

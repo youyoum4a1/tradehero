@@ -1,7 +1,7 @@
-package com.tradehero.th.api.security;
+package com.ayondo.academy.api.security;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.timeline.form.TradePublishableFormDTO;
+import com.ayondo.academy.api.timeline.form.TradePublishableFormDTO;
 import java.util.Map;
 
 public class TransactionFormDTO extends TradePublishableFormDTO

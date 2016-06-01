@@ -1,6 +1,6 @@
-package com.tradehero.th.models.push;
+package com.ayondo.academy.models.push;
 
-import com.tradehero.th.api.notification.NotificationDTO;
+import com.ayondo.academy.api.notification.NotificationDTO;
 import java.util.HashMap;
 import java.util.List;
 import javax.inject.Inject;

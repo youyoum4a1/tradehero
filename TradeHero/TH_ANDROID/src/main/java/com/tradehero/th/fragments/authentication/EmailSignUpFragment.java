@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.authentication;
+package com.ayondo.academy.fragments.authentication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -15,26 +15,26 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.tradehero.common.fragment.ActivityResultDTO;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
-import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.auth.AuthDataUtil;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.settings.ProfileInfoView;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
-import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.ActivityHelper;
+import com.ayondo.academy.activities.AuthenticationActivity;
+import com.ayondo.academy.api.form.UserFormDTO;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.auth.AuthData;
+import com.ayondo.academy.auth.AuthDataUtil;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.settings.ProfileInfoView;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.network.service.UserServiceWrapper;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.rx.view.DismissDialogAction0;
+import com.ayondo.academy.utils.DeviceUtil;
+import com.ayondo.academy.utils.metrics.appsflyer.AppsFlyerConstants;
+import com.ayondo.academy.utils.metrics.appsflyer.THAppsFlyer;
 
 import javax.inject.Inject;
 

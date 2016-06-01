@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.position;
+package com.ayondo.academy.fragments.position;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.google.common.annotations.VisibleForTesting;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.models.security.ProviderTradableSecuritiesHelper;
 import javax.inject.Inject;
 
 //TODO need refactor by alex

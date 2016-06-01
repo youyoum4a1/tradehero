@@ -1,4 +1,4 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

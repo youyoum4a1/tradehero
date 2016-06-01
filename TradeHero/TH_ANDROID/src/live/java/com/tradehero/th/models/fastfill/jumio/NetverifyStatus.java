@@ -1,7 +1,7 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.models.fastfill.DocumentCheckStatus;
+import com.ayondo.academy.models.fastfill.DocumentCheckStatus;
 
 public enum NetverifyStatus
 {

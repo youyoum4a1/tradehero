@@ -1,9 +1,9 @@
 package com.tradehero.common.persistence;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.persistence.social.HeroListCacheRx;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.persistence.social.HeroListCacheRx;
 import java.util.concurrent.RejectedExecutionException;
 import javax.inject.Inject;
 import org.junit.After;

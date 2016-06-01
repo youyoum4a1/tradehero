@@ -1,4 +1,4 @@
-package com.tradehero.th.models;
+package com.ayondo.academy.models;
 
 import android.support.annotation.NonNull;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.timeline;
+package com.ayondo.academy.fragments.timeline;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -7,12 +7,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.DTOSetAdapter;
-import com.tradehero.th.api.pagination.RangeDTO;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.DTOSetAdapter;
+import com.ayondo.academy.api.pagination.RangeDTO;
+import com.ayondo.academy.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.utils.Constants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;

@@ -1,6 +1,6 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
-import com.tradehero.th.widget.validation.WidgetValidationModule;
+import com.ayondo.academy.widget.validation.WidgetValidationModule;
 import dagger.Module;
 
 @Module(

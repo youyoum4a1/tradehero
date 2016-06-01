@@ -1,4 +1,4 @@
-package com.tradehero.th.models.sms;
+package com.ayondo.academy.models.sms;
 
 import com.tradehero.common.persistence.DTOKey;
 

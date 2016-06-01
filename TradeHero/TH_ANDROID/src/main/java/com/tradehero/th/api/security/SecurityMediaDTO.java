@@ -1,8 +1,8 @@
-package com.tradehero.th.api.security;
+package com.ayondo.academy.api.security;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.misc.MediaDTO;
+import com.ayondo.academy.api.misc.MediaDTO;
 
 public class SecurityMediaDTO extends MediaDTO
 {

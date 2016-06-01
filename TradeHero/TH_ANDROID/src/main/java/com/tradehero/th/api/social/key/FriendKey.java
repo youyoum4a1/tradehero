@@ -1,4 +1,4 @@
-package com.tradehero.th.api.social.key;
+package com.ayondo.academy.api.social.key;
 
 import com.tradehero.common.persistence.DTOKey;
 

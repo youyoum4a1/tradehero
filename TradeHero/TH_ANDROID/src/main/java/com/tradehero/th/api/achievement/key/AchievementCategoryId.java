@@ -1,8 +1,8 @@
-package com.tradehero.th.api.achievement.key;
+package com.ayondo.academy.api.achievement.key;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class AchievementCategoryId implements DTOKey
 {

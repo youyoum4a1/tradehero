@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.discovery;
+package com.ayondo.academy.fragments.discovery;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
-import com.tradehero.th.adapters.ArrayDTOAdapterNew;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.adapters.ArrayDTOAdapterNew;
+import com.ayondo.academy.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
 import java.util.List;
 import rx.Observable;
 import rx.subjects.PublishSubject;

@@ -1,6 +1,6 @@
-package com.tradehero.th.models.security;
+package com.ayondo.academy.models.security;
 
-import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.ayondo.academy.api.security.compact.WarrantDTO;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

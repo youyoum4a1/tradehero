@@ -1,11 +1,11 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.market.ExchangeCompactDTOList;
-import com.tradehero.th.api.market.ExchangeListType;
-import com.tradehero.th.api.market.SectorCompactDTOList;
-import com.tradehero.th.api.market.SectorDTOList;
-import com.tradehero.th.api.market.SectorListType;
+import com.ayondo.academy.api.market.ExchangeCompactDTOList;
+import com.ayondo.academy.api.market.ExchangeListType;
+import com.ayondo.academy.api.market.SectorCompactDTOList;
+import com.ayondo.academy.api.market.SectorDTOList;
+import com.ayondo.academy.api.market.SectorListType;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

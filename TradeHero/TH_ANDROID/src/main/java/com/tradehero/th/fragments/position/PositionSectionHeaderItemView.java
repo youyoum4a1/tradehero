@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position;
+package com.ayondo.academy.fragments.position;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -8,9 +8,9 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.TypedRecyclerAdapter;
-import com.tradehero.th.api.position.PositionStatus;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.TypedRecyclerAdapter;
+import com.ayondo.academy.api.position.PositionStatus;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;

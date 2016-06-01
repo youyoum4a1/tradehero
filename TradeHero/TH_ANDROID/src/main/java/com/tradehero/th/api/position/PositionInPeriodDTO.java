@@ -1,12 +1,12 @@
-package com.tradehero.th.api.position;
+package com.ayondo.academy.api.position;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
-import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardMarkUserId;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardMarkUserPositionId;
+import com.ayondo.academy.api.leaderboard.position.OwnedLeaderboardPositionId;
 
 public class PositionInPeriodDTO extends PositionDTO
 {

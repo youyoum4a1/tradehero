@@ -1,4 +1,4 @@
-package com.tradehero.th.widget.validation;
+package com.ayondo.academy.widget.validation;
 
 import dagger.Module;
 

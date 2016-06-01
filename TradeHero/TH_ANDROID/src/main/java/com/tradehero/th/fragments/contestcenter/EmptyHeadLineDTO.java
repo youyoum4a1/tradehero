@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.contestcenter;
+package com.ayondo.academy.fragments.contestcenter;
 
 public class EmptyHeadLineDTO implements ContestPageDTO
 {

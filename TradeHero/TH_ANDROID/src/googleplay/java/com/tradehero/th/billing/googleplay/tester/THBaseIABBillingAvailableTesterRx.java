@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay.tester;
+package com.ayondo.academy.billing.googleplay.tester;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

@@ -1,6 +1,6 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
-import com.tradehero.th.api.system.SystemStatusDTO;
+import com.ayondo.academy.api.system.SystemStatusDTO;
 
 public class UserLoginDTO
 {

@@ -1,6 +1,6 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.market.CurrencyDTO;
+import com.ayondo.academy.api.market.CurrencyDTO;
 import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.http.GET;

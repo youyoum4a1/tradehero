@@ -5,8 +5,8 @@ import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ToggleButton;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
 
 public class SocialLinkToggleButton extends ToggleButton
 {

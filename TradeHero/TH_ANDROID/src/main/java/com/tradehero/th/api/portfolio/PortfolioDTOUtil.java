@@ -1,9 +1,9 @@
-package com.tradehero.th.api.portfolio;
+package com.ayondo.academy.api.portfolio;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class PortfolioDTOUtil
 {

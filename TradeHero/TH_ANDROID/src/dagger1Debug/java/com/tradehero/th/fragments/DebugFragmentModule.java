@@ -1,7 +1,7 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
-import com.tradehero.th.fragments.achievement.DebugFragmentAchievementModule;
-import com.tradehero.th.fragments.level.DebugFragmentLevelModule;
+import com.ayondo.academy.fragments.achievement.DebugFragmentAchievementModule;
+import com.ayondo.academy.fragments.level.DebugFragmentLevelModule;
 import dagger.Module;
 
 @Module(

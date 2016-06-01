@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -12,18 +12,18 @@ import android.view.ViewGroup;
 
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.payment.UpdateAlipayAccountDTO;
-import com.tradehero.th.api.users.payment.UpdateAlipayAccountFormDTO;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.widget.validation.ValidatedText;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.api.users.payment.UpdateAlipayAccountDTO;
+import com.ayondo.academy.api.users.payment.UpdateAlipayAccountFormDTO;
+import com.ayondo.academy.fragments.base.BaseFragment;
+import com.ayondo.academy.network.service.UserServiceWrapper;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.rx.view.DismissDialogAction0;
+import com.ayondo.academy.widget.validation.ValidatedText;
 
 import javax.inject.Inject;
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung;
+package com.ayondo.academy.billing.samsung;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,11 +6,11 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.BaseBillingUtils;
-import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
-import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.billing.BaseBillingUtils;
+import com.ayondo.academy.billing.THBillingAlertDialogRxUtil;
+import com.ayondo.academy.billing.samsung.persistence.THSamsungPurchaseCacheRx;
 import java.util.HashMap;
 import javax.inject.Inject;
 import timber.log.Timber;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion.stock;
+package com.ayondo.academy.fragments.discussion.stock;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,13 +7,13 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionFragment;
-import com.tradehero.th.fragments.discussion.DiscussionSetAdapter;
-import com.tradehero.th.fragments.discussion.SingleViewDiscussionSetAdapter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.ayondo.academy.fragments.discussion.AbstractDiscussionFragment;
+import com.ayondo.academy.fragments.discussion.DiscussionSetAdapter;
+import com.ayondo.academy.fragments.discussion.SingleViewDiscussionSetAdapter;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;

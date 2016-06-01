@@ -1,11 +1,11 @@
-package com.tradehero.th.api.position;
+package com.ayondo.academy.api.position;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardMarkUserId;
+import com.ayondo.academy.api.security.SecurityCompactDTOList;
 
 public class GetPositionsDTO implements DTO
 {

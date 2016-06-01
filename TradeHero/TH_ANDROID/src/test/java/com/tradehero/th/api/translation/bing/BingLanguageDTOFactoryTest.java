@@ -1,11 +1,11 @@
-package com.tradehero.th.api.translation.bing;
+package com.ayondo.academy.api.translation.bing;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.i18n.LanguageCodePredicate;
-import com.tradehero.th.api.i18n.LanguageDTO;
-import com.tradehero.th.api.i18n.LanguageDTOList;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.i18n.LanguageCodePredicate;
+import com.ayondo.academy.api.i18n.LanguageDTO;
+import com.ayondo.academy.api.i18n.LanguageDTOList;
+import com.ayondo.academy.base.TestTHApp;
 import javax.inject.Inject;
 import org.junit.Ignore;
 import org.junit.Test;

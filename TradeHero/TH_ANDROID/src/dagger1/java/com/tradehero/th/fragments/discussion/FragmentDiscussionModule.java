@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
-import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
-import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
-import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
+import com.ayondo.academy.fragments.discussion.stock.SecurityDiscussionCommentFragment;
+import com.ayondo.academy.fragments.discussion.stock.SecurityDiscussionFragment;
+import com.ayondo.academy.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
 import dagger.Module;
 
 @Module(

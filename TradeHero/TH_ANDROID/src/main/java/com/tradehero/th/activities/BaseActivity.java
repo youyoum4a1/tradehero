@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -13,13 +13,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.inject.Injector;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.R;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.inject.Injector;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.utils.AlertDialogRxUtil;
+import com.ayondo.academy.utils.Constants;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;

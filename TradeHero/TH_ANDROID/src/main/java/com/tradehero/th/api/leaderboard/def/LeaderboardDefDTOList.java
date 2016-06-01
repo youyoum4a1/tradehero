@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard.def;
+package com.ayondo.academy.api.leaderboard.def;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;

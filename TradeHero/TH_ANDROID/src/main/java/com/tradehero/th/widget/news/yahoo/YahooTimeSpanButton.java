@@ -1,11 +1,11 @@
-package com.tradehero.th.widget.news.yahoo;
+package com.ayondo.academy.widget.news.yahoo;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import com.tradehero.th.R;
-import com.tradehero.th.models.chart.yahoo.YahooTimeSpan;
-import com.tradehero.th.widget.news.TimeSpanButton;
+import com.ayondo.academy.R;
+import com.ayondo.academy.models.chart.yahoo.YahooTimeSpan;
+import com.ayondo.academy.widget.news.TimeSpanButton;
 
 public class YahooTimeSpanButton extends TimeSpanButton
 {

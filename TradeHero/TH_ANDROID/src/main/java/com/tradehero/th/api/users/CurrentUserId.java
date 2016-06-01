@@ -1,4 +1,4 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -7,8 +7,8 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.activities.ActivityBuildTypeUtil;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.activities.ActivityBuildTypeUtil;
+import com.ayondo.academy.utils.Constants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

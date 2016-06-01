@@ -1,4 +1,4 @@
-package com.tradehero.th.api.misc;
+package com.ayondo.academy.api.misc;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonCreator;

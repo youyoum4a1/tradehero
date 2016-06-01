@@ -1,8 +1,8 @@
-package com.tradehero.th.models.discussion;
+package com.ayondo.academy.models.discussion;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.alert.AlertId;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
 
 public class UpdateStockAlertUserAction extends UserDiscussionAction
 {

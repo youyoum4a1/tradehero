@@ -1,9 +1,9 @@
-package com.tradehero.th.api.leaderboard.position;
+package com.ayondo.academy.api.leaderboard.position;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
+import com.ayondo.academy.api.position.GetPositionsDTOKey;
 
 public class LeaderboardMarkUserId extends AbstractIntegerDTOKey
     implements GetPositionsDTOKey

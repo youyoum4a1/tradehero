@@ -1,8 +1,8 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.market.ExchangeCompactDTOList;
-import com.tradehero.th.api.market.SectorCompactDTOList;
-import com.tradehero.th.api.market.SectorDTOList;
+import com.ayondo.academy.api.market.ExchangeCompactDTOList;
+import com.ayondo.academy.api.market.SectorCompactDTOList;
+import com.ayondo.academy.api.market.SectorDTOList;
 import retrofit.http.GET;
 import retrofit.http.Query;
 import rx.Observable;

@@ -1,11 +1,11 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.amazon.AmazonSKU;
-import com.tradehero.th.api.alert.AlertPlanDTO;
-import com.tradehero.th.billing.amazon.THAmazonConstants;
+import com.ayondo.academy.api.alert.AlertPlanDTO;
+import com.ayondo.academy.billing.amazon.THAmazonConstants;
 
 public class BillingSecurityAlertKnowledge extends SecurityAlertKnowledge
 {

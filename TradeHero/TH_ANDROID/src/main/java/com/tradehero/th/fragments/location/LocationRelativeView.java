@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.location;
+package com.ayondo.academy.fragments.location;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.market.Country;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.market.Country;
 public class LocationRelativeView extends RelativeLayout
     implements DTOView<ListedLocationDTO>
 {

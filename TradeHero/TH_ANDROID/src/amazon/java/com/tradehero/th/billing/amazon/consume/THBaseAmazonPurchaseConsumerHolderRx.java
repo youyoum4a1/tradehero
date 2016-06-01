@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon.consume;
+package com.ayondo.academy.billing.amazon.consume;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,9 +7,9 @@ import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.consume.AmazonPurchaseConsumerRx;
 import com.tradehero.common.billing.amazon.consume.BaseAmazonPurchaseConsumerHolderRx;
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
-import com.tradehero.th.billing.amazon.THAmazonOrderId;
-import com.tradehero.th.billing.amazon.THAmazonPurchase;
-import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
+import com.ayondo.academy.billing.amazon.THAmazonOrderId;
+import com.ayondo.academy.billing.amazon.THAmazonPurchase;
+import com.ayondo.academy.persistence.billing.THAmazonPurchaseCacheRx;
 import javax.inject.Inject;
 
 public class THBaseAmazonPurchaseConsumerHolderRx

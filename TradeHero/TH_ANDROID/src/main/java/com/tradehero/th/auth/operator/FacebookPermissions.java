@@ -1,4 +1,4 @@
-package com.tradehero.th.auth.operator;
+package com.ayondo.academy.auth.operator;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position;
+package com.ayondo.academy.fragments.position;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,19 +16,19 @@ import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserId;
-import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
-import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardMarkUserId;
+import com.ayondo.academy.api.portfolio.AssetClass;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PortfolioDTO;
+import com.ayondo.academy.api.portfolio.PortfolioId;
+import com.ayondo.academy.api.position.GetPositionsDTOKey;
+import com.ayondo.academy.api.position.GetPositionsDTOKeyFactory;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.utils.route.THRouter;
 import javax.inject.Inject;
 
 @Routable("user/:userId/portfolio/:portfolioId")

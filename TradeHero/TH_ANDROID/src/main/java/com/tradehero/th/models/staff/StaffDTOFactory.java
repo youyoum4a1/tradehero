@@ -1,8 +1,8 @@
-package com.tradehero.th.models.staff;
+package com.ayondo.academy.models.staff;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import java.util.ArrayList;
 import java.util.List;
 

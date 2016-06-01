@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.widget.TextView;
-import com.tradehero.th.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.CurrentUserId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;

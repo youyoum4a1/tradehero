@@ -1,14 +1,14 @@
-package com.tradehero.th.models.notification;
+package com.ayondo.academy.models.notification;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.ThroughDTOProcessor;
-import com.tradehero.th.persistence.notification.NotificationCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.notification.NotificationDTO;
+import com.ayondo.academy.api.notification.NotificationKey;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.models.ThroughDTOProcessor;
+import com.ayondo.academy.persistence.notification.NotificationCacheRx;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 
 public class DTOProcessorNotificationRead extends ThroughDTOProcessor<BaseResponseDTO>
 {

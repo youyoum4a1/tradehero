@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,8 +16,8 @@ import butterknife.Bind;
 import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.R;
-import com.tradehero.th.utils.DeviceUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.utils.DeviceUtil;
 import java.util.List;
 import javax.inject.Inject;
 import timber.log.Timber;

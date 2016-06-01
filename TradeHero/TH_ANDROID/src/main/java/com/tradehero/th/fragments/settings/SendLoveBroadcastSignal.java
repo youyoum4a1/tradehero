@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.th.utils.broadcast.BroadcastConstants;
-import com.tradehero.th.utils.broadcast.BroadcastData;
+import com.ayondo.academy.utils.broadcast.BroadcastConstants;
+import com.ayondo.academy.utils.broadcast.BroadcastData;
 
 public class SendLoveBroadcastSignal implements BroadcastData
 {

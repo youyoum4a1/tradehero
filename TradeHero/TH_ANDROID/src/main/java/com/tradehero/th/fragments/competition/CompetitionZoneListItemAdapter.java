@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.competition;
+package com.ayondo.academy.fragments.competition;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -6,10 +6,10 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.DTOAdapterNew;
-import com.tradehero.th.fragments.competition.zone.AbstractCompetitionZoneListItemView;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.DTOAdapterNew;
+import com.ayondo.academy.fragments.competition.zone.AbstractCompetitionZoneListItemView;
+import com.ayondo.academy.fragments.competition.zone.dto.CompetitionZoneDTO;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;

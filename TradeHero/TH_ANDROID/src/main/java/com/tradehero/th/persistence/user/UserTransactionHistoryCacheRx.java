@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.user;
+package com.ayondo.academy.persistence.user;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.users.UserTransactionHistoryDTO;
-import com.tradehero.th.api.users.UserTransactionHistoryId;
+import com.ayondo.academy.api.users.UserTransactionHistoryDTO;
+import com.ayondo.academy.api.users.UserTransactionHistoryId;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

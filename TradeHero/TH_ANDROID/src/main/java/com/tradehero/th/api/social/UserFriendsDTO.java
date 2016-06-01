@@ -1,10 +1,10 @@
-package com.tradehero.th.api.social;
+package com.ayondo.academy.api.social;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.social.key.FriendKey;
+import com.ayondo.academy.api.social.key.FriendKey;
 
 abstract public class UserFriendsDTO
         implements Comparable<UserFriendsDTO>, DTO

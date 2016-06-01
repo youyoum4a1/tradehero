@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.ayondo.academy.api.social.UserFriendsDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
 
 public class ProcessableLeaderboardFriendsDTO
         implements DTO, ContainerDTO<LeaderboardItemDisplayDTO, LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>>

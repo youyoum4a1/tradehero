@@ -1,11 +1,11 @@
-package com.tradehero.th.api.social;
+package com.ayondo.academy.api.social;
 
 import android.support.annotation.NonNull;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.persistence.BaseArrayListHasExpiration;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.th.api.social.key.FriendKey;
+import com.ayondo.academy.api.social.key.FriendKey;
 import java.util.Collection;
 import java.util.List;
 import rx.functions.Func1;

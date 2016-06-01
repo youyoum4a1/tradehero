@@ -1,15 +1,15 @@
-package com.tradehero.th.fragments.watchlist;
+package com.ayondo.academy.fragments.watchlist;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.ArrayDTOAdapterNew;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.utils.GraphicUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.ArrayDTOAdapterNew;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.utils.GraphicUtil;
 
 public class WatchlistAdapter extends ArrayDTOAdapterNew<WatchlistPositionDTO, WatchlistItemView>
 {

@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.content.res.Resources;
-import com.tradehero.th.adapters.WrapperRecyclerAdapter;
-import com.tradehero.th.api.competition.AdDTO;
+import com.ayondo.academy.adapters.WrapperRecyclerAdapter;
+import com.ayondo.academy.api.competition.AdDTO;
 
 public class CompetitionAdsExtraItem extends LeaderboardItemDisplayDTO implements WrapperRecyclerAdapter.ExtraItem
 {

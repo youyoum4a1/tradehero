@@ -1,7 +1,7 @@
-package com.tradehero.th.api.discussion.key;
+package com.ayondo.academy.api.discussion.key;
 
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class RecipientTypedMessageListKey extends TypedMessageListKey
 {

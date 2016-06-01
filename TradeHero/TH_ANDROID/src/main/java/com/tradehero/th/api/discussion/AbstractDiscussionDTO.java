@@ -1,8 +1,8 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.ExtendedDTO;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.ExtendedDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public abstract class AbstractDiscussionDTO<T extends AbstractDiscussionDTO> extends AbstractDiscussionCompactDTO<T>
 {

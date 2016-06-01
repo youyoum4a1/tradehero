@@ -1,4 +1,4 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;

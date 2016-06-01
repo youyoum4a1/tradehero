@@ -1,7 +1,7 @@
-package com.tradehero.th.api.leaderboard.key;
+package com.ayondo.academy.api.leaderboard.key;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;

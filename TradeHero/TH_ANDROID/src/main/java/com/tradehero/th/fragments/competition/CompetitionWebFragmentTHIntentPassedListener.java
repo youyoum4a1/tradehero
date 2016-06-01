@@ -1,16 +1,16 @@
-package com.tradehero.th.fragments.competition;
+package com.ayondo.academy.fragments.competition;
 
 import android.os.Bundle;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
-import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.models.intent.security.SecurityPushBuyIntent;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.trade.AbstractBuySellFragment;
+import com.ayondo.academy.fragments.trade.BuySellStockFragment;
+import com.ayondo.academy.fragments.web.BaseWebViewIntentFragment;
+import com.ayondo.academy.models.intent.THIntent;
+import com.ayondo.academy.models.intent.THIntentPassedListener;
+import com.ayondo.academy.models.intent.competition.ProviderPageIntent;
+import com.ayondo.academy.models.intent.security.SecurityPushBuyIntent;
 import timber.log.Timber;
 
 abstract public class CompetitionWebFragmentTHIntentPassedListener implements THIntentPassedListener

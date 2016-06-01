@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.live;
+package com.ayondo.academy.fragments.live;
 
 import android.support.annotation.NonNull;
 import rx.Observable;

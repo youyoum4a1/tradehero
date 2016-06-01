@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,10 +16,10 @@ import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.widget.FlagNearEdgeRecyclerScrollListener;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedRecyclerAdapter;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.widget.MultiRecyclerScrollListener;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.PagedRecyclerAdapter;
+import com.ayondo.academy.fragments.billing.BasePurchaseManagerFragment;
+import com.ayondo.academy.widget.MultiRecyclerScrollListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

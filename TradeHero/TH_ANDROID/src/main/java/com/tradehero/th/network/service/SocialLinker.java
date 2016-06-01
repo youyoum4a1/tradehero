@@ -1,8 +1,8 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.auth.AccessTokenForm;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.ayondo.academy.api.auth.AccessTokenForm;
+import com.ayondo.academy.api.users.UserProfileDTO;
 import rx.Observable;
 
 public interface SocialLinker

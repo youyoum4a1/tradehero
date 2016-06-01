@@ -1,6 +1,6 @@
-package com.tradehero.th.api.news;
+package com.ayondo.academy.api.news;
 
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import java.util.HashMap;
 
 public class NewsItemKnowledge

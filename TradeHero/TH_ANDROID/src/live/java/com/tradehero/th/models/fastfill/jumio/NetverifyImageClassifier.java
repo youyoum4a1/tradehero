@@ -1,4 +1,4 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonCreator;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.achievement;
+package com.ayondo.academy.fragments.achievement;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,13 +15,13 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.tradehero.common.utils.THToast;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.DTOAdapterNew;
-import com.tradehero.th.api.achievement.AchievementCategoryDTO;
-import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.achievement.AchievementCategoryListCacheRx;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.DTOAdapterNew;
+import com.ayondo.academy.api.achievement.AchievementCategoryDTO;
+import com.ayondo.academy.api.achievement.AchievementCategoryDTOList;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.persistence.achievement.AchievementCategoryListCacheRx;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.android.app.AppObservable;

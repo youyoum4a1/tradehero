@@ -1,9 +1,9 @@
-package com.tradehero.th.models.intent.competition;
+package com.ayondo.academy.models.intent.competition;
 
 import android.content.Intent;
 import android.net.Uri;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

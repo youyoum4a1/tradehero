@@ -1,12 +1,12 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.VersionUtils;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.utils.StringUtils;
+import com.ayondo.academy.utils.VersionUtils;
 import java.util.List;
 
 public class BaseBillingUtils

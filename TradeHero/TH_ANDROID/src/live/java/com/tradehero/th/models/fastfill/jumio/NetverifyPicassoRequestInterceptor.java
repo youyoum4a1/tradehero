@@ -1,4 +1,4 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.Request;

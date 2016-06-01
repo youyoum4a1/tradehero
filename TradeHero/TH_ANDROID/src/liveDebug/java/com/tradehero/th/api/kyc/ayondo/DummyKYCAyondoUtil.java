@@ -1,16 +1,16 @@
-package com.tradehero.th.api.kyc.ayondo;
+package com.ayondo.academy.api.kyc.ayondo;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import com.tradehero.th.api.kyc.AnnualIncomeRange;
-import com.tradehero.th.api.kyc.EmploymentStatus;
-import com.tradehero.th.api.kyc.KYCAddress;
-import com.tradehero.th.api.kyc.NetWorthRange;
-import com.tradehero.th.api.kyc.PercentNetWorthForInvestmentRange;
-import com.tradehero.th.api.kyc.StepStatus;
-import com.tradehero.th.api.kyc.StepStatusesDTO;
-import com.tradehero.th.api.kyc.TradingPerQuarter;
-import com.tradehero.th.api.live.CountryUtil;
+import com.ayondo.academy.api.kyc.AnnualIncomeRange;
+import com.ayondo.academy.api.kyc.EmploymentStatus;
+import com.ayondo.academy.api.kyc.KYCAddress;
+import com.ayondo.academy.api.kyc.NetWorthRange;
+import com.ayondo.academy.api.kyc.PercentNetWorthForInvestmentRange;
+import com.ayondo.academy.api.kyc.StepStatus;
+import com.ayondo.academy.api.kyc.StepStatusesDTO;
+import com.ayondo.academy.api.kyc.TradingPerQuarter;
+import com.ayondo.academy.api.live.CountryUtil;
 import java.util.Arrays;
 
 public class DummyKYCAyondoUtil

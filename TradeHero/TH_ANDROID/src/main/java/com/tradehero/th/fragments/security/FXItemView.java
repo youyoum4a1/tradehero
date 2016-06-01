@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.ColorRes;
@@ -8,14 +8,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOUtil;
-import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
-import com.tradehero.th.api.security.key.FxPairSecurityId;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedFXRate;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTOUtil;
+import com.ayondo.academy.api.security.compact.FxSecurityCompactDTO;
+import com.ayondo.academy.api.security.key.FxPairSecurityId;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.number.THSignedFXRate;
 
 public class FXItemView extends RelativeLayout implements DTOView<SecurityCompactDTO>
 {

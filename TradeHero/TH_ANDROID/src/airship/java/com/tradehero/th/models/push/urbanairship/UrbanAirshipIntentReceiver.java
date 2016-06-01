@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push.urbanairship;
+package com.ayondo.academy.models.push.urbanairship;
 
 import android.content.Context;
 import android.content.Intent;

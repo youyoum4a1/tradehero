@@ -1,15 +1,15 @@
-package com.tradehero.th.fragments.competition;
+package com.ayondo.academy.fragments.competition;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-import com.tradehero.th.R;
-import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.fragments.security.FXSecurityPagedViewDTOAdapter;
-import com.tradehero.th.fragments.security.ProviderSecurityListRxFragment;
-import com.tradehero.th.fragments.trending.TrendingFXFragment;
-import com.tradehero.th.network.service.SecurityServiceWrapper;
-import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.quote.QuoteDTO;
+import com.ayondo.academy.fragments.security.FXSecurityPagedViewDTOAdapter;
+import com.ayondo.academy.fragments.security.ProviderSecurityListRxFragment;
+import com.ayondo.academy.fragments.trending.TrendingFXFragment;
+import com.ayondo.academy.network.service.SecurityServiceWrapper;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;

@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung.tester;
+package com.ayondo.academy.billing.samsung.tester;
 
 import com.tradehero.common.billing.samsung.tester.SamsungBillingAvailableTesterRx;
 

@@ -1,7 +1,7 @@
-package com.tradehero.th.models.chart.yahoo;
+package com.ayondo.academy.models.chart.yahoo;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.ayondo.academy.models.chart.ChartTimeSpan;
 
 public enum YahooTimeSpan
 {

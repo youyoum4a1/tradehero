@@ -1,14 +1,14 @@
-package com.tradehero.th.persistence.social.friend;
+package com.ayondo.academy.persistence.social.friend;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.social.UserFriendsDTOList;
-import com.tradehero.th.api.social.key.FriendsListKey;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.ListCacheMaxSize;
+import com.ayondo.academy.api.social.UserFriendsDTOList;
+import com.ayondo.academy.api.social.key.FriendsListKey;
+import com.ayondo.academy.network.service.UserServiceWrapper;
+import com.ayondo.academy.persistence.ListCacheMaxSize;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

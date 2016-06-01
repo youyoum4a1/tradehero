@@ -1,4 +1,4 @@
-package com.tradehero.th.api.social;
+package com.ayondo.academy.api.social;
 
 
 abstract class InviteFormMessageDTO implements InviteFormDTO

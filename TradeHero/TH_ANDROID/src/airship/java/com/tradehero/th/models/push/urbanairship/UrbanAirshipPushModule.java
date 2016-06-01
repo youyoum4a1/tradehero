@@ -1,7 +1,7 @@
-package com.tradehero.th.models.push.urbanairship;
+package com.ayondo.academy.models.push.urbanairship;
 
 import android.content.Context;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.utils.Constants;
 import com.urbanairship.AirshipConfigOptions;
 import dagger.Module;
 import dagger.Provides;

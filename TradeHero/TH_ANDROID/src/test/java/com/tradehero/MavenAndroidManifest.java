@@ -1,6 +1,6 @@
 package com.tradehero;
 
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academy.base.TestTHApp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

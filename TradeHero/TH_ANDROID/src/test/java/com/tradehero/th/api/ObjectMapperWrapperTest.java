@@ -1,4 +1,4 @@
-package com.tradehero.th.api;
+package com.ayondo.academy.api;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,16 +7,16 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.achievement.key.UserAchievementId;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.persistence.achievement.UserAchievementCacheRx;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.achievement.UserAchievementDTO;
+import com.ayondo.academy.api.achievement.key.UserAchievementId;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTO;
+import com.ayondo.academy.api.position.GetPositionsDTO;
+import com.ayondo.academy.api.position.PositionDTO;
+import com.ayondo.academy.base.TestTHApp;
+import com.ayondo.academy.persistence.achievement.UserAchievementCacheRx;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -28,8 +28,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 

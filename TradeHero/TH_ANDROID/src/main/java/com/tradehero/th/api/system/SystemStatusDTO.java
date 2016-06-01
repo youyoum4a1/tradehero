@@ -1,4 +1,4 @@
-package com.tradehero.th.api.system;
+package com.ayondo.academy.api.system;
 
 import com.tradehero.common.persistence.DTO;
 

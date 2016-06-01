@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -15,10 +15,10 @@ import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.models.staff.StaffDTO;
-import com.tradehero.th.models.staff.StaffDTOFactory;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.base.BaseFragment;
+import com.ayondo.academy.models.staff.StaffDTO;
+import com.ayondo.academy.models.staff.StaffDTOFactory;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

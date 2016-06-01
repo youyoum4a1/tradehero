@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.translation;
+package com.ayondo.academy.fragments.translation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.i18n.LanguageDTO;
-import com.tradehero.th.api.translation.UserTranslationSettingDTO;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.i18n.LanguageDTO;
+import com.ayondo.academy.api.translation.UserTranslationSettingDTO;
 
 public class TranslatableLanguageItemLinearView extends LinearLayout
     implements DTOView<LanguageDTO>

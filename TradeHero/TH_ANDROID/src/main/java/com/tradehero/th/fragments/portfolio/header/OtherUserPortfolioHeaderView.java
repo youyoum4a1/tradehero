@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.portfolio.header;
+package com.ayondo.academy.fragments.portfolio.header;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -14,14 +14,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.graphics.ForUserPhoto;
+import com.ayondo.academy.models.user.follow.FollowUserAssistant;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;

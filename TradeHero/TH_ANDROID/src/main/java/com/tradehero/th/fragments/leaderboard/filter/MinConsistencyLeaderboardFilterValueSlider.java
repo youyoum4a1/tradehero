@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.leaderboard.filter;
+package com.ayondo.academy.fragments.leaderboard.filter;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.models.number.THSignedNumber;
+import com.ayondo.academy.R;
+import com.ayondo.academy.models.number.THSignedNumber;
 
 public class MinConsistencyLeaderboardFilterValueSlider extends LeaderboardFilterValueSlider
 {

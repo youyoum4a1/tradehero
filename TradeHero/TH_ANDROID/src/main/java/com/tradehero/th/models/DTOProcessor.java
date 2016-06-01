@@ -1,4 +1,4 @@
-package com.tradehero.th.models;
+package com.ayondo.academy.models;
 
 public interface DTOProcessor<DTOType> //extends Func1<? extends DTOType, DTOType>
 {

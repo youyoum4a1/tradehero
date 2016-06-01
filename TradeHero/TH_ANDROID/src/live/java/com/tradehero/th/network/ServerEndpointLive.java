@@ -1,4 +1,4 @@
-package com.tradehero.th.network;
+package com.ayondo.academy.network;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

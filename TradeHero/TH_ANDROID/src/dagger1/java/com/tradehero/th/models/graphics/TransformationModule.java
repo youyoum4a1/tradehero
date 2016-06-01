@@ -1,4 +1,4 @@
-package com.tradehero.th.models.graphics;
+package com.ayondo.academy.models.graphics;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -14,7 +14,7 @@ import com.tradehero.common.graphics.RoundedCornerShaderTransformation;
 import com.tradehero.common.graphics.RoundedShapeTransformation;
 import com.tradehero.common.graphics.StackBlurTransformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

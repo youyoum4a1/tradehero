@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 public interface OnMovableBottomTranslateListener
 {

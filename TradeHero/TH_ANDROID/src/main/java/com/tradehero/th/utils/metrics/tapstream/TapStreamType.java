@@ -1,9 +1,9 @@
-package com.tradehero.th.utils.metrics.tapstream;
+package com.ayondo.academy.utils.metrics.tapstream;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.models.push.PushConstants;
-import com.tradehero.th.utils.metrics.MarketSegment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.models.push.PushConstants;
+import com.ayondo.academy.utils.metrics.MarketSegment;
 
 public enum TapStreamType
 {

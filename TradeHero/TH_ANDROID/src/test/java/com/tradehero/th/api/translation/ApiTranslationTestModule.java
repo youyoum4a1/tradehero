@@ -1,6 +1,6 @@
-package com.tradehero.th.api.translation;
+package com.ayondo.academy.api.translation;
 
-import com.tradehero.th.api.translation.bing.ApiTranslationBingTestModule;
+import com.ayondo.academy.api.translation.bing.ApiTranslationBingTestModule;
 import dagger.Module;
 
 @Module(

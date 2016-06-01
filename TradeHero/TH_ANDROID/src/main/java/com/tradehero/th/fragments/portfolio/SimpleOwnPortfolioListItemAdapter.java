@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.portfolio;
+package com.ayondo.academy.fragments.portfolio;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -7,13 +7,13 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.GenericArrayAdapter;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioDTO;
-import com.tradehero.th.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
-import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
-import com.tradehero.th.fragments.timeline.TimelineFragment;
-import com.tradehero.th.fragments.timeline.TimelineHeaderButtonView;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.GenericArrayAdapter;
+import com.ayondo.academy.api.portfolio.DisplayablePortfolioDTO;
+import com.ayondo.academy.api.portfolio.DisplayablePortfolioDTOWithinUserComparator;
+import com.ayondo.academy.api.portfolio.DummyFxDisplayablePortfolioDTO;
+import com.ayondo.academy.fragments.timeline.TimelineFragment;
+import com.ayondo.academy.fragments.timeline.TimelineHeaderButtonView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

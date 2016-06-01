@@ -1,4 +1,4 @@
-package com.tradehero.th.models.graphics;
+package com.ayondo.academy.models.graphics;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;

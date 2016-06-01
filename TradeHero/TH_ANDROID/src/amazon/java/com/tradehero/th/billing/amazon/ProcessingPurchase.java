@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

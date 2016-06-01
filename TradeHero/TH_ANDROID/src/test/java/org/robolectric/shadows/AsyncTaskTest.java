@@ -2,8 +2,8 @@ package org.robolectric.shadows;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;

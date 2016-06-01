@@ -1,12 +1,12 @@
-package com.tradehero.th.auth.operator;
+package com.ayondo.academy.auth.operator;
 
 import android.content.Context;
 import android.net.Uri;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
-import com.tradehero.th.R;
-import com.tradehero.th.auth.OAuthDialog;
-import com.tradehero.th.rx.view.DismissDialogAction0;
+import com.ayondo.academy.R;
+import com.ayondo.academy.auth.OAuthDialog;
+import com.ayondo.academy.rx.view.DismissDialogAction0;
 import java.util.concurrent.CancellationException;
 import oauth.signpost.OAuth;
 import rx.Observable;

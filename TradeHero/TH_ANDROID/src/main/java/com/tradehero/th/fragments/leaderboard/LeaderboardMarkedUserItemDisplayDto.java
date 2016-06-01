@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -6,18 +6,18 @@ import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.view.View;
 import com.tradehero.common.annotation.ViewVisibilityValue;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.ExpandableItem;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.timeline.UserStatisticView;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.StringUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.ExpandableItem;
+import com.ayondo.academy.api.leaderboard.LeaderboardDTO;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardKey;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.fragments.timeline.UserStatisticView;
+import com.ayondo.academy.models.number.THSignedPercentage;
+import com.ayondo.academy.utils.DateUtils;
+import com.ayondo.academy.utils.StringUtils;
 
 public class LeaderboardMarkedUserItemDisplayDto extends LeaderboardItemDisplayDTO implements com.tradehero.common.persistence.DTO,
         ExpandableItem

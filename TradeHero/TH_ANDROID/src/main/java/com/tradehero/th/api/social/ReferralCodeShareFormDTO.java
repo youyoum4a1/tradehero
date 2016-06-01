@@ -1,7 +1,7 @@
-package com.tradehero.th.api.social;
+package com.ayondo.academy.api.social;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.ayondo.academy.api.share.SocialShareFormDTO;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

@@ -1,20 +1,20 @@
-package com.tradehero.th.billing.googleplay.report;
+package com.ayondo.academy.billing.googleplay.report;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABProductDetail;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.report.THBasePurchaseReporterHolderRx;
-import com.tradehero.th.billing.report.THPurchaseReporterRx;
-import com.tradehero.th.network.service.AlertPlanCheckServiceWrapper;
-import com.tradehero.th.network.service.AlertPlanServiceWrapper;
-import com.tradehero.th.network.service.PortfolioServiceWrapper;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.billing.googleplay.THIABOrderId;
+import com.ayondo.academy.billing.googleplay.THIABProductDetail;
+import com.ayondo.academy.billing.googleplay.THIABPurchase;
+import com.ayondo.academy.billing.report.THBasePurchaseReporterHolderRx;
+import com.ayondo.academy.billing.report.THPurchaseReporterRx;
+import com.ayondo.academy.network.service.AlertPlanCheckServiceWrapper;
+import com.ayondo.academy.network.service.AlertPlanServiceWrapper;
+import com.ayondo.academy.network.service.PortfolioServiceWrapper;
+import com.ayondo.academy.network.service.UserServiceWrapper;
+import com.ayondo.academy.persistence.billing.googleplay.THIABProductDetailCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 

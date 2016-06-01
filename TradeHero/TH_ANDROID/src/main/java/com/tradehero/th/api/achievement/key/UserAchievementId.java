@@ -1,12 +1,12 @@
-package com.tradehero.th.api.achievement.key;
+package com.ayondo.academy.api.achievement.key;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
-import com.tradehero.th.utils.broadcast.BroadcastData;
+import com.ayondo.academy.utils.broadcast.BroadcastData;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_ACTION_NAME;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_ACTION_NAME;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.KEY_USER_ACHIEVEMENT_ID;
 
 public class UserAchievementId extends AbstractIntegerDTOKey implements BroadcastData
 {

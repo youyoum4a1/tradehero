@@ -1,4 +1,4 @@
-package com.tradehero.th.api.market;
+package com.ayondo.academy.api.market;
 
 public class KnownSectors
 {

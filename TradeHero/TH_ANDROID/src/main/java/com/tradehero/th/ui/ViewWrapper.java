@@ -1,4 +1,4 @@
-package com.tradehero.th.ui;
+package com.ayondo.academy.ui;
 
 import android.view.ViewGroup;
 

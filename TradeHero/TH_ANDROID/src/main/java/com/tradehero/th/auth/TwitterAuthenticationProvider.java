@@ -1,13 +1,13 @@
-package com.tradehero.th.auth;
+package com.ayondo.academy.auth;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.webkit.CookieSyncManager;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.auth.operator.OperatorOAuthDialog;
-import com.tradehero.th.network.service.SocialLinker;
-import com.tradehero.th.network.share.SocialConstants;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.auth.operator.OperatorOAuthDialog;
+import com.ayondo.academy.network.service.SocialLinker;
+import com.ayondo.academy.network.share.SocialConstants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import oauth.signpost.OAuthProvider;

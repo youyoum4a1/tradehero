@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.metrics;
+package com.ayondo.academy.utils.metrics;
 
 import android.content.Context;
 
@@ -6,8 +6,8 @@ import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Config;
 import com.tapstream.sdk.Tapstream;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.utils.Constants;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,10 +17,10 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-import static com.tradehero.th.utils.Constants.DOGFOOD_BUILD;
-import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_DEBUG;
-import static com.tradehero.th.utils.Constants.LOCALYTICS_APP_KEY_RELEASE;
-import static com.tradehero.th.utils.Constants.RELEASE;
+import static com.ayondo.academy.utils.Constants.DOGFOOD_BUILD;
+import static com.ayondo.academy.utils.Constants.LOCALYTICS_APP_KEY_DEBUG;
+import static com.ayondo.academy.utils.Constants.LOCALYTICS_APP_KEY_RELEASE;
+import static com.ayondo.academy.utils.Constants.RELEASE;
 
 @Module(
         library = true,

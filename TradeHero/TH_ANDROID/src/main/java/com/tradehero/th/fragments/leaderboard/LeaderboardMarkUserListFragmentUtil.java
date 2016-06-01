@@ -1,33 +1,33 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.position.TabbedPositionListFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
-import com.tradehero.th.rx.ReplaceWithFunc1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderUtil;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTO;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardDefKey;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.position.GetPositionsDTOKey;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.api.users.UserProfileDTOUtil;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.competition.CompetitionWebViewFragment;
+import com.ayondo.academy.fragments.position.TabbedPositionListFragment;
+import com.ayondo.academy.fragments.timeline.MeTimelineFragment;
+import com.ayondo.academy.fragments.timeline.PushableTimelineFragment;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.user.follow.FollowUserAssistant;
+import com.ayondo.academy.persistence.leaderboard.LeaderboardDefCacheRx;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
 
 import java.text.SimpleDateFormat;
 

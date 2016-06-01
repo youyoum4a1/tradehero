@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.trade.view;
+package com.ayondo.academy.fragments.trade.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.Button;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class QuickPriceButton extends Button
 {

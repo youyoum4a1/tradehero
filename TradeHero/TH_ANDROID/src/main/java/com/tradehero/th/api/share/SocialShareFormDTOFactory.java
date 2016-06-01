@@ -1,17 +1,17 @@
-package com.tradehero.th.api.share;
+package com.ayondo.academy.api.share;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTOFactory;
-import com.tradehero.th.api.share.wechat.WeChatDTOFactory;
-import com.tradehero.th.api.social.ReferralCodeDTO;
-import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.models.share.ShareDestination;
-import com.tradehero.th.models.share.ShareDestinationWithEnum;
-import com.tradehero.th.models.share.WeChatShareDestination;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.share.timeline.TimelineItemShareFormDTOFactory;
+import com.ayondo.academy.api.share.wechat.WeChatDTOFactory;
+import com.ayondo.academy.api.social.ReferralCodeDTO;
+import com.ayondo.academy.api.social.ReferralCodeShareFormDTO;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.models.share.ShareDestination;
+import com.ayondo.academy.models.share.ShareDestinationWithEnum;
+import com.ayondo.academy.models.share.WeChatShareDestination;
 
 public class SocialShareFormDTOFactory
 {

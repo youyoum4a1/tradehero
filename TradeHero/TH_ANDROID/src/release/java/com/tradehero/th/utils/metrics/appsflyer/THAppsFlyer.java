@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.metrics.appsflyer;
+package com.ayondo.academy.utils.metrics.appsflyer;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

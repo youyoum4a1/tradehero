@@ -1,10 +1,10 @@
-package com.tradehero.th.api.translation;
+package com.ayondo.academy.api.translation;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.R;
-import com.tradehero.th.api.translation.bing.BingTranslationToken;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.translation.bing.BingTranslationToken;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

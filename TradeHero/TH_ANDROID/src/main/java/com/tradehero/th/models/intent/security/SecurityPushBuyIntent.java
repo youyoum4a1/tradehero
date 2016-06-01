@@ -1,4 +1,4 @@
-package com.tradehero.th.models.intent.security;
+package com.ayondo.academy.models.intent.security;
 
 import android.content.res.Resources;
 import android.net.Uri;
@@ -6,13 +6,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.models.intent.THIntent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityIntegerId;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
+import com.ayondo.academy.fragments.trade.AbstractBuySellFragment;
+import com.ayondo.academy.fragments.trade.BuySellStockFragment;
+import com.ayondo.academy.models.intent.THIntent;
 import java.util.List;
 
 public class SecurityPushBuyIntent extends THIntent

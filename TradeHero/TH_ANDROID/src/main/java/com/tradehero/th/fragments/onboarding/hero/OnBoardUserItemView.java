@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.hero;
+package com.ayondo.academy.fragments.onboarding.hero;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -13,12 +13,12 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.api.SelectableDTO;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
-import com.tradehero.th.fragments.timeline.UserStatisticView;
-import com.tradehero.th.models.number.THSignedPercentage;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.LeaderboardDTO;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.fragments.onboarding.OnBoardSelectableViewLinear;
+import com.ayondo.academy.fragments.timeline.UserStatisticView;
+import com.ayondo.academy.models.number.THSignedPercentage;
 import javax.inject.Inject;
 
 public class OnBoardUserItemView extends OnBoardSelectableViewLinear<LeaderboardUserDTO, OnBoardUserItemView.DTO>

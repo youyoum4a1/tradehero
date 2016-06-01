@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.leaderboard;
+package com.ayondo.academy.persistence.leaderboard;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTOList;
-import com.tradehero.th.api.users.UserListType;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTOList;
+import com.ayondo.academy.api.users.UserListType;
+import com.ayondo.academy.network.service.UserServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;

@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
-import com.tradehero.th.adapters.ViewDTOSetAdapter;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.adapters.ViewDTOSetAdapter;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;

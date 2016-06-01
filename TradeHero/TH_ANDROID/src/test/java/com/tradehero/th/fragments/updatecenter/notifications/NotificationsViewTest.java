@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.updatecenter.notifications;
+package com.ayondo.academy.fragments.updatecenter.notifications;
 
 import android.view.LayoutInflater;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.network.service.NotificationServiceWrapper;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.DashboardActivity;
+import com.ayondo.academy.network.service.NotificationServiceWrapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

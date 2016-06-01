@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.R;
+import com.ayondo.academy.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class SettingsDrawerMenuItem extends LinearLayout

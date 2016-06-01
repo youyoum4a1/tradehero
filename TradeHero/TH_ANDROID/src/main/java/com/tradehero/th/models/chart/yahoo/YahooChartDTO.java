@@ -1,11 +1,11 @@
-package com.tradehero.th.models.chart.yahoo;
+package com.ayondo.academy.models.chart.yahoo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.models.chart.ChartDTO;
-import com.tradehero.th.models.chart.ChartSize;
-import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.models.chart.ChartDTO;
+import com.ayondo.academy.models.chart.ChartSize;
+import com.ayondo.academy.models.chart.ChartTimeSpan;
 import java.util.ArrayList;
 import java.util.List;
 

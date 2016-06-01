@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.achievement;
+package com.ayondo.academy.fragments.achievement;
 
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
@@ -10,16 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tradehero.th.R;
-import com.tradehero.th.api.achievement.AchievementCategoryDTO;
-import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.achievement.key.AchievementCategoryId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.persistence.achievement.AchievementCategoryCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.achievement.AchievementCategoryDTO;
+import com.ayondo.academy.api.achievement.UserAchievementDTO;
+import com.ayondo.academy.api.achievement.key.AchievementCategoryId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.models.number.THSignedMoney;
+import com.ayondo.academy.persistence.achievement.AchievementCategoryCacheRx;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.utils.SecurityUtils;
+import com.ayondo.academy.utils.metrics.AnalyticsConstants;
 
 import java.util.HashMap;
 import java.util.List;

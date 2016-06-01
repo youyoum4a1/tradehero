@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard;
+package com.ayondo.academy.api.leaderboard;
 
 import java.util.ArrayList;
 

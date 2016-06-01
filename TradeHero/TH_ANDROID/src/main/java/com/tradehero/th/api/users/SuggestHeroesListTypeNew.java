@@ -1,9 +1,9 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.SectorId;
+import com.ayondo.academy.api.market.ExchangeIntegerId;
+import com.ayondo.academy.api.market.SectorId;
 import java.util.Collections;
 import java.util.List;
 

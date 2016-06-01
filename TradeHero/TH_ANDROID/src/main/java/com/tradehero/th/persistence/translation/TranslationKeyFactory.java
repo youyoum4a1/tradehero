@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.translation;
+package com.ayondo.academy.persistence.translation;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.AbstractDiscussionDTO;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.news.NewsItemDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

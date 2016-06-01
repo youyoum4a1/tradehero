@@ -1,8 +1,8 @@
-package com.tradehero.th.api.i18n;
+package com.ayondo.academy.api.i18n;
 
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.TestConstants;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academy.BuildConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.ayondo.academy.fragments.trending;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,14 +6,14 @@ import android.util.Pair;
 import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForExtraTileBackground;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.graphics.ForExtraTileBackground;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;

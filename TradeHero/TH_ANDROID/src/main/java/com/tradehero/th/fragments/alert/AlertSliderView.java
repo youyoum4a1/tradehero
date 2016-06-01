@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.alert;
+package com.ayondo.academy.fragments.alert;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -13,12 +13,12 @@ import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnCheckedChanged;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.number.THSignedPercentage;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.number.THSignedMoney;
+import com.ayondo.academy.models.number.THSignedNumber;
+import com.ayondo.academy.models.number.THSignedPercentage;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 

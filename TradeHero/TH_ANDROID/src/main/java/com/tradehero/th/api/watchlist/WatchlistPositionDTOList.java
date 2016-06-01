@@ -1,10 +1,10 @@
-package com.tradehero.th.api.watchlist;
+package com.ayondo.academy.api.watchlist;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityId;
 import java.util.ArrayList;
 
 public class WatchlistPositionDTOList extends BaseArrayList<WatchlistPositionDTO>

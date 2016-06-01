@@ -1,15 +1,15 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.R;
-import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.persistence.prefs.FirstLaunch;
-import com.tradehero.th.utils.VersionUtils;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.R;
+import com.ayondo.academy.base.TestTHApp;
+import com.ayondo.academy.persistence.prefs.FirstLaunch;
+import com.ayondo.academy.utils.VersionUtils;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;

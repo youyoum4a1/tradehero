@@ -21,7 +21,7 @@
         android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
 
     <activity
-        android:name="com.tradehero.th.activities.IdentityPromptActivity"
+        android:name="com.ayondo.academy.activities.IdentityPromptActivity"
         android:theme="@style/TradeHero.Live"
         android:label="@string/tradehero_live"
         android:windowSoftInputMode="adjustResize"
@@ -30,7 +30,7 @@
         />
 
     <activity
-        android:name="com.tradehero.th.activities.SignUpLiveActivity"
+        android:name="com.ayondo.academy.activities.SignUpLiveActivity"
         android:theme="@style/TradeHero.Live"
         android:label="@string/tradehero_live"
         android:windowSoftInputMode="adjustResize"

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.position;
+package com.ayondo.academy.api.position;
 
 import com.fasterxml.jackson.core.Version;
 import com.fasterxml.jackson.databind.JsonDeserializer;

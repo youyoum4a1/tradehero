@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.timeline;
+package com.ayondo.academy.fragments.timeline;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

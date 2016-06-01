@@ -1,12 +1,12 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.th.api.translation.TranslationResult;
-import com.tradehero.th.api.translation.TranslationToken;
-import com.tradehero.th.api.translation.bing.BingTranslationToken;
-import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
-import com.tradehero.th.persistence.translation.TranslationTokenKey;
+import com.ayondo.academy.api.translation.TranslationResult;
+import com.ayondo.academy.api.translation.TranslationToken;
+import com.ayondo.academy.api.translation.bing.BingTranslationToken;
+import com.ayondo.academy.persistence.translation.TranslationTokenCacheRx;
+import com.ayondo.academy.persistence.translation.TranslationTokenKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

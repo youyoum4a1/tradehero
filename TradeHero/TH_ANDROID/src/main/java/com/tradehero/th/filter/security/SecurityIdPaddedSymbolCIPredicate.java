@@ -1,4 +1,4 @@
-package com.tradehero.th.filter.security;
+package com.ayondo.academy.filter.security;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

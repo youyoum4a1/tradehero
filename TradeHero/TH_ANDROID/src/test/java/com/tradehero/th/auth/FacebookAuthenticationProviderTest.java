@@ -1,7 +1,7 @@
-package com.tradehero.th.auth;
+package com.ayondo.academy.auth;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;

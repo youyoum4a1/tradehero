@@ -1,11 +1,11 @@
-package com.tradehero.th.billing.amazon.purchase;
+package com.ayondo.academy.billing.amazon.purchase;
 
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.purchase.AmazonPurchaserRx;
-import com.tradehero.th.billing.amazon.THAmazonOrderId;
-import com.tradehero.th.billing.amazon.THAmazonPurchase;
-import com.tradehero.th.billing.amazon.THAmazonPurchaseOrder;
-import com.tradehero.th.billing.purchase.THPurchaserRx;
+import com.ayondo.academy.billing.amazon.THAmazonOrderId;
+import com.ayondo.academy.billing.amazon.THAmazonPurchase;
+import com.ayondo.academy.billing.amazon.THAmazonPurchaseOrder;
+import com.ayondo.academy.billing.purchase.THPurchaserRx;
 
 public interface THAmazonPurchaserRx
         extends

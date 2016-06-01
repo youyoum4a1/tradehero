@@ -1,10 +1,10 @@
-package com.tradehero.th.api.live;
+package com.ayondo.academy.api.live;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.kyc.KYCForm;
+import com.ayondo.academy.api.kyc.KYCForm;
 
 public class LiveBrokerSituationDTO implements DTO
 {

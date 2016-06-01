@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,12 +9,12 @@ import android.widget.LinearLayout;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.tradehero.common.fragment.HasSelectedItem;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.security.SecuritySearchFragment;
-import com.tradehero.th.fragments.social.AllRelationsRecyclerFragment;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.rx.view.ViewArrayObservable;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.security.SecuritySearchFragment;
+import com.ayondo.academy.fragments.social.AllRelationsRecyclerFragment;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.rx.view.ViewArrayObservable;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.view.OnClickEvent;

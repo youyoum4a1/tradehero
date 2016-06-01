@@ -1,7 +1,7 @@
-package com.tradehero.th.api.market;
+package com.ayondo.academy.api.market;
 
 import android.support.annotation.DrawableRes;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public enum Exchange
 {

@@ -1,8 +1,8 @@
-package com.tradehero.th.api.discussion.form;
+package com.ayondo.academy.api.discussion.form;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.api.discussion.MessageType;
+import com.ayondo.academy.api.discussion.MessageType;
 
 abstract public class MessageCreateFormDTO
 {

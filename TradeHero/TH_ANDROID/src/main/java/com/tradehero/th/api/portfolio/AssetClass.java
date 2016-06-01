@@ -1,4 +1,4 @@
-package com.tradehero.th.api.portfolio;
+package com.ayondo.academy.api.portfolio;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonCreator;

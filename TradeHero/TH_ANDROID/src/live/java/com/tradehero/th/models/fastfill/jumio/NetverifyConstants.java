@@ -1,7 +1,7 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.util.Base64;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academy.BuildConfig;
 
 public class NetverifyConstants
 {

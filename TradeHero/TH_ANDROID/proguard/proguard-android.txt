@@ -195,13 +195,13 @@
 
 # Jackson introspect
 -keep class com.fasterxml.jackson.** { *; }
--keep public class com.tradehero.th.api.** {
+-keep public class com.ayondo.academy.api.** {
   public void set*(***);
   public *** get*();
 }
 
 # We actually use public field instead of getter and setter for it.
--keep public class com.tradehero.th.api.** {
+-keep public class com.ayondo.academy.api.** {
   public <fields>;
 }
 
@@ -212,7 +212,7 @@
 }
 
 # Keep constructors that are called by reflection
--keepclassmembers public class * extends com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO{
+-keepclassmembers public class * extends com.ayondo.academy.fragments.trending.filter.TrendingFilterTypeDTO{
   public <init>(...);
 }
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.live;
+package com.ayondo.academy.api.live;
 
 public class LiveBrokerKnowledge
 {

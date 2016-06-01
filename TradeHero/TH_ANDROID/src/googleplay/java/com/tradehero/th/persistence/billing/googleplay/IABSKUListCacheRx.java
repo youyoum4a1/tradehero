@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.billing.googleplay;
+package com.ayondo.academy.persistence.billing.googleplay;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductIdentifierListCacheRx;

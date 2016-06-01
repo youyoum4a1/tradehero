@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,11 +9,11 @@ import android.view.MenuItem;
 import butterknife.ButterKnife;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.onboarding.OnBoardFragment;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.base.ActionBarOwnerMixin;
+import com.ayondo.academy.fragments.onboarding.OnBoardFragment;
+import com.ayondo.academy.utils.route.THRouter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

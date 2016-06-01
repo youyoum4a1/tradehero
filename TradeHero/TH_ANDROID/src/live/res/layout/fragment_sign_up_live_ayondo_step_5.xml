@@ -43,7 +43,7 @@
           android:layout_height="@dimen/clickable_element_min_dimen"
           />
 
-      <com.tradehero.th.widget.DocumentActionWidget
+      <com.ayondo.academy.widget.DocumentActionWidget
           android:id="@+id/document_action_identity"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -77,7 +77,7 @@
           android:layout_marginTop="@dimen/margin_xsmall"
           />
 
-      <com.tradehero.th.widget.DocumentActionWidget
+      <com.ayondo.academy.widget.DocumentActionWidget
           android:id="@+id/document_action_residence"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

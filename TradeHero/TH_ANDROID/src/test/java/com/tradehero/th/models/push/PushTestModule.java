@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push;
+package com.ayondo.academy.models.push;
 
 import dagger.Module;
 import dagger.Provides;

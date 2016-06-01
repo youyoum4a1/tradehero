@@ -1,9 +1,9 @@
-package com.tradehero.th.api.kyc.ayondo;
+package com.ayondo.academy.api.kyc.ayondo;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.neovisionaries.i18n.CountryCode;
-import com.tradehero.th.api.kyc.KYCAddress;
+import com.ayondo.academy.api.kyc.KYCAddress;
 import java.util.List;
 
 public class AyondoLeadAddressDTO extends AyondoLeadUserIdentityDTO

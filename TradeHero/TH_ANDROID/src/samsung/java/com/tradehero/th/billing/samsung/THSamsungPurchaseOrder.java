@@ -1,13 +1,13 @@
-package com.tradehero.th.billing.samsung;
+package com.ayondo.academy.billing.samsung;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.billing.samsung.SamsungPurchaseOrder;
 import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.THPurchaseOrder;
-import com.tradehero.th.billing.samsung.exception.SamsungInvalidQuantityException;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.billing.THPurchaseOrder;
+import com.ayondo.academy.billing.samsung.exception.SamsungInvalidQuantityException;
 
 public class THSamsungPurchaseOrder
     implements SamsungPurchaseOrder<SamsungSKU>,

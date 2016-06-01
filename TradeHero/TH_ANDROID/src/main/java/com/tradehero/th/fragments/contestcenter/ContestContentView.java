@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.contestcenter;
+package com.ayondo.academy.fragments.contestcenter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -10,11 +10,11 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.utils.DateUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.competition.ProviderDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.utils.DateUtils;
 import dagger.Lazy;
 import javax.inject.Inject;
 

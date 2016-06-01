@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -16,8 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardKey;
 
 import butterknife.Bind;
 import butterknife.OnClick;

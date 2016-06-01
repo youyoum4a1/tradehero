@@ -1,4 +1,4 @@
-package com.tradehero.th.api.level;
+package com.ayondo.academy.api.level;
 
 import android.os.Bundle;
 import com.tradehero.common.persistence.DTO;

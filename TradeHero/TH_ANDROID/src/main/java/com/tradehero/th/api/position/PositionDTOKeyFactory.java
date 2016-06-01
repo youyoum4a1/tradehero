@@ -1,8 +1,8 @@
-package com.tradehero.th.api.position;
+package com.ayondo.academy.api.position;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
+import com.ayondo.academy.api.leaderboard.position.OwnedLeaderboardPositionId;
 
 public class PositionDTOKeyFactory
 {

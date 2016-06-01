@@ -1,4 +1,4 @@
-package com.tradehero.th.api.achievement;
+package com.ayondo.academy.api.achievement;
 
 import com.tradehero.common.api.BaseArrayList;
 

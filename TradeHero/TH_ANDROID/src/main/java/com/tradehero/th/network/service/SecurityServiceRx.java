@@ -1,13 +1,13 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.fx.FXChartDTO;
-import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
-import com.tradehero.th.api.position.PositionDTOList;
-import com.tradehero.th.api.position.SecurityPositionTransactionDTO;
-import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.TransactionFormDTO;
+import com.ayondo.academy.api.fx.FXChartDTO;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioIdList;
+import com.ayondo.academy.api.position.PositionDTOList;
+import com.ayondo.academy.api.position.SecurityPositionTransactionDTO;
+import com.ayondo.academy.api.quote.QuoteDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTOList;
+import com.ayondo.academy.api.security.TransactionFormDTO;
 import java.util.List;
 import java.util.Map;
 import retrofit.http.Body;

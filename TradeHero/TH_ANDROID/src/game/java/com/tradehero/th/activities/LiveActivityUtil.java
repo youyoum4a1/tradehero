@@ -1,9 +1,9 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.view.Menu;
-import com.tradehero.th.fragments.trending.TileType;
-import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.OffOnViewSwitcherEvent;
+import com.ayondo.academy.fragments.trending.TileType;
+import com.ayondo.academy.utils.route.THRouter;
+import com.ayondo.academy.widget.OffOnViewSwitcherEvent;
 
 public class LiveActivityUtil
 {

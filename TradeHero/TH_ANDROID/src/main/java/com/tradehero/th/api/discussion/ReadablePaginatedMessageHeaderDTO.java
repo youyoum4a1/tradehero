@@ -1,9 +1,9 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.HasExpiration;
-import com.tradehero.th.api.pagination.PaginationInfoDTO;
-import com.tradehero.th.api.pagination.ReadablePaginatedDTO;
+import com.ayondo.academy.api.pagination.PaginationInfoDTO;
+import com.ayondo.academy.api.pagination.ReadablePaginatedDTO;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;

@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.portfolio.header;
+package com.ayondo.academy.fragments.portfolio.header;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
 import rx.Observable;
 
 /**

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -7,10 +7,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.security.FxCurrency;
-import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.security.FxCurrency;
+import com.ayondo.academy.api.security.key.FxPairSecurityId;
 
 public class FxFlagContainer extends LinearLayout
     implements DTOView<FxPairSecurityId>

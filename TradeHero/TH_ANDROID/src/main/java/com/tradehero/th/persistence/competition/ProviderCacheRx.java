@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.competition;
+package com.ayondo.academy.persistence.competition;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.network.service.ProviderServiceWrapper;
+import com.ayondo.academy.api.competition.ProviderDTO;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.network.service.ProviderServiceWrapper;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

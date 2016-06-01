@@ -1,7 +1,7 @@
-package com.tradehero.th.api.share.wechat;
+package com.ayondo.academy.api.share.wechat;
 
 import android.support.annotation.StringRes;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public enum WeChatMessageType
 {

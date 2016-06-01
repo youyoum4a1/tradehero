@@ -1,9 +1,9 @@
-package com.tradehero.th.billing.purchasefetch;
+package com.ayondo.academy.billing.purchasefetch;
 
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.purchasefetch.BillingPurchaseFetcherRx;
-import com.tradehero.th.billing.THOrderId;
-import com.tradehero.th.billing.THProductPurchase;
+import com.ayondo.academy.billing.THOrderId;
+import com.ayondo.academy.billing.THProductPurchase;
 
 public interface THPurchaseFetcherRx<
         ProductIdentifierType extends ProductIdentifier,

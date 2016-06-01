@@ -1,18 +1,18 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
+import com.ayondo.academy.adapters.PagedViewDTOAdapterImpl;
+import com.ayondo.academy.api.alert.AlertCompactDTO;
+import com.ayondo.academy.api.quote.QuoteDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityIntegerId;
+import com.ayondo.academy.api.security.compact.FxSecurityCompactDTO;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTOList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

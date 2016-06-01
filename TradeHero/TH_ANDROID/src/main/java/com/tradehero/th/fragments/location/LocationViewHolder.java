@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.location;
+package com.ayondo.academy.fragments.location;
 
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.market.Country;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.market.Country;
 
 class LocationViewHolder implements DTOView<ListedLocationDTO>
 {

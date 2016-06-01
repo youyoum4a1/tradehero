@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.competition;
+package com.ayondo.academy.fragments.competition;
 
 import dagger.Module;
 

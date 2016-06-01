@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.achievement;
+package com.ayondo.academy.fragments.achievement;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,14 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.achievement.QuestBonusDTO;
-import com.tradehero.th.api.achievement.QuestBonusDTOList;
-import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.achievement.key.QuestBonusListId;
-import com.tradehero.th.persistence.achievement.QuestBonusListCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.widget.QuestIndicatorGroupView;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.achievement.QuestBonusDTO;
+import com.ayondo.academy.api.achievement.QuestBonusDTOList;
+import com.ayondo.academy.api.achievement.UserAchievementDTO;
+import com.ayondo.academy.api.achievement.key.QuestBonusListId;
+import com.ayondo.academy.persistence.achievement.QuestBonusListCacheRx;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.widget.QuestIndicatorGroupView;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;

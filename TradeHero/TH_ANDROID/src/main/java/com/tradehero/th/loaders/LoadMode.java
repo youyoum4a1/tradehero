@@ -1,4 +1,4 @@
-package com.tradehero.th.loaders;
+package com.ayondo.academy.loaders;
 
 public enum LoadMode
 {

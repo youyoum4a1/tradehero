@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.Filter;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
-import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
+import com.ayondo.academy.api.quote.QuoteDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityIntegerId;
+import com.ayondo.academy.api.security.compact.FxSecurityCompactDTO;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

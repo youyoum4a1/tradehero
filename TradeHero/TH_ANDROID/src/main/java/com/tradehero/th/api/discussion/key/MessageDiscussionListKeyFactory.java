@@ -1,8 +1,8 @@
-package com.tradehero.th.api.discussion.key;
+package com.ayondo.academy.api.discussion.key;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.discussion.DiscussionKeyList;
+import com.ayondo.academy.api.discussion.DiscussionKeyList;
 
 public class MessageDiscussionListKeyFactory
 {

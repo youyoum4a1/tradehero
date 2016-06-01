@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social;
+package com.ayondo.academy.fragments.social;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,9 +7,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedRecyclerAdapter;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.PagedRecyclerAdapter;
+import com.ayondo.academy.api.users.AllowableRecipientDTO;
 
 public class AllRelationsRecyclerAdapter extends PagedRecyclerAdapter<RelationItemDisplayDTO>
 {

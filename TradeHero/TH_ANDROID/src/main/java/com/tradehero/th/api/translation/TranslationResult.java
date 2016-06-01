@@ -1,8 +1,8 @@
-package com.tradehero.th.api.translation;
+package com.ayondo.academy.api.translation;
 
 import android.support.annotation.DrawableRes;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class TranslationResult implements DTO
 {

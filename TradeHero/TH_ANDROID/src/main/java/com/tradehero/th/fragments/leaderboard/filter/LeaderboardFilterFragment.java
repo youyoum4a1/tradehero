@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard.filter;
+package com.ayondo.academy.fragments.leaderboard.filter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,11 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.LeaderboardDTO;
+import com.ayondo.academy.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.persistence.leaderboard.LeaderboardCacheRx;
 
 import javax.inject.Inject;
 

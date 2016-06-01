@@ -1,13 +1,13 @@
-package com.tradehero.th.models.intent.competition;
+package com.ayondo.academy.models.intent.competition;
 
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.fragments.competition.ProviderVideoListFragment;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,12 +7,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.key.WarrantProviderSecurityListType;
-import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.security.WarrantType;
-import com.tradehero.th.api.security.WarrantTypeShortCode;
-import com.tradehero.th.api.security.key.SecurityListType;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.key.WarrantProviderSecurityListType;
+import com.ayondo.academy.api.portfolio.AssetClass;
+import com.ayondo.academy.api.security.WarrantType;
+import com.ayondo.academy.api.security.WarrantTypeShortCode;
+import com.ayondo.academy.api.security.key.SecurityListType;
 import javax.inject.Inject;
 
 public class ProviderWarrantListRxFragment extends ProviderSecurityListRxFragment

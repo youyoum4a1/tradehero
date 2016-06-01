@@ -1,7 +1,7 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.share.TrackShareDTO;
-import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
+import com.ayondo.academy.api.share.TrackShareDTO;
+import com.ayondo.academy.api.share.wechat.WeChatTrackShareFormDTO;
 import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Path;

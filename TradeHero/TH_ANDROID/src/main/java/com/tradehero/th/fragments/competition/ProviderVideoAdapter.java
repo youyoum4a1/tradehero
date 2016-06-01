@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.competition;
+package com.ayondo.academy.fragments.competition;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import com.tradehero.th.adapters.ArrayDTOAdapterNew;
-import com.tradehero.th.api.competition.HelpVideoDTO;
+import com.ayondo.academy.adapters.ArrayDTOAdapterNew;
+import com.ayondo.academy.api.competition.HelpVideoDTO;
 
 public class ProviderVideoAdapter extends ArrayDTOAdapterNew<HelpVideoDTO, ProviderVideoListItemView>
 {

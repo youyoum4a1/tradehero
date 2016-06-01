@@ -1,9 +1,9 @@
-package com.tradehero.th.models.intent;
+package com.ayondo.academy.models.intent;
 
 import android.content.Intent;
 import android.net.Uri;
-import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
+import com.ayondo.academy.R;
+import com.ayondo.academy.base.THApp;
 import java.util.List;
 
 abstract public class THIntentFactory<THIntentType extends THIntent>

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;

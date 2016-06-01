@@ -1,4 +1,4 @@
-package com.tradehero.th.api.discussion.key;
+package com.ayondo.academy.api.discussion.key;
 
 import java.io.Serializable;
 import java.util.Comparator;

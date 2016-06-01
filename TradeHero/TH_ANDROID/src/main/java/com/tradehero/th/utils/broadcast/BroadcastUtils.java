@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.broadcast;
+package com.ayondo.academy.utils.broadcast;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

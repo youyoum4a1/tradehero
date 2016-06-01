@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.ayondo.academy.fragments.trending;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -12,13 +12,13 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.users.UserSearchResultDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForSearchPeopleItemBackground;
-import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.utils.DateUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.users.UserSearchResultDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.graphics.ForSearchPeopleItemBackground;
+import com.ayondo.academy.models.graphics.ForUserPhoto;
+import com.ayondo.academy.utils.DateUtils;
 import javax.inject.Inject;
 
 public class SearchPeopleItemView extends FrameLayout implements DTOView<UserSearchResultDTO>

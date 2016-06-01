@@ -1,14 +1,14 @@
-package com.tradehero.th.network.share;
+package com.ayondo.academy.network.share;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.wechat.WeChatDTO;
-import com.tradehero.th.api.social.HasSocialNetworkEnum;
-import com.tradehero.th.api.social.HasSocialNetworkEnumList;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.auth.FacebookAuthenticationProvider;
+import com.ayondo.academy.api.share.SocialShareFormDTO;
+import com.ayondo.academy.api.share.wechat.WeChatDTO;
+import com.ayondo.academy.api.social.HasSocialNetworkEnum;
+import com.ayondo.academy.api.social.HasSocialNetworkEnumList;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.users.UserProfileCompactDTO;
+import com.ayondo.academy.auth.FacebookAuthenticationProvider;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.competition.zone;
+package com.ayondo.academy.fragments.competition.zone;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,10 +11,10 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZonePrizePoolDTO;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.ayondo.academy.fragments.competition.zone.dto.CompetitionZonePrizePoolDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class CompetitionZonePrizePoolView extends AbstractCompetitionZoneListItemView

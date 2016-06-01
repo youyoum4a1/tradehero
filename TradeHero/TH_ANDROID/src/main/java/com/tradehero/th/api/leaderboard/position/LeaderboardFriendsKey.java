@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard.position;
+package com.ayondo.academy.api.leaderboard.position;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.api.PagedDTOKey;

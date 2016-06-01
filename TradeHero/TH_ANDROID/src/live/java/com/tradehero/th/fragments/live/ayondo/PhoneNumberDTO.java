@@ -1,7 +1,7 @@
-package com.tradehero.th.fragments.live.ayondo;
+package com.ayondo.academy.fragments.live.ayondo;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.market.Country;
+import com.ayondo.academy.api.market.Country;
 
 class PhoneNumberDTO
 {

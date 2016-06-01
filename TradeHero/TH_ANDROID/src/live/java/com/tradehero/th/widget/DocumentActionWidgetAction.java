@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.support.annotation.NonNull;
 import android.view.View;

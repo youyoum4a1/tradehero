@@ -1,4 +1,4 @@
-package com.tradehero.th.models.fastfill;
+package com.ayondo.academy.models.fastfill;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

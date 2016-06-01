@@ -20,7 +20,7 @@
       android:layout_gravity="start"
       />
 
-  <com.tradehero.th.widget.validation.ValidatedText
+  <com.ayondo.academy.widget.validation.ValidatedText
       android:id="@+id/settings_paypal_email_text"
       android:hint="@string/settings_paypal_hint"
       android:layout_width="match_parent"

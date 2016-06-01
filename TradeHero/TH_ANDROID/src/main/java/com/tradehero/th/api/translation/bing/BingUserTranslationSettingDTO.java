@@ -1,10 +1,10 @@
-package com.tradehero.th.api.translation.bing;
+package com.ayondo.academy.api.translation.bing;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
-import com.tradehero.th.R;
-import com.tradehero.th.api.i18n.LanguageDTO;
-import com.tradehero.th.api.translation.UserTranslationSettingDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.i18n.LanguageDTO;
+import com.ayondo.academy.api.translation.UserTranslationSettingDTO;
 
 public class BingUserTranslationSettingDTO extends UserTranslationSettingDTO
 {

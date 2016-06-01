@@ -1,9 +1,9 @@
-package com.tradehero.th.models.market;
+package com.ayondo.academy.models.market;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.market.BaseExchangeCompactDTOList;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
+import com.ayondo.academy.api.market.BaseExchangeCompactDTOList;
+import com.ayondo.academy.api.market.ExchangeCompactDTO;
 import java.util.Collection;
 
 public class ExchangeCompactSpinnerDTOList extends BaseExchangeCompactDTOList<ExchangeCompactSpinnerDTO>

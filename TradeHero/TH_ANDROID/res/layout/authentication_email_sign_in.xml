@@ -32,7 +32,7 @@
         style="@style/TH.Authentication"
         >
 
-      <com.tradehero.th.widget.validation.ValidatedText
+      <com.ayondo.academy.widget.validation.ValidatedText
           android:id="@+id/authentication_sign_in_email"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
           app:minTextLength="3"
           />
 
-      <com.tradehero.th.widget.validation.ValidatedText
+      <com.ayondo.academy.widget.validation.ValidatedText
           android:id="@+id/et_pwd_login"
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"

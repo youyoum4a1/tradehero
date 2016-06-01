@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.social.facebook.FacebookConstants;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.social.UserFriendsDTOList;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.Observable;

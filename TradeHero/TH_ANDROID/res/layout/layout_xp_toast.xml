@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.widget.XpToast
+<com.ayondo.academy.widget.XpToast
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
@@ -56,4 +56,4 @@
       android:layout_below="@id/xp_toast_text"
       />
 
-</com.tradehero.th.widget.XpToast>
+</com.ayondo.academy.widget.XpToast>

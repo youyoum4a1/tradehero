@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -8,13 +8,13 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
-import com.tradehero.th.persistence.prefs.ShowAskForInviteDialogCloseTimes;
-import com.tradehero.th.persistence.timing.TimingIntervalPreference;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.base.BaseDialogFragment;
+import com.ayondo.academy.fragments.social.friend.FriendsInvitationFragment;
+import com.ayondo.academy.persistence.prefs.ShowAskForInviteDialog;
+import com.ayondo.academy.persistence.prefs.ShowAskForInviteDialogCloseTimes;
+import com.ayondo.academy.persistence.timing.TimingIntervalPreference;
 import dagger.Lazy;
 import javax.inject.Inject;
 

@@ -1,9 +1,9 @@
-package com.tradehero.th.models.trade;
+package com.ayondo.academy.models.trade;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.position.OwnedPositionId;
-import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.models.ThroughDTOProcessor;
+import com.ayondo.academy.api.position.OwnedPositionId;
+import com.ayondo.academy.api.trade.TradeDTO;
+import com.ayondo.academy.models.ThroughDTOProcessor;
 
 public class DTOProcessorTradeReceived extends ThroughDTOProcessor<TradeDTO>
 {

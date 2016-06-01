@@ -1,8 +1,8 @@
-package com.tradehero.th.api.auth;
+package com.ayondo.academy.api.auth;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.auth.AuthData;
+import com.ayondo.academy.auth.AuthData;
 import java.util.Map;
 
 public final class AccessTokenForm

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.education;
+package com.ayondo.academy.fragments.education;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,14 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
-import com.tradehero.th.api.education.PagedVideoCategories;
-import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
-import com.tradehero.th.api.education.VideoCategoryDTO;
-import com.tradehero.th.api.education.VideoCategoryDTOList;
-import com.tradehero.th.fragments.BasePagedListRxFragment;
-import com.tradehero.th.persistence.education.PaginatedVideoCategoryCacheRx;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.PagedViewDTOAdapterImpl;
+import com.ayondo.academy.api.education.PagedVideoCategories;
+import com.ayondo.academy.api.education.PaginatedVideoCategoryDTO;
+import com.ayondo.academy.api.education.VideoCategoryDTO;
+import com.ayondo.academy.api.education.VideoCategoryDTOList;
+import com.ayondo.academy.fragments.BasePagedListRxFragment;
+import com.ayondo.academy.persistence.education.PaginatedVideoCategoryCacheRx;
 
 import javax.inject.Inject;
 

@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.prefs;
+package com.ayondo.academy.persistence.prefs;
 
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.persistence.prefs.AbstractPreference;
-import com.tradehero.th.api.live.LiveBrokerSituationDTO;
+import com.ayondo.academy.api.live.LiveBrokerSituationDTO;
 import java.io.IOException;
 import javax.inject.Singleton;
 import rx.Observable;

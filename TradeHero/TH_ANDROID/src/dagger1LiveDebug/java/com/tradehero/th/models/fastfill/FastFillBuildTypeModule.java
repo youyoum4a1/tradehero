@@ -1,7 +1,7 @@
-package com.tradehero.th.models.fastfill;
+package com.ayondo.academy.models.fastfill;
 
-import com.tradehero.th.models.fastfill.jumio.DebugNetverifyFastFillUtil;
-import com.tradehero.th.models.fastfill.jumio.NetverifyFastFillUtil;
+import com.ayondo.academy.models.fastfill.jumio.DebugNetverifyFastFillUtil;
+import com.ayondo.academy.models.fastfill.jumio.NetverifyFastFillUtil;
 import dagger.Module;
 import dagger.Provides;
 

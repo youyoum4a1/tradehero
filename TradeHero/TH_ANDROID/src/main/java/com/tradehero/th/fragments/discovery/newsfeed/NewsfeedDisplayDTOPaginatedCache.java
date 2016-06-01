@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.discovery.newsfeed;
+package com.ayondo.academy.fragments.discovery.newsfeed;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedDTOList;
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedCache;
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedPagedDTOKey;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedDTOList;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedPagedCache;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedPagedDTOKey;
 import rx.Observable;
 import rx.functions.Func1;
 

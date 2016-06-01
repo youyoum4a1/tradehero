@@ -1,9 +1,9 @@
-package com.tradehero.th.models.intent;
+package com.ayondo.academy.models.intent;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.utils.route.THRouter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

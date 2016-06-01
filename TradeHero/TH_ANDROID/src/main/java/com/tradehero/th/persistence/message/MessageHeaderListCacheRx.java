@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.message;
+package com.ayondo.academy.persistence.message;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,14 +8,14 @@ import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
-import com.tradehero.th.api.discussion.key.MessageListKey;
-import com.tradehero.th.api.discussion.key.RecipientTypedMessageListKey;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.service.MessageServiceWrapper;
-import com.tradehero.th.persistence.ListCacheMaxSize;
+import com.ayondo.academy.api.discussion.MessageHeaderDTO;
+import com.ayondo.academy.api.discussion.ReadablePaginatedMessageHeaderDTO;
+import com.ayondo.academy.api.discussion.key.MessageHeaderId;
+import com.ayondo.academy.api.discussion.key.MessageListKey;
+import com.ayondo.academy.api.discussion.key.RecipientTypedMessageListKey;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.network.service.MessageServiceWrapper;
+import com.ayondo.academy.persistence.ListCacheMaxSize;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,6 @@
-package com.tradehero.th.network.retrofit;
+package com.ayondo.academy.network.retrofit;
 
-import com.tradehero.th.network.service.FlavorRetrofitProtectedModule;
+import com.ayondo.academy.network.service.FlavorRetrofitProtectedModule;
 import dagger.Module;
 
 @Module(

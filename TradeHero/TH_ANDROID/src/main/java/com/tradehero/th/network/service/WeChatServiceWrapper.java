@@ -1,9 +1,9 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.share.TrackShareDTO;
-import com.tradehero.th.api.share.wechat.WeChatTrackShareFormDTO;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.share.TrackShareDTO;
+import com.ayondo.academy.api.share.wechat.WeChatTrackShareFormDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.contestcenter;
+package com.ayondo.academy.fragments.contestcenter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.competition.ProviderDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
 
 public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
 {

@@ -1,4 +1,4 @@
-package com.tradehero.th.network;
+package com.ayondo.academy.network;
 
 public class LiveNetworkConstants
 {

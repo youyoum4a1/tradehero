@@ -1,7 +1,7 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityId;
 
 class SecurityActionDTO
 {

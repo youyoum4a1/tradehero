@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.prefs;
+package com.ayondo.academy.persistence.prefs;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -10,19 +10,19 @@ import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
 import com.tradehero.common.persistence.prefs.IntPreference;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
-import com.tradehero.th.models.share.preference.SocialShareSetPreference;
-import com.tradehero.th.persistence.market.ExchangeMarketPreference;
-import com.tradehero.th.persistence.timing.TimingIntervalPreference;
-import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
+import com.ayondo.academy.api.translation.UserTranslationSettingDTOFactory;
+import com.ayondo.academy.models.share.preference.SocialShareSetPreference;
+import com.ayondo.academy.persistence.market.ExchangeMarketPreference;
+import com.ayondo.academy.persistence.timing.TimingIntervalPreference;
+import com.ayondo.academy.persistence.translation.UserTranslationSettingPreference;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;
 import javax.inject.Singleton;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
-import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
+import static com.ayondo.academy.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
+import static com.ayondo.academy.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
 @Module(
         includes = {

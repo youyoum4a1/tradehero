@@ -1,9 +1,9 @@
-package com.tradehero.th.api.social;
+package com.ayondo.academy.api.social;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.key.ContactFriendKey;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.key.ContactFriendKey;
 
 public class UserFriendsContactEntryDTO extends UserFriendsDTO
 {

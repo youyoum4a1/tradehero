@@ -1,7 +1,7 @@
-package com.tradehero.th.models.discussion;
+package com.ayondo.academy.models.discussion;
 
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.persistence.discussion.DiscussionCacheRx;
 import javax.inject.Inject;
 
 public class NewsDTOProcessor extends DiscussionDTOProcessor<NewsItemCompactDTO>

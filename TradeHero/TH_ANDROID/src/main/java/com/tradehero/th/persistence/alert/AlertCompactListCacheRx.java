@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.alert;
+package com.ayondo.academy.persistence.alert;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
@@ -6,12 +6,12 @@ import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.alert.AlertCompactDTOList;
-import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.service.AlertServiceWrapper;
+import com.ayondo.academy.api.alert.AlertCompactDTO;
+import com.ayondo.academy.api.alert.AlertCompactDTOList;
+import com.ayondo.academy.api.alert.AlertId;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.network.service.AlertServiceWrapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;

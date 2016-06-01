@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.MarketUtil;
-import com.tradehero.th.fragments.base.BaseDialogFragment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.MarketUtil;
+import com.ayondo.academy.fragments.base.BaseDialogFragment;
 
 public class AskForReviewDialogFragment extends BaseDialogFragment
 {

@@ -1,10 +1,10 @@
-package com.tradehero.th.api.social.key;
+package com.ayondo.academy.api.social.key;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class FriendsListKey implements DTOKey
 {

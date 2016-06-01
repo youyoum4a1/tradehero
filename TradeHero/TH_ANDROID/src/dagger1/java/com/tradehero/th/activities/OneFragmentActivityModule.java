@@ -1,13 +1,13 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.content.Context;
 import android.support.v7.widget.Toolbar;
-import com.tradehero.th.UIModule;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.base.BaseFragmentOuterElements;
-import com.tradehero.th.fragments.base.FragmentOuterElements;
-import com.tradehero.th.utils.dagger.AppModule;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.UIModule;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.base.BaseFragmentOuterElements;
+import com.ayondo.academy.fragments.base.FragmentOuterElements;
+import com.ayondo.academy.utils.dagger.AppModule;
+import com.ayondo.academy.utils.route.THRouter;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Provider;

@@ -1,13 +1,13 @@
-package com.tradehero.th.api.security;
+package com.ayondo.academy.api.security;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
-import com.tradehero.th.api.security.key.FxPairSecurityId;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.fragments.trade.FXMainFragment;
-import com.tradehero.th.models.number.THSignedNumber;
+import com.ayondo.academy.api.security.compact.FxSecurityCompactDTO;
+import com.ayondo.academy.api.security.key.FxPairSecurityId;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.fragments.trade.BuySellStockFragment;
+import com.ayondo.academy.fragments.trade.FXMainFragment;
+import com.ayondo.academy.models.number.THSignedNumber;
 import java.text.DecimalFormatSymbols;
 
 public class SecurityCompactDTOUtil

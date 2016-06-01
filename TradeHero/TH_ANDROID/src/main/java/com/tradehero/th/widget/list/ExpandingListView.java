@@ -1,13 +1,13 @@
-package com.tradehero.th.widget.list;
+package com.ayondo.academy.widget.list;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.ExpandableItem;
-import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.ExpandableItem;
+import com.ayondo.academy.fragments.leaderboard.ExpandingLayout;
 
 /**
  * Listens for item clicks and expands or collapses the selected view depending on its current

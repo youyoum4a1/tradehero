@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import java.util.List;
 
 public class SocialTypeListAdapter extends ArrayAdapter<SocialTypeItem>

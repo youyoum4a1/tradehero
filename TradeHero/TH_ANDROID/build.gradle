@@ -90,7 +90,7 @@ android {
   defaultConfig {
     minSdkVersion 16
     targetSdkVersion 22
-    applicationId "com.tradehero.th"
+    applicationId "com.ayondo.academy"
     versionCode project.ext.versionBuild
     versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
 
@@ -133,7 +133,7 @@ android {
   productFlavors {
     googleplay {
       dimension "marketSegment"
-      buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
+      buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.ayondo.academy\""
 
       // Enabling multidex support.
       multiDexEnabled true

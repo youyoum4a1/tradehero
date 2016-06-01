@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.alert;
+package com.ayondo.academy.fragments.alert;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.network.service.AlertServiceWrapper;
-import com.tradehero.th.network.service.QuoteServiceWrapper;
-import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.network.service.AlertServiceWrapper;
+import com.ayondo.academy.network.service.QuoteServiceWrapper;
+import com.ayondo.academy.persistence.security.SecurityCompactCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 

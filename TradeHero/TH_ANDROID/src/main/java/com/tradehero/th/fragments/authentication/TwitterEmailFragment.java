@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.authentication;
+package com.ayondo.academy.fragments.authentication;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;

@@ -1,10 +1,10 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.models.fastfill.DocumentCheckService;
-import com.tradehero.th.models.fastfill.ScanImageKey;
-import com.tradehero.th.models.fastfill.ScanReference;
-import com.tradehero.th.models.fastfill.ScanStatus;
+import com.ayondo.academy.models.fastfill.DocumentCheckService;
+import com.ayondo.academy.models.fastfill.ScanImageKey;
+import com.ayondo.academy.models.fastfill.ScanReference;
+import com.ayondo.academy.models.fastfill.ScanStatus;
 import javax.inject.Inject;
 import rx.Observable;
 

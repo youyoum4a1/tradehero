@@ -1,4 +1,4 @@
-package com.tradehero.th.api.kyc;
+package com.ayondo.academy.api.kyc;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonCreator;

@@ -1,10 +1,10 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.network.CompetitionUrl;
-import com.tradehero.th.persistence.prefs.AuthHeader;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.network.CompetitionUrl;
+import com.ayondo.academy.persistence.prefs.AuthHeader;
 import javax.inject.Inject;
 
 public class ProviderUtil

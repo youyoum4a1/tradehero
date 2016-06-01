@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.news;
+package com.ayondo.academy.fragments.news;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.DTOSetAdapter;
-import com.tradehero.th.models.share.ShareDestination;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.DTOSetAdapter;
+import com.ayondo.academy.models.share.ShareDestination;
 import java.util.Collection;
 import java.util.Comparator;
 

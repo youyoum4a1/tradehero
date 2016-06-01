@@ -1,12 +1,12 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.share.BaseResponseSocialShareResultDTO;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
-import com.tradehero.th.api.share.timeline.TimelineItemShareFormDTO;
-import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.share.BaseResponseSocialShareResultDTO;
+import com.ayondo.academy.api.share.SocialShareFormDTO;
+import com.ayondo.academy.api.share.SocialShareResultDTO;
+import com.ayondo.academy.api.share.timeline.TimelineItemShareFormDTO;
+import com.ayondo.academy.api.social.ReferralCodeShareFormDTO;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

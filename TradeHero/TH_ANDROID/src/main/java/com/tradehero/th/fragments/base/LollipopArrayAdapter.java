@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.base;
+package com.ayondo.academy.fragments.base;
 
 import android.content.Context;
 import android.view.View;
@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.tradehero.common.utils.SDKUtils;
-import com.tradehero.th.R;
-import com.tradehero.th.utils.GraphicUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.utils.GraphicUtil;
 import java.util.List;
 
 public class LollipopArrayAdapter<T> extends ArrayAdapter<T>

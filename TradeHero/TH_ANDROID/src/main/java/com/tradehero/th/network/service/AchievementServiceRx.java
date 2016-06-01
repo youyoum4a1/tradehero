@@ -1,11 +1,11 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
-import com.tradehero.th.api.achievement.QuestBonusDTOList;
-import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.level.LevelDefDTOList;
-import com.tradehero.th.api.social.SocialShareReqFormDTO;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.achievement.AchievementCategoryDTOList;
+import com.ayondo.academy.api.achievement.QuestBonusDTOList;
+import com.ayondo.academy.api.achievement.UserAchievementDTO;
+import com.ayondo.academy.api.level.LevelDefDTOList;
+import com.ayondo.academy.api.social.SocialShareReqFormDTO;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;

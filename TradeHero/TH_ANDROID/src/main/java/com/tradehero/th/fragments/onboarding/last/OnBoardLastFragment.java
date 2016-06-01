@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.last;
+package com.ayondo.academy.fragments.onboarding.last;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,12 +12,12 @@ import android.widget.Gallery;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityCompactDTOList;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.fragments.base.BaseFragment;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.utils.route.THRouter;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.app.AppObservable;

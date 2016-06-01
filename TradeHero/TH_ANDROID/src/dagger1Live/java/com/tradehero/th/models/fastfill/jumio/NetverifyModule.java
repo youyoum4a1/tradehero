@@ -1,4 +1,4 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,10 +7,10 @@ import com.squareup.picasso.LruCache;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.log.RetrofitErrorHandlerLogger;
-import com.tradehero.th.models.fastfill.DocumentCheckService;
-import com.tradehero.th.models.fastfill.ForDocumentChecker;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.dagger.ForPicasso;
+import com.ayondo.academy.models.fastfill.DocumentCheckService;
+import com.ayondo.academy.models.fastfill.ForDocumentChecker;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.dagger.ForPicasso;
 import dagger.Module;
 import dagger.Provides;
 import retrofit.Endpoints;

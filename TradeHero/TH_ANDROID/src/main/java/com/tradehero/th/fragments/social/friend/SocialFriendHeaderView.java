@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class SocialFriendHeaderView extends SocialFriendItemView
 {

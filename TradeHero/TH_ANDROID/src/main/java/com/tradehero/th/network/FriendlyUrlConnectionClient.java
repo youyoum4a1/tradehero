@@ -1,7 +1,7 @@
-package com.tradehero.th.network;
+package com.ayondo.academy.network;
 
 import android.content.Context;
-import com.tradehero.th.utils.NetworkUtils;
+import com.ayondo.academy.utils.NetworkUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;

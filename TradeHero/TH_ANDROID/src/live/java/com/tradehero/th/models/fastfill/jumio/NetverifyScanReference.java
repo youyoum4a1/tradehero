@@ -1,8 +1,8 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.models.fastfill.ScanReference;
+import com.ayondo.academy.models.fastfill.ScanReference;
 
 public class NetverifyScanReference implements ScanReference
 {

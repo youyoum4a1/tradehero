@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.trade;
+package com.ayondo.academy.persistence.trade;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.position.OwnedPositionId;
-import com.tradehero.th.api.trade.TradeDTOList;
-import com.tradehero.th.network.service.TradeServiceWrapper;
+import com.ayondo.academy.api.position.OwnedPositionId;
+import com.ayondo.academy.api.trade.TradeDTOList;
+import com.ayondo.academy.network.service.TradeServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

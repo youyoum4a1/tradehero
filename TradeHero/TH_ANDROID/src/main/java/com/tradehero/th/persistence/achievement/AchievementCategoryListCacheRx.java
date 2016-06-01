@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.achievement;
+package com.ayondo.academy.persistence.achievement;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.achievement.AchievementCategoryDTOList;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.service.AchievementServiceWrapper;
+import com.ayondo.academy.api.achievement.AchievementCategoryDTOList;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.network.service.AchievementServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

@@ -1,12 +1,12 @@
-package com.tradehero.th.models.watchlist;
+package com.ayondo.academy.models.watchlist;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.models.ThroughDTOProcessor;
-import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.models.ThroughDTOProcessor;
+import com.ayondo.academy.persistence.portfolio.PortfolioCacheRx;
+import com.ayondo.academy.persistence.watchlist.WatchlistPositionCacheRx;
 import timber.log.Timber;
 
 public class DTOProcessorWatchlistUpdate extends ThroughDTOProcessor<WatchlistPositionDTO>

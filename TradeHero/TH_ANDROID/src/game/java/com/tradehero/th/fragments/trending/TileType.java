@@ -1,6 +1,6 @@
-package com.tradehero.th.fragments.trending;
+package com.ayondo.academy.fragments.trending;
 
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public enum TileType
 {

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
@@ -12,13 +12,13 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.text.ClickableTagProcessor;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.models.discussion.PlayerUserAction;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
-import com.tradehero.th.models.discussion.UserDiscussionActionFactory;
-import com.tradehero.th.models.graphics.ForUserPhoto;
-import com.tradehero.th.widget.MarkdownTextView;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.AbstractDiscussionDTO;
+import com.ayondo.academy.models.discussion.PlayerUserAction;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.models.discussion.UserDiscussionActionFactory;
+import com.ayondo.academy.models.graphics.ForUserPhoto;
+import com.ayondo.academy.widget.MarkdownTextView;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 import rx.Observable;

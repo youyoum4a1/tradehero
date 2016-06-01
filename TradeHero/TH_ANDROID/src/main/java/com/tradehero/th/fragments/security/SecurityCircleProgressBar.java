@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,10 +11,10 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.squareup.picasso.Target;
 import com.tradehero.common.widget.CircleProgressBar;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;

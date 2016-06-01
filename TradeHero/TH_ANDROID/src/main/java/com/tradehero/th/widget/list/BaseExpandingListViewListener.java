@@ -1,8 +1,8 @@
-package com.tradehero.th.widget.list;
+package com.ayondo.academy.widget.list;
 
 import android.view.View;
 import android.widget.AdapterView;
-import com.tradehero.th.adapters.ExpandableItem;
+import com.ayondo.academy.adapters.ExpandableItem;
 import javax.inject.Inject;
 
 public class BaseExpandingListViewListener extends BaseExpandingItemListener

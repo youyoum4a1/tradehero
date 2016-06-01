@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.web;
+package com.ayondo.academy.fragments.web;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -7,9 +7,9 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.tradehero.th.models.intent.THIntent;
-import com.tradehero.th.models.intent.THIntentPassedListener;
-import com.tradehero.th.network.NetworkConstants;
+import com.ayondo.academy.models.intent.THIntent;
+import com.ayondo.academy.models.intent.THIntentPassedListener;
+import com.ayondo.academy.network.NetworkConstants;
 import java.util.Map;
 import timber.log.Timber;
 

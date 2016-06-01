@@ -1,4 +1,4 @@
-package com.tradehero.th.api.timeline.form;
+package com.ayondo.academy.api.timeline.form;
 
 import android.support.annotation.NonNull;
 import java.util.Map;

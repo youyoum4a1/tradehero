@@ -1,11 +1,11 @@
-package com.tradehero.th.billing.googleplay;
+package com.ayondo.academy.billing.googleplay;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.billing.googleplay.IABOrderId;
 import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.billing.THOrderId;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.billing.THOrderId;
 import java.io.IOException;
 
 public class THIABOrderId

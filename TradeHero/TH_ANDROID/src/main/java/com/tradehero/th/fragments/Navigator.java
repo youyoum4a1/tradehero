@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,10 +9,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.DeviceUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.base.ActionBarOwnerMixin;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.utils.DeviceUtil;
 import timber.log.Timber;
 
 class Navigator<ActivityType extends Activity>

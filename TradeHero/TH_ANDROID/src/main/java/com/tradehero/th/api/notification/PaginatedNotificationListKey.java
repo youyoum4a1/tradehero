@@ -1,9 +1,9 @@
-package com.tradehero.th.api.notification;
+package com.ayondo.academy.api.notification;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.pagination.PaginatedKey;
+import com.ayondo.academy.api.pagination.PaginatedKey;
 import java.util.Map;
 
 public class PaginatedNotificationListKey extends NotificationListKey

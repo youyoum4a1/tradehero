@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.position.partial;
+package com.ayondo.academy.fragments.position.partial;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import com.tradehero.th.adapters.ExpandableListItem;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.position.PositionDTO;
+import com.ayondo.academy.adapters.ExpandableListItem;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.position.PositionDTO;
 
 public class AbstractPartialBottomView
         extends RelativeLayout
