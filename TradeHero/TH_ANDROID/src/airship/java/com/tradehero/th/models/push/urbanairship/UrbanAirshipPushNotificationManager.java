@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -20,8 +21,10 @@ import com.urbanairship.actions.Action;
 import com.urbanairship.actions.ActionArguments;
 import com.urbanairship.actions.ActionRegistry;
 import com.urbanairship.actions.ActionResult;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
