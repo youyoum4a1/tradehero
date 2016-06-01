@@ -1,10 +1,10 @@
-package com.tradehero.th.api.social;
+package com.ayondo.academy.api.social;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.key.LinkedinFriendKey;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.key.LinkedinFriendKey;
+import com.ayondo.academy.utils.metrics.AnalyticsConstants;
 
 public class UserFriendsLinkedinDTO extends UserFriendsDTO
 {

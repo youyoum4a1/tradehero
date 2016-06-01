@@ -1,9 +1,9 @@
-package com.tradehero.th.api.alert;
+package com.ayondo.academy.api.alert;
 
 import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class AlertId implements Comparable, DTOKey
 {

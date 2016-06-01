@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discovery;
+package com.ayondo.academy.fragments.discovery;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -16,27 +16,27 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.BottomTabsQuickReturnListViewListener;
-import com.tradehero.th.R;
-import com.tradehero.th.api.pagination.RangeDTO;
-import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.timeline.TimelineSection;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
-import com.tradehero.th.fragments.discussion.DiscussionEditPostFragment;
-import com.tradehero.th.fragments.discussion.DiscussionFragmentUtil;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
-import com.tradehero.th.network.service.UserTimelineServiceWrapper;
-import com.tradehero.th.rx.PaginationObservable;
-import com.tradehero.th.rx.RxLoaderManager;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.widget.MultiScrollListener;
+import com.ayondo.academy.BottomTabsQuickReturnListViewListener;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.pagination.RangeDTO;
+import com.ayondo.academy.api.timeline.TimelineDTO;
+import com.ayondo.academy.api.timeline.TimelineItemDTO;
+import com.ayondo.academy.api.timeline.TimelineSection;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
+import com.ayondo.academy.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
+import com.ayondo.academy.fragments.discussion.DiscussionEditPostFragment;
+import com.ayondo.academy.fragments.discussion.DiscussionFragmentUtil;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.network.service.UserTimelineServiceWrapper;
+import com.ayondo.academy.rx.PaginationObservable;
+import com.ayondo.academy.rx.RxLoaderManager;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.widget.MultiScrollListener;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -53,8 +53,8 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tradehero.th.rx.view.list.ListViewObservable.createNearEndScrollOperator;
-import static com.tradehero.th.utils.Constants.TIMELINE_ITEM_PER_PAGE;
+import static com.ayondo.academy.rx.view.list.ListViewObservable.createNearEndScrollOperator;
+import static com.ayondo.academy.utils.Constants.TIMELINE_ITEM_PER_PAGE;
 
 public class DiscoveryDiscussionFragment extends Fragment
 {

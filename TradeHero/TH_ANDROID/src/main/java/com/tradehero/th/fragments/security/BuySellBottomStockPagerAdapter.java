@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +9,14 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionFragment;
-import com.tradehero.th.fragments.news.SecurityNewsfeedFragment;
-import com.tradehero.th.fragments.position.SecurityPositionListFragment;
-import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.fragments.discussion.stock.SecurityDiscussionFragment;
+import com.ayondo.academy.fragments.news.SecurityNewsfeedFragment;
+import com.ayondo.academy.fragments.position.SecurityPositionListFragment;
+import com.ayondo.academy.models.chart.ChartTimeSpan;
 import timber.log.Timber;
 
 public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter

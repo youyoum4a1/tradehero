@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.support.annotation.NonNull;
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ public class SocialTypeItemFactory
         List<SocialTypeItem> socialList = new ArrayList<>();
 
         socialList.add(new SocialTypeItemFacebook());
-        socialList.add(new SocialTypeItemTwitter());
-        socialList.add(new SocialTypeItemLinkedin());
+        //socialList.add(new SocialTypeItemTwitter());
+        //socialList.add(new SocialTypeItemLinkedin());
         socialList.add(new SocialTypeItemWeibo());
         socialList.add(new SocialTypeItemWechat());
 

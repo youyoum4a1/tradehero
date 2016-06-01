@@ -1,15 +1,15 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
-import com.tradehero.th.api.competition.CompetitionPreseasonShareFormDTO;
-import com.tradehero.th.api.competition.HelpVideoDTOList;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTOList;
-import com.tradehero.th.api.competition.ProviderDisplayCellDTOList;
-import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.competition.CompetitionPreSeasonDTO;
+import com.ayondo.academy.api.competition.CompetitionPreseasonShareFormDTO;
+import com.ayondo.academy.api.competition.HelpVideoDTOList;
+import com.ayondo.academy.api.competition.ProviderDTO;
+import com.ayondo.academy.api.competition.ProviderDTOList;
+import com.ayondo.academy.api.competition.ProviderDisplayCellDTOList;
+import com.ayondo.academy.api.competition.ProviderPrizePoolDTO;
+import com.ayondo.academy.api.portfolio.PortfolioDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTOList;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;

@@ -1,10 +1,10 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import com.tradehero.th.api.timeline.TimelineSection;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.timeline.TimelineDTO;
+import com.ayondo.academy.api.timeline.TimelineItemDTO;
+import com.ayondo.academy.api.timeline.TimelineItemShareRequestDTO;
+import com.ayondo.academy.api.timeline.TimelineSection;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;

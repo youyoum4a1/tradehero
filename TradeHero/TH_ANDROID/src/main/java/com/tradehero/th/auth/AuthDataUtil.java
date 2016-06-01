@@ -1,4 +1,4 @@
-package com.tradehero.th.auth;
+package com.ayondo.academy.auth;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -6,11 +6,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.utils.StringUtils;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.utils.StringUtils;
 
-import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
-import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
+import static com.ayondo.academy.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
+import static com.ayondo.academy.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
 public class AuthDataUtil
 {

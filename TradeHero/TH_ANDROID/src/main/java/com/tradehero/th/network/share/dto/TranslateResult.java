@@ -1,7 +1,7 @@
-package com.tradehero.th.network.share.dto;
+package com.ayondo.academy.network.share.dto;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
 
 public class TranslateResult implements SocialDialogResult
 {

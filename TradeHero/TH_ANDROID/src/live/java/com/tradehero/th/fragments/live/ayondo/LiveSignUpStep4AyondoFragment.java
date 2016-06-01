@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.live.ayondo;
+package com.ayondo.academy.fragments.live.ayondo;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,35 +12,38 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.kyc.KYCAddress;
-import com.tradehero.th.api.kyc.StepStatus;
-import com.tradehero.th.api.kyc.ayondo.AyondoAddressCheckDTO;
-import com.tradehero.th.api.kyc.ayondo.AyondoLeadAddressDTO;
-import com.tradehero.th.api.kyc.ayondo.DummyKYCAyondoUtil;
-import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
-import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
-import com.tradehero.th.api.live.LiveBrokerDTO;
-import com.tradehero.th.api.live.LiveBrokerSituationDTO;
-import com.tradehero.th.api.market.Country;
-import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.widget.KYCAddressWidget;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.kyc.KYCAddress;
+import com.ayondo.academy.api.kyc.StepStatus;
+import com.ayondo.academy.api.kyc.ayondo.AyondoAddressCheckDTO;
+import com.ayondo.academy.api.kyc.ayondo.AyondoLeadAddressDTO;
+import com.ayondo.academy.api.kyc.ayondo.DummyKYCAyondoUtil;
+import com.ayondo.academy.api.kyc.ayondo.KYCAyondoForm;
+import com.ayondo.academy.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.ayondo.academy.api.live.LiveBrokerDTO;
+import com.ayondo.academy.api.live.LiveBrokerSituationDTO;
+import com.ayondo.academy.api.market.Country;
+import com.ayondo.academy.fragments.live.CountrySpinnerAdapter;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.widget.KYCAddressWidget;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -294,7 +297,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
             Context context = getActivity().getApplicationContext();
-            getParentFragment().startActivityForResult(builder.build(context), requestCode);
+            getParentFragment().startActivityForResult(builder.build(getActivity()), requestCode);
         }
         catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e)
         {

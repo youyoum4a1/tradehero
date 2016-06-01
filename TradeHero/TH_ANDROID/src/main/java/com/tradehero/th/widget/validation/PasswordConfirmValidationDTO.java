@@ -1,9 +1,9 @@
-package com.tradehero.th.widget.validation;
+package com.ayondo.academy.widget.validation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class PasswordConfirmValidationDTO extends ValidationDTO
 {

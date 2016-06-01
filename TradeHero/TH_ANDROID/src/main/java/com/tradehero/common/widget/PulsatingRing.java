@@ -12,7 +12,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import java.util.ArrayList;
 
 public class PulsatingRing extends View

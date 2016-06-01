@@ -1,7 +1,7 @@
-package com.tradehero.th.network.retrofit;
+package com.ayondo.academy.network.retrofit;
 
 import android.content.Context;
-import com.tradehero.th.persistence.prefs.LanguageCode;
+import com.ayondo.academy.persistence.prefs.LanguageCode;
 import javax.inject.Inject;
 import timber.log.Timber;
 

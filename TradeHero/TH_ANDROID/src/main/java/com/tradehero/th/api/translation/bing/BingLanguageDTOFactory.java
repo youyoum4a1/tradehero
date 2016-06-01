@@ -1,9 +1,9 @@
-package com.tradehero.th.api.translation.bing;
+package com.ayondo.academy.api.translation.bing;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.translation.TranslatableLanguageDTOFactory;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.translation.TranslatableLanguageDTOFactory;
 import javax.inject.Inject;
 
 public class BingLanguageDTOFactory extends TranslatableLanguageDTOFactory

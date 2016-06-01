@@ -1,11 +1,11 @@
-package com.tradehero.th.models.intent;
+package com.ayondo.academy.models.intent;
 
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.R;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.R;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

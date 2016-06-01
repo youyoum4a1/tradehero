@@ -1,9 +1,9 @@
-package com.tradehero.th.api.discussion.form;
+package com.ayondo.academy.api.discussion.form;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
 
 abstract public class ReplyDiscussionFormDTO extends DiscussionFormDTO
 {

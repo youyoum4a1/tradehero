@@ -1,7 +1,7 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.social.UserFriendsDTO;
+import com.ayondo.academy.api.social.UserFriendsDTO;
 
 public class LeaderboardFriendUserAction
 {

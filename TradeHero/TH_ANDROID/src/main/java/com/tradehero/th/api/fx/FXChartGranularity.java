@@ -1,7 +1,7 @@
-package com.tradehero.th.api.fx;
+package com.ayondo.academy.api.fx;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.ayondo.academy.models.chart.ChartTimeSpan;
 
 public enum FXChartGranularity
 {

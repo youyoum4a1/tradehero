@@ -1,13 +1,13 @@
-package com.tradehero.th.persistence.market;
+package com.ayondo.academy.persistence.market;
 
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.api.market.BaseExchangeCompactDTOList;
-import com.tradehero.th.api.market.Country;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
-import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.ayondo.academy.api.market.BaseExchangeCompactDTOList;
+import com.ayondo.academy.api.market.Country;
+import com.ayondo.academy.api.market.ExchangeCompactDTO;
+import com.ayondo.academy.api.market.ExchangeIntegerId;
+import com.ayondo.academy.api.users.UserProfileDTO;
 
 public class ExchangeMarketPreference extends IntPreference
 {

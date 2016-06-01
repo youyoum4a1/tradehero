@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social;
+package com.ayondo.academy.fragments.social;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,28 +7,32 @@ import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ToggleButton;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.SocialLinkToggleButton;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.share.SocialShareHelper;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceHelper;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.rx.view.ViewArrayObservable;
-import com.tradehero.th.utils.SocialAlertDialogRxUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.api.users.UserProfileDTOUtil;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.misc.exception.THException;
+import com.ayondo.academy.models.share.SocialShareHelper;
+import com.ayondo.academy.models.share.preference.SocialSharePreferenceHelper;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.rx.view.ViewArrayObservable;
+import com.ayondo.academy.utils.SocialAlertDialogRxUtil;
+
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -51,8 +55,6 @@ public class ShareDelegateFragment
     @Bind(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
     @Nullable @Bind({
             R.id.btn_share_fb,
-            R.id.btn_share_li,
-            R.id.btn_share_tw,
             R.id.btn_share_wb})
     SocialLinkToggleButton[] socialLinkingButtons;
 

@@ -17,7 +17,7 @@
 }
 
 -keepattributes EnclosingMethod
--keepclassmembers class com.tradehero.th.** {
+-keepclassmembers class com.ayondo.academy.** {
   *;
 }
 # keep setters in Views so that animations can still work.
@@ -101,7 +101,7 @@
 -dontwarn okio.**
 -dontwarn com.tencent.**
 -dontwarn **.VisibleForTesting
--dontwarn com.tradehero.th.api.i18n.**
+-dontwarn com.ayondo.academy.api.i18n.**
 -dontwarn com.tradehero.route.**
 -dontwarn com.tradehero.metrics.**
 -dontwarn com.handmark.**
@@ -122,21 +122,21 @@
 
 
 # Jackson introspect
--keep public class com.tradehero.th.api.** {
+-keep public class com.ayondo.academy.api.** {
   public void set*(***);
   public *** get*();
 }
--keep interface com.tradehero.th.network.service.** { *; }
--keep public class com.tradehero.th.billing.** { *; }
--keep public class com.tradehero.th.fragments.social.friend.** { *; }
+-keep interface com.ayondo.academy.network.service.** { *; }
+-keep public class com.ayondo.academy.billing.** { *; }
+-keep public class com.ayondo.academy.fragments.social.friend.** { *; }
 -keep public class com.tradehero.common.billing.** { *; }
--keep public class com.tradehero.th.api.discussion.** { *; }
--keep public class com.tradehero.th.api.pagination.** { *; }
--keep public class com.tradehero.th.api.timeline.** { *; }
--keep public class com.tradehero.th.models.graphics.** { *; }
+-keep public class com.ayondo.academy.api.discussion.** { *; }
+-keep public class com.ayondo.academy.api.pagination.** { *; }
+-keep public class com.ayondo.academy.api.timeline.** { *; }
+-keep public class com.ayondo.academy.models.graphics.** { *; }
 
 # We actually use public field instead of getter and setter for it.
--keep public class com.tradehero.th.api.** {
+-keep public class com.ayondo.academy.api.** {
   public <fields>;
 }
 
@@ -146,7 +146,7 @@
 }
 
 # Keep constructors that are called by reflection
--keepclassmembers public class * extends com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO{
+-keepclassmembers public class * extends com.ayondo.academy.fragments.trending.filter.TrendingFilterTypeDTO{
   public <init>(...);
 }
 

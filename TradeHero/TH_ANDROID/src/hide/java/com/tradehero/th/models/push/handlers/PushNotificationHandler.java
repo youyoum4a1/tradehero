@@ -1,7 +1,7 @@
-package com.tradehero.th.models.push.handlers;
+package com.ayondo.academy.models.push.handlers;
 
 import android.content.Intent;
-import com.tradehero.th.models.push.PushConstants;
+import com.ayondo.academy.models.push.PushConstants;
 
 public interface PushNotificationHandler
 {

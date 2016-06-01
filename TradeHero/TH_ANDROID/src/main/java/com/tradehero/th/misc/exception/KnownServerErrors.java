@@ -1,4 +1,4 @@
-package com.tradehero.th.misc.exception;
+package com.ayondo.academy.misc.exception;
 
 import android.support.annotation.NonNull;
 

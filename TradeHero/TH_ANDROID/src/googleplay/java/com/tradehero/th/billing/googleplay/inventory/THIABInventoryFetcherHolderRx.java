@@ -1,9 +1,9 @@
-package com.tradehero.th.billing.googleplay.inventory;
+package com.ayondo.academy.billing.googleplay.inventory;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.inventory.IABInventoryFetcherHolderRx;
-import com.tradehero.th.billing.googleplay.THIABProductDetail;
-import com.tradehero.th.billing.inventory.THInventoryFetcherHolderRx;
+import com.ayondo.academy.billing.googleplay.THIABProductDetail;
+import com.ayondo.academy.billing.inventory.THInventoryFetcherHolderRx;
 
 public interface THIABInventoryFetcherHolderRx
         extends IABInventoryFetcherHolderRx<

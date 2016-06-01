@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,9 +11,9 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.WrapperRecyclerAdapter;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.WrapperRecyclerAdapter;
+import com.ayondo.academy.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class CompetitionLeaderboardWrapperRecyclerAdapter extends WrapperRecyclerAdapter<WrapperRecyclerAdapter.ExtraItem>

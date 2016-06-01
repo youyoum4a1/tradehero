@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <com.tradehero.th.widget.news.fx.FXGranularityButton
+    <com.ayondo.academy.widget.news.fx.FXGranularityButton
             style="@style/TH.Btn_Time_Span"
             android:text="@string/fx_chart_1min"
             app:timeSpan="min1"
@@ -14,7 +14,7 @@
 
     <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-    <com.tradehero.th.widget.news.fx.FXGranularityButton
+    <com.ayondo.academy.widget.news.fx.FXGranularityButton
             style="@style/TH.Btn_Time_Span"
             android:text="@string/fx_chart_5min"
             app:timeSpan="min5"
@@ -22,7 +22,7 @@
 
     <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-    <com.tradehero.th.widget.news.fx.FXGranularityButton
+    <com.ayondo.academy.widget.news.fx.FXGranularityButton
             style="@style/TH.Btn_Time_Span"
             android:text="@string/fx_chart_15min"
             app:timeSpan="min15"
@@ -30,7 +30,7 @@
 
     <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-    <com.tradehero.th.widget.news.fx.FXGranularityButton
+    <com.ayondo.academy.widget.news.fx.FXGranularityButton
             style="@style/TH.Btn_Time_Span"
             android:text="@string/fx_chart_30min"
             app:timeSpan="min30"
@@ -38,7 +38,7 @@
 
     <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-    <com.tradehero.th.widget.news.fx.FXGranularityButton
+    <com.ayondo.academy.widget.news.fx.FXGranularityButton
             style="@style/TH.Btn_Time_Span"
             android:text="@string/fx_chart_1h"
             app:timeSpan="hour1"
@@ -46,7 +46,7 @@
 
     <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-    <com.tradehero.th.widget.news.fx.FXGranularityButton
+    <com.ayondo.academy.widget.news.fx.FXGranularityButton
             style="@style/TH.Btn_Time_Span"
             android:text="@string/fx_chart_4h"
             app:timeSpan="hour4"
@@ -54,7 +54,7 @@
 
     <View style="@style/TH.Btn_Price_Bar_Separator" />
 
-    <com.tradehero.th.widget.news.fx.FXGranularityButton
+    <com.ayondo.academy.widget.news.fx.FXGranularityButton
             style="@style/TH.Btn_Time_Span"
             android:text="@string/fx_chart_1d"
             app:timeSpan="day1"

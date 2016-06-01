@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -13,8 +13,8 @@ import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
 import com.tradehero.common.billing.restore.PurchaseRestoreResult;
 import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.billing.tester.BillingTestResult;
-import com.tradehero.th.rx.ReplaceWithFunc1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

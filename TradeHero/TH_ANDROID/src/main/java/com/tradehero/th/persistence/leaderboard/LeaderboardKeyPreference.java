@@ -1,10 +1,10 @@
-package com.tradehero.th.persistence.leaderboard;
+package com.ayondo.academy.persistence.leaderboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardKey;
 import java.util.Set;
 
 public class LeaderboardKeyPreference extends StringSetPreference

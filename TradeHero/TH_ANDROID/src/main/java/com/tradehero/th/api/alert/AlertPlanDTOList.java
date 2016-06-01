@@ -1,4 +1,4 @@
-package com.tradehero.th.api.alert;
+package com.ayondo.academy.api.alert;
 
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;

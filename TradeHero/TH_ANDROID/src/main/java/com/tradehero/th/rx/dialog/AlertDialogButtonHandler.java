@@ -1,4 +1,4 @@
-package com.tradehero.th.rx.dialog;
+package com.ayondo.academy.rx.dialog;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.annotation.DialogButton;

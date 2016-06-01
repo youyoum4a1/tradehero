@@ -1,16 +1,16 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.auth.AccessTokenForm;
-import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
-import com.tradehero.th.api.social.SocialNetworkFormDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.models.user.DTOProcessorUpdateUserProfile;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.auth.AccessTokenForm;
+import com.ayondo.academy.api.form.UserFormDTO;
+import com.ayondo.academy.api.social.ReferralCodeShareFormDTO;
+import com.ayondo.academy.api.social.SocialNetworkFormDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.auth.AuthData;
+import com.ayondo.academy.models.user.DTOProcessorUpdateUserProfile;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;

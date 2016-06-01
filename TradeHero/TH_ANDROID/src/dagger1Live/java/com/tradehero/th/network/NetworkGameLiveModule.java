@@ -1,4 +1,4 @@
-package com.tradehero.th.network;
+package com.ayondo.academy.network;
 
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;

@@ -1,26 +1,26 @@
-package com.tradehero.th.fragments.trade;
+package com.ayondo.academy.fragments.trade;
 
 import android.content.Context;
 import android.os.Bundle;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.DashboardActivityExtended;
-import com.tradehero.th.api.alert.AlertCompactDTOList;
-import com.tradehero.th.api.alert.AlertDTO;
-import com.tradehero.th.api.alert.AlertId;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.persistence.alert.AlertCacheRx;
-import com.tradehero.th.persistence.alert.AlertCompactCacheRx;
-import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.activities.DashboardActivity;
+import com.ayondo.academy.activities.DashboardActivityExtended;
+import com.ayondo.academy.api.alert.AlertCompactDTOList;
+import com.ayondo.academy.api.alert.AlertDTO;
+import com.ayondo.academy.api.alert.AlertId;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTOList;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.persistence.alert.AlertCacheRx;
+import com.ayondo.academy.persistence.alert.AlertCompactCacheRx;
+import com.ayondo.academy.persistence.alert.AlertCompactListCacheRx;
+import com.ayondo.academy.persistence.security.SecurityCompactCacheRx;
+import com.ayondo.academy.persistence.security.SecurityIdCache;
+import com.ayondo.academy.persistence.watchlist.UserWatchlistPositionCacheRx;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 
-import static com.tradehero.THRobolectric.runBgUiTasks;
+import static com.ayondo.academyRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)

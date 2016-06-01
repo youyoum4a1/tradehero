@@ -1,10 +1,10 @@
-package com.tradehero.th.models.push;
+package com.ayondo.academy.models.push;
 
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.IntPreference;
-import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushModule;
-import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+import com.ayondo.academy.models.push.urbanairship.UrbanAirshipPushModule;
+import com.ayondo.academy.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -20,11 +20,11 @@ import butterknife.Bind;
 import com.google.common.annotations.VisibleForTesting;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.level.LevelDefDTO;
-import com.tradehero.th.api.level.LevelDefDTOList;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForUserNextLevelBadge;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.level.LevelDefDTO;
+import com.ayondo.academy.api.level.LevelDefDTOList;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.graphics.ForUserNextLevelBadge;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;

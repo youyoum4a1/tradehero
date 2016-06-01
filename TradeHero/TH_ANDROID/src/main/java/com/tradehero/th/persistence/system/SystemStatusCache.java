@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.system;
+package com.ayondo.academy.persistence.system;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.system.SystemStatusDTO;
-import com.tradehero.th.api.system.SystemStatusKey;
-import com.tradehero.th.network.service.SessionServiceWrapper;
+import com.ayondo.academy.api.system.SystemStatusDTO;
+import com.ayondo.academy.api.system.SystemStatusKey;
+import com.ayondo.academy.network.service.SessionServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;

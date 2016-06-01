@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.location;
+package com.ayondo.academy.fragments.location;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.market.Country;
+import com.ayondo.academy.api.market.Country;
 
 class ListedLocationDTO implements DTO
 {

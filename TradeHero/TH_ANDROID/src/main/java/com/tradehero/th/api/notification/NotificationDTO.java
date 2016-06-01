@@ -1,7 +1,7 @@
-package com.tradehero.th.api.notification;
+package com.ayondo.academy.api.notification;
 
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.KeyGenerator;
+import com.ayondo.academy.api.KeyGenerator;
 import java.util.Date;
 
 public class NotificationDTO implements DTO, KeyGenerator

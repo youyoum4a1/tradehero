@@ -1,12 +1,12 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.position.OwnedPositionId;
-import com.tradehero.th.api.trade.OwnedTradeId;
-import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.api.trade.TradeDTOList;
-import com.tradehero.th.models.BaseDTOListProcessor;
-import com.tradehero.th.models.trade.DTOProcessorTradeReceived;
+import com.ayondo.academy.api.position.OwnedPositionId;
+import com.ayondo.academy.api.trade.OwnedTradeId;
+import com.ayondo.academy.api.trade.TradeDTO;
+import com.ayondo.academy.api.trade.TradeDTOList;
+import com.ayondo.academy.models.BaseDTOListProcessor;
+import com.ayondo.academy.models.trade.DTOProcessorTradeReceived;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

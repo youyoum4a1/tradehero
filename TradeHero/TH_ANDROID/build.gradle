@@ -4,11 +4,19 @@ import java.util.regex.Pattern
 buildscript {
   repositories {
     mavenCentral()
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'https://maven.fabric.io/public' }
+
+    //crashlytics is fabric now
+    //maven { url 'http://download.crashlytics.com/maven' }
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:1.3.0'
-    classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+    classpath 'com.android.tools.build:gradle:2.1.0'
+    classpath 'io.fabric.tools:gradle:1.+'
+    classpath 'com.google.gms:google-services:3.0.0'
+    //crashlytics is fabric now
+    //classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+
+
     //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
   }
 }
@@ -24,17 +32,20 @@ project.ext.versionPatch = Integer.parseInt((String) versionProps['VERSION_PATCH
 project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD'])
 
 apply plugin: 'com.android.application'
-apply plugin: 'crashlytics'
+apply plugin: 'io.fabric'
+apply plugin: 'com.google.gms.google-services'
+
 
 repositories {
   maven { url "http://dl.bintray.com/populov/maven" }
   mavenCentral()
-  maven { url 'http://download.crashlytics.com/maven' }
+  maven { url 'https://maven.fabric.io/public' }
   maven { url "https://github.com/dahlgren/pulltorefresh-aar/raw/master" }
 //  maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
   maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
   maven { url 'http://ooo-maven.googlecode.com/hg/repository' }
   maven { url 'http://mobile-sdk.jumio.com' }
+  maven { url  "https://urbanairship.bintray.com/android" }
 }
 
 project.ext.gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
@@ -63,7 +74,7 @@ android {
 
   compileSdkVersion 23
 
-  buildToolsVersion "22.0.1"
+  buildToolsVersion "23.0.3"
   //useOldManifestMerger=true
 
   dexOptions {
@@ -77,9 +88,9 @@ android {
   }
 
   defaultConfig {
-    minSdkVersion 14
+    minSdkVersion 16
     targetSdkVersion 22
-
+    applicationId "com.ayondo.academy"
     versionCode project.ext.versionBuild
     versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
 
@@ -100,7 +111,9 @@ android {
       proguardFile 'proguard/proguard-android-fast.txt'
       //zipAlign true
       // versionNameSuffix interferes with the version the server receives
-      applicationIdSuffix '.dev'
+      //This changes the package name and exception is thrown(Package not found exception for play services)
+      //We either have to register new play services with package name suffixed with .dev or just comment out this line
+      //applicationIdSuffix '.dev'
       versionNameSuffix '-dev'
 
       // Enabling multidex support.
@@ -119,15 +132,15 @@ android {
 
   productFlavors {
     googleplay {
-      flavorDimension "marketSegment"
-      buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
+      dimension "marketSegment"
+      buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.ayondo.academy\""
 
       // Enabling multidex support.
       multiDexEnabled true
     }
 
     samsung {
-      flavorDimension "marketSegment"
+      dimension "marketSegment"
 
       // Enabling multidex support.
       multiDexEnabled true
@@ -136,26 +149,26 @@ android {
     }
 
     amazon {
-      flavorDimension "marketSegment"
+      dimension "marketSegment"
       proguardFile 'proguard/proguard-android-amazon.txt'
       // https://github.com/TradeHero/TH_ANDROID/wiki/Amazon
       //compileSdkVersion = [ 20 , "Amazon.com:Amazon Fire Phone SDK Addon:17" ]
     }
 
     game {
-      flavorDimension "liveOrNot"
+      dimension "liveOrNot"
     }
 
     live {
-      flavorDimension "liveOrNot"
+      dimension "liveOrNot"
     }
 
     airship {
-      flavorDimension "pushProvider"
+      dimension "pushProvider"
     }
 
     noPush {
-      flavorDimension "pushProvider"
+      dimension "pushProvider"
     }
   }
 
@@ -540,20 +553,27 @@ dependencies {
 
   compile("in.srain.cube:grid-view-with-header-footer:${GRID_VIEW_WITH_HEADER_VERSION}")
 
-  compile 'com.tradehero:metrics:2.1.1-SNAPSHOT'
+  //Dont need these anymore
+
+  //Deleted the dependency
+  //compile 'com.tradehero:metrics:2.1.1-SNAPSHOT'
+
   compile "com.squareup.dagger:dagger:${DAGGER_VERSION}"
   provided "com.squareup.dagger:dagger-compiler:${DAGGER_VERSION}"
   compile "io.reactivex:rxandroid:${RX_ANDROID_VERSION}"
   //compile 'io.reactivex:rxjava-joins:0.21.0'
   compile "com.jakewharton.timber:timber:${TIMBER_VERSION}"
 
-  airshipCompile "com.urbanairship:urbanairship-lib:${URBAN_AIRSHIP_VERSION}@aar"
+  compile "com.urbanairship.android:urbanairship-sdk:${URBAN_AIRSHIP_VERSION}@aar"
   amazonCompile "com.amazon:amazon-device-messaging:${AMAZON_DEVICE_MESSAGING_VERSION}" // Should be amazonAirshipCompile, if Gradle was better
 
   compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
   compile 'com.tradehero.route:route:0.2-SNAPSHOT'
   compile "com.android.support:support-annotations:${SUPPORT_V7_VERSION}"
-  releaseCompile 'com.crashlytics.android:crashlytics:1.+'
+  //releaseCompile 'com.crashlytics.android:crashlytics:1.+'
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+        transitive = true;
+    }
   compile("oauth.signpost:signpost-core:${SIGNPOST_VERSION}") {
     exclude group: 'commons-codec', module: 'commons-codec'
   }
@@ -577,8 +597,8 @@ dependencies {
   releaseCompile "com.appsflyer:library:${APPS_FLYER_VERSION}"
   //provided 'com.kenai.nbpwr:edu-umd-cs-findbugs-annotations:1.3.2-201002241900'
 
-  liveCompile "com.jumio.android:jumio-mobile-sdk:${JUMIO_SDK_VERSION}@aar"
-  liveCompile "com.jumio.android:netverify-resources:${JUMIO_SDK_VERSION}@aar"
+  compile "com.jumio.android:core:${JUMIO_SDK_VERSION}@aar"
+  compile "com.jumio.android:nv:${JUMIO_SDK_VERSION}@aar"
   //  liveCompile "com.jumio.android:netswipe-resources:${JUMIO_SDK_VERSION}@aar"
   liveCompile "com.neovisionaries:nv-i18n:${NV_I18N_VERSION}"
   liveCompile "com.googlecode.libphonenumber:libphonenumber:${LIB_PHONE_NUMBER_VERSION}"
@@ -611,10 +631,11 @@ dependencies {
   }
 
   // Remove those when building for Amazon
-  releaseCompile "com.google.android.gms:play-services-base:${PLAY_SERVICES_VERSION}" // This one has fewer methods
-  releaseCompile "com.google.android.gms:play-services-gcm:${PLAY_SERVICES_VERSION}"
-  releaseCompile "com.google.android.gms:play-services-ads:${PLAY_SERVICES_VERSION}"
-  liveCompile "com.google.android.gms:play-services-location:${PLAY_SERVICES_VERSION}"
+  compile "com.google.android.gms:play-services-base:${PLAY_SERVICES_VERSION}" // This one has fewer methods
+  compile "com.google.android.gms:play-services-gcm:${PLAY_SERVICES_VERSION}"
+  compile "com.google.android.gms:play-services-ads:${PLAY_SERVICES_VERSION}"
+  compile "com.google.android.gms:play-services-analytics:${PLAY_SERVICES_VERSION}"
+  compile "com.google.android.gms:play-services-location:${PLAY_SERVICES_VERSION}"
   //releaseCompile 'com.google.android.gms:play-services:6.1.+'
 }
 

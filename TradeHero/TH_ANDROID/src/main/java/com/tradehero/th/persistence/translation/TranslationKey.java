@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.translation;
+package com.ayondo.academy.persistence.translation;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

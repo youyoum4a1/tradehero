@@ -1,12 +1,12 @@
-package com.tradehero.th.api.translation;
+package com.ayondo.academy.api.translation;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
-import com.tradehero.th.api.translation.bing.BingLanguageDTOFactory;
-import com.tradehero.th.api.translation.bing.BingTranslationToken;
-import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
-import com.tradehero.th.persistence.translation.TranslationTokenKey;
+import com.ayondo.academy.api.translation.bing.BingLanguageDTOFactory;
+import com.ayondo.academy.api.translation.bing.BingTranslationToken;
+import com.ayondo.academy.persistence.translation.TranslationTokenCacheRx;
+import com.ayondo.academy.persistence.translation.TranslationTokenKey;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Provider;

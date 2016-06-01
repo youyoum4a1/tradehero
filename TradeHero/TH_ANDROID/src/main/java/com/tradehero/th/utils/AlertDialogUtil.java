@@ -1,4 +1,4 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class AlertDialogUtil
 {

@@ -1,8 +1,8 @@
-package com.tradehero.th.api.level;
+package com.ayondo.academy.api.level;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.level.key.LevelDefId;
+import com.ayondo.academy.api.level.key.LevelDefId;
 
 public class LevelDefDTO implements DTO
 {

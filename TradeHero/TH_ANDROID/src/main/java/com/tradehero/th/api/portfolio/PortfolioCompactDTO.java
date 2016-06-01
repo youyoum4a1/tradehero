@@ -1,13 +1,13 @@
-package com.tradehero.th.api.portfolio;
+package com.ayondo.academy.api.portfolio;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.utils.SecurityUtils;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.utils.SecurityUtils;
 import java.util.Date;
 
 public class PortfolioCompactDTO implements DTO

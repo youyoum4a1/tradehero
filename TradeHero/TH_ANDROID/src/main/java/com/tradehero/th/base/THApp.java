@@ -1,16 +1,16 @@
-package com.tradehero.th.base;
+package com.ayondo.academy.base;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import com.flurry.android.FlurryAgent;
 import com.tradehero.common.utils.THLog;
-import com.tradehero.th.activities.ActivityBuildTypeUtil;
-import com.tradehero.th.inject.BaseInjector;
-import com.tradehero.th.inject.ExInjector;
-import com.tradehero.th.models.level.UserXPAchievementHandler;
-import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.utils.dagger.AppModule;
+import com.ayondo.academy.activities.ActivityBuildTypeUtil;
+import com.ayondo.academy.inject.BaseInjector;
+import com.ayondo.academy.inject.ExInjector;
+import com.ayondo.academy.models.level.UserXPAchievementHandler;
+import com.ayondo.academy.models.push.PushNotificationManager;
+import com.ayondo.academy.utils.dagger.AppModule;
 import dagger.ObjectGraph;
 import javax.inject.Inject;
 import rx.functions.Action1;

@@ -1,11 +1,11 @@
 
-package com.tradehero.th.fragments.trending;
+package com.ayondo.academy.fragments.trending;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import com.tradehero.th.adapters.PagedViewDTOAdapterImpl;
-import com.tradehero.th.api.users.UserSearchResultDTO;
+import com.ayondo.academy.adapters.PagedViewDTOAdapterImpl;
+import com.ayondo.academy.api.users.UserSearchResultDTO;
 
 public class PeopleItemViewAdapter extends PagedViewDTOAdapterImpl<UserSearchResultDTO, SearchPeopleItemView>
 {

@@ -1,8 +1,8 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.misc.DeviceType;
-import com.tradehero.th.utils.metrics.tapstream.TapStreamType;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.misc.DeviceType;
+import com.ayondo.academy.utils.metrics.tapstream.TapStreamType;
 
 public class Constants
 {
@@ -42,7 +42,7 @@ public class Constants
     public static final String CONTENT_ENCODING_GZIP = ACCEPT_ENCODING_GZIP;
     public static final String TH_ERROR_CODE = "TH-Error-Code";
 
-    public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.tradehero.th&g_f=991653";
+    public static final String WECHAT_SHARE_URL = "http://a.app.qq.com/o/simple.jsp?pkgname=com.ayondo.academy&g_f=991653";
 
     // Localytics
     public static final String LOCALYTICS_APP_KEY_RELEASE = "731adfbe0df8a59ff8e1117-4a8d02de-01d4-11e4-9d24-005cf8cbabd8";

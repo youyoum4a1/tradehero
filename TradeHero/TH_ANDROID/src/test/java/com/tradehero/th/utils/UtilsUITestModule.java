@@ -1,6 +1,6 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
-import com.tradehero.th.utils.route.UtilsRouteUITestModule;
+import com.ayondo.academy.utils.route.UtilsRouteUITestModule;
 import dagger.Module;
 
 @Module(

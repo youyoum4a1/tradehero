@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.trade;
+package com.ayondo.academy.fragments.trade;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.AlertDialogRxUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.utils.AlertDialogRxUtil;
 import rx.Observable;
 
 public class AlertDialogBuySellRxUtil extends AlertDialogRxUtil

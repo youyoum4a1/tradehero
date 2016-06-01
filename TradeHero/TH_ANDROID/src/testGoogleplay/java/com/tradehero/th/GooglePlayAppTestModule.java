@@ -1,6 +1,6 @@
-package com.tradehero.th;
+package com.ayondo.academy;
 
-import com.tradehero.th.api.GooglePlayApiTestModule;
+import com.ayondo.academy.api.GooglePlayApiTestModule;
 import dagger.Module;
 
 @Module(

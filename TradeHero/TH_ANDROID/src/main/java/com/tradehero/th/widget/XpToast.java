@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -14,18 +14,18 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.level.LevelDefDTO;
-import com.tradehero.th.api.level.LevelDefDTOList;
-import com.tradehero.th.api.level.UserXPAchievementDTO;
-import com.tradehero.th.api.level.UserXPMultiplierDTO;
-import com.tradehero.th.api.level.key.LevelDefListId;
-import com.tradehero.th.fragments.level.LevelUpDialogFragment;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.persistence.level.LevelDefListCacheRx;
-import com.tradehero.th.utils.broadcast.BroadcastUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.DashboardActivity;
+import com.ayondo.academy.api.level.LevelDefDTO;
+import com.ayondo.academy.api.level.LevelDefDTOList;
+import com.ayondo.academy.api.level.UserXPAchievementDTO;
+import com.ayondo.academy.api.level.UserXPMultiplierDTO;
+import com.ayondo.academy.api.level.key.LevelDefListId;
+import com.ayondo.academy.fragments.level.LevelUpDialogFragment;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.number.THSignedNumber;
+import com.ayondo.academy.persistence.level.LevelDefListCacheRx;
+import com.ayondo.academy.utils.broadcast.BroadcastUtils;
 import java.util.ArrayDeque;
 import javax.inject.Inject;
 import rx.Observer;
@@ -184,7 +184,7 @@ public class XpToast extends RelativeLayout
 
     private void startXPAnimation()
     {
-        // TODO https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/543e1b85e3de5099ba0dbd14
+        // TODO https://crashlytics.com/tradehero/android/apps/com.ayondo.academy/issues/543e1b85e3de5099ba0dbd14
         currentLevelAnimationDefinition = levelAnimationDefinitions.pop();
 
         xpTextSwitcher.setText(currentLevelAnimationDefinition.text);

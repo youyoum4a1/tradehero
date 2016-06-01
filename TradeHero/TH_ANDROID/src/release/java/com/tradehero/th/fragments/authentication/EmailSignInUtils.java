@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.authentication;
+package com.ayondo.academy.fragments.authentication;
 
 import android.support.annotation.NonNull;
 import android.widget.TextView;

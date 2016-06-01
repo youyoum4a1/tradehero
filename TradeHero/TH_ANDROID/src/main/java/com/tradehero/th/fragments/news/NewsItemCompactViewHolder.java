@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.news;
+package com.ayondo.academy.fragments.news;
 
 import android.content.res.Resources;
 import android.support.annotation.DrawableRes;
@@ -8,10 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.NewsItemKnowledge;
-import com.tradehero.th.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.news.NewsItemKnowledge;
+import com.ayondo.academy.fragments.discussion.AbstractDiscussionCompactItemViewHolder;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class NewsItemCompactViewHolder

@@ -1,9 +1,9 @@
 package com.tradehero.common.utils;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.base.TestTHApp;
 import java.io.ByteArrayOutputStream;
 import javax.inject.Inject;
 import org.junit.Before;

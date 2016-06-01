@@ -1,4 +1,4 @@
-package com.tradehero.th.models.share.preference;
+package com.ayondo.academy.models.share.preference;
 
 import android.support.annotation.NonNull;
 import org.json.JSONException;

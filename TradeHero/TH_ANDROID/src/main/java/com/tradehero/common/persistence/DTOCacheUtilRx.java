@@ -2,7 +2,7 @@ package com.tradehero.common.persistence;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
 
 public interface DTOCacheUtilRx
 {

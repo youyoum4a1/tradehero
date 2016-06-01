@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.exchange;
+package com.ayondo.academy.fragments.onboarding.exchange;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,8 +6,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import com.tradehero.th.api.market.MarketRegion;
-import com.tradehero.th.rx.view.ViewArrayObservable;
+import com.ayondo.academy.api.market.MarketRegion;
+import com.ayondo.academy.rx.view.ViewArrayObservable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

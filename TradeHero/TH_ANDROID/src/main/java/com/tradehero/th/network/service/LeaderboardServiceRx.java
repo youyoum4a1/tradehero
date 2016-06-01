@@ -1,10 +1,10 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsDTO;
-import com.tradehero.th.api.position.GetPositionsDTO;
+import com.ayondo.academy.api.leaderboard.LeaderboardDTO;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTO;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTOList;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardFriendsDTO;
+import com.ayondo.academy.api.position.GetPositionsDTO;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.news;
+package com.ayondo.academy.api.news;
 
 import java.util.ArrayList;
 import java.util.Collection;

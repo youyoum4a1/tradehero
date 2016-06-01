@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,15 +11,15 @@ import com.tradehero.common.billing.amazon.exception.AmazonFetchInventoryUnsuppo
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseFailedException;
 import com.tradehero.common.billing.amazon.exception.AmazonPurchaseUnsupportedException;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityUtil;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.BaseBillingUtils;
-import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
-import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
-import com.tradehero.th.rx.dialog.AlertDialogButtonHandler;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.VersionUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.ActivityUtil;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.billing.BaseBillingUtils;
+import com.ayondo.academy.billing.THBillingAlertDialogRxUtil;
+import com.ayondo.academy.persistence.billing.THAmazonPurchaseCacheRx;
+import com.ayondo.academy.rx.dialog.AlertDialogButtonHandler;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.utils.VersionUtils;
 import java.util.HashMap;
 import javax.inject.Inject;
 import rx.Observable;

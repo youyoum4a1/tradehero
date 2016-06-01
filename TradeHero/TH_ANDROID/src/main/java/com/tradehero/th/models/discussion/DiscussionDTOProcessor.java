@@ -1,8 +1,8 @@
-package com.tradehero.th.models.discussion;
+package com.ayondo.academy.models.discussion;
 
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.persistence.discussion.DiscussionCacheRx;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.pagination.PaginatedDTO;
+import com.ayondo.academy.persistence.discussion.DiscussionCacheRx;
 import rx.functions.Func1;
 
 public class DiscussionDTOProcessor<T extends AbstractDiscussionCompactDTO> implements Func1<PaginatedDTO<T>, PaginatedDTO<T>>

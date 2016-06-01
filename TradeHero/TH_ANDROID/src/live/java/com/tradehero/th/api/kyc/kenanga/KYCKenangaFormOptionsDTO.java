@@ -1,11 +1,11 @@
-package com.tradehero.th.api.kyc.kenanga;
+package com.ayondo.academy.api.kyc.kenanga;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.api.kyc.KYCFormOptionsDTO;
-import com.tradehero.th.api.market.Country;
-import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
+import com.ayondo.academy.api.kyc.KYCFormOptionsDTO;
+import com.ayondo.academy.api.market.Country;
+import com.ayondo.academy.models.fastfill.IdentityScannedDocumentType;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

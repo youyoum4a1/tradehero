@@ -1,17 +1,17 @@
-package com.tradehero.th.fragments.social.message;
+package com.ayondo.academy.fragments.social.message;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.MessageType;
-import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
-import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
-import com.tradehero.th.api.discussion.form.PrivateMessageCreateFormDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.discussion.PostCommentView;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.MessageType;
+import com.ayondo.academy.api.discussion.form.DiscussionFormDTO;
+import com.ayondo.academy.api.discussion.form.MessageCreateFormDTO;
+import com.ayondo.academy.api.discussion.form.PrivateMessageCreateFormDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.fragments.discussion.PostCommentView;
 
 public class PrivatePostCommentView extends PostCommentView
 {

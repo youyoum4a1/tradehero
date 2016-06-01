@@ -1,8 +1,8 @@
-package com.tradehero.th.api;
+package com.ayondo.academy.api;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.billing.PurchaseReportDTO;
-import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
+import com.ayondo.academy.api.billing.PurchaseReportDTO;
+import com.ayondo.academy.api.billing.SamsungPurchaseReportDTO;
 import javax.inject.Inject;
 
 public class ValidMockerSamsung extends ValidMocker

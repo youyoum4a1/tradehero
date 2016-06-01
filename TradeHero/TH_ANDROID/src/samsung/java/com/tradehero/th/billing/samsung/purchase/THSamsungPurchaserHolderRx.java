@@ -1,11 +1,11 @@
-package com.tradehero.th.billing.samsung.purchase;
+package com.ayondo.academy.billing.samsung.purchase;
 
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.purchase.SamsungPurchaserHolderRx;
-import com.tradehero.th.billing.purchase.THPurchaserHolderRx;
-import com.tradehero.th.billing.samsung.THSamsungOrderId;
-import com.tradehero.th.billing.samsung.THSamsungPurchase;
-import com.tradehero.th.billing.samsung.THSamsungPurchaseOrder;
+import com.ayondo.academy.billing.purchase.THPurchaserHolderRx;
+import com.ayondo.academy.billing.samsung.THSamsungOrderId;
+import com.ayondo.academy.billing.samsung.THSamsungPurchase;
+import com.ayondo.academy.billing.samsung.THSamsungPurchaseOrder;
 
 public interface THSamsungPurchaserHolderRx
         extends

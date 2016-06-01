@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.discovery;
+package com.ayondo.academy.fragments.discovery;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.discovery.newsfeed.DiscoveryNewsfeedFragment;
-import com.tradehero.th.fragments.education.VideoCategoriesFragment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.discovery.newsfeed.DiscoveryNewsfeedFragment;
+import com.ayondo.academy.fragments.education.VideoCategoriesFragment;
 
 enum DiscoveryTabType
 {

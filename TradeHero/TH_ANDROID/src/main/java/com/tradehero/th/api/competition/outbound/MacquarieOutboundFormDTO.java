@@ -1,4 +1,4 @@
-package com.tradehero.th.api.competition.outbound;
+package com.ayondo.academy.api.competition.outbound;
 
 public class MacquarieOutboundFormDTO
 {

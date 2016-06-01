@@ -1,7 +1,7 @@
-package com.tradehero.th.utils.metrics;
+package com.ayondo.academy.utils.metrics;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.misc.DeviceType;
+import com.ayondo.academy.api.misc.DeviceType;
 
 public enum MarketSegment
 {

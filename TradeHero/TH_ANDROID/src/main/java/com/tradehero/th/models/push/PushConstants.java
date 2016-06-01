@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push;
+package com.ayondo.academy.models.push;
 
 public class PushConstants
 {
@@ -8,8 +8,8 @@ public class PushConstants
     public static final String KEY_NOTIFICATION_CONTENT = PushConstants.class.getName() + ".notificationContent";
     public static final String KEY_PUSH_GROUP_ID = PushConstants.class.getName() + ".notificationGroupId";
 
-    public static final String ACTION_NOTIFICATION_CLICKED = "com.tradehero.th.ACTION_NOTIFICATION_CLICKED";
-    public static final String ACTION_MESSAGE_RECEIVED = "com.tradehero.th.ACTION_MESSAGE_RECEIVED";
+    public static final String ACTION_NOTIFICATION_CLICKED = "com.ayondo.academy.ACTION_NOTIFICATION_CLICKED";
+    public static final String ACTION_MESSAGE_RECEIVED = "com.ayondo.academy.ACTION_MESSAGE_RECEIVED";
 
     public static enum THAction
     {

@@ -1,16 +1,16 @@
-package com.tradehero.th.network.retrofit;
+package com.ayondo.academy.network.retrofit;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Context;
-import com.tradehero.th.persistence.prefs.LanguageCode;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.VersionUtils;
+import com.ayondo.academy.persistence.prefs.LanguageCode;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.VersionUtils;
 import javax.inject.Inject;
 import retrofit.RequestInterceptor;
 
-import static com.tradehero.th.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
-import static com.tradehero.th.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
+import static com.ayondo.academy.utils.Constants.Auth.PARAM_ACCOUNT_TYPE;
+import static com.ayondo.academy.utils.Constants.Auth.PARAM_AUTHTOKEN_TYPE;
 
 public class RequestHeaders implements RequestInterceptor
 {

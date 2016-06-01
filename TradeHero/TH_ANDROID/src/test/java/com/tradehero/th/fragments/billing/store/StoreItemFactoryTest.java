@@ -1,14 +1,14 @@
-package com.tradehero.th.fragments.billing.store;
+package com.ayondo.academy.fragments.billing.store;
 
 import com.android.internal.util.Predicate;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.system.SystemStatusDTO;
-import com.tradehero.th.api.system.SystemStatusKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.persistence.system.SystemStatusCache;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.system.SystemStatusDTO;
+import com.ayondo.academy.api.system.SystemStatusKey;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.base.TestTHApp;
+import com.ayondo.academy.billing.ProductIdentifierDomain;
+import com.ayondo.academy.persistence.system.SystemStatusCache;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;

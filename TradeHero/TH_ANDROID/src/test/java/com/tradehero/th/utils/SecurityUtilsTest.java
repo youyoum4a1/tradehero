@@ -1,6 +1,6 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
-import com.tradehero.th.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityId;
 import org.junit.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;

@@ -1,9 +1,9 @@
-package com.tradehero.th.api.market;
+package com.ayondo.academy.api.market;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public enum Country
 {

@@ -1,15 +1,15 @@
-package com.tradehero.th.api.level;
+package com.ayondo.academy.api.level;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.utils.broadcast.BroadcastData;
+import com.ayondo.academy.utils.broadcast.BroadcastData;
 import java.util.ArrayList;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.XP_INTENT_ACTION_NAME;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.KEY_XP_BROADCAST;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.XP_INTENT_ACTION_NAME;
 
 public class UserXPAchievementDTO implements DTO, BroadcastData
 {

@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.discussion.stock;
+package com.ayondo.academy.fragments.discussion.stock;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.fragments.discussion.DiscussionActionButtonsView;
-import com.tradehero.th.fragments.discussion.DiscussionItemViewLinear;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.fragments.discussion.DiscussionActionButtonsView;
+import com.ayondo.academy.fragments.discussion.DiscussionItemViewLinear;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
 import rx.Observable;
 import rx.functions.Func1;
 

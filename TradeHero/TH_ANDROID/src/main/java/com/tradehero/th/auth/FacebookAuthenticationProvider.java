@@ -1,4 +1,4 @@
-package com.tradehero.th.auth;
+package com.ayondo.academy.auth;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,13 +15,13 @@ import com.facebook.android.Facebook;
 import com.tradehero.common.activities.ActivityResultRequester;
 import com.tradehero.common.social.facebook.FacebookRequestOperator;
 import com.tradehero.common.social.facebook.SubscriberCallback;
-import com.tradehero.th.api.auth.AccessTokenForm;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.operator.FacebookPermissions;
-import com.tradehero.th.network.service.SocialLinker;
-import com.tradehero.th.network.share.SocialConstants;
-import com.tradehero.th.rx.ReplaceWithFunc1;
+import com.ayondo.academy.api.auth.AccessTokenForm;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.auth.operator.FacebookPermissions;
+import com.ayondo.academy.network.service.SocialLinker;
+import com.ayondo.academy.network.share.SocialConstants;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

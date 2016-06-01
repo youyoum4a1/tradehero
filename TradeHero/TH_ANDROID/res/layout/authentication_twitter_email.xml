@@ -17,6 +17,7 @@
 
   <EditText
       android:id="@+id/authentication_twitter_email_txt"
+      android:visibility="invisible"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:hint="@string/authentication_twitter_email"
@@ -27,6 +28,7 @@
 
   <Button
       android:id="@+id/authentication_twitter_email_button"
+      android:visibility="invisible"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:text="@string/authentication_confirm"

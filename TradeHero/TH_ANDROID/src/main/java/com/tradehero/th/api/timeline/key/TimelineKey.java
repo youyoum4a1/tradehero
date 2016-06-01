@@ -1,11 +1,11 @@
-package com.tradehero.th.api.timeline.key;
+package com.ayondo.academy.api.timeline.key;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.pagination.RangeDTO;
-import com.tradehero.th.api.timeline.TimelineSection;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.pagination.RangeDTO;
+import com.ayondo.academy.api.timeline.TimelineSection;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class TimelineKey implements DTOKey
 {

@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push.urbanairship;
+package com.ayondo.academy.models.push.urbanairship;
 
 public class JustReportingException extends RuntimeException
 {

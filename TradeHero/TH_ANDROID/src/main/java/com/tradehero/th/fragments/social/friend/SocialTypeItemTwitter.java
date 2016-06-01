@@ -1,7 +1,7 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
 
 public class SocialTypeItemTwitter extends SocialTypeItem
 {

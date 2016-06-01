@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.competition;
+package com.ayondo.academy.fragments.competition;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.webkit.WebViewClient;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.fragments.web.BaseWebViewFragment;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.fragments.web.BaseWebViewFragment;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 

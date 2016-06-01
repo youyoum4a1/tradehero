@@ -1,7 +1,7 @@
-package com.tradehero.th.api.share;
+package com.ayondo.academy.api.share;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
+import com.ayondo.academy.api.BaseResponseDTO;
 
 public class BaseResponseSocialShareResultDTO implements SocialShareResultDTO
 {

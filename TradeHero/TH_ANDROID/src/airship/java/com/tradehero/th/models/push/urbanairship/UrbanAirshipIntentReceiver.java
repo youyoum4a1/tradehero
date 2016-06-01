@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push.urbanairship;
+package com.ayondo.academy.models.push.urbanairship;
 
 import android.content.Context;
 import android.content.Intent;
@@ -52,26 +52,26 @@ public class UrbanAirshipIntentReceiver extends BaseIntentReceiver
     @Override protected void onPushReceived(Context context, PushMessage pushMessage, int i)
     {
         Timber.e(new JustReportingException("Just reporting"),
-                "UrbanAirshipIntentReceiver.onPushReceived i=" + i + ", message: " + pushMessage.getActionsPayload());
+                "UrbanAirshipIntentReceiver.onPushReceived i=" + i + ", message: " + pushMessage.getPublicNotificationPayload());
     }
 
     @Override protected void onBackgroundPushReceived(Context context, PushMessage pushMessage)
     {
         Timber.e(new JustReportingException("Just reporting"),
-                "UrbanAirshipIntentReceiver.onBackgroundPushReceived message: " + pushMessage.getActionsPayload());
+                "UrbanAirshipIntentReceiver.onBackgroundPushReceived message: " + pushMessage.getPublicNotificationPayload());
     }
 
     @Override protected boolean onNotificationOpened(Context context, PushMessage pushMessage, int i)
     {
         Timber.e(new JustReportingException("Just reporting"),
-                "UrbanAirshipIntentReceiver.onNotificationOpened i=" + i + ", message: " + pushMessage.getActionsPayload());
+                "UrbanAirshipIntentReceiver.onNotificationOpened i=" + i + ", message: " + pushMessage.getPublicNotificationPayload());
         return false;
     }
 
     @Override protected boolean onNotificationActionOpened(Context context, PushMessage pushMessage, int i, String s, boolean b)
     {
         Timber.e(new JustReportingException("Just reporting"),
-                "UrbanAirshipIntentReceiver.onNotificationActionOpened i=" + i + ", b=" + b + ", message: " + pushMessage.getActionsPayload());
+                "UrbanAirshipIntentReceiver.onNotificationActionOpened i=" + i + ", b=" + b + ", message: " + pushMessage.getPublicNotificationPayload());
         return false;
     }
 
@@ -79,6 +79,6 @@ public class UrbanAirshipIntentReceiver extends BaseIntentReceiver
     {
         super.onNotificationDismissed(context, message, notificationId);
         Timber.e(new JustReportingException("Just reporting"),
-                "UrbanAirshipIntentReceiver.onNotificationDismissed id=" + notificationId + ", message: " + message.getActionsPayload());
+                "UrbanAirshipIntentReceiver.onNotificationDismissed id=" + notificationId + ", message: " + message.getPublicNotificationPayload());
     }
 }

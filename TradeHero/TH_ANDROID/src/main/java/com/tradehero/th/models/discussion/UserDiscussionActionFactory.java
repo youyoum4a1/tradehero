@@ -1,10 +1,10 @@
-package com.tradehero.th.models.discussion;
+package com.ayondo.academy.models.discussion;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.text.ClickableTagProcessor;
 import com.tradehero.common.text.SecurityTagProcessor;
 import com.tradehero.common.text.UserTagProcessor;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
 import rx.Observable;
 import timber.log.Timber;
 

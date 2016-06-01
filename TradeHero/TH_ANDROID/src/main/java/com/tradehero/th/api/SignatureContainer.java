@@ -1,4 +1,4 @@
-package com.tradehero.th.api;
+package com.ayondo.academy.api;
 
 public class SignatureContainer<SignedType>
 {

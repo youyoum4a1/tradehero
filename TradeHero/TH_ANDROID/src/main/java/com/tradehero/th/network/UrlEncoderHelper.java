@@ -1,4 +1,4 @@
-package com.tradehero.th.network;
+package com.ayondo.academy.network;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

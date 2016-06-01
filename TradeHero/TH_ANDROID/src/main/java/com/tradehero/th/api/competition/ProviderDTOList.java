@@ -1,10 +1,10 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioIdList;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioIdList;
 
 public class ProviderDTOList extends BaseArrayList<ProviderDTO>
     implements DTO

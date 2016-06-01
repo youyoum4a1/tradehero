@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.settings.SettingsDrawerMenuItem
+<com.ayondo.academy.fragments.settings.SettingsDrawerMenuItem
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/TH.LeftDrawerMenu.Container">
@@ -25,4 +25,4 @@
         android:layout_marginLeft="@dimen/margin_xsmall"
         android:background="@drawable/red_circle" />
 
-</com.tradehero.th.fragments.settings.SettingsDrawerMenuItem>
+</com.ayondo.academy.fragments.settings.SettingsDrawerMenuItem>

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending.filter;
+package com.ayondo.academy.fragments.trending.filter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -9,9 +9,9 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.models.market.ExchangeCompactSpinnerDTO;
 
 public class TrendingFilterSpinnerItemView extends LinearLayout
     implements DTOView<ExchangeCompactSpinnerDTO>

@@ -1,11 +1,11 @@
-package com.tradehero.th.billing.report;
+package com.ayondo.academy.billing.report;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseResult;
 import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.THOrderId;
-import com.tradehero.th.billing.THProductPurchase;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.billing.THOrderId;
+import com.ayondo.academy.billing.THProductPurchase;
 
 public class PurchaseReportResult<
         ProductIdentifierType extends ProductIdentifier,

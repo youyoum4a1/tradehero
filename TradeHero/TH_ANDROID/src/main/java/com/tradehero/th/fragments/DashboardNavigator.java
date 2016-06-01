@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,11 +9,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import com.tradehero.th.activities.BaseActivity;
-import com.tradehero.th.activities.OnBoardActivity;
-import com.tradehero.th.activities.OneFragmentActivity;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.ayondo.academy.activities.BaseActivity;
+import com.ayondo.academy.activities.OnBoardActivity;
+import com.ayondo.academy.activities.OneFragmentActivity;
+import com.ayondo.academy.fragments.base.BaseFragment;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import timber.log.Timber;

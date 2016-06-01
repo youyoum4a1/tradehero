@@ -7,7 +7,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:context="com.tradehero.th.activities.DashboardActivity"
+    tools:context="com.ayondo.academy.activities.DashboardActivity"
     >
 
   <TextView
@@ -72,7 +72,7 @@
         tools:text="Rafael Barba"
         />
 
-    <com.tradehero.th.widget.MarkdownTextView
+    <com.ayondo.academy.widget.MarkdownTextView
         android:id="@+id/leaderboard_user_item_fof"
         style="@style/TH.Caption"
         android:layout_width="wrap_content"

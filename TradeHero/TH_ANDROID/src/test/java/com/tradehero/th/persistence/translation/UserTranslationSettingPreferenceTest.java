@@ -1,14 +1,14 @@
-package com.tradehero.th.persistence.translation;
+package com.ayondo.academy.persistence.translation;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.TestConstants;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.translation.TranslationToken;
-import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import com.tradehero.th.api.translation.bing.BingTranslationToken;
-import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.translation.TranslationToken;
+import com.ayondo.academy.api.translation.UserTranslationSettingDTO;
+import com.ayondo.academy.api.translation.bing.BingTranslationToken;
+import com.ayondo.academy.api.translation.bing.BingUserTranslationSettingDTO;
+import com.ayondo.academy.base.TestTHApp;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;

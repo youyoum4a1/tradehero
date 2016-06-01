@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon.identifier;
+package com.ayondo.academy.billing.amazon.identifier;
 
 import android.app.Activity;
 import android.content.Intent;

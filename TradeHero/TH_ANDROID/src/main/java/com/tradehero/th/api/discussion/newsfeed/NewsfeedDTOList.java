@@ -1,4 +1,4 @@
-package com.tradehero.th.api.discussion.newsfeed;
+package com.ayondo.academy.api.discussion.newsfeed;
 
 import com.tradehero.common.api.BaseArrayList;
 import com.tradehero.common.persistence.DTO;

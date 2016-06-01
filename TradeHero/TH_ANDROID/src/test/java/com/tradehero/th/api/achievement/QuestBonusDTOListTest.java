@@ -1,7 +1,7 @@
-package com.tradehero.th.api.achievement;
+package com.ayondo.academy.api.achievement;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;

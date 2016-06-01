@@ -1,10 +1,10 @@
-package com.tradehero.th.billing.samsung;
+package com.ayondo.academy.billing.samsung;
 
 import com.tradehero.common.billing.samsung.SamsungLogicHolderRx;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
-import com.tradehero.th.billing.THBillingLogicHolderRx;
+import com.ayondo.academy.billing.THBillingLogicHolderRx;
 
 public interface THSamsungLogicHolderRx
         extends SamsungLogicHolderRx<

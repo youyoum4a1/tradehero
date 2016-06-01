@@ -1,10 +1,10 @@
-package com.tradehero.th.api.news.form;
+package com.ayondo.academy.api.news.form;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.news.key.NewsItemDTOKey;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.form.ReplyDiscussionFormDTO;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.news.key.NewsItemDTOKey;
 
 public class NewsItemReplyDiscussionFormDTO extends ReplyDiscussionFormDTO
 {

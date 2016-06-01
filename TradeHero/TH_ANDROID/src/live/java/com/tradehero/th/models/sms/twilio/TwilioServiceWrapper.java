@@ -1,10 +1,10 @@
-package com.tradehero.th.models.sms.twilio;
+package com.ayondo.academy.models.sms.twilio;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.models.sms.SMSId;
-import com.tradehero.th.models.sms.SMSRequest;
-import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
-import com.tradehero.th.models.sms.SMSServiceWrapper;
+import com.ayondo.academy.models.sms.SMSId;
+import com.ayondo.academy.models.sms.SMSRequest;
+import com.ayondo.academy.models.sms.SMSSentConfirmationDTO;
+import com.ayondo.academy.models.sms.SMSServiceWrapper;
 import javax.inject.Inject;
 import retrofit.RetrofitError;
 import rx.Observable;

@@ -1,12 +1,12 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.api.portfolio.key.PortfolioCompactListKey;
-import com.tradehero.th.api.users.specific.UserBaseKeyConstants;
+import com.ayondo.academy.api.portfolio.key.PortfolioCompactListKey;
+import com.ayondo.academy.api.users.specific.UserBaseKeyConstants;
 
 public class UserBaseKey extends AbstractIntegerDTOKey implements PortfolioCompactListKey
 {

@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import com.tradehero.common.billing.amazon.AmazonSKU;
-import com.tradehero.th.billing.THProductDetailDomainInformer;
+import com.ayondo.academy.billing.THProductDetailDomainInformer;
 
 public interface THAmazonProductDetailDomainInformer
     extends THProductDetailDomainInformer<AmazonSKU, THAmazonProductDetail>

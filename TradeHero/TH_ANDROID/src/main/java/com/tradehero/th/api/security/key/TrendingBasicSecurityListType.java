@@ -1,4 +1,4 @@
-package com.tradehero.th.api.security.key;
+package com.ayondo.academy.api.security.key;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

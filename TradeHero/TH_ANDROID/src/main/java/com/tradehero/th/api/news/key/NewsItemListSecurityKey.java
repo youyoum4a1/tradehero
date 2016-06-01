@@ -1,6 +1,6 @@
-package com.tradehero.th.api.news.key;
+package com.ayondo.academy.api.news.key;
 
-import com.tradehero.th.api.security.SecurityIntegerId;
+import com.ayondo.academy.api.security.SecurityIntegerId;
 
 public class NewsItemListSecurityKey extends NewsItemListKey
 {

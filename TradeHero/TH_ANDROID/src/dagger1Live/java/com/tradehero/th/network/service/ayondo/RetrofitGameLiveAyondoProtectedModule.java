@@ -1,6 +1,6 @@
-package com.tradehero.th.network.service.ayondo;
+package com.ayondo.academy.network.service.ayondo;
 
-import com.tradehero.th.network.ForLive;
+import com.ayondo.academy.network.ForLive;
 import dagger.Module;
 import dagger.Provides;
 import retrofit.RestAdapter;

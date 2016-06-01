@@ -1,6 +1,6 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
-import com.tradehero.th.fragments.billing.FragmentBillingAppTestModule;
+import com.ayondo.academy.fragments.billing.FragmentBillingAppTestModule;
 import dagger.Module;
 
 @Module(

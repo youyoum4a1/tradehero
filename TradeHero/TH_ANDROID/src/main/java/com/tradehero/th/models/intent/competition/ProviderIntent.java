@@ -1,10 +1,10 @@
-package com.tradehero.th.models.intent.competition;
+package com.ayondo.academy.models.intent.competition;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.models.intent.THIntent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
+import com.ayondo.academy.models.intent.THIntent;
 
 public class ProviderIntent extends THIntent
 {

@@ -1,14 +1,14 @@
-package com.tradehero.th.models.user.follow;
+package com.ayondo.academy.models.user.follow;
 
-import com.tradehero.THRobolectric;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.activities.DashboardActivityExtended;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.models.user.FollowUserAssistantTestBase;
-import com.tradehero.th.models.user.OpenSimpleFollowUserAssistant;
-import com.tradehero.th.rx.EmptyAction1;
+import com.ayondo.academyRobolectric;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.activities.DashboardActivityExtended;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.models.user.FollowUserAssistantTestBase;
+import com.ayondo.academy.models.user.OpenSimpleFollowUserAssistant;
+import com.ayondo.academy.rx.EmptyAction1;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

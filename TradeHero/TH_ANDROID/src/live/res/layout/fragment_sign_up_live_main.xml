@@ -24,7 +24,7 @@
       tools:background="@color/background_material_light"
       />
 
-  <com.tradehero.th.widget.LiveRewardWidget
+  <com.ayondo.academy.widget.LiveRewardWidget
       android:id="@+id/live_reward_widget"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"

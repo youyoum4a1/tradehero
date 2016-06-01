@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
@@ -21,7 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class DocumentActionWidget extends RelativeLayout implements Target
 {

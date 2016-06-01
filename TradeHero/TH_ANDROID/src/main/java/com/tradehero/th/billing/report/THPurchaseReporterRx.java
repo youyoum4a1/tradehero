@@ -1,10 +1,10 @@
-package com.tradehero.th.billing.report;
+package com.ayondo.academy.billing.report;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.RequestCodeActor;
-import com.tradehero.th.billing.THOrderId;
-import com.tradehero.th.billing.THProductPurchase;
+import com.ayondo.academy.billing.THOrderId;
+import com.ayondo.academy.billing.THProductPurchase;
 import rx.Observable;
 
 public interface THPurchaseReporterRx<

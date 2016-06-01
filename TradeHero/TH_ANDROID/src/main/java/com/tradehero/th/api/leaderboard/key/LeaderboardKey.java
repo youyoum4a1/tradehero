@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard.key;
+package com.ayondo.academy.api.leaderboard.key;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTOKey;
 import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.api.portfolio.AssetClass;
+import com.ayondo.academy.api.portfolio.AssetClass;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;

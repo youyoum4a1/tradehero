@@ -1,11 +1,11 @@
-package com.tradehero.th.models.user;
+package com.ayondo.academy.models.user;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.billing.THBillingInteractorRx;
+import com.ayondo.academy.network.service.UserServiceWrapper;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 
 public class OpenFollowUserAssistant extends FollowUserAssistant
 {

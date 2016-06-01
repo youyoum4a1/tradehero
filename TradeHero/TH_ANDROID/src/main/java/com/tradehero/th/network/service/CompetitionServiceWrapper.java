@@ -1,12 +1,12 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.competition.CompetitionDTO;
-import com.tradehero.th.api.competition.CompetitionDTOList;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.key.CompetitionId;
-import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardDTO;
-import com.tradehero.th.api.leaderboard.competition.CompetitionLeaderboardId;
+import com.ayondo.academy.api.competition.CompetitionDTO;
+import com.ayondo.academy.api.competition.CompetitionDTOList;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.competition.key.CompetitionId;
+import com.ayondo.academy.api.leaderboard.competition.CompetitionLeaderboardDTO;
+import com.ayondo.academy.api.leaderboard.competition.CompetitionLeaderboardId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TabHost;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.widget.THTabView;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
+import com.ayondo.academy.widget.THTabView;
 import java.util.Collection;
 
 public class DashboardTabHost extends TabHost

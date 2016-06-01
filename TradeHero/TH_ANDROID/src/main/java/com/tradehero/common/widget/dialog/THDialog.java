@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

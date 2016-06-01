@@ -1,8 +1,8 @@
-package com.tradehero.th.models.security;
+package com.ayondo.academy.models.security;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.security.compact.WarrantDTO;
 import java.util.Iterator;
 import java.util.TreeSet;
 import org.junit.After;

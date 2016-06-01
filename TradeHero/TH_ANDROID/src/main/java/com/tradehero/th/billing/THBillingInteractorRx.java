@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.BaseProductIdentifierList;
@@ -7,7 +7,7 @@ import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.ProductIdentifierListKey;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserBaseKey;
 import java.util.List;
 import rx.Observable;
 

@@ -1,13 +1,13 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.amazon.device.iap.model.Product;
 import com.tradehero.common.billing.amazon.AmazonProductDetail;
 import com.tradehero.common.billing.amazon.AmazonSKU;
-import com.tradehero.th.R;
-import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THProductDetail;
+import com.ayondo.academy.R;
+import com.ayondo.academy.billing.ProductIdentifierDomain;
+import com.ayondo.academy.billing.THProductDetail;
 
 public class THAmazonProductDetail extends AmazonProductDetail<AmazonSKU>
     implements THProductDetail<AmazonSKU>

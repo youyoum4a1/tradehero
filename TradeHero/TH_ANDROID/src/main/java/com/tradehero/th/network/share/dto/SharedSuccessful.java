@@ -1,8 +1,8 @@
-package com.tradehero.th.network.share.dto;
+package com.ayondo.academy.network.share.dto;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.share.SocialShareResultDTO;
+import com.ayondo.academy.api.share.SocialShareFormDTO;
+import com.ayondo.academy.api.share.SocialShareResultDTO;
 
 public class SharedSuccessful extends SocialShareResult
 {

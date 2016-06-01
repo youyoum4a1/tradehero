@@ -1,19 +1,19 @@
-package com.tradehero.th.models.user;
+package com.ayondo.academy.models.user;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.th.api.system.SystemStatusDTO;
-import com.tradehero.th.api.system.SystemStatusKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserLoginDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.auth.AuthDataUtil;
-import com.tradehero.th.models.ThroughDTOProcessor;
-import com.tradehero.th.persistence.system.SystemStatusCache;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.system.SystemStatusDTO;
+import com.ayondo.academy.api.system.SystemStatusKey;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserLoginDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.auth.AuthData;
+import com.ayondo.academy.auth.AuthDataUtil;
+import com.ayondo.academy.models.ThroughDTOProcessor;
+import com.ayondo.academy.persistence.system.SystemStatusCache;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 
 public class DTOProcessorUserLogin extends ThroughDTOProcessor<UserLoginDTO>
 {

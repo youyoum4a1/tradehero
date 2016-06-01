@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.os.Bundle;
 import android.support.v4.preference.PreferenceFragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.base.ActionBarOwnerMixin;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.internal.util.SubscriptionList;

@@ -1,14 +1,14 @@
-package com.tradehero.th.models.intent.security;
+package com.ayondo.academy.models.intent.security;
 
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityIntegerId;
+import com.ayondo.academy.fragments.trade.BuySellStockFragment;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
@@ -108,8 +108,8 @@ public class SecurityPushBuyIntentTest
         SecurityPushBuyIntent intent = new SecurityPushBuyIntent(resources, used, securityId);
         Bundle bundle = intent.getBundle();
         assertEquals(1, bundle.size());
-        assertEquals(2, bundle.getBundle("com.tradehero.th.fragments.trade.AbstractBuySellFragment.securityId").size());
-        assertTrue(securityId.equals(new SecurityId(bundle.getBundle("com.tradehero.th.fragments.trade.AbstractBuySellFragment.securityId"))));
+        assertEquals(2, bundle.getBundle("com.ayondo.academy.fragments.trade.AbstractBuySellFragment.securityId").size());
+        assertTrue(securityId.equals(new SecurityId(bundle.getBundle("com.ayondo.academy.fragments.trade.AbstractBuySellFragment.securityId"))));
     }
 
     @Test public void populateBundleKeepsExisting()
@@ -122,7 +122,7 @@ public class SecurityPushBuyIntentTest
         intent.populate(bundle);
 
         assertEquals(2, bundle.size());
-        assertEquals(2, bundle.getBundle("com.tradehero.th.fragments.trade.AbstractBuySellFragment.securityId").size());
-        assertTrue(securityId.equals(new SecurityId(bundle.getBundle("com.tradehero.th.fragments.trade.AbstractBuySellFragment.securityId"))));
+        assertEquals(2, bundle.getBundle("com.ayondo.academy.fragments.trade.AbstractBuySellFragment.securityId").size());
+        assertTrue(securityId.equals(new SecurityId(bundle.getBundle("com.ayondo.academy.fragments.trade.AbstractBuySellFragment.securityId"))));
     }
 }

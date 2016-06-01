@@ -1,8 +1,8 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.CurrentUserId;
 import javax.inject.Inject;
 import rx.Observable;
 

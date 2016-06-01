@@ -1,4 +1,4 @@
-package com.tradehero.th.rx;
+package com.ayondo.academy.rx;
 
 import android.support.annotation.NonNull;
 import java.util.LinkedList;

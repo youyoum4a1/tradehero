@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.achievement;
+package com.ayondo.academy.fragments.achievement;
 
 import android.animation.Animator;
 import android.animation.AnimatorInflater;
@@ -15,8 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.achievement.AchievementDefDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.achievement.AchievementDefDTO;
 import java.util.List;
 
 public class AchievementProgressIndicator extends LinearLayout

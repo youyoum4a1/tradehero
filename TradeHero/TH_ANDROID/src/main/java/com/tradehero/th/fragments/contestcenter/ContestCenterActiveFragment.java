@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.contestcenter;
+package com.ayondo.academy.fragments.contestcenter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.competition.ProviderDTO;
+import com.ayondo.academy.api.competition.ProviderDTO;
 import javax.inject.Inject;
 
 public class ContestCenterActiveFragment extends ContestCenterBaseFragment

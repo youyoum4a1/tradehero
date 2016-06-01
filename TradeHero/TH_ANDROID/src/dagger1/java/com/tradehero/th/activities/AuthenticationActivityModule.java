@@ -1,7 +1,7 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.utils.dagger.AppModule;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.utils.dagger.AppModule;
 import dagger.Module;
 import dagger.Provides;
 

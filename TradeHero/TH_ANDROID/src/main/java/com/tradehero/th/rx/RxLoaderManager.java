@@ -1,4 +1,4 @@
-package com.tradehero.th.rx;
+package com.ayondo.academy.rx;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.position;
+package com.ayondo.academy.api.position;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

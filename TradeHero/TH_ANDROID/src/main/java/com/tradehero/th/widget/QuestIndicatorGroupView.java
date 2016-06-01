@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -10,8 +10,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.LinearLayout;
-import com.tradehero.th.R;
-import com.tradehero.th.api.achievement.QuestBonusDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.achievement.QuestBonusDTO;
 import java.util.ArrayList;
 import java.util.List;
 

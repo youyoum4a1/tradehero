@@ -1,14 +1,8 @@
-package com.tradehero.th.fragments.watchlist;
+package com.ayondo.academy.fragments.watchlist;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,26 +11,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ProgressBar;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.security.SecuritySearchWatchlistFragment;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.trending.TrendingMainFragment;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.MultiScrollListener;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTOList;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.fragments.security.SecuritySearchWatchlistFragment;
+import com.ayondo.academy.fragments.security.WatchlistEditFragment;
+import com.ayondo.academy.fragments.trending.TrendingMainFragment;
+import com.ayondo.academy.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.ayondo.academy.widget.MultiScrollListener;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -50,11 +43,12 @@ public class MainWatchlistPositionFragment extends DashboardFragment
 
     @Inject CurrentUserId currentUserId;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @Bind(android.R.id.empty) @Nullable protected ProgressBar progressBar;
     //@Bind(R.id.watchlist_swipe_listview) SwipeListView watchlistPositionListView;
-    @Bind(R.id.swipe_container) SwipeRefreshLayout watchListRefreshableContainer;
+    //@Bind(R.id.swipe_container) SwipeRefreshLayout watchListRefreshableContainer;
 
     private WatchlistAdapter watchListAdapter;
     //private BroadcastReceiver broadcastReceiver;
@@ -99,13 +93,13 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         //watchlistPositionListView.setOnScrollListener(createListViewScrollListener());
         //watchlistPositionListView.setAdapter(watchListAdapter);
         //watchlistPositionListView.setSwipeListViewListener(createSwipeListViewListener());
-        watchListRefreshableContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
+        /*watchListRefreshableContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
         {
             @Override public void onRefresh()
             {
                 MainWatchlistPositionFragment.this.refreshValues();
             }
-        });
+        });*/
     }
 
     //<editor-fold desc="ActionBar Menu Actions">
@@ -152,9 +146,9 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     @Override public void onResume()
     {
         super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_List));
-        //LocalBroadcastManager.getInstance(this.getActivity())
-        //        .registerReceiver(broadcastReceiver, new IntentFilter(WatchlistItemView.WATCHLIST_ITEM_DELETED));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_List));
+
     }
 
     @Override public void onPause()
@@ -171,8 +165,8 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         //watchlistPositionListView.setSwipeListViewListener(null);
         //watchlistPositionListView.removeCallbacks(null);
 
-        watchListRefreshableContainer.setRefreshing(false);
-        watchListRefreshableContainer.setOnRefreshListener(null);
+        //watchListRefreshableContainer.setRefreshing(false);
+        //watchListRefreshableContainer.setOnRefreshListener(null);
 
         ButterKnife.unbind(this);
         super.onDestroyView();
@@ -235,7 +229,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
                                 {
                                     maxOffsetY = offsetY;
                                 }
-                                watchListRefreshableContainer.setEnabled(offsetY == maxOffsetY);
+                                //watchListRefreshableContainer.setEnabled(offsetY == maxOffsetY);
                             }
                             else
                             {
@@ -244,7 +238,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
                         }
                         else
                         {
-                            watchListRefreshableContainer.setEnabled(false);
+                            //watchListRefreshableContainer.setEnabled(false);
                         }
                     }
 
@@ -310,7 +304,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
                         {
                             @Override public void call(Throwable e)
                             {
-                                watchListRefreshableContainer.setRefreshing(false);
+                                //watchListRefreshableContainer.setRefreshing(false);
                                 if (watchListAdapter == null || watchListAdapter.getCount() <= 0)
                                 {
                                     THToast.show(MainWatchlistPositionFragment.this.getString(R.string.error_fetch_portfolio_watchlist));
@@ -331,7 +325,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         watchListAdapter.clear();
         watchListAdapter.addAll(watchlistPositionDTOs);
         watchListAdapter.notifyDataSetChanged();
-        watchListRefreshableContainer.setRefreshing(false);
+        //watchListRefreshableContainer.setRefreshing(false);
     }
 
     private void openWatchlistItemEditor(int position)

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.timeline;
+package com.ayondo.academy.api.timeline;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonCreator;

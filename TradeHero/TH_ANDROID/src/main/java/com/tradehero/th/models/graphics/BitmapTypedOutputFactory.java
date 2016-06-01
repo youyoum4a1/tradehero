@@ -1,11 +1,11 @@
-package com.tradehero.th.models.graphics;
+package com.ayondo.academy.models.graphics;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.utils.GraphicUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.utils.GraphicUtil;
 
 public class BitmapTypedOutputFactory
 {

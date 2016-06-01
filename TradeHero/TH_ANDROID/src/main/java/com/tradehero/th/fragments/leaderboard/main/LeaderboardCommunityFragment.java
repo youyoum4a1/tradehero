@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard.main;
+package com.ayondo.academy.fragments.leaderboard.main;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,41 +15,41 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.android.common.SlidingTabLayout;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefListKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.leaderboard.FriendLeaderboardMarkUserRecyclerFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardMarkUserRecyclerFragment;
-import com.tradehero.th.fragments.leaderboard.LeaderboardType;
-import com.tradehero.th.fragments.social.PeopleSearchFragment;
-import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.fragments.web.BaseWebViewIntentFragment;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefListCacheRx;
-import com.tradehero.th.persistence.prefs.PreferenceModule;
-import com.tradehero.th.persistence.prefs.THPreference;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.OffOnViewSwitcher;
-import com.tradehero.th.widget.OffOnViewSwitcherEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTO;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTOList;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardDefListKey;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.fragments.base.BaseLiveFragmentUtil;
+import com.ayondo.academy.fragments.billing.BasePurchaseManagerFragment;
+import com.ayondo.academy.fragments.leaderboard.FriendLeaderboardMarkUserRecyclerFragment;
+import com.ayondo.academy.fragments.leaderboard.LeaderboardMarkUserRecyclerFragment;
+import com.ayondo.academy.fragments.leaderboard.LeaderboardType;
+import com.ayondo.academy.fragments.social.PeopleSearchFragment;
+import com.ayondo.academy.fragments.tutorial.WithTutorial;
+import com.ayondo.academy.fragments.web.BaseWebViewIntentFragment;
+import com.ayondo.academy.models.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.ayondo.academy.persistence.leaderboard.LeaderboardDefListCacheRx;
+import com.ayondo.academy.persistence.prefs.PreferenceModule;
+import com.ayondo.academy.persistence.prefs.THPreference;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.widget.OffOnViewSwitcher;
+import com.ayondo.academy.widget.OffOnViewSwitcherEvent;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -64,7 +64,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         implements WithTutorial, View.OnClickListener
 {
     @Inject LeaderboardDefListCacheRx leaderboardDefListCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject @THPreference(PreferenceModule.PREF_ON_BOARDING_EXCHANGE) StringPreference onBoardExchangePref;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
@@ -167,7 +168,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Community));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Community));
         if (leaderboardDefDTOs == null)
         {
             fetchLeaderboardDefList();
@@ -353,7 +355,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
         @Override public Fragment getItem(int position)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_ShowLeaderboard));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_ShowLeaderboard));
             LeaderboardDefDTO leaderboardDefDTO = dtoList.get(position);
             Bundle args = new Bundle(getArguments());
 

@@ -1,13 +1,13 @@
-package com.tradehero.th.api.security;
+package com.ayondo.academy.api.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.common.annotation.ForApp;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.BaseApiTestClass;
-import com.tradehero.th.api.security.compact.EquityCompactDTO;
-import com.tradehero.th.api.security.compact.WarrantDTO;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.BaseApiTestClass;
+import com.ayondo.academy.api.security.compact.EquityCompactDTO;
+import com.ayondo.academy.api.security.compact.WarrantDTO;
+import com.ayondo.academy.base.TestTHApp;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;

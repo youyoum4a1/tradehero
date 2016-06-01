@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon.purchase;
+package com.ayondo.academy.billing.amazon.purchase;
 
 import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.PurchaseResponse;
@@ -7,10 +7,10 @@ import com.tradehero.common.billing.amazon.purchase.BaseAmazonPurchaserRx;
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.billing.amazon.THAmazonOrderId;
-import com.tradehero.th.billing.amazon.THAmazonPurchase;
-import com.tradehero.th.billing.amazon.THAmazonPurchaseOrder;
-import com.tradehero.th.billing.amazon.THBaseAmazonPurchase;
+import com.ayondo.academy.billing.amazon.THAmazonOrderId;
+import com.ayondo.academy.billing.amazon.THAmazonPurchase;
+import com.ayondo.academy.billing.amazon.THAmazonPurchaseOrder;
+import com.ayondo.academy.billing.amazon.THBaseAmazonPurchase;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

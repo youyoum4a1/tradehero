@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.base;
+package com.ayondo.academy.fragments.base;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -9,8 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 import butterknife.ButterKnife;
-import com.tradehero.th.R;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.R;
+import com.ayondo.academy.inject.HierarchyInjector;
 import rx.Subscription;
 import rx.internal.util.SubscriptionList;
 

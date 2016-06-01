@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.discussion.DiscussionItemViewLinear
+<com.ayondo.academy.fragments.discussion.DiscussionItemViewLinear
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -34,7 +34,7 @@
         android:background="@drawable/mine_bubble"
         >
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.ayondo.academy.widget.MarkdownTextView
           android:id="@+id/discussion_content"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
         android:visibility="gone"
         >
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.ayondo.academy.widget.MarkdownTextView
           android:id="@+id/discussion_stub_content"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -68,4 +68,4 @@
 
   </RelativeLayout>
 
-</com.tradehero.th.fragments.discussion.DiscussionItemViewLinear>
+</com.ayondo.academy.fragments.discussion.DiscussionItemViewLinear>

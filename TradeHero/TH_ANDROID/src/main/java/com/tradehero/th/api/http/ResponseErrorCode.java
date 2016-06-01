@@ -1,4 +1,4 @@
-package com.tradehero.th.api.http;
+package com.ayondo.academy.api.http;
 
 import android.support.annotation.Nullable;
 import timber.log.Timber;

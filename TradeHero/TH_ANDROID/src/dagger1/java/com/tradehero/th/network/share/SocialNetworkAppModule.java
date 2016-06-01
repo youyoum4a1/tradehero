@@ -1,15 +1,15 @@
-package com.tradehero.th.network.share;
+package com.ayondo.academy.network.share;
 
 import android.content.Context;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
-import com.tradehero.th.R;
-import com.tradehero.th.auth.operator.FacebookPermissions;
-import com.tradehero.th.models.share.ShareDestination;
-import com.tradehero.th.models.share.ShareDestinationFactory;
-import com.tradehero.th.models.share.ShareDestinationFactoryByResources;
-import com.tradehero.th.models.share.ShareDestinationId;
-import com.tradehero.th.models.share.ShareDestinationIndexResComparator;
+import com.ayondo.academy.R;
+import com.ayondo.academy.auth.operator.FacebookPermissions;
+import com.ayondo.academy.models.share.ShareDestination;
+import com.ayondo.academy.models.share.ShareDestinationFactory;
+import com.ayondo.academy.models.share.ShareDestinationFactoryByResources;
+import com.ayondo.academy.models.share.ShareDestinationId;
+import com.ayondo.academy.models.share.ShareDestinationIndexResComparator;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Arrays;

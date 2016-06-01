@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.exchange;
+package com.ayondo.academy.fragments.onboarding.exchange;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,12 +7,12 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.MarketRegion;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.onboarding.OnBoardHeaderLinearView;
-import com.tradehero.th.rx.TimberOnErrorAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.market.ExchangeIntegerId;
+import com.ayondo.academy.api.market.MarketRegion;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.fragments.onboarding.OnBoardHeaderLinearView;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
 import java.util.Collection;
 import java.util.Set;
 import rx.Observable;

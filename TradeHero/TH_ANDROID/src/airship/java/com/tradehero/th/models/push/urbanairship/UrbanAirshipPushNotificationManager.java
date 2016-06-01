@@ -1,27 +1,30 @@
-package com.tradehero.th.models.push.urbanairship;
+package com.ayondo.academy.models.push.urbanairship;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.network.service.SessionServiceWrapper;
-import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.ReplaceWithFunc1;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.models.push.PushNotificationManager;
+import com.ayondo.academy.network.service.SessionServiceWrapper;
+import com.ayondo.academy.persistence.prefs.SavedPushDeviceIdentifier;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
 import com.urbanairship.AirshipConfigOptions;
 import com.urbanairship.UAirship;
 import com.urbanairship.actions.Action;
 import com.urbanairship.actions.ActionArguments;
 import com.urbanairship.actions.ActionRegistry;
 import com.urbanairship.actions.ActionResult;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -60,7 +63,8 @@ import timber.log.Timber;
     @NonNull @Override public Observable<PushNotificationManager.InitialisationCompleteDTO> initialise()
     {
         final long before = System.nanoTime();
-        UAirship.takeOff(THApp.context(), options);
+        UrbanAirshipPushModule a = new UrbanAirshipPushModule();
+        UAirship.takeOff(THApp.context(), a.provideAirshipConfigOptions(THApp.context));
         while (UAirship.shared() == null)
         {
             // We have to use the direct takeOff and do this to avoid a silly NPE in com.urbanairship.analytics.EventService
@@ -80,7 +84,7 @@ import timber.log.Timber;
                     {
                         final String channelId = uAirship.getPushManager().getChannelId();
                         UrbanAirshipPushNotificationManager.uAirship = uAirship;
-                        uAirship.getPushManager().setDeviceTagsEnabled(false);
+                        uAirship.getPushManager().setChannelTagRegistrationEnabled(false);
                         Timber.i("My UrbanAirship Application Channel ID below");
                         Timber.i("My UrbanAirship Application Channel ID: %s", channelId);
                         uAirship.getPushManager().setPushEnabled(true);

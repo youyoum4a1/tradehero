@@ -1,4 +1,4 @@
-package com.tradehero.th.api.portfolio;
+package com.ayondo.academy.api.portfolio;
 
 import android.content.res.Resources;
 import android.support.annotation.ColorRes;
@@ -6,14 +6,14 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.android.internal.util.Predicate;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.position.PositionDTOCompact;
-import com.tradehero.th.api.position.PositionStatus;
-import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.models.resource.ResourceUtil;
-import com.tradehero.th.utils.SecurityUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.position.PositionDTOCompact;
+import com.ayondo.academy.api.position.PositionStatus;
+import com.ayondo.academy.api.quote.QuoteDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.models.resource.ResourceUtil;
+import com.ayondo.academy.utils.SecurityUtils;
 import timber.log.Timber;
 
 public class PortfolioCompactDTOUtil

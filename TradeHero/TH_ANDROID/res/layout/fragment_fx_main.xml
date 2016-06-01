@@ -24,7 +24,7 @@
       android:progressDrawable="@drawable/progress_thin_square"
       />
 
-  <com.tradehero.th.fragments.trade.view.PortfolioSelectorView
+  <com.ayondo.academy.fragments.trade.view.PortfolioSelectorView
       android:id="@+id/portfolio_selector_container"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         style="@style/TH.Body.Accented"
         android:layout_centerVertical="true"/>
 
-  </com.tradehero.th.fragments.trade.view.PortfolioSelectorView>
+  </com.ayondo.academy.fragments.trade.view.PortfolioSelectorView>
 
   <RelativeLayout
       android:id="@+id/chart_frame"

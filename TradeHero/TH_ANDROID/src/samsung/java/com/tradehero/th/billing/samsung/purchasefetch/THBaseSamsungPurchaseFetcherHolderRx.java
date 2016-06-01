@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung.purchasefetch;
+package com.ayondo.academy.billing.samsung.purchasefetch;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,14 +6,14 @@ import android.util.Pair;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.purchasefetch.BaseSamsungPurchaseFetcherHolderRx;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.samsung.THSamsungOrderId;
-import com.tradehero.th.billing.samsung.THSamsungPurchase;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.billing.samsung.THSamsungOrderId;
+import com.ayondo.academy.billing.samsung.THSamsungPurchase;
+import com.ayondo.academy.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
 import javax.inject.Inject;
 import rx.functions.Action1;
 

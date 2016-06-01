@@ -1,4 +1,4 @@
-package com.tradehero.th.base;
+package com.ayondo.academy.base;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;

@@ -1,8 +1,8 @@
-package com.tradehero.th.models.number;
+package com.ayondo.academy.models.number;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
+import com.ayondo.academy.R;
+import com.ayondo.academy.base.THApp;
 
 public class THSignedPercentage extends THSignedNumber
 {

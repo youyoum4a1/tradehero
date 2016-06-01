@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.competition.zone.dto;
+package com.ayondo.academy.fragments.competition.zone.dto;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;

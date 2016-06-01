@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.social;
+package com.ayondo.academy.fragments.social;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.tradehero.common.persistence.DTOCacheRx;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
-import com.tradehero.th.api.users.PaginatedAllowableRecipientDTO;
-import com.tradehero.th.api.users.SearchAllowableRecipientListType;
-import com.tradehero.th.persistence.user.AllowableRecipientPaginatedCacheRx;
+import com.ayondo.academy.api.users.AllowableRecipientDTO;
+import com.ayondo.academy.api.users.PaginatedAllowableRecipientDTO;
+import com.ayondo.academy.api.users.SearchAllowableRecipientListType;
+import com.ayondo.academy.persistence.user.AllowableRecipientPaginatedCacheRx;
 import rx.Observable;
 import rx.functions.Func1;
 

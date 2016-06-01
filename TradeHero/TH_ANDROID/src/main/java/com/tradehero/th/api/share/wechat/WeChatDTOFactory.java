@@ -1,22 +1,22 @@
-package com.tradehero.th.api.share.wechat;
+package com.ayondo.academy.api.share.wechat;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.FacebookShareActivity;
-import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOUtil;
-import com.tradehero.th.api.security.SecurityMediaDTO;
-import com.tradehero.th.api.social.ReferralCodeDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.models.number.THSignedNumber;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.FacebookShareActivity;
+import com.ayondo.academy.api.achievement.UserAchievementDTO;
+import com.ayondo.academy.api.competition.CompetitionPreSeasonDTO;
+import com.ayondo.academy.api.competition.ProviderDTO;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTOUtil;
+import com.ayondo.academy.api.security.SecurityMediaDTO;
+import com.ayondo.academy.api.social.ReferralCodeDTO;
+import com.ayondo.academy.api.timeline.TimelineItemDTO;
+import com.ayondo.academy.models.number.THSignedNumber;
 
 public class WeChatDTOFactory
 {

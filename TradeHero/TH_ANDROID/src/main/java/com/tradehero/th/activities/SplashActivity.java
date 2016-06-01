@@ -1,40 +1,36 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.widget.TextView;
+
 import com.facebook.AppEventsLogger;
 import com.mobileapptracker.MobileAppTracker;
 import com.tapstream.sdk.Api;
 import com.tapstream.sdk.Event;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.network.share.SocialConstants;
-import com.tradehero.th.persistence.prefs.AuthHeader;
-import com.tradehero.th.persistence.prefs.FirstLaunch;
-import com.tradehero.th.persistence.prefs.ResetHelpScreens;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.MetricsModule;
-import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
-import com.tradehero.th.utils.metrics.events.AppLaunchEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.urbanairship.util.UriUtils;
-import dagger.Lazy;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.models.time.AppTiming;
+import com.ayondo.academy.network.share.SocialConstants;
+import com.ayondo.academy.persistence.prefs.AuthHeader;
+import com.ayondo.academy.persistence.prefs.FirstLaunch;
+import com.ayondo.academy.persistence.prefs.ResetHelpScreens;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.VersionUtils;
+import com.ayondo.academy.utils.metrics.MetricsModule;
+import com.ayondo.academy.utils.metrics.appsflyer.THAppsFlyer;
+
 import javax.inject.Inject;
+
+import dagger.Lazy;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
@@ -47,7 +43,9 @@ public class SplashActivity extends BaseActivity
 
     @Inject Lazy<Api> tapStream;
     @Inject MobileAppTracker mobileAppTracker;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject
+    //Analytics analytics;
     @Inject @AuthHeader String authToken;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
@@ -89,7 +87,8 @@ public class SplashActivity extends BaseActivity
     {
         super.onResume();
 
-        analytics.tagScreen(AnalyticsConstants.Loading);
+        //TODO Add code for Google Analytics
+        //analytics.tagScreen(AnalyticsConstants.Loading);
 
         AppEventsLogger.activateApp(this, SocialConstants.FACEBOOK_APP_ID);
 
@@ -105,9 +104,8 @@ public class SplashActivity extends BaseActivity
         {
             VersionUtils.logScreenMeasurements(this);
         }
-
-        analytics.addEvent(new AppLaunchEvent())
-                .addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
+        //TODO Add code for Google Analytics
+        //analytics.addEvent(new AppLaunchEvent()).addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
 
         if (firstLaunchPreference.get() || resetHelpScreens.get() || authToken == null)
         {

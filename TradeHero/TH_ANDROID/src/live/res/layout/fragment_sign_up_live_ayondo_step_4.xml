@@ -23,7 +23,7 @@
         android:text="@string/postal_address"
         />
 
-    <com.tradehero.th.widget.KYCAddressWidget
+    <com.ayondo.academy.widget.KYCAddressWidget
         android:id="@+id/info_address_pri"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         tools:visibility="visible"
         />
 
-    <com.tradehero.th.widget.KYCAddressWidget
+    <com.ayondo.academy.widget.KYCAddressWidget
         android:id="@+id/info_address_sec"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

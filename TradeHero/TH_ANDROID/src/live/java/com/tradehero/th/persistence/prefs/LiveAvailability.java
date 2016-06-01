@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.prefs;
+package com.ayondo.academy.persistence.prefs;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

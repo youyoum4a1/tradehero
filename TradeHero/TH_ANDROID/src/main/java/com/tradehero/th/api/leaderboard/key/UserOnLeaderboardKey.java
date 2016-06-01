@@ -1,7 +1,7 @@
-package com.tradehero.th.api.leaderboard.key;
+package com.ayondo.academy.api.leaderboard.key;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class UserOnLeaderboardKey extends LeaderboardKey
 {

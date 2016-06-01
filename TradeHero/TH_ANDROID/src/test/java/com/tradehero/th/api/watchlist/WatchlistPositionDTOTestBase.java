@@ -1,7 +1,7 @@
-package com.tradehero.th.api.watchlist;
+package com.ayondo.academy.api.watchlist;
 
-import com.tradehero.th.api.position.PositionDTOTestBase;
-import com.tradehero.th.api.security.SecurityCompactDTOTestBase;
+import com.ayondo.academy.api.position.PositionDTOTestBase;
+import com.ayondo.academy.api.security.SecurityCompactDTOTestBase;
 
 abstract public class WatchlistPositionDTOTestBase extends PositionDTOTestBase
 {

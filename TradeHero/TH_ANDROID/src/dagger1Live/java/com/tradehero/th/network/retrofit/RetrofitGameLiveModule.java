@@ -1,9 +1,9 @@
-package com.tradehero.th.network.retrofit;
+package com.ayondo.academy.network.retrofit;
 
 import com.tradehero.common.log.RetrofitErrorHandlerLogger;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.th.network.ForLive;
-import com.tradehero.th.network.ServerEndpointLive;
+import com.ayondo.academy.network.ForLive;
+import com.ayondo.academy.network.ServerEndpointLive;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

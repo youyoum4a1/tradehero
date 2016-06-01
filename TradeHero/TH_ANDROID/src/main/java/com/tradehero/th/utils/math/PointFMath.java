@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.math;
+package com.ayondo.academy.utils.math;
 
 import android.graphics.Point;
 import android.graphics.PointF;

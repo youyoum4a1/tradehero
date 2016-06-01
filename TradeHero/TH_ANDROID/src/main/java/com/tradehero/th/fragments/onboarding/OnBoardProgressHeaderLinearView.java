@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.onboarding;
+package com.ayondo.academy.fragments.onboarding;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import butterknife.Bind;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class OnBoardProgressHeaderLinearView extends OnBoardHeaderLinearView
 {

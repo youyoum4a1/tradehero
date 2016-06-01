@@ -5,9 +5,9 @@ import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
-import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.misc.exception.THException;
+import com.ayondo.academy.R;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.misc.exception.THException;
 import timber.log.Timber;
 
 public class THToast

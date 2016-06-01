@@ -1,15 +1,15 @@
-package com.tradehero.th.fragments.translation;
+package com.ayondo.academy.fragments.translation;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import com.tradehero.THRobolectric;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivityExtended;
-import com.tradehero.th.api.i18n.LanguageDTO;
-import com.tradehero.th.api.translation.UserTranslationSettingDTO;
+import com.ayondo.academyRobolectric;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.DashboardActivityExtended;
+import com.ayondo.academy.api.i18n.LanguageDTO;
+import com.ayondo.academy.api.translation.UserTranslationSettingDTO;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;

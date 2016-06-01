@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.live.ayondo;
+package com.ayondo.academy.fragments.live.ayondo;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.kyc.TradingPerQuarter;
+import com.ayondo.academy.api.kyc.TradingPerQuarter;
 import java.util.ArrayList;
 import java.util.List;
 

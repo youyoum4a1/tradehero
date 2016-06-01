@@ -1,8 +1,8 @@
-package com.tradehero.th.api.kyc;
+package com.ayondo.academy.api.kyc;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.live.LiveBrokerId;
+import com.ayondo.academy.api.live.LiveBrokerId;
 
 public class KYCFormOptionsId implements DTOKey
 {

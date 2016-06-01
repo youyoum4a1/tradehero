@@ -1,4 +1,4 @@
-package com.tradehero.th.api;
+package com.ayondo.academy.api;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;

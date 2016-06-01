@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.security;
+package com.ayondo.academy.persistence.security;
 
 import dagger.Module;
 

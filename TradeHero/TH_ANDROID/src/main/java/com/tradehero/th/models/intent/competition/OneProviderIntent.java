@@ -1,13 +1,13 @@
-package com.tradehero.th.models.intent.competition;
+package com.ayondo.academy.models.intent.competition;
 
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.fragments.competition.ProviderVideoListFragment;
 import java.util.List;
 
 abstract public class OneProviderIntent extends ProviderIntent

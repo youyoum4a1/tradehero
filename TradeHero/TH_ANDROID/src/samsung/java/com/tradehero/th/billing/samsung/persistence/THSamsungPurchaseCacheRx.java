@@ -1,12 +1,12 @@
-package com.tradehero.th.billing.samsung.persistence;
+package com.ayondo.academy.billing.samsung.persistence;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.billing.samsung.THSamsungOrderId;
-import com.tradehero.th.billing.samsung.THSamsungPurchase;
+import com.ayondo.academy.billing.samsung.THSamsungOrderId;
+import com.ayondo.academy.billing.samsung.THSamsungPurchase;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

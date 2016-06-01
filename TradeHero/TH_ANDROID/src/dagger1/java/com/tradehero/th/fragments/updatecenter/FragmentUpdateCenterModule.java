@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.updatecenter;
+package com.ayondo.academy.fragments.updatecenter;
 
-import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationItemView;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationsView;
+import com.ayondo.academy.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
+import com.ayondo.academy.fragments.updatecenter.notifications.NotificationClickHandler;
+import com.ayondo.academy.fragments.updatecenter.notifications.NotificationItemView;
+import com.ayondo.academy.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.ayondo.academy.fragments.updatecenter.notifications.NotificationsView;
 import dagger.Module;
 
 @Module(

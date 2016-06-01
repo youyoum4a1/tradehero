@@ -1,8 +1,8 @@
-package com.tradehero.th.models.discussion;
+package com.ayondo.academy.models.discussion;
 
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionDTOFactory;
-import com.tradehero.th.models.ThroughDTOProcessor;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.discussion.DiscussionDTOFactory;
+import com.ayondo.academy.models.ThroughDTOProcessor;
 
 public class DTOProcessorDiscussion extends ThroughDTOProcessor<DiscussionDTO>
 {

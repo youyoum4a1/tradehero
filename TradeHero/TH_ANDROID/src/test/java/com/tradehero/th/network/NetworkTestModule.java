@@ -1,7 +1,7 @@
-package com.tradehero.th.network;
+package com.ayondo.academy.network;
 
-import com.tradehero.th.network.retrofit.RetrofitTestModule;
-import com.tradehero.th.network.service.NetworkServiceTestModule;
+import com.ayondo.academy.network.retrofit.RetrofitTestModule;
+import com.ayondo.academy.network.service.NetworkServiceTestModule;
 import dagger.Module;
 
 @Module(

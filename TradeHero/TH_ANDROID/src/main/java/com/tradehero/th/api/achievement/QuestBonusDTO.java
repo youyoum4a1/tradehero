@@ -1,8 +1,8 @@
-package com.tradehero.th.api.achievement;
+package com.ayondo.academy.api.achievement;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.achievement.key.QuestBonusId;
+import com.ayondo.academy.api.achievement.key.QuestBonusId;
 
 public class QuestBonusDTO implements DTO
 {

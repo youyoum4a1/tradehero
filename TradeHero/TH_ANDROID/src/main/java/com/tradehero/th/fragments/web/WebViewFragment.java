@@ -1,5 +1,5 @@
 
-package com.tradehero.th.fragments.web;
+package com.ayondo.academy.fragments.web;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -11,11 +11,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.utils.AlertDialogRxUtil;
+import com.ayondo.academy.utils.route.THRouter;
 import java.util.Map;
 import javax.inject.Inject;
 import timber.log.Timber;

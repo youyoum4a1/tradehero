@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.trade;
+package com.ayondo.academy.fragments.trade;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.security.SecurityCircleProgressBar;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.security.SecurityCircleProgressBar;
 
 public class StockDetailActionBarRelativeLayout extends StockActionBarRelativeLayout
 {

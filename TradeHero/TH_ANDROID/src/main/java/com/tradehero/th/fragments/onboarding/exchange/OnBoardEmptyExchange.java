@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.onboarding.exchange;
+package com.ayondo.academy.fragments.onboarding.exchange;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import com.tradehero.th.api.DTOView;
+import com.ayondo.academy.api.DTOView;
 
 public class OnBoardEmptyExchange extends TextView
     implements DTOView<SelectableExchangeDTO>

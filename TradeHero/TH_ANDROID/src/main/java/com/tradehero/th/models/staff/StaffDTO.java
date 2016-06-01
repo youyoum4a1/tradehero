@@ -1,4 +1,4 @@
-package com.tradehero.th.models.staff;
+package com.ayondo.academy.models.staff;
 
 public class StaffDTO
 {

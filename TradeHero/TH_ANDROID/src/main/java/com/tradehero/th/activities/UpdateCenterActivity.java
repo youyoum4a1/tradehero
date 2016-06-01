@@ -1,11 +1,11 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.updatecenter.UpdateCenterFragment;
 
 public class UpdateCenterActivity extends OneFragmentActivity
 {

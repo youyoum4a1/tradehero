@@ -1,6 +1,6 @@
-package com.tradehero.th.fragments.billing.store;
+package com.ayondo.academy.fragments.billing.store;
 
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class StoreItemRestoreDisplayDTO extends StoreItemDisplayDTO
 {

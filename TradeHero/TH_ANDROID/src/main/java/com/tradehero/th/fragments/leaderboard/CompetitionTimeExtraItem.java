@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.time.TimeFormatFloor;
-import com.tradehero.th.adapters.WrapperRecyclerAdapter;
+import com.ayondo.academy.adapters.WrapperRecyclerAdapter;
 import java.util.Date;
 import java.util.List;
 import org.ocpsoft.prettytime.Duration;

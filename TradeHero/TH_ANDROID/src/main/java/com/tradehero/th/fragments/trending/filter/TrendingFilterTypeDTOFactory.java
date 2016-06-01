@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.trending.filter;
+package com.ayondo.academy.fragments.trending.filter;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.fragments.trending.TrendingStockTabType;
+import com.ayondo.academy.fragments.trending.TrendingStockTabType;
 
 public class TrendingFilterTypeDTOFactory
 {

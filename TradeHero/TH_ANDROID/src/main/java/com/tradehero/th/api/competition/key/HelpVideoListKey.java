@@ -1,7 +1,7 @@
-package com.tradehero.th.api.competition.key;
+package com.ayondo.academy.api.competition.key;
 
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.competition.ProviderId;
+import com.ayondo.academy.api.competition.ProviderId;
 
 public class HelpVideoListKey implements DTOKey
 {

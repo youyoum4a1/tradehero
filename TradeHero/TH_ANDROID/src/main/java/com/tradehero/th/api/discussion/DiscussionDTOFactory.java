@@ -1,10 +1,10 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
-import com.tradehero.th.api.discussion.form.ReplyDiscussionFormDTO;
-import com.tradehero.th.api.users.CurrentUserId;
+import com.ayondo.academy.api.discussion.form.DiscussionFormDTO;
+import com.ayondo.academy.api.discussion.form.ReplyDiscussionFormDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
 import java.util.Date;
 
 public class DiscussionDTOFactory

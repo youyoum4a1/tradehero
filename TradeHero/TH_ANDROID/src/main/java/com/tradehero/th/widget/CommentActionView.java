@@ -1,11 +1,11 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.CompoundButton;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class CommentActionView extends CompoundButton
 {

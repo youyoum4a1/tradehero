@@ -1,16 +1,16 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.pagination.RangeDTO;
-import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
-import com.tradehero.th.api.timeline.TimelineSection;
-import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
-import com.tradehero.th.api.timeline.key.TimelineKey;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.timeline.TimelineDTOProcessor;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.pagination.RangeDTO;
+import com.ayondo.academy.api.timeline.TimelineDTO;
+import com.ayondo.academy.api.timeline.TimelineItemDTO;
+import com.ayondo.academy.api.timeline.TimelineItemShareRequestDTO;
+import com.ayondo.academy.api.timeline.TimelineSection;
+import com.ayondo.academy.api.timeline.key.TimelineItemDTOKey;
+import com.ayondo.academy.api.timeline.key.TimelineKey;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.models.timeline.TimelineDTOProcessor;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;

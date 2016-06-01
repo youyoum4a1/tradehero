@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.competition.zone.dto;
+package com.ayondo.academy.fragments.competition.zone.dto;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.CompetitionPreSeasonDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.CompetitionPreSeasonDTO;
 
 public class CompetitionZonePreSeasonDTO extends CompetitionZoneDTO
 {

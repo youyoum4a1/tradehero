@@ -1,9 +1,9 @@
-package com.tradehero.th.api.trade;
+package com.ayondo.academy.api.trade;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOKey;
-import com.tradehero.th.api.position.OwnedPositionId;
+import com.ayondo.academy.api.position.OwnedPositionId;
 
 public class OwnedTradeId extends OwnedPositionId implements DTOKey
 {

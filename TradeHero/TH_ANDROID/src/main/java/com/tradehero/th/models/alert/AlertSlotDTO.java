@@ -1,10 +1,10 @@
-package com.tradehero.th.models.alert;
+package com.ayondo.academy.models.alert;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.alert.AlertCompactDTOList;
-import com.tradehero.th.api.system.SystemStatusDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.ayondo.academy.api.alert.AlertCompactDTOList;
+import com.ayondo.academy.api.system.SystemStatusDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
 
 public class AlertSlotDTO implements DTO
 {

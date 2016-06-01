@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.dagger;
+package com.ayondo.academy.utils.dagger;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

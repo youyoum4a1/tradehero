@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.competition.zone;
+package com.ayondo.academy.fragments.competition.zone;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,8 +7,8 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.competition.zone.dto.CompetitionZoneDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.competition.zone.dto.CompetitionZoneDTO;
 import timber.log.Timber;
 
 public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneListItemView

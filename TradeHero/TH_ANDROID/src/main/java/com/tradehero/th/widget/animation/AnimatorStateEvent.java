@@ -1,4 +1,4 @@
-package com.tradehero.th.widget.animation;
+package com.ayondo.academy.widget.animation;
 
 import android.animation.Animator;
 import android.support.annotation.NonNull;

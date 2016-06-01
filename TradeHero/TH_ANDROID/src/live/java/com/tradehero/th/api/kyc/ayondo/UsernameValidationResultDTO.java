@@ -1,4 +1,4 @@
-package com.tradehero.th.api.kyc.ayondo;
+package com.ayondo.academy.api.kyc.ayondo;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;

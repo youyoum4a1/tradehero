@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.exception;
+package com.ayondo.academy.billing.exception;
 
 public class PurchaseReportedToOtherUserException extends RuntimeException
 {

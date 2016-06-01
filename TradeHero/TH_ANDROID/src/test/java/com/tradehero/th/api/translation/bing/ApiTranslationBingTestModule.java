@@ -1,4 +1,4 @@
-package com.tradehero.th.api.translation.bing;
+package com.ayondo.academy.api.translation.bing;
 
 import dagger.Module;
 

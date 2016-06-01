@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,31 +13,31 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.UserOnLeaderboardKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
-import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
-import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
-import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
-import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.MultiRecyclerScrollListener;
-import com.tradehero.th.widget.list.SingleExpandingListViewListener;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.LeaderboardDTO;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.PagedLeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.PerPagedLeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.UserOnLeaderboardKey;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.fragments.leaderboard.filter.LeaderboardFilterFragment;
+import com.ayondo.academy.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
+import com.ayondo.academy.persistence.leaderboard.LeaderboardCacheRx;
+import com.ayondo.academy.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
+import com.ayondo.academy.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.widget.MultiRecyclerScrollListener;
+import com.ayondo.academy.widget.list.SingleExpandingListViewListener;
+
 import javax.inject.Inject;
+
 import retrofit.RetrofitError;
 import rx.Observable;
 import rx.android.app.AppObservable;
@@ -56,7 +56,8 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
     public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserRecyclerFragment.class.getName();
     private static final String BUNDLE_KEY_LEADERBOARD_TYPE_ID = LeaderboardMarkUserRecyclerFragment.class.getName() + ".leaderboardTypeId";
 
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject @ForUser SharedPreferences preferences;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardCacheRx leaderboardCache;
@@ -141,7 +142,8 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         switch (item.getItemId())
         {
             case android.R.id.home:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Back));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Back));
                 break;
             case R.id.button_leaderboard_filter:
                 pushFilterFragmentIn();

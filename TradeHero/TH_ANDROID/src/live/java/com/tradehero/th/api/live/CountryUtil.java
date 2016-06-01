@@ -1,10 +1,10 @@
-package com.tradehero.th.api.live;
+package com.ayondo.academy.api.live;
 
 import android.support.annotation.NonNull;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.PhoneNumberUtilPublic;
 import com.google.i18n.phonenumbers.Phonemetadata;
-import com.tradehero.th.api.market.Country;
+import com.ayondo.academy.api.market.Country;
 import timber.log.Timber;
 
 public class CountryUtil

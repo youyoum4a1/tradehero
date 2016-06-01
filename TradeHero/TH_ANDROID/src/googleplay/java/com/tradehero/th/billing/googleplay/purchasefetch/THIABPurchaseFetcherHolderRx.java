@@ -1,10 +1,10 @@
-package com.tradehero.th.billing.googleplay.purchasefetch;
+package com.ayondo.academy.billing.googleplay.purchasefetch;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.purchasefetch.IABPurchaseFetcherHolderRx;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.purchasefetch.THPurchaseFetcherHolderRx;
+import com.ayondo.academy.billing.googleplay.THIABOrderId;
+import com.ayondo.academy.billing.googleplay.THIABPurchase;
+import com.ayondo.academy.billing.purchasefetch.THPurchaseFetcherHolderRx;
 
 public interface THIABPurchaseFetcherHolderRx
         extends

@@ -1,4 +1,4 @@
-package com.tradehero.th.base;
+package com.ayondo.academy.base;
 
 import android.support.multidex.MultiDexApplication;
 

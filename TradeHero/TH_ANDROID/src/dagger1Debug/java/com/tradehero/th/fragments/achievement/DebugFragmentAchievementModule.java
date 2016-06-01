@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.achievement;
+package com.ayondo.academy.fragments.achievement;
 
 import dagger.Module;
 

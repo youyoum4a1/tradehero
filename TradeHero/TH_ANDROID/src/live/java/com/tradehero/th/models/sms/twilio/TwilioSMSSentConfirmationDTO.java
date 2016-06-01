@@ -1,10 +1,10 @@
-package com.tradehero.th.models.sms.twilio;
+package com.ayondo.academy.models.sms.twilio;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.R;
-import com.tradehero.th.models.sms.SMSId;
-import com.tradehero.th.models.sms.SMSSentConfirmationDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.models.sms.SMSId;
+import com.ayondo.academy.models.sms.SMSSentConfirmationDTO;
 import java.util.Date;
 
 public class TwilioSMSSentConfirmationDTO implements SMSSentConfirmationDTO

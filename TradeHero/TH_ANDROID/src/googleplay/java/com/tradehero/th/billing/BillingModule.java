@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import com.tradehero.common.billing.ProductDetailCacheRx;
 import com.tradehero.common.billing.ProductIdentifierListCacheRx;
@@ -6,10 +6,10 @@ import com.tradehero.common.billing.ProductPurchaseCacheRx;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCacheRx;
-import com.tradehero.th.billing.googleplay.exception.THIABExceptionFactory;
-import com.tradehero.th.persistence.billing.googleplay.IABSKUListCacheRx;
-import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
-import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
+import com.ayondo.academy.billing.googleplay.exception.THIABExceptionFactory;
+import com.ayondo.academy.persistence.billing.googleplay.IABSKUListCacheRx;
+import com.ayondo.academy.persistence.billing.googleplay.THIABProductDetailCacheRx;
+import com.ayondo.academy.persistence.billing.googleplay.THIABPurchaseCacheRx;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

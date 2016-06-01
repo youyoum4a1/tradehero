@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.sector;
+package com.ayondo.academy.fragments.onboarding.sector;
 
 import android.content.Context;
 import android.support.annotation.DrawableRes;
@@ -10,10 +10,10 @@ import android.widget.TextView;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.api.SelectableDTO;
-import com.tradehero.th.R;
-import com.tradehero.th.api.market.SectorDTO;
-import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
-import com.tradehero.th.fragments.onboarding.exchange.TopStockListView;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.market.SectorDTO;
+import com.ayondo.academy.fragments.onboarding.OnBoardSelectableViewLinear;
+import com.ayondo.academy.fragments.onboarding.exchange.TopStockListView;
 import javax.inject.Inject;
 
 public class OnBoardSectorItemView extends OnBoardSelectableViewLinear<SectorDTO, SelectableDTO<SectorDTO>>

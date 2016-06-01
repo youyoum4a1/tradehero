@@ -2,9 +2,9 @@ package com.tradehero.common.text;
 
 import android.support.annotation.NonNull;
 import android.view.View;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.auth.weibo;
+package com.ayondo.academy.auth.weibo;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,12 +8,12 @@ import android.support.annotation.Nullable;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuth;
 import com.tradehero.common.activities.ActivityResultRequester;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.auth.SocialAuthenticationProvider;
-import com.tradehero.th.network.service.SocialLinker;
-import com.tradehero.th.network.share.SocialConstants;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.auth.AuthData;
+import com.ayondo.academy.auth.SocialAuthenticationProvider;
+import com.ayondo.academy.network.service.SocialLinker;
+import com.ayondo.academy.network.share.SocialConstants;
+import com.ayondo.academy.utils.Constants;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

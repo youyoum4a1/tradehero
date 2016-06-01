@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.trade;
+package com.ayondo.academy.fragments.trade;
 
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.position.PositionDTOKey;
-import com.tradehero.th.api.trade.TradeDTO;
+import com.ayondo.academy.api.position.PositionDTOKey;
+import com.ayondo.academy.api.trade.TradeDTO;
 
 public class PositionTradeDTOKey implements DTO
 {

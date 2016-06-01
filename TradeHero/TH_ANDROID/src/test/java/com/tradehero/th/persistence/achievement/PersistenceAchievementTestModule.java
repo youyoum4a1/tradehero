@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.achievement;
+package com.ayondo.academy.persistence.achievement;
 
 import dagger.Module;
 

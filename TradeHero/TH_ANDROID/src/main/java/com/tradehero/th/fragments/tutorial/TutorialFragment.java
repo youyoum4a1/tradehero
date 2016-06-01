@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.tutorial;
+package com.ayondo.academy.fragments.tutorial;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

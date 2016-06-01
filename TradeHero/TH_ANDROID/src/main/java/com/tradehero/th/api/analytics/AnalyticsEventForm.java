@@ -1,4 +1,4 @@
-package com.tradehero.th.api.analytics;
+package com.ayondo.academy.api.analytics;
 
 public class AnalyticsEventForm
 {

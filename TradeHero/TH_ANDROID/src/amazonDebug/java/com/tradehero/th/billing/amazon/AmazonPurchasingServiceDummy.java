@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,7 +21,7 @@ import com.amazon.device.iap.model.RequestId;
 import com.amazon.device.iap.model.UserData;
 import com.amazon.device.iap.model.UserDataResponse;
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
-import com.tradehero.th.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.CurrentUserId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;

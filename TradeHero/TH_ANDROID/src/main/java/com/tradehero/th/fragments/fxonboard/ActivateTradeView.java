@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.fxonboard;
+package com.ayondo.academy.fragments.fxonboard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import com.tradehero.th.R;
-import com.tradehero.th.rx.ReplaceWithFunc1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
 import rx.Observable;
 import rx.android.view.ViewObservable;
 

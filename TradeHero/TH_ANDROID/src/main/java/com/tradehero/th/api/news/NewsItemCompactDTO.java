@@ -1,10 +1,10 @@
-package com.tradehero.th.api.news;
+package com.ayondo.academy.api.news;
 
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.ExtendedDTO;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.news.key.NewsItemDTOKey;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.ExtendedDTO;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.news.key.NewsItemDTOKey;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
 
 public class NewsItemCompactDTO extends AbstractDiscussionCompactDTO<NewsItemCompactDTO>
 {

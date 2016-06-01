@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.support.annotation.NonNull;
@@ -20,7 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.squareup.okhttp.Cache;
 import com.squareup.picasso.LruCache;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
@@ -29,63 +28,57 @@ import com.tradehero.common.rx.DurationMeasurer;
 import com.tradehero.common.rx.MinimumApparentDelayer;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.OnBoardActivity;
-import com.tradehero.th.api.i18n.LanguageDTO;
-import com.tradehero.th.api.i18n.LanguageDTOFactory;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.SocialNetworkFormDTO;
-import com.tradehero.th.api.translation.TranslationToken;
-import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AuthenticationProvider;
-import com.tradehero.th.auth.SocialAuth;
-import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.billing.report.PurchaseReportResult;
-import com.tradehero.th.fragments.location.LocationListFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.translation.TranslatableLanguageListFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.push.PushNotificationManager;
-import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
-import com.tradehero.th.models.share.SocialShareHelper;
-import com.tradehero.th.network.ServerEndpoint;
-import com.tradehero.th.network.service.SessionServiceWrapper;
-import com.tradehero.th.network.service.SocialServiceWrapper;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.prefs.AuthHeader;
-import com.tradehero.th.persistence.prefs.ResetHelpScreens;
-import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
-import com.tradehero.th.persistence.translation.TranslationTokenKey;
-import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.ReplaceWithFunc1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.SocialAlertDialogRxUtil;
-import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.VersionUtils;
-import com.tradehero.th.utils.dagger.ForPicasso;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.MarketSegment;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.OnBoardActivity;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.social.SocialNetworkFormDTO;
+import com.ayondo.academy.api.translation.UserTranslationSettingDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.auth.AuthenticationProvider;
+import com.ayondo.academy.auth.SocialAuth;
+import com.ayondo.academy.billing.THBillingInteractorRx;
+import com.ayondo.academy.billing.report.PurchaseReportResult;
+import com.ayondo.academy.fragments.location.LocationListFragment;
+import com.ayondo.academy.fragments.web.WebViewFragment;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.misc.exception.THException;
+import com.ayondo.academy.models.push.PushNotificationManager;
+import com.ayondo.academy.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+import com.ayondo.academy.models.share.SocialShareHelper;
+import com.ayondo.academy.network.ServerEndpoint;
+import com.ayondo.academy.network.service.SessionServiceWrapper;
+import com.ayondo.academy.network.service.SocialServiceWrapper;
+import com.ayondo.academy.network.service.UserServiceWrapper;
+import com.ayondo.academy.persistence.prefs.AuthHeader;
+import com.ayondo.academy.persistence.prefs.ResetHelpScreens;
+import com.ayondo.academy.persistence.translation.TranslationTokenCacheRx;
+import com.ayondo.academy.persistence.translation.UserTranslationSettingPreference;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.rx.view.DismissDialogAction0;
+import com.ayondo.academy.utils.AlertDialogRxUtil;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.SocialAlertDialogRxUtil;
+import com.ayondo.academy.utils.StringUtils;
+import com.ayondo.academy.utils.VersionUtils;
+import com.ayondo.academy.utils.dagger.ForPicasso;
+import com.ayondo.academy.utils.metrics.MarketSegment;
 import com.urbanairship.UAirship;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -101,7 +94,8 @@ public final class SettingsFragment extends BasePreferenceFragment
     private static final Pair<Long, TimeUnit> APPARENT_DURATION = Pair.create(500l, TimeUnit.MILLISECONDS);
     @Inject CurrentUserId currentUserId;
     @Inject @ServerEndpoint StringPreference serverEndpoint;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject protected THBillingInteractorRx billingInteractorRx;
     @Inject protected SessionServiceWrapper sessionServiceWrapper;
     @Inject @AuthHeader String authHeader;
@@ -192,7 +186,8 @@ public final class SettingsFragment extends BasePreferenceFragment
     {
         super.onResume();
 
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Settings));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Settings));
 
         if (userProfileDTO != null)
         {
@@ -609,7 +604,8 @@ public final class SettingsFragment extends BasePreferenceFragment
 
     public void handleFaqClick()
     {
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_FAQ));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_FAQ));
         String faqUrl = getString(R.string.th_faq_url);
         Bundle bundle = new Bundle();
         WebViewFragment.putUrl(bundle, faqUrl);

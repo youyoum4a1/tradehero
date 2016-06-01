@@ -1,7 +1,7 @@
-package com.tradehero.th.models.sms.twilio;
+package com.ayondo.academy.models.sms.twilio;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.models.sms.SMSRequest;
+import com.ayondo.academy.models.sms.SMSRequest;
 
 public class TwilioSMSRequest implements SMSRequest
 {

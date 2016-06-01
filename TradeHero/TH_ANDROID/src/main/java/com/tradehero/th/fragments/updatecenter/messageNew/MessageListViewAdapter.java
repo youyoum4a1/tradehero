@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.updatecenter.messageNew;
+package com.ayondo.academy.fragments.updatecenter.messageNew;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,8 +12,8 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.widget.swipe.adapters.BaseSwipeAdapter;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.MessageHeaderDTO;
 import java.util.ArrayList;
 import java.util.List;
 import org.ocpsoft.prettytime.PrettyTime;

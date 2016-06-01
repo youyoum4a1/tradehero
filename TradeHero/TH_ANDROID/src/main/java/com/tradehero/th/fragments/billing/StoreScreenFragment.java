@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing;
+package com.ayondo.academy.fragments.billing;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -12,41 +12,42 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.tester.BillingTestResult;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.TypedRecyclerAdapter;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.billing.THProductDetail;
-import com.tradehero.th.fragments.base.BaseFragment;
-import com.tradehero.th.fragments.billing.store.StoreItemDisplayDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemProductDisplayDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemRestoreDisplayDTO;
-import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.TypedRecyclerAdapter;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.billing.ProductIdentifierDomain;
+import com.ayondo.academy.billing.THBillingInteractorRx;
+import com.ayondo.academy.billing.THProductDetail;
+import com.ayondo.academy.fragments.base.BaseFragment;
+import com.ayondo.academy.fragments.billing.store.StoreItemDisplayDTO;
+import com.ayondo.academy.fragments.billing.store.StoreItemProductDisplayDTO;
+import com.ayondo.academy.fragments.billing.store.StoreItemRestoreDisplayDTO;
+import com.ayondo.academy.fragments.tutorial.WithTutorial;
+import com.ayondo.academy.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.route.THRouter;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -66,7 +67,8 @@ public class StoreScreenFragment extends BaseFragment
     public static boolean alreadyNotifiedNeedCreateAccount = false;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
@@ -183,7 +185,8 @@ public class StoreScreenFragment extends BaseFragment
     @Override public void onStart()
     {
         super.onStart();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
         fetchUserProfile();
 

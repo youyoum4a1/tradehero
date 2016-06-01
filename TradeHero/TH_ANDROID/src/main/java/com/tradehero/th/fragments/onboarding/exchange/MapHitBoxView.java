@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.exchange;
+package com.ayondo.academy.fragments.onboarding.exchange;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -6,8 +6,8 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-import com.tradehero.th.R;
-import com.tradehero.th.api.market.MarketRegion;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.market.MarketRegion;
 
 public class MapHitBoxView extends ImageView
 {

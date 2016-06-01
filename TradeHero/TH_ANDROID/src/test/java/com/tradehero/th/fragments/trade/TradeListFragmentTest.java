@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.trade;
+package com.ayondo.academy.fragments.trade;
 
 import android.content.Context;
 import android.os.Bundle;
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.TestConstants;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.DashboardActivityExtended;
-import com.tradehero.th.fragments.DashboardNavigator;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.activities.DashboardActivity;
+import com.ayondo.academy.activities.DashboardActivityExtended;
+import com.ayondo.academy.fragments.DashboardNavigator;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;

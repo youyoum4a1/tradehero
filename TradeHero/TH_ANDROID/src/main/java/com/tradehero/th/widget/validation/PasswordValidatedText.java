@@ -1,12 +1,12 @@
-package com.tradehero.th.widget.validation;
+package com.ayondo.academy.widget.validation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.prefs.AuthHeader;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.persistence.prefs.AuthHeader;
 import javax.inject.Inject;
 
 public class PasswordValidatedText extends ValidatedText

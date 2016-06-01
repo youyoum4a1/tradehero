@@ -1,7 +1,7 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.market.CurrencyDTO;
+import com.ayondo.academy.api.market.CurrencyDTO;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;

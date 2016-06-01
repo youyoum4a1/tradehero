@@ -1,11 +1,11 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.auth.AccessTokenForm;
-import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.social.ReferralCodeShareFormDTO;
-import com.tradehero.th.api.social.SocialNetworkFormDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.auth.AccessTokenForm;
+import com.ayondo.academy.api.form.UserFormDTO;
+import com.ayondo.academy.api.social.ReferralCodeShareFormDTO;
+import com.ayondo.academy.api.social.SocialNetworkFormDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
 import retrofit.http.Body;
 import retrofit.http.POST;
 import retrofit.http.Path;

@@ -1,11 +1,11 @@
-package com.tradehero.th.fragments.live.ayondo;
+package com.ayondo.academy.fragments.live.ayondo;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import com.tradehero.th.fragments.live.PrevNextObservable;
+import com.ayondo.academy.fragments.live.PrevNextObservable;
 import rx.Observable;
 import rx.functions.Func1;
 

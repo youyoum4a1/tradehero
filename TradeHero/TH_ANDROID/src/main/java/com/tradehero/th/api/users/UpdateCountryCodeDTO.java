@@ -1,4 +1,4 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
 public class UpdateCountryCodeDTO
 {

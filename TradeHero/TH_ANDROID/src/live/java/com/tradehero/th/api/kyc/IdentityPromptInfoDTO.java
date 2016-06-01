@@ -1,8 +1,8 @@
-package com.tradehero.th.api.kyc;
+package com.ayondo.academy.api.kyc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.market.Country;
+import com.ayondo.academy.api.market.Country;
 
 public class IdentityPromptInfoDTO implements DTO
 {

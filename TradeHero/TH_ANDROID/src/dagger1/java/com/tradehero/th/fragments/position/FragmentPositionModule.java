@@ -1,7 +1,7 @@
-package com.tradehero.th.fragments.position;
+package com.ayondo.academy.fragments.position;
 
-import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
-import com.tradehero.th.fragments.position.view.PositionView;
+import com.ayondo.academy.fragments.position.partial.PositionPartialTopView;
+import com.ayondo.academy.fragments.position.view.PositionView;
 import dagger.Module;
 
 @Module(

@@ -1,21 +1,22 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
+
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
 
 public class NavigationAnalyticsReporter implements DashboardNavigator.DashboardFragmentWatcher
 {
-    private final Analytics analytics;
+    //TODO Change Analytics
+    //private final Analytics analytics;
     private final DashboardTabHost dashboardTabHost;
 
-    public NavigationAnalyticsReporter(Analytics analytics, DashboardTabHost dashboardTabHost)
+    public NavigationAnalyticsReporter( DashboardTabHost dashboardTabHost)
     {
-        this.analytics = analytics;
+        //TODO Change Analytics
+        //Analytics was 1st argument
+        //this.analytics = analytics;
         this.dashboardTabHost = dashboardTabHost;
     }
 
@@ -23,9 +24,8 @@ public class NavigationAnalyticsReporter implements DashboardNavigator.Dashboard
     {
         if (RootFragmentType.values()[dashboardTabHost.getCurrentTab()].fragmentClass == fragmentClass)
         {
-            analytics.fireEvent(new SingleAttributeEvent(
-                    RootFragmentType.values()[dashboardTabHost.getCurrentTab()].analyticsString,
-                    AnalyticsConstants.ClickedFrom, AnalyticsConstants.Bottom));
+            //TODO Change Analytics
+            //analytics.fireEvent(new SingleAttributeEvent(RootFragmentType.values()[dashboardTabHost.getCurrentTab()].analyticsString, AnalyticsConstants.ClickedFrom, AnalyticsConstants.Bottom));
         }
         else
         {
@@ -33,8 +33,8 @@ public class NavigationAnalyticsReporter implements DashboardNavigator.Dashboard
             {
                 if (rootFragmentType.fragmentClass == fragmentClass)
                 {
-                    analytics.fireEvent(new SingleAttributeEvent(rootFragmentType.analyticsString,
-                            AnalyticsConstants.ClickedFrom, AnalyticsConstants.Side));
+                    //TODO Change Analytics
+                    //analytics.fireEvent(new SingleAttributeEvent(rootFragmentType.analyticsString, AnalyticsConstants.ClickedFrom, AnalyticsConstants.Side));
                     return;
                 }
             }

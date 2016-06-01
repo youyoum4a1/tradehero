@@ -1,11 +1,11 @@
-package com.tradehero.th.api.leaderboard.competition;
+package com.ayondo.academy.api.leaderboard.competition;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.competition.key.CompetitionId;
-import com.tradehero.th.api.leaderboard.key.PagedLeaderboardKey;
-import com.tradehero.th.api.leaderboard.key.PerPagedLeaderboardKey;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.competition.key.CompetitionId;
+import com.ayondo.academy.api.leaderboard.key.PagedLeaderboardKey;
+import com.ayondo.academy.api.leaderboard.key.PerPagedLeaderboardKey;
 
 public class CompetitionLeaderboardId extends PerPagedLeaderboardKey
 {

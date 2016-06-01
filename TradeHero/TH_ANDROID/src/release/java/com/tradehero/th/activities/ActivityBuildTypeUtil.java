@@ -1,19 +1,23 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+
 import com.crashlytics.android.Crashlytics;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.utils.Constants;
+
 import java.util.Date;
+
+import io.fabric.sdk.android.Fabric;
 
 public class ActivityBuildTypeUtil
 {
     public static void startCrashReports(@NonNull Context context)
     {
-        Crashlytics.start(context);
-        Crashlytics.setString(Constants.TH_CLIENT_TYPE,
-                String.format("%s:%s", Constants.DEVICE_TYPE, Constants.TAP_STREAM_TYPE.name()));
+        Fabric.with(context, new Crashlytics());
+        //Crashlytics.start(context);
+        Crashlytics.setString(Constants.TH_CLIENT_TYPE, String.format("%s:%s", Constants.DEVICE_TYPE, Constants.TAP_STREAM_TYPE.name()));
     }
 
     public static void setUpCrashReports(@NonNull UserBaseKey currentUserKey)

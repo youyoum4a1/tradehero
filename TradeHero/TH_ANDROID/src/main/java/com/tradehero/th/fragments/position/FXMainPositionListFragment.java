@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position;
+package com.ayondo.academy.fragments.position;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,12 +16,12 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
-import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.fragments.base.ActionBarOwnerMixin;
+import com.ayondo.academy.fragments.billing.BasePurchaseManagerFragment;
+import com.ayondo.academy.utils.route.THRouter;
 import javax.inject.Inject;
 
 public class FXMainPositionListFragment extends BasePurchaseManagerFragment

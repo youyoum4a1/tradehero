@@ -1,4 +1,4 @@
-package com.tradehero.th.api.portfolio.key;
+package com.ayondo.academy.api.portfolio.key;
 
 import com.tradehero.common.persistence.DTOKey;
 

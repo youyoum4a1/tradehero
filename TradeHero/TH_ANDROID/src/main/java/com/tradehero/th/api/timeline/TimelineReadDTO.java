@@ -1,4 +1,4 @@
-package com.tradehero.th.api.timeline;
+package com.ayondo.academy.api.timeline;
 
 import java.util.List;
 

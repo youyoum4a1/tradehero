@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,9 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.android.internal.util.Predicate;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
@@ -27,52 +25,54 @@ import com.squareup.widgets.AspectRatioImageViewCallback;
 import com.tradehero.common.annotation.ViewVisibilityValue;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.StockChartActivity;
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.TillExchangeOpenDuration;
-import com.tradehero.th.api.security.compact.WarrantDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
-import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
-import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.FragmentOuterElements;
-import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
-import com.tradehero.th.fragments.trade.AlertDialogBuySellRxUtil;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.chart.ChartDTO;
-import com.tradehero.th.models.chart.ChartDTOFactory;
-import com.tradehero.th.models.chart.ChartSize;
-import com.tradehero.th.models.chart.ChartTimeSpan;
-import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
-import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.news.TimeSpanButtonSet;
-import dagger.Lazy;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.StockChartActivity;
+import com.ayondo.academy.api.alert.AlertCompactDTO;
+import com.ayondo.academy.api.quote.QuoteDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.security.TillExchangeOpenDuration;
+import com.ayondo.academy.api.security.compact.WarrantDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTOList;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.alert.AlertCreateDialogFragment;
+import com.ayondo.academy.fragments.alert.AlertEditDialogFragment;
+import com.ayondo.academy.fragments.alert.BaseAlertEditDialogFragment;
+import com.ayondo.academy.fragments.base.ActionBarOwnerMixin;
+import com.ayondo.academy.fragments.base.FragmentOuterElements;
+import com.ayondo.academy.fragments.trade.AbstractBuySellFragment;
+import com.ayondo.academy.fragments.trade.AlertDialogBuySellRxUtil;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.chart.ChartDTO;
+import com.ayondo.academy.models.chart.ChartDTOFactory;
+import com.ayondo.academy.models.chart.ChartSize;
+import com.ayondo.academy.models.chart.ChartTimeSpan;
+import com.ayondo.academy.models.number.THSignedMoney;
+import com.ayondo.academy.models.number.THSignedNumber;
+import com.ayondo.academy.models.number.THSignedPercentage;
+import com.ayondo.academy.persistence.alert.AlertCompactListCacheRx;
+import com.ayondo.academy.persistence.security.SecurityCompactCacheRx;
+import com.ayondo.academy.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.utils.DateUtils;
+import com.ayondo.academy.widget.news.TimeSpanButtonSet;
+
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import dagger.Lazy;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -143,7 +143,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Inject SecurityCompactCacheRx securityCompactCacheRx;
     @Inject Picasso picasso;
     @Inject ChartDTOFactory chartDTOFactory;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject FragmentOuterElements fragmentElements;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
@@ -268,7 +269,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         {
             @Override public void onTimeSpanButtonSelected(ChartTimeSpan selected)
             {
-                analytics.fireEvent(new ChartTimeEvent(securityId, selected));
+                //TODO Change Analytics
+                //analytics.fireEvent(new ChartTimeEvent(securityId, selected));
                 linkWith(selected);
             }
         };
@@ -614,12 +616,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         WatchlistEditFragment.putSecurityId(args, securityId);
         if (isAdd)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
             ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
         }
         else
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
             ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
         }
         if (navigator != null)

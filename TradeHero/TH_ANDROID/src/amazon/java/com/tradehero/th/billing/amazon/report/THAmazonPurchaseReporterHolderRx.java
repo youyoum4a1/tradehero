@@ -1,10 +1,10 @@
-package com.tradehero.th.billing.amazon.report;
+package com.ayondo.academy.billing.amazon.report;
 
 import com.tradehero.common.billing.amazon.AmazonSKU;
-import com.tradehero.th.billing.amazon.THAmazonOrderId;
-import com.tradehero.th.billing.amazon.THAmazonProductDetail;
-import com.tradehero.th.billing.amazon.THAmazonPurchase;
-import com.tradehero.th.billing.report.THPurchaseReporterHolderRx;
+import com.ayondo.academy.billing.amazon.THAmazonOrderId;
+import com.ayondo.academy.billing.amazon.THAmazonProductDetail;
+import com.ayondo.academy.billing.amazon.THAmazonPurchase;
+import com.ayondo.academy.billing.report.THPurchaseReporterHolderRx;
 
 public interface THAmazonPurchaseReporterHolderRx
         extends THPurchaseReporterHolderRx<

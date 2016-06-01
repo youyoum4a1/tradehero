@@ -1,9 +1,9 @@
-package com.tradehero.th.api.position;
+package com.ayondo.academy.api.position;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.th.api.UniqueFieldDTODeserialiser;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.api.UniqueFieldDTODeserialiser;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;

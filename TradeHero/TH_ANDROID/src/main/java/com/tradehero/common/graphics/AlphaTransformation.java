@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import java.io.IOException;
 
 public class AlphaTransformation implements com.squareup.picasso.Transformation

@@ -1,4 +1,4 @@
-package com.tradehero.th.auth;
+package com.ayondo.academy.auth;
 
 public enum AuthenticationMode
 {

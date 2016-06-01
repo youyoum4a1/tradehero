@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.competition.zone.dto;
+package com.ayondo.academy.fragments.competition.zone.dto;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderPrizePoolDTO;
-import com.tradehero.th.models.number.THSignedNumber;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderPrizePoolDTO;
+import com.ayondo.academy.models.number.THSignedNumber;
 
 public class CompetitionZonePrizePoolDTO extends CompetitionZoneDTO
 {

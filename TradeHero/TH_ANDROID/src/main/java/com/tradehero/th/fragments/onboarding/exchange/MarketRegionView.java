@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.onboarding.exchange;
+package com.ayondo.academy.fragments.onboarding.exchange;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import com.tradehero.th.R;
-import com.tradehero.th.api.market.MarketRegion;
-import com.tradehero.th.models.market.MarketRegionDisplayUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.market.MarketRegion;
+import com.ayondo.academy.models.market.MarketRegionDisplayUtil;
 
 public class MarketRegionView extends TextView
 {

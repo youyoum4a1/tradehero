@@ -1,8 +1,8 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.education.PaginatedVideoCategoryDTO;
-import com.tradehero.th.api.education.PaginatedVideoDTO;
-import com.tradehero.th.api.education.VideoDTO;
+import com.ayondo.academy.api.education.PaginatedVideoCategoryDTO;
+import com.ayondo.academy.api.education.PaginatedVideoDTO;
+import com.ayondo.academy.api.education.VideoDTO;
 import java.util.List;
 import retrofit.http.GET;
 import retrofit.http.Query;

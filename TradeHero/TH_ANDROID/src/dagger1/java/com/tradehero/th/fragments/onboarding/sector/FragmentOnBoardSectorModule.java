@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.sector;
+package com.ayondo.academy.fragments.onboarding.sector;
 
 import dagger.Module;
 

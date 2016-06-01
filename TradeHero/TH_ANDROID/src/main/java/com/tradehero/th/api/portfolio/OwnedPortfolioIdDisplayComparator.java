@@ -1,4 +1,4 @@
-package com.tradehero.th.api.portfolio;
+package com.ayondo.academy.api.portfolio;
 
 import java.io.Serializable;
 import java.util.Comparator;

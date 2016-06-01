@@ -1,15 +1,15 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.KeyGenerator;
-import com.tradehero.th.api.discussion.key.MessageHeaderId;
-import com.tradehero.th.api.discussion.key.MessageHeaderUserId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.api.KeyGenerator;
+import com.ayondo.academy.api.discussion.key.MessageHeaderId;
+import com.ayondo.academy.api.discussion.key.MessageHeaderUserId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.inject.HierarchyInjector;
 import java.util.Date;
 import java.util.Random;
 import javax.inject.Inject;

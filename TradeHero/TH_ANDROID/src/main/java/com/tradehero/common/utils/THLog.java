@@ -5,7 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.util.Base64;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.utils.Constants;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import timber.log.Timber;
@@ -21,7 +21,7 @@ public class THLog
             {
                 PackageInfo info = context
                         .getPackageManager()
-                        .getPackageInfo("com.tradehero.th", PackageManager.GET_SIGNATURES);
+                        .getPackageInfo("com.ayondo.academy", PackageManager.GET_SIGNATURES);
                 for (Signature signature : info.signatures)
                 {
                     MessageDigest md = MessageDigest.getInstance("SHA");

@@ -1,11 +1,11 @@
-package com.tradehero.th.api.translation;
+package com.ayondo.academy.api.translation;
 
 import android.support.annotation.NonNull;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.i18n.LanguageDTOFactory;
-import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.i18n.LanguageDTOFactory;
+import com.ayondo.academy.api.translation.bing.BingUserTranslationSettingDTO;
+import com.ayondo.academy.base.TestTHApp;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.Test;

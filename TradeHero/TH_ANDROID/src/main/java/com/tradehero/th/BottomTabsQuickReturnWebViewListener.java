@@ -1,4 +1,4 @@
-package com.tradehero.th;
+package com.ayondo.academy;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

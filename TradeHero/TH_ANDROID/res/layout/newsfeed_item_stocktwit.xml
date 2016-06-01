@@ -83,7 +83,7 @@
         tools:src="@drawable/img_placeholder_news_2"
         />
 
-    <com.tradehero.th.widget.MarkdownTextView
+    <com.ayondo.academy.widget.MarkdownTextView
         android:id="@+id/newsfeed_item_body"
         style="@style/TH.Body"
         android:layout_width="match_parent"

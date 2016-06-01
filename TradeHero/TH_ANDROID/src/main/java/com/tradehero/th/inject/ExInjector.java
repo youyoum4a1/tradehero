@@ -1,4 +1,4 @@
-package com.tradehero.th.inject;
+package com.ayondo.academy.inject;
 
 /**
  * An injector which can evolve itself to be a more powerful injector, who can provides more objects to the injecting subject,

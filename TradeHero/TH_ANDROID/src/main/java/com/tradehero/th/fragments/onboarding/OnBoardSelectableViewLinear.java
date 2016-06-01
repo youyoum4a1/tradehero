@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding;
+package com.ayondo.academy.fragments.onboarding;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,9 +10,9 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.tradehero.common.api.SelectableDTO;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.inject.HierarchyInjector;
 
 public class OnBoardSelectableViewLinear<
         ValueDTOType extends DTO,

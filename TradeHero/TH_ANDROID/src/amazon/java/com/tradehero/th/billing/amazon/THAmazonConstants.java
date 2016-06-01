@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import com.tradehero.common.billing.amazon.AmazonConstants;
-import com.tradehero.th.billing.THBillingConstants;
+import com.ayondo.academy.billing.THBillingConstants;
 
 public class THAmazonConstants
         extends AmazonConstants

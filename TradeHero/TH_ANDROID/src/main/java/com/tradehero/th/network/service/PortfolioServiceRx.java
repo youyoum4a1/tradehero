@@ -1,9 +1,9 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.billing.PurchaseReportDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.ayondo.academy.api.billing.PurchaseReportDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.portfolio.PortfolioDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;

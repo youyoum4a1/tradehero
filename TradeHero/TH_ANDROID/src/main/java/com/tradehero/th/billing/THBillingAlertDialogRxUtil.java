@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,14 +9,13 @@ import com.tradehero.common.billing.RequestCodeHolder;
 import com.tradehero.common.billing.restore.PurchaseRestoreResultWithError;
 import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityUtil;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.VersionUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.ActivityUtil;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.billing.inventory.THProductDetailDomainInformerRx;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.utils.AlertDialogRxUtil;
+import com.ayondo.academy.utils.VersionUtils;
 import java.net.UnknownServiceException;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -40,16 +39,19 @@ abstract public class THBillingAlertDialogRxUtil<
     public static final int MAX_RANDOM_RETRIES = 50;
 
     @NonNull protected final CurrentUserId currentUserId;
-    @NonNull protected final Analytics analytics;
+    //TODO Change Analytics
+    //@NonNull protected final Analytics analytics;
     protected String storeName;
 
     //<editor-fold desc="Constructors">
     public THBillingAlertDialogRxUtil(
-            @NonNull CurrentUserId currentUserId,
-            @NonNull Analytics analytics)
+            @NonNull CurrentUserId currentUserId)
     {
         this.currentUserId = currentUserId;
-        this.analytics = analytics;
+
+        //TODO Change Analytics
+        //Part of constructor
+        //this.analytics = analytics;
     }
     //</editor-fold>
 

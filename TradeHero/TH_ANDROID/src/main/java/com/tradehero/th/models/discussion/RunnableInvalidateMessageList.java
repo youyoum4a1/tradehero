@@ -1,8 +1,8 @@
-package com.tradehero.th.models.discussion;
+package com.ayondo.academy.models.discussion;
 
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.message.MessageHeaderListCacheRx;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.persistence.message.MessageHeaderListCacheRx;
 import javax.inject.Inject;
 
 public class RunnableInvalidateMessageList implements Runnable

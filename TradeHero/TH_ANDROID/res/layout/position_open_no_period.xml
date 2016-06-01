@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.position.view.PositionView
+<com.ayondo.academy.fragments.position.view.PositionView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,7 +14,7 @@
     android:gravity="center"
     >
 
-  <com.tradehero.th.fragments.position.partial.PositionPartialTopView
+  <com.ayondo.academy.fragments.position.partial.PositionPartialTopView
       android:id="@+id/position_partial_top"
       android:orientation="horizontal"
       android:layout_width="wrap_content"
@@ -38,8 +38,8 @@
         layout="@layout/fx_flags"
         />
 
-  </com.tradehero.th.fragments.position.partial.PositionPartialTopView>
+  </com.ayondo.academy.fragments.position.partial.PositionPartialTopView>
 
   <include layout="@layout/position_partial_bottom_open"/>
 
-</com.tradehero.th.fragments.position.view.PositionView>
+</com.ayondo.academy.fragments.position.view.PositionView>

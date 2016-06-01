@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.user;
+package com.ayondo.academy.persistence.user;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.users.AllowableRecipientDTO;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.AllowableRecipientDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;

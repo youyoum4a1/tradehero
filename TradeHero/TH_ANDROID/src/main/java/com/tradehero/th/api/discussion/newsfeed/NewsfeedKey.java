@@ -1,4 +1,4 @@
-package com.tradehero.th.api.discussion.newsfeed;
+package com.ayondo.academy.api.discussion.newsfeed;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

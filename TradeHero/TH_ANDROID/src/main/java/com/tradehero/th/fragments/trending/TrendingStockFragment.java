@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.ayondo.academy.fragments.trending;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,54 +11,52 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
 import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.LiveActivityUtil;
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTOList;
-import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.security.SecurityPagedViewDTOAdapter;
-import com.tradehero.th.fragments.security.SecuritySearchFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTOFactory;
-import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
-import com.tradehero.th.persistence.competition.ProviderListCacheRx;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ProfileEvent;
-import com.tradehero.th.utils.metrics.events.TrendingFilterEvent;
-import com.tradehero.th.utils.metrics.events.TrendingStockEvent;
-import java.util.Collections;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.LiveActivityUtil;
+import com.ayondo.academy.api.alert.AlertCompactDTO;
+import com.ayondo.academy.api.competition.ProviderDTO;
+import com.ayondo.academy.api.competition.ProviderDTOList;
+import com.ayondo.academy.api.competition.ProviderUtil;
+import com.ayondo.academy.api.competition.key.ProviderListKey;
+import com.ayondo.academy.api.portfolio.AssetClass;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.security.key.SecurityListType;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTOList;
+import com.ayondo.academy.billing.ProductIdentifierDomain;
+import com.ayondo.academy.billing.THBillingInteractorRx;
+import com.ayondo.academy.fragments.competition.CompetitionWebViewFragment;
+import com.ayondo.academy.fragments.competition.MainCompetitionFragment;
+import com.ayondo.academy.fragments.security.SecurityPagedViewDTOAdapter;
+import com.ayondo.academy.fragments.security.SecuritySearchFragment;
+import com.ayondo.academy.fragments.social.friend.FriendsInvitationFragment;
+import com.ayondo.academy.fragments.trade.AbstractBuySellFragment;
+import com.ayondo.academy.fragments.trade.BuySellStockFragment;
+import com.ayondo.academy.fragments.trending.filter.TrendingFilterTypeDTO;
+import com.ayondo.academy.fragments.trending.filter.TrendingFilterTypeDTOFactory;
+import com.ayondo.academy.fragments.tutorial.WithTutorial;
+import com.ayondo.academy.fragments.web.WebViewFragment;
+import com.ayondo.academy.models.market.ExchangeCompactSpinnerDTO;
+import com.ayondo.academy.persistence.alert.AlertCompactListCacheRx;
+import com.ayondo.academy.persistence.competition.ProviderListCacheRx;
+import com.ayondo.academy.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.utils.Constants;
+
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -75,7 +73,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
     private static final String KEY_TAB_TYPE_ID = TrendingMainFragment.class.getName() + ".tabTypeId";
 
     @Inject ProviderListCacheRx providerListCache;
-    @Inject Analytics analytics;
+    ////TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject ProviderUtil providerUtil;
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
@@ -141,12 +140,12 @@ public class TrendingStockFragment extends TrendingBaseFragment
                             {
                                 @Override public void call(TrendingFilterTypeDTO trendingFilterTypeDTO)
                                 {
-                                    analytics.fireEvent(new TrendingFilterEvent(trendingFilterTypeDTO));
+                                    //TODO Change Analytics
+                                    //analytics.fireEvent(new TrendingFilterEvent(trendingFilterTypeDTO));
                                     if (Constants.RELEASE)
                                     {
-                                        analytics.localytics().setProfileAttribute(new ProfileEvent(
-                                                AnalyticsConstants.InterestedExchange,
-                                                Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
+                                        //TODO Change Analytics
+                                        //analytics.localytics().setProfileAttribute(new ProfileEvent(AnalyticsConstants.InterestedExchange, Collections.singletonList(trendingFilterTypeDTO.exchange.name)));
                                     }
                                 }
                             })
@@ -486,7 +485,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void handleSecurityItemOnClick(@NonNull SecurityCompactDTO securityCompactDTO)
     {
-        analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
+        //TODO Change Analytics
+        //analytics.fireEvent(new TrendingStockEvent(securityCompactDTO.getSecurityId()));
 
         Bundle args = new Bundle();
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.social.friend.InviteCodeViewLinear
+<com.ayondo.academy.fragments.social.friend.InviteCodeViewLinear
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/invite_code_dialog_key"
     android:orientation="vertical"
@@ -155,4 +155,4 @@
 
   </ViewFlipper>
 
-</com.tradehero.th.fragments.social.friend.InviteCodeViewLinear>
+</com.ayondo.academy.fragments.social.friend.InviteCodeViewLinear>

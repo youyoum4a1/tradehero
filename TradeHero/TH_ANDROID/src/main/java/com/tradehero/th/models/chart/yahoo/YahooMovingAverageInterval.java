@@ -1,4 +1,4 @@
-package com.tradehero.th.models.chart.yahoo;
+package com.ayondo.academy.models.chart.yahoo;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

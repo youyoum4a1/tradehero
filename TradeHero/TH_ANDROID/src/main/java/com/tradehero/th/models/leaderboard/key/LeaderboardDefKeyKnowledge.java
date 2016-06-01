@@ -1,9 +1,9 @@
-package com.tradehero.th.models.leaderboard.key;
+package com.ayondo.academy.models.leaderboard.key;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTO;
 
 public class LeaderboardDefKeyKnowledge
 {

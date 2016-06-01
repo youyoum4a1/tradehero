@@ -1,4 +1,4 @@
-package com.tradehero.th.inject;
+package com.ayondo.academy.inject;
 
 /**
  * An injector for dependency injection pattern

@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon.purchasefetch;
+package com.ayondo.academy.billing.amazon.purchasefetch;
 
 import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.Receipt;
@@ -8,11 +8,11 @@ import com.tradehero.common.billing.amazon.purchasefetch.BaseAmazonPurchaseFetch
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
 import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.api.billing.AmazonPurchaseInProcessDTO;
-import com.tradehero.th.billing.amazon.THAmazonOrderId;
-import com.tradehero.th.billing.amazon.THAmazonPurchase;
-import com.tradehero.th.billing.amazon.THAmazonPurchaseIncomplete;
-import com.tradehero.th.billing.amazon.THComposedAmazonPurchase;
+import com.ayondo.academy.api.billing.AmazonPurchaseInProcessDTO;
+import com.ayondo.academy.billing.amazon.THAmazonOrderId;
+import com.ayondo.academy.billing.amazon.THAmazonPurchase;
+import com.ayondo.academy.billing.amazon.THAmazonPurchaseIncomplete;
+import com.ayondo.academy.billing.amazon.THComposedAmazonPurchase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

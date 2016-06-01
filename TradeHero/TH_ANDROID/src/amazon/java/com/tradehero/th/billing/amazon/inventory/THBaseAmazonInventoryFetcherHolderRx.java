@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon.inventory;
+package com.ayondo.academy.billing.amazon.inventory;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.inventory.BaseAmazonInventoryFetcherHolderRx;
 import com.tradehero.common.billing.amazon.service.AmazonPurchasingService;
-import com.tradehero.th.billing.amazon.THAmazonProductDetail;
+import com.ayondo.academy.billing.amazon.THAmazonProductDetail;
 import java.util.List;
 import javax.inject.Inject;
 

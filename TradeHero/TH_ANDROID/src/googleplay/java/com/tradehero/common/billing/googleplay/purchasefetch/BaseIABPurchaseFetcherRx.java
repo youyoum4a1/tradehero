@@ -19,7 +19,7 @@ import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academy.BuildConfig;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONException;

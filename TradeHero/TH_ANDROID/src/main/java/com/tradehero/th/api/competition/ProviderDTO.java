@@ -1,11 +1,11 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.utils.SecurityUtils;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.utils.SecurityUtils;
 import java.util.Date;
 import java.util.List;
 

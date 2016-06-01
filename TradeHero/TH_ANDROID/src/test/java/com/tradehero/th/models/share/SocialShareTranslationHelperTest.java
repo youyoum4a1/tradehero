@@ -1,16 +1,16 @@
-package com.tradehero.th.models.share;
+package com.ayondo.academy.models.share;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.activities.DashboardActivityExtended;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.translation.bing.BingTranslationToken;
-import com.tradehero.th.api.translation.bing.BingUserTranslationSettingDTO;
-import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
-import com.tradehero.th.persistence.translation.TranslationTokenKey;
-import com.tradehero.th.persistence.translation.UserTranslationSettingPreference;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.activities.DashboardActivityExtended;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.translation.bing.BingTranslationToken;
+import com.ayondo.academy.api.translation.bing.BingUserTranslationSettingDTO;
+import com.ayondo.academy.persistence.translation.TranslationTokenCacheRx;
+import com.ayondo.academy.persistence.translation.TranslationTokenKey;
+import com.ayondo.academy.persistence.translation.UserTranslationSettingPreference;
 import java.io.IOException;
 import javax.inject.Inject;
 import javax.inject.Provider;

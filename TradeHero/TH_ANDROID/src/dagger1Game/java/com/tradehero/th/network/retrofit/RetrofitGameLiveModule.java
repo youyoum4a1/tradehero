@@ -1,4 +1,4 @@
-package com.tradehero.th.network.retrofit;
+package com.ayondo.academy.network.retrofit;
 
 import dagger.Module;
 

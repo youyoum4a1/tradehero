@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.market;
+package com.ayondo.academy.fragments.market;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
-import com.tradehero.th.api.market.ExchangeIntegerId;
+import com.ayondo.academy.api.market.ExchangeCompactDTO;
+import com.ayondo.academy.api.market.ExchangeIntegerId;
 
 public class ExchangeSpinner extends Spinner
 {

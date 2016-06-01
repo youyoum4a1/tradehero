@@ -1,6 +1,6 @@
-package com.tradehero.th.filter.security;
+package com.ayondo.academy.filter.security;
 
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
 
 public class SecurityCompactPaddedSymbolCIPredicate<SecurityCompactType extends SecurityCompactDTO>
         extends SecurityCompactSymbolCIPredicate<SecurityCompactType>

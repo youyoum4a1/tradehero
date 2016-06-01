@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.discovery;
+package com.ayondo.academy.fragments.discovery;
 
 import android.app.ActionBar;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.DashboardActivityExtended;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.activities.DashboardActivity;
+import com.ayondo.academy.activities.DashboardActivityExtended;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;

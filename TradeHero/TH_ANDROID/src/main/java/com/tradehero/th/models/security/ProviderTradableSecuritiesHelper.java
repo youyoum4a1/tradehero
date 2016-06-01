@@ -1,16 +1,16 @@
-package com.tradehero.th.models.security;
+package com.ayondo.academy.models.security;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.billing.BasePurchaseManagerFragment;
-import com.tradehero.th.fragments.competition.ProviderFxListFragment;
-import com.tradehero.th.fragments.security.ProviderSecurityListRxFragment;
-import com.tradehero.th.fragments.security.WarrantCompetitionPagerFragment;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.billing.BasePurchaseManagerFragment;
+import com.ayondo.academy.fragments.competition.ProviderFxListFragment;
+import com.ayondo.academy.fragments.security.ProviderSecurityListRxFragment;
+import com.ayondo.academy.fragments.security.WarrantCompetitionPagerFragment;
 
 public class ProviderTradableSecuritiesHelper
 {

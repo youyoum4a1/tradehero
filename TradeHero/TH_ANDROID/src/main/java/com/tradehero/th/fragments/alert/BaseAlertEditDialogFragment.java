@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.alert;
+package com.ayondo.academy.fragments.alert;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -9,12 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import com.tradehero.th.R;
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.base.BaseDialogSupportFragment;
-import com.tradehero.th.models.alert.SecurityAlertCountingHelper;
-import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.alert.AlertCompactDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.fragments.base.BaseDialogSupportFragment;
+import com.ayondo.academy.models.alert.SecurityAlertCountingHelper;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;

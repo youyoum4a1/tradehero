@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.billing;
+package com.ayondo.academy.persistence.billing;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.ProductDetailCacheRx;
 import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.billing.amazon.THAmazonProductDetail;
-import com.tradehero.th.billing.amazon.THAmazonProductDetailTuner;
+import com.ayondo.academy.billing.amazon.THAmazonProductDetail;
+import com.ayondo.academy.billing.amazon.THAmazonProductDetailTuner;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

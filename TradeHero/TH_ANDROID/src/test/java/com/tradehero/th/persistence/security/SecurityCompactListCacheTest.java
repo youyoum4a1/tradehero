@@ -1,10 +1,10 @@
-package com.tradehero.th.persistence.security;
+package com.ayondo.academy.persistence.security;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.key.TrendingBasicSecurityListType;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.security.SecurityCompactDTOList;
+import com.ayondo.academy.api.security.key.TrendingBasicSecurityListType;
+import com.ayondo.academy.base.TestTHApp;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;

@@ -1,8 +1,8 @@
-package com.tradehero.th.api;
+package com.ayondo.academy.api;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.billing.AmazonPurchaseReportDTO;
-import com.tradehero.th.api.billing.PurchaseReportDTO;
+import com.ayondo.academy.api.billing.AmazonPurchaseReportDTO;
+import com.ayondo.academy.api.billing.PurchaseReportDTO;
 import javax.inject.Inject;
 
 public class ValidMockerAmazon extends ValidMocker

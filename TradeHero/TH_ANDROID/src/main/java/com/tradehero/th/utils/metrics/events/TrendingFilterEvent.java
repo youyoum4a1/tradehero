@@ -1,10 +1,6 @@
-package com.tradehero.th.utils.metrics.events;
+package com.ayondo.academy.utils.metrics.events;
 
-import com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import java.util.Map;
-
-public class TrendingFilterEvent extends THAnalyticsEvent
+/*public class TrendingFilterEvent extends THAnalyticsEvent
 {
     static final String TRENDING_FILTER_CATEGORY_MAP_KEY = "category";
 
@@ -25,4 +21,4 @@ public class TrendingFilterEvent extends THAnalyticsEvent
         }
         return attributes;
     }
-}
+}*/

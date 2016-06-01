@@ -1,4 +1,4 @@
-package com.tradehero.th.api.pagination;
+package com.ayondo.academy.api.pagination;
 
 import com.tradehero.common.api.PagedDTOKey;
 

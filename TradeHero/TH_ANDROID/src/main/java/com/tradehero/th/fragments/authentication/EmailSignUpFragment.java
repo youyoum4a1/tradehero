@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.authentication;
+package com.ayondo.academy.fragments.authentication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -13,36 +13,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnClick;
+
 import com.tradehero.common.fragment.ActivityResultDTO;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityHelper;
-import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.api.form.UserFormDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.auth.AuthDataUtil;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.settings.ProfileInfoView;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
-import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.ActivityHelper;
+import com.ayondo.academy.activities.AuthenticationActivity;
+import com.ayondo.academy.api.form.UserFormDTO;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.auth.AuthData;
+import com.ayondo.academy.auth.AuthDataUtil;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.settings.ProfileInfoView;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.network.service.UserServiceWrapper;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.rx.view.DismissDialogAction0;
+import com.ayondo.academy.utils.DeviceUtil;
+import com.ayondo.academy.utils.metrics.appsflyer.AppsFlyerConstants;
+import com.ayondo.academy.utils.metrics.appsflyer.THAppsFlyer;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import dagger.Lazy;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -58,7 +57,8 @@ public class EmailSignUpFragment extends Fragment
 {
     private static final String BUNDLE_KEY_DEEP_LINK = EmailSignUpFragment.class.getName() + ".deepLink";
 
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
 
@@ -94,9 +94,10 @@ public class EmailSignUpFragment extends Fragment
         super.onCreate(savedInstanceState);
 
         HierarchyInjector.inject(this);
-        analytics.tagScreen(AnalyticsConstants.Register_Form);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.RegisterFormScreen));
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
+        //TODO Change Analytics
+        //analytics.tagScreen(AnalyticsConstants.Register_Form);
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.RegisterFormScreen));
+        //analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
         deepLink = getDeepLink(getArguments());
     }
 

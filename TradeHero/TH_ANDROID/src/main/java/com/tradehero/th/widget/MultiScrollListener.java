@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.widget.AbsListView;
 import com.tradehero.common.utils.CollectionUtils;

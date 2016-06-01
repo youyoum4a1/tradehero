@@ -1,9 +1,9 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.alert.AlertCompactDTOList;
-import com.tradehero.th.api.alert.AlertDTO;
-import com.tradehero.th.api.alert.AlertFormDTO;
+import com.ayondo.academy.api.alert.AlertCompactDTO;
+import com.ayondo.academy.api.alert.AlertCompactDTOList;
+import com.ayondo.academy.api.alert.AlertDTO;
+import com.ayondo.academy.api.alert.AlertFormDTO;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;

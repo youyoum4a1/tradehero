@@ -1,4 +1,4 @@
-package com.tradehero.th.api.billing;
+package com.ayondo.academy.api.billing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.tradehero.common.billing.samsung.SamsungPurchase;

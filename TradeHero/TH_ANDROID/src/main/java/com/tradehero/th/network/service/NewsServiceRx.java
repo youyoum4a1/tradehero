@@ -1,13 +1,13 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.news.CountryLanguagePairDTO;
-import com.tradehero.th.api.news.NewsItemCategoryDTO;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.news.NewsItemSourceDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.news.CountryLanguagePairDTO;
+import com.ayondo.academy.api.news.NewsItemCategoryDTO;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.news.NewsItemDTO;
+import com.ayondo.academy.api.news.NewsItemSourceDTO;
+import com.ayondo.academy.api.pagination.PaginatedDTO;
+import com.ayondo.academy.api.timeline.TimelineItemShareRequestDTO;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;

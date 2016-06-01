@@ -1,10 +1,10 @@
-package com.tradehero.th.models.portfolio;
+package com.ayondo.academy.models.portfolio;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class MenuOwnedPortfolioId extends OwnedPortfolioId
         implements CharSequence

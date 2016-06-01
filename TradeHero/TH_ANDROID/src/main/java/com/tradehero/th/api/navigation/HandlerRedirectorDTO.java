@@ -1,4 +1,4 @@
-package com.tradehero.th.api.navigation;
+package com.ayondo.academy.api.navigation;
 
 public class HandlerRedirectorDTO
 {

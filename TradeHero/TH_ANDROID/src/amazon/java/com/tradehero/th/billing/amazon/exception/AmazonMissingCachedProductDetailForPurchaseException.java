@@ -1,8 +1,8 @@
-package com.tradehero.th.billing.amazon.exception;
+package com.ayondo.academy.billing.amazon.exception;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.billing.amazon.exception.AmazonException;
-import com.tradehero.th.billing.amazon.THAmazonPurchase;
+import com.ayondo.academy.billing.amazon.THAmazonPurchase;
 
 public class AmazonMissingCachedProductDetailForPurchaseException extends AmazonException
 {

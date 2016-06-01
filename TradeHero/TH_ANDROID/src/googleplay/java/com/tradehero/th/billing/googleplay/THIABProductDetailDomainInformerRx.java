@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.googleplay;
+package com.ayondo.academy.billing.googleplay;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.th.billing.inventory.THProductDetailDomainInformerRx;
+import com.ayondo.academy.billing.inventory.THProductDetailDomainInformerRx;
 
 interface THIABProductDetailDomainInformerRx
         extends THProductDetailDomainInformerRx<IABSKU, THIABProductDetail>

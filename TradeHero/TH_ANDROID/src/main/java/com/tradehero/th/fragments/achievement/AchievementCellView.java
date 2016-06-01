@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.achievement;
+package com.ayondo.academy.fragments.achievement;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -10,12 +10,12 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.achievement.AchievementCategoryDTO;
-import com.tradehero.th.api.achievement.AchievementDefDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.utils.StringUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.achievement.AchievementCategoryDTO;
+import com.ayondo.academy.api.achievement.AchievementDefDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.utils.StringUtils;
 import javax.inject.Inject;
 
 public class AchievementCellView extends RelativeLayout implements DTOView<AchievementCategoryDTO>

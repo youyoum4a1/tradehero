@@ -1,8 +1,8 @@
-package com.tradehero.th.widget.list;
+package com.ayondo.academy.widget.list;
 
 import android.view.View;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.leaderboard.ExpandingLayout;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.leaderboard.ExpandingLayout;
 
 public class BaseExpandingItemListener
     implements View.OnClickListener

@@ -77,7 +77,7 @@
           android:maxLines="1"
           />
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.ayondo.academy.widget.MarkdownTextView
           android:id="@+id/message_item_title"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
           android:maxLines="1"
           />
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.ayondo.academy.widget.MarkdownTextView
           android:id="@+id/message_item_sub_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
           android:maxLines="1"
           />
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.ayondo.academy.widget.MarkdownTextView
           android:id="@+id/message_item_content"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

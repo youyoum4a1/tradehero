@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung.identifier;
+package com.ayondo.academy.billing.samsung.identifier;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

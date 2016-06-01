@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.timeline;
+package com.ayondo.academy.fragments.timeline;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,13 +7,13 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.OnClick;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.level.LevelDefDTOList;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.widget.UserLevelProgressBar;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.api.level.LevelDefDTOList;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.models.number.THSignedMoney;
+import com.ayondo.academy.widget.UserLevelProgressBar;
 import timber.log.Timber;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder

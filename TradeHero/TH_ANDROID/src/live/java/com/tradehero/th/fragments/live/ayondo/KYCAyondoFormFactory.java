@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.live.ayondo;
+package com.ayondo.academy.fragments.live.ayondo;
 
 import android.support.annotation.NonNull;
 import com.neovisionaries.i18n.CountryCode;
-import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
-import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
-import com.tradehero.th.models.fastfill.Gender;
-import com.tradehero.th.rx.view.adapter.OnItemSelectedEvent;
-import com.tradehero.th.rx.view.adapter.OnSelectedEvent;
+import com.ayondo.academy.api.kyc.ayondo.KYCAyondoForm;
+import com.ayondo.academy.fragments.live.CountrySpinnerAdapter;
+import com.ayondo.academy.models.fastfill.Gender;
+import com.ayondo.academy.rx.view.adapter.OnItemSelectedEvent;
+import com.ayondo.academy.rx.view.adapter.OnSelectedEvent;
 import rx.android.view.OnCheckedChangeEvent;
 import rx.android.widget.OnTextChangeEvent;
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discovery;
+package com.ayondo.academy.fragments.discovery;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,29 +12,30 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.android.common.SlidingTabLayout;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.AnalyticsDuration;
-import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.base.ActionBarOwnerMixin;
+import com.ayondo.academy.fragments.base.BaseLiveFragmentUtil;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.metrics.AnalyticsDuration;
+import com.ayondo.academy.utils.route.THRouter;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 @Routable(DiscoveryMainFragment.ROUTER_DISCOVERY_TAB_INDEX + ":tabIndex")
 public class DiscoveryMainFragment extends DashboardFragment
 {
     public static final String ROUTER_DISCOVERY_TAB_INDEX = "discovery/tab-index/";
 
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Bind(R.id.pager) ViewPager tabViewPager;
     @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
@@ -143,17 +144,13 @@ public class DiscoveryMainFragment extends DashboardFragment
         AnalyticsDuration duration = AnalyticsDuration.sinceTimeMillis(beginTime);
         if (oldPageItem == 0)
         {
-            analytics.fireEvent(new SingleAttributeEvent(
-                    AnalyticsConstants.DiscoverNewsViewed,
-                    AnalyticsConstants.TimeOnScreen,
-                    duration.toString()));
+            //TODO Change Analytics
+            //analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.DiscoverNewsViewed, AnalyticsConstants.TimeOnScreen, duration.toString()));
         }
         else if (oldPageItem == 1)
         {
-            analytics.fireEvent(new SingleAttributeEvent(
-                    AnalyticsConstants.DiscoverDiscussionsViewed,
-                    AnalyticsConstants.TimeOnScreen,
-                    duration.toString()));
+            //TODO Change Analytics
+            //analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.DiscoverDiscussionsViewed, AnalyticsConstants.TimeOnScreen, duration.toString()));
         }
     }
 

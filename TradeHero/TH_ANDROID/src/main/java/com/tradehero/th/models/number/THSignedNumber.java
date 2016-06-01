@@ -1,4 +1,4 @@
-package com.tradehero.th.models.number;
+package com.ayondo.academy.models.number;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
@@ -11,9 +11,9 @@ import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.widget.TextView;
-import com.tradehero.th.R;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.utils.THColorUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.utils.THColorUtils;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import org.oshkimaadziig.george.androidutils.SpanFormatter;

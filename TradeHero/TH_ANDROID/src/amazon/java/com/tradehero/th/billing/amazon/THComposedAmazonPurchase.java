@@ -1,14 +1,14 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.amazon.device.iap.model.ProductType;
 import com.amazon.device.iap.model.Receipt;
 import com.tradehero.common.billing.amazon.AmazonSKU;
-import com.tradehero.th.api.billing.AmazonPurchaseInProcessDTO;
-import com.tradehero.th.api.billing.AmazonPurchaseReportDTO;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.billing.AmazonPurchaseInProcessDTO;
+import com.ayondo.academy.api.billing.AmazonPurchaseReportDTO;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class THComposedAmazonPurchase implements THAmazonPurchase
 {

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing;
+package com.ayondo.academy.fragments.billing;
 
 import dagger.Module;
 

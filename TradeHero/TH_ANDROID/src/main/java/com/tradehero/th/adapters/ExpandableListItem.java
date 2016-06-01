@@ -1,4 +1,4 @@
-package com.tradehero.th.adapters;
+package com.ayondo.academy.adapters;
 
 public class ExpandableListItem<T> implements ExpandableItem, OnSizeChangedListener
 {

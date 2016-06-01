@@ -1,11 +1,11 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.MessageHeaderDTO;
-import com.tradehero.th.api.discussion.ReadablePaginatedMessageHeaderDTO;
-import com.tradehero.th.api.discussion.form.MessageCreateFormDTO;
-import com.tradehero.th.api.users.UserMessagingRelationshipDTO;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.discussion.MessageHeaderDTO;
+import com.ayondo.academy.api.discussion.ReadablePaginatedMessageHeaderDTO;
+import com.ayondo.academy.api.discussion.form.MessageCreateFormDTO;
+import com.ayondo.academy.api.users.UserMessagingRelationshipDTO;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;

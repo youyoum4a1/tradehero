@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
@@ -9,11 +9,11 @@ import com.tradehero.common.billing.amazon.AmazonPurchaseCacheRx;
 import com.tradehero.common.billing.amazon.exception.AmazonExceptionFactory;
 import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
-import com.tradehero.th.billing.amazon.ProcessingPurchase;
-import com.tradehero.th.billing.amazon.exception.THAmazonExceptionFactory;
-import com.tradehero.th.persistence.billing.AmazonSKUListCacheRx;
-import com.tradehero.th.persistence.billing.THAmazonProductDetailCacheRx;
-import com.tradehero.th.persistence.billing.THAmazonPurchaseCacheRx;
+import com.ayondo.academy.billing.amazon.ProcessingPurchase;
+import com.ayondo.academy.billing.amazon.exception.THAmazonExceptionFactory;
+import com.ayondo.academy.persistence.billing.AmazonSKUListCacheRx;
+import com.ayondo.academy.persistence.billing.THAmazonProductDetailCacheRx;
+import com.ayondo.academy.persistence.billing.THAmazonPurchaseCacheRx;
 import dagger.Module;
 import dagger.Provides;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
 import com.tradehero.common.persistence.BaseArrayListHasExpiration;
 import com.tradehero.common.persistence.DTO;

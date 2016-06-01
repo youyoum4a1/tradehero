@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.social;
+package com.ayondo.academy.fragments.social;
 
-import com.tradehero.th.fragments.social.follower.FragmentSocialFollowerModule;
-import com.tradehero.th.fragments.social.friend.FragmentSocialFriendModule;
-import com.tradehero.th.fragments.social.hero.FragmentSocialHeroModule;
-import com.tradehero.th.fragments.social.message.FragmentSocialMessageModule;
+import com.ayondo.academy.fragments.social.follower.FragmentSocialFollowerModule;
+import com.ayondo.academy.fragments.social.friend.FragmentSocialFriendModule;
+import com.ayondo.academy.fragments.social.hero.FragmentSocialHeroModule;
+import com.ayondo.academy.fragments.social.message.FragmentSocialMessageModule;
 import dagger.Module;
 
 @Module(

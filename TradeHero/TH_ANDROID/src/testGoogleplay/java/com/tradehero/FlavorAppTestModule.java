@@ -1,6 +1,6 @@
 package com.tradehero;
 
-import com.tradehero.th.GooglePlayAppTestModule;
+import com.ayondo.academy.GooglePlayAppTestModule;
 import dagger.Module;
 
 @Module(

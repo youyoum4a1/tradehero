@@ -1,11 +1,11 @@
-package com.tradehero.th.api.security.compact;
+package com.ayondo.academy.api.security.compact;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.key.FxPairSecurityId;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.key.FxPairSecurityId;
 
 public class FxSecurityCompactDTO extends SecurityCompactDTO
 {

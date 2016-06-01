@@ -1,12 +1,12 @@
-package com.tradehero.th.utils;
+package com.ayondo.academy.utils;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.misc.exception.KnownServerErrors;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.misc.exception.KnownServerErrors;
+import com.ayondo.academy.misc.exception.THException;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
 import rx.Observable;
 
 public class SocialAlertDialogRxUtil extends AlertDialogRxUtil

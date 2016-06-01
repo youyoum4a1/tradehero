@@ -1,9 +1,9 @@
-package com.tradehero.th.api.portfolio;
+package com.ayondo.academy.api.portfolio;
 
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.StringRes;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public enum MarginCloseOutState
 {

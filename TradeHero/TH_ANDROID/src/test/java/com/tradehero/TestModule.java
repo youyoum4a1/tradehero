@@ -1,9 +1,9 @@
 package com.tradehero;
 
 import com.tradehero.common.CommonModule;
-import com.tradehero.th.AppTestModule;
-import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.models.push.handers.NotificationOpenedHandlerTest;
+import com.ayondo.academy.AppTestModule;
+import com.ayondo.academy.base.TestTHApp;
+import com.ayondo.academy.models.push.handers.NotificationOpenedHandlerTest;
 import dagger.Module;
 
 @Module(

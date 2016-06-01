@@ -1,6 +1,6 @@
-package com.tradehero.th.api;
+package com.ayondo.academy.api;
 
-import com.tradehero.th.api.billing.AmazonApiBillingTestModule;
+import com.ayondo.academy.api.billing.AmazonApiBillingTestModule;
 import dagger.Module;
 import dagger.Provides;
 

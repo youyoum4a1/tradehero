@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social;
+package com.ayondo.academy.fragments.social;
 
 import dagger.Module;
 

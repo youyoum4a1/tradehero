@@ -1,14 +1,19 @@
-package com.tradehero.th.models.fastfill.jumio;
+
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import com.jumio.netverify.sdk.NetverifyDocumentData;
+
+import com.jumio.nv.NetverifyDocumentData;
+import com.jumio.nv.enums.EPassportStatus;
 import com.neovisionaries.i18n.CountryCode;
-import com.tradehero.th.models.fastfill.Gender;
-import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
-import com.tradehero.th.models.fastfill.ScannedDocument;
+import com.ayondo.academy.models.fastfill.Gender;
+import com.ayondo.academy.models.fastfill.IdentityScannedDocumentType;
+import com.ayondo.academy.models.fastfill.ScannedDocument;
+
 import java.util.Date;
+
 
 public class NetverifyScannedDocument implements ScannedDocument
 {
@@ -20,6 +25,7 @@ public class NetverifyScannedDocument implements ScannedDocument
         this.scanReference = scanReference;
         this.data = data;
     }
+
 
     @NonNull @Override public NetverifyScanReference getScanReference()
     {
@@ -147,10 +153,10 @@ public class NetverifyScannedDocument implements ScannedDocument
         return data.getOptionalData2();
     }
 
-    @Override @Nullable public String getStreet()
+    /*@Override @Nullable public String getStreet()
     {
         return data.getStreet();
-    }
+    }*/
 
     @Override @Nullable public String getCity()
     {
@@ -159,13 +165,17 @@ public class NetverifyScannedDocument implements ScannedDocument
 
     @Override @Nullable public String getPostalCode()
     {
-        return data.getPostalCode();
+        return data.getPostCode();
+    }
+    @Override @Nullable public EPassportStatus getEPassportStatus()
+    {
+        return data.getEPassportStatus();
     }
 
-    @Override @Nullable public String getState()
+    /*@Override @Nullable public String getState()
     {
         return data.getState();
-    }
+    }*/
 
     @Override public boolean isNameMatch()
     {

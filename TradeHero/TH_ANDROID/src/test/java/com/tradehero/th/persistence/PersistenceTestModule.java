@@ -1,8 +1,8 @@
-package com.tradehero.th.persistence;
+package com.ayondo.academy.persistence;
 
-import com.tradehero.th.persistence.achievement.PersistenceAchievementTestModule;
-import com.tradehero.th.persistence.security.PersistenceSecurityTestModule;
-import com.tradehero.th.persistence.translation.PersistenceTranslationTestModule;
+import com.ayondo.academy.persistence.achievement.PersistenceAchievementTestModule;
+import com.ayondo.academy.persistence.security.PersistenceSecurityTestModule;
+import com.ayondo.academy.persistence.translation.PersistenceTranslationTestModule;
 import dagger.Module;
 
 @Module(

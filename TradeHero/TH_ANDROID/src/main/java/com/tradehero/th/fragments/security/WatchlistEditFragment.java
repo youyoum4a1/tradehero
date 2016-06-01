@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -11,34 +11,34 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
+
 import com.squareup.picasso.Picasso;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.misc.exception.THException;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.network.service.WatchlistServiceWrapper;
-import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.api.watchlist.WatchlistPositionFormDTO;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.misc.exception.THException;
+import com.ayondo.academy.models.number.THSignedNumber;
+import com.ayondo.academy.network.service.WatchlistServiceWrapper;
+import com.ayondo.academy.persistence.security.SecurityCompactCacheRx;
+import com.ayondo.academy.persistence.watchlist.WatchlistPositionCacheRx;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.rx.view.DismissDialogAction0;
+import com.ayondo.academy.utils.DeviceUtil;
+import com.ayondo.academy.utils.SecurityUtils;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
+import dagger.Lazy;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -67,7 +67,8 @@ public class WatchlistEditFragment extends DashboardFragment
     @Inject WatchlistPositionCacheRx watchlistPositionCache;
     @Inject WatchlistServiceWrapper watchlistServiceWrapper;
     @Inject Lazy<Picasso> picasso;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     public static void putSecurityId(@NonNull Bundle args, @NonNull SecurityId securityId)
     {
@@ -166,9 +167,8 @@ public class WatchlistEditFragment extends DashboardFragment
         setActionBarTitle(watchlistPositionDTO != null
                 ? R.string.watchlist_edit_title
                 : R.string.watchlist_add_title);
-        analytics.addEvent(new SimpleEvent(watchlistPositionDTO != null
-                ? AnalyticsConstants.Watchlist_Edit
-                : AnalyticsConstants.Watchlist_Add));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(watchlistPositionDTO != null ? AnalyticsConstants.Watchlist_Edit : AnalyticsConstants.Watchlist_Add));
     }
 
     protected void display(@NonNull SecurityCompactDTO securityCompactDTO)

@@ -1,7 +1,7 @@
-package com.tradehero.th.models.intent;
+package com.ayondo.academy.models.intent;
 
-import com.tradehero.th.models.intent.competition.ProviderIntentFactory;
-import com.tradehero.th.models.intent.security.SecurityIntentFactory;
+import com.ayondo.academy.models.intent.competition.ProviderIntentFactory;
+import com.ayondo.academy.models.intent.security.SecurityIntentFactory;
 import dagger.Module;
 import dagger.Provides;
 import java.util.Set;

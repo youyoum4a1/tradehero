@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,8 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import com.tradehero.th.R;
-import com.tradehero.th.api.fx.FXCandleDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.fx.FXCandleDTO;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;

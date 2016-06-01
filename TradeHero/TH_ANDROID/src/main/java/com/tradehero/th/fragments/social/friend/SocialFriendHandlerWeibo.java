@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.social.InviteFormWeiboDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.social.InviteFormWeiboDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.network.service.UserServiceWrapper;
 import javax.inject.Inject;
 import rx.Observable;
 

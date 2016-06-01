@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.trending;
+package com.ayondo.academy.fragments.trending;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.fragments.security.SecurityListRxFragment;
-import com.tradehero.th.fragments.security.SecuritySearchFragment;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.fragments.security.SecurityListRxFragment;
+import com.ayondo.academy.fragments.security.SecuritySearchFragment;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;

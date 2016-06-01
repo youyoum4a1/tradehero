@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-  <com.tradehero.th.fragments.fxonboard.IntroductionView
+  <com.ayondo.academy.fragments.fxonboard.IntroductionView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
@@ -66,6 +66,6 @@
         style="@style/TH.FxOnBoardDialog.NextButton"
         />
 
-  </com.tradehero.th.fragments.fxonboard.IntroductionView>
+  </com.ayondo.academy.fragments.fxonboard.IntroductionView>
 
 </merge>

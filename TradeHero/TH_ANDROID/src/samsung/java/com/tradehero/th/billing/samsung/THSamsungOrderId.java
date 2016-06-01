@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.samsung;
+package com.ayondo.academy.billing.samsung;
 
 import com.tradehero.common.billing.samsung.SamsungOrderId;
-import com.tradehero.th.billing.THOrderId;
+import com.ayondo.academy.billing.THOrderId;
 
 public class THSamsungOrderId
         extends SamsungOrderId

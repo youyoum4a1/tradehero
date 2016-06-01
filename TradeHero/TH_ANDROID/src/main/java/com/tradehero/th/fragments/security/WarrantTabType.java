@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.WarrantType;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.WarrantType;
 
 public enum WarrantTabType
 {

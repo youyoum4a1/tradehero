@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.education;
+package com.ayondo.academy.fragments.education;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,10 +10,10 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.education.VideoDTO;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.education.VideoDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class VideoView extends RelativeLayout implements DTOView<VideoDTO>

@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
@@ -11,7 +11,7 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class THTabView extends LinearLayout
 {

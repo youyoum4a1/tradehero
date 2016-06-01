@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.alert;
+package com.ayondo.academy.fragments.alert;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,15 +17,15 @@ import butterknife.Bind;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DateUtils;
-import com.tradehero.th.utils.SecurityUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.alert.AlertCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.number.THSignedMoney;
+import com.ayondo.academy.models.number.THSignedPercentage;
+import com.ayondo.academy.utils.DateUtils;
+import com.ayondo.academy.utils.SecurityUtils;
 import javax.inject.Inject;
 
 public class AlertItemView extends RelativeLayout

@@ -1,8 +1,8 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.UITestModule;
-import com.tradehero.th.utils.dagger.AppModule;
+import com.ayondo.academy.UITestModule;
+import com.ayondo.academy.utils.dagger.AppModule;
 import dagger.Module;
 import java.util.List;
 

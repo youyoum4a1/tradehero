@@ -1,8 +1,8 @@
-package com.tradehero.th.models.share;
+package com.ayondo.academy.models.share;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
 
 public class LinkedInShareDestination extends BaseShareDestination
     implements ShareDestinationWithEnum

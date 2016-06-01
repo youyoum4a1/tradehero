@@ -1,6 +1,6 @@
-package com.tradehero.th.filter.security;
+package com.ayondo.academy.filter.security;
 
-import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.ayondo.academy.api.security.compact.WarrantDTO;
 
 public class WarrantPaddedSymbolOrUnderlyingCIPredicate<WarrantType extends WarrantDTO>
         extends SecurityCompactPaddedSymbolCIPredicate<WarrantType>

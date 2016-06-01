@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.timeline;
+package com.ayondo.academy.fragments.timeline;
 
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
@@ -11,16 +11,16 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.route.Routable;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.UpdateCenterActivity;
-import com.tradehero.th.api.portfolio.DummyFxDisplayablePortfolioDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.models.number.THSignedNumber;
-import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.UpdateCenterActivity;
+import com.ayondo.academy.api.portfolio.DummyFxDisplayablePortfolioDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.fragments.fxonboard.FxOnBoardDialogFragment;
+import com.ayondo.academy.fragments.tutorial.WithTutorial;
+import com.ayondo.academy.models.number.THSignedNumber;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
 import javax.inject.Inject;
 import rx.functions.Action1;
 

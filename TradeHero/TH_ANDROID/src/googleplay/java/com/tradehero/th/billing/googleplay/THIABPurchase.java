@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.tradehero.th.billing.googleplay;
+package com.ayondo.academy.billing.googleplay;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,10 +22,10 @@ import com.tradehero.common.billing.googleplay.BaseIABPurchase;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.SkuTypeValue;
 import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.THProductPurchase;
+import com.ayondo.academy.api.billing.GooglePlayPurchaseReportDTO;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.billing.THProductPurchase;
 import org.json.JSONException;
 import timber.log.Timber;
 

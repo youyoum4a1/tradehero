@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay.purchase;
+package com.ayondo.academy.billing.googleplay.purchase;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -6,9 +6,9 @@ import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
 import com.tradehero.common.billing.googleplay.purchase.BaseIABPurchaserHolderRx;
 import com.tradehero.common.billing.googleplay.purchase.IABPurchaserRx;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
+import com.ayondo.academy.billing.googleplay.THIABOrderId;
+import com.ayondo.academy.billing.googleplay.THIABPurchase;
+import com.ayondo.academy.billing.googleplay.THIABPurchaseOrder;
 import javax.inject.Inject;
 import javax.inject.Provider;
 

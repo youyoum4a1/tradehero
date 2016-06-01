@@ -1,8 +1,8 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.app.Activity;
-import com.tradehero.th.UIModule;
-import com.tradehero.th.utils.dagger.AppModule;
+import com.ayondo.academy.UIModule;
+import com.ayondo.academy.utils.dagger.AppModule;
 import dagger.Module;
 import dagger.Provides;
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.watchlist.key;
+package com.ayondo.academy.api.watchlist.key;
 
 abstract public class PerPagedWatchlistKeyTestBase extends PagedWatchlistKeyTestBase
 {

@@ -1,6 +1,6 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
+import com.ayondo.academy.api.BaseResponseDTO;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;

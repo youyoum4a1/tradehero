@@ -1,4 +1,4 @@
-package com.tradehero.th.adapters;
+package com.ayondo.academy.adapters;
 
 public interface ExpandableItem
 {

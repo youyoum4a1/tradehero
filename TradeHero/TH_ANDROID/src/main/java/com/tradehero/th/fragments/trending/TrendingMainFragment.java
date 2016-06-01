@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.ayondo.academy.fragments.trending;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -18,53 +18,54 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.android.common.SlidingTabLayout;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.BaseActivity;
-import com.tradehero.th.adapters.DTOAdapterNew;
-import com.tradehero.th.api.market.Country;
-import com.tradehero.th.api.market.ExchangeCompactDTO;
-import com.tradehero.th.api.market.ExchangeCompactDTODescriptionNameComparator;
-import com.tradehero.th.api.market.ExchangeCompactDTOList;
-import com.tradehero.th.api.market.ExchangeCompactDTOUtil;
-import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.ExchangeListType;
-import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.market.ExchangeSpinner;
-import com.tradehero.th.fragments.position.FXMainPositionListFragment;
-import com.tradehero.th.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
-import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
-import com.tradehero.th.models.market.ExchangeCompactSpinnerDTOList;
-import com.tradehero.th.persistence.market.ExchangeCompactListCacheRx;
-import com.tradehero.th.persistence.market.ExchangeMarketPreference;
-import com.tradehero.th.persistence.prefs.PreferredExchangeMarket;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.OffOnViewSwitcher;
-import com.tradehero.th.widget.OffOnViewSwitcherEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.BaseActivity;
+import com.ayondo.academy.adapters.DTOAdapterNew;
+import com.ayondo.academy.api.market.Country;
+import com.ayondo.academy.api.market.ExchangeCompactDTO;
+import com.ayondo.academy.api.market.ExchangeCompactDTODescriptionNameComparator;
+import com.ayondo.academy.api.market.ExchangeCompactDTOList;
+import com.ayondo.academy.api.market.ExchangeCompactDTOUtil;
+import com.ayondo.academy.api.market.ExchangeIntegerId;
+import com.ayondo.academy.api.market.ExchangeListType;
+import com.ayondo.academy.api.portfolio.AssetClass;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.fragments.base.ActionBarOwnerMixin;
+import com.ayondo.academy.fragments.base.BaseLiveFragmentUtil;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.fragments.fxonboard.FxOnBoardDialogFragment;
+import com.ayondo.academy.fragments.market.ExchangeSpinner;
+import com.ayondo.academy.fragments.position.FXMainPositionListFragment;
+import com.ayondo.academy.fragments.trending.filter.TrendingFilterSpinnerIconAdapter;
+import com.ayondo.academy.models.market.ExchangeCompactSpinnerDTO;
+import com.ayondo.academy.models.market.ExchangeCompactSpinnerDTOList;
+import com.ayondo.academy.persistence.market.ExchangeCompactListCacheRx;
+import com.ayondo.academy.persistence.market.ExchangeMarketPreference;
+import com.ayondo.academy.persistence.prefs.PreferredExchangeMarket;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.view.DismissDialogAction0;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.route.THRouter;
+import com.ayondo.academy.widget.OffOnViewSwitcher;
+import com.ayondo.academy.widget.OffOnViewSwitcherEvent;
+
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.app.AppObservable;
@@ -94,7 +95,8 @@ public class TrendingMainFragment extends DashboardFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject THRouter thRouter;
     @Inject Toolbar toolbar;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject @PreferredExchangeMarket ExchangeMarketPreference preferredExchangeMarket;
     @Inject ExchangeCompactListCacheRx exchangeCompactListCache;
 
@@ -251,7 +253,8 @@ public class TrendingMainFragment extends DashboardFragment
         });
 
         initViews();
-        analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
+        //TODO Change Analytics
+        //analytics.fireEvent(new SimpleEvent(AnalyticsConstants.TabBar_Trade));
     }
 
     private void initViews()

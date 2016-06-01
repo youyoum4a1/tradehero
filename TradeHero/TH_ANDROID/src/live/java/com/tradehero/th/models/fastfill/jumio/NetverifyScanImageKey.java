@@ -1,9 +1,9 @@
-package com.tradehero.th.models.fastfill.jumio;
+package com.ayondo.academy.models.fastfill.jumio;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.models.fastfill.ScanImageKey;
+import com.ayondo.academy.models.fastfill.ScanImageKey;
 
 public class NetverifyScanImageKey implements ScanImageKey
 {

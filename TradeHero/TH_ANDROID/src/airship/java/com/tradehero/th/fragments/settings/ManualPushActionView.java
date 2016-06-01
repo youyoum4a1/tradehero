@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,17 +10,18 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.models.push.urbanairship.UrbanAirshipPushNotificationManager;
+
+import com.ayondo.academy.R;
+import com.ayondo.academy.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.urbanairship.UAirship;
+import com.urbanairship.actions.Action;
 import com.urbanairship.actions.ActionArguments;
 import com.urbanairship.actions.ActionValue;
-import com.urbanairship.actions.ActionValueException;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
-import timber.log.Timber;
 
 public class ManualPushActionView extends ScrollView
 {
@@ -79,19 +80,19 @@ public class ManualPushActionView extends ScrollView
 
     @Override protected void onDetachedFromWindow()
     {
-        try
+        //try
         {
             actionArgumentObservable.onNext(Pair.create(
                     actionNameView.getText().toString(),
-                    new ActionArguments(
-                            ((SituationDTO) situationSpinner.getSelectedItem()).situation,
+                    new ActionArguments(Action.SITUATION_PUSH_OPENED,
                             ActionValue.wrap(argumentView.getText().toString()),
                             new Bundle())));
-        } catch (ActionValueException e)
+             }
+            /*catch (ActionValueException e)
         {
             Timber.e(e, "Failed to pass on action value");
             actionArgumentObservable.onError(e);
-        }
+        }*/
         ButterKnife.unbind(this);
         super.onDetachedFromWindow();
     }

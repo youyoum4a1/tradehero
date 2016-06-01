@@ -1,17 +1,17 @@
-package com.tradehero.th.api.i18n;
+package com.ayondo.academy.api.i18n;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.i18n.lang.LanguageChineseSimplifiedDTO;
-import com.tradehero.th.api.i18n.lang.LanguageChineseTraditionalDTO;
-import com.tradehero.th.api.i18n.lang.LanguageHaitianCreoleDTO;
-import com.tradehero.th.api.i18n.lang.LanguageHebrewDTO;
-import com.tradehero.th.api.i18n.lang.LanguageHmongDawDTO;
-import com.tradehero.th.api.i18n.lang.LanguageIndonesianDTO;
-import com.tradehero.th.api.i18n.lang.LanguageKlingonDTO;
-import com.tradehero.th.api.i18n.lang.LanguageKlingonQaakDTO;
-import com.tradehero.th.api.i18n.lang.LanguageNorwegianDTO;
+import com.ayondo.academy.api.i18n.lang.LanguageChineseSimplifiedDTO;
+import com.ayondo.academy.api.i18n.lang.LanguageChineseTraditionalDTO;
+import com.ayondo.academy.api.i18n.lang.LanguageHaitianCreoleDTO;
+import com.ayondo.academy.api.i18n.lang.LanguageHebrewDTO;
+import com.ayondo.academy.api.i18n.lang.LanguageHmongDawDTO;
+import com.ayondo.academy.api.i18n.lang.LanguageIndonesianDTO;
+import com.ayondo.academy.api.i18n.lang.LanguageKlingonDTO;
+import com.ayondo.academy.api.i18n.lang.LanguageKlingonQaakDTO;
+import com.ayondo.academy.api.i18n.lang.LanguageNorwegianDTO;
 import java.util.Locale;
 
 public class LanguageDTOFactory

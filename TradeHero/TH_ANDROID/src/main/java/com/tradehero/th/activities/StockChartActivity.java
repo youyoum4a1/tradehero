@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,12 +9,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import com.tradehero.common.annotation.ViewVisibilityValue;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.fragments.security.ChartFragment;
-import com.tradehero.th.inject.Injector;
-import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.fragments.security.ChartFragment;
+import com.ayondo.academy.inject.Injector;
+import com.ayondo.academy.models.chart.ChartTimeSpan;
 
 public class StockChartActivity extends FragmentActivity
         implements Injector, AchievementAcceptor

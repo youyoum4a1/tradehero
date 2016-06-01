@@ -1,4 +1,4 @@
-package com.tradehero.th.api.kyc.ayondo;
+package com.ayondo.academy.api.kyc.ayondo;
 
 import com.tradehero.common.persistence.DTO;
 

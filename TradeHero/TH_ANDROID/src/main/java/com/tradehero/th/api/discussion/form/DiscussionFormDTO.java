@@ -1,9 +1,9 @@
-package com.tradehero.th.api.discussion.form;
+package com.ayondo.academy.api.discussion.form;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.timeline.form.PublishableFormDTO;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.timeline.form.PublishableFormDTO;
 
 public class DiscussionFormDTO extends PublishableFormDTO
 {

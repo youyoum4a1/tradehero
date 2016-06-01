@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending.filter;
+package com.ayondo.academy.fragments.trending.filter;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.adapters.ArrayDTOAdapterNew;
-import com.tradehero.th.models.market.ExchangeCompactSpinnerDTO;
+import com.ayondo.academy.adapters.ArrayDTOAdapterNew;
+import com.ayondo.academy.models.market.ExchangeCompactSpinnerDTO;
 
 public class TrendingFilterSpinnerIconAdapter
         extends ArrayDTOAdapterNew<ExchangeCompactSpinnerDTO, TrendingFilterSpinnerItemView>

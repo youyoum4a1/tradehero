@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 import com.tradehero.common.text.ClickableTagProcessor;
 import com.tradehero.common.text.RichTextCreator;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.inject.HierarchyInjector;
 import javax.inject.Inject;
 import rx.Observable;
 

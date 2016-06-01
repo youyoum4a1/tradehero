@@ -1,9 +1,9 @@
-package com.tradehero.th.api.portfolio;
+package com.ayondo.academy.api.portfolio;
 
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.users.UserBaseDTO;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.sql.Date;

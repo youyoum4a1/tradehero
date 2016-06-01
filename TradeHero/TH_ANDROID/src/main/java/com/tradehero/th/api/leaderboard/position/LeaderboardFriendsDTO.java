@@ -1,9 +1,9 @@
-package com.tradehero.th.api.leaderboard.position;
+package com.ayondo.academy.api.leaderboard.position;
 
 import com.tradehero.common.persistence.BaseHasExpiration;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.leaderboard.LeaderboardDTO;
-import com.tradehero.th.api.social.UserFriendsDTOList;
+import com.ayondo.academy.api.leaderboard.LeaderboardDTO;
+import com.ayondo.academy.api.social.UserFriendsDTOList;
 
 public class LeaderboardFriendsDTO extends BaseHasExpiration
         implements DTO

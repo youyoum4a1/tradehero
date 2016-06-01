@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import com.tradehero.common.billing.ProductDetailCacheRx;
 import com.tradehero.common.billing.ProductIdentifierListCacheRx;
@@ -7,11 +7,11 @@ import com.tradehero.common.billing.exception.BillingExceptionFactory;
 import com.tradehero.common.billing.samsung.SamsungBillingMode;
 import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
 import com.tradehero.common.billing.samsung.persistence.SamsungPurchaseCacheRx;
-import com.tradehero.th.billing.samsung.THSamsungConstants;
-import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
-import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
-import com.tradehero.th.persistence.billing.samsung.SamsungSKUListCacheRx;
-import com.tradehero.th.persistence.billing.samsung.THSamsungProductDetailCacheRx;
+import com.ayondo.academy.billing.samsung.THSamsungConstants;
+import com.ayondo.academy.billing.samsung.exception.THSamsungExceptionFactory;
+import com.ayondo.academy.billing.samsung.persistence.THSamsungPurchaseCacheRx;
+import com.ayondo.academy.persistence.billing.samsung.SamsungSKUListCacheRx;
+import com.ayondo.academy.persistence.billing.samsung.THSamsungProductDetailCacheRx;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

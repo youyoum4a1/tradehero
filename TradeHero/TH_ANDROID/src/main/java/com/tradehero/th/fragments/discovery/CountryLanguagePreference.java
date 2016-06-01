@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.discovery;
+package com.ayondo.academy.fragments.discovery;
 
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.prefs.AbstractPreference;
-import com.tradehero.th.api.news.CountryLanguagePairDTO;
+import com.ayondo.academy.api.news.CountryLanguagePairDTO;
 
 public class CountryLanguagePreference extends AbstractPreference<CountryLanguagePairDTO>
 {

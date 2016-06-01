@@ -1,7 +1,7 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.social.FollowerSummaryDTO;
-import com.tradehero.th.api.social.UserFollowerDTO;
+import com.ayondo.academy.api.social.FollowerSummaryDTO;
+import com.ayondo.academy.api.social.UserFollowerDTO;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import rx.Observable;

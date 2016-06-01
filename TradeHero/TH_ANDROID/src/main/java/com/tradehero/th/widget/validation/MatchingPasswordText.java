@@ -1,4 +1,4 @@
-package com.tradehero.th.widget.validation;
+package com.ayondo.academy.widget.validation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

@@ -1,10 +1,10 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.alert.AlertPlanStatusDTO;
-import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
-import com.tradehero.th.api.billing.PurchaseReportDTO;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.alert.AlertPlanStatusDTO;
+import com.ayondo.academy.api.billing.GooglePlayPurchaseReportDTO;
+import com.ayondo.academy.api.billing.PurchaseReportDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

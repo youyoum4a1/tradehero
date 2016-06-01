@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,30 +6,33 @@ import android.util.AttributeSet;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnCheckedChanged;
+
 import com.tradehero.common.fragment.HasSelectedItem;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.timeline.form.PublishableFormDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.share.SocialShareHelper;
-import com.tradehero.th.models.share.preference.SocialSharePreferenceHelper;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.timeline.form.PublishableFormDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.api.users.UserProfileDTOUtil;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.share.SocialShareHelper;
+import com.ayondo.academy.models.share.preference.SocialSharePreferenceHelper;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.EmptyAction1;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.functions.Action1;
 
 public class DiscussionPostActionButtonsView extends LinearLayout
 {
     @Bind(R.id.btn_share_fb) ToggleButton facebookShareButton;
-    @Bind(R.id.btn_share_tw) ToggleButton twitterShareButton;
-    @Bind(R.id.btn_share_li) ToggleButton linkedInShareButton;
+    //@Bind(R.id.btn_share_tw) ToggleButton twitterShareButton;
+    //@Bind(R.id.btn_share_li) ToggleButton linkedInShareButton;
     @Bind(R.id.btn_share_wb) ToggleButton weiboShareButton;
     @Bind(R.id.btn_share_wechat) ToggleButton weChatShareButton;
     @Bind(R.id.btn_location) ToggleButton locationShareButton;
@@ -62,8 +65,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
         {
             socialSharePreferenceHelper.load();
             initSocialButton(facebookShareButton, SocialNetworkEnum.FB);
-            initSocialButton(twitterShareButton, SocialNetworkEnum.TW);
-            initSocialButton(linkedInShareButton, SocialNetworkEnum.LN);
+            //initSocialButton(twitterShareButton, SocialNetworkEnum.TW);
+            //initSocialButton(linkedInShareButton, SocialNetworkEnum.LN);
             initSocialButton(weChatShareButton, SocialNetworkEnum.WECHAT);
             initSocialButton(weiboShareButton, SocialNetworkEnum.WB);
         }
@@ -104,8 +107,6 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @SuppressWarnings("UnusedDeclaration")
     @OnCheckedChanged({
             R.id.btn_share_fb,
-            R.id.btn_share_li,
-            R.id.btn_share_tw,
             R.id.btn_share_wb,
     })
     public void onSocialNetworkCheckedChanged(@NonNull CompoundButton compoundButton, boolean isChecked)
@@ -154,8 +155,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     public void populate(@NonNull PublishableFormDTO publishableFormDTO)
     {
         publishableFormDTO.publishToFb = facebookShareButton.isChecked();
-        publishableFormDTO.publishToTw = twitterShareButton.isChecked();
-        publishableFormDTO.publishToLi = linkedInShareButton.isChecked();
+        //publishableFormDTO.publishToTw = twitterShareButton.isChecked();
+        //publishableFormDTO.publishToLi = linkedInShareButton.isChecked();
         publishableFormDTO.publishToWb = weiboShareButton.isChecked();
 
         publishableFormDTO.isPublic = isPublic.isChecked();
@@ -179,8 +180,8 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     public void hideSocialButtons()
     {
         facebookShareButton.setVisibility(GONE);
-        twitterShareButton.setVisibility(GONE);
-        linkedInShareButton.setVisibility(GONE);
+        //twitterShareButton.setVisibility(GONE);
+        //linkedInShareButton.setVisibility(GONE);
         weChatShareButton.setVisibility(GONE);
         weiboShareButton.setVisibility(GONE);
     }

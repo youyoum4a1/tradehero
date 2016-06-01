@@ -1,9 +1,9 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.competition.key.HelpVideoId;
+import com.ayondo.academy.api.competition.key.HelpVideoId;
 
 public class HelpVideoDTO implements DTO
 {

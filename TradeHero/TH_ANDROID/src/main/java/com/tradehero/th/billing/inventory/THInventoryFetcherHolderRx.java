@@ -1,8 +1,8 @@
-package com.tradehero.th.billing.inventory;
+package com.ayondo.academy.billing.inventory;
 
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.inventory.BillingInventoryFetcherHolderRx;
-import com.tradehero.th.billing.THProductDetail;
+import com.ayondo.academy.billing.THProductDetail;
 
 public interface THInventoryFetcherHolderRx<
         ProductIdentifierType extends ProductIdentifier,

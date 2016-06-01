@@ -1,8 +1,8 @@
-package com.tradehero.th.adapters;
+package com.ayondo.academy.adapters;
 
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.api.DTOView;
+import com.ayondo.academy.api.DTOView;
 
 public interface PagedViewDTOAdapter<
         DTOType,

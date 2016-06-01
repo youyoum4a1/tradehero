@@ -1,6 +1,6 @@
-package com.tradehero.th.fragments.trade;
+package com.ayondo.academy.fragments.trade;
 
-import com.tradehero.th.fragments.trade.view.TradeListItemView;
+import com.ayondo.academy.fragments.trade.view.TradeListItemView;
 import dagger.Module;
 
 @Module(

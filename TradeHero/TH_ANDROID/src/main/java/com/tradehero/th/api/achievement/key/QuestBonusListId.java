@@ -1,4 +1,4 @@
-package com.tradehero.th.api.achievement.key;
+package com.ayondo.academy.api.achievement.key;
 
 import com.tradehero.common.persistence.DTOKey;
 

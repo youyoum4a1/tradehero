@@ -1,11 +1,11 @@
-package com.tradehero.th.adapters;
+package com.ayondo.academy.adapters;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.api.DTOView;
+import com.ayondo.academy.api.DTOView;
 
 public class ArrayDTOAdapter<T, V extends DTOView<T>> extends GenericArrayAdapter<T>
 {

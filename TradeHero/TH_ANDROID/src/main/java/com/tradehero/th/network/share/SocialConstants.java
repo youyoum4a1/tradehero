@@ -1,7 +1,7 @@
-package com.tradehero.th.network.share;
+package com.ayondo.academy.network.share;
 
-import com.tradehero.th.auth.weibo.WeiboAppAuthData;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.auth.weibo.WeiboAppAuthData;
+import com.ayondo.academy.utils.Constants;
 
 public class SocialConstants
 {

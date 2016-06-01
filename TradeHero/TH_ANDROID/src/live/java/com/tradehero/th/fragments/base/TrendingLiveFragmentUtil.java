@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.base;
+package com.ayondo.academy.fragments.base;
 
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,11 +7,11 @@ import android.view.View;
 import android.widget.FrameLayout;
 import butterknife.Bind;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.LiveActivityUtil;
-import com.tradehero.th.fragments.live.LiveCallToActionFragment;
-import com.tradehero.th.persistence.prefs.IsLiveTrading;
-import com.tradehero.th.persistence.prefs.ShowCallToActionFragmentPreference;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.LiveActivityUtil;
+import com.ayondo.academy.fragments.live.LiveCallToActionFragment;
+import com.ayondo.academy.persistence.prefs.IsLiveTrading;
+import com.ayondo.academy.persistence.prefs.ShowCallToActionFragmentPreference;
 import javax.inject.Inject;
 import rx.Subscription;
 import rx.functions.Action1;

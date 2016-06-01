@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -17,7 +17,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;

@@ -1,7 +1,7 @@
-package com.tradehero.th.api.security;
+package com.ayondo.academy.api.security;
 
 import android.support.annotation.StringDef;
-import com.tradehero.th.api.security.compact.WarrantDTO;
+import com.ayondo.academy.api.security.compact.WarrantDTO;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

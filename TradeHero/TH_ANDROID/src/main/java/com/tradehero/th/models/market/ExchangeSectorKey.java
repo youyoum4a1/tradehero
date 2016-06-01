@@ -1,4 +1,4 @@
-package com.tradehero.th.models.market;
+package com.ayondo.academy.models.market;
 
 import com.tradehero.common.persistence.DTOKey;
 

@@ -1,9 +1,9 @@
-package com.tradehero.th.models.portfolio;
+package com.ayondo.academy.models.portfolio;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.ThroughDTOProcessor;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.models.ThroughDTOProcessor;
 
 public class DTOProcessorPortfolioReceived<PortfolioCompactType extends PortfolioCompactDTO>
         extends ThroughDTOProcessor<PortfolioCompactType>

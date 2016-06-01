@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import com.android.internal.util.Predicate;
 import com.tradehero.common.billing.ProductIdentifier;

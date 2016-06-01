@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.timeline;
+package com.ayondo.academy.fragments.timeline;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.level.LevelDefDTOList;
-import com.tradehero.th.api.users.UserProfileDTO;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.level.LevelDefDTOList;
+import com.ayondo.academy.api.users.UserProfileDTO;
 import rx.Observable;
 
 public class UserProfileDetailView extends LinearLayout implements DTOView<UserProfileDTO>

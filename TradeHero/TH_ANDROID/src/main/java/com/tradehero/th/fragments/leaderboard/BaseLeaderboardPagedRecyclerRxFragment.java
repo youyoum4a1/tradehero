@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.os.Bundle;
 import android.support.annotation.MenuRes;
@@ -7,14 +7,14 @@ import com.tradehero.common.api.PagedDTOKey;
 import com.tradehero.common.persistence.ContainerDTO;
 import com.tradehero.common.persistence.DTO;
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.BasePagedRecyclerRxFragment;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardDefKey;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.fragments.BasePagedRecyclerRxFragment;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
 import java.util.List;
 import javax.inject.Inject;
 import rx.android.app.AppObservable;

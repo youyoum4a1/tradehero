@@ -1,7 +1,7 @@
-package com.tradehero.th.api.watchlist.key;
+package com.ayondo.academy.api.watchlist.key;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

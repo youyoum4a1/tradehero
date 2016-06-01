@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.competition;
+package com.ayondo.academy.fragments.competition;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,10 +9,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.competition.HelpVideoDTO;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.competition.HelpVideoDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.inject.Inject;

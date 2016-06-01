@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trade.view;
+package com.ayondo.academy.fragments.trade.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Observable;

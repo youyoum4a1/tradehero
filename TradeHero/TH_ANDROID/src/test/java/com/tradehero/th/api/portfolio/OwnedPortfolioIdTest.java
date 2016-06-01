@@ -1,8 +1,8 @@
-package com.tradehero.th.api.portfolio;
+package com.ayondo.academy.api.portfolio;
 
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academy.BuildConfig;
 import java.io.IOException;
 import org.junit.After;
 import org.junit.Before;

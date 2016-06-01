@@ -1,7 +1,7 @@
-package com.tradehero.th.models.fastfill;
+package com.ayondo.academy.models.fastfill;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.models.fastfill.jumio.NetverifyScanReference;
+import com.ayondo.academy.models.fastfill.jumio.NetverifyScanReference;
 
 public interface ScanImageKey
 {

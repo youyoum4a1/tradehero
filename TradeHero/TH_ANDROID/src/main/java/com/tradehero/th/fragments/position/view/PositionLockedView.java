@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position.view;
+package com.ayondo.academy.fragments.position.view;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -7,11 +7,11 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.TypedRecyclerAdapter;
-import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.models.number.THSignedMoney;
-import com.tradehero.th.models.number.THSignedPercentage;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.TypedRecyclerAdapter;
+import com.ayondo.academy.api.position.PositionDTO;
+import com.ayondo.academy.models.number.THSignedMoney;
+import com.ayondo.academy.models.number.THSignedPercentage;
 
 public class PositionLockedView extends LinearLayout
 {

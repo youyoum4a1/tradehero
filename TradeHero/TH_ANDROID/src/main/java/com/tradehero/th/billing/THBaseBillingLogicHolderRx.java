@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -18,8 +18,8 @@ import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.purchasefetch.BillingPurchaseFetcherHolderRx;
 import com.tradehero.common.billing.restore.PurchaseRestoreResult;
 import com.tradehero.common.billing.tester.BillingAvailableTesterHolderRx;
-import com.tradehero.th.billing.report.PurchaseReportResult;
-import com.tradehero.th.billing.report.THPurchaseReporterHolderRx;
+import com.ayondo.academy.billing.report.PurchaseReportResult;
+import com.ayondo.academy.billing.report.THPurchaseReporterHolderRx;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;

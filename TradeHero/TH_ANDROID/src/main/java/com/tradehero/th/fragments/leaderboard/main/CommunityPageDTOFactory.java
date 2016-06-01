@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.leaderboard.main;
+package com.ayondo.academy.fragments.leaderboard.main;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.android.internal.util.Predicate;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTOList;
-import com.tradehero.th.models.leaderboard.key.LeaderboardDefKeyKnowledge;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTO;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTOList;
+import com.ayondo.academy.models.leaderboard.key.LeaderboardDefKeyKnowledge;
 
 /** TODO IMHO, CommunityPageDTOFactory hides the fact about where the real data comes from */
 class CommunityPageDTOFactory

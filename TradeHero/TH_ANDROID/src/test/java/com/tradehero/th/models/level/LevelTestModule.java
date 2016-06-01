@@ -1,4 +1,4 @@
-package com.tradehero.th.models.level;
+package com.ayondo.academy.models.level;
 
 import dagger.Module;
 

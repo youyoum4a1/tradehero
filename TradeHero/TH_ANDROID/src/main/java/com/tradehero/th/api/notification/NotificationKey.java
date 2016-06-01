@@ -1,4 +1,4 @@
-package com.tradehero.th.api.notification;
+package com.ayondo.academy.api.notification;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

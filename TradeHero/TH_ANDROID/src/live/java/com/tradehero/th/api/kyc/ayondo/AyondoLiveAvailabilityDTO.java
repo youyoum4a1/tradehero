@@ -1,9 +1,9 @@
-package com.tradehero.th.api.kyc.ayondo;
+package com.ayondo.academy.api.kyc.ayondo;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.th.api.kyc.LiveAvailabilityDTO;
-import com.tradehero.th.api.market.Country;
+import com.ayondo.academy.api.kyc.LiveAvailabilityDTO;
+import com.ayondo.academy.api.market.Country;
 
 public class AyondoLiveAvailabilityDTO implements LiveAvailabilityDTO
 {

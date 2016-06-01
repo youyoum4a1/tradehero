@@ -1,12 +1,12 @@
-package com.tradehero.th.models.provider;
+package com.ayondo.academy.models.provider;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.models.DTOProcessor;
-import com.tradehero.th.models.ThroughDTOProcessor;
-import com.tradehero.th.models.portfolio.DTOProcessorPortfolioReceived;
+import com.ayondo.academy.api.competition.ProviderDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.models.DTOProcessor;
+import com.ayondo.academy.models.ThroughDTOProcessor;
+import com.ayondo.academy.models.portfolio.DTOProcessorPortfolioReceived;
 
 public class DTOProcessorProviderReceived extends ThroughDTOProcessor<ProviderDTO>
 {

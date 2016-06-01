@@ -1,10 +1,10 @@
-package com.tradehero.th.widget.validation;
+package com.ayondo.academy.widget.validation;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.persistence.user.UserAvailabilityCacheRx;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.persistence.user.UserAvailabilityCacheRx;
 import javax.inject.Inject;
 
 public class DisplayNameValidatedText extends ValidatedText

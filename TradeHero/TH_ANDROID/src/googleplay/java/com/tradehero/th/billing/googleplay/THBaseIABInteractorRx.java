@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay;
+package com.ayondo.academy.billing.googleplay;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,14 +9,14 @@ import com.tradehero.common.billing.googleplay.IABConstants;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;
 import com.tradehero.common.billing.googleplay.IABSKUListKey;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.billing.THBaseBillingInteractorRx;
-import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTOUtil;
+import com.ayondo.academy.billing.THBaseBillingInteractorRx;
+import com.ayondo.academy.persistence.billing.googleplay.THIABProductDetailCacheRx;
+import com.ayondo.academy.persistence.portfolio.PortfolioCompactListCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;

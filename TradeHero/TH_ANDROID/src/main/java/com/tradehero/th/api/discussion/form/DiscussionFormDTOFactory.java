@@ -1,9 +1,9 @@
-package com.tradehero.th.api.discussion.form;
+package com.ayondo.academy.api.discussion.form;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.news.form.NewsItemReplyDiscussionFormDTO;
-import com.tradehero.th.api.timeline.form.TimelineItemReplyCommentFormDTO;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.news.form.NewsItemReplyDiscussionFormDTO;
+import com.ayondo.academy.api.timeline.form.TimelineItemReplyCommentFormDTO;
 
 public class DiscussionFormDTOFactory
 {

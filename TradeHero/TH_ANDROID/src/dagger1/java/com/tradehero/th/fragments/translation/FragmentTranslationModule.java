@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.translation;
+package com.ayondo.academy.fragments.translation;
 
 import dagger.Module;
 

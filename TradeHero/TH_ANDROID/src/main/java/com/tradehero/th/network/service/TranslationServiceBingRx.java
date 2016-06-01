@@ -1,11 +1,11 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Query;
 import rx.Observable;
 
-import static com.tradehero.th.utils.Constants.AUTHORIZATION;
+import static com.ayondo.academy.utils.Constants.AUTHORIZATION;
 
 interface TranslationServiceBingRx
 {

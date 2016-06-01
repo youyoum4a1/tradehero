@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -15,11 +15,11 @@ import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.social.UserFriendsWeiboDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.UserFriendsDTO;
+import com.ayondo.academy.api.social.UserFriendsWeiboDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
 import timber.log.Timber;
 

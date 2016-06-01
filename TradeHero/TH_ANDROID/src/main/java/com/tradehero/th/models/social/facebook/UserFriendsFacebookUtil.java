@@ -1,4 +1,4 @@
-package com.tradehero.th.models.social.facebook;
+package com.ayondo.academy.models.social.facebook;
 
 import android.support.annotation.NonNull;
 import com.facebook.Response;
@@ -6,8 +6,8 @@ import com.facebook.model.GraphObject;
 import com.facebook.model.GraphObjectList;
 import com.facebook.model.GraphUser;
 import com.tradehero.common.social.facebook.FacebookInvitableFriendGraphUser;
-import com.tradehero.th.api.social.UserFriendsDTOList;
-import com.tradehero.th.api.social.UserFriendsFacebookDTO;
+import com.ayondo.academy.api.social.UserFriendsDTOList;
+import com.ayondo.academy.api.social.UserFriendsFacebookDTO;
 import org.json.JSONException;
 import timber.log.Timber;
 

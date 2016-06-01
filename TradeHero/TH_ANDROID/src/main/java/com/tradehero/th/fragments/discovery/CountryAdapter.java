@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discovery;
+package com.ayondo.academy.fragments.discovery;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -10,10 +10,10 @@ import android.widget.Filterable;
 import android.widget.TextView;
 import com.android.internal.util.Predicate;
 import com.tradehero.common.utils.CollectionUtils;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.GenericArrayAdapter;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.news.CountryLanguagePairDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.GenericArrayAdapter;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.news.CountryLanguagePairDTO;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

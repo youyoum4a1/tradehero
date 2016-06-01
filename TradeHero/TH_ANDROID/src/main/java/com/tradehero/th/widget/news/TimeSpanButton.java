@@ -1,9 +1,9 @@
-package com.tradehero.th.widget.news;
+package com.ayondo.academy.widget.news;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.Button;
-import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.ayondo.academy.models.chart.ChartTimeSpan;
 
 abstract public class TimeSpanButton extends Button
 {

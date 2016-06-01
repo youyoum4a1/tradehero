@@ -1,4 +1,4 @@
-package com.tradehero.th.models.chart;
+package com.ayondo.academy.models.chart;
 
 /**
  * Indicates a duration in seconds

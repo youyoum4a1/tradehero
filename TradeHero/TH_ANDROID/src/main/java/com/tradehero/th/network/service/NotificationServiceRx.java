@@ -1,8 +1,8 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.notification.PaginatedNotificationDTO;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.notification.NotificationDTO;
+import com.ayondo.academy.api.notification.PaginatedNotificationDTO;
 import java.util.Map;
 import retrofit.http.GET;
 import retrofit.http.POST;

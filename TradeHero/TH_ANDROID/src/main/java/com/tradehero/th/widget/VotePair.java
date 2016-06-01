@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,11 +9,11 @@ import android.widget.LinearLayout;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.VoteDirection;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.VoteDirection;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -141,7 +141,7 @@ public class VotePair extends LinearLayout
         {
             // We need to make these tests because view are detached from window in
             // disparate order
-            // https://www.crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/5360b347e3de5099ba24841d
+            // https://www.crashlytics.com/tradehero/android/apps/com.ayondo.academy/issues/5360b347e3de5099ba24841d
             voteUp.display(discussionDTO);
         }
         if (voteDown != null)

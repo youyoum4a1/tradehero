@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.dashboard;
+package com.ayondo.academy.fragments.dashboard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

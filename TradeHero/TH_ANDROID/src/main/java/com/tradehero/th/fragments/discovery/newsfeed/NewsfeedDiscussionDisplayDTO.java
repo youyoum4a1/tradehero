@@ -1,6 +1,6 @@
-package com.tradehero.th.fragments.discovery.newsfeed;
+package com.ayondo.academy.fragments.discovery.newsfeed;
 
-import com.tradehero.th.api.discussion.newsfeed.NewsfeedDiscussionDTO;
+import com.ayondo.academy.api.discussion.newsfeed.NewsfeedDiscussionDTO;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class NewsfeedDiscussionDisplayDTO extends NewsfeedDisplayDTO

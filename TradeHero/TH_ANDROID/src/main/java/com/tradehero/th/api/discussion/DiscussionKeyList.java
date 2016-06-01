@@ -1,8 +1,8 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTOKeyIdList;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
 
 public class DiscussionKeyList extends DTOKeyIdList<DiscussionKey>
 {

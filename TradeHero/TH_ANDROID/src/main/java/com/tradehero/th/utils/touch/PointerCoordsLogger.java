@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.touch;
+package com.ayondo.academy.utils.touch;
 
 import android.view.MotionEvent;
 

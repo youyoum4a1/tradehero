@@ -1,4 +1,4 @@
-package com.tradehero.th.rx.view.list;
+package com.ayondo.academy.rx.view.list;
 
 import android.widget.AbsListView;
 import android.widget.ListView;

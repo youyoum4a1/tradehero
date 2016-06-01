@@ -1,6 +1,6 @@
-package com.tradehero.th;
+package com.ayondo.academy;
 
-import com.tradehero.th.fragments.DebugFragmentModule;
+import com.ayondo.academy.fragments.DebugFragmentModule;
 import dagger.Module;
 
 @Module(

@@ -1,4 +1,4 @@
-package com.tradehero.th.utils.route;
+package com.ayondo.academy.utils.route;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,10 +13,10 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.Router;
 import com.tradehero.route.RouterOptions;
 import com.tradehero.route.RouterParams;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.BaseActivity;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.fragments.DashboardNavigator;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.BaseActivity;
+import com.ayondo.academy.activities.DashboardActivity;
+import com.ayondo.academy.fragments.DashboardNavigator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;

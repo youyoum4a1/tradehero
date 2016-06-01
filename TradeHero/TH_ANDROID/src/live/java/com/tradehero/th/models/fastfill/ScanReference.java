@@ -1,10 +1,10 @@
-package com.tradehero.th.models.fastfill;
+package com.ayondo.academy.models.fastfill;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.tradehero.th.models.fastfill.jumio.NetverifyScanReference;
+import com.ayondo.academy.models.fastfill.jumio.NetverifyScanReference;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,

@@ -1,15 +1,15 @@
-package com.tradehero.th.api.users;
+package com.ayondo.academy.api.users;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.th.api.misc.DeviceType;
-import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.persistence.prefs.SavedPushDeviceIdentifier;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.VersionUtils;
+import com.ayondo.academy.api.misc.DeviceType;
+import com.ayondo.academy.auth.AuthData;
+import com.ayondo.academy.persistence.prefs.SavedPushDeviceIdentifier;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.VersionUtils;
 import java.util.Map;
 import javax.inject.Inject;
 

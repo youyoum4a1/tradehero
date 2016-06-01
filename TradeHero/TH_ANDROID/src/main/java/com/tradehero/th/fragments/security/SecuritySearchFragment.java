@@ -1,28 +1,28 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.View;
+
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityCompactDTOList;
-import com.tradehero.th.api.security.SecurityCompactDTOUtil;
-import com.tradehero.th.api.security.key.SearchSecurityListType;
-import com.tradehero.th.api.security.key.SecurityListType;
-import com.tradehero.th.fragments.BaseSearchRxFragment;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
-import com.tradehero.th.persistence.security.SecurityCompactListCacheRx;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.portfolio.AssetClass;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTOList;
+import com.ayondo.academy.api.security.SecurityCompactDTOUtil;
+import com.ayondo.academy.api.security.key.SearchSecurityListType;
+import com.ayondo.academy.api.security.key.SecurityListType;
+import com.ayondo.academy.fragments.BaseSearchRxFragment;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.trade.AbstractBuySellFragment;
+import com.ayondo.academy.persistence.security.SecurityCompactListCacheRx;
+
 import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class SecuritySearchFragment extends BaseSearchRxFragment<
@@ -35,7 +35,8 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     private static final String BUNDLE_KEY_ASSET_CLASS = SecuritySearchProviderFragment.class.getName() + ".assetClass";
 
     @Inject SecurityCompactListCacheRx securityCompactListCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @Nullable protected AssetClass assetClass;
 
@@ -169,7 +170,8 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
     @Override protected void onNext(@NonNull SecurityListType key, @NonNull SecurityCompactDTOList value)
     {
         super.onNext(key, value);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_Stock));
     }
 
     @Override protected void onError(@NonNull SecurityListType key, @NonNull Throwable error)

@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.alert;
+package com.ayondo.academy.fragments.alert;
 
 import android.support.annotation.NonNull;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.api.alert.AlertDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.alert.AlertDTO;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;

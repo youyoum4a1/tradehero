@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import com.tradehero.common.billing.ProductIdentifier;
 import java.util.List;

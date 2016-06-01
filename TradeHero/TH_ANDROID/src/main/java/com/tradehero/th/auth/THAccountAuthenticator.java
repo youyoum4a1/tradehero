@@ -1,4 +1,4 @@
-package com.tradehero.th.auth;
+package com.ayondo.academy.auth;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
@@ -8,8 +8,8 @@ import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import com.tradehero.th.activities.AuthenticationActivity;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.activities.AuthenticationActivity;
+import com.ayondo.academy.utils.Constants;
 
 public class THAccountAuthenticator extends AbstractAccountAuthenticator
 {

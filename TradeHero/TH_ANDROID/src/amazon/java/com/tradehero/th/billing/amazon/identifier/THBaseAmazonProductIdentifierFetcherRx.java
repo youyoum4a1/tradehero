@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon.identifier;
+package com.ayondo.academy.billing.amazon.identifier;
 
 import android.support.annotation.NonNull;
 import com.amazon.device.iap.model.ProductType;
@@ -6,7 +6,7 @@ import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.billing.amazon.identifier.BaseAmazonProductIdentifierFetcherRx;
-import com.tradehero.th.billing.amazon.THAmazonConstants;
+import com.ayondo.academy.billing.amazon.THAmazonConstants;
 import javax.inject.Inject;
 
 public class THBaseAmazonProductIdentifierFetcherRx

@@ -1,14 +1,14 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.VersionUtils;
+import com.ayondo.academy.api.billing.GooglePlayPurchaseReportDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.billing.googleplay.THIABPurchase;
+import com.ayondo.academy.utils.StringUtils;
+import com.ayondo.academy.utils.VersionUtils;
 import java.util.ArrayList;
 import java.util.List;
 

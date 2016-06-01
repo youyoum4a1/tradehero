@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon.tester;
+package com.ayondo.academy.billing.amazon.tester;
 
 import android.app.Activity;
 import android.content.Intent;

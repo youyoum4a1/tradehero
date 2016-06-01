@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -18,10 +18,10 @@ import android.widget.Spinner;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.neovisionaries.i18n.CountryCode;
-import com.tradehero.th.R;
-import com.tradehero.th.api.kyc.KYCAddress;
-import com.tradehero.th.api.market.Country;
-import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.kyc.KYCAddress;
+import com.ayondo.academy.api.market.Country;
+import com.ayondo.academy.fragments.live.CountrySpinnerAdapter;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import rx.Observable;

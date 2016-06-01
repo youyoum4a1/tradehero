@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.updatecenter;
+package com.ayondo.academy.fragments.updatecenter;
 
 import android.support.v4.app.Fragment;
-import com.tradehero.th.R;
-import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
+import com.ayondo.academy.fragments.updatecenter.notifications.NotificationsCenterFragment;
 
 enum UpdateCenterTabType
 {

@@ -1,7 +1,7 @@
-package com.tradehero.th.models.user;
+package com.ayondo.academy.models.user;
 
-import com.tradehero.th.models.user.follow.FollowUserAssistantTest;
-import com.tradehero.th.models.user.follow.SimpleFollowUserAssistantTest;
+import com.ayondo.academy.models.user.follow.FollowUserAssistantTest;
+import com.ayondo.academy.models.user.follow.SimpleFollowUserAssistantTest;
 import dagger.Module;
 
 @Module(

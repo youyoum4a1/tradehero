@@ -1,8 +1,8 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
 import android.support.annotation.DrawableRes;
 import com.tradehero.common.billing.BillingConstants;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class SecurityAlertKnowledge
 {

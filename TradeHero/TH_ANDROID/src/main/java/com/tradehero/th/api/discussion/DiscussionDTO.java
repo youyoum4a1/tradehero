@@ -1,9 +1,9 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
-import com.tradehero.th.api.ExtendedDTO;
-import com.tradehero.th.api.discussion.key.CommentKey;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.users.UserBaseDTO;
+import com.ayondo.academy.api.ExtendedDTO;
+import com.ayondo.academy.api.discussion.key.CommentKey;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.users.UserBaseDTO;
 
 public class DiscussionDTO<T extends DiscussionDTO> extends AbstractDiscussionDTO<T>
 {

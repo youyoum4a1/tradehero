@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discovery;
+package com.ayondo.academy.fragments.discovery;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import android.widget.Spinner;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnItemSelected;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public final class NewsPagerFragment extends Fragment
 {

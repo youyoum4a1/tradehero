@@ -1,8 +1,8 @@
-package com.tradehero.th.network.share.dto;
+package com.ayondo.academy.network.share.dto;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.share.SocialShareFormDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.share.SocialShareFormDTO;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
 import java.util.List;
 
 public class ConnectRequired extends SocialShareResult

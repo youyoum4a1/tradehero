@@ -1,13 +1,13 @@
-package com.tradehero.th.misc.exception;
+package com.ayondo.academy.misc.exception;
 
 import android.support.annotation.StringRes;
 import com.facebook.FacebookOperationCanceledException;
 import com.tradehero.common.utils.RetrofitHelper;
-import com.tradehero.th.R;
-import com.tradehero.th.api.ErrorMessageDTO;
-import com.tradehero.th.api.http.ResponseErrorCode;
-import com.tradehero.th.base.THApp;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.ErrorMessageDTO;
+import com.ayondo.academy.api.http.ResponseErrorCode;
+import com.ayondo.academy.base.THApp;
+import com.ayondo.academy.utils.Constants;
 import java.util.List;
 import retrofit.RetrofitError;
 import retrofit.client.Header;

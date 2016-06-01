@@ -1,6 +1,6 @@
-package com.tradehero.th.fragments.competition;
+package com.ayondo.academy.fragments.competition;
 
-import com.tradehero.th.fragments.competition.zone.FragmentCompetitionZoneModule;
+import com.ayondo.academy.fragments.competition.zone.FragmentCompetitionZoneModule;
 import dagger.Module;
 
 @Module(

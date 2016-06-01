@@ -1,6 +1,6 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTO;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

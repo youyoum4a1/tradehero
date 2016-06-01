@@ -1,4 +1,4 @@
-package com.tradehero.th.api.users.specific;
+package com.ayondo.academy.api.users.specific;
 
 public class UserBaseKeyConstants
 {

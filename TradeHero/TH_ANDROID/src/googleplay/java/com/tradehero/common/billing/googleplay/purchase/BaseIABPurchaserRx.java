@@ -21,7 +21,7 @@ import com.tradehero.common.billing.googleplay.exception.IABSubscriptionUnavaila
 import com.tradehero.common.billing.googleplay.exception.IABUnknownErrorException;
 import com.tradehero.common.billing.googleplay.exception.IABVerificationFailedException;
 import com.tradehero.common.billing.purchase.PurchaseResult;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academy.BuildConfig;
 import org.json.JSONException;
 import rx.Observable;
 import rx.functions.Action1;

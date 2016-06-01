@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard.key;
+package com.ayondo.academy.api.leaderboard.key;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;

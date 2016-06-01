@@ -1,7 +1,7 @@
-package com.tradehero.th.fragments.achievement;
+package com.ayondo.academy.fragments.achievement;
 
-import com.tradehero.th.fragments.level.LevelUpDialogFragment;
-import com.tradehero.th.widget.UserLevelProgressBar;
+import com.ayondo.academy.fragments.level.LevelUpDialogFragment;
+import com.ayondo.academy.widget.UserLevelProgressBar;
 import dagger.Module;
 
 @Module(

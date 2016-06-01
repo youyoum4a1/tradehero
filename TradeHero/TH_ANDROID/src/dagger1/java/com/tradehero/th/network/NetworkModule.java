@@ -1,9 +1,9 @@
-package com.tradehero.th.network;
+package com.ayondo.academy.network;
 
 import android.content.SharedPreferences;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.persistence.prefs.StringPreference;
-import com.tradehero.th.network.retrofit.RetrofitModule;
+import com.ayondo.academy.network.retrofit.RetrofitModule;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

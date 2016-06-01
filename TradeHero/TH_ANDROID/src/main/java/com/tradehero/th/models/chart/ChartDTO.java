@@ -1,9 +1,9 @@
-package com.tradehero.th.models.chart;
+package com.ayondo.academy.models.chart;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
 
 public interface ChartDTO extends DTO
 {

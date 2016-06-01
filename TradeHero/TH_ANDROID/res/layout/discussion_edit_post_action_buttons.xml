@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView
+<com.ayondo.academy.fragments.discussion.DiscussionPostActionButtonsView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/discussion_new_post_action_buttons"
@@ -21,19 +21,21 @@
       app:networkType="facebook"
       />
 
-  <com.tradehero.common.widget.SocialLinkToggleButton
+  <!--<com.tradehero.common.widget.SocialLinkToggleButton
       android:id="@+id/btn_share_tw"
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_share_tw"
       app:networkType="twitter"
+      android:visibility="invisible"
       />
 
   <com.tradehero.common.widget.SocialLinkToggleButton
       android:id="@+id/btn_share_li"
       style="@style/TH.ShareButtons"
       android:background="@drawable/ic_share_li"
+      android:visibility="invisible"
       app:networkType="linkedin"
-      />
+      />-->
 
   <ToggleButton
       android:id="@+id/btn_share_wechat"
@@ -74,4 +76,4 @@
 
   </LinearLayout>
 
-</com.tradehero.th.fragments.discussion.DiscussionPostActionButtonsView>
+</com.ayondo.academy.fragments.discussion.DiscussionPostActionButtonsView>

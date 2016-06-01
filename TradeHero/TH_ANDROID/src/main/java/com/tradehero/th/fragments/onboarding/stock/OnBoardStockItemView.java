@@ -1,14 +1,14 @@
-package com.tradehero.th.fragments.onboarding.stock;
+package com.ayondo.academy.fragments.onboarding.stock;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import butterknife.Bind;
 import com.tradehero.common.api.SelectableDTO;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.fragments.onboarding.OnBoardSelectableViewLinear;
-import com.tradehero.th.fragments.security.SecurityItemView;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.fragments.onboarding.OnBoardSelectableViewLinear;
+import com.ayondo.academy.fragments.security.SecurityItemView;
 
 public class OnBoardStockItemView extends OnBoardSelectableViewLinear<SecurityCompactDTO, SelectableDTO<SecurityCompactDTO>>
 {

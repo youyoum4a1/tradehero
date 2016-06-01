@@ -1,44 +1,44 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionVoteKey;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
-import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionCommentFragment;
-import com.tradehero.th.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.models.discussion.NewNewsDiscussionAction;
-import com.tradehero.th.models.discussion.OpenNewStockAlertUserAction;
-import com.tradehero.th.models.discussion.OpenWatchlistUserAction;
-import com.tradehero.th.models.discussion.OpenWebUserAction;
-import com.tradehero.th.models.discussion.PlayerUserAction;
-import com.tradehero.th.models.discussion.SecurityUserAction;
-import com.tradehero.th.models.discussion.UpdateStockAlertUserAction;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
-import com.tradehero.th.network.service.DiscussionServiceWrapper;
-import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
-import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.VotePair;
+
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.discussion.key.DiscussionVoteKey;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.alert.AlertCreateDialogFragment;
+import com.ayondo.academy.fragments.alert.AlertEditDialogFragment;
+import com.ayondo.academy.fragments.base.ActionBarOwnerMixin;
+import com.ayondo.academy.fragments.discussion.stock.SecurityDiscussionCommentFragment;
+import com.ayondo.academy.fragments.discussion.stock.SecurityDiscussionItemViewLinear;
+import com.ayondo.academy.fragments.security.WatchlistEditFragment;
+import com.ayondo.academy.fragments.timeline.PushableTimelineFragment;
+import com.ayondo.academy.fragments.web.WebViewFragment;
+import com.ayondo.academy.models.discussion.NewNewsDiscussionAction;
+import com.ayondo.academy.models.discussion.OpenNewStockAlertUserAction;
+import com.ayondo.academy.models.discussion.OpenWatchlistUserAction;
+import com.ayondo.academy.models.discussion.OpenWebUserAction;
+import com.ayondo.academy.models.discussion.PlayerUserAction;
+import com.ayondo.academy.models.discussion.SecurityUserAction;
+import com.ayondo.academy.models.discussion.UpdateStockAlertUserAction;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.network.service.DiscussionServiceWrapper;
+import com.ayondo.academy.persistence.watchlist.WatchlistPositionCacheRx;
+import com.ayondo.academy.utils.SecurityUtils;
+import com.ayondo.academy.utils.route.THRouter;
+import com.ayondo.academy.widget.VotePair;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -47,7 +47,8 @@ public class DiscussionFragmentUtil
 {
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final DashboardNavigator navigator;
-    @NonNull private final Analytics analytics;
+    //TODO Change Analytics
+    //@NonNull private final Analytics analytics;
     @NonNull private final THRouter thRouter;
     @NonNull private final WatchlistPositionCacheRx watchlistPositionCache;
     @NonNull private final DiscussionServiceWrapper discussionServiceWrapper;
@@ -56,14 +57,15 @@ public class DiscussionFragmentUtil
     @Inject public DiscussionFragmentUtil(
             @NonNull CurrentUserId currentUserId,
             @NonNull DashboardNavigator navigator,
-            @NonNull Analytics analytics,
             @NonNull THRouter thRouter,
             @NonNull WatchlistPositionCacheRx watchlistPositionCache,
             @NonNull DiscussionServiceWrapper discussionServiceWrapper)
     {
         this.currentUserId = currentUserId;
         this.navigator = navigator;
-        this.analytics = analytics;
+        //TODO Change Analytics
+        //Was part of constructor
+        //this.analytics = analytics;
         this.thRouter = thRouter;
         this.watchlistPositionCache = watchlistPositionCache;
         this.discussionServiceWrapper = discussionServiceWrapper;
@@ -82,12 +84,14 @@ public class DiscussionFragmentUtil
             WatchlistEditFragment.putSecurityId(args, securityId);
             if (watchlistPositionCache.getCachedValue(securityId) != null)
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, activity.getString(R.string.watchlist_edit_title));
             }
             else
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, activity.getString(R.string.watchlist_add_title));
             }
             navigator.pushFragment(WatchlistEditFragment.class, args, null);
@@ -95,7 +99,8 @@ public class DiscussionFragmentUtil
         }
         else if (userAction instanceof OpenNewStockAlertUserAction)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
             Fragment currentFragment = navigator.getCurrentFragment();
             if (currentFragment != null)
             {
@@ -111,7 +116,8 @@ public class DiscussionFragmentUtil
         }
         else if (userAction instanceof UpdateStockAlertUserAction)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
             Fragment currentFragment = navigator.getCurrentFragment();
             if (currentFragment != null)
             {
@@ -127,7 +133,8 @@ public class DiscussionFragmentUtil
         }
         else if (userAction instanceof SecurityUserAction)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_BuySell));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_BuySell));
             SecurityId securityId = ((SecurityUserAction) userAction).securityId;
             if (securityId.getExchange().equals(SecurityUtils.FX_EXCHANGE))
             {

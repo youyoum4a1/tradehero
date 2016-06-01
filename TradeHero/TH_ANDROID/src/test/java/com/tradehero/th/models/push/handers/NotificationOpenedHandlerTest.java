@@ -1,8 +1,8 @@
-package com.tradehero.th.models.push.handers;
+package com.ayondo.academy.models.push.handers;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.models.push.handlers.NotificationOpenedHandler;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.models.push.handlers.NotificationOpenedHandler;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import org.junit.Before;

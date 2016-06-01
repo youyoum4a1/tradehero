@@ -1,4 +1,4 @@
-package com.tradehero.th.network.share;
+package com.ayondo.academy.network.share;
 
 public class CannotShareException extends RuntimeException
 {

@@ -1,8 +1,8 @@
-package com.tradehero.th.api.security.compact;
+package com.ayondo.academy.api.security.compact;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
 
 public class PreferenceShareDTO extends SecurityCompactDTO
 {

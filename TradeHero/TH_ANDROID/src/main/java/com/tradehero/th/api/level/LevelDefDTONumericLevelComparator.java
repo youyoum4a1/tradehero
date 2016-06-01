@@ -1,4 +1,4 @@
-package com.tradehero.th.api.level;
+package com.ayondo.academy.api.level;
 
 import java.io.Serializable;
 import java.util.Comparator;

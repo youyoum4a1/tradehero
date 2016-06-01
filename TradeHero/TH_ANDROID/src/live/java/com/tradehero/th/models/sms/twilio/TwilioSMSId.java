@@ -1,9 +1,9 @@
-package com.tradehero.th.models.sms.twilio;
+package com.ayondo.academy.models.sms.twilio;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.tradehero.th.models.sms.SMSId;
+import com.ayondo.academy.models.sms.SMSId;
 
 public class TwilioSMSId implements SMSId
 {

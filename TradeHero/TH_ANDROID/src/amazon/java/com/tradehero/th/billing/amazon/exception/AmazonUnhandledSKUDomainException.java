@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon.exception;
+package com.ayondo.academy.billing.amazon.exception;
 
 import com.tradehero.common.billing.amazon.exception.AmazonException;
 

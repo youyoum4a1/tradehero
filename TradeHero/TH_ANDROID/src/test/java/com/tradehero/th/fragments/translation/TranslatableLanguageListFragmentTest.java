@@ -1,15 +1,15 @@
-package com.tradehero.th.fragments.translation;
+package com.ayondo.academy.fragments.translation;
 
 import android.content.Context;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.DashboardActivityExtended;
-import com.tradehero.th.api.translation.bing.BingTranslationToken;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.persistence.translation.TranslationTokenCacheRx;
-import com.tradehero.th.persistence.translation.TranslationTokenKey;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.DashboardActivity;
+import com.ayondo.academy.activities.DashboardActivityExtended;
+import com.ayondo.academy.api.translation.bing.BingTranslationToken;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.persistence.translation.TranslationTokenCacheRx;
+import com.ayondo.academy.persistence.translation.TranslationTokenKey;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;
@@ -19,7 +19,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
-import static com.tradehero.THRobolectric.runBgUiTasks;
+import static com.ayondo.academyRobolectric.runBgUiTasks;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.ayondo.academy.fragments.trending;
 
 import android.content.Context;
 import android.database.DataSetObserver;

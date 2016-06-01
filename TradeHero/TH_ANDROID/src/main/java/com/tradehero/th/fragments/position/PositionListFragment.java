@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position;
+package com.ayondo.academy.fragments.position;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -18,96 +18,94 @@ import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ViewAnimator;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.SDKUtils;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.InjectRoute;
-import com.tradehero.th.R;
-import com.tradehero.th.activities.HelpActivity;
-import com.tradehero.th.adapters.TypedRecyclerAdapter;
-import com.tradehero.th.api.alert.AlertCompactDTO;
-import com.tradehero.th.api.competition.ProviderId;
-import com.tradehero.th.api.portfolio.AssetClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOUtil;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.portfolio.PortfolioId;
-import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
-import com.tradehero.th.api.position.GetPositionsDTOKeyFactory;
-import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.fragments.alert.AlertCreateDialogFragment;
-import com.tradehero.th.fragments.alert.AlertEditDialogFragment;
-import com.tradehero.th.fragments.alert.BaseAlertEditDialogFragment;
-import com.tradehero.th.fragments.base.ActionBarOwnerMixin;
-import com.tradehero.th.fragments.base.DashboardFragment;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.fragments.portfolio.header.OtherUserPortfolioHeaderView;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderFactory;
-import com.tradehero.th.fragments.portfolio.header.PortfolioHeaderView;
-import com.tradehero.th.fragments.position.partial.PositionPartialTopView;
-import com.tradehero.th.fragments.position.view.PositionLockedView;
-import com.tradehero.th.fragments.position.view.PositionNothingView;
-import com.tradehero.th.fragments.security.SecurityListRxFragment;
-import com.tradehero.th.fragments.security.WatchlistEditFragment;
-import com.tradehero.th.fragments.settings.AskForInviteDialogFragment;
-import com.tradehero.th.fragments.settings.SendLoveBroadcastSignal;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.fragments.trade.FXMainFragment;
-import com.tradehero.th.fragments.trade.StockActionBarRelativeLayout;
-import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingMainFragment;
-import com.tradehero.th.fragments.tutorial.WithTutorial;
-import com.tradehero.th.models.position.PositionDTOUtils;
-import com.tradehero.th.models.security.ProviderTradableSecuritiesHelper;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.alert.AlertCompactListCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCacheRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.position.GetPositionsCacheRx;
-import com.tradehero.th.persistence.prefs.ShowAskForInviteDialog;
-import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
-import com.tradehero.th.persistence.security.SecurityCompactCacheRx;
-import com.tradehero.th.persistence.security.SecurityIdCache;
-import com.tradehero.th.persistence.timing.TimingIntervalPreference;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.persistence.watchlist.UserWatchlistPositionCacheRx;
-import com.tradehero.th.rx.ReplaceWithFunc1;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.dialog.AlertDialogRx;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.AlertDialogRxUtil;
-import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.MultiRecyclerScrollListener;
-import dagger.Lazy;
+import com.ayondo.academy.R;
+import com.ayondo.academy.activities.HelpActivity;
+import com.ayondo.academy.adapters.TypedRecyclerAdapter;
+import com.ayondo.academy.api.alert.AlertCompactDTO;
+import com.ayondo.academy.api.competition.ProviderId;
+import com.ayondo.academy.api.portfolio.AssetClass;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOUtil;
+import com.ayondo.academy.api.portfolio.PortfolioDTO;
+import com.ayondo.academy.api.portfolio.PortfolioId;
+import com.ayondo.academy.api.position.GetPositionsDTO;
+import com.ayondo.academy.api.position.GetPositionsDTOKey;
+import com.ayondo.academy.api.position.GetPositionsDTOKeyFactory;
+import com.ayondo.academy.api.position.PositionDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.security.compact.FxSecurityCompactDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTOList;
+import com.ayondo.academy.fragments.alert.AlertCreateDialogFragment;
+import com.ayondo.academy.fragments.alert.AlertEditDialogFragment;
+import com.ayondo.academy.fragments.alert.BaseAlertEditDialogFragment;
+import com.ayondo.academy.fragments.base.ActionBarOwnerMixin;
+import com.ayondo.academy.fragments.base.DashboardFragment;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
+import com.ayondo.academy.fragments.portfolio.header.OtherUserPortfolioHeaderView;
+import com.ayondo.academy.fragments.portfolio.header.PortfolioHeaderFactory;
+import com.ayondo.academy.fragments.portfolio.header.PortfolioHeaderView;
+import com.ayondo.academy.fragments.position.partial.PositionPartialTopView;
+import com.ayondo.academy.fragments.position.view.PositionLockedView;
+import com.ayondo.academy.fragments.position.view.PositionNothingView;
+import com.ayondo.academy.fragments.security.SecurityListRxFragment;
+import com.ayondo.academy.fragments.security.WatchlistEditFragment;
+import com.ayondo.academy.fragments.settings.AskForInviteDialogFragment;
+import com.ayondo.academy.fragments.settings.SendLoveBroadcastSignal;
+import com.ayondo.academy.fragments.timeline.MeTimelineFragment;
+import com.ayondo.academy.fragments.timeline.PushableTimelineFragment;
+import com.ayondo.academy.fragments.trade.BuySellStockFragment;
+import com.ayondo.academy.fragments.trade.FXMainFragment;
+import com.ayondo.academy.fragments.trade.StockActionBarRelativeLayout;
+import com.ayondo.academy.fragments.trade.TradeListFragment;
+import com.ayondo.academy.fragments.trending.TrendingMainFragment;
+import com.ayondo.academy.fragments.tutorial.WithTutorial;
+import com.ayondo.academy.models.position.PositionDTOUtils;
+import com.ayondo.academy.models.security.ProviderTradableSecuritiesHelper;
+import com.ayondo.academy.models.user.follow.FollowUserAssistant;
+import com.ayondo.academy.persistence.alert.AlertCompactListCacheRx;
+import com.ayondo.academy.persistence.portfolio.PortfolioCacheRx;
+import com.ayondo.academy.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.ayondo.academy.persistence.position.GetPositionsCacheRx;
+import com.ayondo.academy.persistence.prefs.ShowAskForInviteDialog;
+import com.ayondo.academy.persistence.prefs.ShowAskForReviewDialog;
+import com.ayondo.academy.persistence.security.SecurityCompactCacheRx;
+import com.ayondo.academy.persistence.security.SecurityIdCache;
+import com.ayondo.academy.persistence.timing.TimingIntervalPreference;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.persistence.watchlist.UserWatchlistPositionCacheRx;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.rx.dialog.AlertDialogRx;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.utils.AlertDialogRxUtil;
+import com.ayondo.academy.utils.broadcast.BroadcastUtils;
+import com.ayondo.academy.utils.route.THRouter;
+import com.ayondo.academy.widget.MultiRecyclerScrollListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -137,7 +135,8 @@ public class PositionListFragment
     @Inject CurrentUserId currentUserId;
     @Inject THRouter thRouter;
     @Inject GetPositionsCacheRx getPositionsCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject SecurityIdCache securityIdCache;
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCacheRx portfolioCache;
@@ -150,8 +149,9 @@ public class PositionListFragment
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
 
     @Bind(R.id.list_flipper) ViewAnimator listViewFlipper;
-    @Bind(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
-    @Bind(R.id.position_recycler_view) RecyclerView positionRecyclerView;
+    SwipeRefreshLayout swipeToRefreshLayout;
+    RecyclerView positionRecyclerView;
+
     @Bind(R.id.btn_help) ImageView btnHelp;
     @Bind(R.id.position_list_header_stub) ViewStub headerStub;
 
@@ -276,6 +276,8 @@ public class PositionListFragment
         if (savedInstanceState != null)
         {
             firstPositionVisible = savedInstanceState.getInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
+
+
         }
         return inflater.inflate(R.layout.fragment_positions_list, container, false);
     }
@@ -289,9 +291,19 @@ public class PositionListFragment
             @Override public void onClick(View v)
             {
                 HelpActivity.slideInFromRight(getActivity());
+                //viewpager
+                //Position chutiye maen dekhna hae
+                //inside files
+                //lot of shit
+                //try more breakpoints
             }
         });
-        positionRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        swipeToRefreshLayout = (SwipeRefreshLayout) view.findViewById((R.id.swipe_to_refresh_layout));
+        positionRecyclerView = (RecyclerView) view.findViewById(R.id.position_recycler_view);
+
+        positionRecyclerView.setLayoutManager(layoutManager);
         positionRecyclerView.setHasFixedSize(true);
         positionRecyclerView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
@@ -301,6 +313,7 @@ public class PositionListFragment
                 PositionListFragment.this.refreshSimplePage();
             }
         });
+
     }
 
     protected void pushSecuritiesFragment()
@@ -520,12 +533,14 @@ public class PositionListFragment
         }
         else if (userAction instanceof PortfolioHeaderView.FollowUserAction)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Follow));
             return freeFollow(userAction.requested.getBaseKey());
         }
         else if (userAction instanceof PortfolioHeaderView.UnFollowUserAction)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Unfollow));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Positions_Unfollow));
             return unfollow(userAction.requested.getBaseKey());
         }
         throw new IllegalArgumentException("Unhandled PortfolioHeaderView.UserAction " + userAction);
@@ -779,12 +794,14 @@ public class PositionListFragment
             WatchlistEditFragment.putSecurityId(args, userAction.securityId);
             if (((StockActionBarRelativeLayout.WatchlistUserAction) userAction).add)
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
             }
             else
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
             }
             if (navigator != null)

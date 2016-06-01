@@ -1,9 +1,9 @@
-package com.tradehero.th.api.share.achievement;
+package com.ayondo.academy.api.share.achievement;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.SocialShareReqFormDTO;
+import com.ayondo.academy.api.achievement.UserAchievementDTO;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.social.SocialShareReqFormDTO;
 import java.util.List;
 
 public class AchievementShareFormDTOFactory

@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments;
+package com.ayondo.academy.fragments;
 
 import android.support.v4.app.Fragment;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.activities.DashboardActivityExtended;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.activities.DashboardActivity;
+import com.ayondo.academy.activities.DashboardActivityExtended;
 import javax.inject.Inject;
 import org.fest.util.VisibleForTesting;
 import org.junit.After;

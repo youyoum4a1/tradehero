@@ -1,11 +1,11 @@
-package com.tradehero.th.persistence.leaderboard.position;
+package com.ayondo.academy.persistence.leaderboard.position;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.leaderboard.position.LeaderboardMarkUserPositionId;
-import com.tradehero.th.api.leaderboard.position.OwnedLeaderboardPositionId;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardMarkUserPositionId;
+import com.ayondo.academy.api.leaderboard.position.OwnedLeaderboardPositionId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.models.sms.twilio;
+package com.ayondo.academy.models.sms.twilio;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonCreator;

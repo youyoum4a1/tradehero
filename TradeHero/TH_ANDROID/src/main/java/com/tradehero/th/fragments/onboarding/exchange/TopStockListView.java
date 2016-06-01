@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.onboarding.exchange;
+package com.ayondo.academy.fragments.onboarding.exchange;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -12,10 +12,10 @@ import android.widget.LinearLayout;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.tradehero.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.market.SecuritySuperCompactDTO;
-import com.tradehero.th.api.market.SecuritySuperCompactDTOList;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.market.SecuritySuperCompactDTO;
+import com.ayondo.academy.api.market.SecuritySuperCompactDTOList;
+import com.ayondo.academy.inject.HierarchyInjector;
 import javax.inject.Inject;
 
 public class TopStockListView extends LinearLayout

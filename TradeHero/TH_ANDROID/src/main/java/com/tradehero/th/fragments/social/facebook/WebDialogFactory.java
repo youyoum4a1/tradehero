@@ -1,16 +1,16 @@
-package com.tradehero.th.fragments.social.facebook;
+package com.ayondo.academy.fragments.social.facebook;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.common.social.facebook.WebDialogConstants;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.UserFriendsFacebookDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.auth.FacebookAuthenticationProvider;
-import com.tradehero.th.network.service.SocialServiceWrapper;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.UserFriendsFacebookDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.auth.FacebookAuthenticationProvider;
+import com.ayondo.academy.network.service.SocialServiceWrapper;
 import dagger.Lazy;
 import java.util.Arrays;
 import javax.inject.Inject;

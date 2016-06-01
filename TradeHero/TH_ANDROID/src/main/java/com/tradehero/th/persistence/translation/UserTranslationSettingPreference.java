@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.translation;
+package com.ayondo.academy.persistence.translation;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -8,9 +8,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.tradehero.common.persistence.prefs.StringSetPreference;
-import com.tradehero.th.api.translation.TranslationToken;
-import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import com.tradehero.th.api.translation.UserTranslationSettingDTOFactory;
+import com.ayondo.academy.api.translation.TranslationToken;
+import com.ayondo.academy.api.translation.UserTranslationSettingDTO;
+import com.ayondo.academy.api.translation.UserTranslationSettingDTOFactory;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;

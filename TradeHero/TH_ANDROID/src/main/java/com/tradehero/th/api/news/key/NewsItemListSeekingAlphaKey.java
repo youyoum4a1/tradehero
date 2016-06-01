@@ -1,4 +1,4 @@
-package com.tradehero.th.api.news.key;
+package com.ayondo.academy.api.news.key;
 
 /**
  * Created by liangyx on 3/18/15.

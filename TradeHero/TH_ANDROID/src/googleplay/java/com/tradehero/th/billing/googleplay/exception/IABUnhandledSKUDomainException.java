@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay.exception;
+package com.ayondo.academy.billing.googleplay.exception;
 
 import com.tradehero.common.billing.googleplay.exception.IABOneResponseValueException;
 

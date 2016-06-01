@@ -1,10 +1,10 @@
 package com.tradehero.common.utils;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.portfolio.PortfolioDTO;
-import com.tradehero.th.api.position.GetPositionsDTO;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.portfolio.PortfolioDTO;
+import com.ayondo.academy.api.position.GetPositionsDTO;
+import com.ayondo.academy.base.TestTHApp;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;

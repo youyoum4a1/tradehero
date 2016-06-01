@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.live.ayondo;
+package com.ayondo.academy.fragments.live.ayondo;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.kyc.Currency;
+import com.ayondo.academy.api.kyc.Currency;
 import java.util.ArrayList;
 import java.util.List;
 

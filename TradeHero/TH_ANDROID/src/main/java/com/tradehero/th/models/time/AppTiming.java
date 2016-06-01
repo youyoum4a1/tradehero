@@ -1,4 +1,4 @@
-package com.tradehero.th.models.time;
+package com.ayondo.academy.models.time;
 
 public class AppTiming
 {

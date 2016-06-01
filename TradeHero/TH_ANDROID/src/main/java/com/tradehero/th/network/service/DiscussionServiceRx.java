@@ -1,12 +1,12 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.VoteDirection;
-import com.tradehero.th.api.discussion.form.DiscussionFormDTO;
-import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.VoteDirection;
+import com.ayondo.academy.api.discussion.form.DiscussionFormDTO;
+import com.ayondo.academy.api.pagination.PaginatedDTO;
+import com.ayondo.academy.api.timeline.TimelineItemShareRequestDTO;
 import java.util.Map;
 import retrofit.http.Body;
 import retrofit.http.GET;

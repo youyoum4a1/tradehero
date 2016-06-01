@@ -1,12 +1,12 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.translation.TranslationResult;
-import com.tradehero.th.persistence.translation.TranslationKey;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.news.NewsItemDTO;
+import com.ayondo.academy.api.timeline.TimelineItemDTO;
+import com.ayondo.academy.api.translation.TranslationResult;
+import com.ayondo.academy.persistence.translation.TranslationKey;
 
 public class AbstractDiscussionCompactDTOFactory
 {

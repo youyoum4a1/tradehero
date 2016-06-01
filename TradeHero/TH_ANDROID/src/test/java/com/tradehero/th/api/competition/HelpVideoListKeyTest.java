@@ -1,6 +1,6 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
-import com.tradehero.th.api.competition.key.HelpVideoListKey;
+import com.ayondo.academy.api.competition.key.HelpVideoListKey;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

@@ -1,9 +1,9 @@
-package com.tradehero.th.api.security.key;
+package com.ayondo.academy.api.security.key;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.market.ExchangeIntegerId;
-import com.tradehero.th.api.market.SectorId;
+import com.ayondo.academy.api.market.ExchangeIntegerId;
+import com.ayondo.academy.api.market.SectorId;
 
 @Deprecated
 public class ExchangeSectorSecurityListType extends SecurityListType

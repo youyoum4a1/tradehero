@@ -1,8 +1,8 @@
-package com.tradehero.th.api.share.wechat;
+package com.ayondo.academy.api.share.wechat;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.share.SocialShareFormDTO;
+import com.ayondo.academy.api.share.SocialShareFormDTO;
 
 public class WeChatDTO implements SocialShareFormDTO
 {

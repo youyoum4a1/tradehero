@@ -1,9 +1,9 @@
-package com.tradehero.th.api.translation.bing;
+package com.ayondo.academy.api.translation.bing;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.translation.TranslationResult;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.translation.TranslationResult;
 
 public class BingTranslationResult extends TranslationResult
 {

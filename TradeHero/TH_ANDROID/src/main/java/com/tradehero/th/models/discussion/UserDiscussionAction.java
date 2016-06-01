@@ -1,7 +1,7 @@
-package com.tradehero.th.models.discussion;
+package com.ayondo.academy.models.discussion;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
 
 public class UserDiscussionAction
 {

@@ -1,9 +1,9 @@
-package com.tradehero.th.api.alert;
+package com.ayondo.academy.api.alert;
 
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
 import java.util.Date;
 
 public class AlertCompactDTO implements DTO

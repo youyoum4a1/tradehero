@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.billing;
+package com.ayondo.academy.fragments.billing;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -6,11 +6,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.TypedRecyclerAdapter;
-import com.tradehero.th.fragments.billing.store.StoreItemDisplayDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemProductDisplayDTO;
-import com.tradehero.th.fragments.billing.store.StoreItemRestoreDisplayDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.TypedRecyclerAdapter;
+import com.ayondo.academy.fragments.billing.store.StoreItemDisplayDTO;
+import com.ayondo.academy.fragments.billing.store.StoreItemProductDisplayDTO;
+import com.ayondo.academy.fragments.billing.store.StoreItemRestoreDisplayDTO;
 
 public class StoreItemAdapter extends TypedRecyclerAdapter<StoreItemDisplayDTO>
 {

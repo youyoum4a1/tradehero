@@ -1,14 +1,14 @@
-package com.tradehero.th.api.share.timeline;
+package com.ayondo.academy.api.share.timeline;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.api.discussion.DiscussionDTO;
-import com.tradehero.th.api.discussion.DiscussionType;
-import com.tradehero.th.api.discussion.key.DiscussionListKey;
-import com.tradehero.th.api.news.NewsItemCompactDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.timeline.TimelineItemDTO;
-import com.tradehero.th.api.timeline.TimelineItemShareRequestDTO;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.key.DiscussionListKey;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.timeline.TimelineItemDTO;
+import com.ayondo.academy.api.timeline.TimelineItemShareRequestDTO;
 
 public class TimelineItemShareFormDTOFactory
 {

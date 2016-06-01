@@ -1,8 +1,8 @@
-package com.tradehero.th.models.sms.twilio;
+package com.ayondo.academy.models.sms.twilio;
 
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 /**
  * https://www.twilio.com/docs/api/rest/message#sms-status-values

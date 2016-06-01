@@ -1,11 +1,11 @@
-package com.tradehero.th.auth;
+package com.ayondo.academy.auth;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.auth.AccessTokenForm;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.network.service.SocialLinker;
+import com.ayondo.academy.api.auth.AccessTokenForm;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.network.service.SocialLinker;
 import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.WeakHashMap;

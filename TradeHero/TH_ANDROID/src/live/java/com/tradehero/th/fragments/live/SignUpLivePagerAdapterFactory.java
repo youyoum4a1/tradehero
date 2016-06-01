@@ -1,14 +1,14 @@
-package com.tradehero.th.fragments.live;
+package com.ayondo.academy.fragments.live;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
-import com.tradehero.th.api.kyc.ayondo.KYCAyondoForm;
-import com.tradehero.th.api.live.LiveBrokerSituationDTO;
-import com.tradehero.th.api.live.LiveTradingSituationDTO;
-import com.tradehero.th.fragments.live.ayondo.SignUpLiveAyondoPagerAdapter;
-import com.tradehero.th.network.service.LiveServiceWrapper;
+import com.ayondo.academy.api.kyc.ayondo.KYCAyondoForm;
+import com.ayondo.academy.api.live.LiveBrokerSituationDTO;
+import com.ayondo.academy.api.live.LiveTradingSituationDTO;
+import com.ayondo.academy.fragments.live.ayondo.SignUpLiveAyondoPagerAdapter;
+import com.ayondo.academy.network.service.LiveServiceWrapper;
 import javax.inject.Inject;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;

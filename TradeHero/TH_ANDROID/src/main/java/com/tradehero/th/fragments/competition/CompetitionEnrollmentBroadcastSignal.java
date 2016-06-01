@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.competition;
+package com.ayondo.academy.fragments.competition;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.th.utils.broadcast.BroadcastConstants;
-import com.tradehero.th.utils.broadcast.BroadcastData;
+import com.ayondo.academy.utils.broadcast.BroadcastConstants;
+import com.ayondo.academy.utils.broadcast.BroadcastData;
 
 public class CompetitionEnrollmentBroadcastSignal implements BroadcastData
 {

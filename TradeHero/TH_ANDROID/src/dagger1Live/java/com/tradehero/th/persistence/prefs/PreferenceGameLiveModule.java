@@ -1,16 +1,16 @@
-package com.tradehero.th.persistence.prefs;
+package com.ayondo.academy.persistence.prefs;
 
 import android.content.SharedPreferences;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.common.annotation.ForApp;
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.prefs.BooleanPreference;
-import com.tradehero.th.api.kyc.EmptyKYCForm;
-import com.tradehero.th.api.kyc.KYCForm;
-import com.tradehero.th.api.kyc.StepStatus;
-import com.tradehero.th.api.live.LiveBrokerDTO;
-import com.tradehero.th.api.live.LiveBrokerId;
-import com.tradehero.th.api.live.LiveBrokerSituationDTO;
+import com.ayondo.academy.api.kyc.EmptyKYCForm;
+import com.ayondo.academy.api.kyc.KYCForm;
+import com.ayondo.academy.api.kyc.StepStatus;
+import com.ayondo.academy.api.live.LiveBrokerDTO;
+import com.ayondo.academy.api.live.LiveBrokerId;
+import com.ayondo.academy.api.live.LiveBrokerSituationDTO;
 import dagger.Module;
 import dagger.Provides;
 import java.util.ArrayList;

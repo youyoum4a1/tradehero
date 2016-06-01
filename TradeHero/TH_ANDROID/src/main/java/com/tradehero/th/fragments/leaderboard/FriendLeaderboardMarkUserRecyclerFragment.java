@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -6,40 +6,40 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
+
 import com.facebook.FacebookOperationCanceledException;
 import com.facebook.Session;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.rx.PairGetFirst;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.PagedRecyclerAdapter;
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.leaderboard.position.LeaderboardFriendsKey;
-import com.tradehero.th.api.social.InviteFormUserDTO;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.api.social.UserFriendsFacebookDTO;
-import com.tradehero.th.api.social.UserFriendsLinkedinDTO;
-import com.tradehero.th.api.social.UserFriendsTwitterDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.fragments.social.friend.SocialFriendHandlerFacebook;
-import com.tradehero.th.models.share.SocialShareHelper;
-import com.tradehero.th.network.service.UserServiceWrapper;
-import com.tradehero.th.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.dialog.AlertDialogRx;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.rx.view.DismissDialogAction0;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import com.tradehero.th.widget.list.SingleExpandingListViewListener;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.PagedRecyclerAdapter;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardKey;
+import com.ayondo.academy.api.leaderboard.position.LeaderboardFriendsKey;
+import com.ayondo.academy.api.social.InviteFormUserDTO;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.social.UserFriendsDTO;
+import com.ayondo.academy.api.social.UserFriendsFacebookDTO;
+import com.ayondo.academy.api.social.UserFriendsLinkedinDTO;
+import com.ayondo.academy.api.social.UserFriendsTwitterDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.fragments.social.friend.SocialFriendHandlerFacebook;
+import com.ayondo.academy.models.share.SocialShareHelper;
+import com.ayondo.academy.network.service.UserServiceWrapper;
+import com.ayondo.academy.persistence.leaderboard.position.LeaderboardFriendsCacheRx;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.dialog.AlertDialogRx;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.rx.view.DismissDialogAction0;
+import com.ayondo.academy.widget.list.SingleExpandingListViewListener;
+
 import java.util.Arrays;
+
 import javax.inject.Inject;
+
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -52,7 +52,8 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
         LeaderboardItemDisplayDTO.DTOList<LeaderboardItemDisplayDTO>,
         ProcessableLeaderboardFriendsDTO>
 {
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardFriendsCacheRx leaderboardFriendsCache;
     @Inject LeaderboardMarkUserListFragmentUtil fragmentUtil;
@@ -167,7 +168,8 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
     @Override public void onResume()
     {
         super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.FriendsLeaderboard_Filter_FoF));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.FriendsLeaderboard_Filter_FoF));
     }
 
     @Override public void onStop()
@@ -228,7 +230,8 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
 
     @NonNull protected Observable<Boolean> invite(@NonNull UserFriendsDTO userFriendsDTO)
     {
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, userFriendsDTO.getAnalyticsTag()));
+        //TODO Change Analytics
+        //analytics.addEvent(new MethodEvent(AnalyticsConstants.InviteFriends, userFriendsDTO.getAnalyticsTag()));
         if (userFriendsDTO instanceof UserFriendsLinkedinDTO || userFriendsDTO instanceof UserFriendsTwitterDTO)
         {
             InviteFormUserDTO inviteFriendForm = new InviteFormUserDTO();

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.portfolio.header;
+package com.ayondo.academy.fragments.portfolio.header;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -8,10 +8,10 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.number.THSignedPercentage;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.models.number.THSignedPercentage;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import rx.Observable;

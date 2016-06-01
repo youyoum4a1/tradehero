@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.competition.zone.dto;
+package com.ayondo.academy.fragments.competition.zone.dto;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.users.UserProfileCompactDTO;
 
 public class CompetitionZonePortfolioDTO extends CompetitionZoneDTO
 {

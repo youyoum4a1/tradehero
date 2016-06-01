@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
-import com.tradehero.th.api.discussion.key.DiscussionKeyFactory;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.social.message.NewPrivateMessageFragment;
-import com.tradehero.th.fragments.social.message.ReplyPrivateMessageFragment;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.discussion.key.DiscussionKeyFactory;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.fragments.social.message.NewPrivateMessageFragment;
+import com.ayondo.academy.fragments.social.message.ReplyPrivateMessageFragment;
 
 public class PrivateDiscussionActivity extends OneFragmentActivity
 {

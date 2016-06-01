@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.tradehero.th.fragments.achievement;
+package com.ayondo.academy.fragments.achievement;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -24,7 +24,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 
 /**
- * A {@link View.OnTouchListener} that makes any {@link com.tradehero.th.fragments.achievement.AchievementDialogFragment} dismissable when the user
+ * A {@link View.OnTouchListener} that makes any {@link com.ayondo.academy.fragments.achievement.AchievementDialogFragment} dismissable when the user
  * swipes (drags her finger) horizontally across the view.
  *
  *

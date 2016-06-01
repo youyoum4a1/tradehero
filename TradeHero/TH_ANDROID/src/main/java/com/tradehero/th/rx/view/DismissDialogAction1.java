@@ -1,4 +1,4 @@
-package com.tradehero.th.rx.view;
+package com.ayondo.academy.rx.view;
 
 import android.app.Dialog;
 import android.support.annotation.CallSuper;

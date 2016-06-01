@@ -1,8 +1,8 @@
-package com.tradehero.th.api.achievement.key;
+package com.ayondo.academy.api.achievement.key;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.AbstractIntegerDTOKey;
-import com.tradehero.th.api.achievement.QuestBonusDTO;
+import com.ayondo.academy.api.achievement.QuestBonusDTO;
 
 public class QuestBonusId extends AbstractIntegerDTOKey
 {

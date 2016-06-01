@@ -88,7 +88,7 @@
       android:orientation="vertical"
       >
 
-    <com.tradehero.th.widget.GoLiveWidget
+    <com.ayondo.academy.widget.GoLiveWidget
         android:id="@+id/live_button_go_live"
         style="@style/TH.Title.Inverse"
         android:layout_width="wrap_content"

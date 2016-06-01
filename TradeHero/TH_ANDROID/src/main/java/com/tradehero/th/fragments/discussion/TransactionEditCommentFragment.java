@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import com.tradehero.common.utils.EditableUtil;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 import javax.inject.Inject;
 
 public class TransactionEditCommentFragment extends SecurityDiscussionEditPostFragment

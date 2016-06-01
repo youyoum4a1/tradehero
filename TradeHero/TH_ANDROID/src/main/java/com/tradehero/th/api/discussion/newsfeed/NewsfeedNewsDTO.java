@@ -1,6 +1,6 @@
-package com.tradehero.th.api.discussion.newsfeed;
+package com.ayondo.academy.api.discussion.newsfeed;
 
-import com.tradehero.th.api.news.NewsItemCompactDTO;
+import com.ayondo.academy.api.news.NewsItemCompactDTO;
 
 public class NewsfeedNewsDTO extends NewsfeedDTO
 {

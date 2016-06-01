@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.updatecenter.notifications;
+package com.ayondo.academy.fragments.updatecenter.notifications;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,16 +12,16 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
-import com.tradehero.th.R;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.graphics.ForUserPhoto;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.notification.NotificationDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.timeline.MeTimelineFragment;
+import com.ayondo.academy.fragments.timeline.PushableTimelineFragment;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
 

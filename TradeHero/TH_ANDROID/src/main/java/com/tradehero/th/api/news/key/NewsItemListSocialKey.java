@@ -1,4 +1,4 @@
-package com.tradehero.th.api.news.key;
+package com.ayondo.academy.api.news.key;
 
 public class NewsItemListSocialKey extends NewsItemListKey
 {

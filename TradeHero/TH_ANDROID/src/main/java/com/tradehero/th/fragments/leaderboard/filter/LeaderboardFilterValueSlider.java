@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard.filter;
+package com.ayondo.academy.fragments.leaderboard.filter;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,7 +8,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 public class LeaderboardFilterValueSlider extends RelativeLayout
 {

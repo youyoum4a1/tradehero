@@ -1,4 +1,4 @@
-package com.tradehero.th.models.fastfill;
+package com.ayondo.academy.models.fastfill;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;

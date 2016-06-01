@@ -1,4 +1,4 @@
-package com.tradehero.th.adapters;
+package com.ayondo.academy.adapters;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;

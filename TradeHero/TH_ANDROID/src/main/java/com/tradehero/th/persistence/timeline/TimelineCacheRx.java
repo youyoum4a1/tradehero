@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.timeline;
+package com.ayondo.academy.persistence.timeline;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.timeline.TimelineDTO;
-import com.tradehero.th.api.timeline.key.TimelineKey;
-import com.tradehero.th.network.service.UserTimelineServiceWrapper;
+import com.ayondo.academy.api.timeline.TimelineDTO;
+import com.ayondo.academy.api.timeline.key.TimelineKey;
+import com.ayondo.academy.network.service.UserTimelineServiceWrapper;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

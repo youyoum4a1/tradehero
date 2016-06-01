@@ -1,6 +1,6 @@
-package com.tradehero.th.api.security.compact;
+package com.ayondo.academy.api.security.compact;
 
-import com.tradehero.th.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
 
 public class LockedSecurityCompactDTO extends SecurityCompactDTO
 {

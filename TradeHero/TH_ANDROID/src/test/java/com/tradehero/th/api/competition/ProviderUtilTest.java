@@ -1,9 +1,9 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.base.TestTHApp;
 import javax.inject.Inject;
 import org.junit.After;
 import org.junit.Before;

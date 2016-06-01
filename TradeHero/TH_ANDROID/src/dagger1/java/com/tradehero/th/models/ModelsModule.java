@@ -1,7 +1,7 @@
-package com.tradehero.th.models;
+package com.ayondo.academy.models;
 
-import com.tradehero.th.models.discussion.RunnableInvalidateMessageList;
-import com.tradehero.th.models.notification.RunnableInvalidateNotificationList;
+import com.ayondo.academy.models.discussion.RunnableInvalidateMessageList;
+import com.ayondo.academy.models.notification.RunnableInvalidateNotificationList;
 import dagger.Module;
 
 @Module(

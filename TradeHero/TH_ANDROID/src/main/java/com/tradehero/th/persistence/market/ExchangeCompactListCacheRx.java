@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.market;
+package com.ayondo.academy.persistence.market;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.BaseFetchDTOCacheRx;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
 import com.tradehero.common.persistence.UserCache;
-import com.tradehero.th.api.market.ExchangeCompactDTOList;
-import com.tradehero.th.api.market.ExchangeListType;
-import com.tradehero.th.network.service.MarketServiceWrapper;
+import com.ayondo.academy.api.market.ExchangeCompactDTOList;
+import com.ayondo.academy.api.market.ExchangeListType;
+import com.ayondo.academy.network.service.MarketServiceWrapper;
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;

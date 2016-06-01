@@ -1,4 +1,4 @@
-package com.tradehero.th.api.i18n;
+package com.ayondo.academy.api.i18n;
 
 import android.support.annotation.NonNull;
 import java.util.HashMap;

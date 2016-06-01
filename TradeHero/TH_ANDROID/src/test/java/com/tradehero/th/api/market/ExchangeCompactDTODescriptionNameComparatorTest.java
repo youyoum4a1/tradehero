@@ -1,7 +1,7 @@
-package com.tradehero.th.api.market;
+package com.ayondo.academy.api.market;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
 import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.leaderboard.key;
+package com.ayondo.academy.api.leaderboard.key;
 
 abstract public class LeaderboardUserIdTestBase
 {

@@ -1,4 +1,4 @@
-package com.tradehero.th.adapters;
+package com.ayondo.academy.adapters;
 
 import android.content.Context;
 import android.content.res.TypedArray;

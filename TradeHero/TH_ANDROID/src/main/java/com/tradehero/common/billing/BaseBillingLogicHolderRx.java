@@ -17,7 +17,7 @@ import com.tradehero.common.billing.restore.PurchaseRestoreTotalResult;
 import com.tradehero.common.billing.tester.BillingAvailableTesterHolderRx;
 import com.tradehero.common.billing.tester.BillingTestResult;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.rx.ReplaceWithFunc1;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,8 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
 import rx.Observable;
 
 public interface AmazonAlertDialogRxUtil

@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay.identifier;
+package com.ayondo.academy.billing.googleplay.identifier;
 
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.IABSKUList;

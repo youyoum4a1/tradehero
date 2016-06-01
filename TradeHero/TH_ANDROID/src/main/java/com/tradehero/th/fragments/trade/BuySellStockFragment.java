@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trade;
+package com.ayondo.academy.fragments.trade;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,26 +13,25 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-import butterknife.Bind;
+
 import com.android.common.SlidingTabLayout;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.position.PositionDTO;
-import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.security.BuySellBottomStockPagerAdapter;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.utils.metrics.events.BuySellEvent;
-import com.tradehero.th.utils.metrics.events.ChartTimeEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.position.PositionDTO;
+import com.ayondo.academy.api.quote.QuoteDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.fragments.security.BuySellBottomStockPagerAdapter;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+
 import java.util.concurrent.TimeUnit;
-import javax.inject.Inject;
+
+import butterknife.Bind;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -51,7 +50,8 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     @Bind(R.id.chart_frame) protected RelativeLayout mInfoFrame;
     @Bind(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
 
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @RouteProperty("exchange") String exchange;
     @RouteProperty("symbol") String symbol;
@@ -76,7 +76,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     @Override public void onStart()
     {
         super.onStart();
-        analytics.fireEvent(new ChartTimeEvent(requisite.securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
+        //analytics.fireEvent(new ChartTimeEvent(requisite.securityId, BuySellBottomStockPagerAdapter.getDefaultChartTimeSpan()));
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -251,7 +251,8 @@ public class BuySellStockFragment extends AbstractBuySellFragment
             default:
                 throw new IllegalArgumentException("Unhandled button " + view.getId());
         }
-        analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, requisite.securityId));
+        //TODO Change Analytics
+        //analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, requisite.securityId));
         super.handleBuySellButtonsClicked(view);
     }
 }

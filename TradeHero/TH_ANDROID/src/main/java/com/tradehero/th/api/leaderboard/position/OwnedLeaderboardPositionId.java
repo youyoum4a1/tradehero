@@ -1,9 +1,9 @@
-package com.tradehero.th.api.leaderboard.position;
+package com.ayondo.academy.api.leaderboard.position;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.position.PositionDTOKey;
+import com.ayondo.academy.api.position.PositionDTOKey;
 
 public class OwnedLeaderboardPositionId implements Comparable, PositionDTOKey, DTO
 {

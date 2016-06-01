@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.onboarding.hero;
+package com.ayondo.academy.fragments.onboarding.hero;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.api.SelectableDTO;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
 
 public class SelectableUserDTO extends SelectableDTO<LeaderboardUserDTO>
 {

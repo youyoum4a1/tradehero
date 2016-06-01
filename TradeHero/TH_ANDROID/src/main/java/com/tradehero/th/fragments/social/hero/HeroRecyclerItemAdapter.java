@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social.hero;
+package com.ayondo.academy.fragments.social.hero;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -12,14 +12,14 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.TypedRecyclerAdapter;
-import com.tradehero.th.api.social.HeroDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.TypedRecyclerAdapter;
+import com.ayondo.academy.api.social.HeroDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.user.follow.FollowUserAssistant;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;

@@ -1,4 +1,4 @@
-package com.tradehero.th.auth.linkedin;
+package com.ayondo.academy.auth.linkedin;
 
 public class LinkedInRetrieveRequestTokenException extends RuntimeException
 {

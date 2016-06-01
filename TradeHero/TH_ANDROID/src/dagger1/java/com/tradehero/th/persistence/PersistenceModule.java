@@ -1,6 +1,6 @@
-package com.tradehero.th.persistence;
+package com.ayondo.academy.persistence;
 
-import com.tradehero.th.persistence.prefs.PreferenceModule;
+import com.ayondo.academy.persistence.prefs.PreferenceModule;
 import dagger.Module;
 
 @Module(

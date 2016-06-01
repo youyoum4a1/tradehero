@@ -1,6 +1,6 @@
-package com.tradehero.th.api.position;
+package com.ayondo.academy.api.position;
 
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
 import org.junit.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;

@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.live.ayondo;
+package com.ayondo.academy.fragments.live.ayondo;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
-import com.tradehero.th.fragments.live.CountrySpinnerAdapter;
-import com.tradehero.th.models.fastfill.Gender;
+import com.ayondo.academy.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.ayondo.academy.fragments.live.CountrySpinnerAdapter;
+import com.ayondo.academy.models.fastfill.Gender;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;

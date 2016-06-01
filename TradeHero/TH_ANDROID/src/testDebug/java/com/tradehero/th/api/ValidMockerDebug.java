@@ -1,7 +1,7 @@
-package com.tradehero.th.api;
+package com.ayondo.academy.api;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.achievement.key.MockQuestBonusId;
+import com.ayondo.academy.api.achievement.key.MockQuestBonusId;
 import javax.inject.Inject;
 
 public class ValidMockerDebug

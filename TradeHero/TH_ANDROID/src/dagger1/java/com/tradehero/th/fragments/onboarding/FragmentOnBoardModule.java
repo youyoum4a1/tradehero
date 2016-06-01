@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.onboarding;
+package com.ayondo.academy.fragments.onboarding;
 
-import com.tradehero.th.fragments.onboarding.exchange.FragmentOnBoardExchangeModule;
-import com.tradehero.th.fragments.onboarding.hero.FragmentOnBoardHeroModule;
-import com.tradehero.th.fragments.onboarding.last.FragmentOnBoardLastModule;
-import com.tradehero.th.fragments.onboarding.sector.FragmentOnBoardSectorModule;
-import com.tradehero.th.fragments.onboarding.stock.FragmentOnBoardStockModule;
+import com.ayondo.academy.fragments.onboarding.exchange.FragmentOnBoardExchangeModule;
+import com.ayondo.academy.fragments.onboarding.hero.FragmentOnBoardHeroModule;
+import com.ayondo.academy.fragments.onboarding.last.FragmentOnBoardLastModule;
+import com.ayondo.academy.fragments.onboarding.sector.FragmentOnBoardSectorModule;
+import com.ayondo.academy.fragments.onboarding.stock.FragmentOnBoardStockModule;
 import dagger.Module;
 
 @Module(

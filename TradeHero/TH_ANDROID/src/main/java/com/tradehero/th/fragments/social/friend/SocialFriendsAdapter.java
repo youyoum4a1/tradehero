@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.social.friend;
+package com.ayondo.academy.fragments.social.friend;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.adapters.ArrayDTOAdapterNew;
-import com.tradehero.th.api.social.UserFriendsDTO;
+import com.ayondo.academy.adapters.ArrayDTOAdapterNew;
+import com.ayondo.academy.api.social.UserFriendsDTO;
 import java.util.List;
 import timber.log.Timber;
 

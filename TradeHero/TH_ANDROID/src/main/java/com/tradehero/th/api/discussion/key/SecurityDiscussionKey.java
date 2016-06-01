@@ -1,8 +1,8 @@
-package com.tradehero.th.api.discussion.key;
+package com.ayondo.academy.api.discussion.key;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.discussion.DiscussionType;
+import com.ayondo.academy.api.discussion.DiscussionType;
 
 public class SecurityDiscussionKey extends DiscussionKey<SecurityDiscussionKey>
 {

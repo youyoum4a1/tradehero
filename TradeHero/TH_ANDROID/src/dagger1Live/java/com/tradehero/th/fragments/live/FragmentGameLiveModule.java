@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.live;
+package com.ayondo.academy.fragments.live;
 
-import com.tradehero.th.fragments.base.BaseLiveFragmentUtil;
-import com.tradehero.th.fragments.base.TrendingLiveFragmentUtil;
-import com.tradehero.th.fragments.live.ayondo.FragmentAyondoModule;
+import com.ayondo.academy.fragments.base.BaseLiveFragmentUtil;
+import com.ayondo.academy.fragments.base.TrendingLiveFragmentUtil;
+import com.ayondo.academy.fragments.live.ayondo.FragmentAyondoModule;
 import dagger.Module;
 
 @Module(

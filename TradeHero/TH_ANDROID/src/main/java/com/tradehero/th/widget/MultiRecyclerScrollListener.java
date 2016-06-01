@@ -1,4 +1,4 @@
-package com.tradehero.th.widget;
+package com.ayondo.academy.widget;
 
 import android.support.v7.widget.RecyclerView;
 import com.tradehero.common.utils.CollectionUtils;

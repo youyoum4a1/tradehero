@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.content.Context;
 import android.support.v4.widget.DrawerLayout;
@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.AbsListView;
+
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
@@ -13,49 +14,50 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnSc
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnWebViewOnScrollChangedListener;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingWebView;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.BottomTabs;
-import com.tradehero.th.BottomTabsQuickReturnListViewListener;
-import com.tradehero.th.BottomTabsQuickReturnRecyclerViewListener;
-import com.tradehero.th.BottomTabsQuickReturnScrollViewListener;
-import com.tradehero.th.BottomTabsQuickReturnWebViewListener;
-import com.tradehero.th.UIModule;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.NavigationAnalyticsReporter;
-import com.tradehero.th.fragments.base.DashboardFragmentOuterElements;
-import com.tradehero.th.fragments.base.FragmentOuterElements;
-import com.tradehero.th.fragments.billing.StoreScreenFragment;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.competition.MainCompetitionFragment;
-import com.tradehero.th.fragments.competition.ProviderVideoListFragment;
-import com.tradehero.th.fragments.discovery.DiscoveryMainFragment;
-import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.tradehero.th.fragments.news.NewsWebFragment;
-import com.tradehero.th.fragments.position.PositionListFragment;
-import com.tradehero.th.fragments.position.TabbedPositionListFragment;
-import com.tradehero.th.fragments.settings.SettingsFragment;
-import com.tradehero.th.fragments.social.follower.FollowersFragment;
-import com.tradehero.th.fragments.social.friend.FriendsInvitationFragment;
-import com.tradehero.th.fragments.social.hero.HeroesFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.fragments.trade.FXInfoFragment;
-import com.tradehero.th.fragments.trade.FXMainFragment;
-import com.tradehero.th.fragments.trade.TradeListFragment;
-import com.tradehero.th.fragments.trending.TrendingMainFragment;
-import com.tradehero.th.fragments.updatecenter.UpdateCenterFragment;
-import com.tradehero.th.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationsCenterFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.utils.dagger.AppModule;
-import com.tradehero.th.utils.metrics.ForAnalytics;
-import com.tradehero.th.utils.route.THRouter;
-import dagger.Module;
-import dagger.Provides;
+import com.ayondo.academy.BottomTabs;
+import com.ayondo.academy.BottomTabsQuickReturnListViewListener;
+import com.ayondo.academy.BottomTabsQuickReturnRecyclerViewListener;
+import com.ayondo.academy.BottomTabsQuickReturnScrollViewListener;
+import com.ayondo.academy.BottomTabsQuickReturnWebViewListener;
+import com.ayondo.academy.UIModule;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.DashboardTabHost;
+import com.ayondo.academy.fragments.NavigationAnalyticsReporter;
+import com.ayondo.academy.fragments.base.DashboardFragmentOuterElements;
+import com.ayondo.academy.fragments.base.FragmentOuterElements;
+import com.ayondo.academy.fragments.billing.StoreScreenFragment;
+import com.ayondo.academy.fragments.competition.CompetitionWebViewFragment;
+import com.ayondo.academy.fragments.competition.MainCompetitionFragment;
+import com.ayondo.academy.fragments.competition.ProviderVideoListFragment;
+import com.ayondo.academy.fragments.discovery.DiscoveryMainFragment;
+import com.ayondo.academy.fragments.leaderboard.main.LeaderboardCommunityFragment;
+import com.ayondo.academy.fragments.news.NewsWebFragment;
+import com.ayondo.academy.fragments.position.PositionListFragment;
+import com.ayondo.academy.fragments.position.TabbedPositionListFragment;
+import com.ayondo.academy.fragments.settings.SettingsFragment;
+import com.ayondo.academy.fragments.social.follower.FollowersFragment;
+import com.ayondo.academy.fragments.social.friend.FriendsInvitationFragment;
+import com.ayondo.academy.fragments.social.hero.HeroesFragment;
+import com.ayondo.academy.fragments.timeline.MeTimelineFragment;
+import com.ayondo.academy.fragments.timeline.PushableTimelineFragment;
+import com.ayondo.academy.fragments.trade.BuySellStockFragment;
+import com.ayondo.academy.fragments.trade.FXInfoFragment;
+import com.ayondo.academy.fragments.trade.FXMainFragment;
+import com.ayondo.academy.fragments.trade.TradeListFragment;
+import com.ayondo.academy.fragments.trending.TrendingMainFragment;
+import com.ayondo.academy.fragments.updatecenter.UpdateCenterFragment;
+import com.ayondo.academy.fragments.updatecenter.messageNew.MessagesCenterNewFragment;
+import com.ayondo.academy.fragments.updatecenter.notifications.NotificationsCenterFragment;
+import com.ayondo.academy.fragments.web.WebViewFragment;
+import com.ayondo.academy.utils.dagger.AppModule;
+import com.ayondo.academy.utils.metrics.ForAnalytics;
+import com.ayondo.academy.utils.route.THRouter;
+
 import javax.inject.Provider;
 import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 @Module(
         addsTo = AppModule.class,
@@ -75,7 +77,8 @@ import javax.inject.Singleton;
     DashboardTabHost dashboardTabHost;
     Toolbar toolbar;
     int tabHostHeight;
-    Analytics analytics;
+    //TODO Add code for Google Analytics
+    //Analytics analytics;
     LiveActivityUtil liveActivityUtil;
 
     @Provides DashboardNavigator provideDashboardNavigator()
@@ -176,9 +179,12 @@ import javax.inject.Singleton;
                 .build();
     }
 
-    @Provides @ForAnalytics DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()
+    @Provides @ForAnalytics
+    DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()
     {
-        return new NavigationAnalyticsReporter(analytics, dashboardTabHost);
+        //TODO Add code for Google Analytics as second argument
+        return new NavigationAnalyticsReporter(dashboardTabHost);
+
     }
 
     @Provides LiveActivityUtil provideLiveActivityUtil()

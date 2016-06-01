@@ -1,6 +1,6 @@
-package com.tradehero.th.api.competition.outbound;
+package com.ayondo.academy.api.competition.outbound;
 
-import com.tradehero.th.api.competition.CompetitionFormDTO;
+import com.ayondo.academy.api.competition.CompetitionFormDTO;
 
 public class DBSOutboundFormDTO extends CompetitionFormDTO
 {

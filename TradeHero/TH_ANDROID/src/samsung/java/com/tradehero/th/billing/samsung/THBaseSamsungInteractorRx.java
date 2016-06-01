@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung;
+package com.ayondo.academy.billing.samsung;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -8,12 +8,12 @@ import com.tradehero.common.billing.samsung.SamsungSKU;
 import com.tradehero.common.billing.samsung.SamsungSKUList;
 import com.tradehero.common.billing.samsung.SamsungSKUListKey;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.THBaseBillingInteractorRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.billing.THBaseBillingInteractorRx;
+import com.ayondo.academy.persistence.portfolio.PortfolioCompactListCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;

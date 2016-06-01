@@ -1,6 +1,6 @@
 package com.tradehero;
 
-import com.tradehero.th.BuildConfig;
+import com.ayondo.academy.BuildConfig;
 import java.io.File;
 import org.junit.runners.model.InitializationError;
 import org.robolectric.RobolectricTestRunner;

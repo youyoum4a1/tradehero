@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.amazon;
+package com.ayondo.academy.billing.amazon;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -8,13 +8,13 @@ import com.tradehero.common.billing.amazon.AmazonSKU;
 import com.tradehero.common.billing.amazon.AmazonSKUList;
 import com.tradehero.common.billing.amazon.AmazonSKUListKey;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTO;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.billing.THBaseBillingInteractorRx;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTO;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTOUtil;
+import com.ayondo.academy.billing.THBaseBillingInteractorRx;
+import com.ayondo.academy.persistence.portfolio.PortfolioCompactListCacheRx;
 import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;

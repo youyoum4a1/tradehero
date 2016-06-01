@@ -1,8 +1,8 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.social.HasSocialNetworkEnumList;
-import com.tradehero.th.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.social.HasSocialNetworkEnumList;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
 import java.util.Collections;
 import java.util.List;
 

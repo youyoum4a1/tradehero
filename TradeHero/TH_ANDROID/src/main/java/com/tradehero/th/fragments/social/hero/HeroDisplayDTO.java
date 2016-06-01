@@ -1,13 +1,13 @@
-package com.tradehero.th.fragments.social.hero;
+package com.ayondo.academy.fragments.social.hero;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
-import com.tradehero.th.api.social.HeroDTO;
-import com.tradehero.th.api.users.UserBaseDTOUtil;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.utils.DateUtils;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.social.HeroDTO;
+import com.ayondo.academy.api.users.UserBaseDTOUtil;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.models.number.THSignedPercentage;
+import com.ayondo.academy.utils.DateUtils;
 
 public class HeroDisplayDTO
 {

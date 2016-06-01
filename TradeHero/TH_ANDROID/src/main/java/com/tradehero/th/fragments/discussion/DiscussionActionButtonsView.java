@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,10 +11,10 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import android.support.annotation.Nullable;
 import com.tradehero.common.annotation.ViewVisibilityValue;
-import com.tradehero.th.R;
-import com.tradehero.th.api.discussion.AbstractDiscussionCompactDTO;
-import com.tradehero.th.models.discussion.UserDiscussionAction;
-import com.tradehero.th.widget.VotePair;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.discussion.AbstractDiscussionCompactDTO;
+import com.ayondo.academy.models.discussion.UserDiscussionAction;
+import com.ayondo.academy.widget.VotePair;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

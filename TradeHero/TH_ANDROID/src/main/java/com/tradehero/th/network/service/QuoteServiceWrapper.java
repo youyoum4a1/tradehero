@@ -1,10 +1,10 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.quote.QuoteDTO;
-import com.tradehero.th.api.quote.RawQuoteParser;
-import com.tradehero.th.api.security.SecurityId;
+import com.ayondo.academy.api.quote.QuoteDTO;
+import com.ayondo.academy.api.quote.RawQuoteParser;
+import com.ayondo.academy.api.security.SecurityId;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;

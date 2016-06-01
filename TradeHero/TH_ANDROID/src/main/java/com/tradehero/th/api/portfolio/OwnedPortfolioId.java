@@ -1,11 +1,11 @@
-package com.tradehero.th.api.portfolio;
+package com.ayondo.academy.api.portfolio;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
-import com.tradehero.th.api.users.UserBaseKey;
+import com.ayondo.academy.api.position.GetPositionsDTOKey;
+import com.ayondo.academy.api.users.UserBaseKey;
 
 public class OwnedPortfolioId implements Comparable, GetPositionsDTOKey
 {

@@ -1,7 +1,7 @@
-package com.tradehero.th.billing;
+package com.ayondo.academy.billing;
 
-import com.tradehero.th.R;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
+import com.ayondo.academy.R;
+import com.ayondo.academy.utils.metrics.AnalyticsConstants;
 
 /** TODO make it default, or at least protected, not public :| **/
 public enum ProductIdentifierDomain

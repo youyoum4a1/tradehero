@@ -1,14 +1,14 @@
-package com.tradehero.th.api.timeline;
+package com.ayondo.academy.api.timeline;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.api.ExtendedDTO;
-import com.tradehero.th.api.discussion.AbstractDiscussionDTO;
-import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.api.security.SecurityMediaDTO;
-import com.tradehero.th.api.security.SecurityMediaDTOList;
-import com.tradehero.th.api.timeline.key.TimelineItemDTOKey;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.ayondo.academy.api.ExtendedDTO;
+import com.ayondo.academy.api.discussion.AbstractDiscussionDTO;
+import com.ayondo.academy.api.security.SecurityId;
+import com.ayondo.academy.api.security.SecurityMediaDTO;
+import com.ayondo.academy.api.security.SecurityMediaDTOList;
+import com.ayondo.academy.api.timeline.key.TimelineItemDTOKey;
+import com.ayondo.academy.api.users.UserProfileCompactDTO;
 import java.util.Date;
 
 public class TimelineItemDTO extends AbstractDiscussionDTO<TimelineItemDTO>

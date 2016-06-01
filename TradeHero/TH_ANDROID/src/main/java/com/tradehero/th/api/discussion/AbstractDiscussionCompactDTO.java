@@ -1,9 +1,9 @@
-package com.tradehero.th.api.discussion;
+package com.ayondo.academy.api.discussion;
 
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.th.api.ExtendedDTO;
-import com.tradehero.th.api.discussion.key.DiscussionKey;
+import com.ayondo.academy.api.ExtendedDTO;
+import com.ayondo.academy.api.discussion.key.DiscussionKey;
 import java.util.Date;
 
 abstract public class AbstractDiscussionCompactDTO<T extends AbstractDiscussionCompactDTO> extends ExtendedDTO

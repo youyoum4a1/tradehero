@@ -1,14 +1,14 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.Filter;
 import com.tradehero.common.widget.filter.ListCharSequencePredicateFilter;
-import com.tradehero.th.adapters.ArrayDTOAdapter;
-import com.tradehero.th.api.DTOView;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.filter.security.SecurityCompactDTOFilter;
-import com.tradehero.th.inject.HierarchyInjector;
+import com.ayondo.academy.adapters.ArrayDTOAdapter;
+import com.ayondo.academy.api.DTOView;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.filter.security.SecurityCompactDTOFilter;
+import com.ayondo.academy.inject.HierarchyInjector;
 import java.util.List;
 
 abstract public class SecurityItemViewAdapter<SecurityDTOType extends SecurityCompactDTO>

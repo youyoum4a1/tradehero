@@ -1,6 +1,6 @@
 package com.tradehero;
 
-import com.tradehero.th.SamsungAppTestModule;
+import com.ayondo.academy.SamsungAppTestModule;
 import dagger.Module;
 
 @Module(

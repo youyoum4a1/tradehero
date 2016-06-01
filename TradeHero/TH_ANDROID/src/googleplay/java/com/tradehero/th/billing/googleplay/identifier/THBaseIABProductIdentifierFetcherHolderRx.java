@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay.identifier;
+package com.ayondo.academy.billing.googleplay.identifier;
 
 import android.app.Activity;
 import android.content.Context;

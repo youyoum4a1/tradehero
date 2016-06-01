@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -11,12 +11,12 @@ import android.widget.TextView;
 import butterknife.Bind;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
-import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.api.social.UserFriendsDTO;
-import com.tradehero.th.fragments.authentication.AuthenticationImageButton;
-import com.tradehero.th.utils.GraphicUtil;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardKey;
+import com.ayondo.academy.api.social.SocialNetworkEnum;
+import com.ayondo.academy.api.social.UserFriendsDTO;
+import com.ayondo.academy.fragments.authentication.AuthenticationImageButton;
+import com.ayondo.academy.utils.GraphicUtil;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 

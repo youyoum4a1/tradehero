@@ -1,7 +1,7 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.trade.TradeDTO;
-import com.tradehero.th.api.trade.TradeDTOList;
+import com.ayondo.academy.api.trade.TradeDTO;
+import com.ayondo.academy.api.trade.TradeDTOList;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import rx.Observable;

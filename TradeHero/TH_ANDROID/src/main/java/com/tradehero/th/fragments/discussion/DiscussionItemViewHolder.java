@@ -1,9 +1,9 @@
-package com.tradehero.th.fragments.discussion;
+package com.ayondo.academy.fragments.discussion;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.api.discussion.DiscussionDTO;
+import com.ayondo.academy.api.discussion.DiscussionDTO;
 import org.ocpsoft.prettytime.PrettyTime;
 
 public class DiscussionItemViewHolder

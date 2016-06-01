@@ -1,10 +1,10 @@
-package com.tradehero.th.api.notification;
+package com.ayondo.academy.api.notification;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.HasExpiration;
-import com.tradehero.th.api.pagination.PaginatedDTO;
-import com.tradehero.th.api.pagination.PaginationInfoDTO;
+import com.ayondo.academy.api.pagination.PaginatedDTO;
+import com.ayondo.academy.api.pagination.PaginationInfoDTO;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;

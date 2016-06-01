@@ -10,7 +10,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
-import com.tradehero.th.R;
+import com.ayondo.academy.R;
 
 /*
     Get From GitHub

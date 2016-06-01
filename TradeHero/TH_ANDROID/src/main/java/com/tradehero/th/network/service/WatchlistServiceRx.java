@@ -1,9 +1,9 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.security.SecurityIntegerIdListForm;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTO;
-import com.tradehero.th.api.watchlist.WatchlistPositionDTOList;
-import com.tradehero.th.api.watchlist.WatchlistPositionFormDTO;
+import com.ayondo.academy.api.security.SecurityIntegerIdListForm;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTO;
+import com.ayondo.academy.api.watchlist.WatchlistPositionDTOList;
+import com.ayondo.academy.api.watchlist.WatchlistPositionFormDTO;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;

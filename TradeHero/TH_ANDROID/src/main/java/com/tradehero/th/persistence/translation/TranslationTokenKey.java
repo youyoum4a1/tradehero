@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.translation;
+package com.ayondo.academy.persistence.translation;
 
 import com.tradehero.common.persistence.DTOKey;
 

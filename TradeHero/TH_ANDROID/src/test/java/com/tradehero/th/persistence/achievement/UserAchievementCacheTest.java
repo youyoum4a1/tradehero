@@ -1,23 +1,23 @@
-package com.tradehero.th.persistence.achievement;
+package com.ayondo.academy.persistence.achievement;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
-import com.tradehero.THRobolectric;
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.achievement.AchievementDefDTO;
-import com.tradehero.th.api.achievement.UserAchievementDTO;
-import com.tradehero.th.base.TestTHApp;
-import com.tradehero.th.utils.broadcast.BroadcastTaskNew;
+import com.ayondo.academyRobolectric;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.achievement.AchievementDefDTO;
+import com.ayondo.academy.api.achievement.UserAchievementDTO;
+import com.ayondo.academy.base.TestTHApp;
+import com.ayondo.academy.utils.broadcast.BroadcastTaskNew;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.ACHIEVEMENT_INTENT_FILTER;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 @RunWith(THRobolectricTestRunner.class)

@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.settings;
+package com.ayondo.academy.fragments.settings;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
-import com.tradehero.th.persistence.prefs.ShowAskForReviewDialog;
-import com.tradehero.th.persistence.timing.TimingIntervalPreference;
-import com.tradehero.th.utils.broadcast.BroadcastUtils;
+import com.ayondo.academy.persistence.prefs.ShowAskForReviewDialog;
+import com.ayondo.academy.persistence.timing.TimingIntervalPreference;
+import com.ayondo.academy.utils.broadcast.BroadcastUtils;
 import javax.inject.Inject;
 
 public class AskForReviewSuggestedDialogFragment extends AskForReviewDialogFragment

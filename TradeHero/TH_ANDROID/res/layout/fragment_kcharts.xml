@@ -10,7 +10,7 @@
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"/>
 
-    <com.tradehero.th.widget.KChartsView
+    <com.ayondo.academy.widget.KChartsView
         android:id="@+id/my_charts_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

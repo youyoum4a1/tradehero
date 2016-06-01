@@ -1,11 +1,11 @@
-package com.tradehero.th.widget.news;
+package com.ayondo.academy.widget.news;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import com.tradehero.th.R;
-import com.tradehero.th.models.chart.ChartTimeSpan;
+import com.ayondo.academy.R;
+import com.ayondo.academy.models.chart.ChartTimeSpan;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;

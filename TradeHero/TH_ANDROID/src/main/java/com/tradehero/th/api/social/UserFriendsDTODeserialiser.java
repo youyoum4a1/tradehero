@@ -1,8 +1,8 @@
-package com.tradehero.th.api.social;
+package com.ayondo.academy.api.social;
 
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.th.api.UniqueFieldDTODeserialiser;
+import com.ayondo.academy.api.UniqueFieldDTODeserialiser;
 import java.util.HashMap;
 import java.util.Map;
 import javax.inject.Inject;

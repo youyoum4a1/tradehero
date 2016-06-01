@@ -1,4 +1,4 @@
-package com.tradehero.th.adapters;
+package com.ayondo.academy.adapters;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import com.tradehero.th.api.DTOView;
+import com.ayondo.academy.api.DTOView;
 import java.util.List;
 
 public class DTOAdapterNew<DTOType>

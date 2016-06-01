@@ -1,10 +1,10 @@
-package com.tradehero.th.api.translation;
+package com.ayondo.academy.api.translation;
 
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.i18n.LanguageDTO;
-import com.tradehero.th.api.i18n.LanguageDTOFactory;
-import com.tradehero.th.api.i18n.LanguageDTOList;
+import com.ayondo.academy.api.i18n.LanguageDTO;
+import com.ayondo.academy.api.i18n.LanguageDTOFactory;
+import com.ayondo.academy.api.i18n.LanguageDTOList;
 
 /**
  * Given a translation service, not all languages known to Android may be translatable.

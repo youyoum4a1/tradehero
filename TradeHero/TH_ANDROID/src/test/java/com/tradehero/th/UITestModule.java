@@ -1,10 +1,10 @@
-package com.tradehero.th;
+package com.ayondo.academy;
 
-import com.tradehero.th.activities.ActivityUITestModule;
-import com.tradehero.th.activities.DashboardActivityExtended;
-import com.tradehero.th.fragments.FragmentUITestModule;
-import com.tradehero.th.models.ModelsUITestModule;
-import com.tradehero.th.utils.UtilsUITestModule;
+import com.ayondo.academy.activities.ActivityUITestModule;
+import com.ayondo.academy.activities.DashboardActivityExtended;
+import com.ayondo.academy.fragments.FragmentUITestModule;
+import com.ayondo.academy.models.ModelsUITestModule;
+import com.ayondo.academy.utils.UtilsUITestModule;
 import dagger.Module;
 
 @Module(

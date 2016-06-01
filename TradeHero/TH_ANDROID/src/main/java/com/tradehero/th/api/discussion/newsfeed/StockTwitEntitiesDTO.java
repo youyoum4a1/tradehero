@@ -1,4 +1,4 @@
-package com.tradehero.th.api.discussion.newsfeed;
+package com.ayondo.academy.api.discussion.newsfeed;
 
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;

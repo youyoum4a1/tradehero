@@ -1,8 +1,8 @@
-package com.tradehero.th.models.portfolio;
+package com.ayondo.academy.models.portfolio;
 
-import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academyRobolectricTestRunner;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

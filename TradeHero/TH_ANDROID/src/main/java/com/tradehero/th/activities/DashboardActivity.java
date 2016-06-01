@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.ayondo.academy.activities;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -30,50 +30,49 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderDTO;
-import com.tradehero.th.api.competition.ProviderDTOList;
-import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.competition.key.ProviderListKey;
-import com.tradehero.th.api.notification.NotificationDTO;
-import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.system.SystemStatusKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserLoginDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.billing.THBillingInteractorRx;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.DashboardTabHost;
-import com.tradehero.th.fragments.competition.CompetitionEnrollmentBroadcastSignal;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.dashboard.DrawerLayoutUtil;
-import com.tradehero.th.fragments.dashboard.RootFragmentType;
-import com.tradehero.th.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.tradehero.th.fragments.onboarding.OnBoardingBroadcastSignal;
-import com.tradehero.th.fragments.settings.AskForReviewSuggestedDialogFragment;
-import com.tradehero.th.fragments.updatecenter.notifications.NotificationClickHandler;
-import com.tradehero.th.models.time.AppTiming;
-import com.tradehero.th.persistence.competition.ProviderListCacheRx;
-import com.tradehero.th.persistence.notification.NotificationCacheRx;
-import com.tradehero.th.persistence.prefs.IsFxShown;
-import com.tradehero.th.persistence.prefs.IsOnBoardShown;
-import com.tradehero.th.persistence.system.SystemStatusCache;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.rx.view.DismissDialogAction1;
-import com.tradehero.th.ui.LeftDrawerMenuItemClickListener;
-import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.broadcast.BroadcastUtils;
-import com.tradehero.th.utils.metrics.ForAnalytics;
-import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderDTO;
+import com.ayondo.academy.api.competition.ProviderDTOList;
+import com.ayondo.academy.api.competition.ProviderUtil;
+import com.ayondo.academy.api.competition.key.ProviderListKey;
+import com.ayondo.academy.api.notification.NotificationDTO;
+import com.ayondo.academy.api.notification.NotificationKey;
+import com.ayondo.academy.api.system.SystemStatusKey;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserLoginDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.api.users.UserProfileDTOUtil;
+import com.ayondo.academy.billing.THBillingInteractorRx;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.DashboardTabHost;
+import com.ayondo.academy.fragments.competition.CompetitionEnrollmentBroadcastSignal;
+import com.ayondo.academy.fragments.competition.CompetitionWebViewFragment;
+import com.ayondo.academy.fragments.dashboard.DrawerLayoutUtil;
+import com.ayondo.academy.fragments.dashboard.RootFragmentType;
+import com.ayondo.academy.fragments.fxonboard.FxOnBoardDialogFragment;
+import com.ayondo.academy.fragments.onboarding.OnBoardingBroadcastSignal;
+import com.ayondo.academy.fragments.settings.AskForReviewSuggestedDialogFragment;
+import com.ayondo.academy.fragments.updatecenter.notifications.NotificationClickHandler;
+import com.ayondo.academy.models.time.AppTiming;
+import com.ayondo.academy.persistence.competition.ProviderListCacheRx;
+import com.ayondo.academy.persistence.notification.NotificationCacheRx;
+import com.ayondo.academy.persistence.prefs.IsFxShown;
+import com.ayondo.academy.persistence.prefs.IsOnBoardShown;
+import com.ayondo.academy.persistence.system.SystemStatusCache;
+import com.ayondo.academy.persistence.user.UserProfileCacheRx;
+import com.ayondo.academy.rx.EmptyAction1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.ToastOnErrorAction1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+import com.ayondo.academy.rx.view.DismissDialogAction1;
+import com.ayondo.academy.ui.LeftDrawerMenuItemClickListener;
+import com.ayondo.academy.utils.Constants;
+import com.ayondo.academy.utils.DeviceUtil;
+import com.ayondo.academy.utils.broadcast.BroadcastUtils;
+import com.ayondo.academy.utils.metrics.ForAnalytics;
+import com.ayondo.academy.utils.metrics.appsflyer.THAppsFlyer;
+import com.ayondo.academy.utils.route.THRouter;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,9 +92,9 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
-import static com.tradehero.th.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.ENROLLMENT_INTENT_FILTER;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.ONBOARD_INTENT_FILTER;
+import static com.ayondo.academy.utils.broadcast.BroadcastConstants.SEND_LOVE_INTENT_FILTER;
 import static rx.android.app.AppObservable.bindActivity;
 import static rx.android.content.ContentObservable.fromLocalBroadcast;
 
@@ -115,7 +114,8 @@ public class DashboardActivity extends BaseActivity
     @Inject SystemStatusCache systemStatusCache;
 
     @Inject THRouter thRouter;
-    @Inject Analytics analytics;
+    //TODO Add code for Google Analytics
+    //@Inject Analytics analytics;
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
     @Inject @IsOnBoardShown BooleanPreference isOnBoardShown;
     @Inject @IsFxShown BooleanPreference isFxShown;
@@ -136,6 +136,7 @@ public class DashboardActivity extends BaseActivity
 
     private Subscription notificationFetchSubscription;
 
+    //TODO Add code for Google Analytics
     private DashboardActivityModule activityModule;
     private BroadcastReceiver onlineStateReceiver;
     private MenuItem networkIndicator;
@@ -151,7 +152,8 @@ public class DashboardActivity extends BaseActivity
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         super.onCreate(savedInstanceState);
-        activityModule.analytics = analytics;
+        //TODO Add code for Google Analytics
+        //activityModule.analytics = analytics;
         setContentView(R.layout.dashboard_with_bottom_bar);
 
         ActivityBuildTypeUtil.setUpCrashReports(currentUserId.toUserBaseKey());

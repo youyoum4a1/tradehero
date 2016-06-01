@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.position.view;
+package com.ayondo.academy.fragments.position.view;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -8,8 +8,8 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.Bind;
-import com.tradehero.th.R;
-import com.tradehero.th.adapters.TypedRecyclerAdapter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.adapters.TypedRecyclerAdapter;
 
 public class PositionNothingView extends RelativeLayout
 {

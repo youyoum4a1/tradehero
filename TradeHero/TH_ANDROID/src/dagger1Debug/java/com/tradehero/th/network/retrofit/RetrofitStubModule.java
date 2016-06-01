@@ -1,8 +1,8 @@
-package com.tradehero.th.network.retrofit;
+package com.ayondo.academy.network.retrofit;
 
-import com.tradehero.th.network.service.AchievementMockServiceWrapper;
-import com.tradehero.th.network.service.AchievementServiceWrapper;
-import com.tradehero.th.network.service.RetrofitStubProtectedModule;
+import com.ayondo.academy.network.service.AchievementMockServiceWrapper;
+import com.ayondo.academy.network.service.AchievementServiceWrapper;
+import com.ayondo.academy.network.service.RetrofitStubProtectedModule;
 import dagger.Module;
 import dagger.Provides;
 

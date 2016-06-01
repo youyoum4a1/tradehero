@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.watchlist;
+package com.ayondo.academy.fragments.watchlist;
 
 import dagger.Module;
 

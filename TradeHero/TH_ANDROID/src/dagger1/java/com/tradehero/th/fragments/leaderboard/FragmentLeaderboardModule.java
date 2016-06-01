@@ -1,8 +1,8 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
-import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterFragment;
-import com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
-import com.tradehero.th.fragments.leaderboard.main.LeaderboardCommunityFragment;
+import com.ayondo.academy.fragments.leaderboard.filter.LeaderboardFilterFragment;
+import com.ayondo.academy.fragments.leaderboard.filter.LeaderboardFilterSliderContainer;
+import com.ayondo.academy.fragments.leaderboard.main.LeaderboardCommunityFragment;
 import dagger.Module;
 
 @Module(

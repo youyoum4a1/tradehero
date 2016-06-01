@@ -1,7 +1,7 @@
-package com.tradehero.th.api.kyc;
+package com.ayondo.academy.api.kyc;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.api.market.Country;
+import com.ayondo.academy.api.market.Country;
 
 public interface LiveAvailabilityDTO
 {

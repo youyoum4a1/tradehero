@@ -1,10 +1,10 @@
-package com.tradehero.th.api.timeline;
+package com.ayondo.academy.api.timeline;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.users.UserProfileCompactDTO;
 import java.util.Collections;
 import java.util.List;
 

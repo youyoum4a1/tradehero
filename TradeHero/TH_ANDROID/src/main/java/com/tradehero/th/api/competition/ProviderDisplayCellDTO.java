@@ -1,4 +1,4 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
 import android.content.res.Resources;
 import android.net.Uri;
@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.key.ProviderDisplayCellId;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.key.ProviderDisplayCellId;
 
 public class ProviderDisplayCellDTO implements DTO
 {

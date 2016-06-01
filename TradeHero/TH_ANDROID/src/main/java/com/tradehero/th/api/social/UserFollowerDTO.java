@@ -1,9 +1,9 @@
-package com.tradehero.th.api.social;
+package com.ayondo.academy.api.social;
 
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTO;
-import com.tradehero.th.api.users.UserProfileCompactDTO;
-import com.tradehero.th.persistence.social.HeroType;
+import com.ayondo.academy.api.users.UserProfileCompactDTO;
+import com.ayondo.academy.persistence.social.HeroType;
 import java.util.Date;
 import java.util.List;
 

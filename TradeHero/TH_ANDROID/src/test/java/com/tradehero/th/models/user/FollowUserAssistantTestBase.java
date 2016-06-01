@@ -1,9 +1,9 @@
-package com.tradehero.th.models.user;
+package com.ayondo.academy.models.user;
 
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.network.service.UserServiceWrapper;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.models.user.follow.FollowUserAssistant;
+import com.ayondo.academy.network.service.UserServiceWrapper;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import retrofit.RetrofitError;

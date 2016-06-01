@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.news;
+package com.ayondo.academy.fragments.news;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -20,39 +20,41 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Gallery;
 import android.widget.TextView;
+
 import com.tradehero.common.rx.PairGetSecond;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
-import com.tradehero.th.api.news.NewsItemDTO;
-import com.tradehero.th.api.news.key.NewsItemDTOKey;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.api.security.SecurityIntegerId;
-import com.tradehero.th.api.security.compact.FxSecurityCompactDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.fragments.base.FragmentOuterElements;
-import com.tradehero.th.fragments.trade.AbstractBuySellFragment;
-import com.tradehero.th.fragments.trade.BuySellStockFragment;
-import com.tradehero.th.fragments.trade.FXMainFragment;
-import com.tradehero.th.fragments.web.WebViewFragment;
-import com.tradehero.th.models.number.THSignedPercentage;
-import com.tradehero.th.network.service.NewsServiceWrapper;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.persistence.security.SecurityMultiFetchAssistant;
-import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.AnalyticsDuration;
-import com.tradehero.th.utils.metrics.events.AttributesEvent;
-import com.tradehero.th.utils.route.THRouter;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.news.NewsItemDTO;
+import com.ayondo.academy.api.news.key.NewsItemDTOKey;
+import com.ayondo.academy.api.portfolio.PortfolioCompactDTOList;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.api.security.SecurityIntegerId;
+import com.ayondo.academy.api.security.compact.FxSecurityCompactDTO;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.fragments.base.FragmentOuterElements;
+import com.ayondo.academy.fragments.trade.AbstractBuySellFragment;
+import com.ayondo.academy.fragments.trade.BuySellStockFragment;
+import com.ayondo.academy.fragments.trade.FXMainFragment;
+import com.ayondo.academy.fragments.web.WebViewFragment;
+import com.ayondo.academy.models.number.THSignedPercentage;
+import com.ayondo.academy.network.service.NewsServiceWrapper;
+import com.ayondo.academy.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.ayondo.academy.persistence.security.SecurityMultiFetchAssistant;
+import com.ayondo.academy.rx.TimberAndToastOnErrorAction1;
+import com.ayondo.academy.utils.metrics.AnalyticsConstants;
+import com.ayondo.academy.utils.metrics.AnalyticsDuration;
+import com.ayondo.academy.utils.route.THRouter;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -77,7 +79,8 @@ public class NewsWebFragment extends WebViewFragment
 
     @Inject NewsServiceWrapper newsServiceWrapper;
     @Inject protected SecurityMultiFetchAssistant securityMultiFetchAssistant;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject FragmentOuterElements fragmentElements;
     @Inject THRouter thRouter;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
@@ -336,7 +339,8 @@ public class NewsWebFragment extends WebViewFragment
         Map<String, String> collections = new HashMap<>();
         collections.put(AnalyticsConstants.PreviousScreen, previousScreen);
         collections.put(AnalyticsConstants.TimeOnScreen, AnalyticsDuration.sinceTimeMillis(beginTime).toString());
-        analytics.fireEvent(new AttributesEvent(AnalyticsConstants.NewsItem_Show, collections));
+        //TODO Change Analytics
+        //analytics.fireEvent(new AttributesEvent(AnalyticsConstants.NewsItem_Show, collections));
     }
 
     class CompactSecurityListAdapter extends ArrayAdapter<SecurityCompactDTO>

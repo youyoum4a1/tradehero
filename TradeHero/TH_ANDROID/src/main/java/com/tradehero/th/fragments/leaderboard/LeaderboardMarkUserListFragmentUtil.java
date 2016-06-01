@@ -1,37 +1,38 @@
-package com.tradehero.th.fragments.leaderboard;
+package com.ayondo.academy.fragments.leaderboard;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
-import com.tradehero.th.api.competition.ProviderUtil;
-import com.tradehero.th.api.leaderboard.LeaderboardUserDTO;
-import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
-import com.tradehero.th.api.leaderboard.key.LeaderboardDefKey;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.position.GetPositionsDTOKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseDTO;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.api.users.UserProfileDTOUtil;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.competition.CompetitionWebViewFragment;
-import com.tradehero.th.fragments.position.TabbedPositionListFragment;
-import com.tradehero.th.fragments.timeline.MeTimelineFragment;
-import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
-import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.models.user.follow.FollowUserAssistant;
-import com.tradehero.th.persistence.leaderboard.LeaderboardDefCacheRx;
-import com.tradehero.th.rx.ReplaceWithFunc1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.ScreenFlowEvent;
+import com.ayondo.academy.R;
+import com.ayondo.academy.api.competition.ProviderUtil;
+import com.ayondo.academy.api.leaderboard.LeaderboardUserDTO;
+import com.ayondo.academy.api.leaderboard.def.LeaderboardDefDTO;
+import com.ayondo.academy.api.leaderboard.key.LeaderboardDefKey;
+import com.ayondo.academy.api.portfolio.OwnedPortfolioId;
+import com.ayondo.academy.api.position.GetPositionsDTOKey;
+import com.ayondo.academy.api.users.CurrentUserId;
+import com.ayondo.academy.api.users.UserBaseDTO;
+import com.ayondo.academy.api.users.UserBaseKey;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.api.users.UserProfileDTOUtil;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.competition.CompetitionWebViewFragment;
+import com.ayondo.academy.fragments.position.TabbedPositionListFragment;
+import com.ayondo.academy.fragments.timeline.MeTimelineFragment;
+import com.ayondo.academy.fragments.timeline.PushableTimelineFragment;
+import com.ayondo.academy.inject.HierarchyInjector;
+import com.ayondo.academy.models.user.follow.FollowUserAssistant;
+import com.ayondo.academy.persistence.leaderboard.LeaderboardDefCacheRx;
+import com.ayondo.academy.rx.ReplaceWithFunc1;
+import com.ayondo.academy.rx.TimberOnErrorAction1;
+import com.ayondo.academy.rx.dialog.OnDialogClickEvent;
+
 import java.text.SimpleDateFormat;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
@@ -46,7 +47,8 @@ public class LeaderboardMarkUserListFragmentUtil
     @NonNull private final DashboardNavigator navigator;
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final LeaderboardDefCacheRx leaderboardDefCache;
-    @NonNull private final Analytics analytics;
+    //TODO Change Analytics
+    //@NonNull private final Analytics analytics;
     @NonNull private final ProviderUtil providerUtil;
 
     private BaseLeaderboardPagedRecyclerRxFragment fragment;
@@ -54,17 +56,19 @@ public class LeaderboardMarkUserListFragmentUtil
     private SubscriptionList onStopSubscriptions;
 
     //<editor-fold desc="Constructors">
+    //TODO Change Analytics
+    //4th argument was analytics
     @Inject public LeaderboardMarkUserListFragmentUtil(
             @NonNull DashboardNavigator navigator,
             @NonNull CurrentUserId currentUserId,
             @NonNull LeaderboardDefCacheRx leaderboardDefCache,
-            @NonNull Analytics analytics,
             @NonNull ProviderUtil providerUtil)
     {
         this.navigator = navigator;
         this.currentUserId = currentUserId;
         this.leaderboardDefCache = leaderboardDefCache;
-        this.analytics = analytics;
+        //TODO Change Analytics
+        //this.analytics = analytics;
         this.providerUtil = providerUtil;
     }
     //</editor-fold>
@@ -221,9 +225,10 @@ public class LeaderboardMarkUserListFragmentUtil
                                            int followType = userProfileDTO.getFollowType(userBaseDTO);
                                            if (followType == UserProfileDTOUtil.IS_FREE_FOLLOWER)
                                            {
-                                               analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success,
-                                                       AnalyticsConstants.Leaderboard));
+                                               //TODO Change Analytics
+                                               //analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.FreeFollow_Success, AnalyticsConstants.Leaderboard));
                                            }
+                                           //Previous codebase comments 3.3.1
                                            //else if (followType == UserProfileDTOUtil.IS_PREMIUM_FOLLOWER)
                                            //{
                                            //    analytics.addEvent(new ScreenFlowEvent(AnalyticsConstants.PremiumFollow_Success,

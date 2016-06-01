@@ -1,4 +1,4 @@
-package com.tradehero.th.api.security;
+package com.ayondo.academy.api.security;
 
 abstract public class SecurityCompactDTOTestBase
 {

@@ -1,4 +1,4 @@
-package com.tradehero.th.network.share.dto;
+package com.ayondo.academy.network.share.dto;
 
 public interface SocialDialogResult
 {

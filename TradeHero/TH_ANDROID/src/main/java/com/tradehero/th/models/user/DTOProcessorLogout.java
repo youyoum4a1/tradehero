@@ -1,10 +1,10 @@
-package com.tradehero.th.models.user;
+package com.ayondo.academy.models.user;
 
 import android.app.NotificationManager;
 import android.support.annotation.NonNull;
 import com.tradehero.common.persistence.DTOCacheUtilRx;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.models.DTOProcessor;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.models.DTOProcessor;
 import rx.functions.Action1;
 
 public class DTOProcessorLogout implements DTOProcessor<UserProfileDTO>,

@@ -1,4 +1,4 @@
-package com.tradehero.th.api.competition;
+package com.ayondo.academy.api.competition;
 
 public class ProviderPrizePoolDTO
 {

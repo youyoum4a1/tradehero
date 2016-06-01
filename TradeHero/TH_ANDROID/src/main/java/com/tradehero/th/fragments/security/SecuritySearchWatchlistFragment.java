@@ -1,12 +1,12 @@
-package com.tradehero.th.fragments.security;
+package com.ayondo.academy.fragments.security;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import com.tradehero.th.api.security.SecurityCompactDTO;
-import com.tradehero.th.fragments.DashboardNavigator;
-import com.tradehero.th.fragments.trending.TrendingMainFragment;
+import com.ayondo.academy.api.security.SecurityCompactDTO;
+import com.ayondo.academy.fragments.DashboardNavigator;
+import com.ayondo.academy.fragments.trending.TrendingMainFragment;
 import javax.inject.Inject;
 
 public class SecuritySearchWatchlistFragment extends SecuritySearchFragment

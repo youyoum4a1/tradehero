@@ -1,10 +1,10 @@
-package com.tradehero.th.fragments.education;
+package com.ayondo.academy.fragments.education;
 
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import com.tradehero.th.adapters.SingleViewDTOSetAdapter;
-import com.tradehero.th.api.education.VideoDTO;
+import com.ayondo.academy.adapters.SingleViewDTOSetAdapter;
+import com.ayondo.academy.api.education.VideoDTO;
 import java.util.Comparator;
 
 public class VideoAdapter extends SingleViewDTOSetAdapter<VideoDTO, VideoView>

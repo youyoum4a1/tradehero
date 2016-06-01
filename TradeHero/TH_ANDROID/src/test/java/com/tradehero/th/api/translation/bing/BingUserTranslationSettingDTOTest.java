@@ -1,14 +1,14 @@
-package com.tradehero.th.api.translation.bing;
+package com.ayondo.academy.api.translation.bing;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tradehero.THRobolectricTestRunner;
+import com.ayondo.academyRobolectricTestRunner;
 import com.tradehero.TestConstants;
 import com.tradehero.common.annotation.ForApp;
-import com.tradehero.th.BuildConfig;
-import com.tradehero.th.api.i18n.LanguageDTOFactory;
-import com.tradehero.th.api.translation.UserTranslationSettingDTO;
-import com.tradehero.th.base.TestTHApp;
+import com.ayondo.academy.BuildConfig;
+import com.ayondo.academy.api.i18n.LanguageDTOFactory;
+import com.ayondo.academy.api.translation.UserTranslationSettingDTO;
+import com.ayondo.academy.base.TestTHApp;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;

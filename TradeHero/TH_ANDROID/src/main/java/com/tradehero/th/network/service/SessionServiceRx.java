@@ -1,11 +1,11 @@
-package com.tradehero.th.network.service;
+package com.ayondo.academy.network.service;
 
-import com.tradehero.th.api.BaseResponseDTO;
-import com.tradehero.th.api.system.SystemStatusDTO;
-import com.tradehero.th.api.users.LoginSignUpFormDTO;
-import com.tradehero.th.api.users.UserLoginDTO;
-import com.tradehero.th.api.users.UserProfileDTO;
-import com.tradehero.th.utils.Constants;
+import com.ayondo.academy.api.BaseResponseDTO;
+import com.ayondo.academy.api.system.SystemStatusDTO;
+import com.ayondo.academy.api.users.LoginSignUpFormDTO;
+import com.ayondo.academy.api.users.UserLoginDTO;
+import com.ayondo.academy.api.users.UserProfileDTO;
+import com.ayondo.academy.utils.Constants;
 import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -14,7 +14,7 @@ import retrofit.http.Header;
 import retrofit.http.POST;
 import rx.Observable;
 
-import static com.tradehero.th.utils.Constants.AUTHORIZATION;
+import static com.ayondo.academy.utils.Constants.AUTHORIZATION;
 
 interface SessionServiceRx
 {
