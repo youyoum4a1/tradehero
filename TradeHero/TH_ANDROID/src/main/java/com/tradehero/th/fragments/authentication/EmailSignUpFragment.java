@@ -13,11 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnClick;
+
 import com.tradehero.common.fragment.ActivityResultDTO;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
 import com.tradehero.th.activities.AuthenticationActivity;
@@ -31,18 +28,20 @@ import com.tradehero.th.fragments.settings.ProfileInfoView;
 import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import dagger.Lazy;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import dagger.Lazy;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -58,7 +57,8 @@ public class EmailSignUpFragment extends Fragment
 {
     private static final String BUNDLE_KEY_DEEP_LINK = EmailSignUpFragment.class.getName() + ".deepLink";
 
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
 
@@ -94,9 +94,10 @@ public class EmailSignUpFragment extends Fragment
         super.onCreate(savedInstanceState);
 
         HierarchyInjector.inject(this);
-        analytics.tagScreen(AnalyticsConstants.Register_Form);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.RegisterFormScreen));
-        analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
+        //TODO Change Analytics
+        //analytics.tagScreen(AnalyticsConstants.Register_Form);
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.RegisterFormScreen));
+        //analytics.addEvent(new MethodEvent(AnalyticsConstants.SignUp_Tap, AnalyticsConstants.Email));
         deepLink = getDeepLink(getArguments());
     }
 

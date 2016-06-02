@@ -15,13 +15,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.android.common.SlidingTabLayout;
 import com.tradehero.common.persistence.prefs.StringPreference;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.widget.BetterViewAnimator;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.def.LeaderboardDefDTO;
@@ -45,11 +43,13 @@ import com.tradehero.th.persistence.prefs.THPreference;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.OffOnViewSwitcher;
 import com.tradehero.th.widget.OffOnViewSwitcherEvent;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -64,7 +64,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
         implements WithTutorial, View.OnClickListener
 {
     @Inject LeaderboardDefListCacheRx leaderboardDefListCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject @THPreference(PreferenceModule.PREF_ON_BOARDING_EXCHANGE) StringPreference onBoardExchangePref;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
@@ -167,7 +168,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onResume()
     {
         super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Community));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Community));
         if (leaderboardDefDTOs == null)
         {
             fetchLeaderboardDefList();
@@ -353,7 +355,8 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
         @Override public Fragment getItem(int position)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_ShowLeaderboard));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboards_ShowLeaderboard));
             LeaderboardDefDTO leaderboardDefDTO = dtoList.get(position);
             Bundle args = new Bundle(getArguments());
 

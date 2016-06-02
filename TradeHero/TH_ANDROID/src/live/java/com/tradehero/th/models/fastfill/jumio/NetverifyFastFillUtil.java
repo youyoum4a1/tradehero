@@ -5,21 +5,26 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import com.jumio.mobile.sdk.PlatformNotSupportedException;
-import com.jumio.mobile.sdk.ResourceNotFoundException;
-import com.jumio.mobile.sdk.enums.JumioDataCenter;
-import com.jumio.netverify.sdk.NetverifyDocumentData;
-import com.jumio.netverify.sdk.NetverifySDK;
-import com.jumio.netverify.sdk.enums.NVDocumentType;
+
+import com.jumio.core.enums.JumioDataCenter;
+import com.jumio.core.exceptions.MissingPermissionException;
+import com.jumio.core.exceptions.PlatformNotSupportedException;
+import com.jumio.nv.NetverifyDocumentData;
+import com.jumio.nv.NetverifySDK;
+import com.jumio.nv.data.document.NVDocumentType;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.CurrentUserId;
 import com.tradehero.th.models.fastfill.FastFillUtil;
 import com.tradehero.th.models.fastfill.IdentityScannedDocumentType;
 import com.tradehero.th.models.fastfill.ScannedDocument;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
@@ -39,7 +44,7 @@ public class NetverifyFastFillUtil implements FastFillUtil
     private Map<IdentityScannedDocumentType, NVDocumentType> documentTypeMap;
 
     @Inject public NetverifyFastFillUtil(@NonNull CurrentUserId currentUserId,
-            @NonNull NetverifyServiceWrapper netverifyServiceWrapper)
+                                         @NonNull NetverifyServiceWrapper netverifyServiceWrapper)
     {
         this.currentUserId = currentUserId;
         this.netverifyServiceWrapper = netverifyServiceWrapper;
@@ -61,7 +66,7 @@ public class NetverifyFastFillUtil implements FastFillUtil
                         NetverifyConstants.NET_VERIFY_ACTIVE_API_SECRET, DATA_CENTER);
                 netverifySDK.setCustomerId(currentUserId.get().toString());
             }
-            catch (ResourceNotFoundException | PlatformNotSupportedException e)
+            catch ( PlatformNotSupportedException e)
             {
                 Timber.e(e, "Failed to initialise NetverifySDK");
                 throw new IllegalArgumentException("Failed to initialise NetverifySDK");
@@ -76,7 +81,7 @@ public class NetverifyFastFillUtil implements FastFillUtil
 
     public static boolean isSupported(@NonNull Activity activity)
     {
-        boolean supported = NetverifySDK.isSupportedPlatform(activity);
+        boolean supported = NetverifySDK.isSupportedPlatform();
         if (!supported)
         {
             Timber.e(new Exception(), "Netverify %s is not supported on this device", NetverifySDK.getSDKVersion());
@@ -115,7 +120,10 @@ public class NetverifyFastFillUtil implements FastFillUtil
     {
         if (documentType != null)
         {
-            netverifySDK.setPreselectedDocumentType(documentTypeMap.get(documentType));
+            //TODO This is just a dummy fix
+            ArrayList<NVDocumentType> docType = new ArrayList<NVDocumentType>();
+            docType.add(documentTypeMap.get(documentType));
+            netverifySDK.setPreselectedDocumentTypes(docType);
         }
 
         if (country != null)
@@ -125,7 +133,11 @@ public class NetverifyFastFillUtil implements FastFillUtil
 
         netverifySDK.setRequireVerification(true);
         this.netverifySDK = netverifySDK;
-        activity.startActivityForResult(netverifySDK.getIntent(), NET_VERIFY_REQUEST_CODE);
+        try {
+            activity.startActivityForResult(netverifySDK.getIntent(), NET_VERIFY_REQUEST_CODE);
+        } catch (MissingPermissionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override public void fastFill(@NonNull Fragment fragment)
@@ -136,22 +148,25 @@ public class NetverifyFastFillUtil implements FastFillUtil
     public void fastFill(@NonNull Fragment fragment, @NonNull NetverifySDK netverifySDK)
     {
         this.netverifySDK = netverifySDK;
-        fragment.startActivityForResult(netverifySDK.getIntent(), NET_VERIFY_REQUEST_CODE);
+        try {
+            fragment.startActivityForResult(netverifySDK.getIntent(), NET_VERIFY_REQUEST_CODE);
+        } catch (MissingPermissionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override public void onActivityResult(@NonNull Activity activity, int requestCode, final int resultCode, Intent data)
     {
         if (requestCode == NET_VERIFY_REQUEST_CODE)
         {
-            if (resultCode == NetverifySDK.RESULT_CODE_SUCCESS || resultCode ==
-                    NetverifySDK.RESULT_CODE_BACK_WITH_SUCCESS)
+            if (resultCode == activity.RESULT_OK)
             {
-                NetverifyScanReference scanReference = new NetverifyScanReference(data.getStringExtra(NetverifySDK.RESULT_DATA_SCAN_REFERENCE));
+                NetverifyScanReference scanReference = new NetverifyScanReference(data.getStringExtra(NetverifySDK.EXTRA_SCAN_REFERENCE));
                 scannedDocumentSubject.onNext(new NetverifyScannedDocument(
                         scanReference,
-                        data.<NetverifyDocumentData>getParcelableExtra(NetverifySDK.RESULT_DATA_SCAN_DATA)));
+                        data.<NetverifyDocumentData>getParcelableExtra(NetverifySDK.EXTRA_SCAN_DATA)));
             }
-            else if (resultCode == NetverifySDK.RESULT_CODE_CANCEL)
+            else if (resultCode == activity.RESULT_CANCELED)
             {
                 //Consecutive scan will fail if we have onError
             }

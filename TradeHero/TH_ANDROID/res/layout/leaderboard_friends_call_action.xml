@@ -28,8 +28,6 @@
       >
 
     <include layout="@layout/authentication_social_auth_image_button_facebook"/>
-    <include layout="@layout/authentication_social_auth_image_button_twitter"/>
-    <include layout="@layout/authentication_social_auth_image_button_linkedin"/>
     <include layout="@layout/authentication_social_auth_image_button_weibo"/>
     <include layout="@layout/authentication_social_auth_image_button_qq"/>
 

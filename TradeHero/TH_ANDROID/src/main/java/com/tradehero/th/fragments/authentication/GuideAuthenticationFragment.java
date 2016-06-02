@@ -7,18 +7,15 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnClick;
-import android.support.annotation.Nullable;
+
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.AuthenticationActivity;
 import com.tradehero.th.api.social.SocialNetworkEnum;
@@ -27,10 +24,13 @@ import com.tradehero.th.inject.Injector;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.Constants;
 import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.MethodEvent;
 import com.viewpagerindicator.PageIndicator;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -48,7 +48,8 @@ public class GuideAuthenticationFragment extends Fragment
     private static final int PAGER_INITIAL_POSITION = 0;
 
     @Inject DashboardNavigator navigator;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @Bind(R.id.guide_page_indicator) PageIndicator guidePageIndicator;
     @Bind(R.id.viewpager) ViewPager guidePager;
@@ -238,7 +239,8 @@ public class GuideAuthenticationFragment extends Fragment
         }
         if (!pagesSeen[position])
         {
-            analytics.addEvent(new MethodEvent(AnalyticsConstants.SplashScreen, AnalyticsConstants.Screen + String.valueOf(position)));
+            //TODO Change Analytics
+            //analytics.addEvent(new MethodEvent(AnalyticsConstants.SplashScreen, AnalyticsConstants.Screen + String.valueOf(position)));
             pagesSeen[position] = true;
         }
     }

@@ -12,12 +12,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.tradehero.common.billing.PurchaseOrder;
 import com.tradehero.common.billing.purchase.PurchaseResult;
 import com.tradehero.common.billing.tester.BillingTestResult;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
@@ -41,12 +39,15 @@ import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
 import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.Constants;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -66,7 +67,8 @@ public class StoreScreenFragment extends BaseFragment
     public static boolean alreadyNotifiedNeedCreateAccount = false;
 
     @Inject CurrentUserId currentUserId;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject THRouter thRouter;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
@@ -183,7 +185,8 @@ public class StoreScreenFragment extends BaseFragment
     @Override public void onStart()
     {
         super.onStart();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.TabBar_Store));
 
         fetchUserProfile();
 

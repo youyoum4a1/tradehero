@@ -12,11 +12,9 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
 import com.tradehero.common.utils.THToast;
 import com.tradehero.common.widget.FlagNearEdgeScrollListener;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.level.LevelDefDTOList;
@@ -57,12 +55,17 @@ import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.MultiScrollListener;
-import dagger.Lazy;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import dagger.Lazy;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -100,7 +103,8 @@ abstract public class TimelineFragment extends DashboardFragment
         TIMELINE, PORTFOLIO_LIST,
     }
 
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject LevelDefListCacheRx levelDefListCache;
     @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;

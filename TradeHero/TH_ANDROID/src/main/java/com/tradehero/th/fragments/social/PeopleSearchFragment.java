@@ -6,10 +6,10 @@ import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+
 import com.tradehero.common.fragment.HasSelectedItem;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.users.SearchUserListType;
 import com.tradehero.th.api.users.UserBaseKey;
@@ -22,9 +22,9 @@ import com.tradehero.th.fragments.timeline.MeTimelineFragment;
 import com.tradehero.th.fragments.timeline.PushableTimelineFragment;
 import com.tradehero.th.fragments.trending.PeopleItemViewAdapter;
 import com.tradehero.th.persistence.user.UserBaseKeyListCacheRx;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
+
 import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class PeopleSearchFragment extends BaseSearchRxFragment<
@@ -35,7 +35,8 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
         implements HasSelectedItem
 {
     @Inject UserBaseKeyListCacheRx userBaseKeyListCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
@@ -116,7 +117,8 @@ public class PeopleSearchFragment extends BaseSearchRxFragment<
     @Override protected void onNext(@NonNull UserListType key, @NonNull UserSearchResultDTOList value)
     {
         super.onNext(key, value);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_User));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.SearchResult_User));
     }
 
     @Override protected void onError(@NonNull UserListType key, @NonNull Throwable error)

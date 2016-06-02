@@ -13,10 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.tradehero.common.annotation.ForUser;
 import com.tradehero.common.persistence.DTOCacheRx;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.LeaderboardKey;
@@ -33,11 +33,11 @@ import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
 import com.tradehero.th.persistence.leaderboard.PerPagedFilteredLeaderboardKeyPreference;
 import com.tradehero.th.persistence.leaderboard.PerPagedLeaderboardKeyPreference;
 import com.tradehero.th.rx.TimberOnErrorAction1;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.MultiRecyclerScrollListener;
 import com.tradehero.th.widget.list.SingleExpandingListViewListener;
+
 import javax.inject.Inject;
+
 import retrofit.RetrofitError;
 import rx.Observable;
 import rx.android.app.AppObservable;
@@ -56,7 +56,8 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
     public static final String PREFERENCE_KEY_PREFIX = LeaderboardMarkUserRecyclerFragment.class.getName();
     private static final String BUNDLE_KEY_LEADERBOARD_TYPE_ID = LeaderboardMarkUserRecyclerFragment.class.getName() + ".leaderboardTypeId";
 
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject @ForUser SharedPreferences preferences;
     @Inject SingleExpandingListViewListener singleExpandingListViewListener;
     @Inject LeaderboardCacheRx leaderboardCache;
@@ -141,7 +142,8 @@ public class LeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPagedRec
         switch (item.getItemId())
         {
             case android.R.id.home:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Back));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_Back));
                 break;
             case R.id.button_leaderboard_filter:
                 pushFilterFragmentIn();

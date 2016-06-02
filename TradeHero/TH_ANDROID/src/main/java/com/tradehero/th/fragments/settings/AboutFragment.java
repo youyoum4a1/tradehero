@@ -14,16 +14,14 @@ import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import com.tradehero.metrics.Analytics;
+
 import com.tradehero.th.R;
 import com.tradehero.th.fragments.base.BaseFragment;
 import com.tradehero.th.models.staff.StaffDTO;
 import com.tradehero.th.models.staff.StaffDTOFactory;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class AboutFragment extends BaseFragment
 {
@@ -31,7 +29,8 @@ public class AboutFragment extends BaseFragment
     @Bind(R.id.staff_list_holder) LinearLayout staffList;
     @Bind(R.id.about_scroll) ScrollView scrollView;
 
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     private ObjectAnimator rotateAnimator;
     private ObjectAnimator scrollAnimator;
@@ -106,7 +105,8 @@ public class AboutFragment extends BaseFragment
     @Override public void onResume()
     {
         super.onResume();
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_About));
+        //TODO Change Analytics
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Settings_About));
     }
 
     private void scrollToBottom()

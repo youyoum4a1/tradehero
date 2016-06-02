@@ -2,7 +2,7 @@ package com.tradehero.th.utils.metrics.events;
 
 import com.tradehero.th.api.competition.ProviderId;
 import com.tradehero.th.api.security.SecurityId;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
+
 import java.util.Map;
 
 public final class SharingOptionsEvent extends SecurityEvent
@@ -33,7 +33,7 @@ public final class SharingOptionsEvent extends SecurityEvent
             boolean weChatEnabled,
             boolean weiboEnabled)
     {
-        super(isBuyEvent ? AnalyticsConstants.Trade_Buy : AnalyticsConstants.Trade_Sell, securityId);
+        super(securityId);
         this.providerId = providerId;
         this.priceSelectMethod = priceSelectMethod;
         this.hasComment = hasComment;

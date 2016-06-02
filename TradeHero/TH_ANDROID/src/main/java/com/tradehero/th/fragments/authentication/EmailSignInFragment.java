@@ -12,11 +12,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnClick;
+
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BuildConfig;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityHelper;
@@ -34,25 +31,28 @@ import com.tradehero.th.inject.HierarchyInjector;
 import com.tradehero.th.network.service.SessionServiceWrapper;
 import com.tradehero.th.network.service.UserServiceWrapper;
 import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.ToastOnErrorAction1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
 import com.tradehero.th.rx.view.DismissDialogAction0;
 import com.tradehero.th.rx.view.DismissDialogAction1;
 import com.tradehero.th.utils.AlertDialogRxUtil;
 import com.tradehero.th.utils.DeviceUtil;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.tradehero.th.utils.metrics.appsflyer.THAppsFlyer;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.widget.validation.TextValidator;
 import com.tradehero.th.widget.validation.ValidatedText;
 import com.tradehero.th.widget.validation.ValidatedView;
 import com.tradehero.th.widget.validation.ValidationMessage;
-import dagger.Lazy;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import dagger.Lazy;
 import rx.Notification;
 import rx.Observable;
 import rx.Observer;
@@ -72,7 +72,8 @@ public class EmailSignInFragment extends Fragment
     private static final String BUNDLE_KEY_DEEP_LINK = EmailSignInFragment.class.getName() + ".deepLink";
 
     @Inject UserServiceWrapper userServiceWrapper;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
@@ -109,8 +110,9 @@ public class EmailSignInFragment extends Fragment
     {
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
-        analytics.tagScreen(AnalyticsConstants.Login_Form);
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
+        //TODO Change Analytics
+        //analytics.tagScreen(AnalyticsConstants.Login_Form);
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginFormScreen));
         deepLink = getDeepLink(getArguments());
     }
 

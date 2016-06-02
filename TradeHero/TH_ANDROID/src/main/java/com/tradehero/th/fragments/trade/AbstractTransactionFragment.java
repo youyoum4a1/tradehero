@@ -17,14 +17,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnTextChanged;
+
 import com.android.internal.util.Predicate;
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.FacebookShareActivity;
 import com.tradehero.th.api.portfolio.OwnedPortfolioId;
@@ -62,11 +58,9 @@ import com.tradehero.th.misc.exception.THException;
 import com.tradehero.th.models.number.THSignedMoney;
 import com.tradehero.th.models.number.THSignedNumber;
 import com.tradehero.th.models.portfolio.MenuOwnedPortfolioId;
-import com.tradehero.th.models.share.SocialShareHelper;
 import com.tradehero.th.network.service.QuoteServiceWrapper;
 import com.tradehero.th.network.service.SecurityServiceWrapper;
 import com.tradehero.th.network.share.SocialSharer;
-import com.tradehero.th.network.share.dto.SocialShareResult;
 import com.tradehero.th.persistence.portfolio.OwnedPortfolioIdListCacheRx;
 import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.tradehero.th.persistence.position.PositionListCacheRx;
@@ -81,12 +75,18 @@ import com.tradehero.th.utils.DeviceUtil;
 import com.tradehero.th.utils.metrics.AnalyticsConstants;
 import com.tradehero.th.utils.metrics.events.SharingOptionsEvent;
 import com.tradehero.th.wxapi.WXEntryActivity;
-import dagger.Lazy;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnTextChanged;
+import dagger.Lazy;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -97,7 +97,6 @@ import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
 import rx.functions.Func2;
-import rx.functions.Func3;
 import rx.functions.Func4;
 import rx.functions.Func6;
 import rx.subjects.BehaviorSubject;
@@ -124,7 +123,8 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject PositionListCacheRx positionCompactListCache;
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject CurrentUserId currentUserId;
@@ -1100,7 +1100,8 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
     protected void fireBuySellReport()
     {
-        analytics.fireEvent(getSharingOptionEvent());
+        //TODO Change Analytics
+        //analytics.fireEvent(getSharingOptionEvent());
     }
 
     public SharingOptionsEvent getSharingOptionEvent()

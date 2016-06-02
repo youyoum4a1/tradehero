@@ -7,20 +7,19 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import com.tradehero.metrics.Analytics;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.inject.HierarchyInjector;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
-import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class LeaderboardFilterSliderContainer extends LinearLayout
 {
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @Bind(R.id.leaderboard_filter_monthly_activity_container) protected LeaderboardFilterValueSlider minMonthlyActivityView;
     @Bind(R.id.leaderboard_filter_win_ratio_container) protected LeaderboardFilterValueSlider minWinRatioView;
@@ -54,7 +53,8 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
             @Override public void onClick(View view)
             {
                 setParameters(getStartingFilter(getResources(), perPagedFilteredLeaderboardKey.id), leaderboardDTO);
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterReset));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterReset));
             }
         });
         displayPerPagedFilteredLeaderboardKey();

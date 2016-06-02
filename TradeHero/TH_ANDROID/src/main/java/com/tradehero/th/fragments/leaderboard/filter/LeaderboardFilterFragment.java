@@ -9,24 +9,25 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import com.tradehero.metrics.Analytics;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.leaderboard.LeaderboardDTO;
 import com.tradehero.th.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.tradehero.th.fragments.base.DashboardFragment;
 import com.tradehero.th.persistence.leaderboard.LeaderboardCacheRx;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class LeaderboardFilterFragment extends DashboardFragment
 {
     private static final String BUNDLE_KEY_PER_PAGED_FILTERED_LEADERBOARD_KEY_BUNDLE =
             LeaderboardFilterFragment.class.getName() + ".perPagedFilteredLeaderboardKey";
 
-    @Inject Analytics analytics;
+    //TODO Change Analytics
+    //@Inject Analytics analytics;
     @Inject LeaderboardCacheRx leaderboardCache;
     @Bind(R.id.leaderboard_filter_slider_container) LeaderboardFilterSliderContainer filterSliderContainer;
 
@@ -83,11 +84,13 @@ public class LeaderboardFilterFragment extends DashboardFragment
         switch (item.getItemId())
         {
             case android.R.id.home:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterReset));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterReset));
                 break;
 
             case R.id.btn_leaderboard_filter_confirm:
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterDone));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterDone));
                 collectPagedFilteredLeaderboardKey();
                 navigator.get().popFragment();
                 break;
@@ -99,7 +102,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
     {
         super.onResume();
 
-        analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterShow));
+        //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Leaderboard_FilterShow));
     }
 
     @Override public void onPause()

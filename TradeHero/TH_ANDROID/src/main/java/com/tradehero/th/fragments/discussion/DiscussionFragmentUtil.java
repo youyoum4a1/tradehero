@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import com.tradehero.metrics.Analytics;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.discussion.DiscussionDTO;
 import com.tradehero.th.api.discussion.key.DiscussionKey;
@@ -34,11 +34,11 @@ import com.tradehero.th.models.discussion.UserDiscussionAction;
 import com.tradehero.th.network.service.DiscussionServiceWrapper;
 import com.tradehero.th.persistence.watchlist.WatchlistPositionCacheRx;
 import com.tradehero.th.utils.SecurityUtils;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SimpleEvent;
 import com.tradehero.th.utils.route.THRouter;
 import com.tradehero.th.widget.VotePair;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -47,7 +47,8 @@ public class DiscussionFragmentUtil
 {
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final DashboardNavigator navigator;
-    @NonNull private final Analytics analytics;
+    //TODO Change Analytics
+    //@NonNull private final Analytics analytics;
     @NonNull private final THRouter thRouter;
     @NonNull private final WatchlistPositionCacheRx watchlistPositionCache;
     @NonNull private final DiscussionServiceWrapper discussionServiceWrapper;
@@ -56,14 +57,15 @@ public class DiscussionFragmentUtil
     @Inject public DiscussionFragmentUtil(
             @NonNull CurrentUserId currentUserId,
             @NonNull DashboardNavigator navigator,
-            @NonNull Analytics analytics,
             @NonNull THRouter thRouter,
             @NonNull WatchlistPositionCacheRx watchlistPositionCache,
             @NonNull DiscussionServiceWrapper discussionServiceWrapper)
     {
         this.currentUserId = currentUserId;
         this.navigator = navigator;
-        this.analytics = analytics;
+        //TODO Change Analytics
+        //Was part of constructor
+        //this.analytics = analytics;
         this.thRouter = thRouter;
         this.watchlistPositionCache = watchlistPositionCache;
         this.discussionServiceWrapper = discussionServiceWrapper;
@@ -82,12 +84,14 @@ public class DiscussionFragmentUtil
             WatchlistEditFragment.putSecurityId(args, securityId);
             if (watchlistPositionCache.getCachedValue(securityId) != null)
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, activity.getString(R.string.watchlist_edit_title));
             }
             else
             {
-                analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+                //TODO Change Analytics
+                //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
                 ActionBarOwnerMixin.putActionBarTitle(args, activity.getString(R.string.watchlist_add_title));
             }
             navigator.pushFragment(WatchlistEditFragment.class, args, null);
@@ -95,7 +99,8 @@ public class DiscussionFragmentUtil
         }
         else if (userAction instanceof OpenNewStockAlertUserAction)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
             Fragment currentFragment = navigator.getCurrentFragment();
             if (currentFragment != null)
             {
@@ -111,7 +116,8 @@ public class DiscussionFragmentUtil
         }
         else if (userAction instanceof UpdateStockAlertUserAction)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_Alert));
             Fragment currentFragment = navigator.getCurrentFragment();
             if (currentFragment != null)
             {
@@ -127,7 +133,8 @@ public class DiscussionFragmentUtil
         }
         else if (userAction instanceof SecurityUserAction)
         {
-            analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_BuySell));
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_BuySell));
             SecurityId securityId = ((SecurityUserAction) userAction).securityId;
             if (securityId.getExchange().equals(SecurityUtils.FX_EXCHANGE))
             {

@@ -3,6 +3,7 @@ package com.tradehero.th.billing.googleplay;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+
 import com.tradehero.common.billing.ProductIdentifier;
 import com.tradehero.common.billing.googleplay.IABSKU;
 import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
@@ -11,7 +12,6 @@ import com.tradehero.common.billing.googleplay.exception.IABInvalidConsumptionEx
 import com.tradehero.common.billing.googleplay.exception.IABItemAlreadyOwnedException;
 import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.common.billing.googleplay.exception.IABResultErrorException;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.activities.ActivityUtil;
 import com.tradehero.th.api.users.CurrentUserId;
@@ -21,8 +21,11 @@ import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
 import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
 import com.tradehero.th.rx.ReplaceWithFunc1;
 import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+
 import java.util.HashMap;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 import timber.log.Timber;
@@ -40,10 +43,13 @@ public class THIABAlertDialogRxUtil
     //<editor-fold desc="Constructors">
     @Inject public THIABAlertDialogRxUtil(
             @NonNull CurrentUserId currentUserId,
-            @NonNull Analytics analytics,
+            //TODO Change Analytics
+            //@NonNull Analytics analytics,
             @NonNull THIABPurchaseCacheRx thiabPurchaseCache)
     {
-        super(currentUserId, analytics);
+        //TODO Change Analytics
+        //2nd argument was analytics
+        super(currentUserId);
         this.thiabPurchaseCache = thiabPurchaseCache;
     }
     //</editor-fold>

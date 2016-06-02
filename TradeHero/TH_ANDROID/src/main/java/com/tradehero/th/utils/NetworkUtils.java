@@ -25,6 +25,11 @@ public final class NetworkUtils
                 @Override public void checkServerTrusted(X509Certificate[] chain, String authType)
                         throws CertificateException
                 {
+                    try {
+                        chain[0].checkValidity();
+                    } catch (Exception e) {
+                        throw new CertificateException("Certificate not valid or trusted.");
+                    }
                 }
 
                 @Override public X509Certificate[] getAcceptedIssuers()

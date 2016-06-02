@@ -5,15 +5,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.webkit.WebView;
+
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderUtil;
 import com.tradehero.th.models.intent.THIntent;
 import com.tradehero.th.models.intent.THIntentFactory;
 import com.tradehero.th.models.intent.THIntentPassedListener;
 import com.tradehero.th.models.intent.competition.ProviderPageIntent;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
+
 import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class THWebViewIntentClient extends THWebViewClient
@@ -56,8 +57,8 @@ public class THWebViewIntentClient extends THWebViewClient
                      * This is a good enough approximation that user had successfully joined the competition.
                      * Refer to Sai Heng.
                      */
-                    analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.CompetitionJoined, AnalyticsConstants.ProviderId,
-                            String.valueOf(((ProviderPageIntent) thIntent).getProviderId().key)));
+                    //TODO Analytics change
+                    //analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.CompetitionJoined, AnalyticsConstants.ProviderId, String.valueOf(((ProviderPageIntent) thIntent).getProviderId().key)));
                 }
             }
             else if (thIntent != null)

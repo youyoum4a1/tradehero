@@ -1,9 +1,6 @@
 package com.tradehero.th.utils.metrics.events;
 
-import com.tradehero.metrics.AnalyticsEvent;
-import java.util.Map;
-
-public abstract class THAnalyticsEvent extends AnalyticsEvent
+/*public abstract class THAnalyticsEvent extends AnalyticsEvent
 {
     //<editor-fold desc="Constructors">
     public THAnalyticsEvent(String name)
@@ -16,4 +13,4 @@ public abstract class THAnalyticsEvent extends AnalyticsEvent
         super(name, attributes);
     }
     //</editor-fold>
-}
+}*/

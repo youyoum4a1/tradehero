@@ -21,7 +21,7 @@
     <!-- GCM -->
     <!-- REQUIRED for Urban Airship GCM-->
     <receiver
-        android:name="com.urbanairship.push.GCMPushReceiver"
+        android:name="com.urbanairship.push.GcmPushReceiver"
         android:permission="com.google.android.c2dm.permission.SEND">
       <intent-filter>
         <action android:name="com.google.android.c2dm.intent.RECEIVE"/>

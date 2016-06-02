@@ -30,7 +30,6 @@ import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.CollectionUtils;
 import com.tradehero.common.utils.OnlineStateReceiver;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
 import com.tradehero.th.api.competition.ProviderDTO;
 import com.tradehero.th.api.competition.ProviderDTOList;
@@ -115,7 +114,8 @@ public class DashboardActivity extends BaseActivity
     @Inject SystemStatusCache systemStatusCache;
 
     @Inject THRouter thRouter;
-    @Inject Analytics analytics;
+    //TODO Add code for Google Analytics
+    //@Inject Analytics analytics;
     @Inject Lazy<BroadcastUtils> broadcastUtilsLazy;
     @Inject @IsOnBoardShown BooleanPreference isOnBoardShown;
     @Inject @IsFxShown BooleanPreference isFxShown;
@@ -136,6 +136,7 @@ public class DashboardActivity extends BaseActivity
 
     private Subscription notificationFetchSubscription;
 
+    //TODO Add code for Google Analytics
     private DashboardActivityModule activityModule;
     private BroadcastReceiver onlineStateReceiver;
     private MenuItem networkIndicator;
@@ -151,7 +152,8 @@ public class DashboardActivity extends BaseActivity
         getWindow().requestFeature(Window.FEATURE_PROGRESS);
 
         super.onCreate(savedInstanceState);
-        activityModule.analytics = analytics;
+        //TODO Add code for Google Analytics
+        //activityModule.analytics = analytics;
         setContentView(R.layout.dashboard_with_bottom_bar);
 
         ActivityBuildTypeUtil.setUpCrashReports(currentUserId.toUserBaseKey());

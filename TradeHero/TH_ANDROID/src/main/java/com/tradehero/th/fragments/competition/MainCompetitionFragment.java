@@ -16,13 +16,9 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
+
 import com.tradehero.common.rx.PairGetSecond;
 import com.tradehero.common.utils.THToast;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.tradehero.th.R;
@@ -69,15 +65,20 @@ import com.tradehero.th.persistence.competition.CompetitionPreseasonCacheRx;
 import com.tradehero.th.persistence.competition.ProviderCacheRx;
 import com.tradehero.th.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.tradehero.th.persistence.user.UserProfileCacheRx;
-import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.rx.TimberAndToastOnErrorAction1;
+import com.tradehero.th.rx.TimberOnErrorAction1;
 import com.tradehero.th.utils.GraphicUtil;
-import com.tradehero.th.utils.metrics.AnalyticsConstants;
-import com.tradehero.th.utils.metrics.events.SingleAttributeEvent;
 import com.tradehero.th.utils.route.THRouter;
+
 import java.util.Collections;
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observable;
@@ -118,7 +119,8 @@ public class MainCompetitionFragment extends DashboardFragment
     @Inject CompetitionPreseasonCacheRx competitionPreSeasonCacheRx;
     @Inject ProviderServiceWrapper providerServiceWrapper;
     @Inject protected CurrentUserId currentUserId;
-    @Inject Analytics analytics;
+    ////TODO Change Analytics
+    //@Inject Analytics analytics;
 
     @RouteProperty("providerId") Integer routedProviderId;
 
@@ -172,8 +174,8 @@ public class MainCompetitionFragment extends DashboardFragment
         this.providerId = getProviderId(getArguments());
         this.webViewTHIntentPassedListener = new MainCompetitionWebViewTHIntentPassedListener();
         competitionZoneListItemAdapter = createAdapter();
-        analytics.fireEvent(
-                new SingleAttributeEvent(AnalyticsConstants.Competition_Home, AnalyticsConstants.ProviderId, String.valueOf(providerId.key)));
+        //TODO Change Analytics
+        //analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.Competition_Home, AnalyticsConstants.ProviderId, String.valueOf(providerId.key)));
 
         applicablePortfolioId = getApplicablePortfolioId(getArguments());
     }

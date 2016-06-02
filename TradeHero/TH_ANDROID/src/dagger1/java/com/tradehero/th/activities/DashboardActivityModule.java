@@ -6,6 +6,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.AbsListView;
+
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
@@ -13,7 +14,6 @@ import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnSc
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnWebViewOnScrollChangedListener;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.etiennelawlor.quickreturn.library.views.NotifyingWebView;
-import com.tradehero.metrics.Analytics;
 import com.tradehero.th.BottomTabs;
 import com.tradehero.th.BottomTabsQuickReturnListViewListener;
 import com.tradehero.th.BottomTabsQuickReturnRecyclerViewListener;
@@ -52,10 +52,12 @@ import com.tradehero.th.fragments.web.WebViewFragment;
 import com.tradehero.th.utils.dagger.AppModule;
 import com.tradehero.th.utils.metrics.ForAnalytics;
 import com.tradehero.th.utils.route.THRouter;
-import dagger.Module;
-import dagger.Provides;
+
 import javax.inject.Provider;
 import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 @Module(
         addsTo = AppModule.class,
@@ -75,7 +77,8 @@ import javax.inject.Singleton;
     DashboardTabHost dashboardTabHost;
     Toolbar toolbar;
     int tabHostHeight;
-    Analytics analytics;
+    //TODO Add code for Google Analytics
+    //Analytics analytics;
     LiveActivityUtil liveActivityUtil;
 
     @Provides DashboardNavigator provideDashboardNavigator()
@@ -176,9 +179,12 @@ import javax.inject.Singleton;
                 .build();
     }
 
-    @Provides @ForAnalytics DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()
+    @Provides @ForAnalytics
+    DashboardNavigator.DashboardFragmentWatcher provideAnalyticsReporter()
     {
-        return new NavigationAnalyticsReporter(analytics, dashboardTabHost);
+        //TODO Add code for Google Analytics as second argument
+        return new NavigationAnalyticsReporter(dashboardTabHost);
+
     }
 
     @Provides LiveActivityUtil provideLiveActivityUtil()
