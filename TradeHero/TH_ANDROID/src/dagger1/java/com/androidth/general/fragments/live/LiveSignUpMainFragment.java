@@ -3,6 +3,7 @@ package com.androidth.general.fragments.live;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Checkable;
 
 import com.android.common.SlidingTabLayout;
+import com.androidth.general.R;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.KYCFormUtil;
 import com.androidth.general.api.kyc.StepStatus;
@@ -23,10 +25,8 @@ import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
-import com.androidth.general.persistence.prefs.ShowCallToActionFragmentPreference;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.widget.LiveRewardWidget;
-import com.tradehero.th.R;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +47,8 @@ public class LiveSignUpMainFragment extends BaseFragment
     @Inject Toolbar toolbar;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject LiveServiceWrapper liveServiceWrapper;
-    @Inject @ShowCallToActionFragmentPreference BooleanPreference showCallToActionFragment;
+    @Inject @com.androidth.general.persistence.prefs.ShowCallToActionFragmentPreference
+    BooleanPreference showCallToActionFragment;
 
     @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
     @Bind(R.id.pager) protected ViewPager viewPager;

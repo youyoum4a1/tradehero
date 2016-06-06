@@ -46,7 +46,7 @@ import com.androidth.general.widget.DocumentActionWidgetAction;
 import com.androidth.general.widget.DocumentActionWidgetActionType;
 import com.androidth.general.widget.DocumentActionWidgetObservable;
 import com.squareup.picasso.Picasso;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 
 import java.io.File;
 import java.util.ArrayList;

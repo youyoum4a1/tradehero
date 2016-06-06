@@ -9,7 +9,7 @@ import com.androidth.general.common.billing.restore.PurchaseRestoreTotalResult;
 import com.androidth.general.common.billing.samsung.SamsungSKU;
 import com.androidth.general.common.billing.samsung.SamsungSKUList;
 import com.androidth.general.common.billing.samsung.SamsungSKUListKey;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.billing.THBaseBillingLogicHolderRx;
 import com.androidth.general.billing.samsung.identifier.THSamsungProductIdentifierFetcherHolderRx;
 import com.androidth.general.billing.samsung.inventory.THSamsungInventoryFetcherHolderRx;

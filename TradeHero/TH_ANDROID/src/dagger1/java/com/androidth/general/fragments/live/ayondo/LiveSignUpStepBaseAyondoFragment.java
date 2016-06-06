@@ -4,6 +4,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.androidth.general.R;
 import com.androidth.general.api.kyc.BrokerApplicationDTO;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.StepStatus;
@@ -18,7 +19,6 @@ import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnNothingSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
-import com.tradehero.th.R;
 
 import java.io.IOException;
 import java.util.Collections;

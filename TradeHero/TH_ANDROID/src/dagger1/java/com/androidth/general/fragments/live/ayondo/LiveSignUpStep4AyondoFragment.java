@@ -27,13 +27,13 @@ import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.widget.KYCAddressWidget;
-import com.ayondo.academyapp.api.kyc.ayondo.DummyKYCAyondoUtil;
+import com.androidth.general.api.kyc.ayondo.DummyKYCAyondoUtil;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.model.LatLng;
 import com.neovisionaries.i18n.CountryCode;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -3,8 +3,8 @@ package com.androidth.general.utils.dagger;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import com.tradehero.FlavorModule;
-import com.tradehero.th.BuildTypeModule;
+
+import com.androidth.general.FlavorModule;
 import com.androidth.general.api.ObjectMapperWrapper;
 import com.androidth.general.api.discussion.MessageHeaderDTO;
 import com.androidth.general.base.THApp;
@@ -19,10 +19,14 @@ import com.androidth.general.network.share.SocialNetworkAppModule;
 import com.androidth.general.persistence.PersistenceModule;
 import com.androidth.general.persistence.prefs.LanguageCode;
 import com.androidth.general.utils.metrics.MetricsModule;
+import com.tradehero.th.BuildTypeModule;
+
+import java.util.Locale;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import java.util.Locale;
-import javax.inject.Singleton;
 
 @Module(
         includes = {

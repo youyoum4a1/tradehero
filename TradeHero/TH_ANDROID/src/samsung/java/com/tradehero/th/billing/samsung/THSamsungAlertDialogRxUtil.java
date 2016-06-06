@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import com.androidth.general.common.billing.ProductIdentifier;
 import com.androidth.general.common.billing.samsung.SamsungSKU;
 import com.tradehero.metrics.Analytics;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.billing.BaseBillingUtils;
 import com.androidth.general.billing.THBillingAlertDialogRxUtil;

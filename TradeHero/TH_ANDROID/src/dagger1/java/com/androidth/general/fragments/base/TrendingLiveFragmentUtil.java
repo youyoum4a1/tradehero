@@ -11,7 +11,7 @@ import com.androidth.general.activities.LiveActivityUtil;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.live.LiveCallToActionFragment;
 import com.androidth.general.persistence.prefs.IsLiveTrading;
-import com.ayondo.academyapp.persistence.prefs.ShowCallToActionFragmentPreference;
+import com.androidth.general.persistence.prefs.ShowCallToActionFragmentPreference;
 
 import javax.inject.Inject;
 

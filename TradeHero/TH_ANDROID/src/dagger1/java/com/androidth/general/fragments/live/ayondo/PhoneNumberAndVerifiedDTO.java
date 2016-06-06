@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.androidth.general.api.market.Country;
 
-class PhoneNumberAndVerifiedDTO extends com.ayondo.academyapp.fragments.live.ayondo.PhoneNumberDTO
+class PhoneNumberAndVerifiedDTO extends PhoneNumberDTO
 {
     public final boolean verified;
 

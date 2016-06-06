@@ -7,7 +7,7 @@ import android.support.annotation.StringRes;
 import com.androidth.general.common.billing.googleplay.BaseIABProductDetail;
 import com.androidth.general.common.billing.googleplay.IABSKU;
 import com.androidth.general.common.billing.googleplay.IABSKUListKey;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.billing.ProductIdentifierDomain;
 import com.androidth.general.billing.THProductDetail;
 import org.json.JSONException;

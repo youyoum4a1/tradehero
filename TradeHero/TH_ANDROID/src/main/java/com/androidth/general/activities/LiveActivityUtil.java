@@ -15,7 +15,7 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
-import com.ayondo.academyapp.network.service.DummyAyondoLiveServiceWrapper;
+import com.androidth.general.network.service.DummyAyondoLiveServiceWrapper;
 
 import javax.inject.Inject;
 

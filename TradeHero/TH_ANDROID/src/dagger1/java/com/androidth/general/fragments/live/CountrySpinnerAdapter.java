@@ -13,12 +13,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.live.CountryUtil;
 import com.androidth.general.api.market.Country;
 import com.androidth.general.common.utils.SDKUtils;
 import com.androidth.general.utils.GraphicUtil;
-import com.tradehero.th.R;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 
 import java.util.ArrayList;
 import java.util.Comparator;

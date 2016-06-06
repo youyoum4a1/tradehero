@@ -15,23 +15,27 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import com.androidth.general.common.utils.THToast;
-import com.tradehero.th.R;
+
+import com.androidth.general.R;
 import com.androidth.general.api.BaseResponseDTO;
 import com.androidth.general.api.achievement.QuestBonusDTO;
 import com.androidth.general.api.achievement.QuestBonusDTOList;
 import com.androidth.general.api.achievement.key.MockQuestBonusId;
 import com.androidth.general.api.achievement.key.QuestBonusListId;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.network.service.AchievementMockServiceWrapper;
 import com.androidth.general.persistence.achievement.QuestBonusListCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.view.DismissDialogAction0;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;

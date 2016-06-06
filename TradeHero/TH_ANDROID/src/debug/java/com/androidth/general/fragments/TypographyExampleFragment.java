@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.fragments.base.BaseFragment;
 import javax.inject.Inject;
 

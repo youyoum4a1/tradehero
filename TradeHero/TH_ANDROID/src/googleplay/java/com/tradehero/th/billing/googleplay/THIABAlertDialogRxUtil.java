@@ -12,7 +12,7 @@ import com.androidth.general.common.billing.googleplay.exception.IABInvalidConsu
 import com.androidth.general.common.billing.googleplay.exception.IABItemAlreadyOwnedException;
 import com.androidth.general.common.billing.googleplay.exception.IABRemoteException;
 import com.androidth.general.common.billing.googleplay.exception.IABResultErrorException;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.activities.ActivityUtil;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.billing.BaseBillingUtils;

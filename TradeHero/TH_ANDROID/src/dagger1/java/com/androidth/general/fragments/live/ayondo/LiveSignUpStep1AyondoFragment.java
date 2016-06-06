@@ -43,7 +43,7 @@ import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.DateUtils;
 import com.neovisionaries.i18n.CountryCode;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;

@@ -2,8 +2,9 @@ package com.androidth.general.api.kyc;
 
 import android.support.annotation.NonNull;
 
+import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.common.persistence.DTOKey;
-import com.ayondo.academyapp.api.live.LiveBrokerId;
+
 
 public class KYCFormOptionsId implements DTOKey
 {

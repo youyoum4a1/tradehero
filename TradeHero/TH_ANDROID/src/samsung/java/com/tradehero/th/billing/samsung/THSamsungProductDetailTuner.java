@@ -1,7 +1,7 @@
 package com.androidth.general.billing.samsung;
 
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.billing.ProductIdentifierDomain;
 import timber.log.Timber;
 

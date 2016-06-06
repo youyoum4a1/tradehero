@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.activities.DashboardActivity;
 import com.androidth.general.api.notification.NotificationKey;
 import com.androidth.general.api.users.CurrentUserId;

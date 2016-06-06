@@ -11,7 +11,7 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
 import com.androidth.general.common.utils.THToast;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.api.level.UserXPAchievementDTO;
 import com.androidth.general.api.level.UserXPMultiplierDTO;
 import com.androidth.general.api.level.UserXPMultiplierDTOList;

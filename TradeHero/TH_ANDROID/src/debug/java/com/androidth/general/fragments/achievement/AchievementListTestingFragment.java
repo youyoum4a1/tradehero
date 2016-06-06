@@ -11,10 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnItemClick;
-import com.tradehero.th.R;
+
+import com.androidth.general.R;
 import com.androidth.general.api.achievement.AchievementCategoryDTO;
 import com.androidth.general.api.achievement.AchievementCategoryDTOList;
 import com.androidth.general.api.achievement.AchievementDefDTO;
@@ -25,7 +23,12 @@ import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.persistence.achievement.AchievementCategoryListCacheRx;
 import com.androidth.general.persistence.achievement.UserAchievementCacheRx;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;

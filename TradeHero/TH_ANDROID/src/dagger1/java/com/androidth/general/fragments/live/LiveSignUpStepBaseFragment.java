@@ -17,7 +17,7 @@ import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.persistence.kyc.KYCFormOptionsCache;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 
 import java.util.Collections;
 import java.util.List;

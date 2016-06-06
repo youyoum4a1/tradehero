@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 import com.samsung.android.sdk.iap.lib.vo.ItemVo;
 import com.androidth.general.common.billing.samsung.BaseSamsungProductDetail;
 import com.androidth.general.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.billing.ProductIdentifierDomain;
 import com.androidth.general.billing.THProductDetail;
 

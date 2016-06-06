@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.androidth.general.fragments.settings.ManualPushActionView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="@dimen/margin_xsmall"
+      >
+
+    <TextView
+        android:id="@+id/channel_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        tools:text="ChannelId"
+        android:textIsSelectable="true"
+        />
+
+    <Spinner
+        android:id="@+id/situation_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <EditText
+        android:id="@+id/arguments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="Enter arguments"
+        android:ems="10"
+        android:layout_gravity="center_horizontal"
+        tools:ignore="HardcodedText"
+        >
+
+      <requestFocus/>
+
+    </EditText>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="5dp"
+        android:text="Example:\n\nPrivate message: 8143519\nBroadcast message: 8208452\nComment: 8145228\n"
+        tools:ignore="HardcodedText"/>
+
+    <EditText
+        android:id="@+id/action_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:hint="Optional action name"
+        android:ems="10"
+        android:layout_gravity="center_horizontal"
+        tools:ignore="HardcodedText"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="5dp"
+        android:text="Example:\nNothing, landing_page_action, deep_link_action, open_external_url_action, add_tags_action, remove_tags_action, share_action, add_custom_event_action, "
+        android:textIsSelectable="true"
+        tools:ignore="HardcodedText"/>
+
+  </LinearLayout>
+
+</com.androidth.general.fragments.settings.ManualPushActionView>

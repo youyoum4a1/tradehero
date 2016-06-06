@@ -3,7 +3,7 @@ package com.androidth.general.models.leaderboard.key;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.api.leaderboard.key.LeaderboardDefKey;
 
 public class LeaderboardDefIconKnowledge extends LeaderboardDefKeyKnowledge

@@ -1,6 +1,6 @@
 package com.androidth.general.fragments.trending;
 
-import com.tradehero.th.R;
+import com.androidth.general.R;
 
 public enum TileType
 {

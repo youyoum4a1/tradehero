@@ -9,9 +9,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.DatePicker;
 
+import com.androidth.general.R;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.BaseDialogFragment;
-import com.tradehero.th.R;
 
 import java.util.Calendar;
 import java.util.Date;

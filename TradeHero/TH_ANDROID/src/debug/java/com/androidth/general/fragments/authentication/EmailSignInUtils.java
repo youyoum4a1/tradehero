@@ -2,7 +2,7 @@ package com.androidth.general.fragments.authentication;
 
 import android.support.annotation.NonNull;
 import android.widget.TextView;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 
 public class EmailSignInUtils
 {

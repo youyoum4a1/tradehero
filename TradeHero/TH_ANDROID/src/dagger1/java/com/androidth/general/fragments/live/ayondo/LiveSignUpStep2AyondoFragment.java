@@ -24,7 +24,7 @@ import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 
 import java.util.ArrayList;
 import java.util.List;

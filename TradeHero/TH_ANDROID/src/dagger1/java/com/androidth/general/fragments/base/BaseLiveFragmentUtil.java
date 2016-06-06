@@ -12,8 +12,8 @@ import com.androidth.general.fragments.trending.TrendingMainFragment;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.fastfill.FastFillUtil;
 import com.androidth.general.rx.TimberOnErrorAction1;
-import com.ayondo.academyapp.persistence.prefs.LiveAvailability;
-import com.ayondo.academyapp.widget.GoLiveWidget;
+import com.androidth.general.persistence.prefs.LiveAvailability;
+import com.androidth.general.widget.GoLiveWidget;
 
 import javax.inject.Inject;
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.androidth.general.R;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.BaseDialogFragment;
 import com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment;
@@ -26,7 +28,6 @@ import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
-import com.tradehero.th.R;
 
 import java.util.concurrent.TimeUnit;
 

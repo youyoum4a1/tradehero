@@ -7,7 +7,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.androidth.general.common.utils.THToast;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.models.push.urbanairship.ActionRunnerOperator;
 import com.androidth.general.models.push.urbanairship.UrbanAirshipPushNotificationManager;
 import com.androidth.general.rx.dialog.AlertDialogRx;

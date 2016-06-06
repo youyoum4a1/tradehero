@@ -8,7 +8,7 @@ import com.androidth.general.common.billing.googleplay.IABSKU;
 import com.androidth.general.common.billing.googleplay.IABSKUList;
 import com.androidth.general.common.billing.googleplay.IABSKUListKey;
 import com.androidth.general.common.billing.googleplay.consume.PurchaseConsumeResult;
-import com.tradehero.th.R;
+import com.androidth.general.R;
 import com.androidth.general.billing.THBaseBillingLogicHolderRx;
 import com.androidth.general.billing.googleplay.consumer.THIABPurchaseConsumerHolderRx;
 import com.androidth.general.billing.googleplay.identifier.THIABProductIdentifierFetcherHolderRx;
