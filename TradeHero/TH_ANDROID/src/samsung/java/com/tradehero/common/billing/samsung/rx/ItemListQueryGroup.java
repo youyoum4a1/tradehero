@@ -1,4 +1,4 @@
-package com.tradehero.common.billing.samsung.rx;
+package com.androidth.general.common.billing.samsung.rx;
 
 import android.support.annotation.NonNull;
 

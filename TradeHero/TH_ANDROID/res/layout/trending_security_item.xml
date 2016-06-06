@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tradehero.th.fragments.security.SecurityItemView
+<com.androidth.general.fragments.security.SecurityItemView
     android:id="@+id/security_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="@dimen/grid_item_height"
-    tools:context=".activities.DashboardActivity"
+    tools:context="com.androidth.general.activities.DashboardActivity"
     android:gravity="center_vertical"
     android:background="@drawable/grid_item_bg"
     >
@@ -20,4 +20,4 @@
 
   </RelativeLayout>
 
-</com.tradehero.th.fragments.security.SecurityItemView>
+</com.androidth.general.fragments.security.SecurityItemView>

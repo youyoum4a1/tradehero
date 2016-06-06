@@ -1,7 +1,7 @@
-package com.tradehero.th.models.push.handlers;
+package com.androidth.general.models.push.handlers;
 
 import android.content.Intent;
-import com.tradehero.th.models.push.PushConstants;
+import com.androidth.general.models.push.PushConstants;
 import javax.inject.Inject;
 
 public class GcmDeletedHandler implements PushNotificationHandler

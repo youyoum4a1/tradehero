@@ -1,6 +1,6 @@
-package com.tradehero.common.billing.googleplay.tester;
+package com.androidth.general.common.billing.googleplay.tester;
 
-import com.tradehero.common.billing.tester.BillingAvailableTesterRx;
+import com.androidth.general.common.billing.tester.BillingAvailableTesterRx;
 
 public interface IABBillingAvailableTesterRx
         extends BillingAvailableTesterRx

@@ -1,10 +1,10 @@
-package com.tradehero.common.billing.samsung;
+package com.androidth.general.common.billing.samsung;
 
 import android.os.Bundle;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.samsung.android.sdk.iap.lib.helper.SamsungIapHelper;
-import com.tradehero.common.billing.ProductIdentifierListKey;
-import com.tradehero.common.persistence.AbstractStringDTOKey;
+import com.androidth.general.common.billing.ProductIdentifierListKey;
+import com.androidth.general.common.persistence.AbstractStringDTOKey;
 
 public class SamsungSKUListKey extends AbstractStringDTOKey
         implements ProductIdentifierListKey

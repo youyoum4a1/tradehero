@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <com.tradehero.th.fragments.timeline.UserStatisticView
+  <com.androidth.general.fragments.timeline.UserStatisticView
       android:id="@+id/user_statistic_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -23,13 +23,13 @@
         android:orientation="vertical"
         >
 
-      <com.tradehero.common.widget.GaugeView
+      <com.androidth.general.common.widget.GaugeView
           android:id="@+id/leaderboard_gauge_tradeconsistency"
           android:layout_width="match_parent"
           style="@style/TH.GaugeView"
           />
 
-      <com.tradehero.common.widget.NumericalAnimatedTextView
+      <com.androidth.general.common.widget.NumericalAnimatedTextView
           android:id="@+id/leaderboard_position_tv"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -54,13 +54,13 @@
         android:orientation="vertical"
         >
 
-      <com.tradehero.common.widget.GaugeView
+      <com.androidth.general.common.widget.GaugeView
           android:id="@+id/leaderboard_gauge_winrate"
           android:layout_width="match_parent"
           style="@style/TH.GaugeView"
           />
 
-      <com.tradehero.common.widget.NumericalAnimatedTextView
+      <com.androidth.general.common.widget.NumericalAnimatedTextView
           android:id="@+id/leaderboard_tradecount_tv"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -85,13 +85,13 @@
         android:orientation="vertical"
         >
 
-      <com.tradehero.common.widget.GaugeView
+      <com.androidth.general.common.widget.GaugeView
           android:id="@+id/leaderboard_gauge_performance"
           android:layout_width="match_parent"
           style="@style/TH.GaugeView"
           />
 
-      <com.tradehero.common.widget.NumericalAnimatedTextView
+      <com.androidth.general.common.widget.NumericalAnimatedTextView
           android:id="@+id/leaderboard_dayshold_tv"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -109,6 +109,6 @@
 
     </LinearLayout>
 
-  </com.tradehero.th.fragments.timeline.UserStatisticView>
+  </com.androidth.general.fragments.timeline.UserStatisticView>
 
 </merge>

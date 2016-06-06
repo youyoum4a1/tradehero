@@ -1,8 +1,8 @@
-package com.tradehero.common.billing.googleplay.inventory;
+package com.androidth.general.common.billing.googleplay.inventory;
 
-import com.tradehero.common.billing.googleplay.IABProductDetail;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.inventory.BillingInventoryFetcherRx;
+import com.androidth.general.common.billing.googleplay.IABProductDetail;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.inventory.BillingInventoryFetcherRx;
 
 public interface IABInventoryFetcherRx<
         IABSKUType extends IABSKU,

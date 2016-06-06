@@ -1,6 +1,6 @@
-package com.tradehero.common.billing.samsung;
+package com.androidth.general.common.billing.samsung;
 
-import com.tradehero.common.billing.BillingLogicHolderRx;
+import com.androidth.general.common.billing.BillingLogicHolderRx;
 
 public interface SamsungLogicHolderRx<
         SamsungSKUListKeyType extends SamsungSKUListKey,

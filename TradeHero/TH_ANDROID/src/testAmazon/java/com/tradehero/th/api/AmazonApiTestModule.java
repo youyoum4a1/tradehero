@@ -1,6 +1,6 @@
-package com.tradehero.th.api;
+package com.androidth.general.api;
 
-import com.tradehero.th.api.billing.AmazonApiBillingTestModule;
+import com.androidth.general.api.billing.AmazonApiBillingTestModule;
 import dagger.Module;
 import dagger.Provides;
 

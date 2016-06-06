@@ -1,4 +1,4 @@
-package com.tradehero.th.api;
+package com.androidth.general.api;
 
 import dagger.Module;
 import dagger.Provides;

@@ -1,20 +1,20 @@
-package com.tradehero.th.auth.tencent_qq;
+package com.androidth.general.auth.tencent_qq;
 
 import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tencent.tauth.Tencent;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.auth.AuthData;
-import com.tradehero.th.auth.SocialAuthenticationProvider;
-import com.tradehero.th.network.service.SocialLinker;
+import com.androidth.general.api.social.SocialNetworkEnum;
+import com.androidth.general.auth.AuthData;
+import com.androidth.general.auth.SocialAuthenticationProvider;
+import com.androidth.general.network.service.SocialLinker;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.functions.Func1;
 
-import static com.tradehero.th.utils.Constants.TENCENT_APP_ID;
+import static com.androidth.general.utils.Constants.TENCENT_APP_ID;
 
 @Singleton
 public class QQAuthenticationProvider extends SocialAuthenticationProvider

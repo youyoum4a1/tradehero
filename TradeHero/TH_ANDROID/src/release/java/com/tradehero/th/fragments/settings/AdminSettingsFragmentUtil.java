@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.settings;
+package com.androidth.general.fragments.settings;
 
 import android.support.annotation.Nullable;
 

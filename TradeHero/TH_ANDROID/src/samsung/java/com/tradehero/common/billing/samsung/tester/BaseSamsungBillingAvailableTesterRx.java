@@ -1,11 +1,11 @@
-package com.tradehero.common.billing.samsung.tester;
+package com.androidth.general.common.billing.samsung.tester;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
-import com.tradehero.common.billing.samsung.SamsungBillingMode;
-import com.tradehero.common.billing.samsung.rx.SamsungIapHelperFacade;
-import com.tradehero.common.billing.tester.BillingTestResult;
+import com.androidth.general.common.billing.samsung.BaseSamsungActorRx;
+import com.androidth.general.common.billing.samsung.SamsungBillingMode;
+import com.androidth.general.common.billing.samsung.rx.SamsungIapHelperFacade;
+import com.androidth.general.common.billing.tester.BillingTestResult;
 import rx.Observable;
 import rx.functions.Func1;
 

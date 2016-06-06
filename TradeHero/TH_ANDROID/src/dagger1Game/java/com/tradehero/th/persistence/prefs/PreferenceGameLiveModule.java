@@ -1,4 +1,4 @@
-package com.tradehero.th.persistence.prefs;
+package com.androidth.general.persistence.prefs;
 
 import dagger.Module;
 

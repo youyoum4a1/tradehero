@@ -1,4 +1,4 @@
-package com.tradehero.th.network.retrofit;
+package com.androidth.general.network.retrofit;
 
 import dagger.Module;
 

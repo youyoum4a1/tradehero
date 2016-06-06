@@ -1,10 +1,10 @@
-package com.tradehero.th.billing.samsung.report;
+package com.androidth.general.billing.samsung.report;
 
-import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.billing.report.THPurchaseReporterHolderRx;
-import com.tradehero.th.billing.samsung.THSamsungOrderId;
-import com.tradehero.th.billing.samsung.THSamsungProductDetail;
-import com.tradehero.th.billing.samsung.THSamsungPurchase;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
+import com.androidth.general.billing.report.THPurchaseReporterHolderRx;
+import com.androidth.general.billing.samsung.THSamsungOrderId;
+import com.androidth.general.billing.samsung.THSamsungProductDetail;
+import com.androidth.general.billing.samsung.THSamsungPurchase;
 
 public interface THSamsungPurchaseReporterHolderRx
         extends THPurchaseReporterHolderRx<

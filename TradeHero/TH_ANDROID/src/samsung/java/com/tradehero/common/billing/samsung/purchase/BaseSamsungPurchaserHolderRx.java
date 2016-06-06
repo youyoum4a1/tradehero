@@ -1,13 +1,13 @@
-package com.tradehero.common.billing.samsung.purchase;
+package com.androidth.general.common.billing.samsung.purchase;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.purchase.BaseBillingPurchaserHolderRx;
-import com.tradehero.common.billing.samsung.SamsungOrderId;
-import com.tradehero.common.billing.samsung.SamsungPurchase;
-import com.tradehero.common.billing.samsung.SamsungPurchaseOrder;
-import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.purchase.BaseBillingPurchaserHolderRx;
+import com.androidth.general.common.billing.samsung.SamsungOrderId;
+import com.androidth.general.common.billing.samsung.SamsungPurchase;
+import com.androidth.general.common.billing.samsung.SamsungPurchaseOrder;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
 
 abstract public class BaseSamsungPurchaserHolderRx<
         SamsungSKUType extends SamsungSKU,

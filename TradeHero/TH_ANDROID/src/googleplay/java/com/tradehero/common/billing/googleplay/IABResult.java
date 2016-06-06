@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 /**
  * Represents the result of an in-app billing operation.

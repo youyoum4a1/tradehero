@@ -1,6 +1,6 @@
 package com.tradehero.th;
 
-import com.tradehero.th.api.SamsungApiTestModule;
+import com.androidth.general.api.SamsungApiTestModule;
 import dagger.Module;
 
 @Module(

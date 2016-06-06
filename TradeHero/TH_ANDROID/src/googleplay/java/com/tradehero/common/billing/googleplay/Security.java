@@ -13,11 +13,11 @@
  * limitations under the License.
  */
 
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 import android.text.TextUtils;
-import com.tradehero.common.billing.Base64;
-import com.tradehero.common.billing.Base64DecoderException;
+import com.androidth.general.common.billing.Base64;
+import com.androidth.general.common.billing.Base64DecoderException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.NoSuchAlgorithmException;

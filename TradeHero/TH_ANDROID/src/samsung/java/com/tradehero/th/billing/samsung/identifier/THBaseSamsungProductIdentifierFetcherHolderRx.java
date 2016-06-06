@@ -1,13 +1,13 @@
-package com.tradehero.th.billing.samsung.identifier;
+package com.androidth.general.billing.samsung.identifier;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.samsung.SamsungBillingMode;
-import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.billing.samsung.SamsungSKUList;
-import com.tradehero.common.billing.samsung.SamsungSKUListKey;
-import com.tradehero.common.billing.samsung.identifier.BaseSamsungProductIdentifierFetcherHolderRx;
-import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
+import com.androidth.general.common.billing.samsung.SamsungBillingMode;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.samsung.SamsungSKUList;
+import com.androidth.general.common.billing.samsung.SamsungSKUListKey;
+import com.androidth.general.common.billing.samsung.identifier.BaseSamsungProductIdentifierFetcherHolderRx;
+import com.androidth.general.billing.samsung.exception.THSamsungExceptionFactory;
 import javax.inject.Inject;
 
 public class THBaseSamsungProductIdentifierFetcherHolderRx

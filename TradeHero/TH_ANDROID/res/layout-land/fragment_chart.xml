@@ -20,7 +20,7 @@
         android:orientation="horizontal"
         >
 
-      <com.tradehero.th.widget.news.TimeSpanButtonSet
+      <com.androidth.general.widget.news.TimeSpanButtonSet
           android:id="@+id/chart_time_span_button_set"
           android:layout_width="@dimen/clickable_element_min_dimen"
           android:layout_height="wrap_content"
@@ -33,9 +33,9 @@
 
         <include layout="@layout/yahoo_chart_buttons_merge"/>
 
-      </com.tradehero.th.widget.news.TimeSpanButtonSet>
+      </com.androidth.general.widget.news.TimeSpanButtonSet>
 
-      <com.tradehero.common.widget.BetterViewAnimator
+      <com.androidth.general.common.widget.BetterViewAnimator
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:id="@+id/chart_image_wrapper"
@@ -50,7 +50,7 @@
             android:text="@string/chart_loading_image"
             />
 
-        <com.tradehero.th.fragments.security.ChartImageView
+        <com.androidth.general.fragments.security.ChartImageView
             android:id="@+id/chart_imageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
             app:dominantMeasurement="width"
             />
 
-      </com.tradehero.common.widget.BetterViewAnimator>
+      </com.androidth.general.common.widget.BetterViewAnimator>
 
     </LinearLayout>
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push.urbanairship;
+package com.androidth.general.models.push.urbanairship;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;

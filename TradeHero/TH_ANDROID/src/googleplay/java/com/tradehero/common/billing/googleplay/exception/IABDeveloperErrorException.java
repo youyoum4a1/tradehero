@@ -1,7 +1,7 @@
-package com.tradehero.common.billing.googleplay.exception;
+package com.androidth.general.common.billing.googleplay.exception;
 
-import com.tradehero.common.billing.googleplay.IABConstants;
-import com.tradehero.common.billing.googleplay.IABResult;
+import com.androidth.general.common.billing.googleplay.IABConstants;
+import com.androidth.general.common.billing.googleplay.IABResult;
 
 public class IABDeveloperErrorException extends IABOneResponseValueException
 {

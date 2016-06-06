@@ -1,6 +1,6 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
-import com.tradehero.common.billing.BaseProductIdentifierList;
+import com.androidth.general.common.billing.BaseProductIdentifierList;
 
 public class BaseIABSKUList<IABSKUType extends IABSKU>
         extends BaseProductIdentifierList<IABSKUType>

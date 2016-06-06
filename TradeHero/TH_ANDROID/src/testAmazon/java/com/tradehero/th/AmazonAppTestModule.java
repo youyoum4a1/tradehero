@@ -1,6 +1,6 @@
 package com.tradehero.th;
 
-import com.tradehero.th.api.AmazonApiTestModule;
+import com.androidth.general.api.AmazonApiTestModule;
 import dagger.Module;
 
 @Module(

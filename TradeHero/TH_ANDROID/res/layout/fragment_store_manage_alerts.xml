@@ -69,7 +69,7 @@
 
   </RelativeLayout>
 
-  <com.tradehero.common.widget.BetterViewAnimator
+  <com.androidth.general.common.widget.BetterViewAnimator
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:id="@+id/progress_animator"
@@ -99,6 +99,6 @@
         android:gravity="center"
         />
 
-  </com.tradehero.common.widget.BetterViewAnimator>
+  </com.androidth.general.common.widget.BetterViewAnimator>
 
 </LinearLayout>

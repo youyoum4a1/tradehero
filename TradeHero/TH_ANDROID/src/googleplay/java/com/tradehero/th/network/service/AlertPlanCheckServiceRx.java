@@ -1,6 +1,6 @@
-package com.tradehero.th.network.service;
+package com.androidth.general.network.service;
 
-import com.tradehero.th.api.alert.AlertPlanStatusDTO;
+import com.androidth.general.api.alert.AlertPlanStatusDTO;
 import retrofit.http.GET;
 import retrofit.http.Path;
 import retrofit.http.Query;

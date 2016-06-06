@@ -90,7 +90,7 @@
 
     <!-- OPTIONAL, if you want to receive push, push opened and registration completed intents -->
     <!-- Replace the receiver below with your package and class name -->
-    <receiver android:name="com.tradehero.th.models.push.urbanairship.UrbanAirshipIntentReceiver"
+    <receiver android:name="com.androidth.general.models.push.urbanairship.UrbanAirshipIntentReceiver"
         android:exported="true">
 
       <intent-filter>

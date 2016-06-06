@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.position.PositionSectionHeaderItemView
+<com.androidth.general.fragments.position.PositionSectionHeaderItemView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -36,4 +36,4 @@
       tools:text="2 OCT 2013 - 7 NOV 2013"
       />
 
-</com.tradehero.th.fragments.position.PositionSectionHeaderItemView>
+</com.androidth.general.fragments.position.PositionSectionHeaderItemView>

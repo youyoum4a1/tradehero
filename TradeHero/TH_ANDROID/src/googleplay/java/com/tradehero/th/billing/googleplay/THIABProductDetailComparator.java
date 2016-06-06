@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.googleplay;
+package com.androidth.general.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.BaseIABProductDetailComparator;
-import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.androidth.general.common.billing.googleplay.BaseIABProductDetailComparator;
+import com.androidth.general.billing.ProductIdentifierDomain;
 
 class THIABProductDetailComparator<THIABProductDetailType extends THIABProductDetail>
         extends BaseIABProductDetailComparator<THIABProductDetailType>

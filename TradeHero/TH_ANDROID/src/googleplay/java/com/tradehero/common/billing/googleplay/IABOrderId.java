@@ -1,8 +1,8 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.common.billing.OrderId;
+import com.androidth.general.common.billing.OrderId;
 
 public class IABOrderId implements OrderId
 {

@@ -1,11 +1,11 @@
-package com.tradehero.th.billing.googleplay.tester;
+package com.androidth.general.billing.googleplay.tester;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.common.billing.googleplay.tester.BaseIABBillingAvailableTesterHolderRx;
+import com.androidth.general.common.billing.googleplay.exception.IABExceptionFactory;
+import com.androidth.general.common.billing.googleplay.tester.BaseIABBillingAvailableTesterHolderRx;
 import javax.inject.Inject;
 
 public class THBaseIABBillingAvailableTesterHolderRx

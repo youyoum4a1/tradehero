@@ -1,14 +1,14 @@
-package com.tradehero.th.billing.samsung.purchase;
+package com.androidth.general.billing.samsung.purchase;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.samsung.SamsungBillingMode;
-import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.billing.samsung.purchase.BaseSamsungPurchaserHolderRx;
-import com.tradehero.th.billing.samsung.THSamsungOrderId;
-import com.tradehero.th.billing.samsung.THSamsungPurchase;
-import com.tradehero.th.billing.samsung.THSamsungPurchaseOrder;
-import com.tradehero.th.billing.samsung.exception.THSamsungExceptionFactory;
+import com.androidth.general.common.billing.samsung.SamsungBillingMode;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.samsung.purchase.BaseSamsungPurchaserHolderRx;
+import com.androidth.general.billing.samsung.THSamsungOrderId;
+import com.androidth.general.billing.samsung.THSamsungPurchase;
+import com.androidth.general.billing.samsung.THSamsungPurchaseOrder;
+import com.androidth.general.billing.samsung.exception.THSamsungExceptionFactory;
 import javax.inject.Inject;
 
 public class THBaseSamsungPurchaserHolderRx

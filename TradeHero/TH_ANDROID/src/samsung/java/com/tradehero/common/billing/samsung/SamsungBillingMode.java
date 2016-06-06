@@ -1,4 +1,4 @@
-package com.tradehero.common.billing.samsung;
+package com.androidth.general.common.billing.samsung;
 
 import android.support.annotation.IntDef;
 import java.lang.annotation.Documented;

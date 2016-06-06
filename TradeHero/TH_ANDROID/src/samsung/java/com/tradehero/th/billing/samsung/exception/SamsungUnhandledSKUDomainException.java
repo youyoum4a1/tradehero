@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.samsung.exception;
+package com.androidth.general.billing.samsung.exception;
 
-import com.tradehero.common.billing.samsung.exception.SamsungOneCodeException;
-import com.tradehero.th.billing.samsung.THSamsungConstants;
+import com.androidth.general.common.billing.samsung.exception.SamsungOneCodeException;
+import com.androidth.general.billing.samsung.THSamsungConstants;
 
 public class SamsungUnhandledSKUDomainException extends SamsungOneCodeException
 {

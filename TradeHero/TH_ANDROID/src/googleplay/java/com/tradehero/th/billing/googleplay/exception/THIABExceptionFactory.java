@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.googleplay.exception;
+package com.androidth.general.billing.googleplay.exception;
 
-import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
+import com.androidth.general.common.billing.googleplay.exception.IABException;
+import com.androidth.general.common.billing.googleplay.exception.IABExceptionFactory;
 import javax.inject.Inject;
 
 public class THIABExceptionFactory extends IABExceptionFactory

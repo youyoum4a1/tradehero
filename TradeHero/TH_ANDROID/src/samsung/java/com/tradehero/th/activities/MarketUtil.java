@@ -1,8 +1,8 @@
-package com.tradehero.th.activities;
+package com.androidth.general.activities;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import com.tradehero.common.utils.THToast;
+import com.androidth.general.common.utils.THToast;
 
 public class MarketUtil
 {

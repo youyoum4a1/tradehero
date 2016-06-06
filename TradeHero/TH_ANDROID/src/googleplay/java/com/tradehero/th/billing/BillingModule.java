@@ -1,15 +1,15 @@
-package com.tradehero.th.billing;
+package com.androidth.general.billing;
 
-import com.tradehero.common.billing.ProductDetailCacheRx;
-import com.tradehero.common.billing.ProductIdentifierListCacheRx;
-import com.tradehero.common.billing.ProductPurchaseCacheRx;
-import com.tradehero.common.billing.exception.BillingExceptionFactory;
-import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.common.persistence.billing.googleplay.IABPurchaseCacheRx;
-import com.tradehero.th.billing.googleplay.exception.THIABExceptionFactory;
-import com.tradehero.th.persistence.billing.googleplay.IABSKUListCacheRx;
-import com.tradehero.th.persistence.billing.googleplay.THIABProductDetailCacheRx;
-import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
+import com.androidth.general.common.billing.ProductDetailCacheRx;
+import com.androidth.general.common.billing.ProductIdentifierListCacheRx;
+import com.androidth.general.common.billing.ProductPurchaseCacheRx;
+import com.androidth.general.common.billing.exception.BillingExceptionFactory;
+import com.androidth.general.common.billing.googleplay.exception.IABExceptionFactory;
+import com.androidth.general.common.persistence.billing.googleplay.IABPurchaseCacheRx;
+import com.androidth.general.billing.googleplay.exception.THIABExceptionFactory;
+import com.androidth.general.persistence.billing.googleplay.IABSKUListCacheRx;
+import com.androidth.general.persistence.billing.googleplay.THIABProductDetailCacheRx;
+import com.androidth.general.persistence.billing.googleplay.THIABPurchaseCacheRx;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

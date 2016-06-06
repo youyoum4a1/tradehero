@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.common.widget.BetterViewAnimator
+<com.androidth.general.common.widget.BetterViewAnimator
     android:id="@+id/community_screen"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -58,5 +58,5 @@
       android:text="@string/error_incomplete_info_message"
       />
 
-</com.tradehero.common.widget.BetterViewAnimator>
+</com.androidth.general.common.widget.BetterViewAnimator>
 

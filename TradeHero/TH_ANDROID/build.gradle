@@ -2,23 +2,22 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 buildscript {
-  repositories {
-    mavenCentral()
-    maven { url 'https://maven.fabric.io/public' }
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
 
-    //crashlytics is fabric now
-    //maven { url 'http://download.crashlytics.com/maven' }
-  }
-  dependencies {
-    classpath 'com.android.tools.build:gradle:2.1.0'
-    classpath 'io.fabric.tools:gradle:1.+'
-    classpath 'com.google.gms:google-services:3.0.0'
-    //crashlytics is fabric now
-    //classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+        //crashlytics is fabric now
+        //maven { url 'http://download.crashlytics.com/maven' }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'io.fabric.tools:gradle:1.+'
+        classpath 'com.google.gms:google-services:3.0.0'
+        //crashlytics is fabric now
+        //classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
 
-
-    //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
-  }
+        //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
+    }
 }
 
 // Manifest version information!
@@ -37,15 +36,15 @@ apply plugin: 'com.google.gms.google-services'
 
 
 repositories {
-  maven { url "http://dl.bintray.com/populov/maven" }
-  mavenCentral()
-  maven { url 'https://maven.fabric.io/public' }
-  maven { url "https://github.com/dahlgren/pulltorefresh-aar/raw/master" }
+    maven { url "http://dl.bintray.com/populov/maven" }
+    mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
+    maven { url "https://github.com/dahlgren/pulltorefresh-aar/raw/master" }
 //  maven { url 'http://clinker.47deg.com/nexus/content/groups/public' }
-  maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
-  maven { url 'http://ooo-maven.googlecode.com/hg/repository' }
-  maven { url 'http://mobile-sdk.jumio.com' }
-  maven { url  "https://urbanairship.bintray.com/android" }
+    maven { url 'https://github.com/TradeHero/TH_MAVEN/raw/master' }
+    maven { url 'http://ooo-maven.googlecode.com/hg/repository' }
+    maven { url 'http://mobile-sdk.jumio.com' }
+    maven { url "https://urbanairship.bintray.com/android" }
 }
 
 project.ext.gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
@@ -57,443 +56,515 @@ project.ext.isIntelliJ = true
 
 project.ext.java8home = System.getenv("JAVA8_HOME")
 if (project.ext.java8home == null) {
-  // MacOS
-  project.ext.java8home = '/usr/libexec/java_home -v 1.8'.execute([], project.rootDir).text.trim()
+    // MacOS
+    project.ext.java8home = '/usr/libexec/java_home -v 1.8'.execute([], project.rootDir).text.trim()
 }
 project.ext.javahome = System.getenv("JAVA_HOME")
 if (project.ext.javahome == null) {
-  // MacOS
-  project.ext.javahome = '/usr/libexec/java_home -v 1.7'.execute([], project.rootDir).text.trim()
+    // MacOS
+    project.ext.javahome = '/usr/libexec/java_home -v 1.7'.execute([], project.rootDir).text.trim()
 }
 
 android {
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_7
-    targetCompatibility JavaVersion.VERSION_1_7
-  }
-
-  compileSdkVersion 23
-
-  buildToolsVersion "23.0.3"
-  //useOldManifestMerger=true
-
-  dexOptions {
-    // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
-    preDexLibraries = project.ext.preDexEnabled && !project.ext.isTravis
-    // TODO is this really necessary?
-    jumboMode = true
-
-    //incremental true
-    javaMaxHeapSize "4g"
-  }
-
-  defaultConfig {
-    minSdkVersion 16
-    targetSdkVersion 22
-    applicationId "com.tradehero.th"
-    versionCode project.ext.versionBuild
-    versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
-
-    buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
-    buildConfigField "String", "BUILD_TIME", "\"${project.ext.buildTime}\""
-    buildConfigField "boolean", "IS_INTELLIJ", "${project.ext.isIntelliJ}"
-    buildConfigField "int", "TAPSTREAM_VERSION", "0"
-  }
-
-  signingConfigs {
-    release {
-    }
-  }
-
-  buildTypes {
-    debug {
-      minifyEnabled "true".equals(System.getenv("PROGUARD_FOR_DEBUG"))
-      proguardFile 'proguard/proguard-android-fast.txt'
-      //zipAlign true
-      // versionNameSuffix interferes with the version the server receives
-      //This changes the package name and exception is thrown(Package not found exception for play services)
-      //We either have to register new play services with package name suffixed with .dev or just comment out this line
-      //applicationIdSuffix '.dev'
-      versionNameSuffix '-dev'
-
-      // Enabling multidex support.
-      multiDexEnabled true
-    }
-    release {
-      minifyEnabled true
-      proguardFile 'proguard/proguard-android.txt'
-      shrinkResources false
-      signingConfig signingConfigs.release
-    }
-  }
-
-  // There may be further flavorGroups dimensions in the future
-  flavorDimensions "marketSegment", "liveOrNot", "pushProvider"
-
-  productFlavors {
-    googleplay {
-      dimension "marketSegment"
-      buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
-
-      // Enabling multidex support.
-      multiDexEnabled true
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 
-    samsung {
-      dimension "marketSegment"
+    compileSdkVersion 23
 
-      // Enabling multidex support.
-      multiDexEnabled true
+    buildToolsVersion "23.0.3"
+    //useOldManifestMerger=true
 
-      minSdkVersion 15 // Dictated by IAP v3.0
+    dexOptions {
+        // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
+        preDexLibraries = project.ext.preDexEnabled && !project.ext.isTravis
+        // TODO is this really necessary?
+        jumboMode = true
+
+        //incremental true
+        javaMaxHeapSize "4g"
     }
 
-    amazon {
-      dimension "marketSegment"
-      proguardFile 'proguard/proguard-android-amazon.txt'
-      // https://github.com/TradeHero/TH_ANDROID/wiki/Amazon
-      //compileSdkVersion = [ 20 , "Amazon.com:Amazon Fire Phone SDK Addon:17" ]
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 22
+        applicationId "com.androidth.general"
+        versionCode project.ext.versionBuild
+        versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
+
+        buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
+        buildConfigField "String", "BUILD_TIME", "\"${project.ext.buildTime}\""
+        buildConfigField "boolean", "IS_INTELLIJ", "${project.ext.isIntelliJ}"
+        buildConfigField "int", "TAPSTREAM_VERSION", "0"
     }
 
-    game {
-      dimension "liveOrNot"
+    signingConfigs {
+        release {
+        }
     }
 
-    live {
-      dimension "liveOrNot"
+    buildTypes {
+        debug {
+            minifyEnabled "true".equals(System.getenv("PROGUARD_FOR_DEBUG"))
+            proguardFile 'proguard/proguard-android-fast.txt'
+            //zipAlign true
+            // versionNameSuffix interferes with the version the server receives
+            //This changes the package name and exception is thrown(Package not found exception for play services)
+            //We either have to register new play services with package name suffixed with .dev or just comment out this line
+            //applicationIdSuffix '.dev'
+            versionNameSuffix '-dev'
+
+            // Enabling multidex support.
+            multiDexEnabled true
+        }
+        release {
+            minifyEnabled true
+            proguardFile 'proguard/proguard-android.txt'
+            shrinkResources false
+            signingConfig signingConfigs.release
+        }
     }
 
-    airship {
-      dimension "pushProvider"
+//  // There may be further flavorGroups dimensions in the future
+//  flavorDimensions "marketSegment", "liveOrNot", "pushProvider"/*, "separateBuild"*/
+
+    productFlavors {
+//    googleplay {
+//      buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
+//
+//      // Enabling multidex support.
+//      multiDexEnabled true
+//    }
+
+        tradeHero {
+            applicationId = "com.tradehero.th"
+            buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
+
+                  multiDexEnabled true
+        }
+
+        ayondoAcademy {
+            applicationId = "com.ayondo.academyapp"
+            buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.ayondo.academyapp\""
+
+                  multiDexEnabled true
+        }
+
+//    samsung {
+//      dimension "marketSegment"
+//
+//      // Enabling multidex support.
+//      multiDexEnabled true
+//
+//      minSdkVersion 15 // Dictated by IAP v3.0
+//    }
+//
+//    amazon {
+//      dimension "marketSegment"
+//      proguardFile 'proguard/proguard-android-amazon.txt'
+//      // https://github.com/TradeHero/TH_ANDROID/wiki/Amazon
+//      //compileSdkVersion = [ 20 , "Amazon.com:Amazon Fire Phone SDK Addon:17" ]
+//    }
+//
+//    game {
+//      dimension "liveOrNot"
+//    }
+//
+//    live {
+//      dimension "liveOrNot"
+//    }
+//
+//    airship {
+//      dimension "pushProvider"
+//    }
+//
+//    noPush {
+//      dimension "pushProvider"
+//    }
     }
 
-    noPush {
-      dimension "pushProvider"
-    }
-  }
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/dagger1/java'
+            }
+            res {
+                srcDir 'res'
+            }
+            assets {
+                srcDir 'assets'
+            }
+        }
 
-  sourceSets {
-    main {
-      java {
-        srcDir 'src/dagger1/java'
-      }
-      res {
-        srcDir 'res'
-      }
-      assets {
-        srcDir 'assets'
-      }
-    }
+        debug {
+            java {
+                srcDir 'src/dagger1Debug/java'
+            }
+        }
 
-    debug {
-      java {
-        srcDir 'src/dagger1Debug/java'
-      }
-    }
+        release {
+            java {
+                srcDir 'src/dagger1Release/java'
+            }
+        }
 
-    release {
-      java {
-        srcDir 'src/dagger1Release/java'
-      }
-    }
+//    game {
+//      java {
+//        srcDir 'src/dagger1Game/java'
+//      }
+//    }
+//
+//    live {
+//      java {
+//        srcDir 'src/dagger1Live/java'
+//      }
+//    }
+//
+//    //region Flavours
+//    googleplay {
+//      java {
+//        srcDir 'src/row/java'
+//      }
+//    }
+//
+//    googleplayGameNoPushDebug {
+//      java {
+//        srcDir 'src/googleplayDebug/java'
+//      }
+//    }
+//
+//    googleplayLiveNoPushDebug {
+//      java {
+//        srcDir 'src/googleplayDebug/java'
+//        srcDir 'src/liveDebug/java'
+//        srcDir 'src/dagger1LiveDebug/java'
+//      }
+//    }
+//
+//    googleplayGameAirship {
+//      manifest {
+//        srcFile 'src/googleplayAirship/AndroidManifest.xml'
+//      }
+//      java {
+//        srcDir 'src/googleplayAirship/java'
+//      }
+//    }
+//
+//    googleplayLiveAirship {
+//      manifest {
+//        srcFile 'src/googleplayAirship/AndroidManifest.xml'
+//      }
+//      java {
+//        srcDir 'src/googleplayAirship/java'
+//      }
+//    }
+//
+//    googleplayGameAirshipDebug {
+//      java {
+//        srcDir 'src/googleplayDebug/java'
+//      }
+//    }
+//
+//    googleplayLiveAirshipDebug {
+//      java {
+//        srcDir 'src/googleplayDebug/java'
+//        srcDir 'src/liveDebug/java'
+//        srcDir 'src/dagger1LiveDebug/java'
+//      }
+//    }
+//
+//    googleplayGameNoPushRelease {
+//      java {
+//        srcDir 'src/googleplayRelease/java'
+//      }
+//    }
+//
+//    googleplayLiveNoPushRelease {
+//      java {
+//        srcDir 'src/googleplayRelease/java'
+//        srcDir 'src/liveRelease/java'
+//        srcDir 'src/dagger1LiveRelease/java'
+//      }
+//    }
+//
+//    googleplayGameAirshipRelease {
+//      manifest {
+//        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml'
+//      }
+//      java {
+//        srcDir 'src/googleplayRelease/java'
+//      }
+//    }
+//
+//    googleplayLiveAirshipRelease {
+//      manifest {
+//        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml'
+//      }
+//      java {
+//        srcDir 'src/googleplayRelease/java'
+//        //HACK just to make a test build
+//        //        srcDir 'src/liveRelease/java'
+//        //        srcDir 'src/dagger1LiveRelease/java'
+//        srcDir 'src/liveDebug/java'
+//        srcDir 'src/dagger1LiveDebug/java'
+//      }
+//    }
 
-    game {
-      java {
-        srcDir 'src/dagger1Game/java'
-      }
-    }
+        ayondoAcademy {
+            java {
+                srcDir 'src/ayondoAcademy/java'
+            }
+            res {
+                srcDir 'src/ayondoAcademy/res'
+            }
+        }
 
-    live {
-      java {
-        srcDir 'src/dagger1Live/java'
-      }
-    }
-
-    //region Flavours
-    googleplay {
-      java {
-        srcDir 'src/row/java'
-      }
-    }
-
-    googleplayGameNoPushDebug {
-      java {
-        srcDir 'src/googleplayDebug/java'
-      }
-    }
-
-    googleplayLiveNoPushDebug {
-      java {
-        srcDir 'src/googleplayDebug/java'
-        srcDir 'src/liveDebug/java'
+        ayondoAcademyDebug {
+            java {
+                srcDir 'src/ayondoAcademyDebug/java'
         srcDir 'src/dagger1LiveDebug/java'
-      }
+            }
+            res {
+                srcDir 'src/ayondoAcademy/res'
+            }
+        }
+
+        ayondoRelease {
+            java {
+                srcDir 'src/ayondoAcademyRelease/java'
+            }
+            res {
+                srcDir 'src/ayondoAcademy/res'
+            }
+        }
+
+        /*
+    *TradeHero app
+    */
+        tradeHero {
+            java {
+                srcDir 'src/tradeHero/java'
+            }
+            res {
+                srcDir 'src/tradeHero/res'
+            }
+        }
+
+        tradeHeroDebug {
+            java {
+                srcDir 'src/tradeHeroDebug/java'
+            }
+            res {
+                srcDir 'src/tradeHero/res'
+            }
+        }
+
+        tradeHeroRelease {
+            java {
+                srcDir 'src/tradeHero/java'
+            }
+            res {
+                srcDir 'src/tradeHero/res'
+            }
+        }
+
+        //    samsung {
+//      java {
+//        srcDir 'src/row/java'
+//      }
+//    }
+//
+//    samsungGameNoPushDebug {
+//      java {
+//        srcDir 'src/samsungDebug/java'
+//      }
+//    }
+//
+//    samsungLiveNoPushDebug {
+//      java {
+//        srcDir 'src/samsungDebug/java'
+//        srcDir 'src/liveDebug/java'
+//        srcDir 'src/dagger1LiveDebug/java'
+//      }
+//    }
+//
+//    samsungGameAirship {
+//      manifest {
+//        srcFile 'src/googleplayAirship/AndroidManifest.xml' // Reuse until there is something special for Samsung
+//      }
+//      java {
+//        srcDir 'src/samsungAirship/java'
+//      }
+//    }
+//
+//    samsungLiveAirship {
+//      manifest {
+//        srcFile 'src/googleplayAirship/AndroidManifest.xml' // Reuse until there is something special for Samsung
+//      }
+//      java {
+//        srcDir 'src/samsungAirship/java'
+//      }
+//    }
+//
+//    samsungGameAirshipDebug {
+//      java {
+//        srcDir 'src/samsungDebug/java'
+//      }
+//    }
+//
+//    samsungLiveAirshipDebug {
+//      java {
+//        srcDir 'src/samsungDebug/java'
+//        srcDir 'src/dagger1LiveDebug/java'
+//      }
+//    }
+//
+//    samsungGameNoPushRelease {
+//      java {
+//        srcDir 'src/samsungRelease/java'
+//      }
+//    }
+//
+//    samsungLiveNoPushRelease {
+//      java {
+//        srcDir 'src/samsungRelease/java'
+//        srcDir 'src/dagger1LiveRelease/java'
+//      }
+//    }
+//
+//    samsungGameAirshipRelease {
+//      manifest {
+//        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml' // Reuse until there is something special for Samsung
+//      }
+//      java {
+//        srcDir 'src/samsungRelease/java'
+//      }
+//    }
+//
+//    samsungLiveAirshipRelease {
+//      manifest {
+//        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml' // Reuse until there is something special for Samsung
+//      }
+//      java {
+//        srcDir 'src/samsungRelease/java'
+//        srcDir 'src/liveDebug/java'
+//        srcDir 'src/dagger1LiveDebug/java'
+//        //        srcDir 'src/dagger1LiveRelease/java'
+//      }
+//    }
+//
+//    amazon {
+//      java {
+//        srcDir 'src/row/java'
+//      }
+//    }
+//
+//    amazonGameNoPushDebug {
+//      java {
+//        srcDir 'src/amazonDebug/java'
+//      }
+//    }
+//
+//    amazonLiveNoPushDebug {
+//      java {
+//        srcDir 'src/amazonDebug/java'
+//        srcDir 'src/liveDebug/java'
+//        srcDir 'src/dagger1LiveDebug/java'
+//      }
+//    }
+//
+//    amazonGameAirship {
+//      manifest {
+//        srcFile 'src/amazonAirship/AndroidManifest.xml'
+//      }
+//      java {
+//        srcDir 'src/amazonAirship/java'
+//      }
+//    }
+//
+//    amazonLiveAirship {
+//      manifest {
+//        srcFile 'src/amazonAirship/AndroidManifest.xml'
+//      }
+//      java {
+//        srcDir 'src/amazonAirship/java'
+//      }
+//    }
+//
+//    amazonGameAirshipDebug {
+//      java {
+//        srcDir 'src/amazonDebug/java'
+//      }
+//    }
+//
+//    amazonLiveAirshipDebug {
+//      java {
+//        srcDir 'src/amazonDebug/java'
+//        srcDir 'src/dagger1LiveDebug/java'
+//      }
+//    }
+//
+//    amazonGameNoPushRelease {
+//      java {
+//        srcDir 'src/amazonRelease/java'
+//      }
+//    }
+//
+//    amazonLiveNoPushRelease {
+//      java {
+//        srcDir 'src/amazonRelease/java'
+//        srcDir 'src/dagger1LiveRelease/java'
+//      }
+//    }
+//
+//    amazonGameAirshipRelease {
+//      java {
+//        srcDir 'src/amazonRelease/java'
+//      }
+//    }
+//
+//    amazonLiveAirshipRelease {
+//      java {
+//        srcDir 'src/amazonRelease/java'
+//        srcDir 'src/dagger1LiveRelease/java'
+//      }
+//    }
+
+        //endregion
     }
 
-    googleplayGameAirship {
-      manifest {
-        srcFile 'src/googleplayAirship/AndroidManifest.xml'
-      }
-      java {
-        srcDir 'src/googleplayAirship/java'
-      }
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
     }
 
-    googleplayLiveAirship {
-      manifest {
-        srcFile 'src/googleplayAirship/AndroidManifest.xml'
-      }
-      java {
-        srcDir 'src/googleplayAirship/java'
-      }
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
     }
 
-    googleplayGameAirshipDebug {
-      java {
-        srcDir 'src/googleplayDebug/java'
-      }
-    }
-
-    googleplayLiveAirshipDebug {
-      java {
-        srcDir 'src/googleplayDebug/java'
-        srcDir 'src/liveDebug/java'
-        srcDir 'src/dagger1LiveDebug/java'
-      }
-    }
-
-    googleplayGameNoPushRelease {
-      java {
-        srcDir 'src/googleplayRelease/java'
-      }
-    }
-
-    googleplayLiveNoPushRelease {
-      java {
-        srcDir 'src/googleplayRelease/java'
-        srcDir 'src/liveRelease/java'
-        srcDir 'src/dagger1LiveRelease/java'
-      }
-    }
-
-    googleplayGameAirshipRelease {
-      manifest {
-        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml'
-      }
-      java {
-        srcDir 'src/googleplayRelease/java'
-      }
-    }
-
-    googleplayLiveAirshipRelease {
-      manifest {
-        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml'
-      }
-      java {
-        srcDir 'src/googleplayRelease/java'
-        //HACK just to make a test build
-        //        srcDir 'src/liveRelease/java'
-        //        srcDir 'src/dagger1LiveRelease/java'
-        srcDir 'src/liveDebug/java'
-        srcDir 'src/dagger1LiveDebug/java'
-      }
-    }
-
-    samsung {
-      java {
-        srcDir 'src/row/java'
-      }
-    }
-
-    samsungGameNoPushDebug {
-      java {
-        srcDir 'src/samsungDebug/java'
-      }
-    }
-
-    samsungLiveNoPushDebug {
-      java {
-        srcDir 'src/samsungDebug/java'
-        srcDir 'src/liveDebug/java'
-        srcDir 'src/dagger1LiveDebug/java'
-      }
-    }
-
-    samsungGameAirship {
-      manifest {
-        srcFile 'src/googleplayAirship/AndroidManifest.xml' // Reuse until there is something special for Samsung
-      }
-      java {
-        srcDir 'src/samsungAirship/java'
-      }
-    }
-
-    samsungLiveAirship {
-      manifest {
-        srcFile 'src/googleplayAirship/AndroidManifest.xml' // Reuse until there is something special for Samsung
-      }
-      java {
-        srcDir 'src/samsungAirship/java'
-      }
-    }
-
-    samsungGameAirshipDebug {
-      java {
-        srcDir 'src/samsungDebug/java'
-      }
-    }
-
-    samsungLiveAirshipDebug {
-      java {
-        srcDir 'src/samsungDebug/java'
-        srcDir 'src/dagger1LiveDebug/java'
-      }
-    }
-
-    samsungGameNoPushRelease {
-      java {
-        srcDir 'src/samsungRelease/java'
-      }
-    }
-
-    samsungLiveNoPushRelease {
-      java {
-        srcDir 'src/samsungRelease/java'
-        srcDir 'src/dagger1LiveRelease/java'
-      }
-    }
-
-    samsungGameAirshipRelease {
-      manifest {
-        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml' // Reuse until there is something special for Samsung
-      }
-      java {
-        srcDir 'src/samsungRelease/java'
-      }
-    }
-
-    samsungLiveAirshipRelease {
-      manifest {
-        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml' // Reuse until there is something special for Samsung
-      }
-      java {
-        srcDir 'src/samsungRelease/java'
-        srcDir 'src/liveDebug/java'
-        srcDir 'src/dagger1LiveDebug/java'
-        //        srcDir 'src/dagger1LiveRelease/java'
-      }
-    }
-
-    amazon {
-      java {
-        srcDir 'src/row/java'
-      }
-    }
-
-    amazonGameNoPushDebug {
-      java {
-        srcDir 'src/amazonDebug/java'
-      }
-    }
-
-    amazonLiveNoPushDebug {
-      java {
-        srcDir 'src/amazonDebug/java'
-        srcDir 'src/liveDebug/java'
-        srcDir 'src/dagger1LiveDebug/java'
-      }
-    }
-
-    amazonGameAirship {
-      manifest {
-        srcFile 'src/amazonAirship/AndroidManifest.xml'
-      }
-      java {
-        srcDir 'src/amazonAirship/java'
-      }
-    }
-
-    amazonLiveAirship {
-      manifest {
-        srcFile 'src/amazonAirship/AndroidManifest.xml'
-      }
-      java {
-        srcDir 'src/amazonAirship/java'
-      }
-    }
-
-    amazonGameAirshipDebug {
-      java {
-        srcDir 'src/amazonDebug/java'
-      }
-    }
-
-    amazonLiveAirshipDebug {
-      java {
-        srcDir 'src/amazonDebug/java'
-        srcDir 'src/dagger1LiveDebug/java'
-      }
-    }
-
-    amazonGameNoPushRelease {
-      java {
-        srcDir 'src/amazonRelease/java'
-      }
-    }
-
-    amazonLiveNoPushRelease {
-      java {
-        srcDir 'src/amazonRelease/java'
-        srcDir 'src/dagger1LiveRelease/java'
-      }
-    }
-
-    amazonGameAirshipRelease {
-      java {
-        srcDir 'src/amazonRelease/java'
-      }
-    }
-
-    amazonLiveAirshipRelease {
-      java {
-        srcDir 'src/amazonRelease/java'
-        srcDir 'src/dagger1LiveRelease/java'
-      }
-    }
-    //endregion
-  }
-
-  lintOptions {
-    checkReleaseBuilds false
-    abortOnError false
-  }
-
-  packagingOptions {
-    exclude 'META-INF/LICENSE'
-    exclude 'META-INF/NOTICE'
-    exclude 'META-INF/services/javax.annotation.processing.Processor'
-  }
-
-  useLibrary 'org.apache.http.legacy'
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
-  // Helper here http://gradleplease.appspot.com
-  androidTestCompile "junit:junit:${JUNIT_VERSION}"
-  testCompile "junit:junit:${JUNIT_VERSION}"
+    // Helper here http://gradleplease.appspot.com
+    androidTestCompile "junit:junit:${JUNIT_VERSION}"
+    testCompile "junit:junit:${JUNIT_VERSION}"
 
-  compile fileTree(dir: 'libs', include: ['*.jar'])
-  releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
 
-  // For swipelistview
-  compile 'com.nineoldandroids:library:2.4.0'
+    // For swipelistview
 
-  // for qq
+
+    // for qq
   releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])
 
-  samsungCompile 'com.sec.android.iap:library:3.0@aar'
+//  samsungCompile 'com.sec.android.iap:library:3.0@aar'//jeff
   // TODO confirm on a hardware that it is "provided" and not "compile"
-  amazonCompile 'com.amazon:in-app-purchasing:2.0.61'
+//  amazonCompile 'com.amazon:in-app-purchasing:2.0.61'//jeff
   //  testAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
   // This does not work as we would hope. Second "setProperty" wins
   //def fbproj = project(':facebook-android-sdk:facebook')
@@ -505,15 +576,15 @@ dependencies {
 
   debugCompile 'com.facebook.android:library:3.15.0@aar' // 3.19.1 gives 65k error
   releaseCompile 'com.facebook.android:library:3.22.0@aar'
-  compile 'com.parse.bolts:bolts-android:1.1.4' // For Facebook
+  // For Facebook
 
   compile("com.android.support:support-v13:${SUPPORT_V13_VERSION}")
   compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
   compile "com.android.support:recyclerview-v7:${SUPPORT_V7_VERSION}"
   compile "com.android.support:design:${SUPPORT_V7_VERSION}"
   compile "com.android.support:cardview-v7:${SUPPORT_V7_VERSION}"
-  googleplayCompile 'com.android.support:multidex:1.0.1'
-  samsungCompile 'com.android.support:multidex:1.0.1'
+//  googleplayCompile 'com.android.support:multidex:1.0.1'//jeff
+//  samsungCompile 'com.android.support:multidex:1.0.1' //jeff
 
   //provided 'proguard:annotations:4.6'
   compile("se.emilsjolander:stickylistheaders:${STICKY_LIST_HEADERS_VERSION}@aar") {
@@ -565,10 +636,9 @@ dependencies {
   compile "com.jakewharton.timber:timber:${TIMBER_VERSION}"
 
   compile "com.urbanairship.android:urbanairship-sdk:${URBAN_AIRSHIP_VERSION}@aar"
-  amazonCompile "com.amazon:amazon-device-messaging:${AMAZON_DEVICE_MESSAGING_VERSION}" // Should be amazonAirshipCompile, if Gradle was better
+//  amazonCompile "com.amazon:amazon-device-messaging:${AMAZON_DEVICE_MESSAGING_VERSION}" // Should be amazonAirshipCompile, if Gradle was better//jeff
 
   compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
-  compile 'com.tradehero.route:route:0.2-SNAPSHOT'
   compile "com.android.support:support-annotations:${SUPPORT_V7_VERSION}"
   //releaseCompile 'com.crashlytics.android:crashlytics:1.+'
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
@@ -584,8 +654,6 @@ dependencies {
     exclude group: 'org.apache.httpcomponents', module: 'httpclient'
   }
 
-  compile("com.flurry:FlurryAnalytics:6.1.0")
-  compile("com.flurry:FlurryAds:6.1.0")
 
   releaseCompile("com.localytics.android:library:${LOCALYTICS_VERSION}") {
     exclude group: 'com.google.android', module: 'support-v4'
@@ -600,8 +668,8 @@ dependencies {
   compile "com.jumio.android:core:${JUMIO_SDK_VERSION}@aar"
   compile "com.jumio.android:nv:${JUMIO_SDK_VERSION}@aar"
   //  liveCompile "com.jumio.android:netswipe-resources:${JUMIO_SDK_VERSION}@aar"
-  liveCompile "com.neovisionaries:nv-i18n:${NV_I18N_VERSION}"
-  liveCompile "com.googlecode.libphonenumber:libphonenumber:${LIB_PHONE_NUMBER_VERSION}"
+  compile "com.neovisionaries:nv-i18n:${NV_I18N_VERSION}"
+  compile "com.googlecode.libphonenumber:libphonenumber:${LIB_PHONE_NUMBER_VERSION}"
 
   // For Test
   testCompile('org.robolectric:robolectric:3.0-rc2') {
@@ -631,58 +699,87 @@ dependencies {
   }
 
   // Remove those when building for Amazon
-  compile "com.google.android.gms:play-services-base:${PLAY_SERVICES_VERSION}" // This one has fewer methods
+  compile "com.google.android.gms:play-services-base:${PLAY_SERVICES_VERSION}"
+    // This one has fewer methods
   compile "com.google.android.gms:play-services-gcm:${PLAY_SERVICES_VERSION}"
   compile "com.google.android.gms:play-services-ads:${PLAY_SERVICES_VERSION}"
   compile "com.google.android.gms:play-services-analytics:${PLAY_SERVICES_VERSION}"
   compile "com.google.android.gms:play-services-location:${PLAY_SERVICES_VERSION}"
-  //releaseCompile 'com.google.android.gms:play-services:6.1.+'
-}
+    //releaseCompile 'com.google.android.gms:play-services:6.1.+'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.parse.bolts:bolts-android:1.1.4'
+    compile 'com.tradehero.route:route:0.2-SNAPSHOT'
+    compile 'com.flurry:FlurryAnalytics:6.1.0'
+    compile 'com.flurry:FlurryAds:6.1.0'
+    compile 'com.google.android.gms:play-services-ads:9.0.0'}
 
 File propFile = file('signing.properties');
-if (propFile.exists()) {
-  def Properties props = new Properties()
-  props.load(new FileInputStream(propFile))
+if (propFile.
+    exists()) {
+  def Properties props = new
+    Properties()
+  props.load(new FileInputStream
 
-  if (props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
-          props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
-    android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
-    android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
-    android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
-    android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
-  } else {
+    (propFile))
+
+  if (props.containsKey('STORE_FILE') && props.containsKey(
+            'STORE_PASSWORD') &&
+          props.containsKey('KEY_ALIAS') && props.
+        containsKey('KEY_PASSWORD')) {
+    android.signingConfigs.release.
+        storeFile = file(props['STORE_FILE'])
+    android.signingConfigs.release.
+        storePassword = props['STORE_PASSWORD']
+    android.
+        signingConfigs.release.keyAlias = props['KEY_ALIAS']
+    android.
+    signingConfigs.
+        release.keyPassword = props['KEY_PASSWORD']
+  }
+    else {
     android.buildTypes.release.signingConfig = null
   }
 } else {
-  android.buildTypes.release.signingConfig = null
+  android.buildTypes.
+    release.signingConfig = null
 }
 
 tasks.withType(JavaCompile) {
   options.encoding = "UTF-8"
 }
-
-// Fix this annoyance: https://github.com/robolectric/deckard-gradle/blob/master/README.md#required-tweaking-the-module-dependency-order-ie-classpath
+    // Fix this annoyance: https://github.com/robolectric/deckard-gradle/blob/master/README.md#required-tweaking-the-module-dependency-order-ie-classpath
 task reorderDependencyToFixJunit4Issue {
-  def file = file(project.name + ".iml")
+  def file = file(project
+    .name +
+        ".iml")
 
   println "reorderDependencyToFixJunit4Issue"
   doLast {
-    println "reorderDependencyToFixJunit4Issue-doLast"
-    if (file.exists()) {
-      def parsedXml = (new XmlParser()).parse(file)
-      // find first component node which has orderEntry child
-      def targetComponent = parsedXml.component.find { it.orderEntry }
+            println "reorderDependencyToFixJunit4Issue-doLast"
+            if (file.exists()) {
+      def parsedXml = (new XmlParser()).
+            parse(file)
+            // find first component node which has orderEntry child
+      def
+                targetComponent = parsedXml.component.find { it.
+                    orderEntry }
       if (targetComponent) {
-        def androidSdk = targetComponent.find {
+                def
+                androidSdk = targetComponent.find {
           it.@type == 'jdk' && it.@jdkType == 'Android SDK'
         }
-        if (androidSdk && androidSdk != targetComponent.children().last()) {
-          // reposition android sdk dependency in the iml file
-          targetComponent.remove(androidSdk)
+        if (androidSdk &&
+                    androidSdk != targetComponent.
+                    children().last()) {
+                    // reposition android sdk dependency in the iml file
+          targetComponent.remove(
+                    androidSdk)
           targetComponent.append(androidSdk)
 
           // update iml file
-          def writer = new StringWriter()
+          def
+            writer = new
+    StringWriter()
           new XmlNodePrinter(new PrintWriter(writer)).print(parsedXml)
           file.text = writer.toString()
         }
@@ -691,39 +788,45 @@ task reorderDependencyToFixJunit4Issue {
   }
 }
 
-preBuild.dependsOn(reorderDependencyToFixJunit4Issue)
+preBuild.dependsOn(
+         reorderDependencyToFixJunit4Issue)
 
 tasks.whenTaskAdded { theTask ->
   def taskName = theTask.name.toString()
-  if (taskName.matches(/test.*(Debug|Release)/)) {
+  if (taskName.
+         matches(/test.*(Debug|Release)/)) {
     /**
-     * Listen for when robolectric adds the 'testDebug' task and when it does, add the -noverify
-     * option to that task's jvmArgs.  This allows us to turn off byte code verification when
+     *
+         Listen for when robolectric adds the 'testDebug' task and when it does, add the -noverify
+     *
+     option to that task's jvmArgs.  This allows us to turn off byte code verification when
      * running our unit tests.
      */
     theTask.jvmArgs('-noverify')
   }
 }
 
-def testResourceFilesToCopy = copySpec {
+def
+            testResourceFilesToCopy = copySpec {
   from "${projectDir}/src/test/resources"
 }
 
 task copyTestResources {
   println("Copying test resources")
   [
-          "${buildDir}/intermediates/classes/test/amazonairship/debug",
-          "${buildDir}/intermediates/classes/test/amazonairship/release",
-          "${buildDir}/intermediates/classes/test/amazonnopush/debug",
-          "${buildDir}/intermediates/classes/test/amazonnopush/release",
-          "${buildDir}/intermediates/classes/test/googleplayairship/debug",
-          "${buildDir}/intermediates/classes/test/googleplayairship/release",
-          "${buildDir}/intermediates/classes/test/googleplaynopush/debug",
-          "${buildDir}/intermediates/classes/test/googleplaynopush/release",
-          "${buildDir}/intermediates/classes/test/samsungairship/debug",
-          "${buildDir}/intermediates/classes/test/samsungairship/release",
-          "${buildDir}/intermediates/classes/test/samsungnopush/debug",
-          "${buildDir}/intermediates/classes/test/samsungnopush/release"
+          //jeff
+//          "${buildDir}/intermediates/classes/test/amazonairship/debug",
+//          "${buildDir}/intermediates/classes/test/amazonairship/release",
+//          "${buildDir}/intermediates/classes/test/amazonnopush/debug",
+//          "${buildDir}/intermediates/classes/test/amazonnopush/release",
+//          "${buildDir}/intermediates/classes/test/googleplayairship/debug",
+//          "${buildDir}/intermediates/classes/test/googleplayairship/release",
+//          "${buildDir}/intermediates/classes/test/googleplaynopush/debug",
+//          "${buildDir}/intermediates/classes/test/googleplaynopush/release",
+//          "${buildDir}/intermediates/classes/test/samsungairship/debug",
+    //          "${buildDir}/intermediates/classes/test/samsungairship/release",
+            //          "${buildDir}/intermediates/classes/test/samsungnopush/debug",
+    //          "${buildDir}/intermediates/classes/test/samsungnopush/release"
   ].each { dest ->
     copy {
       with testResourceFilesToCopy
@@ -731,62 +834,88 @@ task copyTestResources {
     }
   }
 }
-
-project.afterEvaluate {
-  println("afterEvaluate")
-  Pattern flavorsPattern = Pattern.compile("compile(.+)DebugJava")
+        project.afterEvaluate {
+  println(
+                "afterEvaluate")
+  Pattern flavorsPattern =
+            Pattern.compile("compile(.+)DebugJava")
 
   tasks.each { theTask ->
-    if (project.ext.isIntelliJ
+    if (project.ext.
+                isIntelliJ
             && theTask.name.matches("assemble.+Release")) {
-      println("Adding a version build bump to task " + theTask.name)
+      println(
+                "Adding a version build bump to task " + theTask.name)
       theTask.doLast {
-        // Bump version Build
-        versionProps.setProperty('VERSION_BUILD', (project.ext.versionBuild + 1).toString())
-        def map = versionProps.sort(new Comparator<Object>() {
-          @Override int compare(Object left, Object right) {
-            // TODO this does not appear to save the properties in the desired order
-            return versionPropIndex(left.toString()).compareTo(versionPropIndex(right.toString()))
+                    // Bump version Build
+        versionProps.setProperty('VERSION_BUILD', (project.
+                        ext.versionBuild + 1).toString())
+        def map = versionProps.sort(
+                        new Comparator<Object>() {
+          @Override int compare(Object left, Object right)
+                {
+                // TODO this does not appear to save the properties in the desired order
+            return
+                versionPropIndex(left.toString()).compareTo(
+        versionPropIndex(
+
+        right.toString()))
           }
         })
         versionProps = new Properties()
         versionProps.putAll(map)
-        versionProps.store(versionFile.newWriter(), null)
+        versionProps.store(
+                    versionFile.
+                    newWriter(), null)
       }
     }
-
-    Matcher m = flavorsPattern.matcher(theTask.getName())
+                    Matcher m =
+                    flavorsPattern.matcher(theTask.getName())
     while (m.find()) {
-      println("Adding copy to " + theTask.getName() +
+      println("Adding copy to " + theTask.
+    getName() +
               " from " +
               "${projectDir}/src/test/resources" +
               " to " +
               "${buildDir}/intermediates/classes/test/${m.group(1).toLowerCase()}/debug")
-      theTask.dependsOn("copyTestResources")
+      theTask.dependsOn
+    ("copyTestResources")
     }
   }
 }
 
 Integer versionPropIndex(String key) {
   if (key.equals("VERSION_MAJOR")) return 0
-  if (key.equals("VERSION_MINOR")) return 1
-  if (key.equals("VERSION_PATCH")) return 2
-  if (key.equals("VERSION_BUILD")) return 3
-  throw new IllegalStateException("Unknown key " + key)
-}
+  if (
 
-task showMeCache << {
-  configurations.compile.each { println it }
+    key.equals(
+
+    "VERSION_MINOR")) return 1
+  if (key.equals(
+    "VERSION_PATCH")) return 2
+  if (key.equals(
+
+    "VERSION_BUILD")) return 3
+  throw new IllegalStateException(
+
+    "Unknown key " + key)
+}
+    task showMeCache << {
+  configurations.compile
+            .each { println it }
 
   int mb = 1024 * 1024;
+    //Getting the runtime reference from system
+  Runtime runtime =
+            Runtime.getRuntime();
 
-  //Getting the runtime reference from system
-  Runtime runtime = Runtime.getRuntime();
-
-  System.out.println("##### Heap utilization statistics [MB] #####");
+    System.out.println(
+    "##### Heap utilization statistics [MB] #####");
 
   //Print used memory
-  System.out.println("Used Memory:"
+  System
+
+    .out.println("Used Memory:"
           + (runtime.totalMemory() - runtime.freeMemory()) / mb);
 
   //Print free memory

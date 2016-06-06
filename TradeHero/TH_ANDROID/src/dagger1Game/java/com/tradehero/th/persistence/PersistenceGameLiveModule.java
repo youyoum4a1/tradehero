@@ -1,6 +1,6 @@
-package com.tradehero.th.persistence;
+package com.androidth.general.persistence;
 
-import com.tradehero.common.persistence.DTOCacheUtilRx;
+import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

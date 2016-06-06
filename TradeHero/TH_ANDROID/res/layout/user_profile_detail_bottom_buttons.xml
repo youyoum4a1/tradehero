@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.timeline.TimelineHeaderButtonView
+<com.androidth.general.fragments.timeline.TimelineHeaderButtonView
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/TH.BuySell_ViewPager_Belt"
     >
@@ -17,4 +17,4 @@
       android:text="@string/user_profile_button_timeline"
       />
 
-</com.tradehero.th.fragments.timeline.TimelineHeaderButtonView>
+</com.androidth.general.fragments.timeline.TimelineHeaderButtonView>

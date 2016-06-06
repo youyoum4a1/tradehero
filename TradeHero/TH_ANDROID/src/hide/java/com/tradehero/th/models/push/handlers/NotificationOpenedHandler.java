@@ -1,17 +1,17 @@
-package com.tradehero.th.models.push.handlers;
+package com.androidth.general.models.push.handlers;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.DashboardActivity;
-import com.tradehero.th.api.notification.NotificationKey;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.models.push.NotificationGroupHolder;
-import com.tradehero.th.models.push.PushConstants;
-import com.tradehero.th.persistence.notification.NotificationCacheRx;
-import com.tradehero.th.persistence.user.UserProfileCacheRx;
+import com.androidth.general.activities.DashboardActivity;
+import com.androidth.general.api.notification.NotificationKey;
+import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.models.push.NotificationGroupHolder;
+import com.androidth.general.models.push.PushConstants;
+import com.androidth.general.persistence.notification.NotificationCacheRx;
+import com.androidth.general.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
 
 public class NotificationOpenedHandler extends PrecacheNotificationHandler

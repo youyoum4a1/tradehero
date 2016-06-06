@@ -1,0 +1,16 @@
+package com.androidth.general.utils.touch;
+
+import android.view.MotionEvent;
+
+public class PointerCoordsLogger
+{
+    public static String toString(MotionEvent.PointerCoords pointerCoords)
+    {
+        if (pointerCoords == null)
+        {
+            return "null";
+        }
+
+        return String.format("[pointerCoords x=%f, y=%f, orientation=%f]", pointerCoords.x, pointerCoords.y, pointerCoords.orientation);
+    }
+}

@@ -1,7 +1,7 @@
-package com.tradehero.common.billing.samsung;
+package com.androidth.general.common.billing.samsung;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.ProductIdentifier;
+import com.androidth.general.common.billing.ProductIdentifier;
 
 public class SamsungSKU
         implements ProductIdentifier

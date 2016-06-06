@@ -1,12 +1,12 @@
-package com.tradehero.common.billing.samsung.identifier;
+package com.androidth.general.common.billing.samsung.identifier;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.identifier.BaseProductIdentifierFetcherHolderRx;
-import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
-import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.billing.samsung.SamsungSKUListKey;
+import com.androidth.general.common.billing.identifier.BaseProductIdentifierFetcherHolderRx;
+import com.androidth.general.common.billing.samsung.BaseSamsungSKUList;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.samsung.SamsungSKUListKey;
 
 abstract public class BaseSamsungProductIdentifierFetcherHolderRx<
         SamsungSKUListKeyType extends SamsungSKUListKey,

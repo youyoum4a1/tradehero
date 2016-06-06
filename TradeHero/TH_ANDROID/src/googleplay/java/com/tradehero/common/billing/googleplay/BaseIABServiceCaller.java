@@ -1,14 +1,14 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 import android.content.Context;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import com.android.vending.billing.IInAppBillingService;
-import com.tradehero.common.billing.BaseRequestCodeActor;
-import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
+import com.androidth.general.common.billing.BaseRequestCodeActor;
+import com.androidth.general.common.billing.googleplay.exception.IABException;
+import com.androidth.general.common.billing.googleplay.exception.IABExceptionFactory;
+import com.androidth.general.common.billing.googleplay.exception.IABRemoteException;
 import com.tradehero.th.BuildConfig;
 import rx.Observable;
 import rx.functions.Func1;

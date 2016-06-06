@@ -1,6 +1,6 @@
-package com.tradehero.common.billing.samsung.exception;
+package com.androidth.general.common.billing.samsung.exception;
 
-import com.tradehero.common.billing.samsung.SamsungConstants;
+import com.androidth.general.common.billing.samsung.SamsungConstants;
 
 public class SamsungNetworkUnavailableException extends SamsungOneCodeException
 {

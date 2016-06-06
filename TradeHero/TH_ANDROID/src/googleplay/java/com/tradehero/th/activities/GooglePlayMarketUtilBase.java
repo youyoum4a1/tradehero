@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.androidth.general.activities;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
-import com.tradehero.th.rx.EmptyAction1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
-import com.tradehero.th.utils.AlertDialogRxUtil;
+import com.androidth.general.rx.EmptyAction1;
+import com.androidth.general.rx.dialog.OnDialogClickEvent;
+import com.androidth.general.utils.AlertDialogRxUtil;
 import timber.log.Timber;
 
 abstract class GooglePlayMarketUtilBase

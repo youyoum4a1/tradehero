@@ -1,14 +1,14 @@
-package com.tradehero.th.billing.samsung.identifier;
+package com.androidth.general.billing.samsung.identifier;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import com.samsung.android.sdk.iap.lib.helper.SamsungIapHelper;
-import com.tradehero.common.billing.samsung.SamsungBillingMode;
-import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.billing.samsung.SamsungSKUList;
-import com.tradehero.common.billing.samsung.SamsungSKUListKey;
-import com.tradehero.common.billing.samsung.identifier.BaseSamsungProductIdentifierFetcherRx;
-import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
+import com.androidth.general.common.billing.samsung.SamsungBillingMode;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.samsung.SamsungSKUList;
+import com.androidth.general.common.billing.samsung.SamsungSKUListKey;
+import com.androidth.general.common.billing.samsung.identifier.BaseSamsungProductIdentifierFetcherRx;
+import com.androidth.general.common.billing.samsung.rx.ItemListQueryGroup;
 import java.util.Collections;
 import java.util.List;
 

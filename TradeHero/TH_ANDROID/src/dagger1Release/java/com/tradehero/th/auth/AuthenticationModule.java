@@ -1,11 +1,11 @@
-package com.tradehero.th.auth;
+package com.androidth.general.auth;
 
 import android.content.Context;
 import com.facebook.TokenCachingStrategy;
-import com.tradehero.th.api.social.SocialNetworkEnum;
-import com.tradehero.th.auth.linkedin.LinkedInAuthenticationProvider;
-import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
-import com.tradehero.th.auth.weibo.WeiboAuthenticationProvider;
+import com.androidth.general.api.social.SocialNetworkEnum;
+import com.androidth.general.auth.linkedin.LinkedInAuthenticationProvider;
+import com.androidth.general.auth.tencent_qq.QQAuthenticationProvider;
+import com.androidth.general.auth.weibo.WeiboAuthenticationProvider;
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;

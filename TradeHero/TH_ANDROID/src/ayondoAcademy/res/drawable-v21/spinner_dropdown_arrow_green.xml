@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:state_pressed="true">
+    <bitmap android:src="@drawable/abc_spinner_mtrl_am_alpha"
+        android:tint="@color/light_green_normal" />
+    <!-- Tried ?attr/colorAccent but it's not showing on several spinners.-->
+  </item>
+  <item>
+    <bitmap android:src="@drawable/abc_spinner_mtrl_am_alpha"
+        android:tint="?attr/colorControlNormal" />
+  </item>
+</selector>

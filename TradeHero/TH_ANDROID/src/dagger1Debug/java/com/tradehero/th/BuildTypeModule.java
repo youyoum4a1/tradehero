@@ -1,11 +1,11 @@
 package com.tradehero.th;
 
-import com.tradehero.th.network.NetworkDebugModule;
+import com.androidth.general.network.NetworkDebugModule;
 import dagger.Module;
 
 @Module(
         includes = {
-                FlavorDebugModule.class,
+//                FlavorDebugModule.class,
                 NetworkDebugModule.class,
         },
 

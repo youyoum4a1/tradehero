@@ -1,4 +1,4 @@
-package com.tradehero.th.models.push;
+package com.androidth.general.models.push;
 
 import dagger.Module;
 

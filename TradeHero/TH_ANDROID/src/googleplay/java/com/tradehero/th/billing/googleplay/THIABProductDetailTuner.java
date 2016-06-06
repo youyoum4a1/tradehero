@@ -1,8 +1,8 @@
-package com.tradehero.th.billing.googleplay;
+package com.androidth.general.billing.googleplay;
 
 import android.support.annotation.NonNull;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.ProductIdentifierDomain;
+import com.androidth.general.billing.ProductIdentifierDomain;
 import timber.log.Timber;
 
 public class THIABProductDetailTuner

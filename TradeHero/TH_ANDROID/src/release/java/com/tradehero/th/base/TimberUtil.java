@@ -1,7 +1,7 @@
-package com.tradehero.th.base;
+package com.androidth.general.base;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.log.CrashReportingTree;
+import com.androidth.general.common.log.CrashReportingTree;
 import timber.log.Timber;
 
 public class TimberUtil

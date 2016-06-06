@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <com.tradehero.th.fragments.timeline.UserStatisticView
+  <com.androidth.general.fragments.timeline.UserStatisticView
       android:id="@+id/user_statistic_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
           android:orientation="vertical"
           >
 
-          <com.tradehero.common.widget.GaugeView
+          <com.androidth.general.common.widget.GaugeView
               android:id="@+id/leaderboard_gauge_tradeconsistency"
               android:layout_width="match_parent"
               style="@style/TH.GaugeView"
@@ -38,7 +38,7 @@
           android:orientation="vertical"
           >
 
-          <com.tradehero.common.widget.GaugeView
+          <com.androidth.general.common.widget.GaugeView
               android:id="@+id/leaderboard_gauge_winrate"
               android:layout_width="match_parent"
               style="@style/TH.GaugeView"
@@ -53,7 +53,7 @@
           android:orientation="vertical"
           >
 
-          <com.tradehero.common.widget.GaugeView
+          <com.androidth.general.common.widget.GaugeView
               android:id="@+id/leaderboard_gauge_performance"
               android:layout_width="match_parent"
               style="@style/TH.GaugeView"
@@ -61,6 +61,6 @@
 
       </LinearLayout>
 
-  </com.tradehero.th.fragments.timeline.UserStatisticView>
+  </com.androidth.general.fragments.timeline.UserStatisticView>
 
 </merge>

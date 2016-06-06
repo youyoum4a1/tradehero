@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.position.view.PositionView
+<com.androidth.general.fragments.position.view.PositionView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -16,7 +16,7 @@
       android:layout_height="wrap_content"
       android:orientation="vertical">
 
-    <com.tradehero.th.fragments.position.partial.PositionPartialTopView
+    <com.androidth.general.fragments.position.partial.PositionPartialTopView
         android:id="@+id/position_partial_top"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -39,10 +39,10 @@
       <include
           layout="@layout/fx_flags"/>
 
-    </com.tradehero.th.fragments.position.partial.PositionPartialTopView>
+    </com.androidth.general.fragments.position.partial.PositionPartialTopView>
 
     <include layout="@layout/position_partial_bottom_closed"/>
 
   </LinearLayout>
 
-</com.tradehero.th.fragments.position.view.PositionView>
+</com.androidth.general.fragments.position.view.PositionView>

@@ -30,7 +30,7 @@
       android:layout_alignParentLeft="true"
       />
 
-  <com.tradehero.th.fragments.leaderboard.ExpandingLayout
+  <com.androidth.general.fragments.leaderboard.ExpandingLayout
       android:id="@+id/expanding_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -319,6 +319,6 @@
         layout="@layout/lbmu_item_action_buttons"
         />
 
-  </com.tradehero.th.fragments.leaderboard.ExpandingLayout>
+  </com.androidth.general.fragments.leaderboard.ExpandingLayout>
 
 </RelativeLayout>

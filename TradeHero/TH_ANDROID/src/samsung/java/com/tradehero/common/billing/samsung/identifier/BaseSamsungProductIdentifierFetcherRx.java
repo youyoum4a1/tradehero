@@ -1,17 +1,17 @@
-package com.tradehero.common.billing.samsung.identifier;
+package com.androidth.general.common.billing.samsung.identifier;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.samsung.android.sdk.iap.lib.vo.ItemVo;
-import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
-import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
-import com.tradehero.common.billing.samsung.BaseSamsungSKUList;
-import com.tradehero.common.billing.samsung.SamsungBillingMode;
-import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.billing.samsung.SamsungSKUListKey;
-import com.tradehero.common.billing.samsung.rx.ItemListQueryGroup;
-import com.tradehero.common.billing.samsung.rx.SamsungIapHelperFacade;
+import com.androidth.general.common.billing.identifier.ProductIdentifierListResult;
+import com.androidth.general.common.billing.samsung.BaseSamsungActorRx;
+import com.androidth.general.common.billing.samsung.BaseSamsungSKUList;
+import com.androidth.general.common.billing.samsung.SamsungBillingMode;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.samsung.SamsungSKUListKey;
+import com.androidth.general.common.billing.samsung.rx.ItemListQueryGroup;
+import com.androidth.general.common.billing.samsung.rx.SamsungIapHelperFacade;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

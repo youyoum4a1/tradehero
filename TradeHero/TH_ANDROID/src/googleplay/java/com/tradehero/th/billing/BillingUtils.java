@@ -1,14 +1,14 @@
-package com.tradehero.th.billing;
+package com.androidth.general.billing;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.utils.StringUtils;
-import com.tradehero.th.utils.VersionUtils;
+import com.androidth.general.api.billing.GooglePlayPurchaseReportDTO;
+import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.billing.googleplay.THIABPurchase;
+import com.androidth.general.utils.StringUtils;
+import com.androidth.general.utils.VersionUtils;
 import java.util.ArrayList;
 import java.util.List;
 

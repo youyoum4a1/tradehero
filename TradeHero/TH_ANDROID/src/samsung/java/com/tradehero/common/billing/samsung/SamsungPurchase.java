@@ -1,9 +1,9 @@
-package com.tradehero.common.billing.samsung;
+package com.androidth.general.common.billing.samsung;
 
 import android.support.annotation.NonNull;
 import com.samsung.android.sdk.iap.lib.vo.InboxVo;
 import com.samsung.android.sdk.iap.lib.vo.PurchaseVo;
-import com.tradehero.common.billing.ProductPurchase;
+import com.androidth.general.common.billing.ProductPurchase;
 
 abstract public class SamsungPurchase<
         SamsungSKUType extends SamsungSKU,

@@ -1,4 +1,4 @@
-package com.tradehero.th.activities;
+package com.androidth.general.activities;
 
 import android.app.Activity;
 import android.app.Dialog;

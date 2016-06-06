@@ -1,14 +1,14 @@
-package com.tradehero.th.billing.googleplay.inventory;
+package com.androidth.general.billing.googleplay.inventory;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.common.billing.googleplay.inventory.BaseIABInventoryFetcherHolderRx;
-import com.tradehero.common.billing.googleplay.inventory.IABInventoryFetcherRx;
-import com.tradehero.th.billing.googleplay.THIABProductDetail;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.exception.IABExceptionFactory;
+import com.androidth.general.common.billing.googleplay.inventory.BaseIABInventoryFetcherHolderRx;
+import com.androidth.general.common.billing.googleplay.inventory.IABInventoryFetcherRx;
+import com.androidth.general.billing.googleplay.THIABProductDetail;
 import java.util.List;
 import javax.inject.Inject;
 

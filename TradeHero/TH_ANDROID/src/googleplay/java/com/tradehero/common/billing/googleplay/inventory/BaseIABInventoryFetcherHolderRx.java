@@ -1,9 +1,9 @@
-package com.tradehero.common.billing.googleplay.inventory;
+package com.androidth.general.common.billing.googleplay.inventory;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.googleplay.IABProductDetail;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.inventory.BaseBillingInventoryFetcherHolderRx;
+import com.androidth.general.common.billing.googleplay.IABProductDetail;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.inventory.BaseBillingInventoryFetcherHolderRx;
 import java.util.List;
 
 abstract public class BaseIABInventoryFetcherHolderRx<

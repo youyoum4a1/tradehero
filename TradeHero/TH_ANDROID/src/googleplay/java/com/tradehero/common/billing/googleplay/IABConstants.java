@@ -1,9 +1,9 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.BillingConstants;
+import com.androidth.general.common.billing.BillingConstants;
 import timber.log.Timber;
 
 public class IABConstants implements BillingConstants

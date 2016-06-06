@@ -1,10 +1,10 @@
-package com.tradehero.common.billing.googleplay.consume;
+package com.androidth.general.common.billing.googleplay.consume;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.BaseRequestCodeHolder;
-import com.tradehero.common.billing.googleplay.IABOrderId;
-import com.tradehero.common.billing.googleplay.IABPurchase;
-import com.tradehero.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.BaseRequestCodeHolder;
+import com.androidth.general.common.billing.googleplay.IABOrderId;
+import com.androidth.general.common.billing.googleplay.IABPurchase;
+import com.androidth.general.common.billing.googleplay.IABSKU;
 import rx.Observable;
 
 abstract public class BaseIABPurchaseConsumerHolderRx<

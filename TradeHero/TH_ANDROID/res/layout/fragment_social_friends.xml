@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.common.widget.BetterViewAnimator
+<com.androidth.general.common.widget.BetterViewAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/friends_root_view"
     android:layout_width="match_parent"
@@ -106,4 +106,4 @@
       android:text="@string/message_fetch_error"
       />
 
-</com.tradehero.common.widget.BetterViewAnimator>
+</com.androidth.general.common.widget.BetterViewAnimator>

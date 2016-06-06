@@ -1,9 +1,9 @@
-package com.tradehero.th.activities;
+package com.androidth.general.activities;
 
 import android.view.Menu;
-import com.tradehero.th.fragments.trending.TileType;
-import com.tradehero.th.utils.route.THRouter;
-import com.tradehero.th.widget.OffOnViewSwitcherEvent;
+import com.androidth.general.fragments.trending.TileType;
+import com.androidth.general.utils.route.THRouter;
+import com.androidth.general.widget.OffOnViewSwitcherEvent;
 
 public class LiveActivityUtil
 {

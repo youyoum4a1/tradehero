@@ -1,11 +1,11 @@
-package com.tradehero.common.billing.samsung.tester;
+package com.androidth.general.common.billing.samsung.tester;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.samsung.SamsungBillingMode;
-import com.tradehero.common.billing.tester.BaseBillingAvailableTesterHolderRx;
+import com.androidth.general.common.billing.samsung.SamsungBillingMode;
+import com.androidth.general.common.billing.tester.BaseBillingAvailableTesterHolderRx;
 
 abstract public class BaseSamsungBillingAvailableTesterHolderRx
         extends BaseBillingAvailableTesterHolderRx

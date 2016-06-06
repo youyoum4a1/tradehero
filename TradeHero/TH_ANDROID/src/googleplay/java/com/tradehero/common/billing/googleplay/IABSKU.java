@@ -1,8 +1,8 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.common.billing.ProductIdentifier;
+import com.androidth.general.common.billing.ProductIdentifier;
 
 public class IABSKU implements ProductIdentifier
 {

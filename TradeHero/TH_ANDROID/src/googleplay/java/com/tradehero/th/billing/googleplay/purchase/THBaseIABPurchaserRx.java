@@ -1,13 +1,13 @@
-package com.tradehero.th.billing.googleplay.purchase;
+package com.androidth.general.billing.googleplay.purchase;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.common.billing.googleplay.purchase.BaseIABPurchaserRx;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.googleplay.THIABPurchaseOrder;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.exception.IABExceptionFactory;
+import com.androidth.general.common.billing.googleplay.purchase.BaseIABPurchaserRx;
+import com.androidth.general.billing.googleplay.THIABOrderId;
+import com.androidth.general.billing.googleplay.THIABPurchase;
+import com.androidth.general.billing.googleplay.THIABPurchaseOrder;
 import org.json.JSONException;
 
 public class THBaseIABPurchaserRx

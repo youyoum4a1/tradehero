@@ -1,7 +1,7 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.ProductDetail;
+import com.androidth.general.common.billing.ProductDetail;
 
 public interface IABProductDetail<IABSKUType extends IABSKU>
         extends ProductDetail<IABSKUType>

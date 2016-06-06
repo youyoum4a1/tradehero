@@ -1,11 +1,11 @@
-package com.tradehero.common.billing.samsung.persistence;
+package com.androidth.general.common.billing.samsung.persistence;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.ProductPurchaseCacheRx;
-import com.tradehero.common.billing.samsung.SamsungOrderId;
-import com.tradehero.common.billing.samsung.SamsungPurchase;
-import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.persistence.DTOCacheUtilRx;
+import com.androidth.general.common.billing.ProductPurchaseCacheRx;
+import com.androidth.general.common.billing.samsung.SamsungOrderId;
+import com.androidth.general.common.billing.samsung.SamsungPurchase;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.persistence.DTOCacheUtilRx;
 
 public class SamsungPurchaseCacheRx<
             SamsungSKUType extends SamsungSKU,

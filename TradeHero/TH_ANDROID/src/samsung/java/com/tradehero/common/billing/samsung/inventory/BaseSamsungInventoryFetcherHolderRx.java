@@ -1,11 +1,11 @@
-package com.tradehero.common.billing.samsung.inventory;
+package com.androidth.general.common.billing.samsung.inventory;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.inventory.BaseBillingInventoryFetcherHolderRx;
-import com.tradehero.common.billing.samsung.SamsungProductDetail;
-import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.inventory.BaseBillingInventoryFetcherHolderRx;
+import com.androidth.general.common.billing.samsung.SamsungProductDetail;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
 import java.util.List;
 
 abstract public class BaseSamsungInventoryFetcherHolderRx<

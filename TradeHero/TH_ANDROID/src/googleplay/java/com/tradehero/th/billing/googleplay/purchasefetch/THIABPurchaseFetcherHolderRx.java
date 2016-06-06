@@ -1,10 +1,10 @@
-package com.tradehero.th.billing.googleplay.purchasefetch;
+package com.androidth.general.billing.googleplay.purchasefetch;
 
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.purchasefetch.IABPurchaseFetcherHolderRx;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
-import com.tradehero.th.billing.purchasefetch.THPurchaseFetcherHolderRx;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.purchasefetch.IABPurchaseFetcherHolderRx;
+import com.androidth.general.billing.googleplay.THIABOrderId;
+import com.androidth.general.billing.googleplay.THIABPurchase;
+import com.androidth.general.billing.purchasefetch.THPurchaseFetcherHolderRx;
 
 public interface THIABPurchaseFetcherHolderRx
         extends

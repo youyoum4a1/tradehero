@@ -1,4 +1,4 @@
-package com.tradehero.common.log;
+package com.androidth.general.common.log;
 
 import android.util.Log;
 import com.crashlytics.android.Crashlytics;

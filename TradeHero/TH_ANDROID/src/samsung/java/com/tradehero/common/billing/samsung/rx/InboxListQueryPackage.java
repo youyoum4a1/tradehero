@@ -1,8 +1,8 @@
-package com.tradehero.common.billing.samsung.rx;
+package com.androidth.general.common.billing.samsung.rx;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.samsung.SamsungBillingMode;
+import com.androidth.general.common.billing.samsung.SamsungBillingMode;
 
 public class InboxListQueryPackage extends SamsungQueryPackage
 {

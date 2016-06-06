@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <declare-styleable name="LiveRewardWidget">
+    <attr name="rewardStep"
+        format="integer" />
+  </declare-styleable>
+
+  <declare-styleable name="DocumentActionWidget">
+    <attr name="android:text" />
+    <attr name="android:drawableLeft" />
+  </declare-styleable>
+
+  <declare-styleable name="KYCAddressWidget">
+    <attr name="showCheckbox" format="boolean"/>
+  </declare-styleable>
+</resources>

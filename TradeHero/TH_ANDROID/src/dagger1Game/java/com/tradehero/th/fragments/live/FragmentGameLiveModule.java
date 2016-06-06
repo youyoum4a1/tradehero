@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.live;
+package com.androidth.general.fragments.live;
 
 import dagger.Module;
 

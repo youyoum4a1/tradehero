@@ -1,4 +1,4 @@
-package com.tradehero.common.billing.samsung.rx;
+package com.androidth.general.common.billing.samsung.rx;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -12,11 +12,11 @@ import com.samsung.android.sdk.iap.lib.vo.ErrorVo;
 import com.samsung.android.sdk.iap.lib.vo.InboxVo;
 import com.samsung.android.sdk.iap.lib.vo.ItemVo;
 import com.samsung.android.sdk.iap.lib.vo.PurchaseVo;
-import com.tradehero.common.billing.samsung.SamsungBillingMode;
-import com.tradehero.common.billing.samsung.exception.SamsungBindException;
-import com.tradehero.common.billing.samsung.exception.SamsungItemListException;
-import com.tradehero.common.billing.samsung.exception.SamsungPurchaseException;
-import com.tradehero.common.billing.samsung.exception.SamsungPurchaseFetchException;
+import com.androidth.general.common.billing.samsung.SamsungBillingMode;
+import com.androidth.general.common.billing.samsung.exception.SamsungBindException;
+import com.androidth.general.common.billing.samsung.exception.SamsungItemListException;
+import com.androidth.general.common.billing.samsung.exception.SamsungPurchaseException;
+import com.androidth.general.common.billing.samsung.exception.SamsungPurchaseFetchException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;

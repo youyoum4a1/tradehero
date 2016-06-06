@@ -1,7 +1,7 @@
-package com.tradehero.th.billing.samsung;
+package com.androidth.general.billing.samsung;
 
-import com.tradehero.common.billing.samsung.SamsungOrderId;
-import com.tradehero.th.billing.THOrderId;
+import com.androidth.general.common.billing.samsung.SamsungOrderId;
+import com.androidth.general.billing.THOrderId;
 
 public class THSamsungOrderId
         extends SamsungOrderId

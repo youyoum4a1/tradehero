@@ -51,7 +51,7 @@
 
       <include layout="@layout/discussion_translate_notice"/>
 
-      <com.tradehero.common.widget.BetterViewAnimator
+      <com.androidth.general.common.widget.BetterViewAnimator
           android:id="@+id/news_detail_wrapper"
           android:layout_width="match_parent"
           android:layout_height="wrap_content">
@@ -70,7 +70,7 @@
             android:gravity="center"
             />
 
-        <com.tradehero.th.widget.MarkdownTextView
+        <com.androidth.general.widget.MarkdownTextView
             android:id="@+id/discussion_content"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginRight="@dimen/margin_small"
@@ -82,7 +82,7 @@
             tools:text="A big one"
             />
 
-      </com.tradehero.common.widget.BetterViewAnimator>
+      </com.androidth.general.common.widget.BetterViewAnimator>
 
       <Button
           android:id="@+id/news_view_on_web"

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <com.tradehero.th.fragments.fxonboard.ActivateTradeView
+  <com.androidth.general.fragments.fxonboard.ActivateTradeView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
@@ -43,6 +43,6 @@
         style="@style/TH.FxOnBoardDialog.NextButton"
         />
 
-  </com.tradehero.th.fragments.fxonboard.ActivateTradeView>
+  </com.androidth.general.fragments.fxonboard.ActivateTradeView>
 
 </merge>

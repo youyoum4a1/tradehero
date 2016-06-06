@@ -1,4 +1,4 @@
-package com.tradehero.th.auth.tencent_qq;
+package com.androidth.general.auth.tencent_qq;
 
 import com.tencent.tauth.UiError;
 

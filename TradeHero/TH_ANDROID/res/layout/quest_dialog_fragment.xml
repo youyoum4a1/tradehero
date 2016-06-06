@@ -43,7 +43,7 @@
           android:id="@+id/achievement_dialog_fragment_inner_top"
           layout="@layout/achievement_dialog_fragment_inner_top"/>
 
-      <com.tradehero.th.widget.QuestIndicatorGroupView
+      <com.androidth.general.widget.QuestIndicatorGroupView
           android:id="@+id/quest_indicator_group"
           android:layout_width="@dimen/achievement_dialog_width"
           android:layout_height="wrap_content"
@@ -55,34 +55,34 @@
           android:gravity="center"
           tools:ignore="UnknownId">
 
-        <com.tradehero.th.widget.QuestIndicatorView
+        <com.androidth.general.widget.QuestIndicatorView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/TH.Achievement.QuestIndicator"/>
-        <com.tradehero.th.widget.QuestIndicatorView
+        <com.androidth.general.widget.QuestIndicatorView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/TH.Achievement.QuestIndicator"/>
-        <com.tradehero.th.widget.QuestIndicatorView
+        <com.androidth.general.widget.QuestIndicatorView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/TH.Achievement.QuestIndicator"/>
-        <com.tradehero.th.widget.QuestIndicatorView
+        <com.androidth.general.widget.QuestIndicatorView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/TH.Achievement.QuestIndicator"/>
-        <com.tradehero.th.widget.QuestIndicatorView
+        <com.androidth.general.widget.QuestIndicatorView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             style="@style/TH.Achievement.QuestIndicator"/>
-      </com.tradehero.th.widget.QuestIndicatorGroupView>
+      </com.androidth.general.widget.QuestIndicatorGroupView>
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.androidth.general.widget.MarkdownTextView
           android:id="@+id/achievement_description"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
           android:layout_centerHorizontal="true"
           style="@style/TH.Achievement.Description"/>
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.androidth.general.widget.MarkdownTextView
           android:id="@+id/achievement_more_description"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"

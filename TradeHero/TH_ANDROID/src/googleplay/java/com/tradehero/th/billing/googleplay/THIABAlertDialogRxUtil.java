@@ -1,26 +1,26 @@
-package com.tradehero.th.billing.googleplay;
+package com.androidth.general.billing.googleplay;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.exception.IABBadResponseException;
-import com.tradehero.common.billing.googleplay.exception.IABDeveloperErrorException;
-import com.tradehero.common.billing.googleplay.exception.IABInvalidConsumptionException;
-import com.tradehero.common.billing.googleplay.exception.IABItemAlreadyOwnedException;
-import com.tradehero.common.billing.googleplay.exception.IABRemoteException;
-import com.tradehero.common.billing.googleplay.exception.IABResultErrorException;
+import com.androidth.general.common.billing.ProductIdentifier;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.exception.IABBadResponseException;
+import com.androidth.general.common.billing.googleplay.exception.IABDeveloperErrorException;
+import com.androidth.general.common.billing.googleplay.exception.IABInvalidConsumptionException;
+import com.androidth.general.common.billing.googleplay.exception.IABItemAlreadyOwnedException;
+import com.androidth.general.common.billing.googleplay.exception.IABRemoteException;
+import com.androidth.general.common.billing.googleplay.exception.IABResultErrorException;
 import com.tradehero.th.R;
-import com.tradehero.th.activities.ActivityUtil;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.BaseBillingUtils;
-import com.tradehero.th.billing.BillingUtils;
-import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
-import com.tradehero.th.persistence.billing.googleplay.THIABPurchaseCacheRx;
-import com.tradehero.th.rx.ReplaceWithFunc1;
-import com.tradehero.th.rx.dialog.OnDialogClickEvent;
+import com.androidth.general.activities.ActivityUtil;
+import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.billing.BaseBillingUtils;
+import com.androidth.general.billing.BillingUtils;
+import com.androidth.general.billing.THBillingAlertDialogRxUtil;
+import com.androidth.general.persistence.billing.googleplay.THIABPurchaseCacheRx;
+import com.androidth.general.rx.ReplaceWithFunc1;
+import com.androidth.general.rx.dialog.OnDialogClickEvent;
 
 import java.util.HashMap;
 

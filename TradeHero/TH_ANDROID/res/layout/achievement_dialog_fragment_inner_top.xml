@@ -18,7 +18,7 @@
       android:layout_centerHorizontal="true"
       style="@style/TH.Achievement.Header"/>
 
-  <com.tradehero.common.widget.PulsatingRing
+  <com.androidth.general.common.widget.PulsatingRing
       android:id="@+id/achievement_pulsating"
       android:layout_height="@dimen/achievement_pulse_circle_w_h"
       android:layout_width="@dimen/achievement_pulse_circle_w_h"

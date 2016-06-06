@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <color android:color="@color/tradehero_grid_border_color"/>
+  </item>
+  <item android:bottom="1dp">
+    <color android:color="#F2F2F2"/>
+  </item>
+</layer-list>

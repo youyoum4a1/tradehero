@@ -1,4 +1,4 @@
-package com.tradehero.common.log;
+package com.androidth.general.common.log;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

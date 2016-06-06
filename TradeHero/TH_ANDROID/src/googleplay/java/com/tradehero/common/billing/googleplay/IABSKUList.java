@@ -1,4 +1,4 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 public class IABSKUList extends BaseIABSKUList<IABSKU>
 {

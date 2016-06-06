@@ -1,16 +1,16 @@
-package com.tradehero.th.billing.samsung;
+package com.androidth.general.billing.samsung;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.ProductIdentifier;
-import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.ProductIdentifier;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
 import com.tradehero.metrics.Analytics;
 import com.tradehero.th.R;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.billing.BaseBillingUtils;
-import com.tradehero.th.billing.THBillingAlertDialogRxUtil;
-import com.tradehero.th.billing.samsung.persistence.THSamsungPurchaseCacheRx;
+import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.billing.BaseBillingUtils;
+import com.androidth.general.billing.THBillingAlertDialogRxUtil;
+import com.androidth.general.billing.samsung.persistence.THSamsungPurchaseCacheRx;
 import java.util.HashMap;
 import javax.inject.Inject;
 import timber.log.Timber;

@@ -1,4 +1,4 @@
-package com.tradehero.common.billing.samsung.exception;
+package com.androidth.general.common.billing.samsung.exception;
 
 import android.support.annotation.NonNull;
 import com.samsung.android.sdk.iap.lib.vo.ErrorVo;

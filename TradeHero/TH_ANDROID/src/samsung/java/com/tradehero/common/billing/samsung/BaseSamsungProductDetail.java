@@ -1,4 +1,4 @@
-package com.tradehero.common.billing.samsung;
+package com.androidth.general.common.billing.samsung;
 
 import com.samsung.android.sdk.iap.lib.vo.ItemVo;
 

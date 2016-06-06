@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.samsung;
+package com.androidth.general.billing.samsung;
 
 import com.tradehero.RobolectricMavenTestRunner;
 import org.junit.Ignore;

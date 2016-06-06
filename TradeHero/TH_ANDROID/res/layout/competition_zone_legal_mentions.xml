@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView
+<com.androidth.general.fragments.competition.zone.CompetitionZoneLegalMentionsView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
@@ -40,4 +40,4 @@
       android:drawableRight="@drawable/settings_forward_light"
       />
 
-</com.tradehero.th.fragments.competition.zone.CompetitionZoneLegalMentionsView>
+</com.androidth.general.fragments.competition.zone.CompetitionZoneLegalMentionsView>

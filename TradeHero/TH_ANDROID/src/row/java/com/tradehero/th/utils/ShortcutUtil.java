@@ -1,4 +1,4 @@
-package com.tradehero.th.utils;
+package com.androidth.general.utils;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;

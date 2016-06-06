@@ -1,6 +1,6 @@
 package com.tradehero.th;
 
-import com.tradehero.th.fragments.DebugFragmentModule;
+import com.androidth.general.fragments.DebugFragmentModule;
 import dagger.Module;
 
 @Module(

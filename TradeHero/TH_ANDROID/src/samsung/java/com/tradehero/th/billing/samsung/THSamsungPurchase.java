@@ -1,14 +1,14 @@
-package com.tradehero.th.billing.samsung;
+package com.androidth.general.billing.samsung;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.samsung.android.sdk.iap.lib.vo.PurchaseVo;
-import com.tradehero.common.billing.samsung.SamsungPurchase;
-import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.th.api.billing.SamsungPurchaseReportDTO;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.THProductPurchase;
+import com.androidth.general.common.billing.samsung.SamsungPurchase;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
+import com.androidth.general.api.billing.SamsungPurchaseReportDTO;
+import com.androidth.general.api.portfolio.OwnedPortfolioId;
+import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.billing.THProductPurchase;
 
 public class THSamsungPurchase
     extends SamsungPurchase<

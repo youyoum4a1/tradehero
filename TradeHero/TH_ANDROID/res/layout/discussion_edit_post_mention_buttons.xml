@@ -2,7 +2,7 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <com.tradehero.th.fragments.discussion.MentionActionButtonsView
+  <com.androidth.general.fragments.discussion.MentionActionButtonsView
       android:orientation="horizontal"
       android:id="@+id/mention_widget"
       android:layout_width="wrap_content"
@@ -24,6 +24,6 @@
         android:text="@string/hashtag"
         />
 
-  </com.tradehero.th.fragments.discussion.MentionActionButtonsView>
+  </com.androidth.general.fragments.discussion.MentionActionButtonsView>
 
 </merge>

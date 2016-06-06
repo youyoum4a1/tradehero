@@ -1,6 +1,6 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
-import com.tradehero.common.billing.ProductPurchase;
+import com.androidth.general.common.billing.ProductPurchase;
 
 public interface IABPurchase<
             IABSKUType extends IABSKU,

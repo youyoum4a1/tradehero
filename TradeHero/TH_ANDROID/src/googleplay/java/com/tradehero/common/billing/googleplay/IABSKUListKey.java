@@ -1,9 +1,9 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.ProductIdentifierListKey;
-import com.tradehero.common.persistence.AbstractStringDTOKey;
+import com.androidth.general.common.billing.ProductIdentifierListKey;
+import com.androidth.general.common.persistence.AbstractStringDTOKey;
 
 public class IABSKUListKey extends AbstractStringDTOKey implements ProductIdentifierListKey
 {

@@ -1,6 +1,6 @@
-package com.tradehero.common.billing.samsung;
+package com.androidth.general.common.billing.samsung;
 
-import com.tradehero.common.billing.OrderId;
+import com.androidth.general.common.billing.OrderId;
 
 public class SamsungOrderId implements OrderId
 {

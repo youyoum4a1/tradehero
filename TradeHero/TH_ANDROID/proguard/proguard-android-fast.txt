@@ -101,7 +101,7 @@
 -dontwarn okio.**
 -dontwarn com.tencent.**
 -dontwarn **.VisibleForTesting
--dontwarn com.tradehero.th.api.i18n.**
+-dontwarn com.androidth.general.api.i18n.**
 -dontwarn com.tradehero.route.**
 -dontwarn com.tradehero.metrics.**
 -dontwarn com.handmark.**
@@ -122,31 +122,31 @@
 
 
 # Jackson introspect
--keep public class com.tradehero.th.api.** {
+-keep public class com.androidth.general.api.** {
   public void set*(***);
   public *** get*();
 }
--keep interface com.tradehero.th.network.service.** { *; }
--keep public class com.tradehero.th.billing.** { *; }
--keep public class com.tradehero.th.fragments.social.friend.** { *; }
--keep public class com.tradehero.common.billing.** { *; }
--keep public class com.tradehero.th.api.discussion.** { *; }
--keep public class com.tradehero.th.api.pagination.** { *; }
--keep public class com.tradehero.th.api.timeline.** { *; }
--keep public class com.tradehero.th.models.graphics.** { *; }
+-keep interface com.androidth.general.network.service.** { *; }
+-keep public class com.androidth.general.billing.** { *; }
+-keep public class com.androidth.general.fragments.social.friend.** { *; }
+-keep public class com.androidth.general.common.billing.** { *; }
+-keep public class com.androidth.general.api.discussion.** { *; }
+-keep public class com.androidth.general.api.pagination.** { *; }
+-keep public class com.androidth.general.api.timeline.** { *; }
+-keep public class com.androidth.general.models.graphics.** { *; }
 
 # We actually use public field instead of getter and setter for it.
--keep public class com.tradehero.th.api.** {
+-keep public class com.androidth.general.api.** {
   public <fields>;
 }
 
 # Keep fields that are called by reflection
--keep public class * extends com.tradehero.common.persistence.DTO {
+-keep public class * extends com.androidth.general.common.persistence.DTO {
   public <fields>;
 }
 
 # Keep constructors that are called by reflection
--keepclassmembers public class * extends com.tradehero.th.fragments.trending.filter.TrendingFilterTypeDTO{
+-keepclassmembers public class * extends com.androidth.general.fragments.trending.filter.TrendingFilterTypeDTO{
   public <init>(...);
 }
 

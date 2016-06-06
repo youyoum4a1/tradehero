@@ -1,8 +1,8 @@
-package com.tradehero.common.billing.samsung;
+package com.androidth.general.common.billing.samsung;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.BaseRequestCodeActor;
+import com.androidth.general.common.billing.BaseRequestCodeActor;
 
 abstract public class BaseSamsungActorRx extends BaseRequestCodeActor
 {

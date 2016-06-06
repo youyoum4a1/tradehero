@@ -1,6 +1,6 @@
-package com.tradehero.th.network.retrofit;
+package com.androidth.general.network.retrofit;
 
-import com.tradehero.th.network.service.FlavorRetrofitProtectedModule;
+import com.androidth.general.network.service.FlavorRetrofitProtectedModule;
 import dagger.Module;
 
 @Module(

@@ -1,6 +1,6 @@
-package com.tradehero.common.billing.samsung;
+package com.androidth.general.common.billing.samsung;
 
-import com.tradehero.common.billing.BaseProductIdentifierList;
+import com.androidth.general.common.billing.BaseProductIdentifierList;
 
 public class BaseSamsungSKUList<SamsungSKUType extends SamsungSKU>
         extends BaseProductIdentifierList<SamsungSKUType>

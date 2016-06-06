@@ -1,4 +1,4 @@
-package com.tradehero.th.billing.googleplay.exception;
+package com.androidth.general.billing.googleplay.exception;
 
 class THIABExceptionConstants
 {

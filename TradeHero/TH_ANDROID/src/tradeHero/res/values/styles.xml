@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <style name="TradeHero.Live"
+      parent="Base.TradeHero">
+    <item name="colorAccent">@color/tradehero_red_focused</item>
+    <item name="colorPrimary">@color/tradehero_red</item>
+    <item name="colorPrimaryDark">#922820</item>
+    <item name="android:textColorHighlight">@color/accented_primary_red_text</item>
+    <item name="android:textColorHighlightInverse">@color/accented_secondary_red_text</item>
+    <item name="slidingTabBackground">@color/tradehero_dark_red</item>
+  </style>
+
+  <style name="TradeHero.Live.RewardWidget">
+    <item name="android:layout_margin">4dp</item>
+    <item name="android:contentDescription">@null</item>
+    <item name="android:scaleType">fitCenter</item>
+    <item name="android:alpha">0.3</item>
+  </style>
+
+  <style name="TradeHero.Live.SignUpInnerContainer">
+    <item name="android:orientation">vertical</item>
+    <item name="android:gravity">center_horizontal</item>
+    <item name="android:clipToPadding">false</item>
+    <item name="android:paddingTop">@dimen/margin_xsmall</item>
+    <item name="android:paddingLeft">@dimen/margin_small</item>
+    <item name="android:paddingRight">@dimen/margin_small</item>
+    <item name="android:paddingBottom">@dimen/margin_small</item>
+    <item name="android:maxWidth">480dp</item>
+    <item name="theme">@style/TradeHero.Live.Form</item>
+    <item name="android:theme">@style/TradeHero.Live.Form</item>
+  </style>
+
+  <style name="TradeHero.Live.Form">
+    <item name="colorAccent">@color/light_green_normal</item>
+    <item name="colorControlHighlight">@color/light_green_focused</item>
+  </style>
+
+  <style name="TH.Button.Link"
+      parent="TH.Button">
+    <item name="android:textColor">@color/tradehero_blue</item>
+  </style>
+
+  <style name="TH.Button.Small.Link"
+      parent="TH.Button.Small">
+    <item name="android:textColor">@color/tradehero_blue</item>
+  </style>
+
+  <style name="TH.LiveIdentityPromptImage">
+    <item name="android:layout_width">@dimen/size_15</item>
+    <item name="android:layout_height">@dimen/size_15</item>
+    <item name="android:layout_marginBottom">@dimen/margin_small</item>
+    <item name="android:layout_marginTop">@dimen/margin_small</item>
+    <item name="android:scaleType">fitCenter</item>
+  </style>
+
+  <style name="TH.Headline.Verify">
+    <item name="android:textSize">48sp</item>
+    <item name="android:padding">@dimen/size_2</item>
+    <item name="android:inputType">number</item>
+    <item name="android:maxLength">1</item>
+    <item name="android:selectAllOnFocus">true</item>
+  </style>
+
+  <style name="TH.Button.LiveForm"
+      parent="TH.Button.Inverse">
+    <item name="android:background">@drawable/basic_green_selector</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:enabled">false</item>
+  </style>
+
+  <style name="TH.Button.LiveForm.Previous"
+      parent="TH.Button">
+    <item name="android:background">@drawable/live_previous_layer_list</item>
+    <item name="android:textColor">@color/light_green_normal</item>
+    <item name="android:enabled">false</item>
+  </style>
+
+  <style name="TH.LiveFormField"
+      parent="TH.Body">
+    <item name="android:singleLine">true</item>
+    <item name="android:inputType">textPostalAddress|textCapWords</item>
+    <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
+  </style>
+
+</resources>

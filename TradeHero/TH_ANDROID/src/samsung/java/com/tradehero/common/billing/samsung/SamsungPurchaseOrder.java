@@ -1,6 +1,6 @@
-package com.tradehero.common.billing.samsung;
+package com.androidth.general.common.billing.samsung;
 
-import com.tradehero.common.billing.PurchaseOrder;
+import com.androidth.general.common.billing.PurchaseOrder;
 
 public interface SamsungPurchaseOrder<SamsungSKUType extends SamsungSKU>
     extends PurchaseOrder<SamsungSKUType>

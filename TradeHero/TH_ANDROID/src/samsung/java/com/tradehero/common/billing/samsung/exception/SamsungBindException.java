@@ -1,4 +1,4 @@
-package com.tradehero.common.billing.samsung.exception;
+package com.androidth.general.common.billing.samsung.exception;
 
 public class SamsungBindException extends SamsungException
 {

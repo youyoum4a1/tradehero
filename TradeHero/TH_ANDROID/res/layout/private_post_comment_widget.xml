@@ -4,7 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     >
 
-  <com.tradehero.th.fragments.social.message.PrivatePostCommentView
+  <com.androidth.general.fragments.social.message.PrivatePostCommentView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:id="@+id/discussion_comment_widget"
@@ -17,6 +17,6 @@
 
     <include layout="@layout/post_comment_widget_inner" />
 
-  </com.tradehero.th.fragments.social.message.PrivatePostCommentView>
+  </com.androidth.general.fragments.social.message.PrivatePostCommentView>
 
 </merge>

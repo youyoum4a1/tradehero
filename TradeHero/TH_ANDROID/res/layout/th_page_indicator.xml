@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<com.tradehero.th.widget.THTabView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.androidth.general.widget.THTabView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="@dimen/dashboard_tabhost_height"
     android:orientation="horizontal"
     style="@style/TradeHero.PageTitleView"
@@ -22,4 +22,4 @@
 
     <include layout="@layout/th_inner_indicator"/>
 
-</com.tradehero.th.widget.THTabView>
+</com.androidth.general.widget.THTabView>

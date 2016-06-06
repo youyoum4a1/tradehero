@@ -1,11 +1,11 @@
-package com.tradehero.common.billing.googleplay.purchase;
+package com.androidth.general.common.billing.googleplay.purchase;
 
-import com.tradehero.common.activities.ActivityResultRequester;
-import com.tradehero.common.billing.googleplay.IABOrderId;
-import com.tradehero.common.billing.googleplay.IABPurchase;
-import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.purchase.BillingPurchaserRx;
+import com.androidth.general.common.activities.ActivityResultRequester;
+import com.androidth.general.common.billing.googleplay.IABOrderId;
+import com.androidth.general.common.billing.googleplay.IABPurchase;
+import com.androidth.general.common.billing.googleplay.IABPurchaseOrder;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.purchase.BillingPurchaserRx;
 
 public interface IABPurchaserRx<
         IABSKUType extends IABSKU,

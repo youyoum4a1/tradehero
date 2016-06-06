@@ -1,4 +1,4 @@
-package com.tradehero.th.api.billing;
+package com.androidth.general.api.billing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

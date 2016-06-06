@@ -1,9 +1,9 @@
-package com.tradehero.th.models.push;
+package com.androidth.general.models.push;
 
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
-import com.tradehero.common.annotation.ForUser;
-import com.tradehero.common.persistence.prefs.IntPreference;
+import com.androidth.general.common.annotation.ForUser;
+import com.androidth.general.common.persistence.prefs.IntPreference;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;

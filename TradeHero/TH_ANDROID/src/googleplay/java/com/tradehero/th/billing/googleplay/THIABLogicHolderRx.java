@@ -1,10 +1,10 @@
-package com.tradehero.th.billing.googleplay;
+package com.androidth.general.billing.googleplay;
 
-import com.tradehero.common.billing.googleplay.IABLogicHolderRx;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.IABSKUList;
-import com.tradehero.common.billing.googleplay.IABSKUListKey;
-import com.tradehero.th.billing.THBillingLogicHolderRx;
+import com.androidth.general.common.billing.googleplay.IABLogicHolderRx;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.IABSKUList;
+import com.androidth.general.common.billing.googleplay.IABSKUListKey;
+import com.androidth.general.billing.THBillingLogicHolderRx;
 
 public interface THIABLogicHolderRx extends
         IABLogicHolderRx<

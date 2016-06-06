@@ -1,8 +1,8 @@
-package com.tradehero.th.models.push;
+package com.androidth.general.models.push;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import com.tradehero.common.utils.THToast;
+import com.androidth.general.common.utils.THToast;
 import javax.inject.Inject;
 import rx.Observable;
 

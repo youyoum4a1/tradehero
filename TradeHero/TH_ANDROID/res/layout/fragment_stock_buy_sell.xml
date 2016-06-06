@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/transparent"
     android:orientation="vertical"
-    tools:context=".activities.DashboardActivity"
+    tools:context="com.androidth.general.activities.DashboardActivity"
     >
 
   <ProgressBar
@@ -25,7 +25,7 @@
       android:background="?attr/colorPrimary"
       >
 
-    <com.tradehero.th.fragments.trade.view.PortfolioSelectorView
+    <com.androidth.general.fragments.trade.view.PortfolioSelectorView
         android:id="@+id/portfolio_selector_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
           android:src="@drawable/spinner_arrow_bg"
           />
 
-    </com.tradehero.th.fragments.trade.view.PortfolioSelectorView>
+    </com.androidth.general.fragments.trade.view.PortfolioSelectorView>
 
   </LinearLayout>
 

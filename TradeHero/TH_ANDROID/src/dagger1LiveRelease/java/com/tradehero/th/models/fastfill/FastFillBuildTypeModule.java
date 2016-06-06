@@ -1,4 +1,4 @@
-package com.tradehero.th.models.fastfill;
+package com.androidth.general.models.fastfill;
 
 import dagger.Module;
 

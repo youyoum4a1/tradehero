@@ -135,7 +135,7 @@
             android:layout_centerVertical="true"
             />
 
-        <com.tradehero.th.fragments.trade.view.TradeQuantityEditText
+        <com.androidth.general.fragments.trade.view.TradeQuantityEditText
             style="@style/TH.Title.Accented"
             android:id="@+id/vquantity"
             android:layout_width="wrap_content"
@@ -255,7 +255,7 @@
           android:layout_marginRight="@dimen/margin_small"
           />
 
-      <com.tradehero.th.widget.MarkdownTextView
+      <com.androidth.general.widget.MarkdownTextView
           android:id="@+id/comments"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

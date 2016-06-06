@@ -1,17 +1,17 @@
-package com.tradehero.common.billing.samsung.purchasefetch;
+package com.androidth.general.common.billing.samsung.purchasefetch;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Pair;
 import com.samsung.android.sdk.iap.lib.vo.InboxVo;
-import com.tradehero.common.billing.purchasefetch.PurchaseFetchResult;
-import com.tradehero.common.billing.samsung.BaseSamsungActorRx;
-import com.tradehero.common.billing.samsung.SamsungBillingMode;
-import com.tradehero.common.billing.samsung.SamsungOrderId;
-import com.tradehero.common.billing.samsung.SamsungPurchase;
-import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.billing.samsung.rx.InboxListQueryGroup;
-import com.tradehero.common.billing.samsung.rx.SamsungIapHelperFacade;
+import com.androidth.general.common.billing.purchasefetch.PurchaseFetchResult;
+import com.androidth.general.common.billing.samsung.BaseSamsungActorRx;
+import com.androidth.general.common.billing.samsung.SamsungBillingMode;
+import com.androidth.general.common.billing.samsung.SamsungOrderId;
+import com.androidth.general.common.billing.samsung.SamsungPurchase;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.samsung.rx.InboxListQueryGroup;
+import com.androidth.general.common.billing.samsung.rx.SamsungIapHelperFacade;
 import java.util.List;
 import rx.Observable;
 import rx.functions.Func1;

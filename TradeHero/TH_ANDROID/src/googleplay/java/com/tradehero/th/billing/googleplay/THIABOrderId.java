@@ -1,11 +1,11 @@
-package com.tradehero.th.billing.googleplay;
+package com.androidth.general.billing.googleplay;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.tradehero.common.billing.googleplay.IABOrderId;
-import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.billing.THOrderId;
+import com.androidth.general.common.billing.googleplay.IABOrderId;
+import com.androidth.general.common.utils.THJsonAdapter;
+import com.androidth.general.api.portfolio.OwnedPortfolioId;
+import com.androidth.general.billing.THOrderId;
 import java.io.IOException;
 
 public class THIABOrderId

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:left="@dimen/achievement_indicator_bg_line_padding" android:right="@dimen/achievement_indicator_bg_line_padding">
+    <shape
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:shape="line"
+        >
+      <stroke android:width="@dimen/achievement_indicator_bg_line_height" android:color="@color/achievement_indicator_blue_bg_transparent"/>
+
+    </shape>
+  </item>
+</layer-list>

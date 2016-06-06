@@ -1,16 +1,16 @@
-package com.tradehero.th.billing.googleplay;
+package com.androidth.general.billing.googleplay;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.THPurchaseOrder;
-import com.tradehero.th.billing.googleplay.exception.IABInvalidQuantityException;
-import com.tradehero.th.billing.googleplay.exception.IABMissingApplicablePortfolioIdException;
+import com.androidth.general.common.billing.googleplay.IABPurchaseOrder;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.utils.THJsonAdapter;
+import com.androidth.general.api.portfolio.OwnedPortfolioId;
+import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.billing.THPurchaseOrder;
+import com.androidth.general.billing.googleplay.exception.IABInvalidQuantityException;
+import com.androidth.general.billing.googleplay.exception.IABMissingApplicablePortfolioIdException;
 import java.io.IOException;
 import timber.log.Timber;
 

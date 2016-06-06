@@ -1,4 +1,4 @@
-package com.tradehero.th.base;
+package com.androidth.general.base;
 
 import android.support.multidex.MultiDexApplication;
 

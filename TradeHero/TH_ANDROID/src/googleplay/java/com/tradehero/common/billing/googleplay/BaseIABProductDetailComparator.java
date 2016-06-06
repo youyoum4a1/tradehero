@@ -1,4 +1,4 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 import java.io.Serializable;
 import java.util.Comparator;

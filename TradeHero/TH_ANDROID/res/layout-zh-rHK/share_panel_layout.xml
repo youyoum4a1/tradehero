@@ -11,7 +11,7 @@
       android:layout_weight="1"
       android:layout_height="wrap_content"/>
 
-  <com.tradehero.common.widget.SocialLinkToggleButton
+  <com.androidth.general.common.widget.SocialLinkToggleButton
       android:id="@+id/btn_share_fb"
       android:layout_width="@dimen/share_button_w_h"
       android:layout_height="@dimen/share_button_w_h"
@@ -29,7 +29,7 @@
        android:layout_weight="1"
        android:layout_height="wrap_content"/>
 
-   <com.tradehero.common.widget.SocialLinkToggleButton
+   <com.androidth.general.common.widget.SocialLinkToggleButton
        android:id="@+id/btn_share_tw"
        android:layout_width="@dimen/share_button_w_h"
        android:layout_height="@dimen/share_button_w_h"
@@ -47,7 +47,7 @@
        android:layout_weight="1"
        android:layout_height="wrap_content"/>
 
-   <com.tradehero.common.widget.SocialLinkToggleButton
+   <com.androidth.general.common.widget.SocialLinkToggleButton
        android:id="@+id/btn_share_li"
        android:layout_width="@dimen/share_button_w_h"
        android:layout_height="@dimen/share_button_w_h"
@@ -81,7 +81,7 @@
       android:layout_weight="1"
       android:layout_height="wrap_content"/>
 
-  <com.tradehero.common.widget.SocialLinkToggleButton
+  <com.androidth.general.common.widget.SocialLinkToggleButton
       android:id="@+id/btn_share_wb"
       android:layout_width="@dimen/share_button_w_h"
       android:layout_height="@dimen/share_button_w_h"

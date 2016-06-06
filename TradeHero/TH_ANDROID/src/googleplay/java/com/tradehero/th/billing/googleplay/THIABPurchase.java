@@ -13,19 +13,19 @@
  * limitations under the License.
  */
 
-package com.tradehero.th.billing.googleplay;
+package com.androidth.general.billing.googleplay;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tradehero.common.billing.googleplay.BaseIABPurchase;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.SkuTypeValue;
-import com.tradehero.common.utils.THJsonAdapter;
-import com.tradehero.th.api.billing.GooglePlayPurchaseReportDTO;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.THProductPurchase;
+import com.androidth.general.common.billing.googleplay.BaseIABPurchase;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.SkuTypeValue;
+import com.androidth.general.common.utils.THJsonAdapter;
+import com.androidth.general.api.billing.GooglePlayPurchaseReportDTO;
+import com.androidth.general.api.portfolio.OwnedPortfolioId;
+import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.billing.THProductPurchase;
 import org.json.JSONException;
 import timber.log.Timber;
 

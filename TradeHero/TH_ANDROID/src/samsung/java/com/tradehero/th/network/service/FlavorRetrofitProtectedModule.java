@@ -1,4 +1,4 @@
-package com.tradehero.th.network.service;
+package com.androidth.general.network.service;
 
 import dagger.Module;
 import dagger.Provides;

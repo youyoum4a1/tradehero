@@ -1,7 +1,7 @@
-package com.tradehero.common.billing.googleplay.tester;
+package com.androidth.general.common.billing.googleplay.tester;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.tester.BaseBillingAvailableTesterHolderRx;
+import com.androidth.general.common.billing.tester.BaseBillingAvailableTesterHolderRx;
 
 abstract public class BaseIABBillingAvailableTesterHolderRx
         extends BaseBillingAvailableTesterHolderRx

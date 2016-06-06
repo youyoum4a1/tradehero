@@ -1,4 +1,4 @@
-package com.tradehero.th.billing;
+package com.androidth.general.billing;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

@@ -1,6 +1,6 @@
-package com.tradehero.th.billing.samsung.tester;
+package com.androidth.general.billing.samsung.tester;
 
-import com.tradehero.common.billing.samsung.tester.SamsungBillingAvailableTesterRx;
+import com.androidth.general.common.billing.samsung.tester.SamsungBillingAvailableTesterRx;
 
 public interface THSamsungBillingAvailableTesterRx
     extends SamsungBillingAvailableTesterRx

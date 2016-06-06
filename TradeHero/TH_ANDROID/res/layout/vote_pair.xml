@@ -2,7 +2,7 @@
 
 <merge xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <com.tradehero.th.widget.VotePair
+  <com.androidth.general.widget.VotePair
       android:id="@+id/vote_pair"
       xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:tools="http://schemas.android.com/tools"
@@ -14,14 +14,14 @@
       app:downVote="false"
       >
 
-    <com.tradehero.th.widget.VoteUpView
+    <com.androidth.general.widget.VoteUpView
         style="@style/TH.VoteView"
         android:id="@+id/timeline_action_button_vote_up"
         android:drawableLeft="@drawable/icn_actions_upvote"
         android:text="@integer/messages_initial_vote_count"
         />
 
-    <com.tradehero.th.widget.VoteDownView
+    <com.androidth.general.widget.VoteDownView
         style="@style/TH.VoteView"
         android:id="@+id/timeline_action_button_vote_down"
         android:drawableLeft="@drawable/icn_actions_downvote"
@@ -29,6 +29,6 @@
         tools:visibility="visible"
         />
 
-  </com.tradehero.th.widget.VotePair>
+  </com.androidth.general.widget.VotePair>
 
 </merge>

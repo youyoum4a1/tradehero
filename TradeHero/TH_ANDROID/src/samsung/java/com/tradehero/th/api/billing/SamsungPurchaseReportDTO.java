@@ -1,7 +1,7 @@
-package com.tradehero.th.api.billing;
+package com.androidth.general.api.billing;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.tradehero.common.billing.samsung.SamsungPurchase;
+import com.androidth.general.common.billing.samsung.SamsungPurchase;
 
 public class SamsungPurchaseReportDTO implements PurchaseReportDTO
 {

@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+  <LinearLayout
+      style="@style/TradeHero.Live.SignUpInnerContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:theme="@style/ThemeOverlay.AppCompat.Light"
+      >
+
+    <TextView
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_xsmall"
+        android:gravity="center_horizontal"
+        android:text="@string/required_document"
+        />
+
+    <LinearLayout
+        android:id="@+id/info_identity_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+      <TextView
+          style="@style/TH.Caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:text="@string/proof_identity_caption"
+          />
+
+      <Spinner
+          android:id="@+id/identity_document_type"
+          style="@style/TH.Spinner"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          />
+
+      <com.androidth.general.widget.DocumentActionWidget
+          android:id="@+id/document_action_identity"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/ic_file_file_upload"
+          android:drawableStart="@drawable/ic_file_file_upload"
+          android:text="@string/tap_to_upload"
+          />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/info_residency_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+      <TextView
+          style="@style/TH.Caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:text="@string/proof_residence_caption"
+          />
+
+      <Spinner
+          android:id="@+id/residence_document_type"
+          style="@style/TH.Spinner"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          android:layout_marginTop="@dimen/margin_xsmall"
+          />
+
+      <com.androidth.general.widget.DocumentActionWidget
+          android:id="@+id/document_action_residence"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:drawableLeft="@drawable/ic_file_file_upload"
+          android:drawableStart="@drawable/ic_file_file_upload"
+          android:text="@string/tap_to_upload"
+          />
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_xsmall"
+        android:layout_marginTop="@dimen/margin_small"
+        android:gravity="center_horizontal"
+        android:text="@string/account_currency"
+        />
+
+    <LinearLayout
+        android:id="@+id/account_currency_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+      <TextView
+          style="@style/TH.Caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:text="@string/currency"
+          />
+
+      <Spinner
+          android:id="@+id/currency_spinner"
+          style="@style/TH.Spinner"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/clickable_element_min_dimen"
+          android:layout_marginTop="@dimen/margin_xsmall"
+          />
+
+    </LinearLayout>
+
+    <TextView
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_xsmall"
+        android:layout_marginTop="@dimen/margin_small"
+        android:gravity="center_horizontal"
+        android:text="@string/live_agree_to_title"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+
+      <CheckBox
+          android:id="@+id/cb_agree_terms_conditions"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:paddingLeft="@dimen/margin_xsmall"
+          android:text="@string/empty"
+          android:theme="@style/TradeHero.Live.Form"
+          />
+
+      <TextView
+          android:id="@+id/agree_terms_conditions"
+          style="@style/TH.Button.Small.Link"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/basic_transparent_selector"
+          android:gravity="center_vertical"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:text="@string/live_agree_to_terms_and_conditions"
+          />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+
+      <CheckBox
+          android:id="@+id/cb_agree_risk_warning"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:paddingLeft="@dimen/margin_xsmall"
+          android:text="@string/empty"
+          android:theme="@style/TradeHero.Live.Form"
+          />
+
+      <TextView
+          android:id="@+id/agree_risk_warning"
+          style="@style/TH.Button.Small.Link"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/basic_transparent_selector"
+          android:gravity="center_vertical"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:text="@string/live_agree_to_risks_and_warnings_disclaimer"
+          />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+
+      <CheckBox
+          android:id="@+id/cb_agree_data_sharing"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:paddingLeft="@dimen/margin_xsmall"
+          android:text="@string/empty"
+          android:theme="@style/TradeHero.Live.Form"
+          />
+
+      <TextView
+          android:id="@+id/agree_data_sharing"
+          style="@style/TH.Button.Small.Link"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@drawable/basic_transparent_selector"
+          android:gravity="center_vertical"
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:text="@string/live_agree_to_data_sharing_agreement"
+          />
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/cb_subscribe_offers"
+        style="@style/TH.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:paddingLeft="@dimen/margin_xsmall"
+        android:paddingRight="@dimen/margin_xsmall"
+        android:text="@string/live_subscribe_offers"
+        android:theme="@style/TradeHero.Live.Form"
+        />
+
+    <CheckBox
+        android:id="@+id/cb_subscribe_trade_notifications"
+        style="@style/TH.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:paddingLeft="@dimen/margin_xsmall"
+        android:paddingRight="@dimen/margin_xsmall"
+        android:text="@string/live_subscribe_trade_notifications"
+        android:theme="@style/TradeHero.Live.Form"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:theme="@style/TradeHero.Live.Form"
+        >
+
+      <Button
+          android:id="@+id/btn_prev"
+          style="@style/TH.Button.LiveForm.Previous"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentLeft="true"
+          android:layout_alignParentStart="true"
+          android:enabled="true"
+          android:text="@string/previous"
+          />
+
+      <ViewSwitcher
+          android:id="@+id/create_switcher"
+          android:layout_width="wrap_content"
+          android:layout_alignParentEnd="true"
+          android:layout_alignParentRight="true"
+          android:layout_height="wrap_content"
+          android:layout_toRightOf="@id/btn_prev"
+          android:inAnimation="@anim/alpha_in"
+          android:outAnimation="@anim/alpha_out"
+          >
+
+        <Button
+            android:id="@+id/btn_create"
+            style="@style/TH.Button.LiveForm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/create"
+            android:layout_gravity="right|end"
+            tools:enabled="true"
+            />
+
+        <LinearLayout
+            android:id="@+id/btn_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/clickable_element_min_dimen"
+            android:paddingLeft="@dimen/margin_small"
+            android:paddingRight="@dimen/margin_small"
+            android:background="@drawable/basic_green_selector"
+            android:orientation="vertical"
+            android:layout_gravity="right|end"
+            android:gravity="center">
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/TH.Caption.Inverse"
+              android:text="@string/submit_form_top"/>
+
+          <TextView
+              style="@style/TH.Button.Inverse"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="@string/submit_form"
+              tools:enabled="true"
+              />
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              style="@style/TH.Caption.Inverse"
+              android:text="@string/submit_form_bottom"/>
+
+        </LinearLayout>
+
+      </ViewSwitcher>
+
+    </RelativeLayout>
+
+  </LinearLayout>
+
+</ScrollView>

@@ -1,19 +1,19 @@
-package com.tradehero.th.billing.samsung.purchasefetch;
+package com.androidth.general.billing.samsung.purchasefetch;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Pair;
-import com.tradehero.common.billing.samsung.SamsungBillingMode;
-import com.tradehero.common.billing.samsung.SamsungSKU;
-import com.tradehero.common.billing.samsung.purchasefetch.BaseSamsungPurchaseFetcherHolderRx;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
-import com.tradehero.th.api.portfolio.PortfolioCompactDTOList;
-import com.tradehero.th.api.users.CurrentUserId;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.billing.samsung.THSamsungOrderId;
-import com.tradehero.th.billing.samsung.THSamsungPurchase;
-import com.tradehero.th.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.tradehero.th.rx.ToastOnErrorAction1;
+import com.androidth.general.common.billing.samsung.SamsungBillingMode;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.samsung.purchasefetch.BaseSamsungPurchaseFetcherHolderRx;
+import com.androidth.general.api.portfolio.OwnedPortfolioId;
+import com.androidth.general.api.portfolio.PortfolioCompactDTOList;
+import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.billing.samsung.THSamsungOrderId;
+import com.androidth.general.billing.samsung.THSamsungPurchase;
+import com.androidth.general.persistence.portfolio.PortfolioCompactListCacheRx;
+import com.androidth.general.rx.ToastOnErrorAction1;
 import javax.inject.Inject;
 import rx.functions.Action1;
 

@@ -1,4 +1,4 @@
-package com.tradehero.th.fragments.trending;
+package com.androidth.general.fragments.trending;
 
 import com.tradehero.th.R;
 

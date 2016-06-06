@@ -1,10 +1,10 @@
-package com.tradehero.common.billing.samsung.exception;
+package com.androidth.general.common.billing.samsung.exception;
 
 import android.support.annotation.Nullable;
 import com.samsung.android.sdk.iap.lib.helper.SamsungIapHelper;
 import com.samsung.android.sdk.iap.lib.vo.ErrorVo;
-import com.tradehero.common.billing.exception.BillingExceptionFactory;
-import com.tradehero.common.billing.samsung.SamsungConstants;
+import com.androidth.general.common.billing.exception.BillingExceptionFactory;
+import com.androidth.general.common.billing.samsung.SamsungConstants;
 
 public class SamsungExceptionFactory
         implements BillingExceptionFactory

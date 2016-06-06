@@ -1,9 +1,9 @@
-package com.tradehero.th.billing.googleplay.consumer;
+package com.androidth.general.billing.googleplay.consumer;
 
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.consume.IABPurchaseConsumerHolderRx;
-import com.tradehero.th.billing.googleplay.THIABOrderId;
-import com.tradehero.th.billing.googleplay.THIABPurchase;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.consume.IABPurchaseConsumerHolderRx;
+import com.androidth.general.billing.googleplay.THIABOrderId;
+import com.androidth.general.billing.googleplay.THIABPurchase;
 
 public interface THIABPurchaseConsumerHolderRx
         extends IABPurchaseConsumerHolderRx<

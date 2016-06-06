@@ -1,13 +1,13 @@
-package com.tradehero.common.billing.googleplay.purchase;
+package com.androidth.general.common.billing.googleplay.purchase;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.googleplay.IABOrderId;
-import com.tradehero.common.billing.googleplay.IABPurchase;
-import com.tradehero.common.billing.googleplay.IABPurchaseOrder;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.purchase.BaseBillingPurchaserHolderRx;
+import com.androidth.general.common.billing.googleplay.IABOrderId;
+import com.androidth.general.common.billing.googleplay.IABPurchase;
+import com.androidth.general.common.billing.googleplay.IABPurchaseOrder;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.purchase.BaseBillingPurchaserHolderRx;
 import timber.log.Timber;
 
 abstract public class BaseIABPurchaserHolderRx<

@@ -1,14 +1,14 @@
-package com.tradehero.th.billing.googleplay.identifier;
+package com.androidth.general.billing.googleplay.identifier;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.IABSKUList;
-import com.tradehero.common.billing.googleplay.IABSKUListKey;
-import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.common.billing.googleplay.identifier.BaseIABProductIdentiferFetcherRx;
-import com.tradehero.common.billing.identifier.ProductIdentifierListResult;
-import com.tradehero.th.billing.googleplay.THIABConstants;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.IABSKUList;
+import com.androidth.general.common.billing.googleplay.IABSKUListKey;
+import com.androidth.general.common.billing.googleplay.exception.IABExceptionFactory;
+import com.androidth.general.common.billing.googleplay.identifier.BaseIABProductIdentiferFetcherRx;
+import com.androidth.general.common.billing.identifier.ProductIdentifierListResult;
+import com.androidth.general.billing.googleplay.THIABConstants;
 import java.util.HashMap;
 import java.util.Map;
 import rx.Observable;

@@ -1,8 +1,8 @@
-package com.tradehero.common.billing.samsung.inventory;
+package com.androidth.general.common.billing.samsung.inventory;
 
-import com.tradehero.common.billing.inventory.BillingInventoryFetcherRx;
-import com.tradehero.common.billing.samsung.SamsungProductDetail;
-import com.tradehero.common.billing.samsung.SamsungSKU;
+import com.androidth.general.common.billing.inventory.BillingInventoryFetcherRx;
+import com.androidth.general.common.billing.samsung.SamsungProductDetail;
+import com.androidth.general.common.billing.samsung.SamsungSKU;
 
 public interface SamsungInventoryFetcherRx<
         SamsungSKUType extends SamsungSKU,

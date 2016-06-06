@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterValueSlider xmlns:android="http://schemas.android.com/apk/res/android"
+<com.androidth.general.fragments.leaderboard.filter.LeaderboardFilterValueSlider xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/leaderboard_filter_holding_period_container"
     android:layout_width="match_parent"
@@ -114,4 +114,4 @@
 
   </RelativeLayout>
 
-</com.tradehero.th.fragments.leaderboard.filter.LeaderboardFilterValueSlider>
+</com.androidth.general.fragments.leaderboard.filter.LeaderboardFilterValueSlider>

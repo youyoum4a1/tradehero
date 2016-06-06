@@ -1,15 +1,15 @@
-package com.tradehero.th.billing.googleplay;
+package com.androidth.general.billing.googleplay;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import com.tradehero.common.billing.googleplay.BaseIABProductDetail;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.IABSKUListKey;
+import com.androidth.general.common.billing.googleplay.BaseIABProductDetail;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.IABSKUListKey;
 import com.tradehero.th.R;
-import com.tradehero.th.billing.ProductIdentifierDomain;
-import com.tradehero.th.billing.THProductDetail;
+import com.androidth.general.billing.ProductIdentifierDomain;
+import com.androidth.general.billing.THProductDetail;
 import org.json.JSONException;
 
 public class THIABProductDetail

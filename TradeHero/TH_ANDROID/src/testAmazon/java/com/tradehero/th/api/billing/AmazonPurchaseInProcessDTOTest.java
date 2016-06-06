@@ -1,10 +1,10 @@
-package com.tradehero.th.api.billing;
+package com.androidth.general.api.billing;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tradehero.THRobolectricTestRunner;
-import com.tradehero.common.annotation.ForApp;
-import com.tradehero.th.api.BaseApiTestClass;
-import com.tradehero.th.api.portfolio.OwnedPortfolioId;
+import com.androidth.general.common.annotation.ForApp;
+import com.androidth.general.api.BaseApiTestClass;
+import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import java.io.IOException;
 import java.io.InputStream;
 import javax.inject.Inject;

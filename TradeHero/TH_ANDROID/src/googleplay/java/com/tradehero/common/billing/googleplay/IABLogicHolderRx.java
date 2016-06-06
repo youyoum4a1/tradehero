@@ -1,8 +1,8 @@
-package com.tradehero.common.billing.googleplay;
+package com.androidth.general.common.billing.googleplay;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.BillingLogicHolderRx;
-import com.tradehero.common.billing.googleplay.consume.PurchaseConsumeResult;
+import com.androidth.general.common.billing.BillingLogicHolderRx;
+import com.androidth.general.common.billing.googleplay.consume.PurchaseConsumeResult;
 import rx.Observable;
 
 public interface IABLogicHolderRx<

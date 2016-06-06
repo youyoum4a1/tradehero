@@ -1,12 +1,12 @@
-package com.tradehero.th.persistence.billing.googleplay;
+package com.androidth.general.persistence.billing.googleplay;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.ProductIdentifierListCacheRx;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.IABSKUList;
-import com.tradehero.common.billing.googleplay.IABSKUListKey;
-import com.tradehero.common.persistence.DTOCacheUtilRx;
-import com.tradehero.common.persistence.UserCache;
+import com.androidth.general.common.billing.ProductIdentifierListCacheRx;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.IABSKUList;
+import com.androidth.general.common.billing.googleplay.IABSKUListKey;
+import com.androidth.general.common.persistence.DTOCacheUtilRx;
+import com.androidth.general.common.persistence.UserCache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

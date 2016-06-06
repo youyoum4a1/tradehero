@@ -1,17 +1,17 @@
-package com.tradehero.common.billing.googleplay.consume;
+package com.androidth.general.common.billing.googleplay.consume;
 
 import android.content.Context;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.googleplay.BaseIABServiceCaller;
-import com.tradehero.common.billing.googleplay.IABConstants;
-import com.tradehero.common.billing.googleplay.IABOrderId;
-import com.tradehero.common.billing.googleplay.IABPurchase;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.googleplay.IABServiceResult;
-import com.tradehero.common.billing.googleplay.exception.IABException;
-import com.tradehero.common.billing.googleplay.exception.IABExceptionFactory;
-import com.tradehero.common.billing.googleplay.exception.IABMissingTokenException;
+import com.androidth.general.common.billing.googleplay.BaseIABServiceCaller;
+import com.androidth.general.common.billing.googleplay.IABConstants;
+import com.androidth.general.common.billing.googleplay.IABOrderId;
+import com.androidth.general.common.billing.googleplay.IABPurchase;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.googleplay.IABServiceResult;
+import com.androidth.general.common.billing.googleplay.exception.IABException;
+import com.androidth.general.common.billing.googleplay.exception.IABExceptionFactory;
+import com.androidth.general.common.billing.googleplay.exception.IABMissingTokenException;
 import com.tradehero.th.BuildConfig;
 import rx.Observable;
 import rx.functions.Func1;

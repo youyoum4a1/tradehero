@@ -1,9 +1,9 @@
-package com.tradehero.th.billing.samsung.exception;
+package com.androidth.general.billing.samsung.exception;
 
 import android.support.annotation.Nullable;
-import com.tradehero.common.billing.samsung.exception.SamsungException;
-import com.tradehero.common.billing.samsung.exception.SamsungExceptionFactory;
-import com.tradehero.th.billing.samsung.THSamsungConstants;
+import com.androidth.general.common.billing.samsung.exception.SamsungException;
+import com.androidth.general.common.billing.samsung.exception.SamsungExceptionFactory;
+import com.androidth.general.billing.samsung.THSamsungConstants;
 import javax.inject.Inject;
 
 public class THSamsungExceptionFactory extends SamsungExceptionFactory

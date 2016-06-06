@@ -1,11 +1,11 @@
-package com.tradehero.th.activities;
+package com.androidth.general.activities;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.crashlytics.android.Crashlytics;
-import com.tradehero.th.api.users.UserBaseKey;
-import com.tradehero.th.utils.Constants;
+import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.utils.Constants;
 
 import java.util.Date;
 

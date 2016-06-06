@@ -1,6 +1,6 @@
-package com.tradehero.common.billing.samsung.exception;
+package com.androidth.general.common.billing.samsung.exception;
 
-import com.tradehero.common.billing.exception.BillingException;
+import com.androidth.general.common.billing.exception.BillingException;
 
 abstract public class SamsungException extends BillingException
 {

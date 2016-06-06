@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.tradehero.common.widget.BetterViewAnimator
+<com.androidth.general.common.widget.BetterViewAnimator
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/contest_center_content_screen"
@@ -41,5 +41,5 @@
       android:layout_gravity="center"
       android:id="@+id/contest_no_joined"/>
 
-</com.tradehero.common.widget.BetterViewAnimator>
+</com.androidth.general.common.widget.BetterViewAnimator>
 

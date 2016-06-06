@@ -1,10 +1,10 @@
-package com.tradehero.common.billing.googleplay.purchasefetch;
+package com.androidth.general.common.billing.googleplay.purchasefetch;
 
 import android.support.annotation.NonNull;
-import com.tradehero.common.billing.googleplay.IABOrderId;
-import com.tradehero.common.billing.googleplay.IABPurchase;
-import com.tradehero.common.billing.googleplay.IABSKU;
-import com.tradehero.common.billing.purchasefetch.BaseBillingPurchaseFetcherHolderRx;
+import com.androidth.general.common.billing.googleplay.IABOrderId;
+import com.androidth.general.common.billing.googleplay.IABPurchase;
+import com.androidth.general.common.billing.googleplay.IABSKU;
+import com.androidth.general.common.billing.purchasefetch.BaseBillingPurchaseFetcherHolderRx;
 
 abstract public class BaseIABPurchaseFetcherHolderRx<
         IABSKUType extends IABSKU,
