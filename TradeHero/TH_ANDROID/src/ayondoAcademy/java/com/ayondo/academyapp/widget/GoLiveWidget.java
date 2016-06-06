@@ -8,7 +8,9 @@ import android.text.Spanned;
 import android.text.style.ImageSpan;
 import android.util.AttributeSet;
 import android.widget.Button;
-import com.tradehero.th.R;
+
+import com.androidth.general.R;
+
 
 public class GoLiveWidget extends Button
 {

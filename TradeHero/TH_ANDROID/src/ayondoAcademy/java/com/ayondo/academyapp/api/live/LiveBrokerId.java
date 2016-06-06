@@ -2,9 +2,11 @@ package com.ayondo.academyapp.api.live;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.androidth.general.common.persistence.DTOKey;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.ayondo.academyapp.common.persistence.DTOKey;
+
 
 public class LiveBrokerId implements DTOKey
 {

@@ -6,33 +6,37 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import com.neovisionaries.i18n.CountryCode;
-import com.squareup.picasso.Picasso;
-import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.common.utils.THToast;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
-import com.tradehero.th.R;
+
+import com.androidth.general.R;
 import com.androidth.general.api.kyc.IdentityPromptInfoDTO;
 import com.androidth.general.api.kyc.KYCFormUtil;
 import com.androidth.general.api.kyc.LiveAvailabilityDTO;
-import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.models.fastfill.FastFillExceptionUtil;
 import com.androidth.general.models.fastfill.FastFillUtil;
 import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
 import com.androidth.general.models.fastfill.ScannedDocument;
-import com.androidth.general.network.service.LiveServiceWrapper;
-import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.ReplaceWithFunc1;
+import com.ayondo.academyapp.api.live.LiveBrokerSituationDTO;
+import com.ayondo.academyapp.network.service.LiveServiceWrapper;
+import com.ayondo.academyapp.persistence.prefs.LiveBrokerSituationPreference;
+import com.neovisionaries.i18n.CountryCode;
+import com.squareup.picasso.Picasso;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
+
 import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -47,11 +51,14 @@ import timber.log.Timber;
 public class IdentityPromptActivity extends BaseActivity
 {
     public static final String ROUTER_KYC_SCHEME = "kyc/";
-    @Inject FastFillUtil fastFillUtil;
-    @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
+    @Inject
+    FastFillUtil fastFillUtil;
+    @Inject
+    LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject LiveServiceWrapper liveServiceWrapper;
+    @Inject
+    LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
 
     @Bind(R.id.identity_prompt_passport)

@@ -1,11 +1,13 @@
 package com.ayondo.academyapp.network.service;
 
-import com.ayondo.academyapp.api.kyc.BrokerDocumentUploadResponseDTO;
-import com.ayondo.academyapp.api.kyc.KYCForm;
-import com.ayondo.academyapp.api.kyc.KYCFormOptionsDTO;
-import com.ayondo.academyapp.api.kyc.StepStatusesDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.UsernameValidationResultDTO;
+
+import com.androidth.general.api.kyc.BrokerDocumentUploadResponseDTO;
+import com.androidth.general.api.kyc.KYCForm;
+import com.androidth.general.api.kyc.KYCFormOptionsDTO;
+import com.androidth.general.api.kyc.StepStatusesDTO;
+import com.androidth.general.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.ayondo.academyapp.api.live.LiveTradingSituationDTO;
+
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Multipart;

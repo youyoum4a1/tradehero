@@ -20,10 +20,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.android.common.SlidingTabLayout;
-import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.common.utils.THToast;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
 import com.androidth.general.activities.BaseActivity;
 import com.androidth.general.adapters.DTOAdapterNew;
@@ -39,6 +35,8 @@ import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
 import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.base.DashboardFragment;
@@ -59,6 +57,8 @@ import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 
 import java.util.List;
 

@@ -2,9 +2,10 @@ package com.ayondo.academyapp.api.live;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.androidth.general.api.kyc.KYCForm;
+import com.androidth.general.common.persistence.DTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ayondo.academyapp.common.persistence.DTO;
-import com.ayondo.academyapp.api.kyc.KYCForm;
 
 public class LiveBrokerSituationDTO implements DTO
 {

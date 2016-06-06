@@ -1,24 +1,24 @@
 package com.ayondo.academyapp.activities;
 
-import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.androidth.general.activities.BaseActivity;
-import com.androidth.general.activities.DashboardActivity;
-import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.R;
+import com.androidth.general.activities.BaseActivity;
+import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.DashboardFragment;
-import com.ayondo.academyapp.fragments.trending.TileType;
+import com.androidth.general.fragments.trending.TileType;
 import com.androidth.general.inject.HierarchyInjector;
-import com.ayondo.academyapp.network.service.DummyAyondoLiveServiceWrapper;
 import com.androidth.general.persistence.prefs.IsLiveTrading;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
+import com.ayondo.academyapp.network.service.DummyAyondoLiveServiceWrapper;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;

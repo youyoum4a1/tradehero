@@ -14,8 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.common.SlidingTabLayout;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
 import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
@@ -23,11 +21,15 @@ import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.metrics.AnalyticsDuration;
 import com.androidth.general.utils.route.THRouter;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+;
 
 @Routable(DiscoveryMainFragment.ROUTER_DISCOVERY_TAB_INDEX + ":tabIndex")
 public class DiscoveryMainFragment extends DashboardFragment

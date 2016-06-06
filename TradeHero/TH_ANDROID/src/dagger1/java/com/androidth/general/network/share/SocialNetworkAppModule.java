@@ -1,23 +1,27 @@
 package com.androidth.general.network.share;
 
 import android.content.Context;
-import com.tencent.mm.sdk.openapi.IWXAPI;
-import com.tencent.mm.sdk.openapi.WXAPIFactory;
-import com.tradehero.th.R;
+
+import com.androidth.general.R;
 import com.androidth.general.auth.operator.FacebookPermissions;
 import com.androidth.general.models.share.ShareDestination;
 import com.androidth.general.models.share.ShareDestinationFactory;
 import com.androidth.general.models.share.ShareDestinationFactoryByResources;
 import com.androidth.general.models.share.ShareDestinationId;
 import com.androidth.general.models.share.ShareDestinationIndexResComparator;
-import dagger.Module;
-import dagger.Provides;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 import timber.log.Timber;
 
 import static com.facebook.FacebookPermissionsConstants.PUBLIC_PROFILE;

@@ -17,10 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.common.SlidingTabLayout;
-import com.androidth.general.common.persistence.prefs.StringPreference;
-import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.common.widget.BetterViewAnimator;
-import com.tradehero.route.Routable;
 import com.androidth.general.R;
 import com.androidth.general.api.leaderboard.def.LeaderboardDefDTO;
 import com.androidth.general.api.leaderboard.def.LeaderboardDefDTOList;
@@ -28,6 +24,9 @@ import com.androidth.general.api.leaderboard.key.LeaderboardDefListKey;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.persistence.prefs.StringPreference;
+import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.common.widget.BetterViewAnimator;
 import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.billing.BasePurchaseManagerFragment;
 import com.androidth.general.fragments.leaderboard.FriendLeaderboardMarkUserRecyclerFragment;
@@ -45,6 +44,7 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
+import com.tradehero.route.Routable;
 
 import javax.inject.Inject;
 

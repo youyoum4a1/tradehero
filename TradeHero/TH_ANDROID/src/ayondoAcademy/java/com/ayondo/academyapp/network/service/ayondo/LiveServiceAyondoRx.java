@@ -1,17 +1,19 @@
 package com.ayondo.academyapp.network.service.ayondo;
 
-import com.ayondo.academyapp.api.kyc.BrokerApplicationDTO;
-import com.ayondo.academyapp.api.kyc.KYCForm;
-import com.ayondo.academyapp.api.kyc.StepStatusesDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoAccountCreationDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoAddressCheckDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoCurrentApplicationDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoIDCheckDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoLeadAddressDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoLeadDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoLiveAvailabilityDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.UsernameValidationResultDTO;
+
+import com.androidth.general.api.kyc.BrokerApplicationDTO;
+import com.androidth.general.api.kyc.KYCForm;
+import com.androidth.general.api.kyc.StepStatusesDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoAccountCreationDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoAddressCheckDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoCurrentApplicationDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoIDCheckDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoLeadAddressDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoLeadDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoLiveAvailabilityDTO;
+import com.androidth.general.api.kyc.ayondo.UsernameValidationResultDTO;
+
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;

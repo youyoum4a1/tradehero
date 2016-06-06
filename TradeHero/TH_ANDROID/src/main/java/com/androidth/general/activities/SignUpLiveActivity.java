@@ -3,10 +3,12 @@ package com.androidth.general.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+
+import com.androidth.general.fragments.live.LiveSignUpMainFragment;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
-import com.androidth.general.fragments.live.LiveSignUpMainFragment;
+
 import timber.log.Timber;
 
 public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener

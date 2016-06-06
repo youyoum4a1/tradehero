@@ -4,8 +4,8 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
+
+import com.androidth.general.R;
 import com.androidth.general.common.graphics.AbstractSequentialTransformation;
 import com.androidth.general.common.graphics.AlphaTransformation;
 import com.androidth.general.common.graphics.GradientTransformation;
@@ -14,10 +14,13 @@ import com.androidth.general.common.graphics.RoundedCornerShaderTransformation;
 import com.androidth.general.common.graphics.RoundedShapeTransformation;
 import com.androidth.general.common.graphics.StackBlurTransformation;
 import com.androidth.general.common.graphics.WhiteToTransparentTransformation;
-import com.tradehero.th.R;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Transformation;
+
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Singleton;
 
 @Module(
         complete = false,

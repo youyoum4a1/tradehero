@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
-import com.androidth.general.common.utils.THToast;
-import com.androidth.general.common.widget.FlagNearEdgeScrollListener;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.level.LevelDefDTOList;
@@ -31,6 +29,8 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseDTOUtil;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.utils.THToast;
+import com.androidth.general.common.widget.FlagNearEdgeScrollListener;
 import com.androidth.general.fragments.achievement.AchievementListFragment;
 import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.base.DashboardFragment;

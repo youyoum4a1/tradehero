@@ -1,8 +1,10 @@
 package com.ayondo.academyapp.api.live;
 
 import android.support.annotation.NonNull;
+
+import com.androidth.general.common.persistence.DTO;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ayondo.academyapp.common.persistence.DTO;
+
 
 public class LiveBrokerDTO implements DTO
 {

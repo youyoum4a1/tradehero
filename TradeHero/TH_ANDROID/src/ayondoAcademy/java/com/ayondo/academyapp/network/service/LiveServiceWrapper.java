@@ -2,37 +2,42 @@ package com.ayondo.academyapp.network.service;
 
 import android.support.annotation.NonNull;
 
-import com.ayondo.academyapp.api.kyc.BrokerApplicationDTO;
-import com.ayondo.academyapp.api.kyc.BrokerDocumentUploadResponseDTO;
-import com.ayondo.academyapp.api.kyc.IdentityPromptInfoDTO;
-import com.ayondo.academyapp.api.kyc.KYCForm;
-import com.ayondo.academyapp.api.kyc.KYCFormOptionsDTO;
-import com.ayondo.academyapp.api.kyc.KYCFormOptionsId;
-import com.ayondo.academyapp.api.kyc.LiveAvailabilityDTO;
-import com.ayondo.academyapp.api.kyc.PhoneNumberVerifiedStatusDTO;
-import com.ayondo.academyapp.api.kyc.StepStatusesDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoAccountCreationDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoAddressCheckDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoIDCheckDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoLeadAddressDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoLeadDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
-import com.ayondo.academyapp.api.kyc.ayondo.KYCAyondoForm;
-import com.ayondo.academyapp.api.kyc.ayondo.UsernameValidationResultDTO;
+import com.androidth.general.api.kyc.BrokerApplicationDTO;
+import com.androidth.general.api.kyc.BrokerDocumentUploadResponseDTO;
+import com.androidth.general.api.kyc.IdentityPromptInfoDTO;
+import com.androidth.general.api.kyc.KYCForm;
+import com.androidth.general.api.kyc.KYCFormOptionsDTO;
+import com.androidth.general.api.kyc.KYCFormOptionsId;
+import com.androidth.general.api.kyc.LiveAvailabilityDTO;
+import com.androidth.general.api.kyc.PhoneNumberVerifiedStatusDTO;
+import com.androidth.general.api.kyc.StepStatusesDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoAccountCreationDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoAddressCheckDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoIDCheckDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoLeadAddressDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoLeadDTO;
+import com.androidth.general.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
+import com.androidth.general.api.kyc.ayondo.UsernameValidationResultDTO;
+import com.androidth.general.api.market.Country;
+import com.androidth.general.utils.GraphicUtil;
 import com.ayondo.academyapp.api.live.LiveBrokerId;
 import com.ayondo.academyapp.api.live.LiveBrokerKnowledge;
 import com.ayondo.academyapp.api.live.LiveBrokerSituationDTO;
 import com.ayondo.academyapp.api.live.LiveTradingSituationDTO;
-import com.androidth.general.api.market.Country;
 import com.ayondo.academyapp.network.service.ayondo.LiveServiceAyondoRx;
 import com.ayondo.academyapp.persistence.prefs.LiveBrokerSituationPreference;
 import com.ayondo.academyapp.persistence.prefs.PhoneNumberVerifiedPreference;
-import com.androidth.general.utils.GraphicUtil;
+
 import java.io.File;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func0;
 import rx.functions.Func1;
+
+import com.androidth.general.api.kyc.LiveAvailabilityDTO;
+
 
 public class LiveServiceWrapper
 {
