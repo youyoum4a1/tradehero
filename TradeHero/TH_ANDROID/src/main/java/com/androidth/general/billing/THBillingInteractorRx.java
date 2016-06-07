@@ -1,6 +1,8 @@
 package com.androidth.general.billing;
 
 import android.support.annotation.NonNull;
+
+import com.androidth.general.common.activities.ActivityResultRequester;
 import com.androidth.general.common.billing.BaseProductIdentifierList;
 import com.androidth.general.common.billing.BillingInteractorRx;
 import com.androidth.general.common.billing.ProductIdentifier;
@@ -9,6 +11,9 @@ import com.androidth.general.common.billing.purchase.PurchaseResult;
 import com.androidth.general.common.billing.restore.PurchaseRestoreTotalResult;
 import com.androidth.general.api.users.UserBaseKey;
 import java.util.List;
+
+import javax.inject.Inject;
+
 import rx.Observable;
 
 public interface THBillingInteractorRx<
@@ -39,6 +44,7 @@ public interface THBillingInteractorRx<
         THProductPurchaseType,
         THBillingLogicHolderType>
 {
+
     @NonNull Observable<PurchaseResult<
             ProductIdentifierType,
             THPurchaseOrderType,

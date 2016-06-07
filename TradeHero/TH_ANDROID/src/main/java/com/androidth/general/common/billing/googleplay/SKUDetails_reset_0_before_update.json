@@ -1,0 +1,1 @@
+{"title":"Reset Master Portfolio (TradeHero)","price":"$2.58","type":"inapp","description":"Reset Portfolio","productId":"com.myhero.th.resetportfolio.0"}

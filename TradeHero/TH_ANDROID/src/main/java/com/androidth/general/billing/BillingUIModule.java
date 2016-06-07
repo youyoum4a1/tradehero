@@ -1,27 +1,37 @@
 package com.androidth.general.billing;
 
+import android.app.Activity;
+import android.content.Context;
+import android.os.IBinder;
+import android.support.annotation.NonNull;
+import com.androidth.general.common.billing.BillingInteractorRx;
+import com.androidth.general.common.billing.BillingLogicHolderRx;
+import com.androidth.general.common.billing.googleplay.BillingServiceBinderObservable;
+import com.androidth.general.common.utils.THToast;
+import com.androidth.general.billing.googleplay.THBaseIABInteractorRx;
+import com.androidth.general.billing.googleplay.THBaseIABLogicHolderRx;
+import com.androidth.general.billing.googleplay.THIABAlertDialogRxUtil;
+import com.androidth.general.billing.googleplay.THIABInteractorRx;
+import com.androidth.general.billing.googleplay.THIABLogicHolderRx;
+import com.androidth.general.billing.googleplay.consumer.THBaseIABPurchaseConsumerHolderRx;
+import com.androidth.general.billing.googleplay.consumer.THIABPurchaseConsumerHolderRx;
+import com.androidth.general.billing.googleplay.identifier.THBaseIABProductIdentifierFetcherHolderRx;
+import com.androidth.general.billing.googleplay.identifier.THIABProductIdentifierFetcherHolderRx;
+import com.androidth.general.billing.googleplay.inventory.THBaseIABInventoryFetcherHolderRx;
+import com.androidth.general.billing.googleplay.inventory.THIABInventoryFetcherHolderRx;
+import com.androidth.general.billing.googleplay.purchase.THBaseIABPurchaserHolderRx;
+import com.androidth.general.billing.googleplay.purchase.THIABPurchaserHolderRx;
+import com.androidth.general.billing.googleplay.purchasefetch.THBaseIABPurchaseFetcherHolderRx;
+import com.androidth.general.billing.googleplay.purchasefetch.THIABPurchaseFetcherHolderRx;
+import com.androidth.general.billing.googleplay.report.THBaseIABPurchaseReporterHolderRx;
+import com.androidth.general.billing.googleplay.report.THIABPurchaseReporterHolderRx;
+import com.androidth.general.billing.googleplay.tester.THBaseIABBillingAvailableTesterHolderRx;
+import com.androidth.general.billing.googleplay.tester.THIABBillingAvailableTesterHolderRx;
 import dagger.Module;
-
-//import com.androidth.general.billing.amazon.AmazonAlertDialogRxUtil;
-//import com.androidth.general.billing.amazon.THAmazonAlertDialogRxUtil;
-//import com.androidth.general.billing.amazon.THAmazonInteractorRx;
-//import com.androidth.general.billing.amazon.THAmazonLogicHolderRx;
-//import com.androidth.general.billing.amazon.THBaseAmazonInteractorRx;
-//import com.androidth.general.billing.amazon.THBaseAmazonLogicHolderRx;
-//import com.androidth.general.billing.amazon.consume.THAmazonPurchaseConsumerHolderRx;
-//import com.androidth.general.billing.amazon.consume.THBaseAmazonPurchaseConsumerHolderRx;
-//import com.androidth.general.billing.amazon.identifier.THAmazonProductIdentifierFetcherHolderRx;
-//import com.androidth.general.billing.amazon.identifier.THBaseAmazonProductIdentifierFetcherHolderRx;
-//import com.androidth.general.billing.amazon.inventory.THAmazonInventoryFetcherHolderRx;
-//import com.androidth.general.billing.amazon.inventory.THBaseAmazonInventoryFetcherHolderRx;
-//import com.androidth.general.billing.amazon.purchase.THAmazonPurchaserHolderRx;
-//import com.androidth.general.billing.amazon.purchase.THBaseAmazonPurchaserHolderRx;
-//import com.androidth.general.billing.amazon.purchasefetch.THAmazonPurchaseFetcherHolderRx;
-//import com.androidth.general.billing.amazon.purchasefetch.THBaseAmazonPurchaseFetcherHolderRx;
-//import com.androidth.general.billing.amazon.report.THAmazonPurchaseReporterHolderRx;
-//import com.androidth.general.billing.amazon.report.THBaseAmazonPurchaseReporterHolderRx;
-//import com.androidth.general.billing.amazon.tester.THAmazonBillingAvailableTesterHolderRx;
-//import com.androidth.general.billing.amazon.tester.THBaseAmazonBillingAvailableTesterHolderRx;
+import dagger.Provides;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+import rx.Observable;
 
 @Module(
         complete = false,
@@ -30,80 +40,88 @@ import dagger.Module;
 )
 public class BillingUIModule
 {
-//    //<editor-fold desc="Actors and Action Holders Rx">
-//    @Provides THAmazonBillingAvailableTesterHolderRx provideBillingAvailableTesterHolderRx(THBaseAmazonBillingAvailableTesterHolderRx thBaseAmazonBillingAvailableTesterHolder)
-//    {
-//        return thBaseAmazonBillingAvailableTesterHolder;
-//    }
-//
-//    @Provides THAmazonProductIdentifierFetcherHolderRx provideProductIdentifierFetcherHolderRx(THBaseAmazonProductIdentifierFetcherHolderRx thBaseAmazonProductIdentifierFetcherHolder)
-//    {
-//        return thBaseAmazonProductIdentifierFetcherHolder;
-//    }
-//
-//    @Provides THAmazonInventoryFetcherHolderRx provideInventoryFetcherHolderRx(THBaseAmazonInventoryFetcherHolderRx thBaseAmazonInventoryFetcherHolder)
-//    {
-//        return thBaseAmazonInventoryFetcherHolder;
-//    }
-//
-//    @Provides THAmazonPurchaseFetcherHolderRx providePurchaseFetcherHolderRx(THBaseAmazonPurchaseFetcherHolderRx thBaseAmazonPurchaseFetcherHolder)
-//    {
-//        return thBaseAmazonPurchaseFetcherHolder;
-//    }
-//
-//    @Provides THAmazonPurchaserHolderRx providePurchaserHolderRx(THBaseAmazonPurchaserHolderRx thBaseAmazonPurchaserHolder)
-//    {
-//        return thBaseAmazonPurchaserHolder;
-//    }
-//
-//    @Provides THAmazonPurchaseReporterHolderRx providePurchaseReporterHolderRx(THBaseAmazonPurchaseReporterHolderRx thBaseAmazonPurchaseReporterHolder)
-//    {
-//        return thBaseAmazonPurchaseReporterHolder;
-//    }
-//
-//    @Provides THAmazonPurchaseConsumerHolderRx providePurchaseConsumerHolderRx(THBaseAmazonPurchaseConsumerHolderRx thBaseAmazonPurchaseConsumerHolder)
-//    {
-//        return thBaseAmazonPurchaseConsumerHolder;
-//    }
-//    //</editor-fold>
-//
-//    @Provides @Singleton BillingLogicHolderRx provideBillingActorRx(THBillingLogicHolderRx logicHolderRx)
-//    {
-//        return logicHolderRx;
-//    }
-//
-//    @Provides @Singleton THBillingLogicHolderRx provideTHBillingActorRx(THAmazonLogicHolderRx logicHolderRx)
-//    {
-//        return logicHolderRx;
-//    }
-//
-//    @Provides @Singleton THAmazonLogicHolderRx provideTHIABLogicHolderRx(THBaseAmazonLogicHolderRx logicHolderRx)
-//    {
-//        return logicHolderRx;
-//    }
-//
-//    @Provides THBillingAlertDialogRxUtil provideBillingAlertDialogRxUtil(THAmazonAlertDialogRxUtil billingDialogRxUtil)
-//    {
-//        return billingDialogRxUtil;
-//    }
-//
-//    @Provides AmazonAlertDialogRxUtil provideAmazonAlertDialogRxUtil(THAmazonAlertDialogRxUtil billingDialogRxUtil)
-//    {
-//        return billingDialogRxUtil;
-//    }
-//
-//    @Provides @Singleton BillingInteractorRx provideBillingInteractorRx(THBillingInteractorRx billingInteractorRx)
-//    {
-//        return billingInteractorRx;
-//    }
-//
-//    @Provides @Singleton THBillingInteractorRx provideBillingInteractorRx(THAmazonInteractorRx billingInteractorRx)
-//    {
-//        return billingInteractorRx;
-//    }
-//
-//    @Provides @Singleton THAmazonInteractorRx provideBillingInteractorRx(THBaseAmazonInteractorRx billingInteractorRx)
-//    {
-//        return billingInteractorRx;
-//    }
+    @Provides @Singleton Observable<IBinder> provideBillingServiceBinderObservable(@NonNull Provider<Activity> activityProvider)
+    {
+        THToast.show("providing binder observable");
+        return BillingServiceBinderObservable.getServiceBinder(
+                activityProvider.get(),
+                BillingServiceBinderObservable.getBillingBindIntent(),
+                0,
+                Context.BIND_AUTO_CREATE)
+                .cache(1);
+    }
+
+    //<editor-fold desc="Action Holders Rx">
+    @Provides THIABBillingAvailableTesterHolderRx provideBillingAvailableTesterHolderRx(
+            THBaseIABBillingAvailableTesterHolderRx thBaseIABBillingAvailableTesterHolder)
+    {
+        return thBaseIABBillingAvailableTesterHolder;
+    }
+
+    @Provides THIABProductIdentifierFetcherHolderRx provideProductIdentifierFetcherHolderRx(
+            THBaseIABProductIdentifierFetcherHolderRx thBaseIABProductIdentifierFetcherHolder)
+    {
+        return thBaseIABProductIdentifierFetcherHolder;
+    }
+
+    @Provides THIABInventoryFetcherHolderRx provideInventoryFetcherHolderRx(THBaseIABInventoryFetcherHolderRx thBaseIABInventoryFetcherHolder)
+    {
+        return thBaseIABInventoryFetcherHolder;
+    }
+
+    @Provides THIABPurchaseFetcherHolderRx providePurchaseFetcherHolderRx(THBaseIABPurchaseFetcherHolderRx thBaseIABPurchaseFetcherHolder)
+    {
+        return thBaseIABPurchaseFetcherHolder;
+    }
+
+    @Provides THIABPurchaserHolderRx providePurchaserHolderRx(THBaseIABPurchaserHolderRx thBaseIABPurchaserHolder)
+    {
+        return thBaseIABPurchaserHolder;
+    }
+
+    @Provides THIABPurchaseReporterHolderRx providePurchaseReporterHolderRx(THBaseIABPurchaseReporterHolderRx thBaseIABPurchaseReporterHolder)
+    {
+        return thBaseIABPurchaseReporterHolder;
+    }
+
+    @Provides THIABPurchaseConsumerHolderRx providePurchaseConsumerHolderRx(THBaseIABPurchaseConsumerHolderRx thBaseIABPurchaseConsumerHolder)
+    {
+        return thBaseIABPurchaseConsumerHolder;
+    }
+    //</editor-fold>
+
+    @Provides @Singleton BillingLogicHolderRx provideBillingActorRx(THBillingLogicHolderRx logicHolderRx)
+    {
+        return logicHolderRx;
+    }
+
+    @Provides @Singleton THBillingLogicHolderRx provideTHBillingActorRx(THIABLogicHolderRx logicHolderRx)
+    {
+        return logicHolderRx;
+    }
+
+    @Provides @Singleton THIABLogicHolderRx provideTHIABLogicHolderRx(THBaseIABLogicHolderRx logicHolderRx)
+    {
+        return logicHolderRx;
+    }
+
+    @Provides THBillingAlertDialogRxUtil provideBillingAlertDialogRxUtil(THIABAlertDialogRxUtil THIABAlertDialogUtil)
+    {
+        return THIABAlertDialogUtil;
+    }
+
+    @Provides @Singleton BillingInteractorRx provideBillingInteractorRx(THBillingInteractorRx billingInteractorRx)
+    {
+        return billingInteractorRx;
+    }
+
+    @Provides @Singleton THBillingInteractorRx provideTHBillingInteractorRx(THIABInteractorRx billingInteractorRx)
+    {
+        return billingInteractorRx;
+    }
+
+    @Provides @Singleton THIABInteractorRx provideTHIABInteractorRx(THBaseIABInteractorRx billingInteractorRx)
+    {
+        return billingInteractorRx;
+    }
 }

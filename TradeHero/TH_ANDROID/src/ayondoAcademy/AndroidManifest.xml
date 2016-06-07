@@ -11,11 +11,42 @@
         android:protectionLevel="signature"/>
     <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE"/>
 
+    <!-- Required by Jumio -->
+    <uses-permission android:name="android.permission.CAMERA"/>
+
+    <!-- For Location Picker -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- Required by Jumio -->
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
+
     <application>
 
         <!-- REQUIRED for PlayServiceUtils.handleAnyPlayServicesError to handle Google Play Services recoverable errors. -->
         <activity android:name="com.urbanairship.google.PlayServicesErrorActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+
+        <activity
+            android:theme="@style/Theme.Netverify"
+            android:name="com.jumio.netverify.sdk.activity.NetverifyActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
+
+        <activity
+            android:name="com.androidth.general.activities.IdentityPromptActivity"
+            android:theme="@style/TradeHero.Live"
+            android:label="@string/tradehero_live"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"
+            android:noHistory="false"
+            />
+
+        <activity
+            android:name="com.androidth.general.activities.SignUpLiveActivity"
+            android:theme="@style/TradeHero.Live"
+            android:label="@string/tradehero_live"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"/>
+
 
         <!-- REQUIRED for GCM -->
         <receiver

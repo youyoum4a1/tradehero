@@ -1,4 +1,4 @@
-package com.androidth.general.billing;
+bpackage com.androidth.general.billing;
 
 import com.androidth.general.common.billing.ProductDetailCacheRx;
 import com.androidth.general.common.billing.ProductIdentifierListCacheRx;

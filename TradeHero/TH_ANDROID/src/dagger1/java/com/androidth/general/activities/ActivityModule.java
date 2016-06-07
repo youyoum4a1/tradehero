@@ -41,9 +41,8 @@ public class ActivityModule
     @Provides(type = Provides.Type.SET_VALUES) @Singleton
     Set<ActivityResultRequester> provideActivityResultRequesters(
             @SocialAuth Set<ActivityResultRequester> socialAuthActivityResultRequesters,
-            THBillingInteractorRx thBillingInteractor
-    )
-    {
+            THBillingInteractorRx thBillingInteractor) {
+
         Set<ActivityResultRequester> requests = new HashSet<>();
         requests.addAll(socialAuthActivityResultRequesters);
         requests.add(thBillingInteractor);
@@ -53,9 +52,8 @@ public class ActivityModule
     @Provides(type = Provides.Type.SET_VALUES) @Singleton @SocialAuth
     Set<ActivityResultRequester> provideSocialAuthActivityResultRequesters(
             FacebookAuthenticationProvider facebookAuthenticationProvider,
-            WeiboAuthenticationProvider weiboAuthenticationProvider
-    )
-    {
+            WeiboAuthenticationProvider weiboAuthenticationProvider) {
+
         Set<ActivityResultRequester> requests = new HashSet<>();
         requests.add(facebookAuthenticationProvider);
         requests.add(weiboAuthenticationProvider);
