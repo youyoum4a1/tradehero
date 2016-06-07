@@ -14,7 +14,7 @@ public class NetworkConstants
         return Constants.DOGFOOD_BUILD ? TRADEHERO_QA_API_ENDPOINT : TRADEHERO_PROD_API_ENDPOINT;
     }
 
-    public static final String COMPETITION_PATH = "pages/";
+    public static final String COMPETITION_PATH = "competitionpages/";
 
     /** Bing Translation */
     public static final String BING_TRANSLATION_ENDPOINT = "http://api.microsofttranslator.com";
