@@ -1,17 +1,20 @@
 package com.androidth.general.activities;
 
-import com.androidth.general.common.activities.ActivityResultRequester;
 import com.androidth.general.auth.FacebookAuthenticationProvider;
 import com.androidth.general.auth.SocialAuth;
 import com.androidth.general.auth.weibo.WeiboAuthenticationProvider;
 import com.androidth.general.billing.THBillingInteractorRx;
+import com.androidth.general.common.activities.ActivityResultRequester;
 import com.androidth.general.wxapi.WXEntryActivity;
-import dagger.Module;
-import dagger.Provides;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.inject.Singleton;
+
+import dagger.Module;
+import dagger.Provides;
 
 @Module(
         includes = {

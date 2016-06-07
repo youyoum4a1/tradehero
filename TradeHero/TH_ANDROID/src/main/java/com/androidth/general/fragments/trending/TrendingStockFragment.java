@@ -345,7 +345,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     @Override protected void startAnew()
     {
-        wrapperAdapter.clearExtraTiles();
+        wrapperAdapter.newClearExtraTiles();
         super.startAnew();
     }
 

@@ -1,17 +1,7 @@
 package com.androidth.general.network.retrofit;
 
 import android.content.Context;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Authenticator;
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.OkHttpClient;
-import com.androidth.general.common.annotation.ForApp;
-import com.androidth.general.common.log.RetrofitErrorHandlerLogger;
-import com.androidth.general.common.persistence.prefs.StringPreference;
+
 import com.androidth.general.api.ObjectMapperWrapper;
 import com.androidth.general.api.position.PositionDTO;
 import com.androidth.general.api.position.PositionDTODeserialiser;
@@ -19,9 +9,13 @@ import com.androidth.general.api.position.PositionDTOJacksonModule;
 import com.androidth.general.api.social.UserFriendsDTO;
 import com.androidth.general.api.social.UserFriendsDTODeserialiser;
 import com.androidth.general.api.social.UserFriendsDTOJacksonModule;
+import com.androidth.general.common.annotation.ForApp;
+import com.androidth.general.common.log.RetrofitErrorHandlerLogger;
+import com.androidth.general.common.persistence.prefs.StringPreference;
 import com.androidth.general.models.intent.competition.ProviderPageIntent;
 import com.androidth.general.network.ApiAuthenticator;
 import com.androidth.general.network.CompetitionUrl;
+import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.network.NullHostNameVerifier;
 import com.androidth.general.network.ServerEndpoint;
@@ -30,12 +24,23 @@ import com.androidth.general.network.service.SocialLinker;
 import com.androidth.general.network.service.SocialServiceWrapper;
 import com.androidth.general.utils.NetworkUtils;
 import com.androidth.general.utils.RetrofitConstants;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.squareup.okhttp.Authenticator;
+import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.OkHttpClient;
+
+import java.io.File;
+
+import javax.inject.Singleton;
+import javax.net.ssl.HostnameVerifier;
+
 import dagger.Lazy;
 import dagger.Module;
 import dagger.Provides;
-import java.io.File;
-import javax.inject.Singleton;
-import javax.net.ssl.HostnameVerifier;
 import retrofit.Endpoint;
 import retrofit.Endpoints;
 import retrofit.RestAdapter;
@@ -106,7 +111,7 @@ public class RetrofitModule
 
     @Provides @Singleton @CompetitionUrl String provideCompetitionUrl(Endpoint server)
     {
-        return server.getUrl() + NetworkConstants.COMPETITION_PATH;
+        return LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT + NetworkConstants.COMPETITION_PATH;
     }
 
     @Provides RestAdapter.Builder provideRestAdapterBuilder(

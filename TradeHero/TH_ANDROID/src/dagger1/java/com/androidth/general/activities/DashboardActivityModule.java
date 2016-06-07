@@ -7,13 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.widget.AbsListView;
 
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnScrollChangedListener;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnWebViewOnScrollChangedListener;
-import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
-import com.etiennelawlor.quickreturn.library.views.NotifyingWebView;
 import com.androidth.general.BottomTabs;
 import com.androidth.general.BottomTabsQuickReturnListViewListener;
 import com.androidth.general.BottomTabsQuickReturnRecyclerViewListener;
@@ -31,6 +24,7 @@ import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.competition.ProviderVideoListFragment;
 import com.androidth.general.fragments.discovery.DiscoveryMainFragment;
 import com.androidth.general.fragments.leaderboard.main.LeaderboardCommunityFragment;
+import com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment;
 import com.androidth.general.fragments.news.NewsWebFragment;
 import com.androidth.general.fragments.position.PositionListFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
@@ -52,6 +46,13 @@ import com.androidth.general.fragments.web.WebViewFragment;
 import com.androidth.general.utils.dagger.AppModule;
 import com.androidth.general.utils.metrics.ForAnalytics;
 import com.androidth.general.utils.route.THRouter;
+import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnListViewOnScrollListener;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnScrollViewOnScrollChangedListener;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnWebViewOnScrollChangedListener;
+import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
+import com.etiennelawlor.quickreturn.library.views.NotifyingWebView;
 
 import javax.inject.Provider;
 import javax.inject.Singleton;
@@ -116,6 +117,7 @@ import dagger.Provides;
                 TrendingMainFragment.class,
                 UpdateCenterFragment.class,
                 WebViewFragment.class,
+                LiveSignUpStep1AyondoFragment.class,
                 LiveActivityUtil.getRoutableKYC()
         );
         DiscoveryMainFragment.registerAliases(router);

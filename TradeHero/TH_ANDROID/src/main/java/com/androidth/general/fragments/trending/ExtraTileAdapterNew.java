@@ -42,7 +42,8 @@ public class ExtraTileAdapterNew extends BaseAdapter
         }
         this.random = new Random(wrappedAdapter.hashCode());
         this.extraTiles = new LinkedHashMap<>();
-        putFirstExtraTilePosition();
+        putCompetitionExtraTilePosition();
+        //putFirstExtraTilePosition();
     }
     //</editor-fold>
 
@@ -74,7 +75,7 @@ public class ExtraTileAdapterNew extends BaseAdapter
     @Override public int getCount()
     {
         int wrappedCount = wrappedAdapter.getCount();
-        addRandomTiles(wrappedCount);
+        addRandomCompetitionTiles(wrappedCount);
         int interstitial = 0;
         for (Integer extraPosition : extraTiles.keySet())
         {
@@ -218,10 +219,27 @@ public class ExtraTileAdapterNew extends BaseAdapter
         putFirstExtraTilePosition();
         notifyDataSetChanged();
     }
+    public void newClearExtraTiles()
+    {
+        extraTiles.clear();
+        putCompetitionExtraTilePosition();
+        notifyDataSetChanged();
+    }
+
 
     protected void putFirstExtraTilePosition()
     {
         this.extraTiles.put(random.nextInt(EXTRA_TILE_RANGE), getRandomisedTile());
+    }
+    protected void putCompetitionExtraTilePosition()
+    {
+        this.extraTiles.put(0, getCompetitionTile());
+        this.extraTiles.put(random.nextInt(EXTRA_TILE_RANGE)+8, getCompetitionTile());
+    }
+
+    @NonNull protected TileType getCompetitionTile()
+    {
+        return TileType.FromProvider;
     }
 
     protected int getMaxExtraTilePosition()
@@ -241,6 +259,15 @@ public class ExtraTileAdapterNew extends BaseAdapter
         {
             maxExtraPosition += getNextExtraTileOffset();
             extraTiles.put(maxExtraPosition, getRandomisedTile());
+        }
+    }
+    protected void addRandomCompetitionTiles(int wrappedCount)
+    {
+        int maxExtraPosition = getMaxExtraTilePosition();
+        while (wrappedCount > maxExtraPosition + EXTRA_TILE_MIN_DISTANCE)
+        {
+            maxExtraPosition += getNextExtraTileOffset();
+            extraTiles.put(maxExtraPosition, getCompetitionTile());
         }
     }
 

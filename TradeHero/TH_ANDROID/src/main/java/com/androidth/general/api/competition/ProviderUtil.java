@@ -9,7 +9,7 @@ import javax.inject.Inject;
 
 public class ProviderUtil
 {
-    public static final String LANDING = "landing/";
+    public static final String LANDING = "competitionlanding";
     public static final String QUERY_KEY_PROVIDER_ID = "providerId";
     public static final String QUERY_KEY_USER_ID = "userId";
     public static final String QUERY_KEY_AUTHORISATION = "authorization";
@@ -43,8 +43,9 @@ public class ProviderUtil
         String url = competitionUrl + LANDING;
         url = appendProviderId(url, '?', providerId);
         url = appendUserId(url, '&');
-        url = appendShowNextButton(url, '&');
-        return appendAuthorization(url, '&');
+        //url = appendShowNextButton(url, '&');
+        //url = appendAuthorization(url, '&');
+        return url;
     }
 
     @NonNull public String getRulesPage(@NonNull ProviderId providerId)
