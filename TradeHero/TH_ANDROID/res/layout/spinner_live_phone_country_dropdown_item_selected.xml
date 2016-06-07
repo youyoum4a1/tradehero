@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    android:id="@+id/live_country_phone_code"
+    style="@style/TH.Subhead"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:drawableRight="@drawable/spinner_dropdown_arrow_green"
+    android:maxLines="1"
+    android:padding="@dimen/margin_xsmall"
+    tools:text="+65"
+    />

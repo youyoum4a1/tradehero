@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_material_light"
+    android:fillViewport="true"
+    tools:layout_height="400dp"
+    >
+
+  <LinearLayout
+      android:id="@+id/live_action_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:padding="@dimen/margin_small"
+      >
+
+    <ImageView
+        android:layout_width="240dp"
+        android:layout_height="@dimen/size_6"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_logo_thlive"
+        />
+
+    <ImageView
+        android:layout_width="@dimen/size_25"
+        android:layout_height="@dimen/size_16"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/live_image_call_to_action"
+        />
+
+    <TextView
+        android:id="@+id/live_description"
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small"
+        android:gravity="center"
+        android:maxWidth="300dp"
+        tools:text="@string/live_call_to_action_string_ayondo"
+        />
+
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/broker_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_centerHorizontal="true"
+      android:layout_marginBottom="@dimen/margin_small"
+      android:gravity="center"
+      android:orientation="vertical"
+      >
+
+    <TextView
+        style="@style/TH.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/powered_by"
+        />
+
+    <TextView
+        android:id="@+id/live_powered_by"
+        style="@style/TH.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/tradehero_red"
+        tools:text="@string/broker_name_ayondo"
+        />
+
+  </LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/live_action_container"
+      android:layout_above="@id/broker_container"
+      android:layout_gravity="center"
+      android:gravity="center"
+      android:orientation="vertical"
+      >
+
+    <com.tradehero.th.widget.GoLiveWidget
+        android:id="@+id/live_button_go_live"
+        style="@style/TH.Title.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/margin_xsmall"
+        android:background="@drawable/basic_green_selector"
+        />
+
+    <Button
+        android:id="@+id/live_button_later"
+        style="@style/TH.Button.Accented"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/basic_transparent_selector"
+        android:gravity="center"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:text="@string/later"
+        />
+  </LinearLayout>
+
+
+</RelativeLayout>

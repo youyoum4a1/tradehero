@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <com.android.common.SlidingTabLayout
+      android:id="@+id/android_tabs"
+      android:minHeight="@dimen/size_4"
+      android:background="@color/grey"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      />
+
+  <com.tradehero.common.widget.NonSwipeableViewPager
+      android:id="@+id/pager"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/android_tabs"
+      android:layout_marginTop="@dimen/size_8"
+      tools:background="@color/background_material_light"
+      />
+
+  <com.tradehero.th.widget.LiveRewardWidget
+      android:id="@+id/live_reward_widget"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/android_tabs"
+      />
+</RelativeLayout>
