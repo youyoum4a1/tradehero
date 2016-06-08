@@ -14,8 +14,8 @@ task wrapper(type: Wrapper) {
 }
 
 ext {
-  SUPPORT_V13_VERSION = "23.0.0"
-  SUPPORT_V7_VERSION = "23.0.0"
+  SUPPORT_V13_VERSION = "23.4.0"
+  SUPPORT_V7_VERSION = "23.4.0"
   JACKSON_VERSION = "2.6.0" // 2.5.0 ?
   RX_ANDROID_VERSION = "0.25.0"
   TIMBER_VERSION = "3.1.0"

@@ -585,6 +585,7 @@ dependencies {
   compile "com.android.support:recyclerview-v7:${SUPPORT_V7_VERSION}"
   compile "com.android.support:design:${SUPPORT_V7_VERSION}"
   compile "com.android.support:cardview-v7:${SUPPORT_V7_VERSION}"
+    compile "com.android.support:design:${SUPPORT_V7_VERSION}"
 //  googleplayCompile 'com.android.support:multidex:1.0.1'//jeff
 //  samsungCompile 'com.android.support:multidex:1.0.1' //jeff
 

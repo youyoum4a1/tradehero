@@ -116,6 +116,7 @@ import dagger.Provides;
                 TrendingMainFragment.class,
                 UpdateCenterFragment.class,
                 WebViewFragment.class,
+                SignUpLiveActivity.class,
                 LiveActivityUtil.getRoutableKYC()
         );
         DiscoveryMainFragment.registerAliases(router);

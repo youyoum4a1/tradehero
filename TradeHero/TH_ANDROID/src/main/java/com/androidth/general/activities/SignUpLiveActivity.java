@@ -5,20 +5,25 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.androidth.general.fragments.live.LiveSignUpMainFragment;
+import com.androidth.general.utils.route.THRouter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.Places;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
+
+import javax.inject.Inject;
 
 import timber.log.Timber;
 
-/*@Routable({
+@Routable({
         "enrollchallenge/:enrollProviderId"
-})*/
+})
 public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
-    /*@RouteProperty("enrollProviderId") protected Integer enrollProviderId;
+    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
     @Inject
-    THRouter thRouter;*/
+    THRouter thRouter;
     private GoogleApiClient mGoogleApiClient;
 
     @NonNull @Override protected Class<? extends Fragment> getInitialFragment()
@@ -29,7 +34,7 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        //thRouter.inject(this);
+        thRouter.inject(new LiveSignUpMainFragment());
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)

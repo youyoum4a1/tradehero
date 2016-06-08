@@ -3,8 +3,8 @@
   <!--Text Colors-->
   <color name="text_primary">#ff1f1f1f</color>
   <color name="text_secondary">#ff888888</color>
-  <color name="text_primary_inverse">@color/white</color>
-  <color name="text_secondary_inverse">#fff4f4f4</color>
+  <color name="text_primary_inverse">#000000</color>
+  <color name="text_secondary_inverse">#000000</color>
   <color name="text_primary_accented">@color/tradehero_blue</color>
   <color name="text_secondary_accented">#ff499bfb</color>
 
