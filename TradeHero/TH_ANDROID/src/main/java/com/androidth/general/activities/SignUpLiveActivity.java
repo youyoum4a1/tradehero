@@ -11,8 +11,14 @@ import com.google.android.gms.location.places.Places;
 
 import timber.log.Timber;
 
+/*@Routable({
+        "enrollchallenge/:enrollProviderId"
+})*/
 public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
+    /*@RouteProperty("enrollProviderId") protected Integer enrollProviderId;
+    @Inject
+    THRouter thRouter;*/
     private GoogleApiClient mGoogleApiClient;
 
     @NonNull @Override protected Class<? extends Fragment> getInitialFragment()
@@ -23,6 +29,7 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        //thRouter.inject(this);
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)

@@ -24,7 +24,6 @@ import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.competition.ProviderVideoListFragment;
 import com.androidth.general.fragments.discovery.DiscoveryMainFragment;
 import com.androidth.general.fragments.leaderboard.main.LeaderboardCommunityFragment;
-import com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment;
 import com.androidth.general.fragments.news.NewsWebFragment;
 import com.androidth.general.fragments.position.PositionListFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
@@ -117,7 +116,6 @@ import dagger.Provides;
                 TrendingMainFragment.class,
                 UpdateCenterFragment.class,
                 WebViewFragment.class,
-                LiveSignUpStep1AyondoFragment.class,
                 LiveActivityUtil.getRoutableKYC()
         );
         DiscoveryMainFragment.registerAliases(router);

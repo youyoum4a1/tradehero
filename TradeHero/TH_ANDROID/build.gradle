@@ -91,7 +91,7 @@ android {
         targetSdkVersion 22
         applicationId "com.androidth.general"
         versionCode project.ext.versionBuild
-        versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
+
 
         buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
         buildConfigField "String", "BUILD_TIME", "\"${project.ext.buildTime}\""
@@ -140,6 +140,7 @@ android {
         tradeHero {
             applicationId = "com.tradehero.th"
             buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
+            versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.0"
 
                   multiDexEnabled true
         }
@@ -147,6 +148,7 @@ android {
         ayondoAcademy {
             applicationId = "com.ayondo.academyapp"
             buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.ayondo.academyapp\""
+            versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.1"
 
                   multiDexEnabled true
         }

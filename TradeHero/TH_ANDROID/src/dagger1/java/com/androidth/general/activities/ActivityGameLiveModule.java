@@ -6,8 +6,7 @@ import dagger.Module;
         includes = {
         },
         injects = {
-                SignUpLiveActivity.class,
-                IdentityPromptActivity.class
+                SignUpLiveActivity.class
         },
         complete = false,
         library = true

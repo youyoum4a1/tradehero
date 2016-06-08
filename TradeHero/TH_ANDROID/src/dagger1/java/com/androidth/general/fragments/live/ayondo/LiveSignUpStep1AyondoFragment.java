@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.androidth.general.R;
 import com.androidth.general.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
@@ -42,11 +43,7 @@ import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.DateUtils;
-import com.androidth.general.utils.route.THRouter;
 import com.neovisionaries.i18n.CountryCode;
-import com.androidth.general.R;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -75,13 +72,10 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-@Routable({
-        "enrollchallenge/:enrollProviderId"
-})
+
 public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
-    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
-    @Inject THRouter thRouter;
+
     private static final int PHONE_NUM_MIN_LENGTH = 7;
 
     @LayoutRes private static final int LAYOUT_COUNTRY = R.layout.spinner_live_country_dropdown_item;
@@ -117,7 +111,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        thRouter.inject(this);
+
         verifiedPublishSubject = PublishSubject.create();
         if (savedInstanceState != null)
         {
