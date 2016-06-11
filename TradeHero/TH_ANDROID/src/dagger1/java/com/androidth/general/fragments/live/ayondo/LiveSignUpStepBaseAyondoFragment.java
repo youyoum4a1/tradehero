@@ -3,15 +3,19 @@ package com.androidth.general.fragments.live.ayondo;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.androidth.general.R;
 import com.androidth.general.api.kyc.BrokerApplicationDTO;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
+import com.androidth.general.api.kyc.KYCFormOptionsId;
 import com.androidth.general.api.kyc.StepStatus;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.androidth.general.api.live.LiveBrokerDTO;
+import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
+import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.live.LiveSignUpStepBaseFragment;
 import com.androidth.general.network.service.LiveServiceWrapper;
@@ -19,6 +23,7 @@ import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnNothingSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -46,16 +51,16 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
     @Nullable private ConnectableObservable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsObservable;
     private Subscription kycAyondoFormOptionsSubscription;
 
-    @NonNull protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
+    @NonNull @RxLogObservable protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
         return super.createBrokerSituationObservable()
-                .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
-                {
-                    @Override public Boolean call(LiveBrokerSituationDTO situationDTO)
-                    {
-                        return situationDTO.kycForm instanceof KYCAyondoForm;
-                    }
-                })
+//                .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
+//                {
+//                    @Override public Boolean call(LiveBrokerSituationDTO situationDTO)
+//                    {
+//                        return situationDTO.kycForm instanceof KYCAyondoForm;
+//                    }
+//                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<LiveBrokerSituationDTO>()
                 {
@@ -88,6 +93,11 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
             // That's right, the first status decides for all Next buttons
             btnNext.setEnabled(firstStatus != null && firstStatus.equals(StepStatus.COMPLETE));
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override public void onDestroyView()
@@ -159,6 +169,9 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                 }));
 
         kycAyondoFormOptionsObservable = createKYCAyondoFormOptionsObservable(kycFormOptionsDTOObservable).publish();
+
+//        kycAyondoFormOptionsObservable.connect();
+        Log.v("ayondoStep1", "KYCayondoformoptions "+kycAyondoFormOptionsObservable);
         return this.onInitAyondoSubscription(brokerDTOObservable, liveBrokerSituationDTOObservable, kycAyondoFormOptionsObservable);
     }
 
@@ -187,18 +200,29 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
         super.onDisconnectObservables();
     }
 
-    @NonNull
+    @NonNull @RxLogObservable
     protected Observable<KYCAyondoFormOptionsDTO> createKYCAyondoFormOptionsObservable(Observable<KYCFormOptionsDTO> kycFormOptionsDTOObservable)
     {
         return kycFormOptionsDTOObservable
-                .filter(new Func1<KYCFormOptionsDTO, Boolean>()
-                {
-                    @Override public Boolean call(KYCFormOptionsDTO kycFormOptionsDTO)
-                    {
-                        return kycFormOptionsDTO instanceof KYCAyondoFormOptionsDTO;
-                    }
-                })
+//                .filter(new Func1<KYCFormOptionsDTO, Boolean>()
+//                {
+//                    @Override public Boolean call(KYCFormOptionsDTO kycFormOptionsDTO)
+//                    {
+//                        return kycFormOptionsDTO instanceof KYCAyondoFormOptionsDTO;
+//                    }
+//                })
                 .cast(KYCAyondoFormOptionsDTO.class);
+
+
+//        return super.createKYCFormOptionsObservable(kycFormOptionsDTOObservable)
+//                .filter(new Func1<KYCFormOptionsDTO, Boolean>()
+//                {
+//                    @Override public Boolean call(KYCFormOptionsDTO kycFormOptionsDTO)
+//                    {
+//                        return kycFormOptionsDTO instanceof KYCAyondoFormOptionsDTO;
+//                    }
+//                })
+//                .cast(KYCAyondoFormOptionsDTO.class);
     }
 
     @NonNull protected Func1<OnSelectedEvent, Integer> createSpinnerDistinctByPosition()

@@ -41,7 +41,8 @@ public class THWebViewIntentClient extends THWebViewClient
             } catch (IndexOutOfBoundsException e)
             {
                 Timber.e(e, "Failed to create intent with string %s", url);
-            }
+            } catch(NoClassDefFoundError e){e.printStackTrace();}
+
             if (thIntent instanceof ProviderPageIntent)
             {
                 // Somewhat of a HACK to make sure we reload the competition
