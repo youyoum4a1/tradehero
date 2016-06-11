@@ -28,7 +28,7 @@
   </style>
 
   <style name="TradeHero.Splash">
-    <item name="android:windowBackground">@drawable/login_bg_1_logo</item>
+    <item name="android:windowBackground">@drawable/splash_screen_theme</item>
   </style>
 
   <style name="TradeHero.ActionBar" parent="Widget.AppCompat.Toolbar">

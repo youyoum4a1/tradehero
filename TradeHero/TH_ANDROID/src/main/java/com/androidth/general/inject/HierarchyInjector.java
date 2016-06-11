@@ -60,10 +60,8 @@ public class HierarchyInjector
         }
         else if (!(context instanceof Activity) && context instanceof android.support.v7.view.ContextThemeWrapper)
         {
-//            context = ((android.support.v7.internal.view.ContextThemeWrapper) context).getBaseContext();
             context = ((android.support.v7.view.ContextThemeWrapper) context).getBaseContext();
         }
-
         return (context instanceof Injector) && inject((Injector) context, o);
     }
 

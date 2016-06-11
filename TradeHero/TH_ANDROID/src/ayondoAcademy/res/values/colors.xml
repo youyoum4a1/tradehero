@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!--Text Colors-->
+  <color name="text_primary">#ff1f1f1f</color>
+  <color name="text_secondary">#ff888888</color>
+  <color name="text_primary_inverse">#000000</color>
+  <color name="text_secondary_inverse">#000000</color>
+  <color name="text_primary_accented">@color/tradehero_blue</color>
+  <color name="text_secondary_accented">#ff499bfb</color>
+
+  <!--Tradehero Colors-->
+  <color name="tradehero_blue">#00adee</color>
+  <color name="tradehero_blue_pressed">#58b0dd</color>
+  <color name="tradehero_blue_focused">#8cdddd</color>
+  <color name="tradehero_blue_status_bar">@color/tradehero_blue</color>
+  <color name="tradehero_dark_blue">#ffff</color>
+
+  <color name="tradehero_tab_bg_color">@color/tradehero_dark_blue</color>
+  <color name="tradehero_tab_indicator_color">#00adee</color>
+  <color name="tradehero_bottom_tab_bg_color">#3E454C</color>
+  <color name="tradehero_divider_grey">@color/black</color>
+  <color name="tradehero_dashboard_bg_color">@color/white</color>
+  <color name="tradehero_grid_border_color">#00adee</color>
+  <color name="tradehero_reside_menu_bg">#ff00a2e0</color>
+
+  <color name="number_green">#ff20ae1e</color>
+  <color name="number_red">#E51A33</color>
+  <color name="number_up">@color/number_green</color>
+  <color name="number_down">@color/number_red</color>
+
+  <!--Basic Colors-->
+  <color name="transparent">@android:color/transparent</color>
+  <color name="red">@android:color/holo_red_dark</color>
+  <color name="dark_red">#ff770000</color>
+  <color name="black">@android:color/black</color>
+  <color name="white">@android:color/white</color>
+  <color name="darker_grey">@android:color/darker_gray</color>
+  <color name="grey">#D0D0D0</color>
+  <color name="grey_transparent">#90000000</color>
+  <color name="lighter_grey">#F2F2F2</color>
+  <color name="pale_yellow">#F0E68C</color>
+  <color name="light_yellow">#FFD000</color>
+
+  <color name="orange">@android:color/holo_orange_light</color>
+
+  <!--Buttons-->
+  <color name="light_green_normal">#6AC31F</color>
+  <color name="light_green_pressed">#54A700</color>
+  <color name="light_green_focused">#ffc7ff8b</color>
+
+  <color name="dark_blue_normal">@color/tradehero_dark_blue</color>
+  <color name="dark_blue_pressed">#ff052040</color>
+  <color name="dark_blue_focused">#ff0765e7</color>
+
+  <color name="facebook_blue_normal">#385185</color>
+  <color name="facebook_blue_pressed">#ff1d1d41</color>
+  <color name="facebook_blue_focused">#ff508dd8</color>
+
+  <color name="linked_in_blue_normal">#007BB6</color>
+  <color name="linked_in_blue_pressed">#ff005583</color>
+  <color name="linked_in_blue_focused">#ff00a2e0</color>
+
+  <color name="twitter_blue_normal">#32A7E0</color>
+  <color name="twitter_blue_pressed">#ff286892</color>
+  <color name="twitter_blue_focused">#ff31d1ff</color>
+
+  <color name="light_blue_normal">#74D3FC</color>
+  <color name="light_blue_pressed">#44A3CC</color>
+  <color name="light_blue_focused">#94F3FF</color>
+
+  <color name="qq_normal">@color/light_green_normal</color>
+  <color name="qq_pressed">@color/light_green_pressed</color>
+  <color name="qq_focused">@color/light_green_focused</color>
+
+  <color name="weibo_normal">@color/purple_normal</color>
+  <color name="weibo_pressed">@color/purple_light</color>
+  <color name="weibo_focused">@color/purple_dark</color>
+
+  <color name="dark_blue">#133979</color>
+  <color name="dark_blue_light">#4369A9</color>
+  <color name="dark_blue_dark">#031959</color>
+
+  <color name="purple_normal">#A10DE0</color>
+  <color name="purple_light">#D13DFF</color>
+  <color name="purple_dark">#8100C0</color>
+
+  <color name="orange_normal">#FD8631</color>
+  <color name="orange_light">#FFC81A</color>
+  <color name="orange_dark">#EF6C01</color>
+
+  <color name="red_normal">@color/red</color>
+  <color name="red_light">#FF4063</color>
+  <color name="red_dark">@color/dark_red</color>
+
+  <color name="yellow_normal">#FBFC56</color>
+  <color name="yellow_light">@color/pale_yellow</color>
+  <color name="yellow_dark">@color/orange</color>
+
+  <color name="lb_header_bg">#C9F1FF</color>
+  <color name="lb_header_bg_focused">#b9deeb</color>
+  <color name="lb_header_bg_pressed">#7f98a1</color>
+
+  <color name="lb_item_even">@android:color/white</color>
+  <color name="lb_item_even_focused">@color/grey</color>
+  <color name="lb_item_even_pressed">@color/darker_grey</color>
+
+  <color name="lb_item_odd">#EFEFEF</color>
+  <color name="lb_item_odd_focused">@color/grey</color>
+  <color name="lb_item_odd_pressed">@color/darker_grey</color>
+
+  <color name="news_seeking_alpha">#4E0A00</color>
+  <color name="news_seeking_alpha_focused">#8e1200</color>
+  <color name="news_seeking_alpha_pressed">#e01d00</color>
+
+  <color name="news_motley_fool">#89C8FF</color>
+  <color name="news_motley_fool_focused">#70a4d1</color>
+  <color name="news_motley_fool_pressed">#43607b</color>
+
+  <color name="news_regional">#1FBFAF</color>
+  <color name="news_regional_focused">#24ddca</color>
+  <color name="news_regional_pressed">#28f8e3</color>
+
+  <color name="news_global">#047ACD</color>
+  <color name="news_global_focused">#0485df</color>
+  <color name="news_global_pressed">#0597fe</color>
+
+  <string-array name="gauge_color_range" translatable="false">
+    <item>#FF0C2B</item>
+    <item>#FF1D0C</item>
+
+    <item>#FF390E</item>
+    <item>#FF530F</item>
+
+    <item>#FF7C11</item>
+    <item>#FF9E13</item>
+    <item>#FFC81A</item>
+    <item>#FFF718</item>
+    <item>#D8FF14</item>
+    <item>#A4FF12</item>
+    <item>#70FF17</item>
+    <item>#3FFF12</item>
+    <item>#16FF11</item>
+  </string-array>
+
+</resources>
