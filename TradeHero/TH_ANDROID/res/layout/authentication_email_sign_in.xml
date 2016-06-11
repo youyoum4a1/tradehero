@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:background="@drawable/login_bg_4"
+    tools:background="@color/white"
     >
 
   <ImageView
@@ -16,15 +16,6 @@
       android:background="@drawable/basic_transparent_selector"
       />
 
-  <ScrollView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_below="@id/authentication_back_button"
-      android:requiresFadingEdge="vertical"
-      android:fadingEdge="vertical"
-      android:fadingEdgeLength="@dimen/size_3"
-      android:fillViewport="true"
-      >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -82,25 +73,101 @@
           style="@style/TH.Button"
           />
 
-      <TextView
-          android:id="@+id/alternative_signup_header"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@id/authentication_sign_in_forgot_password"
-          style="@style/TH.Subhead"
-          android:text="@string/authentication_log_in_alternative"
-          />
 
-      <include
-          layout="@layout/social_network_button_list_wrapper"
-          android:id="@+id/social_network_button_list"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_below="@id/alternative_signup_header"
-          />
+
 
     </RelativeLayout>
 
-  </ScrollView>
 
-</RelativeLayout>
+</RelativeLayout>-->
+
+
+   <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+        android:orientation="vertical"
+
+       >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/scroller"
+        android:fitsSystemWindows="true">
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingTop="56dp"
+      android:paddingLeft="24dp"
+      android:paddingRight="24dp"
+      android:orientation="vertical">
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small">
+      <com.androidth.general.widget.validation.ValidatedText
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:inputType="textEmailAddress"
+          android:focusable="true"
+
+          android:id="@+id/authentication_sign_in_email"
+          android:hint="Email"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small">
+      <com.androidth.general.widget.validation.ValidatedText
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:inputType="textPassword"
+          android:id="@+id/et_pwd_login"
+          android:imeOptions="actionSend"
+          android:hint="Password"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+
+
+
+
+
+
+  </LinearLayout>
+</ScrollView>
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/authentication_sign_in_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:background="#ffffff"
+        android:layout_marginBottom="8dp"
+        android:padding="4dp"
+        android:text="Forgot password?"
+        android:textSize="12sp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:textColor="@android:color/holo_blue_dark"
+        android:gravity="center" />
+
+       <android.support.v7.widget.AppCompatButton
+           android:id="@+id/btn_login"
+           android:layout_gravity="bottom"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:padding="12dp"
+           android:textStyle="bold"
+           android:background="#eed87f"
+           android:textColor="@android:color/holo_blue_dark"
+           android:text="Log in"/>
+
+
+   </LinearLayout>
+
+

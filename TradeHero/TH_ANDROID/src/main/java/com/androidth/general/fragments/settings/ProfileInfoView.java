@@ -9,51 +9,50 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
-import com.androidth.general.common.activities.ActivityResultRequester;
-import com.androidth.general.common.utils.THToast;
+
 import com.androidth.general.R;
 import com.androidth.general.api.form.UserFormDTO;
 import com.androidth.general.api.users.UserBaseDTO;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.activities.ActivityResultRequester;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.graphics.BitmapTypedOutput;
-import com.androidth.general.models.graphics.ForUserPhoto;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
 import com.androidth.general.utils.GraphicUtil;
 import com.androidth.general.widget.validation.DisplayNameValidatedText;
 import com.androidth.general.widget.validation.DisplayNameValidator;
-import com.androidth.general.widget.validation.MatchingPasswordText;
-import com.androidth.general.widget.validation.PasswordConfirmTextValidator;
 import com.androidth.general.widget.validation.PasswordValidatedText;
 import com.androidth.general.widget.validation.TextValidator;
 import com.androidth.general.widget.validation.ValidatedText;
 import com.androidth.general.widget.validation.ValidatedView;
 import com.androidth.general.widget.validation.ValidationMessage;
+
 import java.io.File;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Observer;
 import rx.android.widget.OnTextChangeEvent;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func4;
-import rx.functions.Func8;
+import rx.functions.Func3;
+import rx.functions.Func5;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
 
@@ -66,21 +65,18 @@ public class ProfileInfoView extends LinearLayout
     private static final int INDEX_CHOICE_FROM_LIBRARY = 1;
 
     @Bind(R.id.authentication_sign_up_email) ValidatedText email;
+    @Bind(R.id.authentication_sign_up_email_til) TextInputLayout email_til;
     TextValidator emailValidator;
+
+
+
     @Bind(R.id.authentication_sign_up_password) PasswordValidatedText password;
     TextValidator passwordValidator;
-    @Bind(R.id.authentication_sign_up_confirm_password) MatchingPasswordText confirmPassword;
-    PasswordConfirmTextValidator confirmPasswordValidator;
     TextWatcher targetPasswordWatcher;
     @Bind(R.id.authentication_sign_up_username) DisplayNameValidatedText displayName;
     DisplayNameValidator displayNameValidator;
-    @Bind(R.id.authentication_sign_up_referral_code) EditText referralCode;
     @Bind(R.id.et_firstname) EditText firstName;
     @Bind(R.id.et_lastname) EditText lastName;
-    @Bind(R.id.image_optional) @Nullable ImageView profileImage;
-
-    @Inject Picasso picasso;
-    @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
 
     @NonNull final AccountManager accountManager;
@@ -104,7 +100,6 @@ public class ProfileInfoView extends LinearLayout
         ButterKnife.bind(this);
         emailValidator = email.getValidator();
         passwordValidator = password.getValidator();
-        confirmPasswordValidator = confirmPassword.getValidator();
         displayNameValidator = displayName.getValidator();
     }
 
@@ -120,11 +115,6 @@ public class ProfileInfoView extends LinearLayout
         password.setOnFocusChangeListener(passwordValidator);
         password.addTextChangedListener(passwordValidator);
         subscriptions.add(passwordValidator.getValidationMessageObservable().subscribe(createValidatorObserver(password)));
-        confirmPassword.setOnFocusChangeListener(confirmPasswordValidator);
-        confirmPassword.addTextChangedListener(confirmPasswordValidator);
-        targetPasswordWatcher = confirmPasswordValidator.getPasswordTextWatcher();
-        password.addTextChangedListener(targetPasswordWatcher);
-        subscriptions.add(confirmPasswordValidator.getValidationMessageObservable().subscribe(createValidatorObserver(confirmPassword)));
         displayName.setOnFocusChangeListener(displayNameValidator);
         displayName.addTextChangedListener(displayNameValidator);
 
@@ -146,8 +136,6 @@ public class ProfileInfoView extends LinearLayout
         displayName.setOnFocusChangeListener(null);
         password.removeTextChangedListener(targetPasswordWatcher);
         targetPasswordWatcher = null;
-        confirmPassword.removeTextChangedListener(confirmPasswordValidator);
-        confirmPassword.setOnFocusChangeListener(null);
         password.removeTextChangedListener(passwordValidator);
         password.setOnFocusChangeListener(null);
         email.removeTextChangedListener(emailValidator);
@@ -170,7 +158,9 @@ public class ProfileInfoView extends LinearLayout
                 String message = validationMessage.getMessage();
                 if (message != null && !TextUtils.isEmpty(message) && !message.equals(previousMessage))
                 {
-                    THToast.show(validationMessage.getMessage());
+                    //THToast.show(validationMessage.getMessage());
+                    if(validationMessage.getMessage().contains("email"))
+                        email_til.setError("A user with this email already exists");
                 }
                 previousMessage = message;
             }
@@ -191,18 +181,15 @@ public class ProfileInfoView extends LinearLayout
         return Observable.combineLatest(
                 emailValidator.getValidationMessageObservable(),
                 passwordValidator.getValidationMessageObservable(),
-                confirmPasswordValidator.getValidationMessageObservable(),
                 displayNameValidator.getValidationMessageObservable(),
-                new Func4<ValidationMessage, ValidationMessage, ValidationMessage, ValidationMessage, Boolean>()
+                new Func3<ValidationMessage, ValidationMessage, ValidationMessage, Boolean>()
                 {
                     @Override public Boolean call(ValidationMessage emailValidation,
                             ValidationMessage passwordValidation,
-                            ValidationMessage confirmPasswordValidation,
                             ValidationMessage displayNameValidation)
                     {
                         return emailValidation.getValidStatus().equals(ValidatedView.Status.VALID)
                                 && passwordValidation.getValidStatus().equals(ValidatedView.Status.VALID)
-                                && confirmPasswordValidation.getValidStatus().equals(ValidatedView.Status.VALID)
                                 && displayNameValidation.getValidStatus().equals(ValidatedView.Status.VALID);
                     }
                 }
@@ -235,11 +222,11 @@ public class ProfileInfoView extends LinearLayout
         displayNameValidator.setOriginalUsernameValue(userProfileDTO.displayName);
         displayNameValidator.setText(userProfileDTO.displayName);
         displayName.setText(userProfileDTO.displayName);
-        referralCode.setText(userProfileDTO.inviteCode);
+        /*referralCode.setText(userProfileDTO.inviteCode);
         if (userProfileDTO.inviteCode != null)
         {
             referralCode.setEnabled(false);
-        }
+        }*/
         String currentEmail = email.getText().toString();
         if (currentEmail.isEmpty())
         {
@@ -269,31 +256,31 @@ public class ProfileInfoView extends LinearLayout
 
     public void displayProfileImage(Bitmap newImage)
     {
-        if (this.profileImage != null)
+        /*if (this.profileImage != null)
         {
             profileImage.setImageBitmap(userPhotoTransformation.transform(newImage));
-        }
+        }*/
     }
 
     public void displayProfileImage(UserBaseDTO userBaseDTO)
     {
-        if (this.profileImage != null)
+        /*if (this.profileImage != null)
         {
             picasso.load(userBaseDTO.picture)
                     .placeholder(R.drawable.superman_facebook)
                     .transform(userPhotoTransformation)
                     .into(profileImage);
-        }
+        }*/
     }
 
     public void displayDefaultProfileImage()
     {
-        if (this.profileImage != null && picasso != null)
+        /*if (this.profileImage != null && picasso != null)
         {
             picasso.load(R.drawable.superman_facebook)
                     .transform(userPhotoTransformation)
                     .into(profileImage);
-        }
+        }*/
     }
     //endregion
 
@@ -301,7 +288,7 @@ public class ProfileInfoView extends LinearLayout
     {
         emailValidator.validate();
         passwordValidator.validate();
-        confirmPasswordValidator.validate();
+        //confirmPasswordValidator.validate();
         displayNameValidator.validate();
     }
 
@@ -341,10 +328,10 @@ public class ProfileInfoView extends LinearLayout
             this.password.setText(passwordValue);
             if (passwordValue != null)
             {
-                this.confirmPasswordValidator.setText(passwordValue);
+                //this.confirmPasswordValidator.setText(passwordValue);
             }
-            this.confirmPasswordValidator.setMainPassword(passwordValue);
-            this.confirmPassword.setText(passwordValue);
+            //this.confirmPasswordValidator.setMainPassword(passwordValue);
+            //this.confirmPassword.setText(passwordValue);
         }
     }
 
@@ -388,10 +375,10 @@ public class ProfileInfoView extends LinearLayout
                         {
                             @Override public void call(Bitmap bitmap)
                             {
-                                if (profileImage != null)
+                                /*if (profileImage != null)
                                 {
                                     profileImage.setImageBitmap(bitmap);
-                                }
+                                }*/
                             }
                         },
                         new TimberOnErrorAction1("Failed to ask for and get bitmap")));
@@ -410,37 +397,27 @@ public class ProfileInfoView extends LinearLayout
         return Observable.combineLatest(
                 WidgetObservable.text(email, true),
                 WidgetObservable.text(password, true),
-                WidgetObservable.text(confirmPassword, true),
                 WidgetObservable.text(displayName, true),
-                WidgetObservable.text(referralCode, true),
                 WidgetObservable.text(firstName, true),
                 WidgetObservable.text(lastName, true),
-                Observable.just(profileImage),
-                new Func8<OnTextChangeEvent,
+                new Func5<OnTextChangeEvent,
                         OnTextChangeEvent,
                         OnTextChangeEvent,
                         OnTextChangeEvent,
                         OnTextChangeEvent,
-                        OnTextChangeEvent,
-                        OnTextChangeEvent,
-                        ImageView,
                         UserFormDTO>()
                 {
                     @Override public UserFormDTO call(
                             OnTextChangeEvent serverValidatedEmailText,
                             OnTextChangeEvent validatedPasswordText,
-                            OnTextChangeEvent matchingPasswordText,
                             OnTextChangeEvent serverValidatedUsernameText,
-                            OnTextChangeEvent referralCode1,
                             OnTextChangeEvent firstName1,
-                            OnTextChangeEvent lastName1,
-                            ImageView profileImage)
+                            OnTextChangeEvent lastName1)
                     {
                         return userFormBuilderProvider.get()
                                 .email(email.getText().toString())
                                 .password(password.getText().toString())
                                 .displayName(displayName.getText().toString())
-                                .inviteCode(referralCode.getText().toString())
                                 .firstName(firstName.getText().toString())
                                 .lastName(lastName.getText().toString())
                                 .profilePicture(safeCreateProfilePhoto())

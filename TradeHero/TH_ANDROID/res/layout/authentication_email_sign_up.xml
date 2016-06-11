@@ -1,68 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/sign_up_form_wrapper"
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/sign_up_form_wrapper"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:clickable="true"
+  android:focusable="true"
+  android:focusableInTouchMode="true"
+  >
+
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/TH.Authentication"
-    android:clickable="true"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    >
+    android:layout_alignParentTop="true"
+    android:layout_above="@+id/authentication_sign_up_button"
+    android:requiresFadingEdge="vertical"
+    android:fadingEdge="vertical"
+    android:fadingEdgeLength="@dimen/size_2">
 
-  <ScrollView
+  <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_alignParentTop="true"
-      android:layout_above="@+id/authentication_sign_up_button"
-      android:requiresFadingEdge="vertical"
-      android:fadingEdge="vertical"
-      android:fadingEdgeLength="@dimen/size_2">
+      android:layout_height="wrap_content"
+      android:orientation="vertical">
 
-    <LinearLayout
+
+    <include
+        layout="@layout/profile_info_signup"/>
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_signUp"
+        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:padding="12dp"
+        android:textStyle="bold"
+        android:background="#eed87f"
+        android:textColor="@android:color/holo_blue_dark"
+        android:text="Sign Up"/>
 
-      <ImageView
-          android:id="@+id/authentication_back_button"
-          android:layout_width="@dimen/size_6"
-          android:layout_height="@dimen/size_6"
-          android:background="@drawable/basic_transparent_selector"
-          android:src="@drawable/settings_back_light_default"/>
+  </LinearLayout>
 
-      <include
-          layout="@layout/profile_info_signup"/>
 
-    </LinearLayout>
+</ScrollView>
 
-  </ScrollView>
 
-  <Button
-      android:id="@+id/authentication_sign_up_button"
-      style="@style/TH.SocialAuthenticationButton"
-      android:layout_above="@+id/alternative_signup_header"
-      android:background="@drawable/basic_green_selector"
-      android:text="@string/authentication_register"
-      android:gravity="center"
-      android:enabled="false"
-      />
 
-  <TextView
-      android:id="@+id/alternative_signup_header"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_above="@+id/social_network_button_list"
-      style="@style/TH.Subhead"
-      android:text="@string/authentication_sign_up_alternative"
-      />
 
-  <include
-      layout="@layout/social_network_button_list_wrapper"
-      android:id="@+id/social_network_button_list"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      />
+
+
 
 </RelativeLayout>
+

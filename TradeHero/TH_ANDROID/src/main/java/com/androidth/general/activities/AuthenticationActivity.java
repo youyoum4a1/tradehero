@@ -73,6 +73,8 @@ public class AuthenticationActivity extends BaseActivity
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.authentication_layout);
+        //getActionBar().hide();
+        setTitle("");
 
         dtoCacheUtil.clearUserCaches();
 
@@ -98,6 +100,7 @@ public class AuthenticationActivity extends BaseActivity
     @Override protected void onResume()
     {
         super.onResume();
+        setTitle("");
         //TODO Add code for Google Analytics
         //analytics.tagScreen(AnalyticsConstants.Login_Register);
         //analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));

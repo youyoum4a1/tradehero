@@ -4,9 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/btn_facebook_signin"
     style="@style/TH.SocialAuthenticationButton"
+    android:layout_gravity="center"
     android:drawableLeft="@drawable/icn_fb_white"
     android:drawableStart="@drawable/icn_fb_white"
     android:background="@drawable/facebook_selector"
     android:text="@string/facebook_login_in"
+    android:textColor="@color/white"
+    android:padding="16dp"
+    android:layout="@dimen/margin_small"
     app:type="facebook"
     />

@@ -1,73 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="@drawable/login_bg_1"
+    android:orientation="vertical"
+    android:background="@color/white"
     >
 
   <LinearLayout
       android:id="@+id/authentication_buttons"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_weight="1"
       android:orientation="vertical"
       android:layout_alignParentBottom="true"
       >
+      <ImageView
+          android:id="@+id/login_text"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_medium"
+          android:src="@drawable/logo_th_text"
+          android:layout_gravity="center_horizontal"
+          android:contentDescription="@null"
+          />
+      <ImageView
+          android:id="@+id/login_logo"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_medium"
+          android:src="@drawable/splash_logo"
+          android:layout_gravity="center_horizontal"
+          android:contentDescription="@null"
+          />
+  </LinearLayout>
 
-    <include layout="@layout/authentication_social_auth_button_first"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="bottom">
+    <include layout="@layout/authentication_social_auth_button_first"
+        />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="#E61f1f1f"
+        android:layout_marginTop="@dimen/margin_small"
         >
 
-      <Button
-          android:id="@+id/authentication_email_sign_in_link"
-          style="@style/TH.SocialAuthenticationButton"
-          android:layout_width="0dp"
-          android:layout_weight="1"
-          android:background="@drawable/basic_white_selector"
-          android:text="@string/email_login_in_short"
-          android:textColor="@color/tradehero_blue"
-          android:gravity="center"
-          />
 
-      <Button
+      <android.support.v7.widget.AppCompatButton
           android:id="@+id/authentication_email_sign_up_link"
-          style="@style/TH.SocialAuthenticationButton"
-          android:layout_width="0dp"
+          android:layout_height="wrap_content"
+          android:layout_width="wrap_content"
           android:layout_weight="1"
-          android:background="@drawable/basic_green_selector"
+          android:layout_gravity="left"
+          android:background="@android:color/transparent"
+          style="@style/Widget.AppCompat.Button.Colored"
           android:text="@string/email_register_short"
+          android:textStyle="bold"
           android:gravity="center"
+          android:textColor="#eed87f"
           />
+        <View
+            android:layout_width="2dp"
+            android:layout_gravity="center"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:background="#eed87f"/>
 
-    </LinearLayout>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/authentication_email_sign_in_link"
+            android:layout_gravity="right"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:background="@android:color/transparent"
+            android:text="@string/email_login_in_short"
+            android:textColor="#eed87f"
+            android:gravity="center"
+            style="@style/Widget.AppCompat.Button.Colored"
+
+            />
+
+
 
   </LinearLayout>
+    </LinearLayout>
 
-  <com.viewpagerindicator.CirclePageIndicator
-      android:id="@+id/guide_page_indicator"
-      android:layout_height="wrap_content"
-      android:layout_width="fill_parent"
-      android:layout_above="@id/authentication_buttons"
-      android:layout_marginBottom="@dimen/size_1"
-      app:fillColor="@color/white"
-      app:pageColor="@color/authentication_guide_circle_page"
-      app:radius="@dimen/authentication_guide_circle_indicator_radius"
-      app:strokeWidth="0dp"
-      />
 
-  <android.support.v4.view.ViewPager
-      android:id="@+id/viewpager"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_alignParentTop="true"
-      android:layout_above="@id/guide_page_indicator"
-      />
-
-</RelativeLayout>
+</LinearLayout>

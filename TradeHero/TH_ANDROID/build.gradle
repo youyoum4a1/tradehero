@@ -4,7 +4,10 @@ import java.util.regex.Pattern
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
+
 
         //crashlytics is fabric now
         //maven { url 'http://download.crashlytics.com/maven' }
@@ -45,6 +48,7 @@ repositories {
     maven { url 'http://ooo-maven.googlecode.com/hg/repository' }
     maven { url 'http://mobile-sdk.jumio.com' }
     maven { url "https://urbanairship.bintray.com/android" }
+    maven { url "http://dl.bintray.com/glomadrian/maven" }
 }
 
 project.ext.gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
@@ -710,7 +714,10 @@ dependencies {
   compile "com.google.android.gms:play-services-location:${PLAY_SERVICES_VERSION}"
     //releaseCompile 'com.google.android.gms:play-services:6.1.+'
     compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.easing:library:1.0.1@aar'
+    compile 'com.daimajia.androidanimations:library:1.1.3@aar'
     compile 'com.parse.bolts:bolts-android:1.1.4'
+    compile 'com.github.glomadrian:roadrunner:1.0@aar'
     compile 'com.tradehero.route:route:0.2-SNAPSHOT'
     compile 'com.flurry:FlurryAnalytics:6.1.0'
     compile 'com.flurry:FlurryAds:6.1.0'

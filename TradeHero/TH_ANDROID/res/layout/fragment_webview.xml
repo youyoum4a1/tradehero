@@ -11,5 +11,12 @@
         android:layout_height="match_parent"
         android:fadeScrollbars="true"
         android:scrollbarStyle="insideOverlay" />
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_gravity="center"
+        />
 
 </RelativeLayout>

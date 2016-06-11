@@ -10,21 +10,22 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
 import com.androidth.general.activities.AuthenticationActivity;
 import com.androidth.general.api.social.SocialNetworkEnum;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.inject.Injector;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.GraphicUtil;
-import com.viewpagerindicator.PageIndicator;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import javax.inject.Inject;
 
@@ -51,8 +52,10 @@ public class GuideAuthenticationFragment extends Fragment
     //TODO Change Analytics
     //@Inject Analytics analytics;
 
-    @Bind(R.id.guide_page_indicator) PageIndicator guidePageIndicator;
-    @Bind(R.id.viewpager) ViewPager guidePager;
+    //@Bind(R.id.guide_page_indicator) PageIndicator guidePageIndicator;
+    //@Bind(R.id.viewpager) ViewPager guidePager;
+    @Bind(R.id.login_text) ImageView loginText;
+    @Bind(R.id.login_logo) ImageView loginLogo;
 
     @NonNull final int[] guideRes = new int[] {
             R.layout.guide_1,
@@ -103,6 +106,7 @@ public class GuideAuthenticationFragment extends Fragment
     @Override public View onCreateView(LayoutInflater inflater, @Nullable
     ViewGroup container, @Nullable Bundle savedInstanceState)
     {
+
         return inflater.inflate(R.layout.fragment_entry_authentication, container, false);
     }
 
@@ -110,10 +114,12 @@ public class GuideAuthenticationFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        YoYo.with(Techniques.FadeIn).duration(800).playOn(loginText);
+        YoYo.with(Techniques.FadeIn).duration(800).playOn(loginLogo);
         onViewSubscriptions = new SubscriptionList();
-        guidePager.setAdapter(new GuidePagerAdapter());
-        guidePageIndicator.setViewPager(guidePager, PAGER_INITIAL_POSITION);
-        guidePageIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        //guidePager.setAdapter(new GuidePagerAdapter());
+        //guidePageIndicator.setViewPager(guidePager, PAGER_INITIAL_POSITION);
+        /*guidePageIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
             @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
             {
@@ -127,18 +133,18 @@ public class GuideAuthenticationFragment extends Fragment
             @Override public void onPageScrollStateChanged(int state)
             {
             }
-        });
+        });*/
     }
 
     @Override public void onStart()
     {
         super.onStart();
-        onGuidePageSelected(guidePager.getCurrentItem());
+        //onGuidePageSelected(guidePager.getCurrentItem());
     }
 
     @Override public void onDestroyView()
     {
-        guidePageIndicator.setOnPageChangeListener(null);
+        //guidePageIndicator.setOnPageChangeListener(null);
         onViewSubscriptions.unsubscribe();
         ButterKnife.unbind(this);
         super.onDestroyView();

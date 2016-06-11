@@ -2,6 +2,8 @@ package com.androidth.general.fragments.authentication;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,11 +11,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Pair;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
-import com.androidth.general.common.utils.THToast;
 import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
@@ -26,12 +29,12 @@ import com.androidth.general.api.users.password.ForgotPasswordDTO;
 import com.androidth.general.api.users.password.ForgotPasswordFormDTO;
 import com.androidth.general.auth.AuthData;
 import com.androidth.general.auth.AuthDataUtil;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.network.service.SessionServiceWrapper;
 import com.androidth.general.network.service.UserServiceWrapper;
 import com.androidth.general.rx.EmptyAction1;
-import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
@@ -83,17 +86,13 @@ public class EmailSignInFragment extends Fragment
     @Bind(R.id.et_pwd_login) ValidatedText password;
     TextValidator passwordValidator;
     @Bind(R.id.btn_login) View loginButton;
-    @Bind(R.id.social_network_button_list) SocialNetworkButtonListLinear socialNetworkButtonList;
+    //@Bind(R.id.social_network_button_list) SocialNetworkButtonListLinear socialNetworkButtonList;
     SubscriptionList onStopSubscriptions;
 
     @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
     @Nullable Uri deepLink;
 
-    @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
-    {
-        navigator.get().popFragment();
-    }
+
 
     public static void putDeepLink(@NonNull Bundle args, @NonNull Uri deepLink)
     {
@@ -124,13 +123,26 @@ public class EmailSignInFragment extends Fragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.authentication_email_sign_in, container, false);
+        //getActivity().getActionBar().show();
+        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(),R.style.Login_ActionBar);
+        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
+        getActivity().setTitle("Login to account");
+        View view = inflater.inflate(R.layout.authentication_email_sign_in, container, false);
+        getActivity().setTitle("Login to account");
+        return view;
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        getActivity().setTitle("Login to account");
         ButterKnife.bind(this, view);
+        getActivity().setTitle("Login to account");
+        if(email.requestFocus()){
+            InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imgr.showSoftInput(email, InputMethodManager.SHOW_IMPLICIT);
+        }
+
         EmailSignInUtils.populateDefaults(email, password);
         loginButton.setEnabled(BuildConfig.DEBUG);
 
@@ -143,7 +155,7 @@ public class EmailSignInFragment extends Fragment
 
         try
         {
-            view.setBackgroundResource(R.drawable.login_bg_4);
+            view.setBackgroundColor(Color.parseColor("#ffffff"));
         } catch (Throwable e)
         {
             Timber.e(e, "Failed to set guide background");
@@ -243,19 +255,7 @@ public class EmailSignInFragment extends Fragment
                 .subscribe(
                         new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
                         new EmptyAction1<Throwable>()));
-        onStopSubscriptions.add(socialNetworkButtonList.getSocialNetworkEnumObservable()
-                .subscribe(
-                        new Action1<SocialNetworkEnum>()
-                        {
-                            @Override public void call(SocialNetworkEnum socialNetworkEnum)
-                            {
-                                if (socialNetworkEnumObserver != null)
-                                {
-                                    socialNetworkEnumObserver.onNext(socialNetworkEnum);
-                                }
-                            }
-                        },
-                        new TimberAndToastOnErrorAction1("Failed to listent to social network button")));
+
     }
 
     @Override public void onStop()

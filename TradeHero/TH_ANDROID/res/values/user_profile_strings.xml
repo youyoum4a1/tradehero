@@ -21,8 +21,8 @@
   <string name="user_profile_display_name">*Display Name</string>
   <string name="user_profile_referral_code">Referral code (if any)</string>
   <string name="user_profile_optional">optional</string>
-  <string name="user_profile_first_name">First Name</string>
-  <string name="user_profile_last_name">Last Name</string>
+  <string name="user_profile_first_name">First name</string>
+  <string name="user_profile_last_name">Last name</string>
   <string name="user_profile_roi_in_stocks">in STOCKS</string>
 
   <string name="user_profile_roi">ROI: %1$s</string>

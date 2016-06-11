@@ -23,13 +23,10 @@
     <item name="android:textSize">@dimen/authentication_button_text_size</item>
     <item name="android:textStyle">bold</item>
     <item name="android:layout_height">wrap_content</item>
-    <item name="android:layout_width">match_parent</item>
+    <item name="android:layout_width">wrap_content</item>
     <item name="android:gravity">start|center_vertical</item>
     <item name="android:drawablePadding">@dimen/authentication_button_drawable_padding</item>
-    <item name="android:paddingLeft">@dimen/authentication_button_horizontal_padding</item>
-    <item name="android:paddingRight">@dimen/authentication_button_horizontal_padding</item>
-    <item name="android:paddingTop">@dimen/authentication_button_padding_top_bottom</item>
-    <item name="android:paddingBottom">@dimen/authentication_button_padding_top_bottom</item>
+
   </style>
 
   <style name="TH.SocialAuthenticationImageButton">

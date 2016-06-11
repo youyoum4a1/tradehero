@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import com.androidth.general.common.fragment.ActivityResultDTO;
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
 import com.androidth.general.activities.AuthenticationActivity;
@@ -23,12 +22,12 @@ import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.auth.AuthData;
 import com.androidth.general.auth.AuthDataUtil;
+import com.androidth.general.common.fragment.ActivityResultDTO;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.settings.ProfileInfoView;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.network.service.UserServiceWrapper;
 import com.androidth.general.rx.EmptyAction1;
-import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.view.DismissDialogAction0;
@@ -40,7 +39,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dagger.Lazy;
 import rx.Observable;
 import rx.Observer;
@@ -64,8 +62,9 @@ public class EmailSignUpFragment extends Fragment
 
     @Bind(R.id.profile_info) ProfileInfoView profileView;
     @Bind(R.id.authentication_sign_up_email) EditText emailEditText;
-    @Bind(R.id.authentication_sign_up_button) View signUpButton;
-    @Bind(R.id.social_network_button_list) SocialNetworkButtonListLinear socialNetworkButtonList;
+    //@Nullable
+    @Bind(R.id.btn_signUp) View signUpButton;
+
 
     private SubscriptionList onStopSubscriptions;
     @Nullable private ActivityResultDTO receivedActivityResult;
@@ -73,10 +72,10 @@ public class EmailSignUpFragment extends Fragment
     @Nullable Uri deepLink;
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
+    /*@OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
         navigator.get().popFragment();
-    }
+    }*/
 
     public static void putDeepLink(@NonNull Bundle args, @NonNull Uri deepLink)
     {
@@ -121,7 +120,7 @@ public class EmailSignUpFragment extends Fragment
         DeviceUtil.showKeyboardDelayed(emailEditText);
 
         ActivityResultDTO copy = receivedActivityResult;
-        if (copy != null)
+        /*if (copy != null)
         {
             profileView.onActivityResult(
                     copy.activity,
@@ -129,7 +128,7 @@ public class EmailSignUpFragment extends Fragment
                     copy.resultCode,
                     copy.data);
             receivedActivityResult = null;
-        }
+        }*/
 
         try
         {
@@ -144,14 +143,14 @@ public class EmailSignUpFragment extends Fragment
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if (profileView != null)
+        /*if (profileView != null)
         {
             profileView.onActivityResult(getActivity(), requestCode, resultCode, data);
         }
         else
         {
             receivedActivityResult = new ActivityResultDTO(getActivity(), requestCode, resultCode, data);
-        }
+        }*/
     }
 
     @Override public void onStart()
@@ -174,19 +173,7 @@ public class EmailSignUpFragment extends Fragment
                 .subscribe(
                         new EmptyAction1<Pair<AuthData, UserProfileDTO>>(),
                         new TimberOnErrorAction1("Failed to listen to sign-up observable")));
-        onStopSubscriptions.add(socialNetworkButtonList.getSocialNetworkEnumObservable()
-                .subscribe(
-                        new Action1<SocialNetworkEnum>()
-                        {
-                            @Override public void call(SocialNetworkEnum socialNetworkEnum)
-                            {
-                                if (socialNetworkEnumObserver != null)
-                                {
-                                    socialNetworkEnumObserver.onNext(socialNetworkEnum);
-                                }
-                            }
-                        },
-                        new TimberAndToastOnErrorAction1("Failed to listent to social network button")));
+
     }
 
     @Override public void onStop()
@@ -203,7 +190,7 @@ public class EmailSignUpFragment extends Fragment
 
     @Override public void onDetach()
     {
-        this.socialNetworkEnumObserver = null;
+        //this.socialNetworkEnumObserver = null;
         super.onDetach();
     }
 

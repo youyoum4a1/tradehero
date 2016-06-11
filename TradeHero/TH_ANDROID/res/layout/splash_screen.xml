@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="@drawable/login_bg_1"
+    android:background="@color/white"
     android:padding="@dimen/margin_small">
 
   <LinearLayout
@@ -12,19 +12,10 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:layout_alignParentTop="true"
+      android:layout_centerInParent="true"
       android:layout_centerHorizontal="true"
       >
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_marginTop="@dimen/margin_small"
-        android:src="@drawable/splash_logo"
-        android:layout_gravity="center_horizontal"
-        android:contentDescription="@null"
-        />
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -49,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="#ffffff"
+        android:textColor="#000000"
         android:textSize="@dimen/copyright_text_size"
         tools:text="1.6.1(100)"
         />
@@ -58,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="#ffffff"
+        android:textColor="#000000"
         android:textSize="@dimen/copyright_text_size"
         android:text="@string/settings_about_copyright"
         />
@@ -66,7 +57,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#ffffff"
+        android:textColor="#000000"
         android:gravity="center"
         android:textSize="@dimen/copyright_text_size"
         android:text="@string/splash_copyright_2"
@@ -76,7 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textColor="#ffffff"
+        android:textColor="#000000"
         android:textSize="@dimen/copyright_text_size"
         android:text="@string/splash_copyright_3"
         />

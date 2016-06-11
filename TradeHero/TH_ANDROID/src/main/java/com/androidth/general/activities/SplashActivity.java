@@ -1,22 +1,19 @@
 package com.androidth.general.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import android.widget.TextView;
 
-import com.facebook.AppEventsLogger;
-import com.mobileapptracker.MobileAppTracker;
-import com.tapstream.sdk.Api;
-import com.tapstream.sdk.Event;
-import com.androidth.general.common.persistence.DTOCacheUtilRx;
-import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.R;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.persistence.DTOCacheUtilRx;
+import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.models.time.AppTiming;
 import com.androidth.general.network.share.SocialConstants;
 import com.androidth.general.persistence.prefs.AuthHeader;
@@ -27,6 +24,10 @@ import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.VersionUtils;
 import com.androidth.general.utils.metrics.MetricsModule;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
+import com.facebook.AppEventsLogger;
+import com.mobileapptracker.MobileAppTracker;
+import com.tapstream.sdk.Api;
+import com.tapstream.sdk.Event;
 
 import javax.inject.Inject;
 
@@ -67,7 +68,7 @@ public class SplashActivity extends BaseActivity
         }
         try
         {
-            getWindow().getDecorView().findViewById(android.R.id.content).setBackgroundResource(R.drawable.login_bg_1);
+            getWindow().getDecorView().findViewById(android.R.id.content).setBackgroundColor(Color.parseColor("#ffffff"));
         } catch (Throwable e)
         {
             Timber.e(e, "Failed to set guide background");
