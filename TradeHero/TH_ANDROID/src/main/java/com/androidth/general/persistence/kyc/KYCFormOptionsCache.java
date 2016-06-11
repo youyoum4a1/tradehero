@@ -7,6 +7,8 @@ import com.androidth.general.common.persistence.UserCache;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.KYCFormOptionsId;
 import com.androidth.general.network.service.LiveServiceWrapper;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
@@ -23,7 +25,7 @@ public class KYCFormOptionsCache extends BaseFetchDTOCacheRx<KYCFormOptionsId, K
         this.liveServiceWrapper = liveServiceWrapper;
     }
 
-    @NonNull @Override protected Observable<KYCFormOptionsDTO> fetch(@NonNull KYCFormOptionsId key)
+    @NonNull @Override @RxLogObservable protected Observable<KYCFormOptionsDTO> fetch(@NonNull KYCFormOptionsId key)
     {
         return liveServiceWrapper.getKYCFormOptions(key);
     }

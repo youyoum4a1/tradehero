@@ -102,10 +102,11 @@ public class BaseLiveFragmentUtil
 
     public void setCallToAction(boolean isLive)
     {
-        if(liveAvailability.get())
-        {
-            showCallToActionBubbleVisible();
-        }
+        showCallToActionBubbleVisible();//Jeff force
+//        if(liveAvailability.get())
+//        {
+//            showCallToActionBubbleVisible();
+//        }
     }
 
     protected void showCallToActionBubbleVisible()

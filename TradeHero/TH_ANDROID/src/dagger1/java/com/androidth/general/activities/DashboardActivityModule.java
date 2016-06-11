@@ -16,14 +16,20 @@ import com.androidth.general.UIModule;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.DashboardTabHost;
 import com.androidth.general.fragments.NavigationAnalyticsReporter;
+import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.base.DashboardFragmentOuterElements;
 import com.androidth.general.fragments.base.FragmentOuterElements;
+import com.androidth.general.fragments.base.TrendingLiveFragmentUtil;
 import com.androidth.general.fragments.billing.StoreScreenFragment;
 import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.competition.ProviderVideoListFragment;
 import com.androidth.general.fragments.discovery.DiscoveryMainFragment;
 import com.androidth.general.fragments.leaderboard.main.LeaderboardCommunityFragment;
+import com.androidth.general.fragments.live.DatePickerDialogFragment;
+import com.androidth.general.fragments.live.LiveCallToActionFragment;
+import com.androidth.general.fragments.live.LiveSignUpMainFragment;
+import com.androidth.general.fragments.live.VerifyPhoneDialogFragment;
 import com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment;
 import com.androidth.general.fragments.news.NewsWebFragment;
 import com.androidth.general.fragments.position.PositionListFragment;
@@ -118,6 +124,8 @@ import dagger.Provides;
                 UpdateCenterFragment.class,
                 WebViewFragment.class,
                 LiveSignUpStep1AyondoFragment.class,
+//                SignUpLiveActivity.class,
+//                IdentityPromptActivity.class,
                 LiveActivityUtil.getRoutableKYC()
         );
         DiscoveryMainFragment.registerAliases(router);
