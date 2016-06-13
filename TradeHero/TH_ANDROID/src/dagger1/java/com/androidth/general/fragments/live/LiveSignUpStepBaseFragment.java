@@ -10,6 +10,7 @@ import android.widget.Spinner;
 
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.KYCFormOptionsId;
+import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.live.LiveBrokerDTO;
 import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
@@ -18,6 +19,7 @@ import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.persistence.kyc.KYCFormOptionsCache;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.R;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,10 +30,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
+import timber.log.Timber;
 
 abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 {
@@ -138,6 +144,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
             Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable, Observable<KYCFormOptionsDTO> kycFormOptionsDTOObservable)
     {
         return Collections.emptyList();
+
     }
 
     protected Observable<LiveBrokerSituationDTO> getLiveBrokerSituationObservable()
@@ -152,9 +159,16 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         super.onDestroyView();
     }
 
-    @NonNull protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
+    @NonNull @RxLogObservable protected Observable<LiveBrokerSituationDTO> createBrokerSituationObservable()
     {
         return brokerSituationSubject
+                .doOnNext(new Action1<LiveBrokerSituationDTO>() {
+                    @Override
+                    public void call(LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                        Timber.d("!!!!o");
+                        Timber.d(liveBrokerSituationDTO.toString());
+                    }
+                })
                 .mergeWith(liveBrokerSituationPreference.getLiveBrokerSituationDTOObservable())
                 .distinctUntilChanged();
     }
@@ -170,18 +184,16 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         });
     }
 
-    @NonNull protected Observable<KYCFormOptionsDTO> createKYCFormOptionsObservable(Observable<LiveBrokerSituationDTO> brokerSituationObservable)
+    @NonNull @RxLogObservable protected Observable<KYCFormOptionsDTO> createKYCFormOptionsObservable(Observable<LiveBrokerSituationDTO> brokerSituationObservable)
     {
         return brokerSituationObservable
-                .distinctUntilChanged(new Func1<LiveBrokerSituationDTO, LiveBrokerId>()
-                {
+                .distinctUntilChanged(new Func1<LiveBrokerSituationDTO, LiveBrokerId>() {
                     @Override public LiveBrokerId call(LiveBrokerSituationDTO situationDTO)
                     {
                         return situationDTO.broker.id;
                     }
                 })
-                .flatMap(new Func1<LiveBrokerSituationDTO, Observable<KYCFormOptionsDTO>>()
-                {
+                .flatMap(new Func1<LiveBrokerSituationDTO, Observable<KYCFormOptionsDTO>>() {
                     @Override public Observable<KYCFormOptionsDTO> call(LiveBrokerSituationDTO situationDTO)
                     {
                         return kycFormOptionsCache.getOne(new KYCFormOptionsId(situationDTO.broker.id))

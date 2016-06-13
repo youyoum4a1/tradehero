@@ -72,8 +72,12 @@ public enum Exchange
     NSE(R.drawable.square_in, true),
     BSE(R.drawable.square_in, false),
 
+    XETRA(R.drawable.square_de, false),
+
     // Japan
     TSE(R.drawable.square_jp, true);
+
+
 
     @DrawableRes public final int logoId;
     public final boolean isCountryDefault;

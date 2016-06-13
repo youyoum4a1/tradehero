@@ -7,12 +7,14 @@ import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.common.persistence.prefs.AbstractPreference;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import java.io.IOException;
 
 import javax.inject.Singleton;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func0;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
@@ -83,16 +85,21 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
         }
     }
 
-    @NonNull public Observable<LiveBrokerSituationDTO> getLiveBrokerSituationDTOObservable()
-    {
-        if (liveBrokerSituationDTOObservable == null)
-        {
+    @NonNull @RxLogObservable
+    public Observable<LiveBrokerSituationDTO> getLiveBrokerSituationDTOObservable() {
+        Timber.d("!!!1");
+        if (liveBrokerSituationDTOObservable == null) {
+            Timber.d("!!!2");
             liveBrokerSituationDTOObservable = liveBrokerSituationDTOPublishSubject
-                    .startWith(Observable.defer(new Func0<Observable<LiveBrokerSituationDTO>>()
-                    {
-                        @Override public Observable<LiveBrokerSituationDTO> call()
-                        {
-                            return Observable.just(get());
+                    .startWith(Observable.defer(new Func0<Observable<LiveBrokerSituationDTO>>() {
+                        @Override public Observable<LiveBrokerSituationDTO> call() {
+                            Timber.d("!!!3");
+                            return Observable.just(get()).doOnNext(new Action1<LiveBrokerSituationDTO>() {
+                                @Override
+                                public void call(LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                                    Timber.d("!!!"+liveBrokerSituationDTO.toString());
+                                }
+                            });
                         }
                     }))
                     .distinctUntilChanged();

@@ -1,6 +1,8 @@
 package com.androidth.general.models.push.urbanairship;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
@@ -105,6 +107,23 @@ import timber.log.Timber;
                                     {
                                         return userProfileCache.getOne(new UserBaseKey(userId))
                                                 .map(new ReplaceWithFunc1<Pair<UserBaseKey, UserProfileDTO>, Integer>(userId));
+                                    }
+                                })
+                                .filter(new Func1<Integer, Boolean>() {
+                                    @Override
+                                    public Boolean call(Integer integer) {
+                                        SharedPreferences sp = THApp.context.getSharedPreferences("DeviceChannelId", Context.MODE_PRIVATE);
+                                        String currentToken = sp.getString("DeviceChannelId", "");
+                                        if(currentToken!=null){
+                                            if(currentToken.equals(channelId)){
+                                                return false;
+                                            }
+                                        }
+                                        currentToken = channelId;
+                                        SharedPreferences.Editor editor = sp.edit();
+                                        editor.putString("DeviceChannelId", currentToken);
+                                        editor.commit();
+                                        return true;
                                     }
                                 })
                                 .flatMap(new Func1<Integer, Observable<UserProfileDTO>>()

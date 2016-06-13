@@ -41,7 +41,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_alignParentBottom="true"
-          android:background="?attr/selectableItemBackground"
+          android:background="?android:attr/selectableItemBackground"
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:minWidth="@dimen/clickable_element_min_dimen"
           tools:layout_height="48dp"
@@ -133,7 +133,7 @@
           android:layout_alignParentLeft="true"
           android:layout_alignParentStart="true"
           android:minHeight="@dimen/clickable_element_min_dimen"
-          />
+          android:spinnerMode="dropdown" />
 
       <Button
           android:id="@+id/btn_verify_phone"

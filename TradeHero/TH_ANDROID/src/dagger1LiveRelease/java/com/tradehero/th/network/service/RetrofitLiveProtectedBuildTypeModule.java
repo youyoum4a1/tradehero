@@ -4,8 +4,13 @@ import dagger.Module;
 
 @Module(
         complete = false,
-        library = true
+        library = true,
+        overrides = true
 )
 public class RetrofitLiveProtectedBuildTypeModule
 {
+    @Provides LiveServiceWrapper provideLiveServiceWrapper(DummyAyondoLiveServiceWrapper liveServiceWrapper)
+    {
+        return liveServiceWrapper;
+    }
 }

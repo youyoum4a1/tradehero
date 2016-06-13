@@ -4,14 +4,15 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.androidth.general.R;
+import com.androidth.general.activities.IdentityPromptActivity;
 import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.trending.TrendingMainFragment;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.fastfill.FastFillUtil;
-import com.androidth.general.persistence.prefs.LiveAvailability;
 import com.androidth.general.rx.TimberOnErrorAction1;
+import com.androidth.general.persistence.prefs.LiveAvailability;
 import com.androidth.general.widget.GoLiveWidget;
 
 import javax.inject.Inject;
@@ -67,7 +68,9 @@ public class BaseLiveFragmentUtil
                         {
                             @Override public void call(Boolean fastFillAvailable)
                             {
-                                navigator.launchActivity(SignUpLiveActivity.class);
+                                navigator.launchActivity(fastFillAvailable
+                                        ? IdentityPromptActivity.class
+                                        : SignUpLiveActivity.class);
                             }
                         },
                         new TimberOnErrorAction1("Failed to listen to liveWidget in BaseLiveFragmentUtil"));
@@ -99,10 +102,11 @@ public class BaseLiveFragmentUtil
 
     public void setCallToAction(boolean isLive)
     {
-        //if(liveAvailability.get())
-        //{
-            showCallToActionBubbleVisible();
-        //}
+        showCallToActionBubbleVisible();//Jeff force
+//        if(liveAvailability.get())
+//        {
+//            showCallToActionBubbleVisible();
+//        }
     }
 
     protected void showCallToActionBubbleVisible()

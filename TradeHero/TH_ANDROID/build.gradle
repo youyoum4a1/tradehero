@@ -4,10 +4,15 @@ import java.util.regex.Pattern
 buildscript {
     repositories {
         mavenCentral()
+<<<<<<< HEAD
         maven {
             url 'https://maven.fabric.io/public'
         }
 
+=======
+        jcenter()
+        maven { url 'https://maven.fabric.io/public' }
+>>>>>>> 990a84304b9f277a803748117751581bba7215be
 
         //crashlytics is fabric now
         //maven { url 'http://download.crashlytics.com/maven' }
@@ -16,6 +21,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:2.1.2'
         classpath 'io.fabric.tools:gradle:1.+'
         classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'com.fernandocejas.frodo:frodo-plugin:0.8.1'
         //crashlytics is fabric now
         //classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
 
@@ -36,6 +42,7 @@ project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.fernandocejas.frodo'
 
 
 repositories {
@@ -95,7 +102,7 @@ android {
         targetSdkVersion 22
         applicationId "com.androidth.general"
         versionCode project.ext.versionBuild
-
+        versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.${project.ext.versionPatch}"
 
         buildConfigField "String", "GIT_SHA", "\"${project.ext.gitSha}\""
         buildConfigField "String", "BUILD_TIME", "\"${project.ext.buildTime}\""
@@ -118,9 +125,9 @@ android {
             //We either have to register new play services with package name suffixed with .dev or just comment out this line
             //applicationIdSuffix '.dev'
             versionNameSuffix '-dev'
-
             // Enabling multidex support.
             multiDexEnabled true
+            debuggable true
         }
         release {
             minifyEnabled true
@@ -146,7 +153,7 @@ android {
             buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
             versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.0"
 
-                  multiDexEnabled true
+            multiDexEnabled true
         }
 
         ayondoAcademy {
@@ -154,7 +161,7 @@ android {
             buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.ayondo.academyapp\""
             versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.1"
 
-                  multiDexEnabled true
+            multiDexEnabled true
         }
 
 //    samsung {
@@ -329,7 +336,7 @@ android {
         ayondoAcademyDebug {
             java {
                 srcDir 'src/ayondoAcademyDebug/java'
-        srcDir 'src/dagger1LiveDebug/java'
+                srcDir 'src/dagger1LiveDebug/java'
             }
             res {
                 srcDir 'src/ayondoAcademy/res'
@@ -555,18 +562,17 @@ android {
 }
 
 dependencies {
+
     // Helper here http://gradleplease.appspot.com
     androidTestCompile "junit:junit:${JUNIT_VERSION}"
     testCompile "junit:junit:${JUNIT_VERSION}"
-
     compile fileTree(dir: 'libs', include: ['*.jar'])
     releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
-
     // For swipelistview
 
-
     // for qq
-  releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])
+    releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])
+    //  samsungCompile 'com.sec.android.iap:library:3.0@aar'//jeff
 
 //  samsungCompile 'com.sec.android.iap:library:3.0@aar'//jeff
   // TODO confirm on a hardware that it is "provided" and not "compile"
@@ -721,110 +727,113 @@ dependencies {
     compile 'com.tradehero.route:route:0.2-SNAPSHOT'
     compile 'com.flurry:FlurryAnalytics:6.1.0'
     compile 'com.flurry:FlurryAds:6.1.0'
-    compile 'com.google.android.gms:play-services-ads:9.0.0'}
+    compile "com.google.android.gms:play-services-ads:${PLAY_SERVICES_VERSION}"
+    compile "com.google.android.gms:play-services-gcm:${PLAY_SERVICES_VERSION}"
+}
 
 File propFile = file('signing.properties');
 if (propFile.
-    exists()) {
-  def Properties props = new
-    Properties()
-  props.load(new FileInputStream
+        exists()) {
+    def Properties props = new
+            Properties()
+    props.load(new FileInputStream
 
-    (propFile))
+            (propFile))
 
   if (props.containsKey('STORE_FILE') && props.containsKey(
             'STORE_PASSWORD') &&
-          props.containsKey('KEY_ALIAS') && props.
-        containsKey('KEY_PASSWORD')) {
-    android.signingConfigs.release.
-        storeFile = file(props['STORE_FILE'])
-    android.signingConfigs.release.
-        storePassword = props['STORE_PASSWORD']
-    android.
-        signingConfigs.release.keyAlias = props['KEY_ALIAS']
-    android.
-    signingConfigs.
-        release.keyPassword = props['KEY_PASSWORD']
-  }
-    else {
-    android.buildTypes.release.signingConfig = null
-  }
+            props.containsKey('KEY_ALIAS') && props.
+            containsKey('KEY_PASSWORD')) {
+        android.signingConfigs.release.
+                storeFile = file(props['STORE_FILE'])
+        android.signingConfigs.release.
+                storePassword = props['STORE_PASSWORD']
+        android.
+                signingConfigs.release.keyAlias = props['KEY_ALIAS']
+        android.
+                signingConfigs.
+                release.keyPassword = props['KEY_PASSWORD']
+    } else {
+        android.buildTypes.release.signingConfig = null
+    }
 } else {
-  android.buildTypes.
-    release.signingConfig = null
+    android.buildTypes.
+            release.signingConfig = null
 }
 
 tasks.withType(JavaCompile) {
-  options.encoding = "UTF-8"
+    options.encoding = "UTF-8"
 }
-    // Fix this annoyance: https://github.com/robolectric/deckard-gradle/blob/master/README.md#required-tweaking-the-module-dependency-order-ie-classpath
+// Fix this annoyance: https://github.com/robolectric/deckard-gradle/blob/master/README.md#required-tweaking-the-module-dependency-order-ie-classpath
 task reorderDependencyToFixJunit4Issue {
-  def file = file(project
-    .name +
-        ".iml")
+    def file = file(project
+            .name +
+            ".iml")
 
-  println "reorderDependencyToFixJunit4Issue"
-  doLast {
-            println "reorderDependencyToFixJunit4Issue-doLast"
-            if (file.exists()) {
-      def parsedXml = (new XmlParser()).
-            parse(file)
+    println "reorderDependencyToFixJunit4Issue"
+    doLast {
+        println "reorderDependencyToFixJunit4Issue-doLast"
+        if (file.exists()) {
+            def parsedXml = (new XmlParser()).
+                    parse(file)
             // find first component node which has orderEntry child
-      def
-                targetComponent = parsedXml.component.find { it.
-                    orderEntry }
-      if (targetComponent) {
+            def
+                    targetComponent = parsedXml.component.find {
+                        it.
+                                orderEntry
+                    }
+            if (targetComponent) {
                 def
-                androidSdk = targetComponent.find {
-          it.@type == 'jdk' && it.@jdkType == 'Android SDK'
-        }
-        if (androidSdk &&
-                    androidSdk != targetComponent.
-                    children().last()) {
+                        androidSdk = targetComponent.find {
+                            it.@type == 'jdk' && it.@jdkType == 'Android SDK'
+                        }
+                if (androidSdk &&
+                        androidSdk != targetComponent.
+                        children().last()) {
                     // reposition android sdk dependency in the iml file
-          targetComponent.remove(
-                    androidSdk)
-          targetComponent.append(androidSdk)
+                    targetComponent.remove(
+                            androidSdk)
+                    targetComponent.append(androidSdk)
 
-          // update iml file
-          def
-            writer = new
-    StringWriter()
-          new XmlNodePrinter(new PrintWriter(writer)).print(parsedXml)
-          file.text = writer.toString()
+                    // update iml file
+                    def
+                            writer = new
+                                    StringWriter()
+                    new XmlNodePrinter(new PrintWriter(writer)).print(parsedXml)
+                    file.text = writer.toString()
+                }
+            }
         }
-      }
     }
-  }
 }
 
 preBuild.dependsOn(
-         reorderDependencyToFixJunit4Issue)
+        reorderDependencyToFixJunit4Issue)
 
 tasks.whenTaskAdded { theTask ->
-  def taskName = theTask.name.toString()
-  if (taskName.
-         matches(/test.*(Debug|Release)/)) {
-    /**
-     *
+    def taskName = theTask.name.toString()
+    if (taskName.
+            matches(/test.*(Debug|Release)/)) {
+        /**
+         *
          Listen for when robolectric adds the 'testDebug' task and when it does, add the -noverify
-     *
-     option to that task's jvmArgs.  This allows us to turn off byte code verification when
-     * running our unit tests.
-     */
-    theTask.jvmArgs('-noverify')
-  }
+         *
+         option to that task's jvmArgs.  This allows us to turn off byte code verification when
+         * running our unit tests.
+         */
+        theTask.jvmArgs('-noverify')
+    }
 }
 
 def
-            testResourceFilesToCopy = copySpec {
-  from "${projectDir}/src/test/resources"
-}
+        testResourceFilesToCopy = copySpec {
+            from "${projectDir}/src/test/resources"
+        }
 
 task copyTestResources {
-  println("Copying test resources")
-  [
-          //jeff
+    println("Copying test resources")
+    [
+            //jeff
 //          "${buildDir}/intermediates/classes/test/amazonairship/debug",
 //          "${buildDir}/intermediates/classes/test/amazonairship/release",
 //          "${buildDir}/intermediates/classes/test/amazonnopush/debug",
@@ -834,107 +843,108 @@ task copyTestResources {
 //          "${buildDir}/intermediates/classes/test/googleplaynopush/debug",
 //          "${buildDir}/intermediates/classes/test/googleplaynopush/release",
 //          "${buildDir}/intermediates/classes/test/samsungairship/debug",
-    //          "${buildDir}/intermediates/classes/test/samsungairship/release",
+            //          "${buildDir}/intermediates/classes/test/samsungairship/release",
             //          "${buildDir}/intermediates/classes/test/samsungnopush/debug",
-    //          "${buildDir}/intermediates/classes/test/samsungnopush/release"
-  ].each { dest ->
-    copy {
-      with testResourceFilesToCopy
-      into dest
+            //          "${buildDir}/intermediates/classes/test/samsungnopush/release"
+    ].each { dest ->
+        copy {
+            with testResourceFilesToCopy
+            into dest
+        }
     }
-  }
 }
-        project.afterEvaluate {
-  println(
-                "afterEvaluate")
-  Pattern flavorsPattern =
+project.afterEvaluate {
+    println(
+            "afterEvaluate")
+    Pattern flavorsPattern =
             Pattern.compile("compile(.+)DebugJava")
 
-  tasks.each { theTask ->
-    if (project.ext.
+    tasks.each { theTask ->
+        if (project.ext.
                 isIntelliJ
-            && theTask.name.matches("assemble.+Release")) {
-      println(
-                "Adding a version build bump to task " + theTask.name)
-      theTask.doLast {
-                    // Bump version Build
-        versionProps.setProperty('VERSION_BUILD', (project.
+                && theTask.name.matches("assemble.+Release")) {
+            println(
+                    "Adding a version build bump to task " + theTask.name)
+            theTask.doLast {
+                // Bump version Build
+                versionProps.setProperty('VERSION_BUILD', (project.
                         ext.versionBuild + 1).toString())
-        def map = versionProps.sort(
+                def map = versionProps.sort(
                         new Comparator<Object>() {
-          @Override int compare(Object left, Object right)
-                {
-                // TODO this does not appear to save the properties in the desired order
-            return
-                versionPropIndex(left.toString()).compareTo(
-        versionPropIndex(
+                            @Override
+                            int compare(Object left, Object right) {
+                                // TODO this does not appear to save the properties in the desired order
+                                return
+                                versionPropIndex(left.toString()).compareTo(
+                                        versionPropIndex(
 
-        right.toString()))
-          }
-        })
-        versionProps = new Properties()
-        versionProps.putAll(map)
-        versionProps.store(
-                    versionFile.
-                    newWriter(), null)
-      }
+                                                right.toString()))
+                            }
+                        })
+                versionProps = new Properties()
+                versionProps.putAll(map)
+                versionProps.store(
+                        versionFile.
+                                newWriter(), null)
+            }
+        }
+        Matcher m =
+                flavorsPattern.matcher(theTask.getName())
+        while (m.find()) {
+            println("Adding copy to " + theTask.
+                    getName() +
+                    " from " +
+                    "${projectDir}/src/test/resources" +
+                    " to " +
+                    "${buildDir}/intermediates/classes/test/${m.group(1).toLowerCase()}/debug")
+            theTask.dependsOn
+            ("copyTestResources")
+        }
     }
-                    Matcher m =
-                    flavorsPattern.matcher(theTask.getName())
-    while (m.find()) {
-      println("Adding copy to " + theTask.
-    getName() +
-              " from " +
-              "${projectDir}/src/test/resources" +
-              " to " +
-              "${buildDir}/intermediates/classes/test/${m.group(1).toLowerCase()}/debug")
-      theTask.dependsOn
-    ("copyTestResources")
-    }
-  }
 }
 
 Integer versionPropIndex(String key) {
-  if (key.equals("VERSION_MAJOR")) return 0
-  if (
+    if (key.equals("VERSION_MAJOR")) return 0
+    if (
 
     key.equals(
 
-    "VERSION_MINOR")) return 1
-  if (key.equals(
-    "VERSION_PATCH")) return 2
-  if (key.equals(
+            "VERSION_MINOR")) return 1
+    if (key.equals(
+            "VERSION_PATCH")) return 2
+    if (key.equals(
 
-    "VERSION_BUILD")) return 3
-  throw new IllegalStateException(
+            "VERSION_BUILD")) return 3
+    throw new IllegalStateException(
 
-    "Unknown key " + key)
+            "Unknown key " + key)
 }
-    task showMeCache << {
-  configurations.compile
+
+task showMeCache << {
+    configurations.compile
             .each { println it }
 
-  int mb = 1024 * 1024;
+    int mb = 1024 * 1024;
     //Getting the runtime reference from system
-  Runtime runtime =
+    Runtime runtime =
             Runtime.getRuntime();
 
     System.out.println(
-    "##### Heap utilization statistics [MB] #####");
+            "##### Heap utilization statistics [MB] #####");
 
-  //Print used memory
-  System
+    //Print used memory
+    System
 
-    .out.println("Used Memory:"
-          + (runtime.totalMemory() - runtime.freeMemory()) / mb);
+            .out.println("Used Memory:"
+            + (runtime.totalMemory() - runtime.freeMemory()) / mb);
 
-  //Print free memory
-  System.out.println("Free Memory:"
-          + runtime.freeMemory() / mb);
+    //Print free memory
+    System.out.println("Free Memory:"
+            + runtime.freeMemory() / mb);
 
-  //Print total available memory
-  System.out.println("Total Memory:" + runtime.totalMemory() / mb);
+    //Print total available memory
+    System.out.println("Total Memory:" + runtime.totalMemory() / mb);
 
-  //Print Maximum available memory
-  System.out.println("Max Memory:" + runtime.maxMemory() / mb);
+    //Print Maximum available memory
+    System.out.println("Max Memory:" + runtime.maxMemory() / mb);
 }

@@ -324,9 +324,9 @@
   <style name="TH.Spinner"
       parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
     <item name="android:minHeight">@dimen/clickable_element_min_dimen</item>
-    <item name="android:listSelector">?attr/selectableItemBackground</item>
-    <item name="android:dropDownSelector">?attr/selectableItemBackground</item>
-    <item name="android:background">?attr/selectableItemBackground</item>
+    <item name="android:listSelector">?android:attr/selectableItemBackground</item>
+    <item name="android:dropDownSelector">?android:attr/selectableItemBackground</item>
+    <item name="android:background">?android:attr/selectableItemBackground</item>
     <item name="android:theme">@style/ThemeOverlay.AppCompat.Light</item>
   </style>
 

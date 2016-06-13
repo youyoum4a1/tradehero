@@ -1,6 +1,8 @@
 package com.androidth.general.persistence.prefs;
 
 import android.content.SharedPreferences;
+
+import com.androidth.general.api.live.LiveBrokerKnowledge;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.androidth.general.common.annotation.ForApp;
 import com.androidth.general.common.annotation.ForUser;
@@ -35,7 +37,7 @@ public class PreferenceGameLiveModule
         KYCForm empty = new EmptyKYCForm();
         empty.setStepStatuses(new ArrayList<StepStatus>());
         return new LiveBrokerSituationPreference(objectMapper, sharedPreferences, PREF_SAVED_BROKER_SITUATION, new LiveBrokerSituationDTO(
-                new LiveBrokerDTO(new LiveBrokerId(0), "Fake"), empty));
+                new LiveBrokerDTO(new LiveBrokerId(LiveBrokerKnowledge.BROKER_ID_AYONDO), "fake"), empty));
     }
 
     @Provides @Singleton PhoneNumberVerifiedPreference providePhoneNumberAvailablePreference(

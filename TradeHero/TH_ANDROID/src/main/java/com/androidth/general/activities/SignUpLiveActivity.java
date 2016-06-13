@@ -34,7 +34,7 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        thRouter.inject(new LiveSignUpMainFragment());
+//        thRouter.inject(this);
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)

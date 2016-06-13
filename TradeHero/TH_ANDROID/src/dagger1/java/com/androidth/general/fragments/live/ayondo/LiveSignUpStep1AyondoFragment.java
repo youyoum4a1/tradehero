@@ -9,11 +9,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -43,7 +45,13 @@ import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.DateUtils;
+import com.androidth.general.utils.route.THRouter;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
+import com.google.android.gms.common.data.DataBufferObserver;
 import com.neovisionaries.i18n.CountryCode;
+import com.androidth.general.R;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -72,10 +80,13 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-
+@Routable({
+        "enrollchallenge/:enrollProviderId"
+})
 public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
-
+    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
+    @Inject THRouter thRouter;
     private static final int PHONE_NUM_MIN_LENGTH = 7;
 
     @LayoutRes private static final int LAYOUT_COUNTRY = R.layout.spinner_live_country_dropdown_item;
@@ -111,17 +122,19 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
+        thRouter.inject(this);
         verifiedPublishSubject = PublishSubject.create();
         if (savedInstanceState != null)
         {
             expectedCode = savedInstanceState.getString(KEY_EXPECTED_SMS_CODE, null);
             smsId = savedInstanceState.getString(KEY_SMS_ID, null);
         }
+        Log.v("ayondoStep1", "on ayondo create");
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        Log.v("ayondoStep1", "on ayondo createView");
         return inflater.inflate(R.layout.fragment_sign_up_live_ayondo_step_1, container, false);
     }
 
@@ -147,14 +160,18 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
         List<Subscription> subscriptions = new ArrayList<>();
+        Log.v("ayondoStep1", "on ayondo init "+kycAyondoFormOptionsDTOObservable.toString());
+
+
+//        ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getContext(),R.array.live_title_array, android.R.layout.simple_spinner_item);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        title.setAdapter(adapter);
 
         subscriptions.add(Observable.merge(
                 WidgetObservable.text(firstName)
-                        .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
-                        {
+                        .map(new Func1<OnTextChangeEvent, KYCAyondoForm>() {
                             @Override public KYCAyondoForm call(
-                                    OnTextChangeEvent fullNameEvent)
-                            {
+                                    OnTextChangeEvent fullNameEvent) {
                                 return KYCAyondoFormFactory.fromFirstNameEvent(fullNameEvent);
                             }
                         }),
@@ -177,10 +194,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         }),
                 AdapterViewObservable.selects(title)
-                        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
-                        {
-                            @Override public KYCAyondoForm call(OnSelectedEvent titleEvent)
-                            {
+                        .map(new Func1<OnSelectedEvent, KYCAyondoForm>() {
+                            @Override public KYCAyondoForm call(OnSelectedEvent titleEvent) {
+                                Log.v("ayondoStep1", "on ayondo title view");
                                 return KYCAyondoFormFactory.fromTitleEvent(titleEvent);
                             }
                         }),
@@ -189,6 +205,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public KYCAyondoForm call(OnSelectedEvent nationalityEvent)
                             {
+                                Log.v("ayondoStep1", "on ayondo nationality");
                                 return KYCAyondoFormFactory.fromNationalityEvent(nationalityEvent);
                             }
                         }),
@@ -224,6 +241,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction1(
                                 "Failed to listen to user name, password, full name, email, nationality o residency spinners, or dob")));
+
+        Log.v("ayondoStep1",  "observable done "+subscriptions.size());
 
         emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
         emailInvalidMessage = getString(R.string.validation_incorrect_pattern_email);
@@ -274,7 +293,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         .take(1)
                         .observeOn(AndroidSchedulers.mainThread()),
                 kycAyondoFormOptionsDTOObservable
-                        .observeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
                         .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
                         {
                             @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
@@ -283,17 +302,18 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         })
                         .distinctUntilChanged()
-                        .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<CountryDTOForSpinner>()
                         {
                             @Override public void call(CountryDTOForSpinner options)
                             {
+                                Log.v("ayondoStep1", "Gender setting adapter");
                                 LollipopArrayAdapter<GenderDTO> genderAdapter = new LollipopArrayAdapter<>(
                                         getActivity(),
                                         GenderDTO.createList(getResources(), options.genders));
                                 title.setAdapter(genderAdapter);
                                 title.setEnabled(options.genders.size() > 1);
 
+                                Log.v("ayondoStep1", "Gender setting adapter " +genderAdapter.getCount());
                                 CountrySpinnerAdapter phoneCountryCodeAdapter =
                                         new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
                                 phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
@@ -543,6 +563,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 }, new TimberOnErrorAction1("Failed to update verified mobile number")));
 
+        Log.v("ayondoStep1", "Subscriptions final "+subscriptions.size());
         return subscriptions;
     }
 
