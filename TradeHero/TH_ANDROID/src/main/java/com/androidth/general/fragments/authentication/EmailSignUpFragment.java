@@ -49,7 +49,6 @@ import rx.android.view.ViewObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
-import timber.log.Timber;
 
 public class EmailSignUpFragment extends Fragment
 {
@@ -130,14 +129,6 @@ public class EmailSignUpFragment extends Fragment
             receivedActivityResult = null;
         }*/
 
-        try
-        {
-            view.setBackgroundResource(R.drawable.login_bg_4);
-        } catch (Throwable e)
-        {
-            Timber.e(e, "Failed to set guide background");
-            view.setBackgroundColor(getResources().getColor(R.color.authentication_guide_bg_color));
-        }
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

@@ -21,6 +21,7 @@ public class TextValidator implements View.OnFocusChangeListener, TextWatcher
     @NonNull protected final Resources resources;
     @NonNull protected final ValidationDTO validationDTO;
     protected boolean hasHadInteraction;
+    protected boolean hasTextChanged;
     @NonNull protected CharSequence text;
     @Nullable Subscription delayedValidationSubscription;
 
@@ -31,6 +32,7 @@ public class TextValidator implements View.OnFocusChangeListener, TextWatcher
         this.validationDTO = validationDTO;
         this.validationMessageSubject = BehaviorSubject.create();
         this.hasHadInteraction = false;
+        this.hasTextChanged = false;
         this.text = "";
     }
     //</editor-fold>
@@ -38,7 +40,7 @@ public class TextValidator implements View.OnFocusChangeListener, TextWatcher
     public void setText(@NonNull CharSequence text)
     {
         this.text = text;
-        validate();
+        performValidation();
     }
 
     @NonNull public Observable<ValidationMessage> getValidationMessageObservable()
@@ -54,7 +56,8 @@ public class TextValidator implements View.OnFocusChangeListener, TextWatcher
             // It assumes that this method is not called as part of the constructor.
             hasHadInteraction = true;
         }
-        validate();
+        //validate();
+        performValidation();
     }
 
     @Override public void beforeTextChanged(CharSequence s, int start, int count, int after)
@@ -63,11 +66,20 @@ public class TextValidator implements View.OnFocusChangeListener, TextWatcher
 
     @Override public void onTextChanged(CharSequence text, int start, int before, int count)
     {
-        if (!hasHadInteraction && text.length() > 0)
+        /*if (!hasHadInteraction && text.length() > 0)
         {
             hasHadInteraction = true;
         }
+        setText(text);*/
+        if(text.length() > 0){
+            hasTextChanged = true;
+        }
         setText(text);
+    }
+    private void performValidation(){
+        if(hasTextChanged && hasHadInteraction){
+            validate();
+        }
     }
 
     @Override public void afterTextChanged(Editable s)
@@ -135,7 +147,7 @@ public class TextValidator implements View.OnFocusChangeListener, TextWatcher
 
     protected boolean needsToHintValidStatus()
     {
-        return hasHadInteraction || !validationDTO.validateOnlyIfHadInteraction;
+        return hasHadInteraction || !validationDTO.validateOnlyIfHadInteraction || hasTextChanged;
     }
 
     public boolean needsToValidate()

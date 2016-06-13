@@ -55,10 +55,9 @@
               android:focusable="true"
               app:minTextLength="1"
               app:validatePattern="@string/regex_email_validator"
-              app:delayValidationByMilliSec="500"
               android:id="@+id/authentication_sign_up_email"
               android:imeOptions="actionNext"
-              android:hint="Email"/>
+              android:hint="@string/user_profile_email"/>
 
       </android.support.design.widget.TextInputLayout>
 
@@ -75,7 +74,6 @@
               android:hint="@string/user_profile_display_name"
               android:inputType="text"
               app:minTextLength="1"
-              app:delayValidationByMilliSec="500"
               >
           </com.androidth.general.widget.validation.DisplayNameValidatedText>
       </android.support.design.widget.TextInputLayout>
@@ -98,10 +96,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
                 android:layout_gravity="center_vertical"
-                android:hint="Password"
+                android:hint="@string/user_profile_password"
                 android:inputType="textPassword"
                 app:minTextLength="6"
-                app:delayValidationByMilliSec="1000"
                 />
 
         </android.support.design.widget.TextInputLayout>
