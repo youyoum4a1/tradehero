@@ -7,6 +7,7 @@ import dagger.Module;
                 DisplayNameValidatedText.class,
                 MatchingPasswordText.class,
                 PasswordValidatedText.class,
+                EmailValidatedText.class
         },
         library = true,
         complete = false

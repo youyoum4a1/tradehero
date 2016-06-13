@@ -62,6 +62,7 @@ public interface UserServiceRx
             @Field("username") String username,
             @Field("website") String website);
 
+
     @Multipart @POST("/SignupWithEmail") Observable<UserProfileDTO> signUpWithEmail(
             @Header(AUTHORIZATION) String authorization,
             @Part("biography") String biography,
@@ -129,6 +130,12 @@ public interface UserServiceRx
     @GET("/checkDisplayNameAvailable")
     Observable<UserAvailabilityDTO> checkDisplayNameAvailable(
             @Query("displayName") String username);
+    //</editor-fold>
+
+    //<editor-fold desc="Check Email Available">
+    @GET("/checkEmailAvailable")
+    Observable<UserAvailabilityDTO> checkEmailAvailable(
+            @Query("email") String email);
     //</editor-fold>
 
     //<editor-fold desc="Forgot Password">

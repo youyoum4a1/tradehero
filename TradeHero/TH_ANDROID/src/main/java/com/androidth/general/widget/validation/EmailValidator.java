@@ -4,32 +4,32 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
-import com.androidth.general.api.users.DisplayNameDTO;
+
+import com.androidth.general.api.users.EmailDTO;
 import com.androidth.general.api.users.UserAvailabilityDTO;
-import com.androidth.general.persistence.user.UserAvailabilityCacheRx;
+import com.androidth.general.persistence.user.UserEmailAvailabilityCacheRx;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
-public class DisplayNameValidator extends TextValidator
-{
-    @NonNull private final UserAvailabilityCacheRx userAvailabilityCache;
-    @Nullable private String originalUsernameValue;
+/**
+ * Created by ayushnvijay on 6/13/16.
+ */
+public class EmailValidator extends TextValidator {
 
-    public DisplayNameValidator(
-            @NonNull Resources resources,
-            @NonNull DisplayNameValidationDTO validationDTO,
-            @NonNull UserAvailabilityCacheRx userAvailabilityCache)
-    {
+    @NonNull private final UserEmailAvailabilityCacheRx emailAvailabilityCache;
+    @Nullable
+    private String originalEmailValue;
+
+    public EmailValidator(@NonNull Resources resources, @NonNull EmailValidationDTO validationDTO, @NonNull UserEmailAvailabilityCacheRx emailAvailabilityCache) {
         super(resources, validationDTO);
-        this.userAvailabilityCache = userAvailabilityCache;
+        this.emailAvailabilityCache =  emailAvailabilityCache;
     }
-
-    public void setOriginalUsernameValue(@Nullable String originalUsernameValue)
+    public void setOriginalEmailValue(@Nullable String originalEmailValue)
     {
-        this.originalUsernameValue = originalUsernameValue;
+        this.originalEmailValue = originalEmailValue;
     }
-
     @NonNull @Override public Observable<ValidationMessage> getValidationMessageObservable()
     {
         return super.getValidationMessageObservable()
@@ -41,17 +41,16 @@ public class DisplayNameValidator extends TextValidator
                         {
                             return Observable.just(validationMessage);
                         }
-                        if (originalUsernameValue != null && originalUsernameValue.equalsIgnoreCase(text.toString()))
+                        if (originalEmailValue != null && originalEmailValue.equalsIgnoreCase(text.toString()))
                         {
                             return Observable.just(validationMessage);
                         }
-                        return getCheckingAndThenDisplayNameAvailableObservable(text.toString(), validationMessage);
+                        return getCheckingAndThenEmailAvailableObservable(text.toString(), validationMessage);
                     }
                 });
     }
-
-    @NonNull protected Observable<ValidationMessage> getCheckingAndThenDisplayNameAvailableObservable(
-            @NonNull final String displayName,
+    @NonNull protected Observable<ValidationMessage> getCheckingAndThenEmailAvailableObservable(
+            @NonNull final String email,
             @NonNull final ValidationMessage whenValidMessage)
     {
         return Observable.from(new Integer[]{0, 1})
@@ -63,44 +62,36 @@ public class DisplayNameValidator extends TextValidator
                         {
                             return Observable.just(new ValidationMessage(ValidatedView.Status.CHECKING, ""));
                         }
-                        return getDisplayNameAvailableObservable(displayName, whenValidMessage);
+                        return getEmailAvailableObservable(email, whenValidMessage);
                     }
                 });
     }
 
-    @NonNull protected Observable<ValidationMessage> getDisplayNameAvailableObservable(
-            @NonNull final String displayName,
+    @NonNull protected Observable<ValidationMessage> getEmailAvailableObservable(
+            @NonNull final String email,
             @NonNull final ValidationMessage whenValidMessage)
     {
-        return userAvailabilityCache.get(new DisplayNameDTO(displayName))
-                .distinctUntilChanged(new Func1<Pair<DisplayNameDTO, UserAvailabilityDTO>, Integer>()
+        return emailAvailabilityCache.get(new EmailDTO(email))
+                .distinctUntilChanged(new Func1<Pair<EmailDTO, UserAvailabilityDTO>, Integer>()
                 {
-                    @Override public Integer call(Pair<DisplayNameDTO, UserAvailabilityDTO> availabilityPair)
+                    @Override public Integer call(Pair<EmailDTO, UserAvailabilityDTO> availabilityPair)
                     {
                         return availabilityPair.first.hashCode() * (availabilityPair.second.available ? 1 : -1);
                     }
                 })
-                .map(new Func1<Pair<DisplayNameDTO, UserAvailabilityDTO>, ValidationMessage>()
+                .map(new Func1<Pair<EmailDTO, UserAvailabilityDTO>, ValidationMessage>()
                 {
                     @Override public ValidationMessage call(
-                            Pair<DisplayNameDTO, UserAvailabilityDTO> displayNameDTOUserAvailabilityDTOPair)
+                            Pair<EmailDTO, UserAvailabilityDTO> emailDTOUserAvailabilityDTOPair)
                     {
-                        if (displayNameDTOUserAvailabilityDTOPair.second.available)
+                        if (emailDTOUserAvailabilityDTOPair.second.available)
                         {
                             return whenValidMessage;
                         }
                         return new ValidationMessage(ValidatedView.Status.INVALID,
-                                ((DisplayNameValidationDTO) validationDTO).displayNameTakenMessage);
+                                ((EmailValidationDTO) validationDTO).emailTakenMessage);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread());
     }
-    /*@Override
-    public boolean isFocussedChanged(){
-        return super.isFocussedChanged();
-    }
-    @Override
-    public boolean isTextChanged(){
-        return super.isTextChanged();
-    }*/
 }

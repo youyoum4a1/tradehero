@@ -3,8 +3,7 @@ package com.androidth.general.network.service;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.androidth.general.common.persistence.DTOCacheUtilRx;
-import com.androidth.general.common.persistence.prefs.BooleanPreference;
+
 import com.androidth.general.api.BaseResponseDTO;
 import com.androidth.general.api.analytics.BatchAnalyticsEventForm;
 import com.androidth.general.api.billing.PurchaseReportDTO;
@@ -40,6 +39,8 @@ import com.androidth.general.api.users.payment.UpdateAlipayAccountFormDTO;
 import com.androidth.general.api.users.payment.UpdatePayPalEmailDTO;
 import com.androidth.general.api.users.payment.UpdatePayPalEmailFormDTO;
 import com.androidth.general.auth.AuthData;
+import com.androidth.general.common.persistence.DTOCacheUtilRx;
+import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.models.user.DTOProcessorFollowFreeUser;
 import com.androidth.general.models.user.DTOProcessorFollowFreeUserBatch;
 import com.androidth.general.models.user.DTOProcessorSignInUpUserProfile;
@@ -54,10 +55,12 @@ import com.androidth.general.persistence.prefs.IsOnBoardShown;
 import com.androidth.general.persistence.social.HeroListCacheRx;
 import com.androidth.general.persistence.user.UserMessagingRelationshipCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
-import dagger.Lazy;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
+
+import dagger.Lazy;
 import retrofit.client.Response;
 import rx.Observable;
 import rx.functions.Func1;
@@ -232,6 +235,13 @@ import rx.functions.Func1;
     @NonNull public Observable<UserAvailabilityDTO> checkDisplayNameAvailableRx(@NonNull String username)
     {
         return userServiceRx.checkDisplayNameAvailable(username);
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Check Email Available">
+    @NonNull public Observable<UserAvailabilityDTO> checkEmailAvailableRx(@NonNull String email)
+    {
+        return userServiceRx.checkEmailAvailable(email);
     }
     //</editor-fold>
 

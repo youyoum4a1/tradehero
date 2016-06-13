@@ -56,6 +56,7 @@ public class TextValidator implements View.OnFocusChangeListener, TextWatcher
             // It assumes that this method is not called as part of the constructor.
             hasHadInteraction = true;
         }
+        else hasHadInteraction = false;
         //validate();
         performValidation();
     }
@@ -170,4 +171,18 @@ public class TextValidator implements View.OnFocusChangeListener, TextWatcher
         return validationDTO.validatePattern == null
                 || validationDTO.validatePattern.matcher(text).matches();
     }
+    public boolean isFocussedChanged(){
+
+        return hasHadInteraction;
+    }
+    public boolean isTextChanged(){
+        return hasTextChanged;
+    }
+    public void setFocus(boolean bool){
+        this.hasHadInteraction = bool;
+    }
+    public void setHasTextChanged(boolean bool){
+        this.hasTextChanged = bool;
+    }
+
 }

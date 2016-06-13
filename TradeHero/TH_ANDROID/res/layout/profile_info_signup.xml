@@ -48,7 +48,7 @@
           android:layout_gravity="center_horizontal"
           android:id="@+id/authentication_sign_up_email_til"
           android:layout_marginTop="@dimen/margin_small">
-          <com.androidth.general.widget.validation.ValidatedText
+          <com.androidth.general.widget.validation.EmailValidatedText
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:inputType="textEmailAddress"
@@ -57,7 +57,8 @@
               app:validatePattern="@string/regex_email_validator"
               android:id="@+id/authentication_sign_up_email"
               android:imeOptions="actionNext"
-              android:hint="@string/user_profile_email"/>
+              android:hint="@string/user_profile_email">
+              </com.androidth.general.widget.validation.EmailValidatedText>
 
       </android.support.design.widget.TextInputLayout>
 

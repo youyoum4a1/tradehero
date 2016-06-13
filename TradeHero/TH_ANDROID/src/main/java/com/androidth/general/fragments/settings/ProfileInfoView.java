@@ -13,8 +13,6 @@ import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -33,6 +31,8 @@ import com.androidth.general.utils.AlertDialogRxUtil;
 import com.androidth.general.utils.GraphicUtil;
 import com.androidth.general.widget.validation.DisplayNameValidatedText;
 import com.androidth.general.widget.validation.DisplayNameValidator;
+import com.androidth.general.widget.validation.EmailValidatedText;
+import com.androidth.general.widget.validation.EmailValidator;
 import com.androidth.general.widget.validation.PasswordValidatedText;
 import com.androidth.general.widget.validation.TextValidator;
 import com.androidth.general.widget.validation.ValidatedText;
@@ -65,13 +65,13 @@ public class ProfileInfoView extends LinearLayout
 {
     private static final int INDEX_CHOICE_FROM_CAMERA = 0;
     private static final int INDEX_CHOICE_FROM_LIBRARY = 1;
-    boolean email_focus;
-    boolean password_focus;
-    boolean display_name_focus;
+    boolean email_error_set;
+    boolean password_error_set;
+    boolean display_name_error_set;
 
-    @Bind(R.id.authentication_sign_up_email) ValidatedText email;
+    @Bind(R.id.authentication_sign_up_email) EmailValidatedText email;
     @Bind(R.id.authentication_sign_up_email_til) TextInputLayout email_til;
-    TextValidator emailValidator;
+    EmailValidator emailValidator;
 
 
 
@@ -116,45 +116,47 @@ public class ProfileInfoView extends LinearLayout
         ButterKnife.bind(this);
         displayProfileImage();
 
-        email_til.setOnFocusChangeListener(new OnFocusChangeListener() {
+        /*email.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                Log.i("Email focus","Changed");
                 if(!hasFocus && email.getText()!=null){
                     email_focus = true;
                 }
                 if(hasFocus){
-                    password_focus = false;
-                    display_name_focus = false;
+                    //password_focus = false;
+                    //display_name_focus = false;
                 }
             }
         });
-        password_til.setOnFocusChangeListener(new OnFocusChangeListener() {
+        password.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                Log.i("Password focus","Changed");
                 if(!hasFocus && password.getText()!=null){
                     password_focus = true;
                 }
                 if(hasFocus){
-                    email_focus = false;
-                    display_name_focus = false;
+                    //email_focus = false;
+                    //display_name_focus = false;
                 }
             }
         });
-        displayName_til.setOnFocusChangeListener(new OnFocusChangeListener() {
+        displayName.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
+                Log.i("Username Focus","Changed");
                 if(!hasFocus && displayName.getText()!=null){
                     display_name_focus = true;
                 }
                 if(hasFocus){
-                    email_focus = false;
-                    password_focus = false;
+                    //email_focus = false;
+                    //password_focus = false;
                 }
             }
-        });
+        });*/
         email.setOnFocusChangeListener(emailValidator);
         email.addTextChangedListener(emailValidator);
-        subscriptions.add(emailValidator.getValidationMessageObservable().subscribe(createValidatorObserver(email)));
         password.setOnFocusChangeListener(passwordValidator);
         password.addTextChangedListener(passwordValidator);
         subscriptions.add(passwordValidator.getValidationMessageObservable().subscribe(createValidatorObserver(password)));
@@ -170,6 +172,7 @@ public class ProfileInfoView extends LinearLayout
         {
             populate(userProfileDTO);
         }
+        subscriptions.add(emailValidator.getValidationMessageObservable().subscribe(createValidatorObserver(email)));
         subscriptions.add(displayNameValidator.getValidationMessageObservable().subscribe(createValidatorObserver(displayName)));
     }
 
@@ -201,18 +204,21 @@ public class ProfileInfoView extends LinearLayout
                 String message = validationMessage.getMessage();
                 if (message != null && !TextUtils.isEmpty(message) && !message.equals(previousMessage))
                 {
-                    //THToast.show(validationMessage.getMessage());
-                        Log.i("Error", validationMessage.getMessage()+"");
-                        Log.i("Previous Message", previousMessage+"");
-                        //email_til.setError("A user with this email already exists");
-                    if(email_focus){
+
+                    if(emailValidator.isFocussedChanged() && emailValidator.isTextChanged()){
                         email_til.setError(validationMessage.getMessage());
+                        emailValidator.setFocus(false);
+                        emailValidator.setHasTextChanged(false);
                     }
-                    else if(password_focus){
+                    else if(passwordValidator.isFocussedChanged() && passwordValidator.isTextChanged()){
                         password_til.setError(validationMessage.getMessage());
+                        passwordValidator.setFocus(false);
+                        passwordValidator.setHasTextChanged(false);
                     }
-                    else if(display_name_focus){
+                    else if(displayNameValidator.isFocussedChanged() && displayNameValidator.isTextChanged()){
                         displayName_til.setError(validationMessage.getMessage());
+                        displayNameValidator.setFocus(false);
+                        displayNameValidator.setHasTextChanged(false);
                     }
 
 
@@ -289,10 +295,12 @@ public class ProfileInfoView extends LinearLayout
             referralCode.setEnabled(false);
         }*/
         String currentEmail = email.getText().toString();
-        if (currentEmail.isEmpty())
-        {
+        //if (currentEmail.isEmpty())
+        //{
+            emailValidator.setOriginalEmailValue(userProfileDTO.email);
+            emailValidator.setText(userProfileDTO.email);
             email.setText(userProfileDTO.email);
-        }
+        //}
         displayProfileImage();
     }
 
