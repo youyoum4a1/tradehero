@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +66,10 @@ public class EmailSignUpFragment extends Fragment
     @Bind(R.id.authentication_sign_up_email) EditText emailEditText;
     //@Nullable
     @Bind(R.id.btn_signUp) View signUpButton;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
+    @Bind(R.id.signup_cardview1) CardView cardView1;
+    @Bind(R.id.signup_cardview2)CardView cardView2;
 
 
     private SubscriptionList onStopSubscriptions;
@@ -114,7 +121,18 @@ public class EmailSignUpFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        signUpButton.setEnabled(false);
+        cardView1.setCardElevation(5);
+        cardView2.setCardElevation(5);
+
+        signUpButton.setEnabled(true);
+        toolbar.setTitle("Let's get started");
+        toolbar.findViewById(R.id.arrow_back_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigator.get().popFragment();
+            }
+        });
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
         DeviceUtil.showKeyboardDelayed(emailEditText);
 

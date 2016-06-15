@@ -61,7 +61,7 @@
   <string name="email_login_in">Login with Email</string>
   <string name="email_login_in_short">Log in</string>
   <string name="email_register">Register with Email</string>
-  <string name="email_register_short">Sign up</string>
+  <string name="email_register_short">Sign Up</string>
 
   <string name="authentication_log_in_alternative">Or login with:</string>
   <string name="authentication_sign_up_alternative">Or sign-up with:</string>

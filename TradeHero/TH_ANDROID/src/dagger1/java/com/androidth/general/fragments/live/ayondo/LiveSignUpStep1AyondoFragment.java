@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -46,10 +45,7 @@ import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.DateUtils;
 import com.androidth.general.utils.route.THRouter;
-import com.fernandocejas.frodo.annotation.RxLogObservable;
-import com.google.android.gms.common.data.DataBufferObserver;
 import com.neovisionaries.i18n.CountryCode;
-import com.androidth.general.R;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
@@ -76,7 +72,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func3;
-import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -118,6 +113,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private String expectedCode;
     private String smsId;
     private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
+
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

@@ -1,94 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:background="@color/white"
+    android:id="@+id/coordinator"
     >
 
-  <ImageView
-      android:id="@+id/authentication_back_button"
-      android:layout_width="@dimen/size_6"
-      android:layout_height="@dimen/size_6"
-      android:src="@drawable/settings_back_light_default"
-      android:background="@drawable/basic_transparent_selector"
-      />
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="@style/TH.Authentication"
-        >
-
-      <com.androidth.general.widget.validation.ValidatedText
-          android:id="@+id/authentication_sign_in_email"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text=""
-          android:hint="@string/authentication_email"
-          android:layout_marginTop="@dimen/margin_small"
-          android:textColorHint="@color/red"
-          android:inputType="textEmailAddress"
-          style="@style/TH.Authentication.EditText"
-          app:minTextLength="3"
-          />
-
-      <com.androidth.general.widget.validation.ValidatedText
-          android:id="@+id/et_pwd_login"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_below="@id/authentication_sign_in_email"
-          android:text=""
-          android:hint="@string/authentication_password"
-          android:layout_marginTop="@dimen/margin_small"
-          android:textColorHint="@color/red"
-          android:inputType="textPassword"
-          style="@style/TH.Authentication.EditText"
-          />
-
-      <Button
-          android:id="@+id/btn_login"
-          android:layout_below="@id/et_pwd_login"
-          style="@style/TH.SocialAuthenticationButton"
-          android:layout_marginTop="@dimen/margin_small"
-          android:background="@drawable/basic_green_selector"
-          android:text="@string/authentication_login"
-          android:gravity="center"
-          android:enabled="false"
-          />
-
-      <TextView
-          android:id="@+id/authentication_sign_in_forgot_password"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_below="@id/btn_login"
-          android:layout_centerHorizontal="true"
-          android:layout_marginTop="@dimen/margin_small"
-          android:background="@drawable/basic_transparent_selector"
-          android:padding="@dimen/margin_small"
-          android:text="@string/authentication_forgot_password"
-          style="@style/TH.Button"
-          />
-
-
-
-
-    </RelativeLayout>
-
-
-</RelativeLayout>-->
-
-
    <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-        android:orientation="vertical"
-
+       android:orientation="vertical"
+       app:layout_behavior="com.android.common.LinearLayoutBehavior"
        >
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?android:attr/actionBarSize"
+        android:background="@color/toolbar_color"
+        android:layout_gravity="top"
+        android:paddingLeft="16dp"
+        android:id="@+id/toolbar"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:background="@color/toolbar_color"
+            android:clickable="true"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_gravity="left"
+                android:paddingRight="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_arrow_back_white_24dp"
+                android:id="@+id/arrow_back_button" />
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/toolbar_color"
+                android:textColor="@color/white"
+                android:text="Login to account"
+                android:textSize="20sp"
+                />
+
+        </LinearLayout>
+        </android.support.v7.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -99,7 +57,7 @@
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingTop="56dp"
+      android:paddingTop="24dp"
       android:paddingLeft="24dp"
       android:paddingRight="24dp"
       android:orientation="vertical">
@@ -135,25 +93,19 @@
 
     </android.support.design.widget.TextInputLayout>
 
-
-
-
-
-
-
   </LinearLayout>
 </ScrollView>
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/authentication_sign_in_forgot_password"
         android:layout_width="wrap_content"
-        android:layout_height="28dp"
-        android:background="#ffffff"
-        android:layout_marginBottom="8dp"
-        android:padding="4dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:padding="10dp"
+        style="?android:attr/borderlessButtonStyle"
         android:text="Forgot password?"
         android:textSize="12sp"
         android:layout_gravity="bottom|center_horizontal"
-        android:textColor="@android:color/holo_blue_dark"
+        android:textColor="@android:color/black"
         android:gravity="center" />
 
        <android.support.v7.widget.AppCompatButton
@@ -161,13 +113,17 @@
            android:layout_gravity="bottom"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
+           android:layout_marginLeft="@dimen/margin_small"
+           android:layout_marginRight="@dimen/margin_small"
+           android:textAllCaps="true"
+           android:textSize="14sp"
+           android:textAppearance="?android:attr/textAppearanceMedium"
            android:padding="12dp"
-           android:textStyle="bold"
-           android:background="#eed87f"
-           android:textColor="@android:color/holo_blue_dark"
+           android:background="@android:color/holo_green_dark"
+           android:textColor="@android:color/white"
            android:text="Log in"/>
 
 
    </LinearLayout>
-
+</android.support.design.widget.CoordinatorLayout>
 

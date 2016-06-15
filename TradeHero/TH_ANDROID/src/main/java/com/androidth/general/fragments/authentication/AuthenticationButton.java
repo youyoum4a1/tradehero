@@ -2,12 +2,13 @@ package com.androidth.general.fragments.authentication;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
-import android.widget.Button;
+
 import com.androidth.general.R;
 import com.androidth.general.api.social.SocialNetworkEnum;
 
-public class AuthenticationButton extends Button
+public class AuthenticationButton extends AppCompatButton
 {
     private SocialNetworkEnum type;
 

@@ -4,15 +4,15 @@ import java.util.regex.Pattern
 buildscript {
     repositories {
         mavenCentral()
-<<<<<<< HEAD
+
         maven {
             url 'https://maven.fabric.io/public'
         }
 
-=======
+
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
->>>>>>> 990a84304b9f277a803748117751581bba7215be
+//>>>>>>> 990a84304b9f277a803748117751581bba7215be
 
         //crashlytics is fabric now
         //maven { url 'http://download.crashlytics.com/maven' }

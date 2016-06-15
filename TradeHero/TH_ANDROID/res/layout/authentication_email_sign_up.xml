@@ -8,19 +8,56 @@
   android:focusable="true"
   android:focusableInTouchMode="true"
   >
+  <android.support.v7.widget.Toolbar
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:minHeight="?android:attr/actionBarSize"
+      android:background="@color/toolbar_color"
+      android:paddingLeft="16dp"
+      android:layout_alignParentTop="true"
+      android:id="@+id/toolbar"
+      >
 
-<ScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_alignParentTop="true"
-    android:layout_above="@+id/authentication_sign_up_button"
-    android:requiresFadingEdge="vertical"
-    android:fadingEdge="vertical"
-    android:fadingEdgeLength="@dimen/size_2">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/toolbar_color"
+        android:clickable="true"
+        android:layout_height="wrap_content">
+      <ImageView
+          android:layout_gravity="left"
+          android:paddingRight="5dp"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/ic_arrow_back_white_24dp"
+          android:id="@+id/arrow_back_button" />
+      <TextView
+          android:layout_marginLeft="10dp"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@color/toolbar_color"
+          android:textColor="@color/white"
+          android:text="Let's get started"
+          android:textSize="20sp"
+          />
+
+    </LinearLayout>
+  </android.support.v7.widget.Toolbar>
+
+
+
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:id="@+id/scroller"
+      android:layout_marginTop="@dimen/margin_small"
+      android:layout_below="@id/toolbar"
+      android:fitsSystemWindows="true">
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:layout_marginLeft="24dp"
+      android:layout_marginRight="24dp"
       android:orientation="vertical">
 
 
@@ -28,25 +65,19 @@
         layout="@layout/profile_info_signup"/>
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_signUp"
-        android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="12dp"
-        android:textStyle="bold"
-        android:background="#eed87f"
-        android:textColor="@android:color/holo_blue_dark"
+        android:textAllCaps="true"
+        android:textSize="14sp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:background="@android:color/holo_green_dark"
+        android:textColor="@android:color/white"
+        android:layout_marginBottom="@dimen/margin_small"
         android:text="Sign Up"/>
 
   </LinearLayout>
-
-
-</ScrollView>
-
-
-
-
-
-
+  </ScrollView>
 
 </RelativeLayout>
 

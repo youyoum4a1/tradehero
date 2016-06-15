@@ -13,6 +13,7 @@ import android.support.design.widget.TextInputLayout;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -65,9 +66,7 @@ public class ProfileInfoView extends LinearLayout
 {
     private static final int INDEX_CHOICE_FROM_CAMERA = 0;
     private static final int INDEX_CHOICE_FROM_LIBRARY = 1;
-    boolean email_error_set;
-    boolean password_error_set;
-    boolean display_name_error_set;
+
 
     @Bind(R.id.authentication_sign_up_email) EmailValidatedText email;
     @Bind(R.id.authentication_sign_up_email_til) TextInputLayout email_til;
@@ -201,7 +200,9 @@ public class ProfileInfoView extends LinearLayout
             @Override public void onNext(ValidationMessage validationMessage)
             {
                 validatedText.setStatus(validationMessage.getValidStatus());
+                Log.i("Status",validationMessage.getValidStatus()+"");
                 String message = validationMessage.getMessage();
+                Log.i("Message",message+"");
                 if (message != null && !TextUtils.isEmpty(message) && !message.equals(previousMessage))
                 {
 

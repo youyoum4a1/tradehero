@@ -7,11 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
-import android.view.Window;
 
-import com.androidth.general.common.activities.ActivityResultRequester;
-import com.androidth.general.common.persistence.DTOCacheUtilRx;
-import com.androidth.general.common.utils.CollectionUtils;
 import com.androidth.general.R;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.LoginSignUpFormDTO;
@@ -21,6 +17,9 @@ import com.androidth.general.auth.AuthData;
 import com.androidth.general.auth.AuthDataUtil;
 import com.androidth.general.auth.AuthenticationProvider;
 import com.androidth.general.auth.SocialAuth;
+import com.androidth.general.common.activities.ActivityResultRequester;
+import com.androidth.general.common.persistence.DTOCacheUtilRx;
+import com.androidth.general.common.utils.CollectionUtils;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.authentication.GuideAuthenticationFragment;
 import com.androidth.general.fragments.authentication.TwitterEmailFragment;
@@ -70,11 +69,10 @@ public class AuthenticationActivity extends BaseActivity
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        //supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.authentication_layout);
-        //getActionBar().hide();
-        setTitle("");
+
 
         dtoCacheUtil.clearUserCaches();
 
@@ -100,7 +98,7 @@ public class AuthenticationActivity extends BaseActivity
     @Override protected void onResume()
     {
         super.onResume();
-        setTitle("");
+        //setTitle("");
         //TODO Add code for Google Analytics
         //analytics.tagScreen(AnalyticsConstants.Login_Register);
         //analytics.addEvent(new SimpleEvent(AnalyticsConstants.LoginRegisterScreen));

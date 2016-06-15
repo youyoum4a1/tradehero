@@ -50,17 +50,10 @@
   <style name="AppBaseTheme.NoActionBar"
       parent="TradeHero">
     <item name="android:windowActionBar">false</item>
-    <item name="android:windowNoTitle">false</item>
-    <item name="android:background">@color/white</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:textStyle">normal</item>
   </style>
-  <style name="Login.ActionBar"
-      parent="TradeHero">
-    <item name="android:windowActionBar">true</item>
-    <item name="android:windowNoTitle">false</item>
-    <item name="android:text">Login to account</item>
-    <item name="android:textColor">#eed87f</item>
-    <item name="android:background">#F21f1f1f</item>
-  </style>
+
 
 
   <style name="TH"/>

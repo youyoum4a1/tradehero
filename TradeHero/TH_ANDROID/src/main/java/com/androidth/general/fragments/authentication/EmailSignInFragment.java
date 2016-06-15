@@ -8,10 +8,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Pair;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,14 +32,13 @@ import com.androidth.general.api.users.password.ForgotPasswordDTO;
 import com.androidth.general.api.users.password.ForgotPasswordFormDTO;
 import com.androidth.general.auth.AuthData;
 import com.androidth.general.auth.AuthDataUtil;
-import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.network.service.SessionServiceWrapper;
 import com.androidth.general.network.service.UserServiceWrapper;
 import com.androidth.general.rx.EmptyAction1;
+import com.androidth.general.rx.SnackbarOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
-import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.rx.view.DismissDialogAction1;
@@ -76,18 +78,20 @@ public class EmailSignInFragment extends Fragment
 
     @Inject UserServiceWrapper userServiceWrapper;
     //TODO Change Analytics
-    //@Inject Analytics analytics;
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
 
     @Bind(R.id.authentication_sign_in_email) ValidatedText email;
+    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.coordinator) CoordinatorLayout coordinatorLayout;
     TextValidator emailValidator;
     @Bind(R.id.et_pwd_login) ValidatedText password;
     TextValidator passwordValidator;
     @Bind(R.id.btn_login) View loginButton;
-    //@Bind(R.id.social_network_button_list) SocialNetworkButtonListLinear socialNetworkButtonList;
     SubscriptionList onStopSubscriptions;
+
+
 
     @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
     @Nullable Uri deepLink;
@@ -123,21 +127,22 @@ public class EmailSignInFragment extends Fragment
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        //getActivity().getActionBar().show();
-        final Context contextThemeWrapper = new ContextThemeWrapper(getActivity(),R.style.Login_ActionBar);
-        LayoutInflater localInflater = inflater.cloneInContext(contextThemeWrapper);
-        getActivity().setTitle("Login to account");
         View view = inflater.inflate(R.layout.authentication_email_sign_in, container, false);
-        getActivity().setTitle("Login to account");
         return view;
     }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle("Login to account");
         ButterKnife.bind(this, view);
-        getActivity().setTitle("Login to account");
+        toolbar.setTitle("Login to account");
+        toolbar.findViewById(R.id.arrow_back_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navigator.get().popFragment();
+            }
+        });
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         if(email.requestFocus()){
             InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imgr.showSoftInput(email, InputMethodManager.SHOW_IMPLICIT);
@@ -215,7 +220,7 @@ public class EmailSignInFragment extends Fragment
                                 deepLink);
                     }
                 })
-                .doOnError(new ToastOnErrorAction1())
+                .doOnError(new SnackbarOnErrorAction1(coordinatorLayout,"Unable to login with provided credentials.",Snackbar.LENGTH_SHORT))
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
     }
 
@@ -288,7 +293,9 @@ public class EmailSignInFragment extends Fragment
                 String message = validationMessage.getMessage();
                 if (message != null && !TextUtils.isEmpty(message))
                 {
-                    THToast.show(validationMessage.getMessage());
+                    //THToast.show(validationMessage.getMessage());
+                    Snackbar snackbar = Snackbar.make(coordinatorLayout,validationMessage.getMessage(),Snackbar.LENGTH_SHORT);
+                    snackbar.show();
                 }
             }
 

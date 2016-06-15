@@ -5,11 +5,13 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +58,7 @@ public class GuideAuthenticationFragment extends Fragment
     //@Bind(R.id.viewpager) ViewPager guidePager;
     @Bind(R.id.login_text) ImageView loginText;
     @Bind(R.id.login_logo) ImageView loginLogo;
+    @Bind(R.id.entry_carrdview) CardView cardView;
 
     @NonNull final int[] guideRes = new int[] {
             R.layout.guide_1,
@@ -114,6 +117,10 @@ public class GuideAuthenticationFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        cardView.setCardElevation(5);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            cardView.setTranslationZ(30);
+        }
         YoYo.with(Techniques.FadeIn).duration(800).playOn(loginText);
         YoYo.with(Techniques.FadeIn).duration(800).playOn(loginLogo);
         onViewSubscriptions = new SubscriptionList();

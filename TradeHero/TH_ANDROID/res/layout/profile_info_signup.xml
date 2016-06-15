@@ -5,124 +5,146 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
-  <com.androidth.general.fragments.settings.ProfileInfoView
-      android:orientation="vertical"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:id="@+id/profile_info"
-      tools:background="@color/black"
-      >
-      <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:layout_marginTop="@dimen/margin_small">
-          <EditText
-              android:id="@+id/et_firstname"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/margin_small"
-              android:hint="@string/user_profile_first_name"
-              android:inputType="text"
-              />
-      </android.support.design.widget.TextInputLayout>
-
-      <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:layout_marginTop="@dimen/margin_small">
-          <EditText
-              android:id="@+id/et_lastname"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/margin_small"
-              android:hint="@string/user_profile_last_name"
-              android:inputType="text"
-              style="@style/TH.Authentication.EditText"/>
-      </android.support.design.widget.TextInputLayout>
-
-      <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:id="@+id/authentication_sign_up_email_til"
-          android:layout_marginTop="@dimen/margin_small">
-          <com.androidth.general.widget.validation.EmailValidatedText
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:inputType="textEmailAddress"
-              android:focusable="true"
-              app:minTextLength="1"
-              app:validatePattern="@string/regex_email_validator"
-              android:id="@+id/authentication_sign_up_email"
-              android:imeOptions="actionNext"
-              android:hint="@string/user_profile_email">
-              </com.androidth.general.widget.validation.EmailValidatedText>
-
-      </android.support.design.widget.TextInputLayout>
-
-      <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
-          android:id="@+id/authentication_sign_up_username_til"
-          android:layout_marginTop="@dimen/margin_small">
-          <com.androidth.general.widget.validation.DisplayNameValidatedText
-              android:id="@+id/authentication_sign_up_username"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:hint="@string/user_profile_display_name"
-              android:inputType="text"
-              app:minTextLength="1"
-              >
-          </com.androidth.general.widget.validation.DisplayNameValidatedText>
-      </android.support.design.widget.TextInputLayout>
-
-
-    <FrameLayout
+    <com.androidth.general.fragments.settings.ProfileInfoView
+        android:id="@+id/profile_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/margin_small">
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/authentication_sign_up_password_til"
+        android:orientation="vertical"
+
+
+        >
+        <android.support.v7.widget.CardView
+            android:id="@+id/signup_cardview1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/margin_small">
-            <com.androidth.general.widget.validation.PasswordValidatedText
-                android:id="@+id/authentication_sign_up_password"
+            android:layout_marginBottom="@dimen/margin_medium">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:layout_gravity="center_vertical"
-                android:hint="@string/user_profile_password"
-                android:inputType="textPassword"
-                app:minTextLength="6"
+                android:orientation="vertical">
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <EditText
+                        android:id="@+id/et_firstname"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:hint="@string/user_profile_first_name"
+                        android:inputType="text"
+                        />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <EditText
+                        android:id="@+id/et_lastname"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_small"
+                        android:hint="@string/user_profile_last_name"
+                        android:inputType="text" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/signup_cardview2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_small">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/authentication_sign_up_email_til"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <com.androidth.general.widget.validation.EmailValidatedText
+                        android:id="@+id/authentication_sign_up_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="true"
+                        android:hint="@string/user_profile_email"
+                        android:imeOptions="actionNext"
+                        android:inputType="textEmailAddress"
+                        app:minTextLength="1"
+                        app:validatePattern="@string/regex_email_validator">
+                    </com.androidth.general.widget.validation.EmailValidatedText>
+
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/authentication_sign_up_username_til"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <com.androidth.general.widget.validation.DisplayNameValidatedText
+                        android:id="@+id/authentication_sign_up_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/user_profile_display_name"
+                        android:inputType="text"
+                        app:minTextLength="1"
+                        >
+                    </com.androidth.general.widget.validation.DisplayNameValidatedText>
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/authentication_sign_up_password_til"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/margin_small">
+                    <com.androidth.general.widget.validation.PasswordValidatedText
+                        android:id="@+id/authentication_sign_up_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:hint="@string/user_profile_password"
+                        android:inputType="textPassword"
+                        app:minTextLength="6"
+                        />
+
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/margin_small">
+
+            <ProgressBar
+                android:id="@+id/authentication_sign_up_username_validator"
+                android:layout_width="32dip"
+                android:layout_height="32dip"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dip"
+                android:layout_marginRight="5dip"
+                android:visibility="invisible"
                 />
 
-        </android.support.design.widget.TextInputLayout>
-
-
-
-
-        <ProgressBar
-          android:id="@+id/authentication_sign_up_username_validator"
-          android:layout_width="32dip"
-          android:layout_height="32dip"
-          android:layout_gravity="end|center"
-          android:layout_marginRight="5dip"
-          android:layout_marginEnd="5dip"
-          android:visibility="invisible"
-          />
-
-    </FrameLayout>
+        </android.support.design.widget.CoordinatorLayout>
 
 
 
 
 
-  </com.androidth.general.fragments.settings.ProfileInfoView>
+    </com.androidth.general.fragments.settings.ProfileInfoView>
 
 </merge>

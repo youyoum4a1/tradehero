@@ -58,8 +58,9 @@
     <activity
         android:name="com.androidth.general.activities.AuthenticationActivity"
         android:screenOrientation="portrait"
-        android:theme="@style/AppBaseTheme.NoActionBar"
-        android:windowSoftInputMode="adjustResize">
+        android:windowSoftInputMode="adjustResize"
+        android:theme="@style/AppBaseTheme.NoActionBar">
+    <!--android:theme="@style/AppBaseTheme.NoActionBar"-->
     </activity>
     <activity
         android:name="com.androidth.general.activities.DashboardActivity"

@@ -5,7 +5,7 @@
   <dimen name="authentication_logo_horizontal_padding">50dp</dimen>
   <dimen name="authentication_agreement_vertical_padding">10dp</dimen>
   <dimen name="authentication_button_horizontal_padding">5dp</dimen>
-  <dimen name="authentication_button_drawable_padding">10dp</dimen>
+  <dimen name="authentication_button_drawable_padding">5dp</dimen>
   <dimen name="authentication_button_text_size">@dimen/text_title</dimen>
   <dimen name="authentication_button_vertical_margin">8dp</dimen>
   <dimen name="authentication_page_text_size">@dimen/text_body</dimen>
@@ -20,11 +20,10 @@
   </style>
 
   <style name="TH.SocialAuthenticationButton">
-    <item name="android:textSize">@dimen/authentication_button_text_size</item>
-    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">@dimen/abc_text_size_menu_material</item>
     <item name="android:layout_height">wrap_content</item>
     <item name="android:layout_width">wrap_content</item>
-    <item name="android:gravity">start|center_vertical</item>
+    <item name="android:gravity">center_vertical</item>
     <item name="android:drawablePadding">@dimen/authentication_button_drawable_padding</item>
 
   </style>
