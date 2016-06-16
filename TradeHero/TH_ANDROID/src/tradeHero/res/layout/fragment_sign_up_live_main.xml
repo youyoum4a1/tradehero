@@ -13,21 +13,21 @@
       android:background="@color/grey"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      />
-
-  <com.androidth.general.common.widget.NonSwipeableViewPager
-      android:id="@+id/pager"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/android_tabs"
-      android:layout_marginTop="@dimen/size_8"
-      tools:background="@color/background_material_light"
-      />
+      android:layout_alignParentTop="true"
+      android:fillViewport="false" />
 
   <com.androidth.general.widget.LiveRewardWidget
       android:id="@+id/live_reward_widget"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/android_tabs"
+      />
+
+  <com.androidth.general.common.widget.NonSwipeableViewPager
+      android:id="@+id/pager"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/live_reward_widget"
+      tools:background="@color/background_material_light"
       />
 </RelativeLayout>

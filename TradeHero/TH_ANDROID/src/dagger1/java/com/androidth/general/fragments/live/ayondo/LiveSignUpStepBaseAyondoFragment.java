@@ -91,7 +91,8 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
         if (btnNext != null)
         {
             // That's right, the first status decides for all Next buttons
-            btnNext.setEnabled(firstStatus != null && firstStatus.equals(StepStatus.COMPLETE));
+//            btnNext.setEnabled(firstStatus != null && firstStatus.equals(StepStatus.COMPLETE));
+            btnNext.setEnabled(true);//Jeff
         }
     }
 

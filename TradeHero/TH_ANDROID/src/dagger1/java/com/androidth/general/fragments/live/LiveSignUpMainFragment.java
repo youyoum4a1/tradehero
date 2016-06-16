@@ -82,6 +82,10 @@ public class LiveSignUpMainFragment extends BaseFragment
 //                getChildFragmentManager(),
 //                getArguments()).publish();
 
+        //Jeff
+        liveRewardWidget.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+
         onDestroyViewSubscriptions.add(
                 pagerAdapterObservable
                         .observeOn(AndroidSchedulers.mainThread())
