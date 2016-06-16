@@ -16,14 +16,14 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-@Routable({
-        "enrollchallenge/:enrollProviderId"
-})
+//@Routable({
+//        "enrollchallenge/:enrollProviderId"
+//})
 public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
-    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
-    @Inject
-    THRouter thRouter;
+//    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
+//    @Inject
+//    THRouter thRouter;
     private GoogleApiClient mGoogleApiClient;
 
     @NonNull @Override protected Class<? extends Fragment> getInitialFragment()

@@ -35,6 +35,7 @@ import dagger.Provides;
                 StoreScreenActivity.class,
                 UpdateCenterActivity.class,
                 WXEntryActivity.class,
+                IdentityPromptActivity.class,
         },
         complete = false,
         library = true

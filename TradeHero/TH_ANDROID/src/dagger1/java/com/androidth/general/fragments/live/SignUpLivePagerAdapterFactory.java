@@ -10,11 +10,13 @@ import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.live.LiveTradingSituationDTO;
 import com.androidth.general.fragments.live.ayondo.SignUpLiveAyondoPagerAdapter;
 import com.androidth.general.network.service.LiveServiceWrapper;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 public class SignUpLivePagerAdapterFactory
@@ -29,8 +31,8 @@ public class SignUpLivePagerAdapterFactory
     /**
      * You may want to make your PagerAdapter implement {@link PrevNextObservable}.
      */
-    @NonNull public Observable<PagerAdapter> create(@NonNull final FragmentManager fm, @NonNull final Bundle args)
-    {
+    @NonNull @RxLogObservable public Observable<PagerAdapter> create(@NonNull final FragmentManager fm, @NonNull final Bundle args) {
+
         return liveServiceWrapper.getLiveTradingSituation()
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<LiveTradingSituationDTO, PagerAdapter>()

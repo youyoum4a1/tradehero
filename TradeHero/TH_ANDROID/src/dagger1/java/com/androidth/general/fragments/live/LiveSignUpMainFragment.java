@@ -23,6 +23,7 @@ import com.androidth.general.api.kyc.StepStatusesDTO;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.BaseFragment;
+import com.androidth.general.fragments.live.ayondo.SignUpLiveAyondoPagerAdapter;
 import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -76,9 +77,10 @@ public class LiveSignUpMainFragment extends BaseFragment
         tabLayout.setDistributeEvenly(true);
         tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.transparent));
 
-        ConnectableObservable<PagerAdapter> pagerAdapterObservable = signUpLivePagerAdapterFactory.create(
-                getChildFragmentManager(),
-                getArguments()).publish();
+        ConnectableObservable<SignUpLiveAyondoPagerAdapter> pagerAdapterObservable = ConnectableObservable.just(new SignUpLiveAyondoPagerAdapter(getChildFragmentManager(), getArguments())).publish();
+//        signUpLivePagerAdapterFactory.create(
+//                getChildFragmentManager(),
+//                getArguments()).publish();
 
         onDestroyViewSubscriptions.add(
                 pagerAdapterObservable

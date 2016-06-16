@@ -25,6 +25,8 @@ import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.ReplaceWithFunc1;
+import com.androidth.general.utils.route.THRouter;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.neovisionaries.i18n.CountryCode;
 import com.squareup.picasso.Picasso;
 import com.tradehero.route.Routable;
@@ -47,7 +49,11 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import timber.log.Timber;
 
-@Routable(IdentityPromptActivity.ROUTER_KYC_SCHEME + ":brokerId")
+//@Routable(IdentityPromptActivity.ROUTER_KYC_SCHEME + ":brokerId")
+@Routable({
+        "enrollchallenge/:enrollProviderId",
+        IdentityPromptActivity.ROUTER_KYC_SCHEME + ":brokerId"
+})
 public class IdentityPromptActivity extends BaseActivity
 {
     public static final String ROUTER_KYC_SCHEME = "kyc/";
@@ -72,6 +78,7 @@ public class IdentityPromptActivity extends BaseActivity
 
     @RouteProperty("brokerId") int routedBrokerId;
 
+
     private Subscription fastFillSubscription;
 
     @Override
@@ -80,7 +87,6 @@ public class IdentityPromptActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity_prompt);
         ButterKnife.bind(IdentityPromptActivity.this);
-
         final Observable<ScannedDocument> documentObservable =
                 fastFillUtil.getScannedDocumentObservable().throttleLast(300, TimeUnit.MILLISECONDS); //HACK
 
@@ -215,7 +221,7 @@ public class IdentityPromptActivity extends BaseActivity
                                 if (!FastFillExceptionUtil.canRetry(throwable))
                                 {
                                     THToast.show(R.string.unable_to_capture_value_from_image);
-                                    goToSignUp();
+//                                    goToSignUp();
                                 }
                             }
                         });
@@ -249,7 +255,7 @@ public class IdentityPromptActivity extends BaseActivity
         goToSignUp();
     }
 
-    @NonNull
+    @NonNull @RxLogObservable
     protected Observable<LiveBrokerSituationDTO> getBrokerSituation()
     {
         return Observable.combineLatest(
