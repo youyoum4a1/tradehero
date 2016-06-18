@@ -76,6 +76,7 @@
 -keepnames class dagger.Lazy
 -dontwarn dagger.internal.codegen.**
 -dontwarn com.squareup.javawriter.**
+-dontwarn java.lang.invoke.* #for retrolambda
 
 -keepnames class * implements java.io.Serializable
 

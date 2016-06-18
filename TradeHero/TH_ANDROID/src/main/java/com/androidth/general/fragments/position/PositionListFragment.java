@@ -829,6 +829,7 @@ public class PositionListFragment
                             securityCompactDTO.getSecurityId(),
                             applicableOwnedPortfolioId,
                             andClose && positionDTO.shares != null ? positionDTO.shares : 0));
+            navigator.get().pushFragment(FXMainFragment.class,args);
         }
         else
         {
@@ -838,12 +839,9 @@ public class PositionListFragment
                             securityCompactDTO.getSecurityId(),
                             applicableOwnedPortfolioId,
                             andClose && positionDTO.shares != null ? positionDTO.shares : 0));
+            navigator.get().pushFragment(BuySellStockFragment.class,args);
         }
-        navigator.get().pushFragment(
-                securityCompactDTO instanceof FxSecurityCompactDTO
-                        ? FXMainFragment.class
-                        : BuySellStockFragment.class,
-                args);
+        
     }
 
     @NonNull protected Observable<Pair<UserProfileDTO, PortfolioHeaderView>> getProfileAndHeaderObservable()
