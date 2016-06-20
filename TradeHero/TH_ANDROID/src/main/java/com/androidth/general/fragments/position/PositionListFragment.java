@@ -841,7 +841,7 @@ public class PositionListFragment
                             andClose && positionDTO.shares != null ? positionDTO.shares : 0));
             navigator.get().pushFragment(BuySellStockFragment.class,args);
         }
-        
+
     }
 
     @NonNull protected Observable<Pair<UserProfileDTO, PortfolioHeaderView>> getProfileAndHeaderObservable()
