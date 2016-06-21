@@ -14,6 +14,7 @@ import com.androidth.general.api.competition.ProviderDisplayCellDTO;
 import com.androidth.general.api.competition.ProviderPrizePoolDTO;
 import com.androidth.general.api.portfolio.AssetClass;
 import com.androidth.general.api.portfolio.PortfolioCompactDTOUtil;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.users.UserProfileCompactDTO;
 import com.androidth.general.fragments.competition.CompetitionZoneListItemAdapter;
 import com.androidth.general.fragments.leaderboard.LeaderboardType;
