@@ -257,6 +257,12 @@ public class BaseFragment extends Fragment
         actionBarOwnerMixin.setActionBarTitle(string);
     }
 
+    public final void setActionBarColor(String hexColor)
+    {
+        String color = hexColor.startsWith("#") ? hexColor : "#".concat(hexColor);
+        actionBarOwnerMixin.setActionBarColor(color);
+    }
+
     public final void setActionBarTitle(@StringRes int stringResId)
     {
         actionBarOwnerMixin.setActionBarTitle(stringResId);

@@ -1,6 +1,8 @@
 package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
+import android.util.Pair;
+
 import com.androidth.general.api.BaseResponseDTO;
 import com.androidth.general.api.competition.CompetitionPreSeasonDTO;
 import com.androidth.general.api.competition.CompetitionPreseasonShareFormDTO;
@@ -11,6 +13,7 @@ import com.androidth.general.api.competition.ProviderDisplayCellDTOList;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderPrizePoolDTO;
 import com.androidth.general.api.competition.key.BasicProviderSecurityListType;
+import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.competition.key.HelpVideoListKey;
 import com.androidth.general.api.competition.key.ProviderDisplayCellListKey;
 import com.androidth.general.api.competition.key.ProviderSecurityListType;
@@ -19,14 +22,18 @@ import com.androidth.general.api.competition.key.WarrantProviderSecurityListType
 import com.androidth.general.api.competition.key.WarrantUnderlyersProviderSecurityListType;
 import com.androidth.general.api.portfolio.PortfolioDTO;
 import com.androidth.general.api.security.SecurityCompactDTOList;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.WarrantType;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.models.BaseDTOListProcessor;
 import com.androidth.general.models.portfolio.DTOProcessorPortfolioReceived;
 import com.androidth.general.models.provider.DTOProcessorProviderReceived;
+import com.tencent.mm.sdk.platformtools.Log;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
+import rx.functions.Action1;
 
 @Singleton public class ProviderServiceWrapper
 {
@@ -114,6 +121,24 @@ import rx.Observable;
         {
             throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
         }
+        return received;
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Get Provider Securities">
+    @NonNull public Observable<SecurityCompositeDTO> getProviderSecuritiesV2Rx(@NonNull BasicProviderSecurityV2ListType key)
+    {
+        Observable<SecurityCompositeDTO> received = this.providerServiceRx.getSecuritiesV2(
+                    key.providerId.key);
+
+        received.subscribe(new Action1<SecurityCompositeDTO>()
+        {
+            @Override public void call(SecurityCompositeDTO result)
+            {
+                Log.d("getSecuritiesV2", result.toString());
+            }
+        });
+
         return received;
     }
     //</editor-fold>

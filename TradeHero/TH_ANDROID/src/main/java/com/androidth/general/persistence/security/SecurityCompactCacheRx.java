@@ -2,6 +2,8 @@ package com.androidth.general.persistence.security;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.common.persistence.BaseFetchDTOCacheRx;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.UserCache;
@@ -45,6 +47,14 @@ public class SecurityCompactCacheRx extends BaseFetchDTOCacheRx<SecurityId, Secu
     public void onNext(@NonNull List<? extends SecurityCompactDTO> securityCompacts)
     {
         for (SecurityCompactDTO securityCompact : securityCompacts)
+        {
+            onNext(securityCompact.getSecurityId(), securityCompact);
+        }
+    }
+
+    public void onNext(@NonNull SecurityCompositeDTO securityCompositeDTO)
+    {
+        for (SecurityCompactDTO securityCompact : securityCompositeDTO.Securities)
         {
             onNext(securityCompact.getSecurityId(), securityCompact);
         }

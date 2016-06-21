@@ -1,6 +1,8 @@
 package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
+
+import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.competition.key.ProviderSecurityListType;
 import com.androidth.general.api.fx.FXChartDTO;
 import com.androidth.general.api.fx.FXChartGranularity;
@@ -10,6 +12,7 @@ import com.androidth.general.api.position.SecurityPositionTransactionDTO;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityCompactDTOList;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.SecurityIntegerId;
 import com.androidth.general.api.security.SecurityIntegerIdList;
@@ -157,6 +160,14 @@ import rx.functions.Func1;
         {
             throw new IllegalArgumentException("Unhandled type " + ((Object) key).getClass().getName());
         }
+        return received;
+    }
+    //</editor-fold> V2
+
+    //<editor-fold desc="Get Securities V2">
+    @NonNull public Observable<SecurityCompositeDTO> getSecuritiesV2Rx(@NonNull BasicProviderSecurityV2ListType key)
+    {
+        Observable<SecurityCompositeDTO> received = providerServiceWrapper.getProviderSecuritiesV2Rx(key);
         return received;
     }
     //</editor-fold>

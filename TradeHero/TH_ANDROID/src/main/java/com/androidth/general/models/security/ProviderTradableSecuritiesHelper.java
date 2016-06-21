@@ -10,6 +10,7 @@ import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.billing.BasePurchaseManagerFragment;
 import com.androidth.general.fragments.competition.ProviderFxListFragment;
 import com.androidth.general.fragments.security.ProviderSecurityListRxFragment;
+import com.androidth.general.fragments.security.ProviderSecurityV2RxFragment;
 import com.androidth.general.fragments.security.WarrantCompetitionPagerFragment;
 
 public class ProviderTradableSecuritiesHelper
@@ -49,5 +50,18 @@ public class ProviderTradableSecuritiesHelper
             ProviderSecurityListRxFragment.putProviderId(args, providerId);
             navigator.pushFragment(ProviderSecurityListRxFragment.class, args);
         }
+    }
+
+    public static void pushTradableSecuritiesList(
+            @NonNull DashboardNavigator navigator,
+            @NonNull Bundle args,
+            @Nullable OwnedPortfolioId ownedPortfolioId,
+            @NonNull ProviderId providerId) {
+        if (ownedPortfolioId != null) {
+            BasePurchaseManagerFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+        }
+
+        ProviderSecurityV2RxFragment.putProviderId(args, providerId);
+        navigator.pushFragment(ProviderSecurityV2RxFragment.class, args);
     }
 }
