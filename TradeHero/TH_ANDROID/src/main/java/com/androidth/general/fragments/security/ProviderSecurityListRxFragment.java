@@ -182,6 +182,7 @@ public class ProviderSecurityListRxFragment
     protected void linkWith(@NonNull ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
+
         getActivity().invalidateOptionsMenu();
         getActivity().supportInvalidateOptionsMenu();
         displayTitle();

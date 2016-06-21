@@ -47,6 +47,11 @@ public interface NewsServiceRx
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
 
+    @GET("/news/securitiesv2") Observable<PaginatedDTO<NewsItemCompactDTO>> getSecuritiesV2List(
+            @Query("securityId") int securityId,
+            @Query("page") Integer page,
+            @Query("perPage") Integer perPage);
+
     @GET("/news/featured") Observable<PaginatedDTO<NewsItemCompactDTO>> getFeaturedNewsList(
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);

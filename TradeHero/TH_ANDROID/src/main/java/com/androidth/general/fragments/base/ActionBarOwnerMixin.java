@@ -1,5 +1,7 @@
 package com.androidth.general.fragments.base;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -135,6 +137,14 @@ public class ActionBarOwnerMixin
         if (actionBar != null)
         {
             actionBar.setTitle(titleResId);
+        }
+    }
+
+    public void setActionBarColor(String hexColor)
+    {
+        if(actionBar != null) {
+            ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor(hexColor));
+            actionBar.setBackgroundDrawable(colorDrawable);
         }
     }
 

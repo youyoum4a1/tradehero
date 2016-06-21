@@ -14,6 +14,7 @@ import dagger.Module;
                 WarrantSecurityItemView.class,
                 ChartFragment.class,
                 ProviderSecurityListRxFragment.class,
+                ProviderSecurityV2RxFragment.class,
                 ProviderWarrantListRxFragment.class,
                 WarrantCompetitionPagerFragment.class,
                 WatchlistEditFragment.class,

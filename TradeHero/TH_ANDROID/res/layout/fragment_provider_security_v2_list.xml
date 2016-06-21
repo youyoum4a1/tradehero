@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    >
+
+  <View
+      android:id="@+id/search_empty_container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      />
+
+  <GridView
+      android:id="@+id/listview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentTop="true"
+      android:drawSelectorOnTop="false"
+      android:gravity="center"
+      android:horizontalSpacing="@dimen/trending_horizontal_spacing"
+      android:verticalSpacing="@dimen/trending_vertical_spacing"
+      android:numColumns="@integer/trending_list_column_count"
+      android:paddingRight="@dimen/trending_horizontal_spacing"
+      android:paddingLeft="@dimen/trending_horizontal_spacing"
+      android:layout_marginTop="@dimen/clickable_element_min_dimen"
+      android:paddingTop="@dimen/margin_xsmall"
+      android:paddingBottom="@dimen/trending_grid_padding_bottom"
+      android:clipToPadding="false"
+      android:listSelector="@drawable/basic_transparent_selector"
+      android:scrollbarStyle="outsideOverlay"
+      />
+
+  <LinearLayout
+      android:id="@+id/filter_text_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentTop="true"
+      android:orientation="horizontal"
+      >
+
+    <EditText
+        android:id="@+id/filter_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="8dp"
+        android:background="#f7ffffff"
+        android:maxLines="1"
+        android:drawableRight="@android:drawable/ic_search_category_default"
+        android:hint="@string/provider_security_list_search_hint"
+        android:textSize="@dimen/text_subhead"
+        android:visibility="gone"
+        />
+
+  </LinearLayout>
+
+  <TextView
+      android:id="@+id/provider_securities_tradable"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/tradehero_tab_bg_color"
+      android:paddingTop="8dp"
+      android:paddingBottom="8dp"
+      android:gravity="center"
+      android:minHeight="@dimen/clickable_element_min_dimen"
+      android:text="@string/provider_security_list_tradable"
+      style="@style/TH.Subhead.Inverse"
+      />
+
+  <ProgressBar
+      android:id="@+id/progress"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:background="@drawable/round_square"
+      android:visibility="visible"/>
+
+</RelativeLayout>

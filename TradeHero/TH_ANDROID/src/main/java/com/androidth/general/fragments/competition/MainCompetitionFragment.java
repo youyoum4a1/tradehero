@@ -17,8 +17,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
+import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
+import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
@@ -87,6 +90,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func6;
+import rx.functions.Func7;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -121,6 +125,8 @@ public class MainCompetitionFragment extends DashboardFragment
     @Inject protected CurrentUserId currentUserId;
     ////TODO Change Analytics
     //@Inject Analytics analytics;
+
+    @Inject protected SecurityCompositeListCacheRx securityCompositeListCacheRx;
 
     @RouteProperty("providerId") Integer routedProviderId;
 
@@ -381,12 +387,15 @@ public class MainCompetitionFragment extends DashboardFragment
                                         return Collections.emptyList();
                                     }
                                 }),
-                        new Func6<UserProfileDTO,
+                        securityCompositeListCacheRx.get(new BasicProviderSecurityV2ListType(providerId))
+                                .map(new PairGetSecond<BasicProviderSecurityV2ListType, SecurityCompositeDTO>()),
+                        new Func7<UserProfileDTO,
                                 ProviderDTO,
                                 CompetitionDTOList,
                                 ProviderDisplayCellDTOList,
                                 List<CompetitionPreSeasonDTO>,
                                 List<ProviderPrizePoolDTO>,
+                                SecurityCompositeDTO,
                                 List<Pair<Integer, CompetitionZoneDTO>>>()
                         {
                             @Override public List<Pair<Integer, CompetitionZoneDTO>> call(
@@ -395,7 +404,8 @@ public class MainCompetitionFragment extends DashboardFragment
                                     CompetitionDTOList competitionDTOs,
                                     ProviderDisplayCellDTOList providerDisplayCellDTOs,
                                     List<CompetitionPreSeasonDTO> competitionPreSeasonDTOs,
-                                    List<ProviderPrizePoolDTO> providerPrizePoolDTOs)
+                                    List<ProviderPrizePoolDTO> providerPrizePoolDTOs,
+                                    SecurityCompositeDTO securityCompositeDTO)
                             {
                                 MainCompetitionFragment.this.userProfileDTO = userProfileDTO;
                                 MainCompetitionFragment.this.providerDTO = providerDTO;

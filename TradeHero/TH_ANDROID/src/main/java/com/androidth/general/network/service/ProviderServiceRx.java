@@ -10,6 +10,8 @@ import com.androidth.general.api.competition.ProviderDisplayCellDTOList;
 import com.androidth.general.api.competition.ProviderPrizePoolDTO;
 import com.androidth.general.api.portfolio.PortfolioDTO;
 import com.androidth.general.api.security.SecurityCompactDTOList;
+import com.androidth.general.api.security.SecurityCompositeDTO;
+
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -41,6 +43,12 @@ public interface ProviderServiceRx
             @Path("providerId") int providerId,
             @Query("page") Integer page,
             @Query("perPage") Integer perPage);
+    //</editor-fold>
+
+    //<editor-fold desc="Get Provider Securities">
+    @GET("/providers/{providerId}/securitiesv2")
+    Observable<SecurityCompositeDTO> getSecuritiesV2(
+            @Path("providerId") int providerId);
     //</editor-fold>
 
     //<editor-fold desc="Get Provider Warrant Underlyers">

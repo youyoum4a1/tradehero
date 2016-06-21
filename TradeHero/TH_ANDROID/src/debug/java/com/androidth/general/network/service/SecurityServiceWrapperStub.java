@@ -1,7 +1,10 @@
 package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
+
+import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.security.SecurityCompactDTOList;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.key.ExchangeSectorSecurityListType;
 import com.androidth.general.api.security.key.ExchangeSectorSecurityListTypeNew;
 import com.androidth.general.api.security.key.SecurityListType;
@@ -54,4 +57,16 @@ import rx.functions.Func1;
                     }
                 });
     }
+
+//    @NonNull @Override public Observable<SecurityCompositeDTO> getSecuritiesV2Rx(@NonNull BasicProviderSecurityV2ListType key)
+//    {
+//        return super.getSecuritiesV2Rx(key)
+//                .onErrorResumeNext(new Func1<Throwable, Observable<? extends SecurityCompositeDTO>>()
+//                {
+//                    @Override public Observable<? extends SecurityCompositeDTO> call(Throwable throwable)
+//                    {
+//                            return Observable.error(throwable);
+//                    }
+//                });
+//    }
 }

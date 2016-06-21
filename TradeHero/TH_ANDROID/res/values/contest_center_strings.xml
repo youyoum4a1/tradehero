@@ -5,4 +5,7 @@
   <string name="contest_center_tab_joined">Joined</string>
   <string name="contest_no_joined">Oops!\n You have not joined any competition yet.\nChoose one from the active tab and start playing!</string>
 
+  <string name="competition_security_v2_by_exchange">By Exchange</string>
+  <string name="competition_security_v2_by_type">By Type</string>
+
 </resources>
