@@ -12,15 +12,6 @@
       android:layout_height="wrap_content"
       >
 
-    <TextView
-        style="@style/TH.Subhead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_xsmall"
-        android:gravity="center_horizontal"
-        android:text="@string/basic_information"
-        />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +22,7 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="@string/title"
+          android:text="@string/gender"
           style="@style/TH.Caption"
           android:layout_marginLeft="4dp"/>
 
@@ -104,7 +95,6 @@
         android:layout_height="wrap_content"
         app:hintTextAppearance="@style/TH.Caption"
         >
-
       <EditText
           android:id="@+id/sign_up_email"
           style="@style/TH.Body"
@@ -112,8 +102,8 @@
           android:layout_height="wrap_content"
           android:hint="@string/email"
           android:inputType="textEmailAddress"
+          android:drawableRight="@drawable/green_tick"
           />
-
     </android.support.design.widget.TextInputLayout>
 
 

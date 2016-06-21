@@ -2,6 +2,7 @@ package com.androidth.general.fragments.live.ayondo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MainThread;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
 import com.androidth.general.fragments.live.VerifyPhoneDialogFragment;
 import com.androidth.general.models.fastfill.Gender;
+import com.androidth.general.network.service.KycServicesRx;
 import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
@@ -82,6 +85,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 {
     @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
     @Inject THRouter thRouter;
+    @Inject KycServicesRx kycServices;
     private static final int PHONE_NUM_MIN_LENGTH = 7;
 
     @LayoutRes private static final int LAYOUT_COUNTRY = R.layout.spinner_live_country_dropdown_item;
@@ -115,6 +119,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
 
 
+
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -126,6 +132,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             smsId = savedInstanceState.getString(KEY_SMS_ID, null);
         }
         Log.v("ayondoStep1", "on ayondo create");
+
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -137,6 +144,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+
         phoneNumber.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
             @Override public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
@@ -144,6 +152,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 if (actionId == EditorInfo.IME_ACTION_DONE && buttonVerifyPhone.isEnabled())
                 {
                     offerToEnterCode();
+
                 }
 
                 return false;
@@ -159,9 +168,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         Log.v("ayondoStep1", "on ayondo init "+kycAyondoFormOptionsDTOObservable.toString());
 
 
-//        ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getContext(),R.array.live_title_array, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        title.setAdapter(adapter);
+        ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getContext(),R.array.live_title_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        title.setAdapter(adapter);
 
         subscriptions.add(Observable.merge(
                 WidgetObservable.text(firstName)
@@ -266,14 +275,23 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 {
                                     return emailInvalidMessage;
                                 }
-                                return null;
+                                else {
+                                    return null;
+                                }
+
                             }
                         })
                         .subscribe(new Action1<String>()
                         {
                             @Override public void call(@Nullable String errorMessage)
                             {
-                                email.setError(errorMessage);
+                                Drawable redAlert = getResources().getDrawable(R.drawable.red_alert);
+                                redAlert.setBounds(0,0,redAlert.getIntrinsicWidth(), redAlert.getIntrinsicHeight());
+                                if(errorMessage==null){
+                                    email.setError(null,null);
+                                    email.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.green_tick,0);
+                                }
+                                else email.setError(errorMessage,redAlert);
                             }
                         }, new Action1<Throwable>()
                         {
@@ -849,6 +867,26 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             buttonVerifyPhone.setText(R.string.enter_code);
             buttonVerifyPhone.setBackgroundResource(R.drawable.basic_red_selector);
         }
+    }
+
+    protected void checkEmailSubscription(Integer userId) {
+        Subscription subs = kycServices.validatedEmail(userId ,email.getText().toString()).subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean kycEmailIsValid) {
+                if (kycEmailIsValid) {
+                    Log.i("Valid", "Cool");
+                    //Pop up dialog
+                } else {
+                    Log.i("InValid", "James lied");
+                    //Make tick sign green
+                }
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.i("Error",throwable.getMessage());
+            }
+        });
     }
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)

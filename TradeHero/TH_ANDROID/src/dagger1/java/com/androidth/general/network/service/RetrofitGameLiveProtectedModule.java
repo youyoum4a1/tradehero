@@ -21,5 +21,9 @@ public class RetrofitGameLiveProtectedModule
     {
         return adapter.create(LiveServiceRx .class);
     }
+    @Provides KycServicesRx provideKycServiceRx (@ForLive RestAdapter adapter)
+    {
+        return adapter.create(KycServicesRx .class);
+    }
     //</editor-fold>
 }

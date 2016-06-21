@@ -19,6 +19,8 @@ import rx.subjects.BehaviorSubject;
 @Singleton public class CurrentUserId extends IntPreference
 {
     private static final String PREF_CURRENT_USER_ID_KEY = "PREF_CURRENT_USER_ID_KEY";
+    //Locally
+    //TODO Consult James
     @NonNull private final AccountManager accountManager;
     @NonNull private final BehaviorSubject<Integer> keyObservable;
 

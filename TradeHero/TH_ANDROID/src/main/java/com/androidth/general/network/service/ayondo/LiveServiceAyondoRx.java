@@ -22,11 +22,18 @@ import rx.Observable;
 
 public interface LiveServiceAyondoRx
 {
+    //Refer to AyondoKycServices.cs
+
+    //Use this instead LiveServiceRx
+
     @GET("/kyc/ayondo/availability")
     Observable<AyondoLiveAvailabilityDTO> getAvailability();
+    //If user available or not. UserId is sent in header. Returns boolean
 
     @GET("/kyc/ayondo/currentapplication")
     Observable<AyondoCurrentApplicationDTO> getCurrentApplication();
+    //Returns JSON
+    //applied
 
     @POST("/applyBroker/ayondo")
     Observable<StepStatusesDTO> applyLiveBroker(
