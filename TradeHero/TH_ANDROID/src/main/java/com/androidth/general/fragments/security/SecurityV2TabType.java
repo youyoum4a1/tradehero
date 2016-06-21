@@ -11,7 +11,7 @@ import com.androidth.general.fragments.contestcenter.ContestCenterJoinedFragment
 public enum SecurityV2TabType
 {
     BY_EXCHANGE(R.string.competition_security_v2_by_exchange, ProviderSecurityV2RxByExchangeFragment.class),
-    BY_TYPE(R.string.competition_security_v2_by_type, ProviderSecurityV2RxByExchangeFragment.class);
+    BY_TYPE(R.string.competition_security_v2_by_type, ProviderSecurityV2RxByTypeFragment.class);
 
     @StringRes public final int titleRes;
     @NonNull public final Class<? extends Fragment> tabClass;
