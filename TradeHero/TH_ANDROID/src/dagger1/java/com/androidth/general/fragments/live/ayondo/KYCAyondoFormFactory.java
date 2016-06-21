@@ -41,6 +41,13 @@ public class KYCAyondoFormFactory
         return created;
     }
 
+    @NonNull public static KYCAyondoForm fromIdentificationNumber(OnTextChangeEvent identificationNumber)
+    {
+        KYCAyondoForm created = new KYCAyondoForm();
+        created.setFirstName(identificationNumber.text().toString());
+        return created;
+    }
+
     @NonNull public static KYCAyondoForm fromLastNameEvent(@NonNull OnTextChangeEvent lastNameEvent)
     {
         KYCAyondoForm created = new KYCAyondoForm();

@@ -12,10 +12,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.AuthenticationActivity;
@@ -28,6 +30,11 @@ import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.GraphicUtil;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import javax.inject.Inject;
 
@@ -49,6 +56,8 @@ public class GuideAuthenticationFragment extends Fragment
     private static final String BUNDLE_KEY_DEEP_LINK = GuideAuthenticationFragment.class.getName() + ".deepLink";
 
     private static final int PAGER_INITIAL_POSITION = 0;
+    @Bind(R.id.twitter_login_button) TwitterLoginButton loginButton;
+
 
     @Inject DashboardNavigator navigator;
     //TODO Change Analytics
@@ -117,6 +126,23 @@ public class GuideAuthenticationFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+        loginButton.setCallback(new Callback<TwitterSession>() {
+            @Override
+            public void success(Result<TwitterSession> result) {
+                // The TwitterSession is also available through:
+                // Twitter.getInstance().core.getSessionManager().getActiveSession()
+                TwitterSession session = result.data;
+                // TODO: Remove toast and use the TwitterSession's userID
+                // with your app's user model
+                String msg = "@" + session.getUserName() + " logged in! (#" + session.getUserId() + ")";
+                Toast.makeText(getContext(), msg, Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void failure(TwitterException exception) {
+                Log.d("TwitterKit", "Login with Twitter failure", exception);
+            }
+        });
+
         cardView.setCardElevation(5);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             cardView.setTranslationZ(30);
@@ -319,4 +345,12 @@ public class GuideAuthenticationFragment extends Fragment
             THToast.show("Unable to open url: " + uri);
         }
     }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // Make sure that the loginButton hears the result from any
+        // Activity that it triggered.
+        loginButton.onActivityResult(requestCode, resultCode, data);
+    }
+
 }

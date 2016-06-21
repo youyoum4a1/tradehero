@@ -15,7 +15,13 @@ public class ActivityBuildTypeUtil
 {
     public static void startCrashReports(@NonNull Context context)
     {
-        Fabric.with(context, new Crashlytics());
+        //Fabric.with(context, new Crashlytics());
+
+        // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+        private static final String TWITTER_KEY = "j79q8diGnadXdcOFZJ6K13UTL";
+        private static final String TWITTER_SECRET = "TrhCrSePLTF8yCmfsTvU7B3RoOQLgFf2zz0QXJd7KIeJ6WESZ9";
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(context, new Twitter(authConfig));
         //Crashlytics.start(context);
         Crashlytics.setString(Constants.TH_CLIENT_TYPE, String.format("%s:%s", Constants.DEVICE_TYPE, Constants.TAP_STREAM_TYPE.name()));
     }

@@ -97,6 +97,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final String KEY_EXPECTED_SMS_CODE = LiveSignUpStep1AyondoFragment.class.getName() + ".expectedCode";
     private static final String KEY_SMS_ID = LiveSignUpStep1AyondoFragment.class.getName() + ".smsId";
 
+    @Bind(R.id.nric_number) EditText nricNumber;
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.info_first_name) TextView firstName;
     @Bind(R.id.info_last_name) TextView lastName;
@@ -189,6 +190,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return KYCAyondoFormFactory.fromLastNameEvent(fullNameEvent);
                             }
                         }),
+                WidgetObservable.text(nricNumber).map(new Func1<OnTextChangeEvent, KYCAyondoForm>() {
+                    @Override
+                    public KYCAyondoForm call(OnTextChangeEvent onTextChangeEvent) {
+                        return KYCAyondoFormFactory.fromIdentificationNumber(onTextChangeEvent);
+                    }
+                }),
                 WidgetObservable.text(email)
                         .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
                         {
@@ -251,6 +258,17 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
         emailInvalidMessage = getString(R.string.validation_incorrect_pattern_email);
+        subscriptions.add(WidgetObservable.text(nricNumber).subscribe(new Action1<OnTextChangeEvent>() {
+            @Override
+            public void call(OnTextChangeEvent onTextChangeEvent) {
+                if(nricNumber.getText().length()==6){
+                    nricNumber.append("-");
+                }
+                if(nricNumber.getText().length()==8){
+                    nricNumber.append("-");
+                }
+            }
+        }));
         subscriptions.add(
                 WidgetObservable.text(email)
                         .distinctUntilChanged(new Func1<OnTextChangeEvent, CharSequence>()
@@ -636,6 +654,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             email.setText(emailText);
         }
 
+        String nricNumberText = kycForm.getIdentificationNumber();
+        if (this.nricNumber == null && nricNumberText != null && !nricNumberText.equals(nricNumber.getText().toString()))
+        {
+            nricNumber.setText(nricNumberText);
+        }
+
         String mobileNumberText = kycForm.getMobileNumber();
         if (phoneNumber != null && mobileNumberText != null && !mobileNumberText.equals(phoneNumber.getText().toString()))
         {
@@ -868,7 +892,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             buttonVerifyPhone.setBackgroundResource(R.drawable.basic_red_selector);
         }
     }
-
+    //for email subscription pop up box
     protected void checkEmailSubscription(Integer userId) {
         Subscription subs = kycServices.validatedEmail(userId ,email.getText().toString()).subscribe(new Action1<Boolean>() {
             @Override

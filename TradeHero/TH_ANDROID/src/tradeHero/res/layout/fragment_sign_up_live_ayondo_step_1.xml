@@ -90,7 +90,24 @@
     </RelativeLayout>
 
 
-    <android.support.design.widget.TextInputLayout
+
+      <android.support.design.widget.TextInputLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:hintTextAppearance="@style/TH.Caption"
+          >
+          <EditText
+              android:id="@+id/nric_number"
+              style="@style/TH.Body"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/email"
+              android:inputType="number"
+              android:maxLength="12"
+              android:drawableRight="@drawable/green_tick"
+              />
+      </android.support.design.widget.TextInputLayout>
+      <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:hintTextAppearance="@style/TH.Caption"
@@ -229,6 +246,12 @@
         android:text="@string/next"
         tools:enabled="true"
         />
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:autoLink="web"
+          android:linksClickable="true"
+          android:text="@string/terms_conditions"/>
 
   </LinearLayout>
 

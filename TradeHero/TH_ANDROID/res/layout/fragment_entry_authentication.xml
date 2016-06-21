@@ -56,9 +56,16 @@
         >
         <include layout="@layout/authentication_social_auth_button_first"
             />
+        <com.twitter.sdk.android.core.identity.TwitterLoginButton
+            android:id="@+id/twitter_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:layout_marginBottom="@dimen/margin_small"/>
 
 
-      <LinearLayout
+        <LinearLayout
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center_horizontal"
