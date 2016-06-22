@@ -111,7 +111,7 @@ public class BaseLiveFragmentUtil
 
     protected void showCallToActionBubbleVisible()
     {
-        liveWidget.setVisibility(View.VISIBLE);
+        liveWidget.setVisibility(View.GONE);
     }
 
     protected void showCallToActionBubbleGone()

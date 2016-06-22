@@ -58,6 +58,7 @@
   <string name="authentication_connecting_to_qq">Connecting to QQ</string>
   <string name="wechat">WeChat</string>
   <string name="email">Email</string>
+  <string name="nric">NRIC Number</string>
   <string name="email_login_in">Login with Email</string>
   <string name="email_login_in_short">Log in</string>
   <string name="email_register">Register with Email</string>

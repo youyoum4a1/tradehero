@@ -101,10 +101,9 @@
               style="@style/TH.Body"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="@string/email"
+              android:hint="@string/nric"
               android:inputType="number"
               android:maxLength="12"
-              android:drawableRight="@drawable/green_tick"
               />
       </android.support.design.widget.TextInputLayout>
       <android.support.design.widget.TextInputLayout
@@ -119,7 +118,6 @@
           android:layout_height="wrap_content"
           android:hint="@string/email"
           android:inputType="textEmailAddress"
-          android:drawableRight="@drawable/green_tick"
           />
     </android.support.design.widget.TextInputLayout>
 
