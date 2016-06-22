@@ -117,7 +117,6 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         searchView.requestFocus();
         searchView.requestFocusFromTouch();
         searchView.setIconified(false);
-        DeviceUtil.showKeyboardDelayed(searchView);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
