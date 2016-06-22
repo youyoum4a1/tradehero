@@ -20,6 +20,7 @@ import com.androidth.general.api.market.Exchange;
 import com.androidth.general.api.security.ExchangeCompactDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityCompositeDTO;
+import com.androidth.general.api.security.SecurityTypeDTO;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.utils.StringUtils;
@@ -35,7 +36,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 
-public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
+public class ProviderSecurityV2RxByTypeFragment extends BaseFragment
 {
     @Bind(R.id.listview) protected AbsListView listView;
     @Inject protected SecurityCompositeListCacheRx securityCompositeListCacheRx;
@@ -44,7 +45,7 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
     private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityV2RxFragment.class.getName() + ".providerId";
     protected ProviderId providerId;
     protected SecurityCompositeDTO securityCompositeDTO;
-    protected ExchangeAdapter exchangeAdapter;
+    protected SecurityTypeAdapter securityTypeAdapter;
 
     @NonNull private static ProviderId getProviderId(@NonNull Bundle bundle)
     {
@@ -61,7 +62,7 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
         super.onCreate(savedInstanceState);
         this.providerId = getProviderId(getArguments());
         securityCompositeDTO = securityCompositeListCacheRx.getCachedValue(new BasicProviderSecurityV2ListType(providerId));
-        exchangeAdapter = new ExchangeAdapter(getContext(), securityCompositeDTO.Exchanges.toArray(new ExchangeCompactDTO[securityCompositeDTO.Exchanges.size()]));
+        securityTypeAdapter = new SecurityTypeAdapter(getContext(), securityCompositeDTO.SecurityTypes.toArray(new SecurityTypeDTO[securityCompositeDTO.SecurityTypes.size()]));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -73,7 +74,7 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        this.listView.setAdapter(exchangeAdapter);
+        this.listView.setAdapter(securityTypeAdapter);
     }
 
     @Override public void onDestroyView()
@@ -81,18 +82,17 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
-
     @OnItemClick(R.id.listview)
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         //noinspection unchecked
-        ExchangeCompactDTO exchangeCompactDTO = ((ExchangeCompactDTO) parent.getItemAtPosition(position));
-        Log.i("onItemClick", exchangeCompactDTO.name);
+        SecurityTypeDTO securityTypeDTO = ((SecurityTypeDTO) parent.getItemAtPosition(position));
+        Log.i("onItemClick", securityTypeDTO.name);
 
         List<SecurityCompactDTO> secs = new ArrayList<SecurityCompactDTO>();
         for(SecurityCompactDTO sec : securityCompositeDTO.Securities)
         {
-            if(sec.exchange.equals(exchangeCompactDTO.name))
+            if(sec.secTypeDesc.equals(securityTypeDTO.name))
             {
                 secs.add(sec);
             }
@@ -101,13 +101,12 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
         ProviderSecurityV2RxSubFragment.setItems(secs);
         navigator.get().pushFragment(ProviderSecurityV2RxSubFragment.class, getArguments());
     }
-
-    public class ExchangeAdapter extends ArrayAdapter<ExchangeCompactDTO>
+    public class SecurityTypeAdapter extends ArrayAdapter<SecurityTypeDTO>
     {
         private final Context context;
-        private final ExchangeCompactDTO[] values;
+        private final SecurityTypeDTO[] values;
 
-        public ExchangeAdapter(Context context, ExchangeCompactDTO[] values) {
+        public SecurityTypeAdapter(Context context, SecurityTypeDTO[] values) {
             super(context, -1, values);
             this.context = context;
             this.values = values;
@@ -124,20 +123,12 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
             }
 
             ImageView imgExchangeLogo = (ImageView) rowView.findViewById(R.id.exchange_logo);
-            ImageView imgCountryLogo = (ImageView) rowView.findViewById(R.id.country_logo);
-            TextView txtExchangeSymbol = (TextView) rowView.findViewById(R.id.exchange_symbol);
             TextView txtExchangeName = (TextView) rowView.findViewById(R.id.exchange_name);
             LinearLayout layoutExchangeParent = (LinearLayout) rowView.findViewById(R.id.exchange_parent);
 
-            layoutExchangeParent.setVisibility(View.VISIBLE);
+            layoutExchangeParent.setVisibility(View.INVISIBLE);
 
-            txtExchangeSymbol.setText(values[position].name);
-            txtExchangeName.setText(values[position].description);
-
-            if(StringUtils.isNullOrEmpty(values[position].name))
-                imgCountryLogo.setImageResource(R.drawable.default_image);
-            else
-                imgCountryLogo.setImageResource(Exchange.valueOf(values[position].name).logoId);
+            txtExchangeName.setText(values[position].name);
 
             picasso.load(values[position].imageUrl)
                     .into(imgExchangeLogo);

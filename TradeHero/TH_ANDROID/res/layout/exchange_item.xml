@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/exchange_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/grid_item_height"
+    tools:context="com.androidth.general.activities.DashboardActivity"
+    android:gravity="center_vertical"
+    android:background="@drawable/grid_item_bg"
+    >
+
+  <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:padding="@dimen/margin_xsmall">
+
+    <ImageView
+        android:id="@+id/exchange_logo"
+        android:layout_width="@dimen/security_logo_width"
+        android:layout_height="@dimen/security_logo_height"
+        android:layout_centerHorizontal="true"
+        android:contentDescription="@null"
+        android:adjustViewBounds="false"
+        android:scaleType="fitCenter"
+        android:layout_margin="@dimen/margin_xsmall"
+        android:src="@drawable/accounts_glyph_email_ok" />
+
+    <LinearLayout
+        android:id="@+id/exchange_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/exchange_logo"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+      <TextView
+          android:id="@+id/exchange_symbol"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:lines="1"
+          tools:text="SGX"
+          style="@style/TH.Body"
+          android:textStyle="bold"
+          />
+
+      <ImageView
+          android:id="@+id/country_logo"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_centerHorizontal="true"
+          android:contentDescription="@null"
+          android:adjustViewBounds="false"
+          android:scaleType="fitCenter"
+          android:layout_margin="@dimen/margin_xsmall"
+          android:src="@drawable/square_us" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/exchange_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/exchange_parent"
+        android:layout_centerHorizontal="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:lines="1"
+        style="@style/TH.Subhead"
+        android:singleLine="true"
+        tools:text="Singapore"
+        />
+
+
+  </RelativeLayout>
+
+</LinearLayout>

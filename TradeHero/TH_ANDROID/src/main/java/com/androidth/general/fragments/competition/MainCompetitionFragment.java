@@ -473,8 +473,9 @@ public class MainCompetitionFragment extends DashboardFragment
     {
         Bundle args = new Bundle();
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-        ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(navigator.get(), args, ownedPortfolioId, providerDTO.associatedPortfolio,
-                providerId);
+//        ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(navigator.get(), args, ownedPortfolioId, providerDTO.associatedPortfolio,
+//                providerId); //old securities screen
+        ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(navigator.get(), args, ownedPortfolioId, providerId);
     }
 
     private void displayTradeNowButton()

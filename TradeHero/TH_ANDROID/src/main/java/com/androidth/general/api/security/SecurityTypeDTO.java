@@ -14,7 +14,7 @@ public class SecurityTypeDTO implements DTO
     private final long createdAtNanoTime = System.nanoTime();
     public Integer id;
     public String name;
-    public String imgUrl;
+    public String imageUrl;
 
     public SecurityTypeDTO()
     {
@@ -26,7 +26,7 @@ public class SecurityTypeDTO implements DTO
         super();
         this.id = other.id;
         this.name = other.name;
-        this.imgUrl = other.imgUrl;
+        this.imageUrl = other.imageUrl;
     }
     //</editor-fold>
 
@@ -35,7 +35,7 @@ public class SecurityTypeDTO implements DTO
         return "SecurityTypeDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", imgUrl='" + imgUrl + '\'' +
+                ", imgUrl='" + imageUrl + '\'' +
                 '}';
     }
 }
