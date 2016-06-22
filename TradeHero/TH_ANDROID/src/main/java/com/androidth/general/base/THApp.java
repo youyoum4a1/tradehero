@@ -3,16 +3,21 @@ package com.androidth.general.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import com.flurry.android.FlurryAgent;
-import com.androidth.general.common.utils.THLog;
+
 import com.androidth.general.activities.ActivityBuildTypeUtil;
+import com.androidth.general.common.utils.THLog;
 import com.androidth.general.inject.BaseInjector;
 import com.androidth.general.inject.ExInjector;
 import com.androidth.general.models.level.UserXPAchievementHandler;
 import com.androidth.general.models.push.PushNotificationManager;
 import com.androidth.general.utils.dagger.AppModule;
-import dagger.ObjectGraph;
+import com.flurry.android.FlurryAgent;
+
 import javax.inject.Inject;
+
+import dagger.ObjectGraph;
+import microsoft.aspnet.signalr.client.Platform;
+import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import rx.functions.Action1;
 import timber.log.Timber;
 
@@ -62,6 +67,7 @@ public class THApp extends BaseApplication
 
         FlurryAgent.setLogEnabled(false);
         FlurryAgent.init(this, FLURRY_APIKEY);
+        Platform.loadPlatformComponent(new AndroidPlatformComponent());
     }
 
     private void buildObjectGraphAndInject()

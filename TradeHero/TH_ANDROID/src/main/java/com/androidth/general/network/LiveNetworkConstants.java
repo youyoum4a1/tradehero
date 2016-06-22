@@ -7,4 +7,7 @@ public class LiveNetworkConstants
     //"http://192.168.1.10:62998/";
     //https://live.tradehero.mobi/
     public static final String TRADEHERO_LIVE_API_ENDPOINT = TRADEHERO_LIVE_ENDPOINT + "api/";
+
+    public static final String HUB_NAME = "clientnotificationhub";
+    public static final String PROXY_METHOD = "AddToGroups";
 }

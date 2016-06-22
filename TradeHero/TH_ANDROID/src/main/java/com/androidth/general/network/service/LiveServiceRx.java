@@ -18,8 +18,7 @@ import retrofit.http.Query;
 import retrofit.mime.TypedOutput;
 import rx.Observable;
 
-public interface LiveServiceRx
-{
+public interface LiveServiceRx {
     @GET("/liveTradingSituation")
     Observable<LiveTradingSituationDTO> getLiveTradingSituation();
 
@@ -37,7 +36,8 @@ public interface LiveServiceRx
             @Path("liveBrokerId") int brokerId,
             @Query("username") String username);
 
-    @Multipart @POST("/documentsUpload")
+    @Multipart
+    @POST("/documentsUpload")
     Observable<BrokerDocumentUploadResponseDTO> uploadDocument(
             @Part("image") TypedOutput image
     );
