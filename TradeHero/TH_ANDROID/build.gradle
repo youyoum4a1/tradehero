@@ -683,12 +683,11 @@ dependencies {
   compile("com.jakewharton:butterknife:${BUTTER_KNIFE_VERSION}") {
     exclude group: 'se.emilsjolander', module: 'stickylistheaders'
   }
-  releaseCompile "com.appsflyer:library:${APPS_FLYER_VERSION}"
-  //provided 'com.kenai.nbpwr:edu-umd-cs-findbugs-annotations:1.3.2-201002241900'
+
+  compile 'com.appsflyer:af-android-sdk:4.4.0@aar'
 
   compile "com.jumio.android:core:${JUMIO_SDK_VERSION}@aar"
   compile "com.jumio.android:nv:${JUMIO_SDK_VERSION}@aar"
-  //  liveCompile "com.jumio.android:netswipe-resources:${JUMIO_SDK_VERSION}@aar"
   compile "com.neovisionaries:nv-i18n:${NV_I18N_VERSION}"
   compile "com.googlecode.libphonenumber:libphonenumber:${LIB_PHONE_NUMBER_VERSION}"
 

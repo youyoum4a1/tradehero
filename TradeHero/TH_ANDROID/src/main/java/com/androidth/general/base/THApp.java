@@ -3,6 +3,8 @@ package com.androidth.general.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import com.androidth.general.api.users.CurrentUserId;
+import com.appsflyer.AppsFlyerLib;
 import com.flurry.android.FlurryAgent;
 import com.androidth.general.common.utils.THLog;
 import com.androidth.general.activities.ActivityBuildTypeUtil;
@@ -13,7 +15,6 @@ import com.androidth.general.models.push.PushNotificationManager;
 import com.androidth.general.utils.dagger.AppModule;
 import dagger.ObjectGraph;
 import javax.inject.Inject;
-import rx.functions.Action1;
 import timber.log.Timber;
 
 public class THApp extends BaseApplication
@@ -44,24 +45,21 @@ public class THApp extends BaseApplication
 
         pushNotificationManager.initialise()
                 .subscribe(
-                        new Action1<PushNotificationManager.InitialisationCompleteDTO>() {
-                            @Override
-                            public void call(PushNotificationManager.InitialisationCompleteDTO initialisationCompleteDTO) {
-                                // Nothing to do
-                            }
+                        initialisationCompleteDTO -> {
+                            // Nothing to do
                         },
-                        new Action1<Throwable>() {
-                            @Override
-                            public void call(Throwable throwable) {
-                                // Likely to happen as long as the server expects credentials on this one
-                                Timber.e(throwable, "Failed to initialise PushNotificationManager");
-                            }
+                        throwable -> {
+                            // Likely to happen as long as the server expects credentials on this one
+                            Timber.e(throwable, "Failed to initialise PushNotificationManager");
                         });
 
         THLog.showDeveloperKeyHash(this);
 
         FlurryAgent.setLogEnabled(false);
         FlurryAgent.init(this, FLURRY_APIKEY);
+
+        // TODO: For Kenanga Challenge, can remove after that.
+        AppsFlyerLib.getInstance().startTracking(this,"pEuxjZE2GpyRXXwFjHHRRU");
     }
 
     private void buildObjectGraphAndInject()

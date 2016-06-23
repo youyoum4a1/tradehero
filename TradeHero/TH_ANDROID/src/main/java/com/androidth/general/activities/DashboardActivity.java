@@ -73,6 +73,7 @@ import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.androidth.general.utils.metrics.ForAnalytics;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 import com.androidth.general.utils.route.THRouter;
+import com.appsflyer.AppsFlyerLib;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -199,6 +200,9 @@ public class DashboardActivity extends BaseActivity
         initBroadcastReceivers();
 
         localBroadcastManager.registerReceiver(onlineStateReceiver, new IntentFilter(OnlineStateReceiver.ONLINE_STATE_CHANGED));
+
+        // TODO: For Kenanga challenge, can remove after that
+        AppsFlyerLib.getInstance().setCustomerUserId(currentUserId.get().toString());
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu)
