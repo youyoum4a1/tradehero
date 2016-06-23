@@ -128,10 +128,11 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
             public boolean onQueryTextChange(String newText) {
                 Log.i("onQueryTextChange", newText);
 
+                String newTextLower = newText.toLowerCase();
                 ArrayList<SecurityCompactDTO> subItems = new ArrayList<SecurityCompactDTO>();
                 for(SecurityCompactDTO sec : items)
                 {
-                    if(sec.name.contains(newText) || sec.symbol.contains(newText))
+                    if((sec.name != null && sec.name.toLowerCase().contains(newTextLower)) || (sec.symbol != null && sec.symbol.toLowerCase().contains(newTextLower)))
                     {
                         subItems.add(sec);
                     }
