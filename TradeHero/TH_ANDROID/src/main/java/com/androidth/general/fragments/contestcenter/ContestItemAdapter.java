@@ -39,6 +39,7 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
 
     @Override public int getItemViewType(int position)
     {
+
         ContestPageDTO item = getItem(position);
         if (item instanceof ProviderContestPageDTO)
         {
@@ -69,7 +70,29 @@ public class ContestItemAdapter extends ArrayAdapter<ContestPageDTO>
         if (convertView instanceof DTOView)
         {
             //noinspection unchecked
-            ((DTOView<ContestPageDTO>) convertView).display(getItem(position));
+            ContestPageDTO item = getItem(position);
+            if(getCount()==1){
+                if(item instanceof ProviderContestPageDTO){
+                    ProviderDTO providerDTO = ((ProviderContestPageDTO) item).providerDTO;
+                    if(!providerDTO.isUserEnrolled){
+                        providerDTO.displayURL = providerDTO.singleImageUrl;
+                        ((DTOView<ContestPageDTO>) convertView).display(getItem(position));
+                    }else {
+                        providerDTO.displayURL = providerDTO.multiImageUrl;
+                        ((DTOView<ContestPageDTO>) convertView).display(getItem(position));
+                    }
+                }
+                ((DTOView<ContestPageDTO>) convertView).display(getItem(position));
+            }
+            else {
+
+                if(item instanceof ProviderContestPageDTO){
+                    ProviderDTO providerDTO = ((ProviderContestPageDTO) item).providerDTO;
+                    providerDTO.displayURL = providerDTO.multiImageUrl;
+                    ((DTOView<ContestPageDTO>) convertView).display(getItem(position));
+                }
+
+            }
         }
         return convertView;
     }

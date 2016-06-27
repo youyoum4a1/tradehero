@@ -36,6 +36,7 @@ public class Constants
     public static final String AUTHORIZATION = "Authorization";
     public static final String TH_LANGUAGE_CODE = "TH-Language-Code";
     public static final String TH_CLIENT_TYPE = "TH-Client-Type";
+    public static final String USER_ID = "UserId";
 
     // Response Header
     public static final String CONTENT_ENCODING = "Content-Encoding";

@@ -294,6 +294,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     return emailInvalidMessage;
                                 }
                                 else {
+
                                     return null;
                                 }
 
@@ -307,6 +308,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 redAlert.setBounds(0,0,redAlert.getIntrinsicWidth(), redAlert.getIntrinsicHeight());
                                 if(errorMessage==null){
                                     email.setError(null,null);
+                                    //Drawable greenTick = getResources().getDrawable(R.drawable.green_tick);
+                                    //greenTick.setBounds(0,0,greenTick.getIntrinsicWidth(), greenTick.getIntrinsicHeight());
                                     email.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.green_tick,0);
                                 }
                                 else email.setError(errorMessage,redAlert);
