@@ -1,13 +1,21 @@
 package com.androidth.general.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidth.general.R;
+import com.androidth.general.api.competition.ProviderDTO;
+import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.kyc.CountryDocumentTypes;
 import com.androidth.general.api.kyc.IdentityPromptInfoDTO;
 import com.androidth.general.api.kyc.KYCFormUtil;
 import com.androidth.general.api.kyc.LiveAvailabilityDTO;
@@ -22,7 +30,10 @@ import com.androidth.general.models.fastfill.FastFillUtil;
 import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
 import com.androidth.general.models.fastfill.ScannedDocument;
 import com.androidth.general.network.service.LiveServiceWrapper;
+import com.androidth.general.network.service.ProviderServiceWrapper;
+import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
+import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.ReplaceWithFunc1;
 import com.androidth.general.utils.route.THRouter;
@@ -32,6 +43,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -64,17 +76,29 @@ public class IdentityPromptActivity extends BaseActivity
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
 
+    @Inject protected ProviderCacheRx providerCacheRx;
+
+    @Bind(R.id.identity_prompt_image_passport)
+    ImageView imgPassport;
+
     @Bind(R.id.identity_prompt_passport)
-    View scanPassport;
-    @Bind(R.id.live_powered_by)
-    TextView livePoweredBy;
+    Button scanPassport;
+
     @Bind(R.id.identity_prompt_image_specific)
-    ImageView imgPrompt;
+    ImageView imgSpecific;
+
     @Bind(R.id.identity_prompt_specific)
-    TextView scanSpecificId;
+    Button scanSpecificId;
+
+    @Bind(R.id.dummy_action_bar)
+    ImageView imgActionBar;
 
     //@RouteProperty("brokerId") int routedBrokerId;
     //@RouteProperty("providerId") protected int providerId;
+
+    protected int providerId;
+    protected ProviderDTO providerDTO;
+    String countryCode;
 
     private Subscription fastFillSubscription;
 
@@ -84,6 +108,23 @@ public class IdentityPromptActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity_prompt);
         ButterKnife.bind(IdentityPromptActivity.this);
+
+        providerId = getIntent().getIntExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
+        providerDTO = providerCacheRx.getCachedValue(new ProviderId(providerId));
+
+countryCode = userProfileCache.getCachedValue(currentUserId.toUserBaseKey()).countryCode;
+        if(providerDTO.providerCountries.length == 1)
+        {
+            countryCode = providerDTO.providerCountries[0];
+        }
+
+//        picasso.load(providerDTO.navigationLogoUrl)
+//                .into(imgActionBar);
+
+        String color = providerDTO.hexColor.startsWith("#") ? providerDTO.hexColor : "#".concat(providerDTO.hexColor);
+        ColorDrawable colorDrawable = new ColorDrawable(Color.parseColor(color));
+
+        imgActionBar.setBackground(colorDrawable);
 
         // temp not working, need check
 
@@ -206,7 +247,44 @@ public class IdentityPromptActivity extends BaseActivity
 //                                }
 //                            }
 //                        });
+
+        liveServiceWrapper.documentsForCountry(countryCode).subscribe(new Action1<ArrayList<CountryDocumentTypes>>() {
+            @Override
+            public void call(ArrayList<CountryDocumentTypes> countryDocumentTypes) {
+                imgPassport.setVisibility(View.GONE);
+                scanPassport.setVisibility(View.GONE);
+                imgSpecific.setVisibility(View.GONE);
+                scanSpecificId.setVisibility(View.GONE);
+
+                for (CountryDocumentTypes T : countryDocumentTypes)
+                {
+                    if(T.documentTypeId == 1)
+                    {
+                        imgSpecific.setVisibility(View.VISIBLE);
+                        scanSpecificId.setVisibility(View.VISIBLE);
+
+                        scanSpecificId.setText(T.displayName);
+
+                        String url = "http://portalvhdskgrrf4wksb8vq.blob.core.windows.net/country-flags/" + countryCode.toLowerCase() + "_64.png";
+                        //picasso.load(url)
+                        //        .into(imgSpecific);
+                    }
+
+                    if(T.documentTypeId == 2)
+                    {
+                        imgPassport.setVisibility(View.VISIBLE);
+                        scanPassport.setVisibility(View.VISIBLE);
+
+                        scanPassport.setText(T.displayName);
+                        String url = "https://portalvhdskgrrf4wksb8vq.blob.core.windows.net/country-passport/" + countryCode.toLowerCase() + ".png";
+                        //picasso.load(url)
+                        //        .into(imgPassport);
+                    }
+                }
+            }
+        });
     }
+
 
     @Override
     protected void onDestroy()

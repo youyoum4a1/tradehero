@@ -12,7 +12,7 @@
   <string name="tile_live_trading_top">Open a LIVE account</string>
   <string name="tile_live_trading">Get free US$100</string>
 
-  <string name="live_identity_prompt">Which of these documents do you have with you?</string>
+  <string name="live_identity_prompt">Do you have your Proof of identity with you?</string>
   <string name="live_identity_prompt_au">Do you have your Australian Passport with you?</string>
   <string name="live_identity_prompt_sg">Do you have your NRIC/Passport with you?</string>
 
@@ -69,7 +69,7 @@
   <string name="address_less_than_1_year">Less than 1 year at this address?</string>
   <string name="tap_to_upload">Tap to upload</string>
   <string name="tap_to_sign">Tap to sign</string>
-  <string name="enter_manually">None, I\'ll enter manually.</string>
+  <string name="enter_manually">Don\'t have there with you?\nComplete manually.</string>
   <string name="scan_it">Let\'s scan it!</string>
   <string name="any_passport">Passport\n(Any Country)</string>
 

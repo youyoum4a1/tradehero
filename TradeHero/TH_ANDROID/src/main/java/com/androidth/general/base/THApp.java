@@ -3,22 +3,27 @@ package com.androidth.general.base;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import com.androidth.general.activities.IdentityPromptActivity;
-import com.androidth.general.api.users.CurrentUserId;
-import com.androidth.general.utils.Router;
-import com.appsflyer.AppsFlyerLib;
-import com.flurry.android.FlurryAgent;
-import com.androidth.general.common.utils.THLog;
+
 import com.androidth.general.activities.ActivityBuildTypeUtil;
+import com.androidth.general.common.utils.THLog;
 import com.androidth.general.inject.BaseInjector;
 import com.androidth.general.inject.ExInjector;
 import com.androidth.general.models.level.UserXPAchievementHandler;
 import com.androidth.general.models.push.PushNotificationManager;
 import com.androidth.general.utils.dagger.AppModule;
-import com.tradehero.route.RouteProperty;
-import dagger.ObjectGraph;
+import com.appsflyer.AppsFlyerLib;
+import com.flurry.android.FlurryAgent;
+
 import javax.inject.Inject;
+
+import dagger.ObjectGraph;
+import microsoft.aspnet.signalr.client.Platform;
+import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import timber.log.Timber;
+
+
+
+
 
 public class THApp extends BaseApplication
         implements ExInjector
@@ -61,8 +66,12 @@ public class THApp extends BaseApplication
         FlurryAgent.setLogEnabled(false);
         FlurryAgent.init(this, FLURRY_APIKEY);
 
+        Platform.loadPlatformComponent(new AndroidPlatformComponent());
+
+
         // TODO: For Kenanga Challenge, can remove after that.
         AppsFlyerLib.getInstance().startTracking(this,"pEuxjZE2GpyRXXwFjHHRRU");
+
     }
 
     private void buildObjectGraphAndInject()
