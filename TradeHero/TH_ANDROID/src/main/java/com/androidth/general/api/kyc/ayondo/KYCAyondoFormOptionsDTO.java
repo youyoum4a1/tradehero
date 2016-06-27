@@ -41,6 +41,8 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final String dataSharingAgreementUrl;
     public final int minAge;
     @NonNull public final List<Currency> currencies;
+    @NonNull public final List<String> residenceState;
+    @NonNull public final List<String> howYouKnowTH;
 
     public KYCAyondoFormOptionsDTO(
             @JsonProperty("genders") @Nullable List<Gender> genders,
@@ -59,7 +61,9 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
             @JsonProperty("riskWarningDisclosureUrl") @NonNull String riskWarningDisclosureUrl,
             @JsonProperty("dataSharingAgreementUrl") @NonNull String dataSharingAgreementUrl,
             @JsonProperty("minAge") int minAge,
-            @JsonProperty("currencies") @NonNull List<Currency> currencies)
+            @JsonProperty("currencies") @NonNull List<Currency> currencies,
+            @JsonProperty("residenceState") @NonNull List<String> residenceState,
+            @JsonProperty("howYouKnowTH") @NonNull List<String> howYouKnowTH)
     {
         if (genders == null)
         {
@@ -106,6 +110,8 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         this.dataSharingAgreementUrl = dataSharingAgreementUrl;
         this.minAge = minAge;
         this.currencies = Collections.unmodifiableList(currencies);
+        this.residenceState = residenceState;
+        this.howYouKnowTH = howYouKnowTH;
     }
 
     @NonNull public List<IdentityScannedDocumentType> getIdentityDocumentTypes()
@@ -133,6 +139,8 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
                 ", dataSharingAgreementUrl='" + dataSharingAgreementUrl + '\'' +
                 ", minAge=" + minAge +
                 ", currencies=" + currencies +
+                ", residenceState=" + residenceState +
+                ", howYouKnowTH=" + howYouKnowTH +
                 '}';
     }
 }

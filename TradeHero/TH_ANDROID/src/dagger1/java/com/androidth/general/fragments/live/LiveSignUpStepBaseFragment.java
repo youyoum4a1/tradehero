@@ -5,10 +5,13 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Pair;
 import android.view.View;
 import android.widget.Spinner;
 
 import com.androidth.general.activities.SignUpLiveActivity;
+import com.androidth.general.api.competition.ProviderDTO;
+import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.KYCFormOptionsId;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
@@ -17,6 +20,7 @@ import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.base.BaseFragment;
+import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.kyc.KYCFormOptionsCache;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.R;
@@ -42,6 +46,7 @@ import timber.log.Timber;
 
 abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 {
+    @Inject ProviderCacheRx providerCache;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject protected KYCFormOptionsCache kycFormOptionsCache;
 
@@ -61,7 +66,8 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         this.brokerSituationSubject = BehaviorSubject.create();
     }
 
-    private static int getProviderId(@NonNull Bundle args) {
+    protected static int getProviderId(@NonNull Bundle args)
+    {
         return args.getInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
     }
 
@@ -106,12 +112,6 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
             {
                 onDestroyViewSubscriptions.add(sub);
             }
-        }
-
-        int providerId = getProviderId(getArguments());
-
-        if (providerId != 0) {
-            Timber.d("Here you are");
         }
     }
 

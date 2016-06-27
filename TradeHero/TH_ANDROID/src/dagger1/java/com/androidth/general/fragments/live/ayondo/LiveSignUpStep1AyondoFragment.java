@@ -1,8 +1,11 @@
 package com.androidth.general.fragments.live.ayondo;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MainThread;
@@ -17,11 +20,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import butterknife.OnClick;
 import com.androidth.general.R;
+import com.androidth.general.activities.ActivityHelper;
+import com.androidth.general.activities.AuthenticationActivity;
+import com.androidth.general.api.competition.ProviderDTO;
+import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
@@ -33,6 +44,7 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
@@ -40,6 +52,7 @@ import com.androidth.general.fragments.live.VerifyPhoneDialogFragment;
 import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.network.service.KycServicesRx;
 import com.androidth.general.network.service.LiveServiceWrapper;
+import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -106,9 +119,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.info_phone_number) EditText phoneNumber;
     @Bind(R.id.info_dob) TextView dob;
     @Bind(R.id.btn_verify_phone) TextView buttonVerifyPhone;
-    @Bind(R.id.info_nationality) Spinner spinnerNationality;
-    @Bind(R.id.info_residency) Spinner spinnerResidency;
+    //@Bind(R.id.info_nationality) Spinner spinnerNationality;
+    //@Bind(R.id.info_residency) Spinner spinnerResidency;
 
+    @Bind(R.id.residence_state) Spinner spinnerResidenceState;
+    @Bind(R.id.how_you_know_th) Spinner spinnerHowYouKnowTH;
+    @Bind(R.id.btn_join_competition) Button joinCompetitionButton;
+
+    @Inject ProviderCacheRx providerCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
@@ -117,14 +135,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private String emailInvalidMessage;
     private String expectedCode;
     private String smsId;
+    private ProviderId providerId;
     private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
-
-
-
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         thRouter.inject(this);
         verifiedPublishSubject = PublishSubject.create();
         if (savedInstanceState != null)
@@ -132,13 +149,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             expectedCode = savedInstanceState.getString(KEY_EXPECTED_SMS_CODE, null);
             smsId = savedInstanceState.getString(KEY_SMS_ID, null);
         }
-        Log.v("ayondoStep1", "on ayondo create");
-
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        Log.v("ayondoStep1", "on ayondo createView");
         return inflater.inflate(R.layout.fragment_sign_up_live_ayondo_step_1, container, false);
     }
 
@@ -159,6 +173,30 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 return false;
             }
         });
+
+        int providerIdInt = getProviderId(getArguments());
+
+        if (providerIdInt != 0) {
+            this.providerId = new ProviderId(providerIdInt);
+
+            providerCache.get(providerId).subscribe(providerIdProviderDTOPair -> {
+                ProviderDTO providerDTO = providerIdProviderDTOPair.second;
+
+                if (providerDTO != null) {
+                    if (btnNext != null)
+                    {
+                        btnNext.setVisibility(View.GONE);
+                    }
+
+                    if (btnPrev != null)
+                    {
+                        btnPrev.setVisibility(View.GONE);
+                    }
+
+                    joinCompetitionButton.setEnabled(true);
+                }
+            });
+        }
     }
 
     @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
@@ -208,27 +246,26 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 AdapterViewObservable.selects(title)
                         .map(new Func1<OnSelectedEvent, KYCAyondoForm>() {
                             @Override public KYCAyondoForm call(OnSelectedEvent titleEvent) {
-                                Log.v("ayondoStep1", "on ayondo title view");
                                 return KYCAyondoFormFactory.fromTitleEvent(titleEvent);
                             }
                         }),
-                AdapterViewObservable.selects(spinnerNationality)
-                        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
-                        {
-                            @Override public KYCAyondoForm call(OnSelectedEvent nationalityEvent)
-                            {
-                                Log.v("ayondoStep1", "on ayondo nationality");
-                                return KYCAyondoFormFactory.fromNationalityEvent(nationalityEvent);
-                            }
-                        }),
-                AdapterViewObservable.selects(spinnerResidency)
-                        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
-                        {
-                            @Override public KYCAyondoForm call(OnSelectedEvent residencyEvent)
-                            {
-                                return KYCAyondoFormFactory.fromResidencyEvent(residencyEvent);
-                            }
-                        }),
+                //AdapterViewObservable.selects(spinnerNationality)
+                //        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
+                //        {
+                //            @Override public KYCAyondoForm call(OnSelectedEvent nationalityEvent)
+                //            {
+                //                Log.v("ayondoStep1", "on ayondo nationality");
+                //                return KYCAyondoFormFactory.fromNationalityEvent(nationalityEvent);
+                //            }
+                //        }),
+                //AdapterViewObservable.selects(spinnerResidency)
+                //        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
+                //        {
+                //            @Override public KYCAyondoForm call(OnSelectedEvent residencyEvent)
+                //            {
+                //                return KYCAyondoFormFactory.fromResidencyEvent(residencyEvent);
+                //            }
+                //        }),
                 WidgetObservable.text(dob)
                         .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
                         {
@@ -254,21 +291,20 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         new TimberOnErrorAction1(
                                 "Failed to listen to user name, password, full name, email, nationality o residency spinners, or dob")));
 
-        Log.v("ayondoStep1",  "observable done "+subscriptions.size());
 
         emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
         emailInvalidMessage = getString(R.string.validation_incorrect_pattern_email);
-        subscriptions.add(WidgetObservable.text(nricNumber).subscribe(new Action1<OnTextChangeEvent>() {
-            @Override
-            public void call(OnTextChangeEvent onTextChangeEvent) {
-                if(nricNumber.getText().length()==6){
-                    nricNumber.append("-");
-                }
-                if(nricNumber.getText().length()==8){
-                    nricNumber.append("-");
-                }
-            }
-        }));
+        //subscriptions.add(WidgetObservable.text(nricNumber).subscribe(new Action1<OnTextChangeEvent>() {
+        //    @Override
+        //    public void call(OnTextChangeEvent onTextChangeEvent) {
+        //        if(nricNumber.getText().length()==6){
+        //            nricNumber.append("-");
+        //        }
+        //        if(nricNumber.getText().length()==8){
+        //            nricNumber.append("-");
+        //        }
+        //    }
+        //}));
         subscriptions.add(
                 WidgetObservable.text(email)
                         .distinctUntilChanged(new Func1<OnTextChangeEvent, CharSequence>()
@@ -351,18 +387,29 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
                                 spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
                                 spinnerPhoneCountryCode.setEnabled(options.allowedMobilePhoneCountryDTOs.size() > 1);
+                                spinnerPhoneCountryCode.setSelection(1);
 
-                                CountrySpinnerAdapter residencyAdapter =
-                                        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
-                                residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
-                                spinnerResidency.setAdapter(residencyAdapter);
-                                spinnerResidency.setEnabled(options.allowedResidencyCountryDTOs.size() > 1);
+                                //CountrySpinnerAdapter residencyAdapter =
+                                //        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+                                //residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
+                                //spinnerResidency.setAdapter(residencyAdapter);
+                                //spinnerResidency.setEnabled(options.allowedResidencyCountryDTOs.size() > 1);
+                                //
+                                //CountrySpinnerAdapter nationalityAdapter =
+                                //        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+                                //nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
+                                //spinnerNationality.setAdapter(nationalityAdapter);
+                                //spinnerNationality.setEnabled(options.allowedNationalityCountryDTOs.size() > 1);w
 
-                                CountrySpinnerAdapter nationalityAdapter =
-                                        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
-                                nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
-                                spinnerNationality.setAdapter(nationalityAdapter);
-                                spinnerNationality.setEnabled(options.allowedNationalityCountryDTOs.size() > 1);
+                                LollipopArrayAdapter<String> residenceStateAdapter = new LollipopArrayAdapter<>(
+                                        getActivity(), options.residenceStateList);
+                                spinnerResidenceState.setAdapter(residenceStateAdapter);
+                                spinnerResidenceState.setEnabled(options.residenceStateList.size() > 1);
+
+                                LollipopArrayAdapter<String> howYouKnowTHAdapter = new LollipopArrayAdapter<>(
+                                        getActivity(), options.howYouKnowTHList);
+                                spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
+                                spinnerHowYouKnowTH.setEnabled(options.howYouKnowTHList.size() > 1);
                             }
                         }),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
@@ -784,24 +831,24 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         KYCAyondoForm update = new KYCAyondoForm();
         candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
-        Integer index = setSpinnerOnFirst(spinnerNationality, candidates, liveCountryDTOs);
-        if (savedNationality == null)
-        {
-            CountrySpinnerAdapter.DTO chosenDTO;
-            if (index != null)
-            {
-                chosenDTO = liveCountryDTOs.get(index);
-            }
-            else
-            {
-                chosenDTO = (CountrySpinnerAdapter.DTO) spinnerNationality.getSelectedItem();
-            }
-
-            if (chosenDTO != null)
-            {
-                update.setNationality(CountryCode.getByCode(chosenDTO.country.name()));
-            }
-        }
+        //Integer index = setSpinnerOnFirst(spinnerNationality, candidates, liveCountryDTOs);
+        //if (savedNationality == null)
+        //{
+        //    CountrySpinnerAdapter.DTO chosenDTO;
+        //    if (index != null)
+        //    {
+        //        chosenDTO = liveCountryDTOs.get(index);
+        //    }
+        //    else
+        //    {
+        //        chosenDTO = (CountrySpinnerAdapter.DTO) spinnerNationality.getSelectedItem();
+        //    }
+        //
+        //    if (chosenDTO != null)
+        //    {
+        //        update.setNationality(CountryCode.getByCode(chosenDTO.country.name()));
+        //    }
+        //}
         return update;
     }
 
@@ -832,24 +879,24 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         KYCAyondoForm update = new KYCAyondoForm();
         candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
-        Integer index = setSpinnerOnFirst(spinnerResidency, candidates, liveCountryDTOs);
-        if (savedResidency == null)
-        {
-            CountrySpinnerAdapter.DTO chosenDTO;
-            if (index != null)
-            {
-                chosenDTO = liveCountryDTOs.get(index);
-            }
-            else
-            {
-                chosenDTO = (CountrySpinnerAdapter.DTO) spinnerResidency.getSelectedItem();
-            }
-
-            if (chosenDTO != null)
-            {
-                update.setResidency(CountryCode.getByCode(chosenDTO.country.name()));
-            }
-        }
+        //Integer index = setSpinnerOnFirst(spinnerResidency, candidates, liveCountryDTOs);
+        //if (savedResidency == null)
+        //{
+        //    CountrySpinnerAdapter.DTO chosenDTO;
+        //    if (index != null)
+        //    {
+        //        chosenDTO = liveCountryDTOs.get(index);
+        //    }
+        //    else
+        //    {
+        //        chosenDTO = (CountrySpinnerAdapter.DTO) spinnerResidency.getSelectedItem();
+        //    }
+        //
+        //    if (chosenDTO != null)
+        //    {
+        //        update.setResidency(CountryCode.getByCode(chosenDTO.country.name()));
+        //    }
+        //}
         return update;
     }
 
@@ -939,5 +986,50 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     public void setSmsId(String smsId)
     {
         this.smsId = smsId;
+    }
+
+    @OnClick(R.id.btn_join_competition)
+    public void onClickedJoinButton() {
+        if (nricNumber.length() != 12 || firstName.length() == 0 || lastName.length() == 0 || !emailPattern.matcher(email.getText()).matches() || !buttonVerifyPhone.getText().toString().equalsIgnoreCase("verified") || dob.length() == 0) {
+            return;
+        }
+
+        ProgressDialog progress = new ProgressDialog(getContext());
+        progress.setMessage("Loading...");
+        progress.show();
+
+
+        liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get()).subscribe(new Action1<Boolean>()
+        {
+            @Override public void call(Boolean aBoolean)
+            {
+                if (aBoolean)
+                {
+                    providerCache.fetch(providerId).subscribe(new Action1<ProviderDTO>()
+                    {
+                        @Override public void call(ProviderDTO providerDTO)
+                        {
+                            ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
+                            //thRouter.open("tradehero://providers/" + providerId.key, getActivity().getApplicationContext());
+                            progress.dismiss();
+                        }
+                    }, new Action1<Throwable>()
+                    {
+                        @Override public void call(Throwable throwable)
+                        {
+                            progress.dismiss();
+                        }
+                    });
+
+                }
+            }
+        }, new Action1<Throwable>()
+        {
+            @Override public void call(Throwable throwable)
+            {
+
+                progress.dismiss();
+            }
+        });
     }
 }

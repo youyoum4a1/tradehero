@@ -22,6 +22,7 @@
   <string name="basic_information">Basic Info</string>
   <string name="nationality">Nationality</string>
   <string name="residency">Country of Residence</string>
+  <string name="residence_state">Residence State</string>
   <string name="annual_income">Annual Income</string>
   <string name="net_worth">Net Worth</string>
   <string name="percent_for_investment">% of Net Worth for Investment</string>
@@ -43,6 +44,8 @@
   <string name="sms_verification_button_empty_checking">Checking</string>
   <string name="unable_to_capture_value_from_image">Unable to capture value from image</string>
   <string name="pick_location_within_country">Please pick nearby location within your country.</string>
+
+  <string name="how_you_know_th">How do you know about TradeHero?</string>
 
   <string name="verify">Verify</string>
   <string name="terms_conditions"><a href="http://www.google.com">Terms and conditions.</a></string>

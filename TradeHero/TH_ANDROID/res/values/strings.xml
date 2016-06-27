@@ -244,6 +244,7 @@
   <string name="back">Back</string>
   <string name="done">Done</string>
   <string name="trade_comment">Trade Comment</string>
+  <string name="join_competition">Join competition now!</string>
 
   <string name="mark_all_as_read">Mark all as Read</string>
   <string name="compose">Compose</string>

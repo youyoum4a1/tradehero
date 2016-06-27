@@ -17,6 +17,8 @@ class CountryDTOForSpinner
     @NonNull public final List<CountrySpinnerAdapter.DTO> allowedMobilePhoneCountryDTOs;
     @NonNull public final List<CountrySpinnerAdapter.DTO> allowedResidencyCountryDTOs;
     @NonNull public final List<CountrySpinnerAdapter.DTO> allowedNationalityCountryDTOs;
+    @NonNull public final List<String> residenceStateList;
+    @NonNull public final List<String> howYouKnowTHList;
 
     public CountryDTOForSpinner(@NonNull Context context, @NonNull KYCAyondoFormOptionsDTO options)
     {
@@ -39,6 +41,9 @@ class CountryDTOForSpinner
                 options.allowedNationalityCountries, null);
         Collections.sort(allowedNationalityCountryDTOs, dtoComparator);
         this.allowedNationalityCountryDTOs = Collections.unmodifiableList(allowedNationalityCountryDTOs);
+
+        this.residenceStateList = options.residenceState;
+        this.howYouKnowTHList = options.howYouKnowTH;
     }
 
     @Override public boolean equals(Object o)

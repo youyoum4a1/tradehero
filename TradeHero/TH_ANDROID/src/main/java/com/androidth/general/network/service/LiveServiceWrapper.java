@@ -151,7 +151,7 @@ public class LiveServiceWrapper
         nationalities.removeAll(createNoBusinessNationalities());
         KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(
                 Arrays.asList(Gender.values()),
-                Arrays.asList(Country.SG, Country.AU, Country.NZ),
+                Arrays.asList(Country.MY, Country.SG, Country.TH, Country.ID),
                 nationalities,
                 Arrays.asList(Country.SG, Country.AU, Country.NZ),
                 Arrays.asList(AnnualIncomeRange.values()),
@@ -166,7 +166,9 @@ public class LiveServiceWrapper
                 DummyAyondoData.RISK_WARNING_DISCLAIMER_URL,
                 DummyAyondoData.DATA_SHARING_AGREEMENT_URL,
                 AYONDO_MINIMUM_AGE,
-                Arrays.asList(Currency.values()));
+                Arrays.asList(Currency.values()),
+                Arrays.asList("Kuala Lumpur", "Labuan", "Sarawak", "Penang", "Selangor", "Malacca", "Negeri Sembilan", "Pahang", "Johor", "Terengganu", "Perak", "Sabah", "Perlis", "Kedah", "Kelantan"),
+                Arrays.asList("Online", "Events"));
         return Observable.just(options);
     }
 
@@ -249,6 +251,10 @@ public class LiveServiceWrapper
             //TODO when we have multiple brokers
             return Observable.just(null);
         }
+    }
+
+    public Observable<Boolean>enrollCompetition(int providerId, int userId) {
+        return liveServiceRx.enrollCompetition(providerId, userId);
     }
 
     @NonNull public static List<Country> createNoBusinessNationalities()

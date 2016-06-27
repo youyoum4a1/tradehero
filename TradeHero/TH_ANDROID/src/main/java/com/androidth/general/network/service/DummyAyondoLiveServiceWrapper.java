@@ -99,7 +99,7 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
         nationalities.removeAll(createNoBusinessNationalities());
         KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(
                 Arrays.asList(Gender.values()),
-                Arrays.asList(Country.SG, Country.AU, Country.NZ),
+                Arrays.asList(Country.MY, Country.SG, Country.TH, Country.ID),
                 nationalities,
                 Arrays.asList(Country.SG, Country.AU, Country.NZ),
                 Arrays.asList(AnnualIncomeRange.values()),
@@ -114,7 +114,9 @@ public class DummyAyondoLiveServiceWrapper extends LiveServiceWrapper
                 DummyAyondoData.RISK_WARNING_DISCLAIMER_URL,
                 DummyAyondoData.DATA_SHARING_AGREEMENT_URL,
                 AYONDO_MINIMUM_AGE,
-                Arrays.asList(Currency.values()));
+                Arrays.asList(Currency.values()),
+                Arrays.asList("Kuala Lumpur", "Labuan", "Sarawak", "Penang", "Selangor", "Malacca", "Negeri Sembilan", "Pahang", "Johor", "Terengganu", "Perak", "Sabah", "Perlis", "Kedah", "Kelantan"),
+                Arrays.asList("Online", "Events"));
         return Observable.just(options);
     }
 

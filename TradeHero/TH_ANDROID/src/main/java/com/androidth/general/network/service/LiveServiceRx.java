@@ -41,4 +41,10 @@ public interface LiveServiceRx
     Observable<BrokerDocumentUploadResponseDTO> uploadDocument(
             @Part("image") TypedOutput image
     );
+
+    @GET("/competition/enroll/{providerId}/{userId}")
+    Observable<Boolean>enrollCompetition(
+            @Path("providerId") int providerId,
+            @Path("userId") int userId
+    );
 }

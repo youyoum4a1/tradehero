@@ -85,130 +85,133 @@ public class IdentityPromptActivity extends BaseActivity
         setContentView(R.layout.activity_identity_prompt);
         ButterKnife.bind(IdentityPromptActivity.this);
 
-        final Observable<ScannedDocument> documentObservable =
-                fastFillUtil.getScannedDocumentObservable().throttleLast(300, TimeUnit.MILLISECONDS); //HACK
+        // temp not working, need check
 
-        fastFillSubscription = getBrokerSituation()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(situationDTO -> {
-                    String text = getString(situationDTO.kycForm.getBrokerNameResId());
-                    livePoweredBy.setText(text);
-                })
-                .flatMap(situation -> {
-                    //noinspection ConstantConditions
-                    return liveServiceWrapper.getAvailability()
-                            .flatMap(liveAvailabilityDTO -> liveServiceWrapper.getIdentityPromptInfo(liveAvailabilityDTO.getRequestorCountry()))
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnNext(identityPromptInfoDTO -> {
-                                if (identityPromptInfoDTO != null)
-                                {
-                                    picasso.load(identityPromptInfoDTO.image)
-                                            .placeholder(identityPromptInfoDTO.country.logoId)
-                                            .into(imgPrompt);
-                                    scanSpecificId.setText(identityPromptInfoDTO.prompt);
-                                    imgPrompt.setVisibility(View.VISIBLE);
-                                    scanSpecificId.setVisibility(View.VISIBLE);
-                                }
-                                else
-                                {
-                                    imgPrompt.setVisibility(View.GONE);
-                                    scanSpecificId.setVisibility(View.GONE);
-                                }
-                            })
-                            .map(new Func1<IdentityPromptInfoDTO, LiveBrokerSituationDTO>()
-                            {
-                                @Override public LiveBrokerSituationDTO call(IdentityPromptInfoDTO ignored)
-                                {
-                                    return situation;
-                                }
-                            });
-                })
-                .take(1)
-                .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
-                {
-                    @Override
-                    public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situationToUse)
-                    {
-                        return Observable.merge(
-                                ViewObservable.clicks(scanPassport)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(IdentityScannedDocumentType.PASSPORT)),
-                                ViewObservable.clicks(scanSpecificId)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(
-                                                IdentityScannedDocumentType.IDENTITY_CARD)))
-                                .flatMap(
-                                        new Func1<IdentityScannedDocumentType, Observable<ScannedDocument>>()
-                                        {
-                                            @Override
-                                            public Observable<ScannedDocument> call(IdentityScannedDocumentType identityScannedDocumentType)
-                                            {
-                                                CountryCode code = null;
-                                                if (identityScannedDocumentType.equals(IdentityScannedDocumentType.IDENTITY_CARD)
-                                                        && situationToUse.kycForm.getCountry() != null)
-                                                {
-                                                    code = CountryCode.getByCode(situationToUse.kycForm.getCountry().toString());
-                                                }
 
-                                                fastFillUtil.fastFill(IdentityPromptActivity.this, identityScannedDocumentType, code);
-
-                                                return documentObservable;
-                                            }
-                                        })
-                                .map(new Func1<ScannedDocument, LiveBrokerSituationDTO>()
-                                {
-                                    @Override
-                                    public LiveBrokerSituationDTO call(ScannedDocument scannedDocument)
-                                    {
-                                        //noinspection ConstantConditions
-                                        situationToUse.kycForm.pickFrom(scannedDocument);
-                                        liveBrokerSituationPreference.set(situationToUse);
-                                        return situationToUse;
-                                    }
-                                });
-                    }
-                })
-                .retry(new Func2<Integer, Throwable, Boolean>()
-                {
-                    @Override
-                    public Boolean call(Integer integer, Throwable throwable)
-                    {
-                        boolean willRetry = FastFillExceptionUtil.canRetry(throwable);
-                        if (willRetry)
-                        {
-                            Timber.e(throwable, "Error when FastFill, retrying");
-                        }
-                        return willRetry;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .take(1)
-                .subscribe(
-                        new Action1<LiveBrokerSituationDTO>()
-                        {
-                            @Override
-                            public void call(@NonNull LiveBrokerSituationDTO situationToUse)
-                            {
-                                goToSignUp();
-                            }
-                        },
-                        new Action1<Throwable>()
-                        {
-                            @Override
-                            public void call(Throwable throwable)
-                            {
-                                Timber.e(throwable, "Error when FastFill");
-                                if (!FastFillExceptionUtil.canRetry(throwable))
-                                {
-                                    THToast.show(R.string.unable_to_capture_value_from_image);
-//                                    goToSignUp();
-                                }
-                            }
-                        });
+//        final Observable<ScannedDocument> documentObservable =
+//                fastFillUtil.getScannedDocumentObservable().throttleLast(300, TimeUnit.MILLISECONDS); //HACK
+//
+//        fastFillSubscription = getBrokerSituation()
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnNext(situationDTO -> {
+//                    String text = getString(situationDTO.kycForm.getBrokerNameResId());
+//                    livePoweredBy.setText(text);
+//                })
+//                .flatMap(situation -> {
+//                    //noinspection ConstantConditions
+//                    return liveServiceWrapper.getAvailability()
+//                            .flatMap(liveAvailabilityDTO -> liveServiceWrapper.getIdentityPromptInfo(liveAvailabilityDTO.getRequestorCountry()))
+//                            .observeOn(AndroidSchedulers.mainThread())
+//                            .doOnNext(identityPromptInfoDTO -> {
+//                                if (identityPromptInfoDTO != null)
+//                                {
+//                                    picasso.load(identityPromptInfoDTO.image)
+//                                            .placeholder(identityPromptInfoDTO.country.logoId)
+//                                            .into(imgPrompt);
+//                                    scanSpecificId.setText(identityPromptInfoDTO.prompt);
+//                                    imgPrompt.setVisibility(View.VISIBLE);
+//                                    scanSpecificId.setVisibility(View.VISIBLE);
+//                                }
+//                                else
+//                                {
+//                                    imgPrompt.setVisibility(View.GONE);
+//                                    scanSpecificId.setVisibility(View.GONE);
+//                                }
+//                            })
+//                            .map(new Func1<IdentityPromptInfoDTO, LiveBrokerSituationDTO>()
+//                            {
+//                                @Override public LiveBrokerSituationDTO call(IdentityPromptInfoDTO ignored)
+//                                {
+//                                    return situation;
+//                                }
+//                            });
+//                })
+//                .take(1)
+//                .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
+//                {
+//                    @Override
+//                    public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situationToUse)
+//                    {
+//                        return Observable.merge(
+//                                ViewObservable.clicks(scanPassport)
+//                                        .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(IdentityScannedDocumentType.PASSPORT)),
+//                                ViewObservable.clicks(scanSpecificId)
+//                                        .map(new ReplaceWithFunc1<OnClickEvent, IdentityScannedDocumentType>(
+//                                                IdentityScannedDocumentType.IDENTITY_CARD)))
+//                                .flatMap(
+//                                        new Func1<IdentityScannedDocumentType, Observable<ScannedDocument>>()
+//                                        {
+//                                            @Override
+//                                            public Observable<ScannedDocument> call(IdentityScannedDocumentType identityScannedDocumentType)
+//                                            {
+//                                                CountryCode code = null;
+//                                                if (identityScannedDocumentType.equals(IdentityScannedDocumentType.IDENTITY_CARD)
+//                                                        && situationToUse.kycForm.getCountry() != null)
+//                                                {
+//                                                    code = CountryCode.getByCode(situationToUse.kycForm.getCountry().toString());
+//                                                }
+//
+//                                                fastFillUtil.fastFill(IdentityPromptActivity.this, identityScannedDocumentType, code);
+//
+//                                                return documentObservable;
+//                                            }
+//                                        })
+//                                .map(new Func1<ScannedDocument, LiveBrokerSituationDTO>()
+//                                {
+//                                    @Override
+//                                    public LiveBrokerSituationDTO call(ScannedDocument scannedDocument)
+//                                    {
+//                                        //noinspection ConstantConditions
+//                                        situationToUse.kycForm.pickFrom(scannedDocument);
+//                                        liveBrokerSituationPreference.set(situationToUse);
+//                                        return situationToUse;
+//                                    }
+//                                });
+//                    }
+//                })
+//                .retry(new Func2<Integer, Throwable, Boolean>()
+//                {
+//                    @Override
+//                    public Boolean call(Integer integer, Throwable throwable)
+//                    {
+//                        boolean willRetry = FastFillExceptionUtil.canRetry(throwable);
+//                        if (willRetry)
+//                        {
+//                            Timber.e(throwable, "Error when FastFill, retrying");
+//                        }
+//                        return willRetry;
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .take(1)
+//                .subscribe(
+//                        new Action1<LiveBrokerSituationDTO>()
+//                        {
+//                            @Override
+//                            public void call(@NonNull LiveBrokerSituationDTO situationToUse)
+//                            {
+//                                goToSignUp();
+//                            }
+//                        },
+//                        new Action1<Throwable>()
+//                        {
+//                            @Override
+//                            public void call(Throwable throwable)
+//                            {
+//                                Timber.e(throwable, "Error when FastFill");
+//                                if (!FastFillExceptionUtil.canRetry(throwable))
+//                                {
+//                                    THToast.show(R.string.unable_to_capture_value_from_image);
+////                                    goToSignUp();
+//                                }
+//                            }
+//                        });
     }
 
     @Override
     protected void onDestroy()
     {
-        fastFillSubscription.unsubscribe();
+        //fastFillSubscription.unsubscribe();
         ButterKnife.unbind(this);
         super.onDestroy();
     }
