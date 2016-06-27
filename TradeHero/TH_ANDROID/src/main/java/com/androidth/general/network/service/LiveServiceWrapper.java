@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import com.androidth.general.api.kyc.AnnualIncomeRange;
 import com.androidth.general.api.kyc.BrokerApplicationDTO;
 import com.androidth.general.api.kyc.BrokerDocumentUploadResponseDTO;
+import com.androidth.general.api.kyc.CountryDocumentTypes;
 import com.androidth.general.api.kyc.Currency;
 import com.androidth.general.api.kyc.EmploymentStatus;
 import com.androidth.general.api.kyc.IdentityPromptInfoDTO;
@@ -49,6 +50,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import retrofit.http.Path;
 import rx.Observable;
 import rx.functions.Func0;
 import rx.functions.Func1;
@@ -249,6 +251,12 @@ public class LiveServiceWrapper
             //TODO when we have multiple brokers
             return Observable.just(null);
         }
+    }
+
+    public Observable<ArrayList<CountryDocumentTypes>> documentsForCountry(
+            @Path("countrycode") String countrycode)
+    {
+        return liveServiceRx.documentsForCountry(countrycode);
     }
 
     @NonNull public static List<Country> createNoBusinessNationalities()

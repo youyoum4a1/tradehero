@@ -38,7 +38,7 @@
   <color name="grey">#D0D0D0</color>
   <color name="grey_transparent">#90000000</color>
   <color name="lighter_grey">#F2F2F2</color>
-  <color name="pale_yellow">#F0E68C</color>
+  <color name="pale_yellow">#f0e68c</color>
   <color name="light_yellow">#FFD000</color>
 
   <color name="orange">@android:color/holo_orange_light</color>

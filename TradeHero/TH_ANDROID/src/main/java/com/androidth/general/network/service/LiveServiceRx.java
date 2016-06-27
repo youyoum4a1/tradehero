@@ -7,6 +7,9 @@ import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.StepStatusesDTO;
 import com.androidth.general.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.androidth.general.api.live.LiveTradingSituationDTO;
+import com.androidth.general.api.kyc.CountryDocumentTypes;
+
+import java.util.ArrayList;
 
 import retrofit.http.Body;
 import retrofit.http.GET;
@@ -41,4 +44,10 @@ public interface LiveServiceRx
     Observable<BrokerDocumentUploadResponseDTO> uploadDocument(
             @Part("image") TypedOutput image
     );
+
+    //https://live.tradehero.mobi/api//kyc/proofs/ic/my
+    //https://live.tradehero.mobi/api/kyc/proofs/documents/my
+    @GET("/kyc/proofs/documents/{countrycode}")
+    Observable<ArrayList<CountryDocumentTypes>> documentsForCountry(
+            @Path("countrycode") String countrycode);
 }
