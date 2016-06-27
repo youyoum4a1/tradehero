@@ -20,6 +20,7 @@ import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
 import com.androidth.general.utils.Constants;
+import com.appsflyer.AppsFlyerLib;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
@@ -74,6 +75,9 @@ public class BaseActivity extends AppCompatActivity
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         upgradeRequiredBroadcastListener = new UpgradeRequiredListener();
         socialTokenBroadcastListener = new SocialTokenListener();
+
+        // TODO: For Kenanga Challenge, after that can remove
+        AppsFlyerLib.getInstance().sendDeepLinkData(this);
     }
 
     private void extendAndInject()

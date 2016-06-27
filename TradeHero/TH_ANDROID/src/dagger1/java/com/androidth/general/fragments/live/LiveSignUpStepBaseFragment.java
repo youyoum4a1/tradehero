@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Spinner;
 
+import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.KYCFormOptionsId;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
@@ -60,6 +61,10 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         this.brokerSituationSubject = BehaviorSubject.create();
     }
 
+    private static int getProviderId(@NonNull Bundle args) {
+        return args.getInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
+    }
+
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
@@ -101,6 +106,12 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
             {
                 onDestroyViewSubscriptions.add(sub);
             }
+        }
+
+        int providerId = getProviderId(getArguments());
+
+        if (providerId != 0) {
+            Timber.d("Here you are");
         }
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import com.androidth.general.fragments.base.ActionBarOwnerMixin;
 import com.androidth.general.fragments.live.LiveSignUpMainFragment;
 import com.androidth.general.utils.route.THRouter;
 import com.google.android.gms.common.ConnectionResult;
@@ -16,14 +17,10 @@ import javax.inject.Inject;
 
 import timber.log.Timber;
 
-//@Routable({
-//        "enrollchallenge/:enrollProviderId"
-//})
 public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
-//    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
-//    @Inject
-//    THRouter thRouter;
+    public static final String KYC_CORRESPONDENT_PROVIDER_ID = "KYC.providerId";
+
     private GoogleApiClient mGoogleApiClient;
 
     @NonNull @Override protected Class<? extends Fragment> getInitialFragment()
@@ -34,7 +31,7 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-//        thRouter.inject(this);
+
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
@@ -42,6 +39,15 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+    }
+
+    @NonNull @Override protected Bundle getInitialBundle() {
+        Bundle args = super.getInitialBundle();
+
+        int providerId = getIntent().getIntExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
+        LiveSignUpMainFragment.putProviderId(args, providerId);
+
+        return args;
     }
 
     @Override protected void onStart()

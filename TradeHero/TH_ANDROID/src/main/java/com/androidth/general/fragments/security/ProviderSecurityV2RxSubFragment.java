@@ -1,14 +1,20 @@
 package com.androidth.general.fragments.security;
 
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 
 import com.androidth.general.R;
+import com.androidth.general.activities.DashboardActivity;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.SecurityCompactDTO;
@@ -20,6 +26,7 @@ import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.SignalRInterface;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.DeviceUtil;
 import com.tencent.mm.sdk.platformtools.Log;
 import com.twitter.sdk.android.core.internal.util.ObservableScrollView;
 
@@ -39,6 +46,8 @@ import microsoft.aspnet.signalr.client.http.Request;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
+
+
 
 public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment implements SignalRInterface, ObservableScrollView.ScrollViewListener
 
@@ -75,7 +84,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
         return strings;
     }
-    public void setHubConnection(){
+    public void setHubConnection() {
         HubConnection connection = setConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
         //connection.
         connection.setCredentials(new Credentials() {
@@ -84,11 +93,11 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
                 System.out.print(requestHeaders.headerTokenLive());
                 request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
-                request.addHeader(Constants.USER_ID,currentUserId.get().toString());
+                request.addHeader(Constants.USER_ID, currentUserId.get().toString());
                 //Head
             }
         });
-        try{
+        try {
             proxy = setProxy(LiveNetworkConstants.HUB_NAME, connection);
             //proxy.subscribe()
             //SignalRFuture<Void> connection = hub.start();
@@ -99,18 +108,18 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                 SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str, currentUserId.get());
                 //SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, arr, currentUserId.get());
 
-                        signalProxy.done(req -> Log.i("Yay","Nayy"));
+                signalProxy.done(req -> Log.i("Yay", "Nayy"));
             });
             connection.connected(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("SD","cONNECTED");
+                    Log.i("SD", "cONNECTED");
                 }
             });
             connection.connectionSlow(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("Slow","Slow Connection");
+                    Log.i("Slow", "Slow Connection");
                 }
             });
             connection.reconnected(new Runnable() {
@@ -126,21 +135,20 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                 }
             });
             proxy.on("UpdateQuote", signatureContainer -> {
-                Log.i("Okay","What's this");
+                Log.i("Okay", "What's this");
                 Log.i("Response", signatureContainer.toString());
                 //Update things
                 adapter.updatePrices(signatureContainer.signedObject);
 
             }, SignatureContainer.class);
-        }
-        catch (Exception e){
-            Log.e("Error","Could not connect to Hub Name");
+        } catch (Exception e) {
+            Log.e("Error", "Could not connect to Hub Name");
         }
 
         //proxy.subscribe()
-
-
     }
+
+
 
     @Override
     public void onScrollChanged(int i) {
@@ -206,7 +214,64 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     @Override public void onDestroyView()
     {
         ButterKnife.unbind(this);
+        DeviceUtil.dismissKeyboard(getActivity());
+
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        items = null;
+        super.onDestroy();
+    }
+
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        //menu.clear();
+        inflater.inflate(R.menu.search_menu, menu);
+        MenuItem item = menu.findItem(R.id.btn_search);
+        SearchView searchView = new SearchView(((DashboardActivity) getActivity()).getSupportActionBar().getThemedContext());
+        MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setActionView(item, searchView);
+
+        searchView.setFocusable(true);
+        searchView.setFocusableInTouchMode(true);
+        searchView.requestFocus();
+        searchView.requestFocusFromTouch();
+        searchView.setIconified(false);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.i("onQueryTextSubmit", query);
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Log.i("onQueryTextChange", newText);
+
+                String newTextLower = newText.toLowerCase();
+                ArrayList<SecurityCompactDTO> subItems = new ArrayList<SecurityCompactDTO>();
+                for(SecurityCompactDTO sec : items)
+                {
+                    if((sec.name != null && sec.name.toLowerCase().contains(newTextLower)) || (sec.symbol != null && sec.symbol.toLowerCase().contains(newTextLower)))
+                    {
+                        subItems.add(sec);
+                    }
+                }
+                adapter.setItems(subItems);
+                adapter.notifyDataSetChanged();
+                return false;
+            }
+        });
+    }
+
+    @Override public void onDestroyOptionsMenu()
+    {
+        //mSearchTextField = null;
+        super.onDestroyOptionsMenu();
     }
 
     @OnItemClick(R.id.listview)
