@@ -50,21 +50,18 @@ import rx.functions.Func2;
 import timber.log.Timber;
 
 //@Routable(IdentityPromptActivity.ROUTER_KYC_SCHEME + ":brokerId")
-@Routable({
-        "enrollchallenge/:enrollProviderId",
-        IdentityPromptActivity.ROUTER_KYC_SCHEME + ":brokerId"
-})
+//@Routable({
+//        "enrollchallenge/:providerId",
+//        //IdentityPromptActivity.ROUTER_KYC_SCHEME + ":brokerId"
+//})
 public class IdentityPromptActivity extends BaseActivity
 {
     public static final String ROUTER_KYC_SCHEME = "kyc/";
-    @Inject
-    FastFillUtil fastFillUtil;
-    @Inject
-    LiveBrokerSituationPreference liveBrokerSituationPreference;
+    @Inject FastFillUtil fastFillUtil;
+    @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
-    @Inject
-    LiveServiceWrapper liveServiceWrapper;
+    @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
 
     @Bind(R.id.identity_prompt_passport)
@@ -76,8 +73,8 @@ public class IdentityPromptActivity extends BaseActivity
     @Bind(R.id.identity_prompt_specific)
     TextView scanSpecificId;
 
-    @RouteProperty("brokerId") int routedBrokerId;
-
+    //@RouteProperty("brokerId") int routedBrokerId;
+    //@RouteProperty("providerId") protected int providerId;
 
     private Subscription fastFillSubscription;
 
@@ -87,63 +84,44 @@ public class IdentityPromptActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity_prompt);
         ButterKnife.bind(IdentityPromptActivity.this);
+
         final Observable<ScannedDocument> documentObservable =
                 fastFillUtil.getScannedDocumentObservable().throttleLast(300, TimeUnit.MILLISECONDS); //HACK
 
         fastFillSubscription = getBrokerSituation()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<LiveBrokerSituationDTO>()
-                {
-                    @Override
-                    public void call(LiveBrokerSituationDTO situationDTO)
-                    {
-                        String text = getString(situationDTO.kycForm.getBrokerNameResId());
-                        livePoweredBy.setText(text);
-                    }
+                .doOnNext(situationDTO -> {
+                    String text = getString(situationDTO.kycForm.getBrokerNameResId());
+                    livePoweredBy.setText(text);
                 })
-                .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
-                {
-                    @Override
-                    public Observable<LiveBrokerSituationDTO> call(final LiveBrokerSituationDTO situation)
-                    {
-                        //noinspection ConstantConditions
-                        return liveServiceWrapper.getAvailability()
-                                .flatMap(new Func1<LiveAvailabilityDTO, Observable<IdentityPromptInfoDTO>>()
+                .flatMap(situation -> {
+                    //noinspection ConstantConditions
+                    return liveServiceWrapper.getAvailability()
+                            .flatMap(liveAvailabilityDTO -> liveServiceWrapper.getIdentityPromptInfo(liveAvailabilityDTO.getRequestorCountry()))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnNext(identityPromptInfoDTO -> {
+                                if (identityPromptInfoDTO != null)
                                 {
-                                    @Override public Observable<IdentityPromptInfoDTO> call(LiveAvailabilityDTO liveAvailabilityDTO)
-                                    {
-                                        return liveServiceWrapper.getIdentityPromptInfo(liveAvailabilityDTO.getRequestorCountry());
-                                    }
-                                })
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doOnNext(new Action1<IdentityPromptInfoDTO>()
+                                    picasso.load(identityPromptInfoDTO.image)
+                                            .placeholder(identityPromptInfoDTO.country.logoId)
+                                            .into(imgPrompt);
+                                    scanSpecificId.setText(identityPromptInfoDTO.prompt);
+                                    imgPrompt.setVisibility(View.VISIBLE);
+                                    scanSpecificId.setVisibility(View.VISIBLE);
+                                }
+                                else
                                 {
-                                    @Override public void call(IdentityPromptInfoDTO identityPromptInfoDTO)
-                                    {
-                                        if (identityPromptInfoDTO != null)
-                                        {
-                                            picasso.load(identityPromptInfoDTO.image)
-                                                    .placeholder(identityPromptInfoDTO.country.logoId)
-                                                    .into(imgPrompt);
-                                            scanSpecificId.setText(identityPromptInfoDTO.prompt);
-                                            imgPrompt.setVisibility(View.VISIBLE);
-                                            scanSpecificId.setVisibility(View.VISIBLE);
-                                        }
-                                        else
-                                        {
-                                            imgPrompt.setVisibility(View.GONE);
-                                            scanSpecificId.setVisibility(View.GONE);
-                                        }
-                                    }
-                                })
-                                .map(new Func1<IdentityPromptInfoDTO, LiveBrokerSituationDTO>()
+                                    imgPrompt.setVisibility(View.GONE);
+                                    scanSpecificId.setVisibility(View.GONE);
+                                }
+                            })
+                            .map(new Func1<IdentityPromptInfoDTO, LiveBrokerSituationDTO>()
+                            {
+                                @Override public LiveBrokerSituationDTO call(IdentityPromptInfoDTO ignored)
                                 {
-                                    @Override public LiveBrokerSituationDTO call(IdentityPromptInfoDTO ignored)
-                                    {
-                                        return situation;
-                                    }
-                                });
-                    }
+                                    return situation;
+                                }
+                            });
                 })
                 .take(1)
                 .flatMap(new Func1<LiveBrokerSituationDTO, Observable<LiveBrokerSituationDTO>>()
@@ -260,34 +238,24 @@ public class IdentityPromptActivity extends BaseActivity
     {
         return Observable.combineLatest(
                 liveServiceWrapper.getBrokerSituation()
-                        .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
-                        {
-                            @Override
-                            public Boolean call(LiveBrokerSituationDTO situationDTO)
-                            {
-                                return situationDTO.kycForm != null;
-                            }
-                        }),
+                        .filter(situationDTO -> situationDTO.kycForm != null),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
-                        .map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
-                new Func2<LiveBrokerSituationDTO, UserProfileDTO, LiveBrokerSituationDTO>()
-                {
-                    @Override
-                    public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situationDTO, UserProfileDTO currentUserProfile)
+                        .map(new PairGetSecond<>()),
+                (situationDTO, currentUserProfile) -> {
+                    if (KYCFormUtil.fillInBlanks(situationDTO.kycForm, currentUserProfile))
                     {
-                        if (KYCFormUtil.fillInBlanks(situationDTO.kycForm, currentUserProfile))
-                        {
-                            liveBrokerSituationPreference.set(situationDTO);
-                        }
-                        return situationDTO;
+                        liveBrokerSituationPreference.set(situationDTO);
                     }
+                    return situationDTO;
                 })
                 .share();
     }
 
     protected void goToSignUp()
     {
-        startActivity(new Intent(this, SignUpLiveActivity.class));
+        Intent kycIntent = new Intent(this, SignUpLiveActivity.class);
+        kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, getIntent().getIntExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0));
+        startActivity(kycIntent);
         finish();
     }
 }

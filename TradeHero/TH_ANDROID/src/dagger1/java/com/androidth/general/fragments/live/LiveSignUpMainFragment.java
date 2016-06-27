@@ -2,6 +2,7 @@ package com.androidth.general.fragments.live;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
@@ -16,6 +17,7 @@ import android.widget.Checkable;
 
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
+import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.KYCFormUtil;
 import com.androidth.general.api.kyc.StepStatus;
@@ -41,6 +43,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
+import timber.log.Timber;
 
 public class LiveSignUpMainFragment extends BaseFragment
 {
@@ -54,6 +57,11 @@ public class LiveSignUpMainFragment extends BaseFragment
     @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
     @Bind(R.id.pager) protected ViewPager viewPager;
     @Bind(R.id.live_reward_widget) protected LiveRewardWidget liveRewardWidget;
+
+    public static void putProviderId(@NonNull Bundle args, int providerId)
+    {
+        args.putInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, providerId);
+    }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {

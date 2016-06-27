@@ -42,6 +42,7 @@ public class LiveActivityUtil
     public static void registerAliases(THRouter router)
     {
         router.registerAlias(IdentityPromptActivity.ROUTER_KYC_SCHEME + "ayondo", IdentityPromptActivity.ROUTER_KYC_SCHEME + DummyAyondoLiveServiceWrapper.AYONDO_LIVE_BROKER_ID);
+        router.registerAlias("competition-nagaWarrants", "enrollchallenge/55");
     }
 
     public LiveActivityUtil(BaseActivity activity)

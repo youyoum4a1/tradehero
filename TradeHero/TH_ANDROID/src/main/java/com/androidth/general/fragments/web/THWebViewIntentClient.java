@@ -33,6 +33,10 @@ public class THWebViewIntentClient extends THWebViewClient
         Uri uri = Uri.parse(url);
         if (thIntentFactory.isHandlableScheme(uri.getScheme()))
         {
+            if (url.startsWith("tradehero://enrollchallenge")) {
+                return false;
+            }
+
             // This is a tradehero:// scheme. Is it a ProviderPageIntent?
             THIntent thIntent = null;
             try

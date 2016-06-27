@@ -78,12 +78,12 @@ import rx.functions.Func3;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-@Routable({
-        "enrollchallenge/:enrollProviderId"
-})
+//@Routable({
+//        "enrollchallenge/:enrollProviderId"
+//})
 public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
-    @RouteProperty("enrollProviderId") protected Integer enrollProviderId;
+    //@RouteProperty("enrollProviderId") protected Integer enrollProviderId;
     @Inject THRouter thRouter;
     @Inject KycServicesRx kycServices;
     private static final int PHONE_NUM_MIN_LENGTH = 7;

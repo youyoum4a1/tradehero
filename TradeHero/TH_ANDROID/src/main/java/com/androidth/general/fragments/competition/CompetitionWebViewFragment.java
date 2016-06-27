@@ -1,12 +1,19 @@
 package com.androidth.general.fragments.competition;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import com.androidth.general.activities.IdentityPromptActivity;
+import com.androidth.general.activities.SignUpLiveActivity;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
@@ -35,6 +42,7 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
     @Inject BroadcastUtils broadcastUtils;
 
     protected ProviderId providerId;
+    protected Integer providerIdInteger;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -57,6 +65,25 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
                     providerId));
         }
         CompetitionWebViewFragment.putIsOptionMenuVisible(getArguments(), true);
+    }
+
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        super.webView.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override public boolean onTouch(View v, MotionEvent event)
+            {
+                if (event.getAction() == MotionEvent.ACTION_DOWN)
+                {
+                    Intent kycIntent = new Intent(getActivity(), IdentityPromptActivity.class);
+                    kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, providerIdInteger);
+                    startActivity(kycIntent);
+                }
+
+                return false;
+            }
+        });
     }
 
     @Override public void onAttach(Activity activity)
@@ -92,7 +119,11 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
         if (loadingUrl == null)
         {
             return providerUtil.getLandingPage(providerId);
+        } else {
+            Uri uri = Uri.parse(loadingUrl);
+            providerIdInteger = Integer.parseInt(uri.getQueryParameter("providerId"));
         }
+
         return loadingUrl;
     }
 
