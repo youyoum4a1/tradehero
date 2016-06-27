@@ -9,5 +9,6 @@ public class LiveNetworkConstants
     public static final String TRADEHERO_LIVE_API_ENDPOINT = TRADEHERO_LIVE_ENDPOINT + "api/";
 
     public static final String HUB_NAME = "clientnotificationhub";
-    public static final String PROXY_METHOD = "AddToGroups";
+    public static final String PROXY_METHOD_ADD_TO_GROUPS = "AddToGroups";
+    public static final String PROXY_METHOD_ADD_TO_GROUP = "AddToGroup";
 }

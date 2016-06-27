@@ -5,17 +5,20 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import butterknife.ButterKnife;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
-import com.squareup.widgets.AspectRatioImageView;
-import com.squareup.widgets.AspectRatioImageViewCallback;
+
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.inject.HierarchyInjector;
-import dagger.Lazy;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
+import com.squareup.widgets.AspectRatioImageView;
+import com.squareup.widgets.AspectRatioImageViewCallback;
+
 import javax.inject.Inject;
+
+import butterknife.ButterKnife;
+import dagger.Lazy;
 
 public class ContestCompetitionView extends AspectRatioImageView
         implements DTOView<ContestPageDTO>
@@ -69,16 +72,57 @@ public class ContestCompetitionView extends AspectRatioImageView
         }
     }
 
+    public void display(ContestPageDTO dto, String url) {
+        this.contestPageDTO = dto;
+        if (contestPageDTO != null)
+        {
+            linkWith(((ProviderContestPageDTO) contestPageDTO).providerDTO, url);
+            displayImageView(url);
+        }
+
+    }
+
     private void linkWith(@Nullable ProviderDTO providerDTO)
     {
         this.providerDTO = providerDTO;
         displayImageView();
     }
+    private void linkWith(@Nullable ProviderDTO providerDTO, String url)
+    {
+        this.providerDTO = providerDTO;
+        displayImageView(url);
+    }
+
 
     protected void displayImageView()
     {
         RequestCreator request;
         if (providerDTO != null)
+        {
+            setVisibility(View.VISIBLE);
+
+            String url = providerDTO.displayURL;
+            if (url != null)
+            {
+                request = picasso.get()
+                        .load(url)
+                        .placeholder(PLACE_HOLDER);
+            }
+            else
+            {
+                request = picasso.get().load(PLACE_HOLDER);
+            }
+        }
+        else
+        {
+            request = picasso.get().load(PLACE_HOLDER);
+        }
+        request.into(this, new AspectRatioImageViewCallback(this));
+    }
+    protected void displayImageView(String url)
+    {
+        RequestCreator request;
+        /*if (providerDTO != null)
         {
             setVisibility(View.VISIBLE);
 
@@ -97,7 +141,10 @@ public class ContestCompetitionView extends AspectRatioImageView
         else
         {
             request = picasso.get().load(PLACE_HOLDER);
-        }
+        }*/
+        request = picasso.get()
+                .load(url)
+                .placeholder(PLACE_HOLDER);
         request.into(this, new AspectRatioImageViewCallback(this));
     }
 }

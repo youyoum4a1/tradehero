@@ -151,6 +151,11 @@ public class SecurityCompactDTO implements DTO
     {
         return null;
     }
+    @Nullable public Integer getResourceId()
+    {
+        return id;
+    }
+
 
     @NonNull public String getExchangeSymbol()
     {
