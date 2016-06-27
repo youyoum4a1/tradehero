@@ -22,7 +22,7 @@ import rx.functions.Action1;
 public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
 {
     @Bind(R.id.live_fragment_container) FrameLayout liveFragmentContainer;
-    @Bind(R.id.pager) ViewPager pager;
+    @Nullable @Bind(R.id.pager) ViewPager pager;
     @Nullable private LiveCallToActionFragment callToActionFragment;
 
     @Inject @ShowCallToActionFragmentPreference

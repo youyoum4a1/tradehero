@@ -112,7 +112,7 @@ public class IdentityPromptActivity extends BaseActivity
         providerId = getIntent().getIntExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
         providerDTO = providerCacheRx.getCachedValue(new ProviderId(providerId));
 
-countryCode = userProfileCache.getCachedValue(currentUserId.toUserBaseKey()).countryCode;
+        countryCode = userProfileCache.getCachedValue(currentUserId.toUserBaseKey()).countryCode;
         if(providerDTO.providerCountries.length == 1)
         {
             countryCode = providerDTO.providerCountries[0];

@@ -129,7 +129,7 @@ public class DashboardActivity extends BaseActivity
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private boolean enrollmentScreenIsOpened = false;
 
-    @Bind(R.id.my_toolbar) Toolbar toolbar;
+    @Nullable @Bind(R.id.my_toolbar) Toolbar toolbar;
     @Bind(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
     @Bind(R.id.drawer_content_container) ViewGroup drawerContents;
     @Bind(R.id.left_drawer) ViewGroup leftDrawerContainer;
