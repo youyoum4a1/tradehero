@@ -14,9 +14,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="center_horizontal"
-            android:background="?attr/colorPrimary"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_logo_thlive" />
+            android:src="@drawable/navigation_logo"
+            android:background="@color/tradehero_blue_status_bar" />
 
         <TextView
             style="@style/TH.Body2"
@@ -29,7 +29,8 @@
             android:paddingLeft="@dimen/size_10"
             android:paddingRight="@dimen/size_10"
             android:paddingTop="@dimen/margin_xsmall"
-            android:text="@string/live_5_steps_away" />
+            android:text="@string/live_5_steps_away"
+            android:visibility="gone" />
 
         <ImageView
             android:layout_width="@dimen/big_image_w_h"
@@ -38,7 +39,8 @@
             android:layout_gravity="right"
             android:layout_marginLeft="@dimen/margin_xsmall"
             android:layout_marginTop="@dimen/margin_small"
-            android:src="@drawable/ic_free100" />
+            android:src="@drawable/ic_free100"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@android:id/closeButton"
@@ -73,45 +75,50 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:radius="15dp"
+            android:background="@color/pale_yellow">
 
             <ImageView
                 android:id="@+id/identity_prompt_image_specific"
                 style="@style/TH.LiveIdentityPromptImage"
                 android:layout_marginRight="@dimen/margin_medium"
-                android:src="@drawable/image_identity_proof"
+                android:layout_marginLeft="@dimen/margin_medium"
+                android:src="@drawable/ic_my"
                 android:visibility="gone"
                 tools:visibility="visible" />
 
             <ImageView
                 android:id="@+id/identity_prompt_image_passport"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:layout_marginLeft="@dimen/margin_medium"
                 style="@style/TH.LiveIdentityPromptImage"
                 android:layout_toRightOf="@id/identity_prompt_image_specific"
-                android:src="@drawable/image_identity_proof" />
+                android:src="@drawable/passport_my" />
 
             <Button
                 android:id="@+id/identity_prompt_specific"
-                style="@style/TH.Button.Inverse.Small"
+                style="@style/TH.Button.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/identity_prompt_image_specific"
                 android:layout_alignRight="@id/identity_prompt_image_specific"
                 android:layout_below="@id/identity_prompt_image_specific"
-                android:background="@drawable/basic_green_selector"
                 android:minHeight="@dimen/clickable_element_min_dimen"
                 android:visibility="gone"
                 tools:text="NRIC / Driver's License"
-                tools:visibility="visible" />
+                tools:visibility="visible"
+                android:background="@android:color/transparent" />
 
             <Button
                 android:id="@+id/identity_prompt_passport"
-                style="@style/TH.Button.Inverse.Small"
+                style="@style/TH.Button.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/identity_prompt_image_passport"
                 android:layout_alignRight="@id/identity_prompt_image_passport"
                 android:layout_below="@id/identity_prompt_image_passport"
-                android:background="@drawable/basic_green_selector"
+                android:background="@android:color/transparent"
                 android:minHeight="@dimen/clickable_element_min_dimen"
                 android:text="@string/any_passport" />
 
@@ -119,36 +126,14 @@
 
         <Button
             android:id="@+id/identity_prompt_no"
-            style="@style/TH.Button.Small.Link"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            style="@style/TH.Button.Inverse.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?selectableItemBackground"
+            android:background="@drawable/basic_green_selector"
             android:minHeight="@dimen/clickable_element_min_dimen"
             android:text="@string/enter_manually" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center|bottom"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            style="@style/TH.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/powered_by" />
-
-        <TextView
-            android:id="@+id/live_powered_by"
-            style="@style/TH.Body"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            tools:text="@string/broker_name_ayondo" />
     </LinearLayout>
 
 

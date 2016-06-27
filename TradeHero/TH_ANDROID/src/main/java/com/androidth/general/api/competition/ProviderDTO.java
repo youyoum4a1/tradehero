@@ -54,6 +54,7 @@ public class ProviderDTO implements DTO
     public String ctaLocationTags;
     public String currencyDisplay;
     public String currencyISO;
+    public String[] providerCountries;
     public String displayURL;
 
     public PortfolioCompactDTO associatedPortfolio;
