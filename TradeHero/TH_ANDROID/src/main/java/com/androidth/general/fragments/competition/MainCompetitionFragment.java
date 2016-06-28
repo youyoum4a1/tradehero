@@ -197,6 +197,7 @@ public class MainCompetitionFragment extends DashboardFragment
         ButterKnife.bind(this, view);
         this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
+
         this.listView.setAdapter(this.competitionZoneListItemAdapter);
         competitionZoneDTOUtil.randomiseAd();
     }
@@ -257,6 +258,18 @@ public class MainCompetitionFragment extends DashboardFragment
 
     protected CompetitionZoneListItemAdapter createAdapter()
     {
+        if(providerDTO!=null){
+            if(!providerDTO.canTradeNow) {
+                //show semi live
+                return new CompetitionZoneListItemAdapter(
+                        getActivity(),
+                        R.layout.competition_zone_item,
+                        R.layout.competition_zone_ads,
+                        R.layout.competition_zone_header,
+                        R.layout.competition_zone_legal_mentions);
+            }
+        }
+
         return new CompetitionZoneListItemAdapter(
                 getActivity(),
                 R.layout.competition_zone_item,
@@ -276,17 +289,13 @@ public class MainCompetitionFragment extends DashboardFragment
                         userProfileCache.get(currentUserId.toUserBaseKey())
                                 .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                                 .startWith(Observable.just(userProfileDTO))
-                                .onErrorReturn(new Func1<Throwable, UserProfileDTO>()
-                                {
-                                    @Override public UserProfileDTO call(Throwable throwable)
+                                .onErrorReturn(throwable -> {
+                                    if (userProfileDTO == null)
                                     {
-                                        if (userProfileDTO == null)
-                                        {
-                                            THToast.show(R.string.error_fetch_your_user_profile);
-                                        }
-                                        Timber.e("Error fetching the profile info", throwable);
-                                        return userProfileDTO;
+                                        THToast.show(R.string.error_fetch_your_user_profile);
                                     }
+                                    Timber.e("Error fetching the profile info", throwable);
+                                    return userProfileDTO;
                                 }),
                         providerCache.get(this.providerId)
                                 .map(new PairGetSecond<ProviderId, ProviderDTO>())
@@ -413,14 +422,23 @@ public class MainCompetitionFragment extends DashboardFragment
                                 MainCompetitionFragment.this.providerDisplayCellDTOList = providerDisplayCellDTOs;
                                 MainCompetitionFragment.this.competitionPreSeasonDTOs = competitionPreSeasonDTOs;
                                 MainCompetitionFragment.this.providerPrizePoolDTOs = providerPrizePoolDTOs;
-                                return competitionZoneDTOUtil.makeList(
-                                        getActivity(),
-                                        userProfileDTO,
-                                        providerDTO,
-                                        competitionDTOs,
-                                        providerDisplayCellDTOs,
-                                        competitionPreSeasonDTOs,
-                                        providerPrizePoolDTOs);
+                                if(providerDTO.canTradeNow){
+                                    return competitionZoneDTOUtil.makeList(
+                                            getActivity(),
+                                            userProfileDTO,
+                                            providerDTO,
+                                            competitionDTOs,
+                                            providerDisplayCellDTOs,
+                                            competitionPreSeasonDTOs,
+                                            providerPrizePoolDTOs);
+
+                                }else{
+                                    //show semi live
+                                    return competitionZoneDTOUtil.makeList(
+                                            getActivity(),
+                                            providerDTO);
+                                }
+
                             }
                         })
                         .subscribeOn(Schedulers.computation()))
@@ -480,7 +498,7 @@ public class MainCompetitionFragment extends DashboardFragment
 
     private void displayTradeNowButton()
     {
-        if (providerDTO != null && btnTradeNow.getVisibility() != View.VISIBLE)
+        if (providerDTO != null && btnTradeNow.getVisibility() != View.VISIBLE && providerDTO.canTradeNow)
         {
             btnTradeNow.setVisibility(View.VISIBLE);
 

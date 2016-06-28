@@ -215,4 +215,37 @@ public class CompetitionZoneDTOUtil
 
         return list;
     }
+
+    @NonNull public List<Pair<Integer, CompetitionZoneDTO>> makeList(
+            @NonNull Context context,
+            @Nullable ProviderDTO providerDTO)
+    {
+        List<Pair<Integer, CompetitionZoneDTO>> list = new ArrayList<>();
+
+        if (providerDTO != null)
+        {
+            if (providerDTO.hasAdvertisement())
+            {
+                int randomAds = (int) (randomAd * providerDTO.advertisements.size());
+                AdDTO pickedAdDTO = providerDTO.advertisements.get(randomAds);
+                list.add(Pair.create(
+                        CompetitionZoneListItemAdapter.ITEM_TYPE_ADS,
+                        (CompetitionZoneDTO) new CompetitionZoneAdvertisementDTO(context, pickedAdDTO, providerDTO.getProviderId())));
+            }
+
+            //2016-08-01T00:00:00 show only 10 characters
+            list.add(Pair.create(
+                    CompetitionZoneListItemAdapter.ITEM_TYPE_HEADER,
+                    new CompetitionZoneDTO("Competition starts in "+providerDTO.tradeNowStartDateUtc.substring(0,10), null, null, 0)));
+
+            list.add(Pair.create(
+                    CompetitionZoneListItemAdapter.ITEM_TYPE_LEGAL_MENTIONS,
+                    (CompetitionZoneDTO) new CompetitionZoneLegalDTO(
+                            context.getString(R.string.provider_competition_rules_title),
+                            context.getString(R.string.provider_competition_terms_title))));
+
+        }
+
+        return list;
+    }
 }
