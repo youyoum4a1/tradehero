@@ -56,6 +56,8 @@ public class ProviderDTO implements DTO
     public String currencyISO;
     public String[] providerCountries;
     public String displayURL;
+    public String tradeNowStartDateUtc;
+    public boolean canTradeNow;
 
     public PortfolioCompactDTO associatedPortfolio;
 
@@ -212,6 +214,8 @@ public class ProviderDTO implements DTO
                 ", durationType='" + durationType + '\'' +
                 ", totalPrize='" + totalPrize + '\'' +
                 ", vip=" + vip +
+                ", tradeNowStartDateUtc=" + tradeNowStartDateUtc +
+                ", canTradeNow=" + canTradeNow +
                 '}';
     }
 }
