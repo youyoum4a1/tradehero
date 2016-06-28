@@ -99,6 +99,7 @@ public class IdentityPromptActivity extends BaseActivity
     protected int providerId;
     protected ProviderDTO providerDTO;
     String countryCode;
+    boolean isJoiningCompetition = false;
 
     private Subscription fastFillSubscription;
 
@@ -111,6 +112,7 @@ public class IdentityPromptActivity extends BaseActivity
 
         providerId = getIntent().getIntExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
         providerDTO = providerCacheRx.getCachedValue(new ProviderId(providerId));
+        isJoiningCompetition = getIntent().getBooleanExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, false);
 
         countryCode = userProfileCache.getCachedValue(currentUserId.toUserBaseKey()).countryCode;
         if(providerDTO.providerCountries.length == 1)
@@ -336,6 +338,7 @@ public class IdentityPromptActivity extends BaseActivity
     {
         Intent kycIntent = new Intent(this, SignUpLiveActivity.class);
         kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, getIntent().getIntExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0));
+        kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, getIntent().getBooleanExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, false));
         startActivity(kycIntent);
         finish();
     }

@@ -20,6 +20,7 @@ import timber.log.Timber;
 public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener
 {
     public static final String KYC_CORRESPONDENT_PROVIDER_ID = "KYC.providerId";
+    public static final String KYC_CORRESPONDENT_JOIN_COMPETITION = "KYC.joinCompetition";
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -45,7 +46,10 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
         Bundle args = super.getInitialBundle();
 
         int providerId = getIntent().getIntExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
+        boolean isJoining = getIntent().getBooleanExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, false);
+
         LiveSignUpMainFragment.putProviderId(args, providerId);
+        LiveSignUpMainFragment.isToJoinCompetition(isJoining);
 
         return args;
     }

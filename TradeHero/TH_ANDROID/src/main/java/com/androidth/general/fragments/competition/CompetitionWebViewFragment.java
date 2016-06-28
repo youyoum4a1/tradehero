@@ -78,6 +78,7 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
                 {
                     Intent kycIntent = new Intent(getActivity(), IdentityPromptActivity.class);
                     kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, providerIdInteger);
+                    kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, true);
                     startActivity(kycIntent);
                 }
 

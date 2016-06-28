@@ -53,6 +53,7 @@ public class LiveSignUpMainFragment extends BaseFragment
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject @com.androidth.general.persistence.prefs.ShowCallToActionFragmentPreference
     BooleanPreference showCallToActionFragment;
+    static boolean isToJoinCompetition = false;
 
     @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
     @Bind(R.id.pager) protected ViewPager viewPager;
@@ -61,6 +62,11 @@ public class LiveSignUpMainFragment extends BaseFragment
     public static void putProviderId(@NonNull Bundle args, int providerId)
     {
         args.putInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, providerId);
+    }
+
+    public static void isToJoinCompetition(boolean flag)
+    {
+        isToJoinCompetition = flag;
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -91,8 +97,10 @@ public class LiveSignUpMainFragment extends BaseFragment
 //                getArguments()).publish();
 
         //Jeff
-        liveRewardWidget.setVisibility(View.GONE);
-        tabLayout.setVisibility(View.GONE);
+        if(isToJoinCompetition){
+            liveRewardWidget.setVisibility(View.GONE);
+            tabLayout.setVisibility(View.GONE);
+        }
 
         onDestroyViewSubscriptions.add(
                 pagerAdapterObservable

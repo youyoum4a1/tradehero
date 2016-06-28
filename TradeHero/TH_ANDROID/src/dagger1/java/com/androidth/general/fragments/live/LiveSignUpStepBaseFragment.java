@@ -71,6 +71,11 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         return args.getInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
     }
 
+    protected static boolean getJoinFlag(@NonNull Bundle args)
+    {
+        return args.getBoolean(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, false);
+    }
+
     @Override public void onAttach(Activity activity)
     {
         super.onAttach(activity);
