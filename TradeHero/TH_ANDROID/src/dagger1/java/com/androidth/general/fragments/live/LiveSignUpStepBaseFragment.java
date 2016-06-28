@@ -5,22 +5,17 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Spinner;
 
 import com.androidth.general.activities.SignUpLiveActivity;
-import com.androidth.general.api.competition.ProviderDTO;
-import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.KYCFormOptionsId;
-import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.live.LiveBrokerDTO;
 import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.base.BaseFragment;
-import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.kyc.KYCFormOptionsCache;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.R;
@@ -35,18 +30,15 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
-import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
 abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 {
-    @Inject ProviderCacheRx providerCache;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject protected KYCFormOptionsCache kycFormOptionsCache;
 

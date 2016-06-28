@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.androidth.general.fragments.live.LiveSignUpStepBaseFragment;
 import com.androidth.general.fragments.live.PrevNextObservable;
 
 import rx.Observable;
@@ -48,12 +49,6 @@ public class SignUpLiveAyondoPagerAdapter extends FragmentPagerAdapter
     @NonNull @Override public Observable<Boolean> getPrevNextObservable()
     {
         return Observable.from(fragments)
-                .flatMap(new Func1<LiveSignUpStepBaseAyondoFragment, Observable<Boolean>>()
-                {
-                    @Override public Observable<Boolean> call(LiveSignUpStepBaseAyondoFragment fragment)
-                    {
-                        return fragment.getPrevNextObservabel();
-                    }
-                });
+                .flatMap(LiveSignUpStepBaseFragment::getPrevNextObservabel);
     }
 }
