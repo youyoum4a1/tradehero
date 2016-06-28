@@ -948,9 +948,25 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         this.smsId = smsId;
     }
 
+    private Boolean isAllInputValidated() {
+        if (nricNumber.length() != 12) {
+            Drawable redAlert = getResources().getDrawable(R.drawable.red_alert);
+            redAlert.setBounds(0,0,redAlert.getIntrinsicWidth(), redAlert.getIntrinsicHeight());
+            nricNumber.setError("NRIC must be 12 digits.", redAlert);
+        }
+
+        return true;
+    }
+
+    @SuppressWarnings("unused")
     @OnClick(R.id.btn_join_competition)
     public void onClickedJoinButton() {
-        if (nricNumber.length() != 12 || firstName.length() == 0 || lastName.length() == 0 || !emailPattern.matcher(email.getText()).matches() || !buttonVerifyPhone.getText().toString().equalsIgnoreCase("verified") || dob.length() == 0) {
+
+        if (!isAllInputValidated()) {
+            return;
+        }
+
+        if (firstName.length() == 0 || lastName.length() == 0 || !emailPattern.matcher(email.getText()).matches() || !buttonVerifyPhone.getText().toString().equalsIgnoreCase("verified") || dob.length() == 0) {
             return;
         }
 
