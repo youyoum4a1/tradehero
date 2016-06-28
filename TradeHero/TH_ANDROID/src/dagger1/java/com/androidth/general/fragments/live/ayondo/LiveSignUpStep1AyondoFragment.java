@@ -223,14 +223,27 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                 }).subscribe(this::onNext);
 
-        WidgetObservable.text(nricNumber).withLatestFrom(liveBrokerSituationDTOObservable,
+        WidgetObservable.text(nricNumber)
+                .doOnNext(new Action1<OnTextChangeEvent>()
+                {
+                    @Override public void call(OnTextChangeEvent onTextChangeEvent)
+                    {
+                        if (onTextChangeEvent.text().length() != 12) {
+                            Drawable redAlert = getResources().getDrawable(R.drawable.red_alert);
+                            redAlert.setBounds(0,0,redAlert.getIntrinsicWidth(), redAlert.getIntrinsicHeight());
+                            nricNumber.setError("NRIC must be 12 digits.", redAlert);
+                        }
+                    }
+                })
+                .withLatestFrom(liveBrokerSituationDTOObservable,
                 (onTextChangeEvent, liveBrokerSituationDTO) -> {
                     KYCAyondoForm updated = KYCAyondoFormFactory.fromIdentificationNumber(onTextChangeEvent);
 
                     return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                 }).subscribe(this::onNext);
 
-        WidgetObservable.text(email).withLatestFrom(liveBrokerSituationDTOObservable,
+        WidgetObservable.text(email)
+                .withLatestFrom(liveBrokerSituationDTOObservable,
                 (onTextChangeEvent, liveBrokerSituationDTO) -> {
                     KYCAyondoForm updated = KYCAyondoFormFactory.fromEmailEvent(onTextChangeEvent);
 
