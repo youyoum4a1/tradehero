@@ -1,14 +1,18 @@
 package com.androidth.general.fragments.competition;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.view.ContextThemeWrapper;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
+
+import com.androidth.general.activities.SignUpLiveActivity;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
@@ -44,10 +48,13 @@ public class AdView extends RelativeLayout
     @Inject Lazy<Picasso> picasso;
     @Inject CurrentUserId currentUserId;
 
+    private Context context;
+
     //<editor-fold desc="Constructors">
     public AdView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
+        this.context = context;
         HierarchyInjector.inject(this);
         userActionSubject = PublishSubject.create();
     }
@@ -99,8 +106,12 @@ public class AdView extends RelativeLayout
     {
         if (viewDTO != null && viewDTO.getAdDTO() != null)
         {
-            userActionSubject.onNext(new UserAction(viewDTO, viewDTO.getAdDTO()));
-            sendAnalytics(viewDTO.getAdDTO(), "proceed", viewDTO.providerId);
+            Intent kycIntent = new Intent(this.context, SignUpLiveActivity.class);
+            kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, viewDTO.providerId.key);
+            kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, false);
+            this.context.startActivity(kycIntent);
+//            userActionSubject.onNext(new UserAction(viewDTO, viewDTO.getAdDTO()));
+//            sendAnalytics(viewDTO.getAdDTO(), "proceed", viewDTO.providerId);
         }
     }
 

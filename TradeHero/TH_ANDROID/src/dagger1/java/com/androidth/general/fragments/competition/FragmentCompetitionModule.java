@@ -16,6 +16,7 @@ import dagger.Module;
                 ProviderFxListFragment.class,
                 AdView.class,
                 WizardWebViewFragment.class,
+                RedeemFragment.class
         },
         library = true,
         complete = false
