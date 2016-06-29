@@ -2,8 +2,6 @@ package com.androidth.general.fragments.security;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
 
 /**
@@ -11,126 +9,105 @@ import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
  */
 
 public class LiveQuoteDTO {
-    private int securityId;//SecurityId
+    public int id;//SecurityId
 
     @Nullable
-    private double askPrice;//AskPrice
+    public double a;//AskPrice
 
     @Nullable
-    private double bidPrice;//BidPrice
+    public double b;//BidPrice
 
     @Nullable
-    private double volume;//Volume
+    public double v;//Volume
 
-    private DateDeserializers.DateDeserializer date;
+    public DateDeserializers.DateDeserializer l;
 
     @Nullable
-    private double usdRate;//toUSDRate
+    public double usdr;//toUSDRate
 
-    private String currencyISO;//currencyISO
+    public String ciso;//currencyISO
 
-    private String currencyDisplay;//currencyDisplay
+    public String cd;//currencyDisplay
 
-    private String groupId;//GroupId
+    public String g;//GroupId
 
-    @JsonCreator
-    public LiveQuoteDTO(
-            @JsonProperty("id") int id,
-            @JsonProperty("a") @Nullable double a,
-            @JsonProperty("b") @Nullable double b,
-            @JsonProperty("v") @Nullable double v,
-            @JsonProperty("l")DateDeserializers.DateDeserializer l,
-            @JsonProperty("usdr") @Nullable double usdr,
-            @JsonProperty("ciso") String ciso,
-            @JsonProperty("cd") String cd,
-            @JsonProperty("g") String g
-    ){
-        this.securityId = id;
-        this.askPrice = a;
-        this.bidPrice = b;
-        this.volume = v;
-        this.date = l;
-        this.usdRate = usdr;
-        this.currencyISO = ciso;
-        this.currencyDisplay = cd;
-        this.groupId = g;
-    }
+
 
     public void setSecurityId(int securityId) {
-        this.securityId = securityId;
+        this.id = id;
     }
 
     public void setGroupId(String groupId) {
-        this.groupId = groupId;
+        this.g = g;
     }
 
     public void setAskPrice(@Nullable double askPrice) {
-        this.askPrice = askPrice;
+        this.a = a;
     }
 
     public void setBidPrice(@Nullable double bidPrice) {
-        this.bidPrice = bidPrice;
+        this.b = b;
     }
 
     public void setVolume(@Nullable double volume) {
-        this.volume = volume;
+        this.v = v;
     }
 
     public void setDate(DateDeserializers.DateDeserializer date) {
-        this.date = date;
+        this.l = l;
     }
 
     public void setUsdRate(@Nullable double usdRate) {
-        this.usdRate = usdRate;
+        this.usdr = usdr;
     }
 
     public void setCurrencyISO(String currencyISO) {
-        this.currencyISO = currencyISO;
+        this.ciso = ciso;
     }
 
     public void setCurrencyDisplay(String currencyDisplay) {
-        this.currencyDisplay = currencyDisplay;
+        this.cd = cd;
     }
 
     public int getSecurityId() {
 
-        return securityId;
+        return id;
     }
 
     @Nullable
     public double getAskPrice() {
-        return askPrice;
+        return a;
     }
 
     @Nullable
     public double getBidPrice() {
-        return bidPrice;
+        return b;
     }
 
     @Nullable
     public double getVolume() {
-        return volume;
+        return v;
     }
 
     public DateDeserializers.DateDeserializer getDate() {
-        return date;
+        return l;
     }
 
     @Nullable
     public double getUsdRate() {
-        return usdRate;
+        return usdr;
     }
 
     public String getCurrencyISO() {
-        return currencyISO;
+        return ciso;
     }
 
     public String getCurrencyDisplay() {
-        return currencyDisplay;
+        return cd;
     }
 
     public String getGroupId() {
-        return groupId;
+        return g;
     }
 
 }

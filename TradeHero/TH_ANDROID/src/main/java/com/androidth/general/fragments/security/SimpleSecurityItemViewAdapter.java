@@ -62,11 +62,19 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                     {
                         ((FxSecurityCompactDTO) securityCompactDTO).setAskPrice(quoteUpdate.getAskPrice());
                         ((FxSecurityCompactDTO) securityCompactDTO).setBidPrice(quoteUpdate.getBidPrice());
+                        ((FxSecurityCompactDTO) securityCompactDTO).currencyDisplay = quoteUpdate.getCurrencyDisplay();
+                        ((FxSecurityCompactDTO) securityCompactDTO).currencyISO = quoteUpdate.getCurrencyISO();
+                        ((FxSecurityCompactDTO) securityCompactDTO).volume = quoteUpdate.getVolume();
+                        ((FxSecurityCompactDTO) securityCompactDTO).toUSDRate = quoteUpdate.getUsdRate();
                     }
                     else
                     {
                         securityCompactDTO.askPrice = quoteUpdate.getAskPrice();
                         securityCompactDTO.bidPrice = quoteUpdate.getBidPrice();
+                        securityCompactDTO.currencyDisplay = quoteUpdate.getCurrencyDisplay();
+                        securityCompactDTO.currencyISO = quoteUpdate.getCurrencyISO();
+                        securityCompactDTO.volume = quoteUpdate.getVolume();
+                        securityCompactDTO.toUSDRate = quoteUpdate.getUsdRate();
                     }
                 }
             }

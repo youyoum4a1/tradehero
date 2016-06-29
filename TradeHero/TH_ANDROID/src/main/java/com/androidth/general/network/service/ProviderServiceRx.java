@@ -26,6 +26,11 @@ public interface ProviderServiceRx
     Observable<ProviderDTOList> getProviders();
     //</editor-fold>
 
+    @GET("/providers/redeem/{providerId}/{code}")
+    Observable<String> validatedRedeemCode(
+            @Path("providerId") Integer providerId,
+            @Path("code") String typedCode);
+
     //<editor-fold desc="Get Provider">
     @GET("/providers/{providerId}")
     Observable<ProviderDTO> getProvider(@Path("providerId") int providerId);

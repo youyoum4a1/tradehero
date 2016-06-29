@@ -13,4 +13,6 @@ public interface KycServicesRx {
     Observable<Boolean> validatedEmail(
             @Path("userId") Integer userId,
             @Path("email") String email);
+
+
 }

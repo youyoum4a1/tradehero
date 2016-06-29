@@ -7,6 +7,7 @@ public enum Exchange
 {
     // United Kingdom
     LSE(R.drawable.square_gb, true),
+    XSTO(R.drawable.square_gb, false),
 
     // United States of America
     NASDAQ(R.drawable.square_us, true),
@@ -29,6 +30,9 @@ public enum Exchange
 
     // France
     PAR(R.drawable.square_fr, true),
+
+    // Spain
+    SIBE(R.drawable.square_es, true),
 
     // Netherlands
     AMS(R.drawable.square_nl, true),
@@ -72,10 +76,14 @@ public enum Exchange
     NSE(R.drawable.square_in, true),
     BSE(R.drawable.square_in, false),
 
+    // Germany
     XETRA(R.drawable.square_de, false),
 
     // Japan
-    TSE(R.drawable.square_jp, true);
+    TSE(R.drawable.square_jp, true),
+
+    //Swiss
+    SIX(R.drawable.square_ch, true);
 
 
 
