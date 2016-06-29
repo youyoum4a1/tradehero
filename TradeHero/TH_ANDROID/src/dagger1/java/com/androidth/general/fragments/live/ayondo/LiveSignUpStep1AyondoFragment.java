@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MainThread;
@@ -42,6 +43,7 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
@@ -969,7 +971,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
 
-        liveServiceWrapper.createOrUpdateLead(kycForm).subscribe(new Action1<BrokerApplicationDTO>()
+        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(new Action1<BrokerApplicationDTO>()
         {
             @Override public void call(BrokerApplicationDTO brokerApplicationDTO)
             {
@@ -1007,15 +1009,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             @Override public void call(Throwable throwable)
             {
-                progress.setMessage(throwable.getMessage());
-
-                new Handler().postDelayed(new Runnable()
-                {
-                    @Override public void run()
-                    {
-                        progress.dismiss();
-                    }
-                }, 2000);
+                THToast.show(throwable.getMessage());
+                progress.dismiss();
             }
         });
     }

@@ -139,7 +139,7 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
                 {
                     @Override public Observable<BrokerApplicationDTO> call(KYCAyondoForm kycAyondoForm)
                     {
-                        return liveServiceWrapper.createOrUpdateLead(kycAyondoForm)
+                        return liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycAyondoForm)
                                 .onErrorResumeNext(
                             new Func1<Throwable, Observable<? extends BrokerApplicationDTO>>()
                             {
