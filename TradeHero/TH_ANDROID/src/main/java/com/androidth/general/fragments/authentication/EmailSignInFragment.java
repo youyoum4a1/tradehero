@@ -26,7 +26,6 @@ import com.androidth.general.activities.ActivityHelper;
 import com.androidth.general.activities.AuthenticationActivity;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.LoginSignUpFormDTO;
-import com.androidth.general.api.users.UserLoginDTO;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.api.users.password.ForgotPasswordDTO;
 import com.androidth.general.api.users.password.ForgotPasswordFormDTO;
@@ -185,13 +184,7 @@ public class EmailSignInFragment extends Fragment
         final AuthData authData = loginSignUpFormDTO.authData;
         Observable<UserProfileDTO> userLoginDTOObservable = sessionServiceWrapper.signupAndLoginRx(
                 authData.getTHToken(), loginSignUpFormDTO)
-                .map(new Func1<UserLoginDTO, UserProfileDTO>()
-                {
-                    @Override public UserProfileDTO call(UserLoginDTO userLoginDTO)
-                    {
-                        return userLoginDTO.profileDTO;
-                    }
-                });
+                .map(userLoginDTO -> userLoginDTO.profileDTO);
 
         return Observable.zip(Observable.just(authData), userLoginDTOObservable,
                 new Func2<AuthData, UserProfileDTO, Pair<AuthData, UserProfileDTO>>()

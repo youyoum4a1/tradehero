@@ -2,8 +2,6 @@ package com.androidth.general.fragments.security;
 
 import android.support.annotation.Nullable;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
 
 /**
@@ -11,50 +9,29 @@ import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
  */
 
 public class LiveQuoteDTO {
-    private int id;//SecurityId
+    public int id;//SecurityId
 
     @Nullable
-    private double a;//AskPrice
+    public double a;//AskPrice
 
     @Nullable
-    private double b;//BidPrice
+    public double b;//BidPrice
 
     @Nullable
-    private double v;//Volume
+    public double v;//Volume
 
-    private DateDeserializers.DateDeserializer l;
+    public DateDeserializers.DateDeserializer l;
 
     @Nullable
-    private double usdr;//toUSDRate
+    public double usdr;//toUSDRate
 
-    private String ciso;//currencyISO
+    public String ciso;//currencyISO
 
-    private String cd;//currencyDisplay
+    public String cd;//currencyDisplay
 
-    private String g;//GroupId
+    public String g;//GroupId
 
-    @JsonCreator
-    public LiveQuoteDTO(
-            @JsonProperty("id") int id,
-            @JsonProperty("a") @Nullable double a,
-            @JsonProperty("b") @Nullable double b,
-            @JsonProperty("v") @Nullable double v,
-            @JsonProperty("l")DateDeserializers.DateDeserializer l,
-            @JsonProperty("usdr") @Nullable double usdr,
-            @JsonProperty("ciso") String ciso,
-            @JsonProperty("cd") String cd,
-            @JsonProperty("g") String g
-    ){
-        this.id = id;
-        this.a = a;
-        this.b = b;
-        this.v = v;
-        this.l = l;
-        this.usdr = usdr;
-        this.ciso = ciso;
-        this.cd = cd;
-        this.g = g;
-    }
+
 
     public void setSecurityId(int securityId) {
         this.id = id;

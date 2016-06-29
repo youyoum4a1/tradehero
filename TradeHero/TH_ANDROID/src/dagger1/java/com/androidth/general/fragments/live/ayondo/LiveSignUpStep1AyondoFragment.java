@@ -3,7 +3,6 @@ package com.androidth.general.fragments.live.ayondo;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,15 +21,11 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-import butterknife.OnClick;
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
-import com.androidth.general.activities.AuthenticationActivity;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.kyc.PhoneNumberVerifiedStatusDTO;
@@ -44,7 +39,6 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
@@ -62,8 +56,6 @@ import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.DateUtils;
 import com.androidth.general.utils.route.THRouter;
 import com.neovisionaries.i18n.CountryCode;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,6 +69,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -944,16 +937,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
     //for email subscription pop up box
     protected void checkEmailSubscription(Integer userId) {
-        Subscription subs = kycServices.validatedEmail(userId ,email.getText().toString()).subscribe(new Action1<Boolean>() {
-            @Override
-            public void call(Boolean kycEmailIsValid) {
-                if (kycEmailIsValid) {
-                    Log.i("Valid", "Cool");
-                    //Pop up dialog
-                } else {
-                    Log.i("InValid", "James lied");
-                    //Make tick sign green
-                }
+        Subscription subs = kycServices.validatedEmail(userId ,email.getText().toString()).subscribe(kycEmailIsValid -> {
+            if (kycEmailIsValid) {
+                Log.i("Valid", "Cool");
+                //Pop up dialog
+            } else {
+                Log.i("InValid", "James lied");
+                //Make tick sign green
             }
         }, new Action1<Throwable>() {
             @Override

@@ -87,28 +87,19 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     }
     public void setHubConnection() {
         HubConnection connection = setConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
-        //connection.
         connection.setCredentials(new Credentials() {
             @Override
             public void prepareRequest(Request request) {
-
-                System.out.print(requestHeaders.headerTokenLive());
                 request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
                 request.addHeader(Constants.USER_ID, currentUserId.get().toString());
-                //Head
             }
         });
         try {
             proxy = setProxy(LiveNetworkConstants.HUB_NAME, connection);
-            //proxy.subscribe()
-            //SignalRFuture<Void> connection = hub.start();
             connection.start().done(aVoid -> {
-                //String arr[] = {"700020341","700020415", "700020414", "700016180"};
                 currentVisibleItemsList = getCurrentVisibleItems(listView);
                 String str[] = getSecurityIds(currentVisibleItemsList);
                 SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str, currentUserId.get());
-                //SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, arr, currentUserId.get());
-
                 signalProxy.done(req -> Log.i("Yay", "Nayy"));
             });
             connection.connected(new Runnable() {
@@ -138,7 +129,6 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
             proxy.on("UpdateQuote", signatureContainer -> {
                 Log.i("Okay", "What's this");
                 Log.i("Response", signatureContainer.toString());
-                //Update things
                 update(signatureContainer.signedObject);
 
 
@@ -152,6 +142,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
     @MainThread
     public void update(LiveQuoteDTO dto){
+        Log.i("This is Live", dto.toString());
         adapter.updatePrices(dto);
         adapter.notifyDataSetChanged();
     }
@@ -173,8 +164,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         super.onCreate(savedInstanceState);
         adapter = new SimpleSecurityItemViewAdapter(getContext(), R.layout.trending_security_item);
         adapter.setItems(items);
-        Platform.loadPlatformComponent(new AndroidPlatformComponent());
-        setHubConnection();
+
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -214,6 +204,8 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                 Log.i("Total Item Count ", totalItemCount+"");
             }
         });
+        Platform.loadPlatformComponent(new AndroidPlatformComponent());
+        setHubConnection();
     }
 
     @Override public void onDestroyView()
