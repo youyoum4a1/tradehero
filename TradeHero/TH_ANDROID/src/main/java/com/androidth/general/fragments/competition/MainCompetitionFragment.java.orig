@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -90,7 +89,6 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func7;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -199,8 +197,13 @@ public class MainCompetitionFragment extends DashboardFragment
         this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> cced80763109381f649e9d8e87f6b1165a67ad8e
         this.listView.setAdapter(this.competitionZoneListItemAdapter);
         competitionZoneDTOUtil.randomiseAd();
+        //this.competitionZoneListItemAdapter.getView(3, view, null).setVisibility(View.GONE);
     }
 
     //<editor-fold desc="ActionBar">
@@ -306,6 +309,7 @@ public class MainCompetitionFragment extends DashboardFragment
                                     {
                                         THToast.show(R.string.error_fetch_provider_info);
                                     }
+                                    Timber.e("Error fetching the provider info", throwable);
                                     return providerDTO;
                                 }),
                         competitionListCache.get(providerId)
@@ -370,14 +374,31 @@ public class MainCompetitionFragment extends DashboardFragment
                                 }),
                         securityCompositeListCacheRx.get(new BasicProviderSecurityV2ListType(providerId))
                                 .map(new PairGetSecond<BasicProviderSecurityV2ListType, SecurityCompositeDTO>()),
+<<<<<<< HEAD
+                        (userProfileDTO1, providerDTO1, competitionDTOs1, providerDisplayCellDTOs, competitionPreSeasonDTOs1, providerPrizePoolDTOs1, securityCompositeDTO) -> {
+                            MainCompetitionFragment.this.userProfileDTO = userProfileDTO1;
+                            MainCompetitionFragment.this.providerDTO = providerDTO1;
+                            MainCompetitionFragment.this.competitionDTOs = competitionDTOs1;
+                            MainCompetitionFragment.this.providerDisplayCellDTOList = providerDisplayCellDTOs;
+                            MainCompetitionFragment.this.competitionPreSeasonDTOs = competitionPreSeasonDTOs1;
+                            MainCompetitionFragment.this.providerPrizePoolDTOs = providerPrizePoolDTOs1;
+                            return competitionZoneDTOUtil.makeList(
+                                    getActivity(),
+                                    userProfileDTO1,
+                                    providerDTO1,
+                                    competitionDTOs1,
+                                    providerDisplayCellDTOs,
+                                    competitionPreSeasonDTOs1,
+                                    providerPrizePoolDTOs1);
+=======
                         new Func7<UserProfileDTO,
-                                                        ProviderDTO,
-                                                        CompetitionDTOList,
-                                                        ProviderDisplayCellDTOList,
-                                                        List<CompetitionPreSeasonDTO>,
-                                                        List<ProviderPrizePoolDTO>,
-                                                        SecurityCompositeDTO,
-                                                        List<Pair<Integer, CompetitionZoneDTO>>>()
+                                ProviderDTO,
+                                CompetitionDTOList,
+                                ProviderDisplayCellDTOList,
+                                List<CompetitionPreSeasonDTO>,
+                                List<ProviderPrizePoolDTO>,
+                                SecurityCompositeDTO,
+                                List<Pair<Integer, CompetitionZoneDTO>>>()
                         {
                             @Override public List<Pair<Integer, CompetitionZoneDTO>> call(
                                     UserProfileDTO userProfileDTO,
@@ -412,6 +433,7 @@ public class MainCompetitionFragment extends DashboardFragment
                                 }
 
                             }
+>>>>>>> cced80763109381f649e9d8e87f6b1165a67ad8e
                         })
                         .subscribeOn(Schedulers.computation()))
                 .observeOn(AndroidSchedulers.mainThread())
