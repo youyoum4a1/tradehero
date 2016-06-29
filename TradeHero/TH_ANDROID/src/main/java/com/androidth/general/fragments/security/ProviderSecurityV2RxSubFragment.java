@@ -1,6 +1,7 @@
 package com.androidth.general.fragments.security;
 
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.v4.view.MenuItemCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -138,7 +139,8 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                 Log.i("Okay", "What's this");
                 Log.i("Response", signatureContainer.toString());
                 //Update things
-                adapter.updatePrices(signatureContainer.signedObject);
+                update(signatureContainer.signedObject);
+
 
             }, SignatureContainer.class);
         } catch (Exception e) {
@@ -148,8 +150,11 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         //proxy.subscribe()
     }
 
-
-
+    @MainThread
+    public void update(LiveQuoteDTO dto){
+        adapter.updatePrices(dto);
+        adapter.notifyDataSetChanged();
+    }
     @Override
     public void onScrollChanged(int i) {
 

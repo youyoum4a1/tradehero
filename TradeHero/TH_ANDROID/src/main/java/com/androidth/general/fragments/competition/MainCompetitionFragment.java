@@ -17,13 +17,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
-import com.androidth.general.api.security.SecurityCompositeDTO;
-import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.common.utils.THToast;
-import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.AdDTO;
 import com.androidth.general.api.competition.CompetitionDTOList;
@@ -33,11 +26,15 @@ import com.androidth.general.api.competition.ProviderDisplayCellDTOList;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderPrizePoolDTO;
 import com.androidth.general.api.competition.ProviderUtil;
+import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.competition.key.ProviderDisplayCellListKey;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.OnMovableBottomTranslateListener;
 import com.androidth.general.fragments.base.DashboardFragment;
@@ -67,11 +64,14 @@ import com.androidth.general.persistence.competition.CompetitionListCacheRx;
 import com.androidth.general.persistence.competition.CompetitionPreseasonCacheRx;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.competition.ProviderDisplayCellListCacheRx;
+import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.GraphicUtil;
 import com.androidth.general.utils.route.THRouter;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 
 import java.util.Collections;
 import java.util.List;
@@ -89,7 +89,6 @@ import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func6;
 import rx.functions.Func7;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -197,8 +196,11 @@ public class MainCompetitionFragment extends DashboardFragment
         ButterKnife.bind(this, view);
         this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
+
+
         this.listView.setAdapter(this.competitionZoneListItemAdapter);
         competitionZoneDTOUtil.randomiseAd();
+        //this.competitionZoneListItemAdapter.getView(3, view, null).setVisibility(View.GONE);
     }
 
     //<editor-fold desc="ActionBar">
