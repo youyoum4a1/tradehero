@@ -238,6 +238,7 @@ public class KYCAyondoForm implements KYCForm
             this.leadGuid = ayondoForm.leadGuid != null ? ayondoForm.leadGuid : this.leadGuid;
             this.stepStatuses = ayondoForm.stepStatuses != null ? ayondoForm.stepStatuses : this.stepStatuses;
             this.currency = ayondoForm.getCurrency() != null ? ayondoForm.getCurrency() : this.currency;
+            this.identificationNumber = ayondoForm.getIdentificationNumber() != null ? ayondoForm.getIdentificationNumber() : this.getIdentificationNumber();
         }
     }
 
