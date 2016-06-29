@@ -599,8 +599,8 @@ public class DashboardActivity extends BaseActivity
                             {
                                 if (!isOnBoardShown.get() && userProfileDTO != null && userProfileDTOUtilLazy.get().shouldShowOnBoard(userProfileDTO))
                                 {
-                                    broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal());
-                                    return;
+//                                    broadcastUtilsLazy.get().enqueue(new OnBoardingBroadcastSignal()); //Jeff disable onboarding
+//                                    return;
                                 }
 
                                 if (!isFxShown.get() && userProfileDTO != null && userProfileDTO.fxPortfolio == null)
