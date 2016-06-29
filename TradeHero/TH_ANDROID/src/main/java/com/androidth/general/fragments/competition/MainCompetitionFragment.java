@@ -197,10 +197,8 @@ public class MainCompetitionFragment extends DashboardFragment
         this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
 
-
         this.listView.setAdapter(this.competitionZoneListItemAdapter);
         competitionZoneDTOUtil.randomiseAd();
-        //this.competitionZoneListItemAdapter.getView(3, view, null).setVisibility(View.GONE);
     }
 
     //<editor-fold desc="ActionBar">
@@ -259,6 +257,18 @@ public class MainCompetitionFragment extends DashboardFragment
 
     protected CompetitionZoneListItemAdapter createAdapter()
     {
+        if(providerDTO!=null){
+            if(!providerDTO.canTradeNow) {
+                //show semi live
+                return new CompetitionZoneListItemAdapter(
+                        getActivity(),
+                        R.layout.competition_zone_item,
+                        R.layout.competition_zone_ads,
+                        R.layout.competition_zone_header,
+                        R.layout.competition_zone_legal_mentions);
+            }
+        }
+
         return new CompetitionZoneListItemAdapter(
                 getActivity(),
                 R.layout.competition_zone_item,
@@ -294,8 +304,6 @@ public class MainCompetitionFragment extends DashboardFragment
                                     {
                                         THToast.show(R.string.error_fetch_provider_info);
                                     }
-                                    Timber.e("Error fetching the provider info", throwable);
-                                    return providerDTO;
                                 }),
                         competitionListCache.get(providerId)
                                 .map(new PairGetSecond<ProviderId, CompetitionDTOList>())
@@ -359,21 +367,48 @@ public class MainCompetitionFragment extends DashboardFragment
                                 }),
                         securityCompositeListCacheRx.get(new BasicProviderSecurityV2ListType(providerId))
                                 .map(new PairGetSecond<BasicProviderSecurityV2ListType, SecurityCompositeDTO>()),
-                        (userProfileDTO1, providerDTO1, competitionDTOs1, providerDisplayCellDTOs, competitionPreSeasonDTOs1, providerPrizePoolDTOs1, securityCompositeDTO) -> {
-                            MainCompetitionFragment.this.userProfileDTO = userProfileDTO1;
-                            MainCompetitionFragment.this.providerDTO = providerDTO1;
-                            MainCompetitionFragment.this.competitionDTOs = competitionDTOs1;
-                            MainCompetitionFragment.this.providerDisplayCellDTOList = providerDisplayCellDTOs;
-                            MainCompetitionFragment.this.competitionPreSeasonDTOs = competitionPreSeasonDTOs1;
-                            MainCompetitionFragment.this.providerPrizePoolDTOs = providerPrizePoolDTOs1;
-                            return competitionZoneDTOUtil.makeList(
-                                    getActivity(),
-                                    userProfileDTO1,
-                                    providerDTO1,
-                                    competitionDTOs1,
-                                    providerDisplayCellDTOs,
-                                    competitionPreSeasonDTOs1,
-                                    providerPrizePoolDTOs1);
+                        new Func7<UserProfileDTO,
+                                ProviderDTO,
+                                CompetitionDTOList,
+                                ProviderDisplayCellDTOList,
+                                List<CompetitionPreSeasonDTO>,
+                                List<ProviderPrizePoolDTO>,
+                                SecurityCompositeDTO,
+                                List<Pair<Integer, CompetitionZoneDTO>>>()
+                        {
+                            @Override public List<Pair<Integer, CompetitionZoneDTO>> call(
+                                    UserProfileDTO userProfileDTO,
+                                    ProviderDTO providerDTO,
+                                    CompetitionDTOList competitionDTOs,
+                                    ProviderDisplayCellDTOList providerDisplayCellDTOs,
+                                    List<CompetitionPreSeasonDTO> competitionPreSeasonDTOs,
+                                    List<ProviderPrizePoolDTO> providerPrizePoolDTOs,
+                                    SecurityCompositeDTO securityCompositeDTO)
+                            {
+                                MainCompetitionFragment.this.userProfileDTO = userProfileDTO;
+                                MainCompetitionFragment.this.providerDTO = providerDTO;
+                                MainCompetitionFragment.this.competitionDTOs = competitionDTOs;
+                                MainCompetitionFragment.this.providerDisplayCellDTOList = providerDisplayCellDTOs;
+                                MainCompetitionFragment.this.competitionPreSeasonDTOs = competitionPreSeasonDTOs;
+                                MainCompetitionFragment.this.providerPrizePoolDTOs = providerPrizePoolDTOs;
+                                if(providerDTO.canTradeNow){
+                                    return competitionZoneDTOUtil.makeList(
+                                            getActivity(),
+                                            userProfileDTO,
+                                            providerDTO,
+                                            competitionDTOs,
+                                            providerDisplayCellDTOs,
+                                            competitionPreSeasonDTOs,
+                                            providerPrizePoolDTOs);
+
+                                }else{
+                                    //show semi live
+                                    return competitionZoneDTOUtil.makeList(
+                                            getActivity(),
+                                            providerDTO);
+                                }
+
+                            }
                         })
                         .subscribeOn(Schedulers.computation()))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -428,7 +463,7 @@ public class MainCompetitionFragment extends DashboardFragment
 
     private void displayTradeNowButton()
     {
-        if (providerDTO != null && btnTradeNow.getVisibility() != View.VISIBLE)
+        if (providerDTO != null && btnTradeNow.getVisibility() != View.VISIBLE && providerDTO.canTradeNow)
         {
             btnTradeNow.setVisibility(View.VISIBLE);
 

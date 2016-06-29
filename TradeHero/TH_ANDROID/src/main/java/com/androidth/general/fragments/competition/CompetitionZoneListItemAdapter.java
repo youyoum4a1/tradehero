@@ -18,11 +18,11 @@ import rx.subjects.PublishSubject;
 public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZoneDTO>
 {
     public static final int ITEM_TYPE_ADS = 0;
-    public static final int ITEM_TYPE_HEADER = 1;
-    public static final int ITEM_TYPE_PORTFOLIO = 2;
+    public static final int ITEM_TYPE_HEADER = 2;
+    public static final int ITEM_TYPE_PORTFOLIO = 5;
     public static final int ITEM_TYPE_ZONE_ITEM = 3;
     public static final int ITEM_TYPE_LEADERBOARD = 4;
-    public static final int ITEM_TYPE_LEGAL_MENTIONS = 5;
+    public static final int ITEM_TYPE_LEGAL_MENTIONS = 1;
     public static final int ITEM_TYPE_LOADING = 6;
     public static final int ITEM_TYPE_PRIZE_POOL = 7;
     public static final int ITEM_TYPE_WIZARD = 8;
@@ -60,6 +60,24 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         this.elements = new ArrayList<>();
     }
     //</editor-fold>
+
+    public CompetitionZoneListItemAdapter(
+            @NonNull Context context,
+            @LayoutRes int zoneItemLayoutResId,
+            @LayoutRes int adsResId,
+            @LayoutRes int headerResId,
+            @LayoutRes int legalResId)
+    {
+        super(context, zoneItemLayoutResId);
+
+        this.viewTypeToResId = new Integer[3];
+        this.viewTypeToResId[ITEM_TYPE_ADS] = adsResId;
+        this.viewTypeToResId[ITEM_TYPE_HEADER] = headerResId;
+        this.viewTypeToResId[ITEM_TYPE_LEGAL_MENTIONS] = legalResId;
+
+        this.userActionSubject = PublishSubject.create();
+        this.elements = new ArrayList<>();
+    }
 
     @NonNull public Observable<AbstractCompetitionZoneListItemView.UserAction> getUserActionObservable()
     {

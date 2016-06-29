@@ -70,19 +70,15 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        super.webView.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override public boolean onTouch(View v, MotionEvent event)
+        super.webView.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN)
             {
-                if (event.getAction() == MotionEvent.ACTION_DOWN)
-                {
-                    Intent kycIntent = new Intent(getActivity(), IdentityPromptActivity.class);
-                    kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, providerIdInteger);
-                    startActivity(kycIntent);
-                }
-
-                return false;
+                Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
+                kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, providerIdInteger);
+                startActivity(kycIntent);
             }
+
+            return false;
         });
     }
 
