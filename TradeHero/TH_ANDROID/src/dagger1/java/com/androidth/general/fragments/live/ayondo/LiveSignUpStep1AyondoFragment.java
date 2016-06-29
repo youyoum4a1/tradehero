@@ -31,6 +31,7 @@ import com.androidth.general.activities.ActivityHelper;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.kyc.BrokerApplicationDTO;
+import com.androidth.general.api.kyc.EmptyKYCForm;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
@@ -380,13 +381,26 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             UserProfileDTO currentUserProfile)
                     {
                         ////noinspection ConstantConditions
-                        populate((KYCAyondoForm) situation.kycForm);
-                        populateGender((KYCAyondoForm) situation.kycForm, options.genders);
-                        populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile,
-                                options.allowedMobilePhoneCountryDTOs);
-                        populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
-                        populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
-                        return situation;
+                        LiveBrokerSituationDTO latestDTO = situation;
+
+                        if (situation.kycForm instanceof EmptyKYCForm) {
+                            KYCAyondoForm defaultForm = new KYCAyondoForm();
+                            defaultForm.pickFromWithDefaultValues(currentUserProfile);
+
+                            latestDTO = new LiveBrokerSituationDTO(situation.broker, defaultForm);
+                        }
+
+                        if ((KYCAyondoForm) latestDTO.kycForm != null)
+                        {
+                            populate((KYCAyondoForm) latestDTO.kycForm);
+                            populateGender((KYCAyondoForm) latestDTO.kycForm, options.genders);
+                            populateMobileCountryCode((KYCAyondoForm) latestDTO.kycForm, currentUserProfile,
+                                    options.allowedMobilePhoneCountryDTOs);
+                            populateNationality((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
+                            populateResidency((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
+                        }
+
+                        return latestDTO;
                     }
                 })
                 .subscribe(
