@@ -44,7 +44,7 @@ public class KYCAyondoFormFactory
     @NonNull public static KYCAyondoForm fromIdentificationNumber(OnTextChangeEvent identificationNumber)
     {
         KYCAyondoForm created = new KYCAyondoForm();
-        created.setFirstName(identificationNumber.text().toString());
+        created.setIdentificationNumber(identificationNumber.text().toString());
         return created;
     }
 

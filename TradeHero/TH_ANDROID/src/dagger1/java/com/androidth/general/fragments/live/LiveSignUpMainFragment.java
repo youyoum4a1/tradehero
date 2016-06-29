@@ -15,9 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Checkable;
 
+import android.widget.ImageView;
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
 import com.androidth.general.activities.SignUpLiveActivity;
+import com.androidth.general.api.competition.ProviderDTO;
+import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.KYCFormUtil;
 import com.androidth.general.api.kyc.StepStatus;
@@ -27,10 +30,12 @@ import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.fragments.live.ayondo.SignUpLiveAyondoPagerAdapter;
 import com.androidth.general.network.service.LiveServiceWrapper;
+import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.widget.LiveRewardWidget;
 
+import com.squareup.picasso.Picasso;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -47,6 +52,7 @@ import timber.log.Timber;
 
 public class LiveSignUpMainFragment extends BaseFragment
 {
+    @Inject ProviderCacheRx providerCacheRx;
     @Inject SignUpLivePagerAdapterFactory signUpLivePagerAdapterFactory;
     @Inject Toolbar toolbar;
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
@@ -69,11 +75,23 @@ public class LiveSignUpMainFragment extends BaseFragment
         isToJoinCompetition = flag;
     }
 
+    private static int getProviderId(@NonNull Bundle args)
+    {
+        return args.getInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
+    }
+
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.settings_menu, menu);
-        actionBarOwnerMixin.setCustomView(LayoutInflater.from(getActivity()).inflate(R.layout.sign_up_custom_actionbar, toolbar, false));
+        View navigationBar = LayoutInflater.from(getActivity()).inflate(R.layout.sign_up_custom_actionbar, toolbar, false);
+        ImageView navigationLogo = (ImageView)navigationBar.findViewById(R.id.navigation_logo);
+
+        ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
+
+        Picasso.with(getContext()).load(providerDTO.navigationLogoUrl).into(navigationLogo);
+        actionBarOwnerMixin.setCustomView(navigationBar);
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -113,49 +131,23 @@ public class LiveSignUpMainFragment extends BaseFragment
                                 tabLayout.setViewPager(viewPager);
                             }
                         })
-                        .flatMap(new Func1<PagerAdapter, Observable<LiveBrokerSituationDTO>>()
-                        {
-                            @Override public Observable<LiveBrokerSituationDTO> call(PagerAdapter pagerAdapter)
-                            {
-                                return liveBrokerSituationPreference.getLiveBrokerSituationDTOObservable();
-                            }
-                        })
-                        .filter(new Func1<LiveBrokerSituationDTO, Boolean>()
-                        {
-                            @Override public Boolean call(LiveBrokerSituationDTO situationDTO)
-                            {
-                                return situationDTO.kycForm != null;
-                            }
-                        })
+                        .flatMap(pagerAdapter -> liveBrokerSituationPreference.getLiveBrokerSituationDTOObservable())
+                        .filter(situationDTO -> situationDTO.kycForm != null)
                         .throttleLast(3, TimeUnit.SECONDS)
                         .distinctUntilChanged()
-                        .flatMap(new Func1<LiveBrokerSituationDTO, Observable<StepStatusesDTO>>()
-                        {
-                            @Override public Observable<StepStatusesDTO> call(final LiveBrokerSituationDTO situationDTO)
-                            {
-                                //noinspection ConstantConditions
-                                return liveServiceWrapper.applyToLiveBroker(situationDTO.broker.id, situationDTO.kycForm)
-                                        .doOnNext(new Action1<StepStatusesDTO>()
-                                        {
-                                            @Override public void call(StepStatusesDTO stepStatusesDTO)
-                                            {
-                                                KYCForm form = KYCFormUtil.from(situationDTO.kycForm);
-                                                form.setStepStatuses(stepStatusesDTO.stepStatuses);
-                                                liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(situationDTO.broker, form));
-                                            }
-                                        })
-                                        ;
-                            }
+                        .flatMap(situationDTO -> {
+                            //noinspection ConstantConditions
+                            return liveServiceWrapper.applyToLiveBroker(situationDTO.broker.id, situationDTO.kycForm)
+                                    .doOnNext(stepStatusesDTO -> {
+                                        KYCForm form = KYCFormUtil.from(situationDTO.kycForm);
+                                        form.setStepStatuses(stepStatusesDTO.stepStatuses);
+                                        liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(situationDTO.broker, form));
+                                    })
+                                    ;
                         })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                new Action1<StepStatusesDTO>()
-                                {
-                                    @Override public void call(StepStatusesDTO updatedSteps)
-                                    {
-                                        updatePageIndicator(updatedSteps.stepStatuses);
-                                    }
-                                },
+                                updatedSteps -> updatePageIndicator(updatedSteps.stepStatuses),
                                 new TimberOnErrorAction1("Error on updating step status")));
 
         onDestroyViewSubscriptions.add(pagerAdapterObservable
@@ -171,13 +163,7 @@ public class LiveSignUpMainFragment extends BaseFragment
                     }
                 })
                 .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean next)
-                            {
-                                viewPager.setCurrentItem(viewPager.getCurrentItem() + (next ? 1 : -1));
-                            }
-                        },
+                        next -> viewPager.setCurrentItem(viewPager.getCurrentItem() + (next ? 1 : -1)),
                         new TimberOnErrorAction1("Failed to listen to prev / next buttons")));
 
         pagerAdapterObservable.connect();

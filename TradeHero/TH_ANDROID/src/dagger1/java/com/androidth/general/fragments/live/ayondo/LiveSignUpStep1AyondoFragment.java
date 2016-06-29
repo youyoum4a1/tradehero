@@ -204,107 +204,66 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
         List<Subscription> subscriptions = new ArrayList<>();
-        Log.v("ayondoStep1", "on ayondo init "+kycAyondoFormOptionsDTOObservable.toString());
-
-
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getContext(),R.array.live_title_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         title.setAdapter(adapter);
 
-        subscriptions.add(Observable.merge(
-                WidgetObservable.text(firstName)
-                        .map(new Func1<OnTextChangeEvent, KYCAyondoForm>() {
-                            @Override public KYCAyondoForm call(
-                                    OnTextChangeEvent fullNameEvent) {
-                                return KYCAyondoFormFactory.fromFirstNameEvent(fullNameEvent);
-                            }
-                        }),
-                WidgetObservable.text(lastName)
-                        .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
-                        {
-                            @Override public KYCAyondoForm call(
-                                    OnTextChangeEvent fullNameEvent)
-                            {
-                                return KYCAyondoFormFactory.fromLastNameEvent(fullNameEvent);
-                            }
-                        }),
-                WidgetObservable.text(nricNumber).map(new Func1<OnTextChangeEvent, KYCAyondoForm>() {
-                    @Override
-                    public KYCAyondoForm call(OnTextChangeEvent onTextChangeEvent) {
-                        return KYCAyondoFormFactory.fromIdentificationNumber(onTextChangeEvent);
-                    }
-                }),
-                WidgetObservable.text(email)
-                        .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
-                        {
-                            @Override public KYCAyondoForm call(
-                                    OnTextChangeEvent emailEvent)
-                            {
-                                return KYCAyondoFormFactory.fromEmailEvent(emailEvent);
-                            }
-                        }),
-                AdapterViewObservable.selects(title)
-                        .map(new Func1<OnSelectedEvent, KYCAyondoForm>() {
-                            @Override public KYCAyondoForm call(OnSelectedEvent titleEvent) {
-                                return KYCAyondoFormFactory.fromTitleEvent(titleEvent);
-                            }
-                        }),
-                //AdapterViewObservable.selects(spinnerNationality)
-                //        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
-                //        {
-                //            @Override public KYCAyondoForm call(OnSelectedEvent nationalityEvent)
-                //            {
-                //                Log.v("ayondoStep1", "on ayondo nationality");
-                //                return KYCAyondoFormFactory.fromNationalityEvent(nationalityEvent);
-                //            }
-                //        }),
-                //AdapterViewObservable.selects(spinnerResidency)
-                //        .map(new Func1<OnSelectedEvent, KYCAyondoForm>()
-                //        {
-                //            @Override public KYCAyondoForm call(OnSelectedEvent residencyEvent)
-                //            {
-                //                return KYCAyondoFormFactory.fromResidencyEvent(residencyEvent);
-                //            }
-                //        }),
-                WidgetObservable.text(dob)
-                        .map(new Func1<OnTextChangeEvent, KYCAyondoForm>()
-                        {
-                            @Override public KYCAyondoForm call(OnTextChangeEvent dobEvent)
-                            {
-                                return KYCAyondoFormFactory.fromDobEvent(dobEvent);
-                            }
-                        }))
-                .withLatestFrom(brokerDTOObservable, new Func2<KYCAyondoForm, LiveBrokerDTO, LiveBrokerSituationDTO>()
-                {
-                    @Override public LiveBrokerSituationDTO call(KYCAyondoForm update, LiveBrokerDTO brokerDTO)
-                    {
-                        return new LiveBrokerSituationDTO(brokerDTO, update);
-                    }
-                }).subscribe(
-                        new Action1<LiveBrokerSituationDTO>()
-                        {
-                            @Override public void call(LiveBrokerSituationDTO update)
-                            {
-                                onNext(update);
-                            }
-                        },
-                        new TimberOnErrorAction1(
-                                "Failed to listen to user name, password, full name, email, nationality o residency spinners, or dob")));
 
+        WidgetObservable.text(firstName).withLatestFrom(liveBrokerSituationDTOObservable,
+                (onTextChangeEvent, liveBrokerSituationDTO) -> {
+                    KYCAyondoForm updated = KYCAyondoFormFactory.fromFirstNameEvent(onTextChangeEvent);
+
+                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+                }).subscribe(this::onNext);
+
+        WidgetObservable.text(lastName).withLatestFrom(liveBrokerSituationDTOObservable,
+                (onTextChangeEvent, liveBrokerSituationDTO) -> {
+                    KYCAyondoForm updated = KYCAyondoFormFactory.fromLastNameEvent(onTextChangeEvent);
+
+                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+                }).subscribe(this::onNext);
+
+        WidgetObservable.text(nricNumber)
+                .doOnNext(new Action1<OnTextChangeEvent>()
+                {
+                    @Override public void call(OnTextChangeEvent onTextChangeEvent)
+                    {
+                        if (onTextChangeEvent.text().length() != 12) {
+                            Drawable redAlert = getResources().getDrawable(R.drawable.red_alert);
+                            redAlert.setBounds(0,0,redAlert.getIntrinsicWidth(), redAlert.getIntrinsicHeight());
+                            nricNumber.setError("NRIC must be 12 digits.", redAlert);
+                        }
+                    }
+                })
+                .withLatestFrom(liveBrokerSituationDTOObservable,
+                (onTextChangeEvent, liveBrokerSituationDTO) -> {
+                    KYCAyondoForm updated = KYCAyondoFormFactory.fromIdentificationNumber(onTextChangeEvent);
+
+                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+                }).subscribe(this::onNext);
+
+        WidgetObservable.text(email)
+                .withLatestFrom(liveBrokerSituationDTOObservable,
+                (onTextChangeEvent, liveBrokerSituationDTO) -> {
+                    KYCAyondoForm updated = KYCAyondoFormFactory.fromEmailEvent(onTextChangeEvent);
+
+                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+                }).subscribe(this::onNext);
+
+        WidgetObservable.text(dob).withLatestFrom(liveBrokerSituationDTOObservable,
+                (onTextChangeEvent, liveBrokerSituationDTO) -> {
+                    KYCAyondoForm updated = KYCAyondoFormFactory.fromDobEvent(onTextChangeEvent);
+
+                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+                }).subscribe(this::onNext);
+
+        //AdapterViewObservable.selects(title).subscribe(KYCAyondoFormFactory::fromTitleEvent);
+        //AdapterViewObservable.selects(spinnerNationality).subscribe(KYCAyondoFormFactory::fromNationalityEvent);
+        //AdapterViewObservable.selects(spinnerResidency).subscribe(KYCAyondoFormFactory::fromResidencyEvent);
 
         emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
         emailInvalidMessage = getString(R.string.validation_incorrect_pattern_email);
-        //subscriptions.add(WidgetObservable.text(nricNumber).subscribe(new Action1<OnTextChangeEvent>() {
-        //    @Override
-        //    public void call(OnTextChangeEvent onTextChangeEvent) {
-        //        if(nricNumber.getText().length()==6){
-        //            nricNumber.append("-");
-        //        }
-        //        if(nricNumber.getText().length()==8){
-        //            nricNumber.append("-");
-        //        }
-        //    }
-        //}));
+
         subscriptions.add(
                 WidgetObservable.text(email)
                         .distinctUntilChanged(new Func1<OnTextChangeEvent, CharSequence>()
@@ -377,14 +336,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public void call(CountryDTOForSpinner options)
                             {
-                                Log.v("ayondoStep1", "Gender setting adapter");
                                 LollipopArrayAdapter<GenderDTO> genderAdapter = new LollipopArrayAdapter<>(
                                         getActivity(),
                                         GenderDTO.createList(getResources(), options.genders));
                                 title.setAdapter(genderAdapter);
                                 title.setEnabled(options.genders.size() > 1);
 
-                                Log.v("ayondoStep1", "Gender setting adapter " +genderAdapter.getCount());
                                 CountrySpinnerAdapter phoneCountryCodeAdapter =
                                         new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
                                 phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
@@ -991,9 +948,25 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         this.smsId = smsId;
     }
 
+    private Boolean isAllInputValidated() {
+        if (nricNumber.length() != 12) {
+            Drawable redAlert = getResources().getDrawable(R.drawable.red_alert);
+            redAlert.setBounds(0,0,redAlert.getIntrinsicWidth(), redAlert.getIntrinsicHeight());
+            nricNumber.setError("NRIC must be 12 digits.", redAlert);
+        }
+
+        return true;
+    }
+
+    @SuppressWarnings("unused")
     @OnClick(R.id.btn_join_competition)
     public void onClickedJoinButton() {
-        if (nricNumber.length() != 12 || firstName.length() == 0 || lastName.length() == 0 || !emailPattern.matcher(email.getText()).matches() || !buttonVerifyPhone.getText().toString().equalsIgnoreCase("verified") || dob.length() == 0) {
+
+        if (!isAllInputValidated()) {
+            return;
+        }
+
+        if (firstName.length() == 0 || lastName.length() == 0 || !emailPattern.matcher(email.getText()).matches() || !buttonVerifyPhone.getText().toString().equalsIgnoreCase("verified") || dob.length() == 0) {
             return;
         }
 
@@ -1013,7 +986,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         @Override public void call(ProviderDTO providerDTO)
                         {
                             ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
-                            //thRouter.open("tradehero://providers/" + providerId.key, getActivity().getApplicationContext());
                             progress.dismiss();
                         }
                     }, new Action1<Throwable>()
@@ -1030,7 +1002,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             @Override public void call(Throwable throwable)
             {
-
                 progress.dismiss();
             }
         });
