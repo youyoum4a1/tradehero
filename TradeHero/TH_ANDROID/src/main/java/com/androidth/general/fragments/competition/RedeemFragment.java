@@ -79,24 +79,19 @@ public class RedeemFragment extends DashboardFragment {
     }
     private void validate(String str){
         serviceRx.validatedRedeemCode(routedProviderId, str).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(response->{
-            JsonObject obj = new JsonParser().parse(response).getAsJsonObject();
-            JsonElement element = obj.get("Message");
             redeemServerResponse.setTextColor(Color.parseColor("#66B535"));
             redeemServerResponse.setVisibility(View.VISIBLE);
-            redeemServerResponse.setText(element.getAsString());
-            Log.i("Message",""+response);
+            redeemServerResponse.setText(response);
         }, error->{
             RetrofitError err = (RetrofitError) error;
             String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
             JsonObject obj = new JsonParser().parse(string).getAsJsonObject();
             JsonElement element = obj.get("Message");
-            Log.v("failure", element.getAsString());
 
+            redeemServerResponse.setTextColor(Color.parseColor("#B71C1C"));
             redeemServerResponse.setVisibility(View.VISIBLE);
             redeemServerResponse.setText(element.getAsString());
-            Log.i("Message",""+error.getMessage());
         });
     }
-
 }
 

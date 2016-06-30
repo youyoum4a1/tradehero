@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
@@ -30,6 +32,9 @@ import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.key.ProviderListKey;
+import com.androidth.general.api.kyc.BrokerApplicationDTO;
+import com.androidth.general.api.kyc.EmptyKYCForm;
+import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
@@ -41,6 +46,7 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
@@ -182,15 +188,21 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 if (providerDTO != null) {
                     if (btnNext != null)
                     {
-                        btnNext.setVisibility(View.GONE);
+                        if(providerDTO.isUserEnrolled){
+                            btnNext.setVisibility(View.VISIBLE);
+                            joinCompetitionButton.setVisibility(View.GONE);
+                        }else{
+                            btnNext.setVisibility(View.GONE);
+                            joinCompetitionButton.setVisibility(View.VISIBLE);
+                            joinCompetitionButton.setEnabled(true);
+                        }
+
                     }
 
                     if (btnPrev != null)
                     {
                         btnPrev.setVisibility(View.GONE);
                     }
-
-                    joinCompetitionButton.setEnabled(true);
                 }
             });
         }
@@ -379,13 +391,26 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             UserProfileDTO currentUserProfile)
                     {
                         ////noinspection ConstantConditions
-                        populate((KYCAyondoForm) situation.kycForm);
-                        populateGender((KYCAyondoForm) situation.kycForm, options.genders);
-                        populateMobileCountryCode((KYCAyondoForm) situation.kycForm, currentUserProfile,
-                                options.allowedMobilePhoneCountryDTOs);
-                        populateNationality((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
-                        populateResidency((KYCAyondoForm) situation.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
-                        return situation;
+                        LiveBrokerSituationDTO latestDTO = situation;
+
+                        if (situation.kycForm instanceof EmptyKYCForm) {
+                            KYCAyondoForm defaultForm = new KYCAyondoForm();
+                            defaultForm.pickFromWithDefaultValues(currentUserProfile);
+
+                            latestDTO = new LiveBrokerSituationDTO(situation.broker, defaultForm);
+                        }
+
+                        if ((KYCAyondoForm) latestDTO.kycForm != null)
+                        {
+                            populate((KYCAyondoForm) latestDTO.kycForm);
+                            populateGender((KYCAyondoForm) latestDTO.kycForm, options.genders);
+                            populateMobileCountryCode((KYCAyondoForm) latestDTO.kycForm, currentUserProfile,
+                                    options.allowedMobilePhoneCountryDTOs);
+                            populateNationality((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
+                            populateResidency((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
+                        }
+
+                        return latestDTO;
                     }
                 })
                 .subscribe(
@@ -659,7 +684,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         String nricNumberText = kycForm.getIdentificationNumber();
-        if (this.nricNumber == null && nricNumberText != null && !nricNumberText.equals(nricNumber.getText().toString()))
+        if (this.nricNumber != null && nricNumberText != null && !nricNumberText.equals(nricNumber.getText().toString()))
         {
             nricNumber.setText(nricNumberText);
         }
@@ -968,50 +993,48 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         progress.setMessage("Loading...");
         progress.show();
 
+        KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
 
-        liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get()).subscribe(new Action1<Boolean>()
+        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(new Action1<BrokerApplicationDTO>()
         {
-            @Override public void call(Boolean aBoolean)
+            @Override public void call(BrokerApplicationDTO brokerApplicationDTO)
             {
-                if (aBoolean)
+                liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get()).subscribe(new Action1<Boolean>()
                 {
-                    ProviderListKey key = new ProviderListKey();
-                    providerListCache.invalidate(key);
-                    providerListCache.get(key).subscribe(new Action1<android.util.Pair<ProviderListKey, ProviderDTOList>>() {
-                        @Override
-                        public void call(android.util.Pair<ProviderListKey, ProviderDTOList> providerListKeyProviderDTOListPair) {
-                            ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
-                            progress.dismiss();
-                        }
-                    }, new Action1<Throwable>()
+                    @Override public void call(Boolean aBoolean)
                     {
-                        @Override public void call(Throwable throwable)
+                        if (aBoolean)
                         {
-                            progress.dismiss();
+                            ProviderListKey key = new ProviderListKey();
+                            providerListCache.invalidate(key);
+                            providerListCache.get(key).subscribe(new Action1<android.util.Pair<ProviderListKey, ProviderDTOList>>() {
+                                @Override
+                                public void call(android.util.Pair<ProviderListKey, ProviderDTOList> providerListKeyProviderDTOListPair) {
+                                    ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
+                                    progress.dismiss();
+                                }
+                            }, new Action1<Throwable>()
+                            {
+                                @Override public void call(Throwable throwable)
+                                {
+                                    progress.dismiss();
+                                }
+                            });
                         }
-                    });
-
-//                    providerListCache.fetch(new ProviderListKey()).subscribe(new Action1<ProviderDTOList>()
-//                    {
-//                        @Override public void call(ProviderDTOList providerDTO)
-//                        {
-//                            ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
-//                            progress.dismiss();
-//                        }
-//                    }, new Action1<Throwable>()
-//                    {
-//                        @Override public void call(Throwable throwable)
-//                        {
-//                            progress.dismiss();
-//                        }
-//                    });
-
-                }
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        progress.dismiss();
+                    }
+                });
             }
         }, new Action1<Throwable>()
         {
             @Override public void call(Throwable throwable)
             {
+                THToast.show(throwable.getMessage());
                 progress.dismiss();
             }
         });
