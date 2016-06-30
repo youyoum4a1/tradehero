@@ -57,7 +57,8 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         StepStatus thirdStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(2);
         if (btnNext != null)
         {
-            btnNext.setEnabled(thirdStatus != null && thirdStatus.equals(StepStatus.COMPLETE));
+//            btnNext.setEnabled(thirdStatus != null && thirdStatus.equals(StepStatus.COMPLETE));
+            btnNext.setEnabled(true);
         }
     }
 
@@ -222,7 +223,9 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull List<TradingPerQuarter> tradingPerQuarters)
     {
         KYCAyondoForm update = new KYCAyondoForm();
-        TradingPerQuarter savedTrading = kycForm.getTradingPerQuarter();
+        TradingPerQuarter savedTrading = kycForm.getTradingPerQuarter()==TradingPerQuarter.EMPTY?
+                TradingPerQuarter.ONE_TO_FIVE: kycForm.getTradingPerQuarter();
+
         Integer indexTrading = populateSpinner(tradingPerQuarterSpinner,
                 savedTrading,
                 tradingPerQuarters);

@@ -57,7 +57,8 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         StepStatus secondStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(1);
         if (btnNext != null)
         {
-            btnNext.setEnabled(secondStatus != null && secondStatus.equals(StepStatus.COMPLETE));
+//            btnNext.setEnabled(secondStatus != null && secondStatus.equals(StepStatus.COMPLETE));
+            btnNext.setEnabled(true);//jeff todo
         }
     }
 
@@ -218,7 +219,9 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull List<AnnualIncomeRange> incomeRanges)
     {
         KYCAyondoForm update = new KYCAyondoForm();
-        AnnualIncomeRange savedAnnualIncomeRange = kycForm.getAnnualIncomeRange();
+        AnnualIncomeRange savedAnnualIncomeRange = kycForm.getAnnualIncomeRange()==AnnualIncomeRange.EMPTY?
+                AnnualIncomeRange.FROM15KUSDTO40KUSD : kycForm.getAnnualIncomeRange();
+
         Integer indexIncome = populateSpinner(annualIncomeSpinner,
                 savedAnnualIncomeRange,
                 incomeRanges);
@@ -245,7 +248,9 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull List<NetWorthRange> netWorthRanges)
     {
         KYCAyondoForm update = new KYCAyondoForm();
-        NetWorthRange savedNetWorthRange = kycForm.getNetWorthRange();
+        NetWorthRange savedNetWorthRange = kycForm.getNetWorthRange()==NetWorthRange.EMPTY?
+                NetWorthRange.FROM15KUSDTO40KUSD: kycForm.getNetWorthRange();
+
         Integer indexWorth = populateSpinner(netWorthSpinner,
                 savedNetWorthRange,
                 netWorthRanges);
@@ -272,7 +277,9 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull List<PercentNetWorthForInvestmentRange> netWorthRanges)
     {
         KYCAyondoForm update = new KYCAyondoForm();
-        PercentNetWorthForInvestmentRange savedNetWorthRange = kycForm.getPercentNetWorthForInvestmentRange();
+        PercentNetWorthForInvestmentRange savedNetWorthRange = kycForm.getPercentNetWorthForInvestmentRange()==PercentNetWorthForInvestmentRange.EMPTY?
+                PercentNetWorthForInvestmentRange.LESSTHAN25P : kycForm.getPercentNetWorthForInvestmentRange();
+
         Integer indexWorth = populateSpinner(percentageInvestmentSpinner,
                 savedNetWorthRange,
                 netWorthRanges);
@@ -299,7 +306,9 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull List<EmploymentStatus> employmentStatuses)
     {
         KYCAyondoForm update = new KYCAyondoForm();
-        EmploymentStatus savedEmploymentStatus = kycForm.getEmploymentStatus();
+        EmploymentStatus savedEmploymentStatus = kycForm.getEmploymentStatus()==EmploymentStatus.EMPTY?
+                EmploymentStatus.EMPLOYED:kycForm.getEmploymentStatus();
+
         Integer indexStatus = populateSpinner(employmentStatusSpinner,
                 savedEmploymentStatus,
                 employmentStatuses);

@@ -224,13 +224,7 @@ public class EmailSignUpFragment extends Fragment
 
                         final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
                         return userServiceWrapper.signUpWithEmailRx(authData, userFormDTO)
-                                .map(new Func1<UserProfileDTO, Pair<AuthData, UserProfileDTO>>()
-                                {
-                                    @Override public Pair<AuthData, UserProfileDTO> call(UserProfileDTO userProfileDTO)
-                                    {
-                                        return Pair.create(authData, userProfileDTO);
-                                    }
-                                })
+                                .map(userProfileDTO -> Pair.create(authData, userProfileDTO))
                                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
                     }
                 })
