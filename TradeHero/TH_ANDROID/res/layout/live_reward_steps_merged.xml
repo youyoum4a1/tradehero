@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <ImageView
-      android:layout_width="@dimen/medium_image_w_h"
-      android:layout_height="@dimen/medium_image_w_h"
-      android:src="@drawable/ic_free_100"
-      android:alpha="1.0"
-      style="@style/TradeHero.Live.RewardWidget"
-      />
+  <!--<ImageView-->
+      <!--android:layout_width="@dimen/medium_image_w_h"-->
+      <!--android:layout_height="@dimen/medium_image_w_h"-->
+      <!--android:src="@drawable/ic_free_100"-->
+      <!--android:alpha="1.0"-->
+      <!--style="@style/TradeHero.Live.RewardWidget"-->
+      <!--/>-->
 
   <ImageView
       android:id="@+id/live_reward_20"
