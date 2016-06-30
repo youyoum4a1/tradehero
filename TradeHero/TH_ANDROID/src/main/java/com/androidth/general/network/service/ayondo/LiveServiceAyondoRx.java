@@ -17,6 +17,7 @@ import com.androidth.general.api.kyc.ayondo.UsernameValidationResultDTO;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 import rx.Observable;
 
@@ -43,8 +44,10 @@ public interface LiveServiceAyondoRx
     Observable<UsernameValidationResultDTO> validateUserName(
             @Query("username") String username);
 
-    @POST("/kyc/ayondo/createOrUpdateLead")
-    Observable<BrokerApplicationDTO> createOrUpdateLead(@Body AyondoLeadDTO ayondoLeadDTO);
+    @POST("/kyc/ayondo/createOrUpdateLead/{providerId}")
+    Observable<BrokerApplicationDTO> createOrUpdateLead(
+            @Path("providerId") int providerId,
+            @Body AyondoLeadDTO ayondoLeadDTO);
 
     @POST("/kyc/ayondo/checkidentity")
     Observable<AyondoIDCheckDTO> checkNeedIdentity(
