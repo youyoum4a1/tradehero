@@ -58,6 +58,7 @@ public class ProviderDTO implements DTO
     public String displayURL;
     public String tradeNowStartDateUtc;
     public boolean canTradeNow;
+    public boolean isStrictlyForProviderCountry;
 
     public PortfolioCompactDTO associatedPortfolio;
 
@@ -216,6 +217,7 @@ public class ProviderDTO implements DTO
                 ", vip=" + vip +
                 ", tradeNowStartDateUtc=" + tradeNowStartDateUtc +
                 ", canTradeNow=" + canTradeNow +
+                ", isStrictlyForProviderCountry=" + isStrictlyForProviderCountry +
                 '}';
     }
 }
