@@ -6,7 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.androidth.general.R;
@@ -71,6 +74,7 @@ import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.GraphicUtil;
 import com.androidth.general.utils.route.THRouter;
+import com.squareup.picasso.Picasso;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
@@ -449,7 +453,28 @@ public class MainCompetitionFragment extends DashboardFragment
         }
         else
         {
-            setActionBarTitle(this.providerDTO.name);
+            setActionBarTitle("");
+            //setActionBarColor(this.providerDTO.hexColor);
+            setActionBarImage(this.providerDTO.navigationLogoUrl);
+
+        }
+    }
+    private boolean setActionBarImage(String url){
+        try {
+            ActionBar actionBar = getSupportActionBar();
+
+            ImageView imageView = new ImageView(actionBar.getThemedContext());
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Picasso.with(actionBar.getThemedContext()).load(url).into(imageView);
+            ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
+                    ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
+            actionBar.setElevation(5);
+            actionBar.setCustomView(imageView, layoutParams);
+            actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+            return true;
+        }
+        catch (Exception e){
+            return false;
         }
     }
 

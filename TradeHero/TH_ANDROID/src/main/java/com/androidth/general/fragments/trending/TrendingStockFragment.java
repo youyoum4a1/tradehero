@@ -248,31 +248,31 @@ public class TrendingStockFragment extends TrendingBaseFragment
 
     private void fetchProviderList()
     {
-        //onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
-        //        this,
-        //        providerListCache.get(new ProviderListKey())
-        //                .map(new PairGetSecond<ProviderListKey, ProviderDTOList>()))
-        //        .observeOn(AndroidSchedulers.mainThread())
-        //        .subscribe(
-        //                new Action1<ProviderDTOList>()
-        //                {
-        //                    @Override public void call(ProviderDTOList list)
-        //                    {
-        //                        linkWith(list);
-        //                    }
-        //                },
-        //                new ToastOnErrorAction1(getString(R.string.error_fetch_provider_competition_list))));
-
-        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(this, providerListCache.fetch(new ProviderListKey()))
+        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
+                this,
+                providerListCache.get(new ProviderListKey())
+                        .map(new PairGetSecond<ProviderListKey, ProviderDTOList>()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                new Action1<ProviderDTOList>()
-                {
-                    @Override public void call(ProviderDTOList providerDTOs)
-                    {
-                        linkWith(providerDTOs);
-                    }
-                }, new ToastOnErrorAction1(getString(R.string.error_fetch_provider_competition_list))));
+                        new Action1<ProviderDTOList>()
+                        {
+                            @Override public void call(ProviderDTOList list)
+                            {
+                                linkWith(list);
+                            }
+                        },
+                        new ToastOnErrorAction1(getString(R.string.error_fetch_provider_competition_list))));
+
+//        onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(this, providerListCache.fetch(new ProviderListKey()))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                new Action1<ProviderDTOList>()
+//                {
+//                    @Override public void call(ProviderDTOList providerDTOs)
+//                    {
+//                        linkWith(providerDTOs);
+//                    }
+//                }, new ToastOnErrorAction1(getString(R.string.error_fetch_provider_competition_list))));
     }
 
     protected void linkWith(@NonNull ProviderDTOList providers)

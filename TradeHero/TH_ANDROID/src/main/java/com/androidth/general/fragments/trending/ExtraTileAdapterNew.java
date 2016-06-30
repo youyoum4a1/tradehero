@@ -42,7 +42,7 @@ public class ExtraTileAdapterNew extends BaseAdapter
         }
         this.random = new Random(wrappedAdapter.hashCode());
         this.extraTiles = new LinkedHashMap<>();
-        putCompetitionExtraTilePosition();
+        //putCompetitionExtraTilePosition();
         //putFirstExtraTilePosition();
     }
     //</editor-fold>
@@ -60,6 +60,11 @@ public class ExtraTileAdapterNew extends BaseAdapter
     public void setProviderEnabled(boolean isProviderEnabled)
     {
         this.isProviderEnabled = isProviderEnabled;
+        if(isProviderEnabled)
+        {
+            putCompetitionExtraTilePosition();
+            notifyDataSetChanged();
+        }
     }
 
     @Override public void registerDataSetObserver(DataSetObserver observer)
@@ -219,13 +224,15 @@ public class ExtraTileAdapterNew extends BaseAdapter
         putFirstExtraTilePosition();
         notifyDataSetChanged();
     }
+
     public void newClearExtraTiles()
     {
-        extraTiles.clear();
-        putCompetitionExtraTilePosition();
-        notifyDataSetChanged();
+        if(isProviderEnabled) {
+            extraTiles.clear();
+            putCompetitionExtraTilePosition();
+            notifyDataSetChanged();
+        }
     }
-
 
     protected void putFirstExtraTilePosition()
     {
@@ -234,7 +241,7 @@ public class ExtraTileAdapterNew extends BaseAdapter
     protected void putCompetitionExtraTilePosition()
     {
         this.extraTiles.put(0, getCompetitionTile());
-        this.extraTiles.put(random.nextInt(EXTRA_TILE_RANGE)+8, getCompetitionTile());
+        //this.extraTiles.put(random.nextInt(EXTRA_TILE_RANGE)+8, getCompetitionTile());
     }
 
     @NonNull protected TileType getCompetitionTile()
@@ -263,11 +270,12 @@ public class ExtraTileAdapterNew extends BaseAdapter
     }
     protected void addRandomCompetitionTiles(int wrappedCount)
     {
-        int maxExtraPosition = getMaxExtraTilePosition();
-        while (wrappedCount > maxExtraPosition + EXTRA_TILE_MIN_DISTANCE)
-        {
-            maxExtraPosition += getNextExtraTileOffset();
-            extraTiles.put(maxExtraPosition, getCompetitionTile());
+        if(isProviderEnabled) {
+            int maxExtraPosition = getMaxExtraTilePosition();
+            while (wrappedCount > maxExtraPosition + EXTRA_TILE_MIN_DISTANCE) {
+                maxExtraPosition += getNextExtraTileOffset();
+                extraTiles.put(maxExtraPosition, getCompetitionTile());
+            }
         }
     }
 
