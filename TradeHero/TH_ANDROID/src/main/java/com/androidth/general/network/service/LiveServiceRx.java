@@ -51,10 +51,14 @@ public interface LiveServiceRx {
     Observable<ArrayList<CountryDocumentTypes>> documentsForCountry(
             @Path("countrycode") String countrycode);
 
-@GET("/competition/enroll/{providerId}/{userId}")
+    @GET("/competition/enroll/{providerId}/{userId}")
     Observable<Boolean>enrollCompetition(
             @Path("providerId") int providerId,
             @Path("userId") int userId
     );
 
+    @GET("/{validateURL}")
+    Observable<Boolean>validateData(
+            @Path("validateURL") String validateURL
+    );
 }

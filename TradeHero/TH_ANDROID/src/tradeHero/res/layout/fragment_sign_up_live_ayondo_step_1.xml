@@ -171,20 +171,6 @@
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:spinnerMode="dropdown" />
 
-
-
-      <!--<Button-->
-          <!--android:id="@+id/btn_verify_phone"-->
-          <!--style="@style/TH.Button.LiveForm"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:layout_alignParentBottom="true"-->
-          <!--android:layout_alignParentEnd="true"-->
-          <!--android:layout_alignParentRight="true"-->
-          <!--android:text="@string/verify"-->
-          <!--tools:enabled="false"-->
-          <!--/>-->
-
       <android.support.design.widget.TextInputLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"

@@ -34,6 +34,7 @@ import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.key.ProviderListKey;
 import com.androidth.general.api.kyc.BrokerApplicationDTO;
+import com.androidth.general.api.kyc.CountryDocumentTypes;
 import com.androidth.general.api.kyc.EmptyKYCForm;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.PhoneNumberVerifiedStatusDTO;
@@ -75,7 +76,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -95,6 +98,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func3;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -292,17 +296,60 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
 
         // clicks observable
-        ViewObservable.clicks(nricVerifyButton).subscribe(onClickEvent -> {
-            switch (phoneVerifyButton.getState()) {
-                case BEGIN:
-                    nricNumber.setError("NRIC must be 12 digits.", noErrorIconDrawable);
-                    nricVerifyButton.setState(VerifyButtonState.ERROR);
-                    break;
-                case PENDING:
-                case VALIDATE:
-                    break;
-            }
-        });
+        ViewObservable.clicks(nricVerifyButton)
+                .withLatestFrom(liveBrokerSituationDTOObservable, (onClickEvent, liveBrokerSituationDTO) -> liveBrokerSituationDTO)
+                .subscribe(liveBrokerSituationDTO -> {
+                    switch (nricVerifyButton.getState()) {
+                        case BEGIN:
+                            nricNumber.setError("NRIC must be 12 digits.", noErrorIconDrawable);
+                            nricVerifyButton.setState(VerifyButtonState.ERROR);
+                            break;
+                        case PENDING:
+                        case VALIDATE:
+                            if (liveBrokerSituationDTO.kycForm instanceof KYCAyondoForm) {
+                                KYCAyondoForm form = (KYCAyondoForm)liveBrokerSituationDTO.kycForm;
+
+                                ProgressDialog progress = new ProgressDialog(getContext());
+                                progress.setMessage("Loading...");
+                                progress.show();
+
+                                liveServiceWrapper.documentsForCountry(form.getNationality().getAlpha2()).subscribe(
+                                        countryDocumentTypes -> {
+                                            // possible have multiple items, currently UI is hardcoded for NRIC, I(James) still not sure how to handle this things because the form is not totally dynamic...
+                                            // need to thing some ways to handle all the cases and make it dynamic.
+
+                                            for (CountryDocumentTypes countryDocumentType : countryDocumentTypes)
+                                            {
+                                                if (countryDocumentType.validation != null)
+                                                {
+                                                    Map queryParameters = new HashMap<String, String>();
+                                                    queryParameters.put(LiveServiceWrapper.PROVIDER_ID, Integer.toString(getProviderId(getArguments())));
+                                                    queryParameters.put(LiveServiceWrapper.INPUT, nricNumber.getText().toString());
+                                                    liveServiceWrapper.validateData(countryDocumentType.validation, queryParameters)
+                                                            .subscribeOn(Schedulers.newThread())
+                                                            .observeOn(AndroidSchedulers.mainThread())
+                                                            .subscribe(aBoolean -> {
+                                                                if (aBoolean)
+                                                                {
+                                                                    nricVerifyButton.setState(VerifyButtonState.FINISH);
+                                                                }
+
+                                                                progress.dismiss();
+                                                            }, throwable -> {
+                                                                THToast.show(throwable.getMessage());
+                                                                nricVerifyButton.setState(VerifyButtonState.ERROR);
+                                                                progress.dismiss();
+                                                            });
+                                                }
+                                            }
+                                        }, throwable -> {
+                                            THToast.show(throwable.getMessage());
+                                            progress.dismiss();
+                                        });
+                            }
+                            break;
+                    }
+                });
 
         ViewObservable.clicks(emailVerifybutton).subscribe(onClickEvent -> {
             switch (emailVerifybutton.getState()) {
@@ -406,6 +453,19 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                         if ((KYCAyondoForm) latestDTO.kycForm != null)
                         {
+                            ProviderDTO providerDTO = providerCache.getCachedValue(new ProviderId(getProviderId(getArguments())));
+
+                            if (providerDTO != null) {
+                                if (providerDTO.isStrictlyForProviderCountry && providerDTO.providerCountries.length == 1) {
+                                    KYCAyondoForm updated = new KYCAyondoForm();
+                                    updated.setNationality(CountryCode.getByCode(providerDTO.providerCountries[0]));
+                                    updated.setResidency(CountryCode.getByCode(providerDTO.providerCountries[0]));
+
+                                    //latestDTO = new LiveBrokerSituationDTO(latestDTO.broker, updated);
+                                    onNext(new LiveBrokerSituationDTO(latestDTO.broker, updated));
+                                }
+                            }
+
                             populate((KYCAyondoForm) latestDTO.kycForm);
                             populateGender((KYCAyondoForm) latestDTO.kycForm, options.genders);
                             populateMobileCountryCode((KYCAyondoForm) latestDTO.kycForm, currentUserProfile,
@@ -1023,49 +1083,21 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
 
-        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(new Action1<BrokerApplicationDTO>()
-        {
-            @Override public void call(BrokerApplicationDTO brokerApplicationDTO)
-            {
-                liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get()).subscribe(new Action1<Boolean>()
-                {
-                    @Override public void call(Boolean aBoolean)
+        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(
+                brokerApplicationDTO -> liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get())
+                        .subscribe(aBoolean -> {
+                    if (aBoolean)
                     {
-                        if (aBoolean)
-                        {
-                            ProviderListKey key = new ProviderListKey();
-                            providerListCache.invalidate(key);
-                            providerListCache.get(key).subscribe(new Action1<android.util.Pair<ProviderListKey, ProviderDTOList>>() {
-                                @Override
-                                public void call(android.util.Pair<ProviderListKey, ProviderDTOList> providerListKeyProviderDTOListPair) {
+                        ProviderListKey key = new ProviderListKey();
+                        providerListCache.invalidate(key);
+                        providerListCache.get(key).subscribe(providerListKeyProviderDTOListPair -> {
                                     ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
                                     THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
-                                    progress.dismiss();
-                                }
-                            }, new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable throwable)
-                                {
-                                    progress.dismiss();
-                                }
-                            });
-                        }
+                        }, throwable -> progress.dismiss());
                     }
-                }, new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable throwable)
-                    {
-                        progress.dismiss();
-                    }
+                }, throwable -> progress.dismiss()), throwable -> {
+                    THToast.show(throwable.getMessage());
+                    progress.dismiss();
                 });
-            }
-        }, new Action1<Throwable>()
-        {
-            @Override public void call(Throwable throwable)
-            {
-                THToast.show(throwable.getMessage());
-                progress.dismiss();
-            }
-        });
     }
 }
