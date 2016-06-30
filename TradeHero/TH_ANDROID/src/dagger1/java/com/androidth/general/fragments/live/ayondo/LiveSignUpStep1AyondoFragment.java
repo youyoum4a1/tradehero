@@ -29,7 +29,9 @@ import android.widget.TextView;
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
 import com.androidth.general.api.competition.ProviderDTO;
+import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.competition.key.ProviderListKey;
 import com.androidth.general.api.kyc.BrokerApplicationDTO;
 import com.androidth.general.api.kyc.EmptyKYCForm;
 import com.androidth.general.api.kyc.KYCForm;
@@ -53,6 +55,7 @@ import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.network.service.KycServicesRx;
 import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
+import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -126,6 +129,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.btn_join_competition) Button joinCompetitionButton;
 
     @Inject ProviderCacheRx providerCache;
+    @Inject ProviderListCacheRx providerListCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
@@ -1001,10 +1005,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         if (aBoolean)
                         {
-                            providerCache.fetch(providerId).subscribe(new Action1<ProviderDTO>()
-                            {
-                                @Override public void call(ProviderDTO providerDTO)
-                                {
+                            ProviderListKey key = new ProviderListKey();
+                            providerListCache.invalidate(key);
+                            providerListCache.get(key).subscribe(new Action1<android.util.Pair<ProviderListKey, ProviderDTOList>>() {
+                                @Override
+                                public void call(android.util.Pair<ProviderListKey, ProviderDTOList> providerListKeyProviderDTOListPair) {
                                     ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
                                     progress.dismiss();
                                 }
