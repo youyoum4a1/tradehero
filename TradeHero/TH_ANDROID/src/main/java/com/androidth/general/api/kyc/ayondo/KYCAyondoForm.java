@@ -15,11 +15,14 @@ import com.androidth.general.api.kyc.PercentNetWorthForInvestmentRange;
 import com.androidth.general.api.kyc.StepStatus;
 import com.androidth.general.api.kyc.TradingPerQuarter;
 import com.androidth.general.api.market.Country;
+import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
 import com.androidth.general.models.fastfill.ResidenceScannedDocumentType;
 import com.androidth.general.models.fastfill.ScanReference;
 import com.androidth.general.models.fastfill.ScannedDocument;
+import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.utils.DateUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.neovisionaries.i18n.CountryCode;
@@ -28,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by ayushnvijay on 6/6/16.
@@ -108,6 +112,19 @@ public class KYCAyondoForm implements KYCForm
     public int getBrokerNameResId()
     {
         return R.string.broker_name_ayondo;
+    }
+
+    public void pickFromWithDefaultValues(@NonNull UserProfileDTO userProfileDTO) {
+        this.setGender(Gender.MALE);
+
+        if (!userProfileDTO.email.endsWith("@facebook.com")) {
+            this.setEmail(userProfileDTO.email);
+        }
+
+        this.firstName = userProfileDTO.firstName;
+        this.lastName = userProfileDTO.lastName;
+        this.nationality = CountryCode.getByCode(userProfileDTO.countryCode);
+        this.residency = CountryCode.getByCode(userProfileDTO.countryCode);
     }
 
     @Override public void pickFrom(@NonNull ScannedDocument scannedDocument)

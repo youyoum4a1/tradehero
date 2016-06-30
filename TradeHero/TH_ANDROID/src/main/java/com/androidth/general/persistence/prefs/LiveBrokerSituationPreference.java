@@ -87,19 +87,11 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
 
     @NonNull @RxLogObservable
     public Observable<LiveBrokerSituationDTO> getLiveBrokerSituationDTOObservable() {
-        Timber.d("!!!1");
         if (liveBrokerSituationDTOObservable == null) {
-            Timber.d("!!!2");
             liveBrokerSituationDTOObservable = liveBrokerSituationDTOPublishSubject
                     .startWith(Observable.defer(new Func0<Observable<LiveBrokerSituationDTO>>() {
                         @Override public Observable<LiveBrokerSituationDTO> call() {
-                            Timber.d("!!!3");
-                            return Observable.just(get()).doOnNext(new Action1<LiveBrokerSituationDTO>() {
-                                @Override
-                                public void call(LiveBrokerSituationDTO liveBrokerSituationDTO) {
-                                    Timber.d("!!!"+liveBrokerSituationDTO.toString());
-                                }
-                            });
+                            return Observable.just(get());
                         }
                     }))
                     .distinctUntilChanged();
