@@ -183,15 +183,21 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 if (providerDTO != null) {
                     if (btnNext != null)
                     {
-                        btnNext.setVisibility(View.GONE);
+                        if(providerDTO.isUserEnrolled){
+                            btnNext.setVisibility(View.VISIBLE);
+                            joinCompetitionButton.setVisibility(View.GONE);
+                        }else{
+                            btnNext.setVisibility(View.GONE);
+                            joinCompetitionButton.setVisibility(View.VISIBLE);
+                            joinCompetitionButton.setEnabled(true);
+                        }
+
                     }
 
                     if (btnPrev != null)
                     {
                         btnPrev.setVisibility(View.GONE);
                     }
-
-                    joinCompetitionButton.setEnabled(true);
                 }
             });
         }
