@@ -275,6 +275,17 @@ public enum Country
     }
     //</editor-fold>
 
+    public Country getCountryByCode(String code) {
+        try
+        {
+            return Enum.valueOf(Country.class, code);
+        }
+        catch (IllegalArgumentException e)
+        {
+            return null;
+        }
+    }
+
     @DrawableRes public static int getCountryLogo(@DrawableRes int defaultResId, @Nullable String countryCode)
     {
         if (countryCode == null)
