@@ -121,6 +121,7 @@ android {
 
     buildTypes {
         debug {
+            resValue "string", "google_places_api_key", "AIzaSyDUqz0A077IaXZ-8SNwGmpqzEEzL-d2yFc"
             minifyEnabled "true".equals(System.getenv("PROGUARD_FOR_DEBUG"))
             proguardFile 'proguard/proguard-android-fast.txt'
             //zipAlign true
@@ -134,6 +135,7 @@ android {
             debuggable true
         }
         release {
+            resValue "string", "google_places_api_key", "AIzaSyDUqz0A077IaXZ-8SNwGmpqzEEzL-d2yFc"
             minifyEnabled true
             proguardFile 'proguard/proguard-android.txt'
             shrinkResources false

@@ -11,7 +11,7 @@
 
     <meta-data
         android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyBrdCIJh7VAJ92_ROwHBdNNp_2QmmZp9TM"
+        android:value="@string/google_places_api_key"
         />
 
   </application>

@@ -5,7 +5,7 @@
 
     <meta-data
         android:name="com.google.android.geo.API_KEY"
-        android:value="AIzaSyCDjW5JZRXAoOCbxPNHEScHvOH3dQ60eow"
+        android:value="@string/google_places_api_key"
         />
 
     <receiver android:name="com.appsflyer.MultipleInstallBroadcastReceiver" android:exported="true">
