@@ -3,6 +3,7 @@ package com.androidth.general.fragments.live.ayondo;
 import android.support.annotation.NonNull;
 
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
+import com.androidth.general.api.market.Country;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
@@ -87,6 +88,20 @@ public class KYCAyondoFormFactory
                             ((CountrySpinnerAdapter.DTO) residencyEvent.parent.getItemAtPosition(
                                     ((OnItemSelectedEvent) residencyEvent).position)).country.name());
             created.setResidency(newResidency);
+        }
+        return created;
+    }
+
+    @NonNull public static KYCAyondoForm fromPhoneCountryCode(@NonNull OnSelectedEvent phoneCountryCodeEvent)
+    {
+        KYCAyondoForm created = new KYCAyondoForm();
+        if (phoneCountryCodeEvent instanceof OnItemSelectedEvent)
+        {
+            CountrySpinnerAdapter.DTO selectedDTO = (CountrySpinnerAdapter.DTO) phoneCountryCodeEvent.parent.getItemAtPosition(
+                    ((OnItemSelectedEvent) phoneCountryCodeEvent).position);
+
+            created.setPhonePrimaryCountryCode(selectedDTO.country);
+
         }
         return created;
     }
