@@ -51,7 +51,7 @@ public class LiveRewardWidget extends LinearLayout
     private void init(@Nullable AttributeSet attrs)
     {
         setOrientation(HORIZONTAL);
-        setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM);
+        setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL);
         LayoutInflater.from(getContext()).inflate(R.layout.live_reward_steps_merged, this, true);
         ButterKnife.bind(this);
         if (attrs != null)

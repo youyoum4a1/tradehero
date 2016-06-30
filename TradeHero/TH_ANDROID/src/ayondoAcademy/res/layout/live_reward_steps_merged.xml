@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-  <ImageView
-      android:layout_width="@dimen/medium_image_w_h"
-      android:layout_height="@dimen/medium_image_w_h"
-      android:src="@drawable/ic_free_100"
-      android:alpha="1.0"
-      style="@style/TradeHero.Live.RewardWidget"
-      />
+  <!--<ImageView-->
+      <!--android:layout_width="@dimen/medium_image_w_h"-->
+      <!--android:layout_height="@dimen/medium_image_w_h"-->
+      <!--android:src="@drawable/ic_free_100"-->
+      <!--android:alpha="1.0"-->
+      <!--style="@style/TradeHero.Live.RewardWidget"-->
+      <!--/>-->
 
   <ImageView
       android:id="@+id/live_reward_20"
-      android:layout_width="@dimen/medium_image_w_h"
+      android:layout_width="@dimen/big_image_w_h"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_reward_20"
       style="@style/TradeHero.Live.RewardWidget"
@@ -19,7 +19,7 @@
 
   <ImageView
       android:id="@+id/live_reward_40"
-      android:layout_width="@dimen/medium_image_w_h"
+      android:layout_width="@dimen/big_image_w_h"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_reward_40"
       style="@style/TradeHero.Live.RewardWidget"
@@ -27,7 +27,7 @@
 
   <ImageView
       android:id="@+id/live_reward_60"
-      android:layout_width="@dimen/medium_image_w_h"
+      android:layout_width="@dimen/big_image_w_h"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_reward_60"
       style="@style/TradeHero.Live.RewardWidget"
@@ -35,7 +35,7 @@
 
   <ImageView
       android:id="@+id/live_reward_80"
-      android:layout_width="@dimen/medium_image_w_h"
+      android:layout_width="@dimen/big_image_w_h"
       android:layout_height="wrap_content"
       android:src="@drawable/ic_reward_80"
       style="@style/TradeHero.Live.RewardWidget"
@@ -43,7 +43,7 @@
 
   <ImageView
       android:id="@+id/live_reward_100"
-      android:layout_width="@dimen/medium_image_w_h"
+      android:layout_width="@dimen/big_image_w_h"
       android:layout_height="@dimen/medium_image_w_h"
       android:src="@drawable/ic_reward_100"
       style="@style/TradeHero.Live.RewardWidget"
