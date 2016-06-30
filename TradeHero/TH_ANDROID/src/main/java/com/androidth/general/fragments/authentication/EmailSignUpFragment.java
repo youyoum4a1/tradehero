@@ -233,7 +233,7 @@ public class EmailSignUpFragment extends Fragment
                 {
                     @Override public void call(Pair<AuthData, UserProfileDTO> pair)
                     {
-                        THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.REGISTRATION_EMAIL);
+                        THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.COMPLETE_REGISTRATION, null);
                         AuthDataUtil.saveAccountAndResult(getActivity(), pair.first, pair.second.email);
                         ActivityHelper.launchDashboard(
                                 getActivity(),

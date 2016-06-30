@@ -199,7 +199,7 @@ public class EmailSignInFragment extends Fragment
                 {
                     @Override public void call(Pair<AuthData, UserProfileDTO> pair)
                     {
-                        THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.REGISTRATION_EMAIL);
+                        THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.REGISTRATION_EMAIL, null);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

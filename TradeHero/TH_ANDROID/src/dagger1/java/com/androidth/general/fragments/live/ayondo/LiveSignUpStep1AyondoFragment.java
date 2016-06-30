@@ -64,6 +64,8 @@ import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.DateUtils;
+import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
+import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.validation.KYCVerifyButton;
 import com.androidth.general.widget.validation.VerifyButtonState;
@@ -1037,6 +1039,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 @Override
                                 public void call(android.util.Pair<ProviderListKey, ProviderDTOList> providerListKeyProviderDTOListPair) {
                                     ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
+                                    THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
                                     progress.dismiss();
                                 }
                             }, new Action1<Throwable>()
