@@ -253,14 +253,19 @@ public class LiveServiceWrapper
         }
     }
 
- public Observable<ArrayList<CountryDocumentTypes>> documentsForCountry(
+    public Observable<ArrayList<CountryDocumentTypes>> documentsForCountry(
             @Path("countrycode") String countrycode)
     {
         return liveServiceRx.documentsForCountry(countrycode);
     }
 
-public Observable<Boolean>enrollCompetition(int providerId, int userId) {
+    public Observable<Boolean>enrollCompetition(int providerId, int userId) {
         return liveServiceRx.enrollCompetition(providerId, userId);
+    }
+
+    public Observable<Boolean> verifyEmail(int userId, String email, int providerId)
+    {
+        return liveServiceRx.verifyEmail(userId, email, providerId);
     }
 
     @NonNull public static List<Country> createNoBusinessNationalities()
@@ -304,4 +309,5 @@ public Observable<Boolean>enrollCompetition(int providerId, int userId) {
                 Country.US
         ));
     }
+
 }

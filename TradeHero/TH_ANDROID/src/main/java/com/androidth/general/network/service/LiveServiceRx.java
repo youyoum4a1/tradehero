@@ -61,4 +61,11 @@ public interface LiveServiceRx {
     Observable<Boolean>validateData(
             @Path("validateURL") String validateURL
     );
+
+    @GET("/email/confirmation/{userId}/{email}/{providerId}")
+    Observable<Boolean> verifyEmail(
+            @Path("userId") Integer userId,
+            @Path("email") String email,
+            @Path("providerId") Integer providerId
+    );
 }

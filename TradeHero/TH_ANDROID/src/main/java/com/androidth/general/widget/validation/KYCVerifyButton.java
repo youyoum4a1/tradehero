@@ -33,6 +33,9 @@ public class KYCVerifyButton extends ImageButton
 
     public VerifyButtonState getState()
     {
+        if(state==null){
+            state = VerifyButtonState.ERROR;
+        }
         return state;
     }
 

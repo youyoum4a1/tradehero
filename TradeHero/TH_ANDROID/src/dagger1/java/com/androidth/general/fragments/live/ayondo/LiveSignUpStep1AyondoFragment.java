@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -29,6 +31,7 @@ import android.widget.TextView;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
+import com.androidth.general.api.competition.EmailVerifiedDTO;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
@@ -52,10 +55,14 @@ import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
+import com.androidth.general.fragments.live.VerifyEmailDialogFragment;
 import com.androidth.general.fragments.live.VerifyPhoneDialogFragment;
 import com.androidth.general.models.fastfill.Gender;
+import com.androidth.general.network.LiveNetworkConstants;
+import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.KycServicesRx;
 import com.androidth.general.network.service.LiveServiceWrapper;
+import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
@@ -64,6 +71,7 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
+import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.DateUtils;
 import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
@@ -71,6 +79,7 @@ import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.validation.KYCVerifyButton;
 import com.androidth.general.widget.validation.VerifyButtonState;
 import com.neovisionaries.i18n.CountryCode;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -86,7 +95,14 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import microsoft.aspnet.signalr.client.Credentials;
+import microsoft.aspnet.signalr.client.SignalRFuture;
+import microsoft.aspnet.signalr.client.http.Request;
+import microsoft.aspnet.signalr.client.hubs.HubConnection;
+import microsoft.aspnet.signalr.client.hubs.HubProxy;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -118,6 +134,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @LayoutRes private static final int LAYOUT_PHONE_SELECTED_FLAG = R.layout.spinner_live_phone_country_dropdown_item_selected;
     private static final int REQUEST_PICK_DATE = 2805;
     private static final int REQUEST_VERIFY_PHONE_NUMBER_CODE = 2808;
+    private static final int REQUEST_VERIFY_EMAIL_CODE = 2809;
     private static final String KEY_EXPECTED_SMS_CODE = LiveSignUpStep1AyondoFragment.class.getName() + ".expectedCode";
     private static final String KEY_SMS_ID = LiveSignUpStep1AyondoFragment.class.getName() + ".smsId";
 
@@ -129,12 +146,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
     @Bind(R.id.info_phone_number) EditText phoneNumber;
     @Bind(R.id.info_dob) TextView dob;
+    @Bind(R.id.step_1_tnc_checkbox) CheckBox tncCheckbox;
     //@Bind(R.id.btn_verify_phone) TextView buttonVerifyPhone;
     //@Bind(R.id.info_nationality) Spinner spinnerNationality;
     //@Bind(R.id.info_residency) Spinner spinnerResidency;
 
-    @Bind(R.id.nric_verify_button) KYCVerifyButton nricVerifyButton;
     @Bind(R.id.email_verify_button) KYCVerifyButton emailVerifybutton;
+    @Bind(R.id.nric_verify_button) KYCVerifyButton nricVerifyButton;
     @Bind(R.id.phone_verify_button) KYCVerifyButton phoneVerifyButton;
 
     @Bind(R.id.residence_state) Spinner spinnerResidenceState;
@@ -146,6 +164,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
+    @Inject protected RequestHeaders requestHeaders;
 
     private Pattern emailPattern;
     private String expectedCode;
@@ -153,6 +172,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private ProviderId providerId;
     private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
     private Drawable noErrorIconDrawable;
+    private int providerIdInt = 0;
+
+    HubProxy proxy;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -182,7 +204,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
+        ButterKnife.bind(getActivity());
         phoneNumber.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE && phoneVerifyButton.getState() == VerifyButtonState.PENDING)
             {
@@ -192,7 +214,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             return false;
         });
 
-        int providerIdInt = getProviderId(getArguments());
+        providerIdInt = getProviderId(getArguments());
 
         if (providerIdInt != 0) {
             this.providerId = new ProviderId(providerIdInt);
@@ -298,7 +320,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         // clicks observable
         ViewObservable.clicks(nricVerifyButton)
                 .withLatestFrom(liveBrokerSituationDTOObservable, (onClickEvent, liveBrokerSituationDTO) -> liveBrokerSituationDTO)
-                .subscribe(liveBrokerSituationDTO -> {
+                .doOnError(throwable1 -> {
+                    Log.v(getTag(), "NRIC ERROR");
+                })
+                .subscribe((LiveBrokerSituationDTO liveBrokerSituationDTO) -> {
                     switch (nricVerifyButton.getState()) {
                         case BEGIN:
                             nricNumber.setError("NRIC must be 12 digits.", noErrorIconDrawable);
@@ -329,14 +354,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                             .subscribeOn(Schedulers.newThread())
                                                             .observeOn(AndroidSchedulers.mainThread())
                                                             .subscribe(aBoolean -> {
-                                                                if (aBoolean)
-                                                                {
+//                                                                if (aBoolean)
+//                                                                {
                                                                     nricVerifyButton.setState(VerifyButtonState.FINISH);
-                                                                }
+//                                                                }
 
                                                                 progress.dismiss();
                                                             }, throwable -> {
-                                                                THToast.show(throwable.getMessage());
+//                                                                THToast.show(throwable.getMessage());
                                                                 nricVerifyButton.setState(VerifyButtonState.ERROR);
                                                                 progress.dismiss();
                                                             });
@@ -351,17 +376,22 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 });
 
-        ViewObservable.clicks(emailVerifybutton).subscribe(onClickEvent -> {
-            switch (emailVerifybutton.getState()) {
-                case BEGIN:
-                    email.setError(getString(R.string.validation_incorrect_pattern_email), noErrorIconDrawable);
-                    emailVerifybutton.setState(VerifyButtonState.ERROR);
-                    break;
-                case PENDING:
-                case VALIDATE:
-                    break;
-            }
-        });
+        ViewObservable.clicks(emailVerifybutton)
+                .subscribe(new Action1<OnClickEvent>() {
+                    @Override
+                    public void call(OnClickEvent onClickEvent) {
+                        switch (emailVerifybutton.getState()) {
+                            case BEGIN:
+                                email.setError(LiveSignUpStep1AyondoFragment.this.getString(R.string.validation_incorrect_pattern_email), noErrorIconDrawable);
+                                emailVerifybutton.setState(VerifyButtonState.ERROR);
+                                break;
+                            case PENDING:
+                            case VALIDATE:
+                                LiveSignUpStep1AyondoFragment.this.validateEmail();
+                                break;
+                        }
+                    }
+                });
 
         ViewObservable.clicks(phoneVerifyButton).subscribe(onClickEvent -> {
             switch (phoneVerifyButton.getState()) {
@@ -1011,6 +1041,18 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             //buttonVerifyPhone.setBackgroundResource(R.drawable.basic_red_selector);
         }
     }
+
+    @MainThread
+    protected void validateEmail()
+    {
+        final String email = this.email.getText().toString();
+
+//        liveServiceWrapper.verifyEmail(currentUserId.get(), email).subscribe();
+
+        VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email, this.providerIdInt);
+        setHubConnection();
+    }
+
     //for email subscription pop up box
     protected void checkEmailSubscription(Integer userId) {
         Subscription subs = kycServices.validatedEmail(userId ,email.getText().toString()).subscribe(kycEmailIsValid -> {
@@ -1044,6 +1086,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             {
                 verifiedPublishSubject.onNext(verifiedPhoneNumberPair);
             }
+        }else if (requestCode == REQUEST_VERIFY_EMAIL_CODE && resultCode == Activity.RESULT_OK)
+        {
+            Log.v(getTag(), "Jeff email ok");
+//            Pair<Integer, String> verifiedEmailPair = VerifyEmailDialogFragment.getVerifiedFromIntent(data);
+//            if (verifiedEmailPair != null)
+//            {
+//                verifiedPublishSubject.onNext(verifiedEmailPair);
+//            }
         }
     }
 
@@ -1100,4 +1150,73 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     progress.dismiss();
                 });
     }
+
+    @OnCheckedChanged(R.id.step_1_tnc_checkbox)
+    public void tncCheckboxClicked(CheckBox checkBox) {
+        Log.v(getTag(), "Jeff checkbox "+checkBox.isChecked());
+    }
+
+
+    public HubConnection setConnection(String url) {
+        return new HubConnection(url);
+    }
+
+    public HubProxy setProxy(String hubName, HubConnection connection) { return connection.createHubProxy(hubName); }
+
+    public void setHubConnection() {
+        HubConnection connection = setConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
+        connection.setCredentials(new Credentials() {
+            @Override
+            public void prepareRequest(Request request) {
+                request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
+                request.addHeader(Constants.USER_ID, currentUserId.get().toString());
+            }
+        });
+        try {
+            proxy = setProxy(LiveNetworkConstants.HUB_NAME, connection);
+            connection.start().done(aVoid -> {
+//                SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS);
+//                signalProxy.done(req -> com.tencent.mm.sdk.platformtools.Log.i("Yay", "Nayy"));
+            });
+            connection.connected(new Runnable() {
+                @Override
+                public void run() {
+                    Log.v(getTag(), "Jeff signalR connected");
+//                    com.tencent.mm.sdk.platformtools.Log.i("SD", "cONNECTED");
+                }
+            });
+            connection.connectionSlow(new Runnable() {
+                @Override
+                public void run() {
+//                    com.tencent.mm.sdk.platformtools.Log.i("Slow", "Slow Connection");
+                }
+            });
+            connection.reconnected(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+            connection.closed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.v(getTag(), "Jeff signalR closed");
+                }
+            });
+            proxy.on("SetValidationStatus", emailVerifiedDTO-> {
+                Log.v(getTag(), "Jeff signalR Received "+emailVerifiedDTO.getMessage()+"::"+emailVerifiedDTO.isValidated());
+                updateVerifyEmailButton();
+            }, EmailVerifiedDTO.class);
+
+            proxy.subscribe(this);
+        } catch (Exception e) {
+//            com.tencent.mm.sdk.platformtools.Log.e("Error", "Could not connect to Hub Name");
+        }
+    }
+
+    @MainThread
+    private void updateVerifyEmailButton(){
+        emailVerifybutton.setState(VerifyButtonState.FINISH);
+    }
+
 }

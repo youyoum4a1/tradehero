@@ -15,7 +15,8 @@ import dagger.Module;
                 TrendingLiveFragmentUtil.class,
                 BaseLiveFragmentUtil.class,
                 DatePickerDialogFragment.class,
-                VerifyPhoneDialogFragment.class
+                VerifyPhoneDialogFragment.class,
+                VerifyEmailDialogFragment.class
         },
         library = true,
         complete = false
