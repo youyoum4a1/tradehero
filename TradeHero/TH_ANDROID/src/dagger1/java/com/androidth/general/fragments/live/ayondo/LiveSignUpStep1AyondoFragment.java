@@ -233,7 +233,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             joinCompetitionButton.setVisibility(View.VISIBLE);
                             joinCompetitionButton.setEnabled(true);
                         }
-
                     }
 
                     if (btnPrev != null)
@@ -1050,7 +1049,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 //        liveServiceWrapper.verifyEmail(currentUserId.get(), email).subscribe();
 
         VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email, this.providerIdInt);
-        setHubConnection();
+        setupSignalR();
     }
 
     //for email subscription pop up box
@@ -1123,7 +1122,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             return;
         }
 
-        if (firstName.length() == 0 || lastName.length() == 0 || !emailPattern.matcher(email.getText()).matches() || dob.length() == 0) {
+        if (firstName.length() == 0 || lastName.length() == 0 || !emailPattern.matcher(email.getText()).matches() || dob.length() == 0
+                || !tncCheckbox.isChecked()) {
             return;
         }
 
@@ -1156,67 +1156,64 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         Log.v(getTag(), "Jeff checkbox "+checkBox.isChecked());
     }
 
+    public void setupSignalR() {
+
+        SignalRManager.initWithEvent(currentUserId.get().toString(), requestHeaders.headerTokenLive(), LiveNetworkConstants.HUB_NAME,
+                "SetValidationStatus", emailVerifybutton);
+
+//        HubConnection connection = setConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
+//        connection.setCredentials(new Credentials() {
+//            @Override
+//            public void prepareRequest(Request request) {
+//                request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
+//                request.addHeader(Constants.USER_ID, currentUserId.get().toString());
+//            }
+//        });
+//        try {
+//            proxy = setProxy(LiveNetworkConstants.HUB_NAME, connection);
+//            connection.start().done(aVoid -> {
+////                SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS);
+////                signalProxy.done(req -> com.tencent.mm.sdk.platformtools.Log.i("Yay", "Nayy"));
+//            });
+//            connection.connected(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.v(getTag(), "Jeff signalR connected");
+////                    com.tencent.mm.sdk.platformtools.Log.i("SD", "cONNECTED");
+//                }
+//            });
+//            connection.connectionSlow(new Runnable() {
+//                @Override
+//                public void run() {
+////                    com.tencent.mm.sdk.platformtools.Log.i("Slow", "Slow Connection");
+//                }
+//            });
+//            connection.reconnected(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                }
+//            });
+//            connection.closed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.v(getTag(), "Jeff signalR closed");
+//                }
+//            });
+//            proxy.on("SetValidationStatus", emailVerifiedDTO-> {
+//                Log.v(getTag(), "Jeff signalR Received "+emailVerifiedDTO.getMessage()+"::"+emailVerifiedDTO.isValidated());
+//                updateVerifyEmailButton();
+//            }, EmailVerifiedDTO.class);
+//
+//            proxy.subscribe(this);
+//        } catch (Exception e) {
+////            com.tencent.mm.sdk.platformtools.Log.e("Error", "Could not connect to Hub Name");
+//        }
+    }
 
     public HubConnection setConnection(String url) {
         return new HubConnection(url);
     }
 
     public HubProxy setProxy(String hubName, HubConnection connection) { return connection.createHubProxy(hubName); }
-
-    public void setHubConnection() {
-        HubConnection connection = setConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
-        connection.setCredentials(new Credentials() {
-            @Override
-            public void prepareRequest(Request request) {
-                request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
-                request.addHeader(Constants.USER_ID, currentUserId.get().toString());
-            }
-        });
-        try {
-            proxy = setProxy(LiveNetworkConstants.HUB_NAME, connection);
-            connection.start().done(aVoid -> {
-//                SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS);
-//                signalProxy.done(req -> com.tencent.mm.sdk.platformtools.Log.i("Yay", "Nayy"));
-            });
-            connection.connected(new Runnable() {
-                @Override
-                public void run() {
-                    Log.v(getTag(), "Jeff signalR connected");
-//                    com.tencent.mm.sdk.platformtools.Log.i("SD", "cONNECTED");
-                }
-            });
-            connection.connectionSlow(new Runnable() {
-                @Override
-                public void run() {
-//                    com.tencent.mm.sdk.platformtools.Log.i("Slow", "Slow Connection");
-                }
-            });
-            connection.reconnected(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
-            connection.closed(new Runnable() {
-                @Override
-                public void run() {
-                    Log.v(getTag(), "Jeff signalR closed");
-                }
-            });
-            proxy.on("SetValidationStatus", emailVerifiedDTO-> {
-                Log.v(getTag(), "Jeff signalR Received "+emailVerifiedDTO.getMessage()+"::"+emailVerifiedDTO.isValidated());
-                updateVerifyEmailButton();
-            }, EmailVerifiedDTO.class);
-
-            proxy.subscribe(this);
-        } catch (Exception e) {
-//            com.tencent.mm.sdk.platformtools.Log.e("Error", "Could not connect to Hub Name");
-        }
-    }
-
-    @MainThread
-    private void updateVerifyEmailButton(){
-        emailVerifybutton.setState(VerifyButtonState.FINISH);
-    }
-
 }

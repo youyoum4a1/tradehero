@@ -1,10 +1,19 @@
 package com.androidth.general.network.service;
 
+import android.support.annotation.MainThread;
+import android.util.Log;
+
+import com.androidth.general.api.competition.EmailVerifiedDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.StringUtils;
+import com.androidth.general.widget.validation.EmailValidationDTO;
+import com.androidth.general.widget.validation.KYCVerifyButton;
+import com.androidth.general.widget.validation.VerifyButtonState;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,7 +33,7 @@ import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler2;
 /**
  * Created by ayushnvijay on 6/23/16.
  */
-public class SignalRmanager {
+public class SignalRManager {
 
     private HubProxy proxy;
     @Inject static CurrentUserId currentUserId;
@@ -38,7 +47,7 @@ public class SignalRmanager {
             request.addHeader(Constants.USER_ID,currentUserId.get().toString());
         });
     }
-    public SignalRmanager(String hubName) {
+    private SignalRManager(String hubName) {
         this.proxy = connection.createHubProxy(hubName);
     }
 
@@ -56,7 +65,7 @@ public class SignalRmanager {
         return strings;
     }
 
-    public boolean start(String groupName, List <SecurityCompactDTO> items){
+    public boolean startWithInvoke(String groupName, List <SecurityCompactDTO> items){
         try {
             connection.start().done(new Action<Void>() {
                 @Override
@@ -70,6 +79,17 @@ public class SignalRmanager {
             return false;
         }
     }
+
+    public boolean start(){
+        try {
+            connection.start();
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
+
     public void subscribeOn(String eventName, SubscriptionHandler subscriptionHandler) {
         proxy.on(eventName, subscriptionHandler);
     }
@@ -78,6 +98,40 @@ public class SignalRmanager {
     }
     public void subscribeOn(String eventName, SubscriptionHandler2<Object, Object> subscriptionHandler) {
         proxy.on(eventName, subscriptionHandler, Object.class, Object.class);
+    }
+
+    public static void initWithEvent(String userId, String requestHeader, String hubName, String eventName, KYCVerifyButton kycVerifyButton) {
+        THhubConnection connection = new THhubConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
+        connection.setCredentials(request -> {
+            request.addHeader(Constants.AUTHORIZATION, requestHeader);
+            request.addHeader(Constants.USER_ID, userId);
+        });
+        HubProxy hubProxy = connection.createHubProxy(hubName);
+        try{
+             connection.start();
+            switch (eventName){
+                case "SetValidationStatus":
+                    Log.v("", "SignalRManager proxy on");
+                    hubProxy.on(eventName, emailVerifiedDTO->{
+                        Log.v("", "SignalRManager received "+emailVerifiedDTO.getMessage()+":"+emailVerifiedDTO.isValidated());
+                        if(emailVerifiedDTO.isValidated()){
+                            updateKycVerifyButton(kycVerifyButton, VerifyButtonState.FINISH);
+                        }
+                    }, EmailVerifiedDTO.class);
+                hubProxy.subscribe(LiveSignUpStep1AyondoFragment.class);
+                    break;
+                default:
+                    break;
+            }
+        }catch (Exception e){
+Log.v("", e.getLocalizedMessage());
+        }
+
+    }
+
+    @MainThread
+    private static void updateKycVerifyButton(KYCVerifyButton button, VerifyButtonState finish) {
+        button.setState(VerifyButtonState.FINISH);
     }
 }
 
@@ -100,7 +154,7 @@ class THhubConnection extends HubConnection{
     @Override
     protected void onClosed() {
         super.onClosed();
-        super.start();
+//        super.start();
     }
 
 }
