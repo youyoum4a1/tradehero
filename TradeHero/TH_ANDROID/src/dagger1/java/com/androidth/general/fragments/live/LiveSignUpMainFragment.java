@@ -1,21 +1,25 @@
 package com.androidth.general.fragments.live;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Checkable;
-
 import android.widget.ImageView;
+
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
 import com.androidth.general.activities.SignUpLiveActivity;
@@ -24,7 +28,6 @@ import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.KYCFormUtil;
 import com.androidth.general.api.kyc.StepStatus;
-import com.androidth.general.api.kyc.StepStatusesDTO;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.BaseFragment;
@@ -34,8 +37,9 @@ import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.widget.LiveRewardWidget;
-
 import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -48,7 +52,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observables.ConnectableObservable;
-import timber.log.Timber;
+import rx.schedulers.Schedulers;
 
 public class LiveSignUpMainFragment extends BaseFragment
 {
@@ -64,6 +68,9 @@ public class LiveSignUpMainFragment extends BaseFragment
     @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
     @Bind(R.id.pager) protected ViewPager viewPager;
     @Bind(R.id.live_reward_widget) protected LiveRewardWidget liveRewardWidget;
+
+    public static String notificationLogoUrl;
+    public static String hexColor;
 
     public static void putProviderId(@NonNull Bundle args, int providerId)
     {
@@ -85,13 +92,47 @@ public class LiveSignUpMainFragment extends BaseFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.settings_menu, menu);
-        View navigationBar = LayoutInflater.from(getActivity()).inflate(R.layout.sign_up_custom_actionbar, toolbar, false);
-        ImageView navigationLogo = (ImageView)navigationBar.findViewById(R.id.navigation_logo);
-
         ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
+        notificationLogoUrl = providerDTO.navigationLogoUrl;
+        hexColor = providerDTO.hexColor;
+        setActionBarTitle("");
+        setActionBarColor(providerDTO.hexColor);
+        setActionBarImage(providerDTO.navigationLogoUrl);
 
-        Picasso.with(getContext()).load(providerDTO.navigationLogoUrl).into(navigationLogo);
-        actionBarOwnerMixin.setCustomView(navigationBar);
+    }
+    private boolean setActionBarImage(String url){
+        try {
+            ActionBar actionBar = getSupportActionBar();
+            ImageView imageView = new ImageView(getContext());
+            Observable<Bitmap> observable = Observable.defer(()->{
+                try {
+                    return Observable.just(Picasso.with(getContext()).load(url).get());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return Observable.error(e);
+                }
+            });
+
+            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
+                int height = (int)(actionBar.getHeight()*0.6);
+                int bitmapHt = bitmap.getHeight();
+                int bitmapWd = bitmap.getWidth();
+                int width = height * (bitmapWd / bitmapHt);
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                imageView.setImageBitmap(bitmap);
+                ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
+                actionBar.setCustomView(imageView, layoutParams);
+                actionBar.setElevation(5);
+                actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+            }, throwable -> {
+                Log.e("Error",""+throwable.getMessage());
+            });
+
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

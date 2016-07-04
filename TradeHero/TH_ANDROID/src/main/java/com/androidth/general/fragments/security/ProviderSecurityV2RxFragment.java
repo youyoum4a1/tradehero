@@ -10,7 +10,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,32 +17,19 @@ import android.widget.TextView;
 
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
-import com.androidth.general.adapters.PagedDTOAdapter;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderUtil;
-import com.androidth.general.api.competition.key.BasicProviderSecurityListType;
 import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
-import com.androidth.general.api.portfolio.AssetClass;
-import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.SecurityCompactDTO;
-import com.androidth.general.api.security.SecurityCompactDTOUtil;
 import com.androidth.general.api.security.key.SecurityListType;
 import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.base.BaseFragment;
-import com.androidth.general.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
-import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
-import com.androidth.general.fragments.contestcenter.ContestCenterTabType;
-import com.androidth.general.fragments.trade.AbstractBuySellFragment;
-import com.androidth.general.fragments.web.BaseWebViewIntentFragment;
-import com.androidth.general.models.intent.THIntentPassedListener;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.security.SecurityCompactListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.DeviceUtil;
-
 
 import javax.inject.Inject;
 
@@ -185,6 +171,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     protected void displayTitle()
     {
         setActionBarTitle(providerDTO.name);
+
     }
 
     private class ProviderSecurityV2PagerAdapter extends FragmentPagerAdapter

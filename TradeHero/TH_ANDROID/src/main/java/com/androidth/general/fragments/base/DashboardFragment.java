@@ -1,23 +1,26 @@
 package com.androidth.general.fragments.base;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.androidth.general.R;
-import com.androidth.general.api.competition.ProviderDTO;
 import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
 
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 abstract public class DashboardFragment extends BaseFragment
 {
@@ -48,7 +51,7 @@ abstract public class DashboardFragment extends BaseFragment
     }
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarColorSelf(null);
+        setActionBarColorSelf(null,null);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public void onCreate(Bundle savedInstanceState){
@@ -57,13 +60,14 @@ abstract public class DashboardFragment extends BaseFragment
     @Override public void onResume(){
         super.onResume();
     }
-    public void setActionBarColorSelf( ProviderDTO providerDTO){
-        if(providerDTO == null)
+
+    public void setActionBarColorSelf( String url, String hexColor){
+        if(url == null || url.length()==0)
         setActionBarColor(getString(R.string.tradehero_blue_default));
         else {
 
-            setActionBarColor(providerDTO.hexColor);
-            setActionBarImage(providerDTO.navigationLogoUrl);
+            setActionBarColor(hexColor);
+            setActionBarImage(url);
             setActionBarTitle("");
         }
     }
@@ -71,16 +75,31 @@ abstract public class DashboardFragment extends BaseFragment
     private boolean setActionBarImage(String url){
         try {
             ActionBar actionBar = getSupportActionBar();
-            LayoutInflater mInflater = LayoutInflater.from(getContext());
-            View mCustomView = mInflater.inflate(R.layout.actionbar_custom_view, null);
-            mCustomView.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,actionBar.getHeight()));
-            ImageView imageView = (ImageView) mCustomView.findViewById(R.id.provider_logo);
-            Picasso.with(getContext()).load(url).into(imageView);
-            ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
-                    ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
-            actionBar.setCustomView(mCustomView, layoutParams);
-            actionBar.setElevation(5);
-            actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+            ImageView imageView = new ImageView(getContext());
+            Observable<Bitmap> observable = Observable.defer(()->{
+                try {
+                    return Observable.just(Picasso.with(getContext()).load(url).get());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return Observable.error(e);
+                }
+            });
+
+            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
+                int height = (int)(actionBar.getHeight()*0.6);
+                int bitmapHt = bitmap.getHeight();
+                int bitmapWd = bitmap.getWidth();
+                int width = height * (bitmapWd / bitmapHt);
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                imageView.setImageBitmap(bitmap);
+                ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
+                actionBar.setCustomView(imageView, layoutParams);
+                actionBar.setElevation(5);
+                actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+            }, throwable -> {
+                Log.e("Error",""+throwable.getMessage());
+            });
+
             return true;
         }
         catch (Exception e){

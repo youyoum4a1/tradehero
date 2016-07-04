@@ -2,16 +2,21 @@ package com.androidth.general.fragments.live;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidth.general.R;
@@ -28,7 +33,9 @@ import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
+import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -48,6 +55,7 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.functions.Func4;
 import rx.internal.util.SubscriptionList;
+import rx.schedulers.Schedulers;
 import rx.subjects.BehaviorSubject;
 
 public class VerifyPhoneDialogFragment extends BaseDialogFragment
@@ -68,13 +76,18 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
             R.id.verify_code_3,
             R.id.verify_code_4
     }) EditText[] codeViews;
+
+    @Bind(R.id.banner_logo) ImageView banner;
     @Bind(R.id.btn_verify_phone) View buttonVerify;
     @Bind(R.id.btn_send_code) View buttonResend;
     @Bind(R.id.sms_sent_description) TextView sentDescription;
     @Bind(R.id.sms_sent_status) TextView sentStatus;
+    @Bind(R.id.header) RelativeLayout header;
+
 
     private BehaviorSubject<SMSSentConfirmationDTO> mSMSConfirmationSubject;
-
+    public static String notificationLogoUrl = LiveSignUpMainFragment.notificationLogoUrl;
+    public static String hexcolor = LiveSignUpMainFragment.hexColor;
     private int mDialingPrefix;
     private String mExpectedCode;
     private String mPhoneNumber;
@@ -131,7 +144,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         mDialingPrefix = bundle.getInt(KEY_BUNDLE_DIALING_PREFIX);
         mPhoneNumber = bundle.getString(KEY_BUNDLE_PHONE_NUMBER);
         mFormattedNumber = getFormattedPhoneNumber(mDialingPrefix, mPhoneNumber);
-
+        header.setBackgroundColor(Color.parseColor(hexcolor));
         mSMSConfirmationSubject = BehaviorSubject.create();
 
         smsSubscription = getSMSSubscription();
@@ -139,7 +152,34 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         {
             smsSubscription = createSMSSubscription();
         }
+        try {
+
+            Observable<Bitmap> observable = Observable.defer(()->{
+                try {
+                    return Observable.just(Picasso.with(getContext()).load(notificationLogoUrl).get());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return Observable.error(e);
+                }
+            });
+
+            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
+                int height = (int)(banner.getHeight()*0.6);
+                int bitmapHt = bitmap.getHeight();
+                int bitmapWd = bitmap.getWidth();
+                int width = height * (bitmapWd / bitmapHt);
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                banner.setImageBitmap(bitmap);
+            }, throwable -> {
+                Log.e("Error",""+throwable.getMessage());
+            });
+
+        }
+        catch (Exception e){
+        }
+
     }
+
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

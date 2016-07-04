@@ -20,13 +20,15 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
-
+    public static String navigationLogoUrl;
+    public static String hexcolor;
     protected ProviderId providerId;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
+
 
     @Nullable private static ProviderId getProviderId(@NonNull Bundle args)
     {
@@ -40,6 +42,7 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        setActionBarColorSelf(navigationLogoUrl,hexcolor);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

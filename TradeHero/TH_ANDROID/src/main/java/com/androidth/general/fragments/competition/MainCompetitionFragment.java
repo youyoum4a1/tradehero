@@ -463,6 +463,7 @@ public class MainCompetitionFragment extends DashboardFragment
             setActionBarColor(providerDTO.hexColor);
             setActionBarImage(this.providerDTO.navigationLogoUrl);
 
+
             //ProviderDTO providerDTO = providerCache.getCachedValue(new ProviderId(getProviderId(getArguments())));
 
             //Picasso.with(getContext()).load(providerDTO.navigationLogoUrl).into(navigationLogo);
@@ -497,13 +498,6 @@ public class MainCompetitionFragment extends DashboardFragment
             }, throwable -> {
                 Log.e("Error",""+throwable.getMessage());
             });
-            //Bitmap navigationLogoBitmap = Picasso.with(getContext()).load(url).get();
-            /*imageView.setImageBitmap(navigationLogoBitmap);
-            int height = actionBar.getHeight();
-            int bitmapHt = navigationLogoBitmap.getHeight();
-            int bitmapWd = navigationLogoBitmap.getWidth();
-            int width = bitmapWd * bitmapHt / height;
-            //Picasso.with(getContext()).load(url).resize(width, height).into(imageView);*/
 
             return true;
         }
@@ -571,6 +565,8 @@ public class MainCompetitionFragment extends DashboardFragment
                 CompetitionLeaderboardPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
                 CompetitionLeaderboardPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
                 CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
+                CompetitionLeaderboardPositionListFragment.navigationLogoUrl = providerDTO.navigationLogoUrl;
+                CompetitionLeaderboardPositionListFragment.hexcolor = providerDTO.hexColor;
                 if (providerDTO != null && providerDTO.associatedPortfolio != null)
                 {
                     CompetitionLeaderboardPositionListFragment.putIsFX(args, providerDTO.associatedPortfolio.assetClass);
