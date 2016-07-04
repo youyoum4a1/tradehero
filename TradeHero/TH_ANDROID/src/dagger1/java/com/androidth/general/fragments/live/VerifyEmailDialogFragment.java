@@ -107,12 +107,12 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
         i.putExtra(BUNDLE_KEY_VERIFIED_EMAIL, b);
     }
 
-    @Nullable public static Pair<Integer, String> getVerifiedFromIntent(Intent data)
+    @Nullable public static String getVerifiedFromIntent(Intent data)
     {
         Bundle b = data.getBundleExtra(BUNDLE_KEY_VERIFIED_EMAIL);
         int uId = b.getInt(KEY_BUNDLE_USER_ID);
         String emailAd = b.getString(KEY_BUNDLE_EMAIL_ADDRESS);
-        return Pair.create(uId, emailAd);
+        return emailAd;
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

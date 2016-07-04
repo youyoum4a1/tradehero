@@ -165,12 +165,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject protected RequestHeaders requestHeaders;
+    SignalRManager signalRManager;
 
     private Pattern emailPattern;
     private String expectedCode;
     private String smsId;
     private ProviderId providerId;
     private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
+    private static PublishSubject<String> verifiedPublishEmail;
     private Drawable noErrorIconDrawable;
     private int providerIdInt = 0;
 
@@ -182,6 +184,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         thRouter.inject(this);
         verifiedPublishSubject = PublishSubject.create();
+        verifiedPublishEmail = PublishSubject.create();
         if (savedInstanceState != null)
         {
             expectedCode = savedInstanceState.getString(KEY_EXPECTED_SMS_CODE, null);
@@ -725,6 +728,25 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 }, new TimberOnErrorAction1("Failed to update verified mobile number")));
 
+        subscriptions.add(verifiedPublishEmail.withLatestFrom(liveBrokerSituationDTOObservable,
+                new Func2<String, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                {
+                    @Override
+                    public LiveBrokerSituationDTO call(String verifiedEmail, LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        KYCAyondoForm update = new KYCAyondoForm();
+                        update.setVerifiedEmailAddress(verifiedEmail);
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
+                    }
+                }).subscribe(
+                new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        onNext(liveBrokerSituationDTO);
+                    }
+                }, new TimberOnErrorAction1("Failed to update email address")));
+
         Log.v("ayondoStep1", "Subscriptions final "+subscriptions.size());
         return subscriptions;
     }
@@ -749,6 +771,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onDestroy();
         verifiedPublishSubject = null;
+        verifiedPublishEmail = null;
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -787,6 +810,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (email != null && emailText != null && !emailText.equals(email.getText().toString()))
         {
             email.setText(emailText);
+            String currentVerifiedEmail = kycForm.getVerifiedEmailAddress();
+            if(currentVerifiedEmail!=null && currentVerifiedEmail.equals(emailText)){
+                emailVerifybutton.setState(VerifyButtonState.FINISH);
+            }
         }
 
         String nricNumberText = kycForm.getIdentificationNumber();
@@ -1049,7 +1076,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 //        liveServiceWrapper.verifyEmail(currentUserId.get(), email).subscribe();
 
         VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email, this.providerIdInt);
-        setupSignalR();
+        setupSignalR(email);
     }
 
     //for email subscription pop up box
@@ -1088,11 +1115,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }else if (requestCode == REQUEST_VERIFY_EMAIL_CODE && resultCode == Activity.RESULT_OK)
         {
             Log.v(getTag(), "Jeff email ok");
-//            Pair<Integer, String> verifiedEmailPair = VerifyEmailDialogFragment.getVerifiedFromIntent(data);
-//            if (verifiedEmailPair != null)
-//            {
-//                verifiedPublishSubject.onNext(verifiedEmailPair);
-//            }
+            String verifiedEmail = VerifyEmailDialogFragment.getVerifiedFromIntent(data);
+            if (verifiedEmail != null)
+            {
+                verifiedPublishEmail.onNext(verifiedEmail);
+            }
         }
     }
 
@@ -1156,10 +1183,27 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         Log.v(getTag(), "Jeff checkbox "+checkBox.isChecked());
     }
 
-    public void setupSignalR() {
+    @MainThread
+    public void updateEmailVerification(String emailAddress){
+        emailVerifybutton.setState(VerifyButtonState.FINISH);
+        KYCAyondoForm updated = new KYCAyondoForm();
+        updated.setVerifiedEmailAddress(emailAddress);
+        verifiedPublishEmail.onNext(emailAddress);
+    }
 
-        SignalRManager.initWithEvent(currentUserId.get().toString(), requestHeaders.headerTokenLive(), LiveNetworkConstants.HUB_NAME,
-                "SetValidationStatus", emailVerifybutton);
+    public void setupSignalR(String emailAddress) {
+
+        signalRManager = new SignalRManager(requestHeaders, currentUserId);
+        signalRManager.initWithEvent(LiveNetworkConstants.HUB_NAME,
+                "SetValidationStatus",
+                new String[]{emailAddress},
+                emailVerifybutton, emailVerifiedDTO ->{
+                    Log.v(getTag(), "Jeff signalR Received "+((EmailVerifiedDTO)emailVerifiedDTO).getMessage()
+                            +"::"+((EmailVerifiedDTO)emailVerifiedDTO).isValidated());
+                    if(((EmailVerifiedDTO)emailVerifiedDTO).isValidated()){
+                        updateEmailVerification(emailAddress);
+                    }
+                }, EmailVerifiedDTO.class);
 
 //        HubConnection connection = setConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
 //        connection.setCredentials(new Credentials() {
@@ -1210,10 +1254,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 ////            com.tencent.mm.sdk.platformtools.Log.e("Error", "Could not connect to Hub Name");
 //        }
     }
-
-    public HubConnection setConnection(String url) {
-        return new HubConnection(url);
-    }
-
-    public HubProxy setProxy(String hubName, HubConnection connection) { return connection.createHubProxy(hubName); }
+//
+//    public HubConnection setConnection(String url) {
+//        return new HubConnection(url);
+//    }
+//
+//    public HubProxy setProxy(String hubName, HubConnection connection) { return connection.createHubProxy(hubName); }
 }
