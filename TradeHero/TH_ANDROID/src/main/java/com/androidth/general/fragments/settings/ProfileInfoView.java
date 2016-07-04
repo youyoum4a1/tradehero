@@ -206,28 +206,30 @@ public class ProfileInfoView extends LinearLayout
                 if (message != null && !TextUtils.isEmpty(message) && !message.equals(previousMessage))
                 {
 
-                    if(emailValidator.isFocussedChanged() && emailValidator.isTextChanged()){
+                    if(validatedText instanceof EmailValidatedText && emailValidator.isFocussedChanged() && emailValidator.isTextChanged()){
                         email_til.setError(validationMessage.getMessage());
                         emailValidator.setFocus(false);
                         emailValidator.setHasTextChanged(false);
                     }
-                    else if(passwordValidator.isFocussedChanged() && passwordValidator.isTextChanged()){
+                    else if(validatedText instanceof PasswordValidatedText && passwordValidator.isFocussedChanged() && passwordValidator.isTextChanged()){
                         password_til.setError(validationMessage.getMessage());
                         passwordValidator.setFocus(false);
                         passwordValidator.setHasTextChanged(false);
                     }
-                    else if(displayNameValidator.isFocussedChanged() && displayNameValidator.isTextChanged()){
+                    else if(validatedText instanceof DisplayNameValidatedText && displayNameValidator.isFocussedChanged() && displayNameValidator.isTextChanged()){
                         displayName_til.setError(validationMessage.getMessage());
                         displayNameValidator.setFocus(false);
                         displayNameValidator.setHasTextChanged(false);
                     }
 
-
                 }
                 else {
-                    email_til.setError(null);
-                    password_til.setError(null);
-                    displayName_til.setError(null);
+                    if(validatedText instanceof EmailValidatedText)
+                        email_til.setError(null);
+                    if(validatedText instanceof PasswordValidatedText)
+                        password_til.setError(null);
+                    if(validatedText instanceof DisplayNameValidatedText)
+                        displayName_til.setError(null);
                 }
 
                 previousMessage = message;

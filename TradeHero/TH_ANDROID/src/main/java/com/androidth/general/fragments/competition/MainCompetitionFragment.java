@@ -1,12 +1,14 @@
 package com.androidth.general.fragments.competition;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.StateListDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -78,6 +80,7 @@ import com.squareup.picasso.Picasso;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,7 +95,6 @@ import retrofit.client.Response;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func7;
 import rx.schedulers.Schedulers;
@@ -137,6 +139,7 @@ public class MainCompetitionFragment extends DashboardFragment
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
+    public static ActionbarColor actionbarColor;
     protected UserProfileDTO userProfileDTO;
     protected CompetitionDTOList competitionDTOs;
     private ProviderDisplayCellDTOList providerDisplayCellDTOList;
@@ -176,6 +179,7 @@ public class MainCompetitionFragment extends DashboardFragment
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
+
         thRouter.inject(this);
         if (getArguments() != null && routedProviderId != null)
         {
@@ -211,8 +215,10 @@ public class MainCompetitionFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         displayActionBarTitle();
+        //super.setActionBarColorSelf(providerDTO);
         super.onCreateOptionsMenu(menu, inflater);
     }
+
     //</editor-fold>
 
     @Override public void onStart()
@@ -454,29 +460,58 @@ public class MainCompetitionFragment extends DashboardFragment
         else
         {
             setActionBarTitle("");
-            //setActionBarColor(this.providerDTO.hexColor);
+            setActionBarColor(providerDTO.hexColor);
             setActionBarImage(this.providerDTO.navigationLogoUrl);
+
+            //ProviderDTO providerDTO = providerCache.getCachedValue(new ProviderId(getProviderId(getArguments())));
+
+            //Picasso.with(getContext()).load(providerDTO.navigationLogoUrl).into(navigationLogo);
+            //actionBarOwnerMixin.setCustomView(navigationBar);
 
         }
     }
     private boolean setActionBarImage(String url){
         try {
             ActionBar actionBar = getSupportActionBar();
+            ImageView imageView = new ImageView(getContext());
+            Observable<Bitmap> observable = Observable.defer(()->{
+                try {
+                    return Observable.just(Picasso.with(getContext()).load(url).get());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return Observable.error(e);
+                }
+            });
 
-            ImageView imageView = new ImageView(actionBar.getThemedContext());
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Picasso.with(actionBar.getThemedContext()).load(url).into(imageView);
-            ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
-                    ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
-            actionBar.setElevation(5);
-            actionBar.setCustomView(imageView, layoutParams);
-            actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
+                int height = (int)(actionBar.getHeight()*0.6);
+                int bitmapHt = bitmap.getHeight();
+                int bitmapWd = bitmap.getWidth();
+                int width = height * (bitmapWd / bitmapHt);
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                imageView.setImageBitmap(bitmap);
+                ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
+                actionBar.setCustomView(imageView, layoutParams);
+                actionBar.setElevation(5);
+                actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+            }, throwable -> {
+                Log.e("Error",""+throwable.getMessage());
+            });
+            //Bitmap navigationLogoBitmap = Picasso.with(getContext()).load(url).get();
+            /*imageView.setImageBitmap(navigationLogoBitmap);
+            int height = actionBar.getHeight();
+            int bitmapHt = navigationLogoBitmap.getHeight();
+            int bitmapWd = navigationLogoBitmap.getWidth();
+            int width = bitmapWd * bitmapHt / height;
+            //Picasso.with(getContext()).load(url).resize(width, height).into(imageView);*/
+
             return true;
         }
         catch (Exception e){
             return false;
         }
     }
+
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_trade_now)
@@ -674,20 +709,8 @@ public class MainCompetitionFragment extends DashboardFragment
     {
         onStopSubscriptions.add(competitionZoneListItemAdapter.getUserActionObservable()
                 .subscribe(
-                        new Action1<AbstractCompetitionZoneListItemView.UserAction>()
-                        {
-                            @Override public void call(AbstractCompetitionZoneListItemView.UserAction userAction)
-                            {
-                                handleUserAction(userAction);
-                            }
-                        },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable throwable)
-                            {
-                                Timber.e(throwable, "When listening to adapter clicks");
-                            }
-                        }));
+                        userAction -> handleUserAction(userAction),
+                        throwable -> Timber.e(throwable, "When listening to adapter clicks")));
     }
 
     private void handleUserAction(@NonNull AbstractCompetitionZoneListItemView.UserAction userAction)
@@ -758,3 +781,4 @@ public class MainCompetitionFragment extends DashboardFragment
         }
     }
 }
+

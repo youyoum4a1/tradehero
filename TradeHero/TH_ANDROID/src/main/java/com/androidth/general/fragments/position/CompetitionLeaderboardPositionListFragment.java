@@ -4,10 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import com.google.common.annotations.VisibleForTesting;
+import android.view.Menu;
+import android.view.MenuInflater;
+
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.models.security.ProviderTradableSecuritiesHelper;
+import com.google.common.annotations.VisibleForTesting;
+
 import javax.inject.Inject;
 
 //TODO need refactor by alex
@@ -32,6 +36,10 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
             return null;
         }
         return new ProviderId(bundle);
+    }
+    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)

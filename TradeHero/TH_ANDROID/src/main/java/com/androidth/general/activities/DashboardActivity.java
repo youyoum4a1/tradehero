@@ -22,14 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TabHost;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import com.androidth.general.common.activities.ActivityResultRequester;
-import com.androidth.general.common.persistence.prefs.BooleanPreference;
-import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.common.utils.CollectionUtils;
-import com.androidth.general.common.utils.OnlineStateReceiver;
-import com.androidth.general.common.utils.THToast;
+
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
@@ -44,6 +37,12 @@ import com.androidth.general.api.users.UserLoginDTO;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.api.users.UserProfileDTOUtil;
 import com.androidth.general.billing.THBillingInteractorRx;
+import com.androidth.general.common.activities.ActivityResultRequester;
+import com.androidth.general.common.persistence.prefs.BooleanPreference;
+import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.common.utils.CollectionUtils;
+import com.androidth.general.common.utils.OnlineStateReceiver;
+import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.DashboardTabHost;
 import com.androidth.general.fragments.competition.CompetitionEnrollmentBroadcastSignal;
@@ -51,7 +50,6 @@ import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
 import com.androidth.general.fragments.dashboard.DrawerLayoutUtil;
 import com.androidth.general.fragments.dashboard.RootFragmentType;
 import com.androidth.general.fragments.fxonboard.FxOnBoardDialogFragment;
-import com.androidth.general.fragments.onboarding.OnBoardingBroadcastSignal;
 import com.androidth.general.fragments.settings.AskForReviewSuggestedDialogFragment;
 import com.androidth.general.fragments.updatecenter.notifications.NotificationClickHandler;
 import com.androidth.general.models.time.AppTiming;
@@ -74,14 +72,19 @@ import com.androidth.general.utils.metrics.ForAnalytics;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 import com.androidth.general.utils.route.THRouter;
 import com.appsflyer.AppsFlyerLib;
-import dagger.Lazy;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import dagger.Lazy;
 import rx.Notification;
 import rx.Observable;
 import rx.Observer;
@@ -244,6 +247,7 @@ public class DashboardActivity extends BaseActivity
                 {
                     RootFragmentType selectedFragmentType = RootFragmentType.valueOf(tabId);
                     activityModule.navigator.goToTab(selectedFragmentType);
+
                 } catch (IllegalStateException e)
                 {
                     Timber.d("setOnTabChangedListener goToTab " + e.toString());

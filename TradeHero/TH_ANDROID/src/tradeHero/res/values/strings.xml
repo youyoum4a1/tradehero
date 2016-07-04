@@ -12,6 +12,8 @@
   <string name="tile_live_trading_top">Open a LIVE account</string>
   <string name="tile_live_trading">Get free US$100</string>
 
+  <string name="tradehero_blue_default">#1376FB</string>
+
   <string name="live_identity_prompt">Do you have your Proof of identity with you?</string>
   <string name="live_identity_prompt_au">Do you have your Australian Passport with you?</string>
   <string name="live_identity_prompt_sg">Do you have your NRIC/Passport with you?</string>

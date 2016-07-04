@@ -3,24 +3,20 @@ package com.androidth.general.fragments.contestcenter;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnItemClick;
-import com.androidth.general.common.utils.THToast;
-import com.androidth.general.common.widget.BetterViewAnimator;
+
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.ProviderListKey;
 import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.common.utils.THToast;
+import com.androidth.general.common.widget.BetterViewAnimator;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
@@ -31,9 +27,16 @@ import com.androidth.general.models.intent.competition.ProviderIntent;
 import com.androidth.general.models.intent.competition.ProviderPageIntent;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.portfolio.PortfolioCompactListCacheRx;
+
 import java.util.Collections;
 import java.util.Comparator;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnItemClick;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
