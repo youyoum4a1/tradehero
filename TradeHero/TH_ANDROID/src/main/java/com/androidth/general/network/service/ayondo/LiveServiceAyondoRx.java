@@ -40,10 +40,6 @@ public interface LiveServiceAyondoRx
     Observable<StepStatusesDTO> applyLiveBroker(
             @Body KYCForm kycForm);
 
-    @GET("/kyc/ayondo/checkusername")
-    Observable<UsernameValidationResultDTO> validateUserName(
-            @Query("username") String username);
-
     @POST("/kyc/ayondo/createOrUpdateLead/{providerId}")
     Observable<BrokerApplicationDTO> createOrUpdateLead(
             @Path("providerId") int providerId,

@@ -169,6 +169,10 @@ public class LiveSignUpMainFragment extends BaseFragment
                             @Override public void call(PagerAdapter pagerAdapter)
                             {
                                 viewPager.setAdapter(pagerAdapter);
+                                if(!isToJoinCompetition){
+                                    //if already joined, show the second page
+                                    viewPager.setCurrentItem(1);
+                                }
                                 tabLayout.setViewPager(viewPager);
                             }
                         })
@@ -188,7 +192,9 @@ public class LiveSignUpMainFragment extends BaseFragment
                         })
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                updatedSteps -> updatePageIndicator(updatedSteps.stepStatuses),
+                                updatedSteps -> {
+                                    updatePageIndicator(updatedSteps.stepStatuses);
+                                },
                                 new TimberOnErrorAction1("Error on updating step status")));
 
         onDestroyViewSubscriptions.add(pagerAdapterObservable

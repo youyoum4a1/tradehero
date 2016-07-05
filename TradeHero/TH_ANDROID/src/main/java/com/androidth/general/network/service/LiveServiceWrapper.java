@@ -36,6 +36,7 @@ import com.androidth.general.api.market.Country;
 import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
 import com.androidth.general.models.fastfill.ResidenceScannedDocumentType;
+import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.service.ayondo.LiveServiceAyondoRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.prefs.PhoneNumberVerifiedPreference;
@@ -46,8 +47,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Dictionary;
 import java.util.List;
 
+import java.util.Map;
 import javax.inject.Inject;
 
 import retrofit.http.Path;
@@ -59,6 +62,11 @@ import rx.functions.Func1;
 public class LiveServiceWrapper
 {
     private static final int AYONDO_MINIMUM_AGE = 21;
+
+    // for dynamic query
+    // enum?
+    public static final String PROVIDER_ID = "{providerId}";
+    public static final String INPUT = "{input}";
 
     @NonNull private final com.androidth.general.network.service.LiveServiceRx liveServiceRx;
     @NonNull private final LiveServiceAyondoRx liveServiceAyondoRx;
@@ -146,6 +154,7 @@ public class LiveServiceWrapper
                 }));
     }
 
+    // design get result from server but now is all from client, to have a better design??
     @NonNull public Observable<KYCFormOptionsDTO> getKYCFormOptions(@NonNull KYCFormOptionsId optionsId)
     {
 //        return liveServiceRx.getKYCFormOptions(optionsId.brokerId.key);
@@ -186,23 +195,15 @@ public class LiveServiceWrapper
                 phoneNumberVerifiedPreference.get().contains(phoneNumber)));
     }
 
-    public Observable<UsernameValidationResultDTO> validateUserName(
-            @NonNull LiveBrokerId brokerId,
-            @NonNull final String username)
-    {
-        return (brokerId.key.equals(LiveBrokerKnowledge.BROKER_ID_AYONDO)
-                ? liveServiceAyondoRx.validateUserName(username)
-                : liveServiceRx.validateUserName(brokerId.key, username))
-                .map(new Func1<UsernameValidationResultDTO, UsernameValidationResultDTO>()
-                {
-                    @Override public UsernameValidationResultDTO call(UsernameValidationResultDTO resultDTO)
-                    {
-                        return new UsernameValidationResultDTO(
-                                username,
-                                resultDTO.isValid,
-                                resultDTO.isAvailable);
-                    }
-                });
+    @NonNull public Observable<Boolean>validateData(@NonNull String url, Map<String, String> parameter) {
+        String partialURL = url.replace(LiveNetworkConstants.TRADEHERO_LIVE_API_ENDPOINT, "");
+
+        for (Map.Entry<String, String> query: parameter.entrySet())
+        {
+            partialURL = partialURL.replace(query.getKey(), query.getValue());
+        }
+
+        return liveServiceRx.validateData(partialURL);
     }
 
     public void submitPhoneNumberVerifiedStatus(String formattedPhoneNumber)
@@ -252,14 +253,19 @@ public class LiveServiceWrapper
         }
     }
 
- public Observable<ArrayList<CountryDocumentTypes>> documentsForCountry(
+    public Observable<ArrayList<CountryDocumentTypes>> documentsForCountry(
             @Path("countrycode") String countrycode)
     {
         return liveServiceRx.documentsForCountry(countrycode);
     }
 
-public Observable<Boolean>enrollCompetition(int providerId, int userId) {
+    public Observable<Boolean>enrollCompetition(int providerId, int userId) {
         return liveServiceRx.enrollCompetition(providerId, userId);
+    }
+
+    public Observable<Boolean> verifyEmail(int userId, String email, int providerId)
+    {
+        return liveServiceRx.verifyEmail(userId, email, providerId);
     }
 
     @NonNull public static List<Country> createNoBusinessNationalities()
@@ -303,4 +309,5 @@ public Observable<Boolean>enrollCompetition(int providerId, int userId) {
                 Country.US
         ));
     }
+
 }

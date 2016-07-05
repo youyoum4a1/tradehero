@@ -118,7 +118,11 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
             return providerUtil.getLandingPage(providerId);
         } else {
             Uri uri = Uri.parse(loadingUrl);
-            providerIdInteger = Integer.parseInt(uri.getQueryParameter("providerId"));
+            if(uri.getQueryParameter("providerId")!=null){
+                providerIdInteger = Integer.parseInt(uri.getQueryParameter("providerId"));
+            }else{
+                providerIdInteger = 0;
+            }
         }
 
         return loadingUrl;

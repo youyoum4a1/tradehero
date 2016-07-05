@@ -1,10 +1,25 @@
 package com.androidth.general.network.service;
 
+import android.provider.ContactsContract;
+import android.support.annotation.MainThread;
+import android.util.Log;
+
+import com.androidth.general.api.competition.EmailVerifiedDTO;
+import com.androidth.general.api.kyc.KYCForm;
+import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
+import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.common.persistence.DTO;
+import com.androidth.general.fragments.live.ayondo.KYCAyondoFormFactory;
+import com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.utils.Constants;
+import com.androidth.general.utils.StringUtils;
+import com.androidth.general.widget.validation.EmailValidationDTO;
+import com.androidth.general.widget.validation.KYCVerifyButton;
+import com.androidth.general.widget.validation.VerifyButtonState;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,6 +29,7 @@ import javax.inject.Inject;
 
 import microsoft.aspnet.signalr.client.Action;
 import microsoft.aspnet.signalr.client.Platform;
+import microsoft.aspnet.signalr.client.http.Request;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
@@ -24,23 +40,36 @@ import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler2;
 /**
  * Created by ayushnvijay on 6/23/16.
  */
-public class SignalRmanager {
+public class SignalRManager {
 
     private HubProxy proxy;
-    @Inject static CurrentUserId currentUserId;
-    @Inject static RequestHeaders requestHeaders;
+//    @Inject static CurrentUserId currentUserId;
+//    @Inject static RequestHeaders requestHeaders;
 
-    static final THhubConnection connection;
-    static {
+    private RequestHeaders requestHeaders;
+    private CurrentUserId currentUserId;
+    private THhubConnection connection;
+//    static {
+//        connection = new THhubConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
+//        connection.setCredentials(request -> {
+//            request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
+//            request.addHeader(Constants.USER_ID,currentUserId.get().toString());
+//        });
+//    }
+
+    public SignalRManager(RequestHeaders requestHeaders, CurrentUserId currentUserId){
+        this.requestHeaders = requestHeaders;
+        this.currentUserId = currentUserId;
         connection = new THhubConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
         connection.setCredentials(request -> {
             request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
-            request.addHeader(Constants.USER_ID,currentUserId.get().toString());
+            request.addHeader(Constants.USER_ID, currentUserId.get().toString());
         });
+
     }
-    public SignalRmanager(String hubName) {
-        this.proxy = connection.createHubProxy(hubName);
-    }
+//    private SignalRManager(String hubName) {
+//        this.proxy = connection.createHubProxy(hubName);
+//    }
 
     public String[] getSecurityIds(List<SecurityCompactDTO> items){
         Iterator<SecurityCompactDTO> iterator = items.iterator();
@@ -56,7 +85,7 @@ public class SignalRmanager {
         return strings;
     }
 
-    public boolean start(String groupName, List <SecurityCompactDTO> items){
+    public boolean startWithInvoke(String groupName, List <SecurityCompactDTO> items){
         try {
             connection.start().done(new Action<Void>() {
                 @Override
@@ -70,6 +99,17 @@ public class SignalRmanager {
             return false;
         }
     }
+
+    public boolean start(){
+        try {
+            connection.start();
+            return true;
+        }
+        catch (Exception e){
+            return false;
+        }
+    }
+
     public void subscribeOn(String eventName, SubscriptionHandler subscriptionHandler) {
         proxy.on(eventName, subscriptionHandler);
     }
@@ -79,6 +119,46 @@ public class SignalRmanager {
     public void subscribeOn(String eventName, SubscriptionHandler2<Object, Object> subscriptionHandler) {
         proxy.on(eventName, subscriptionHandler, Object.class, Object.class);
     }
+
+    public void initWithEvent(String hubName, String eventName, String[] args,
+                              KYCVerifyButton kycVerifyButton, SubscriptionHandler1<Object> handler, Class<?> classParameter) {
+
+//        THhubConnection connection = new THhubConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
+//        connection.setCredentials(request -> {
+//            request.addHeader(Constants.AUTHORIZATION, requestHeader);
+//            request.addHeader(Constants.USER_ID, userId);
+//        });
+        HubProxy hubProxy = this.connection.createHubProxy(hubName);
+        try{
+             this.connection.start();
+            switch (eventName){
+                case "SetValidationStatus":
+                    Log.v("", "SignalRManager proxy on");
+                    hubProxy.on(eventName, emailVerifiedDTO->{
+                        Log.v("", "SignalRManager received "+emailVerifiedDTO.getMessage()+":"+emailVerifiedDTO.isValidated());
+                        if(emailVerifiedDTO.isValidated()){
+//                            updateEmailVerifyButton(kycVerifyButton, VerifyButtonState.FINISH, args[0]);
+                            handler.run(emailVerifiedDTO);
+                        }
+                    }, EmailVerifiedDTO.class);
+                hubProxy.subscribe(LiveSignUpStep1AyondoFragment.class);
+                    break;
+                default:
+                    break;
+            }
+        }catch (Exception e){
+Log.v("", e.getLocalizedMessage());
+        }
+
+    }
+
+//    @MainThread
+//    private void updateEmailVerifyButton(KYCVerifyButton button,
+//                                                VerifyButtonState status,
+//                                                String emailAddress) {
+//        button.setState(status);
+//        LiveSignUpStep1AyondoFragment.updateEmailVerification(emailAddress);
+//    }
 }
 
 //Reconnects itself if connection is lost
@@ -100,7 +180,7 @@ class THhubConnection extends HubConnection{
     @Override
     protected void onClosed() {
         super.onClosed();
-        super.start();
+//        super.start();
     }
 
 }

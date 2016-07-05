@@ -10,6 +10,7 @@
       style="@style/TradeHero.Live.SignUpInnerContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
+      android:background="@color/white"
       >
 
     <RelativeLayout
@@ -90,39 +91,73 @@
     </RelativeLayout>
 
 
-
-      <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:hintTextAppearance="@style/TH.Caption"
-          >
-          <EditText
-              android:id="@+id/nric_number"
-              style="@style/TH.Body"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:hint="@string/nric"
-              android:inputType="number"
-              android:maxLength="12"
-              />
-      </android.support.design.widget.TextInputLayout>
-      <android.support.design.widget.TextInputLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:hintTextAppearance="@style/TH.Caption"
-        >
-      <EditText
-          android:id="@+id/sign_up_email"
-          style="@style/TH.Body"
+        android:orientation="horizontal">
+
+      <android.support.design.widget.TextInputLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:hint="@string/email"
-          android:inputType="textEmailAddress"
-          />
-    </android.support.design.widget.TextInputLayout>
+          android:layout_weight="0.2"
+          app:hintTextAppearance="@style/TH.Caption">
 
+        <EditText
+            android:id="@+id/nric_number"
+            style="@style/TH.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/nric"
+            android:inputType="number"
+            android:maxLength="12"
+        />
 
-    <RelativeLayout
+      </android.support.design.widget.TextInputLayout>
+
+      <com.androidth.general.widget.validation.KYCVerifyButton
+          android:id="@+id/nric_verify_button"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_weight="0.8"
+          android:background="?android:attr/selectableItemBackground"
+          android:backgroundTint="@color/transparent"
+          android:src="@drawable/ic_grey_alert"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+      <android.support.design.widget.TextInputLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_weight="0.2"
+          app:hintTextAppearance="@style/TH.Caption">
+
+        <EditText
+            android:id="@+id/sign_up_email"
+            style="@style/TH.Body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+        />
+      </android.support.design.widget.TextInputLayout>
+
+      <com.androidth.general.widget.validation.KYCVerifyButton
+          android:id="@+id/email_verify_button"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_weight="0.8"
+          android:background="?android:attr/selectableItemBackground"
+          android:backgroundTint="@color/transparent"
+          android:src="@drawable/ic_grey_alert"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_xsmall"
@@ -132,34 +167,16 @@
       <Spinner
           android:id="@+id/country_code_spinner"
           style="@style/TH.Spinner"
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_alignParentBottom="true"
-          android:layout_alignParentLeft="true"
-          android:layout_alignParentStart="true"
+          android:layout_weight="0.8"
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:spinnerMode="dropdown" />
 
-      <Button
-          android:id="@+id/btn_verify_phone"
-          style="@style/TH.Button.LiveForm"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentBottom="true"
-          android:layout_alignParentEnd="true"
-          android:layout_alignParentRight="true"
-          android:text="@string/verify"
-          tools:enabled="false"
-          />
-
       <android.support.design.widget.TextInputLayout
-          android:layout_width="wrap_content"
+          android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:layout_centerVertical="true"
-          android:layout_toEndOf="@id/country_code_spinner"
-          android:layout_toRightOf="@id/country_code_spinner"
-          android:layout_toLeftOf="@id/btn_verify_phone"
-          android:layout_toStartOf="@id/btn_verify_phone"
+          android:layout_weight="0.4"
           app:hintTextAppearance="@style/TH.Caption"
           >
 
@@ -174,8 +191,16 @@
 
       </android.support.design.widget.TextInputLayout>
 
+      <com.androidth.general.widget.validation.KYCVerifyButton
+          android:id="@+id/phone_verify_button"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_weight="0.8"
+          android:background="?android:attr/selectableItemBackground"
+          android:backgroundTint="@color/transparent"
+          android:src="@drawable/ic_grey_alert"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <!--<TextView-->
         <!--style="@style/TH.Caption"-->
@@ -279,6 +304,27 @@
         tools:enabled="true"
         />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <CheckBox
+          android:id="@+id/step_1_tnc_checkbox"
+          android:layout_alignParentLeft="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content" />
+
+      <TextView
+          android:layout_toRightOf="@id/step_1_tnc_checkbox"
+          android:layout_alignBaseline="@id/step_1_tnc_checkbox"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:autoLink="web"
+          android:linksClickable="true"
+          android:text="@string/terms_conditions"/>
+
+    </RelativeLayout>
+
     <Button
         android:id="@+id/btn_join_competition"
         style="@style/TH.Button.LiveForm"
@@ -289,13 +335,6 @@
         android:text="@string/join_competition"
         tools:enabled="true"
     />
-
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:autoLink="web"
-          android:linksClickable="true"
-          android:text="@string/terms_conditions"/>
 
   </LinearLayout>
 

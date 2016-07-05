@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
@@ -19,14 +22,21 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
+import com.androidth.general.api.competition.EmailVerifiedDTO;
 import com.androidth.general.api.competition.ProviderDTO;
+import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.competition.key.ProviderListKey;
+import com.androidth.general.api.kyc.BrokerApplicationDTO;
+import com.androidth.general.api.kyc.CountryDocumentTypes;
 import com.androidth.general.api.kyc.EmptyKYCForm;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
@@ -43,25 +53,39 @@ import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
+import com.androidth.general.fragments.live.VerifyEmailDialogFragment;
 import com.androidth.general.fragments.live.VerifyPhoneDialogFragment;
 import com.androidth.general.models.fastfill.Gender;
+import com.androidth.general.network.LiveNetworkConstants;
+import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.KycServicesRx;
 import com.androidth.general.network.service.LiveServiceWrapper;
+import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
+import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
+import com.androidth.general.rx.view.adapter.OnSelectedEvent;
+import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.DateUtils;
+import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
+import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 import com.androidth.general.utils.route.THRouter;
+import com.androidth.general.widget.validation.KYCVerifyButton;
+import com.androidth.general.widget.validation.VerifyButtonState;
 import com.neovisionaries.i18n.CountryCode;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Pattern;
 
@@ -69,7 +93,14 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import microsoft.aspnet.signalr.client.Credentials;
+import microsoft.aspnet.signalr.client.SignalRFuture;
+import microsoft.aspnet.signalr.client.http.Request;
+import microsoft.aspnet.signalr.client.hubs.HubConnection;
+import microsoft.aspnet.signalr.client.hubs.HubProxy;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -79,6 +110,8 @@ import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import rx.functions.Func3;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
@@ -98,6 +131,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @LayoutRes private static final int LAYOUT_PHONE_SELECTED_FLAG = R.layout.spinner_live_phone_country_dropdown_item_selected;
     private static final int REQUEST_PICK_DATE = 2805;
     private static final int REQUEST_VERIFY_PHONE_NUMBER_CODE = 2808;
+    private static final int REQUEST_VERIFY_EMAIL_CODE = 2809;
     private static final String KEY_EXPECTED_SMS_CODE = LiveSignUpStep1AyondoFragment.class.getName() + ".expectedCode";
     private static final String KEY_SMS_ID = LiveSignUpStep1AyondoFragment.class.getName() + ".smsId";
 
@@ -109,25 +143,37 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
     @Bind(R.id.info_phone_number) EditText phoneNumber;
     @Bind(R.id.info_dob) TextView dob;
-    @Bind(R.id.btn_verify_phone) TextView buttonVerifyPhone;
+    @Bind(R.id.step_1_tnc_checkbox) CheckBox tncCheckbox;
+    //@Bind(R.id.btn_verify_phone) TextView buttonVerifyPhone;
     //@Bind(R.id.info_nationality) Spinner spinnerNationality;
     //@Bind(R.id.info_residency) Spinner spinnerResidency;
+
+    @Bind(R.id.email_verify_button) KYCVerifyButton emailVerifybutton;
+    @Bind(R.id.nric_verify_button) KYCVerifyButton nricVerifyButton;
+    @Bind(R.id.phone_verify_button) KYCVerifyButton phoneVerifyButton;
 
     @Bind(R.id.residence_state) Spinner spinnerResidenceState;
     @Bind(R.id.how_you_know_th) Spinner spinnerHowYouKnowTH;
     @Bind(R.id.btn_join_competition) Button joinCompetitionButton;
 
     @Inject ProviderCacheRx providerCache;
+    @Inject ProviderListCacheRx providerListCache;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
+    @Inject protected RequestHeaders requestHeaders;
+    SignalRManager signalRManager;
 
     private Pattern emailPattern;
-    private String emailInvalidMessage;
     private String expectedCode;
     private String smsId;
     private ProviderId providerId;
     private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
+    private static PublishSubject<String> verifiedPublishEmail;
+    private Drawable noErrorIconDrawable;
+    private int providerIdInt = 0;
+
+    HubProxy proxy;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -135,10 +181,18 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         thRouter.inject(this);
         verifiedPublishSubject = PublishSubject.create();
+        verifiedPublishEmail = PublishSubject.create();
         if (savedInstanceState != null)
         {
             expectedCode = savedInstanceState.getString(KEY_EXPECTED_SMS_CODE, null);
             smsId = savedInstanceState.getString(KEY_SMS_ID, null);
+        }
+
+        emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
+        noErrorIconDrawable = getResources().getDrawable(R.drawable.red_alert);
+        if (noErrorIconDrawable != null)
+        {
+            noErrorIconDrawable.setBounds(0,0,0,0);
         }
     }
 
@@ -150,17 +204,17 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
+        ButterKnife.bind(getActivity());
         phoneNumber.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE && buttonVerifyPhone.isEnabled())
+            if (actionId == EditorInfo.IME_ACTION_DONE && phoneVerifyButton.getState() == VerifyButtonState.PENDING)
             {
                 offerToEnterCode();
-
             }
+
             return false;
         });
 
-        int providerIdInt = getProviderId(getArguments());
+        providerIdInt = getProviderId(getArguments());
 
         if (providerIdInt != 0) {
             this.providerId = new ProviderId(providerIdInt);
@@ -171,15 +225,20 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 if (providerDTO != null) {
                     if (btnNext != null)
                     {
-                        btnNext.setVisibility(View.GONE);
+                        if(providerDTO.isUserEnrolled){
+                            btnNext.setVisibility(View.VISIBLE);
+                            joinCompetitionButton.setVisibility(View.GONE);
+                        }else{
+                            btnNext.setVisibility(View.GONE);
+                            joinCompetitionButton.setVisibility(View.VISIBLE);
+                            joinCompetitionButton.setEnabled(true);
+                        }
                     }
 
                     if (btnPrev != null)
                     {
                         btnPrev.setVisibility(View.GONE);
                     }
-
-                    joinCompetitionButton.setEnabled(true);
                 }
             });
         }
@@ -212,9 +271,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         WidgetObservable.text(nricNumber)
                 .doOnNext(onTextChangeEvent -> {
                     if (onTextChangeEvent.text().length() != 12) {
-                        Drawable redAlert = getResources().getDrawable(R.drawable.red_alert);
-                        redAlert.setBounds(0,0,redAlert.getIntrinsicWidth(), redAlert.getIntrinsicHeight());
-                        nricNumber.setError("NRIC must be 12 digits.", redAlert);
+                        nricVerifyButton.setState(VerifyButtonState.BEGIN);
+                    } else if (onTextChangeEvent.text().length() == 12) {
+                        nricVerifyButton.setState(VerifyButtonState.PENDING);
                     }
                 })
                 .withLatestFrom(liveBrokerSituationDTOObservable,
@@ -225,6 +284,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 }).subscribe(this::onNext);
 
         WidgetObservable.text(email)
+                .doOnNext(onTextChangeEvent -> {
+                    if (isValidEmail(onTextChangeEvent.text().toString())) {
+                        emailVerifybutton.setState(VerifyButtonState.PENDING);
+                    } else {
+                        emailVerifybutton.setState(VerifyButtonState.BEGIN);
+                    }
+                })
                 .withLatestFrom(liveBrokerSituationDTOObservable,
                 (onTextChangeEvent, liveBrokerSituationDTO) -> {
                     KYCAyondoForm updated = KYCAyondoFormFactory.fromEmailEvent(onTextChangeEvent);
@@ -239,66 +305,108 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                 }).subscribe(this::onNext);
 
+        AdapterViewObservable.selects(spinnerPhoneCountryCode).withLatestFrom(liveBrokerSituationDTOObservable,
+                new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                {
+                    public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                        KYCAyondoForm updated = KYCAyondoFormFactory.fromPhoneCountryCode(onSelectedEvent);
+
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+                    }
+                }).subscribe(this::onNext);
+
+
+        // clicks observable
+        ViewObservable.clicks(nricVerifyButton)
+                .withLatestFrom(liveBrokerSituationDTOObservable, (onClickEvent, liveBrokerSituationDTO) -> liveBrokerSituationDTO)
+                .doOnError(throwable1 -> {
+                    Log.v(getTag(), "NRIC ERROR");
+                })
+                .subscribe((LiveBrokerSituationDTO liveBrokerSituationDTO) -> {
+                    switch (nricVerifyButton.getState()) {
+                        case BEGIN:
+                            nricNumber.setError("NRIC must be 12 digits.", noErrorIconDrawable);
+                            nricVerifyButton.setState(VerifyButtonState.ERROR);
+                            break;
+                        case PENDING:
+                        case VALIDATE:
+                            if (liveBrokerSituationDTO.kycForm instanceof KYCAyondoForm) {
+                                KYCAyondoForm form = (KYCAyondoForm)liveBrokerSituationDTO.kycForm;
+
+                                ProgressDialog progress = new ProgressDialog(getContext());
+                                progress.setMessage("Loading...");
+                                progress.show();
+
+                                liveServiceWrapper.documentsForCountry(form.getNationality().getAlpha2()).subscribe(
+                                        countryDocumentTypes -> {
+                                            // possible have multiple items, currently UI is hardcoded for NRIC, I(James) still not sure how to handle this things because the form is not totally dynamic...
+                                            // need to thing some ways to handle all the cases and make it dynamic.
+
+                                            for (CountryDocumentTypes countryDocumentType : countryDocumentTypes)
+                                            {
+                                                if (countryDocumentType.validation != null)
+                                                {
+                                                    Map queryParameters = new HashMap<String, String>();
+                                                    queryParameters.put(LiveServiceWrapper.PROVIDER_ID, Integer.toString(getProviderId(getArguments())));
+                                                    queryParameters.put(LiveServiceWrapper.INPUT, nricNumber.getText().toString());
+                                                    liveServiceWrapper.validateData(countryDocumentType.validation, queryParameters)
+                                                            .subscribeOn(Schedulers.newThread())
+                                                            .observeOn(AndroidSchedulers.mainThread())
+                                                            .subscribe(aBoolean -> {
+//                                                                if (aBoolean)
+//                                                                {
+                                                                    nricVerifyButton.setState(VerifyButtonState.FINISH);
+//                                                                }
+
+                                                                progress.dismiss();
+                                                            }, throwable -> {
+//                                                                THToast.show(throwable.getMessage());
+                                                                nricVerifyButton.setState(VerifyButtonState.ERROR);
+                                                                progress.dismiss();
+                                                            });
+                                                }
+                                            }
+                                        }, throwable -> {
+                                            THToast.show(throwable.getMessage());
+                                            progress.dismiss();
+                                        });
+                            }
+                            break;
+                    }
+                });
+
+        ViewObservable.clicks(emailVerifybutton)
+                .subscribe(new Action1<OnClickEvent>() {
+                    @Override
+                    public void call(OnClickEvent onClickEvent) {
+                        switch (emailVerifybutton.getState()) {
+                            case BEGIN:
+                                email.setError(LiveSignUpStep1AyondoFragment.this.getString(R.string.validation_incorrect_pattern_email), noErrorIconDrawable);
+                                emailVerifybutton.setState(VerifyButtonState.ERROR);
+                                break;
+                            case PENDING:
+                            case VALIDATE:
+                                LiveSignUpStep1AyondoFragment.this.validateEmail();
+                                break;
+                        }
+                    }
+                });
+
+        ViewObservable.clicks(phoneVerifyButton).subscribe(onClickEvent -> {
+            switch (phoneVerifyButton.getState()) {
+                case BEGIN:
+                    phoneNumber.setError("Mobile number cannot less than 7 digits.", noErrorIconDrawable);
+                    phoneVerifyButton.setState(VerifyButtonState.ERROR);
+                    break;
+                case PENDING:
+                case VALIDATE:
+                    offerToEnterCode();
+            }
+        });
+
         //AdapterViewObservable.selects(title).subscribe(KYCAyondoFormFactory::fromTitleEvent);
         //AdapterViewObservable.selects(spinnerNationality).subscribe(KYCAyondoFormFactory::fromNationalityEvent);
         //AdapterViewObservable.selects(spinnerResidency).subscribe(KYCAyondoFormFactory::fromResidencyEvent);
-
-        emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
-        emailInvalidMessage = getString(R.string.validation_incorrect_pattern_email);
-
-        subscriptions.add(
-                WidgetObservable.text(email)
-                        .distinctUntilChanged(new Func1<OnTextChangeEvent, CharSequence>()
-                        {
-                            @Override public CharSequence call(OnTextChangeEvent onTextChangeEvent)
-                            {
-                                return onTextChangeEvent.text();
-                            }
-                        })
-                        .filter(new Func1<OnTextChangeEvent, Boolean>()
-                        {
-                            @Override public Boolean call(OnTextChangeEvent onTextChangeEvent)
-                            {
-                                return !TextUtils.isEmpty(onTextChangeEvent.text());
-                            }
-                        })
-                        .map(new Func1<OnTextChangeEvent, String>()
-                        {
-                            @Override public String call(OnTextChangeEvent onTextChangeEvent)
-                            {
-                                if (!emailPattern.matcher(onTextChangeEvent.text()).matches())
-                                {
-                                    return emailInvalidMessage;
-                                }
-                                else {
-
-                                    return null;
-                                }
-
-                            }
-                        })
-                        .subscribe(new Action1<String>()
-                        {
-                            @Override public void call(@Nullable String errorMessage)
-                            {
-                                Drawable redAlert = getResources().getDrawable(R.drawable.red_alert);
-                                redAlert.setBounds(0,0,redAlert.getIntrinsicWidth(), redAlert.getIntrinsicHeight());
-                                if(errorMessage==null){
-                                    email.setError(null,null);
-                                    //Drawable greenTick = getResources().getDrawable(R.drawable.green_tick);
-                                    //greenTick.setBounds(0,0,greenTick.getIntrinsicWidth(), greenTick.getIntrinsicHeight());
-                                    email.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.green_tick,0);
-                                }
-                                else email.setError(errorMessage,redAlert);
-                            }
-                        }, new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable throwable)
-                            {
-                                Timber.e(throwable, "Failed to validate email");
-                            }
-                        })
-        );
 
         subscriptions.add(Observable.combineLatest(
                 liveBrokerSituationDTOObservable
@@ -306,69 +414,97 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         .observeOn(AndroidSchedulers.mainThread()),
                 kycAyondoFormOptionsDTOObservable
                         .observeOn(AndroidSchedulers.mainThread())
-                        .map(kycAyondoFormOptionsDTO -> new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO))
+                        .map(new Func1<KYCAyondoFormOptionsDTO, CountryDTOForSpinner>()
+                        {
+                            @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
+                            {
+                                return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO);
+                            }
+                        })
                         .distinctUntilChanged()
-                        .doOnNext(options -> {
-                            LollipopArrayAdapter<GenderDTO> genderAdapter = new LollipopArrayAdapter<>(
-                                    getActivity(),
-                                    GenderDTO.createList(getResources(), options.genders));
-                            title.setAdapter(genderAdapter);
-                            title.setEnabled(options.genders.size() > 1);
+                        .doOnNext(new Action1<CountryDTOForSpinner>()
+                        {
+                            @Override public void call(CountryDTOForSpinner options)
+                            {
+                                LollipopArrayAdapter<GenderDTO> genderAdapter = new LollipopArrayAdapter<>(
+                                        getActivity(),
+                                        GenderDTO.createList(getResources(), options.genders));
+                                title.setAdapter(genderAdapter);
+                                title.setEnabled(options.genders.size() > 1);
 
-                            CountrySpinnerAdapter phoneCountryCodeAdapter =
-                                    new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
-                            phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
-                            spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
-                            spinnerPhoneCountryCode.setEnabled(options.allowedMobilePhoneCountryDTOs.size() > 1);
-                            spinnerPhoneCountryCode.setSelection(1);
+                                CountrySpinnerAdapter phoneCountryCodeAdapter =
+                                        new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
+                                phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
+                                spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
+                                spinnerPhoneCountryCode.setEnabled(options.allowedMobilePhoneCountryDTOs.size() > 1);
 
-                            //CountrySpinnerAdapter residencyAdapter =
-                            //        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
-                            //residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
-                            //spinnerResidency.setAdapter(residencyAdapter);
-                            //spinnerResidency.setEnabled(options.allowedResidencyCountryDTOs.size() > 1);
-                            //
-                            //CountrySpinnerAdapter nationalityAdapter =
-                            //        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
-                            //nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
-                            //spinnerNationality.setAdapter(nationalityAdapter);
-                            //spinnerNationality.setEnabled(options.allowedNationalityCountryDTOs.size() > 1);w
+                                //CountrySpinnerAdapter residencyAdapter =
+                                //        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+                                //residencyAdapter.addAll(options.allowedResidencyCountryDTOs);
+                                //spinnerResidency.setAdapter(residencyAdapter);
+                                //spinnerResidency.setEnabled(options.allowedResidencyCountryDTOs.size() > 1);
+                                //
+                                //CountrySpinnerAdapter nationalityAdapter =
+                                //        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
+                                //nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
+                                //spinnerNationality.setAdapter(nationalityAdapter);
+                                //spinnerNationality.setEnabled(options.allowedNationalityCountryDTOs.size() > 1);w
 
-                            LollipopArrayAdapter<String> residenceStateAdapter = new LollipopArrayAdapter<>(
-                                    getActivity(), options.residenceStateList);
-                            spinnerResidenceState.setAdapter(residenceStateAdapter);
-                            spinnerResidenceState.setEnabled(options.residenceStateList.size() > 1);
+                                LollipopArrayAdapter<String> residenceStateAdapter = new LollipopArrayAdapter<>(
+                                        getActivity(), options.residenceStateList);
+                                spinnerResidenceState.setAdapter(residenceStateAdapter);
+                                spinnerResidenceState.setEnabled(options.residenceStateList.size() > 1);
 
-                            LollipopArrayAdapter<String> howYouKnowTHAdapter = new LollipopArrayAdapter<>(
-                                    getActivity(), options.howYouKnowTHList);
-                            spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
-                            spinnerHowYouKnowTH.setEnabled(options.howYouKnowTHList.size() > 1);
+                                LollipopArrayAdapter<String> howYouKnowTHAdapter = new LollipopArrayAdapter<>(
+                                        getActivity(), options.howYouKnowTHList);
+                                spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
+                                spinnerHowYouKnowTH.setEnabled(options.howYouKnowTHList.size() > 1);
+                            }
                         }),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
                         .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
                         .observeOn(AndroidSchedulers.mainThread()),
-                (situation, options, currentUserProfile) -> {
-                    ////noinspection ConstantConditions
-                    LiveBrokerSituationDTO latestDTO = situation;
-
-                    if (situation.kycForm instanceof EmptyKYCForm) {
-                        KYCAyondoForm defaultForm = new KYCAyondoForm();
-                        defaultForm.pickFromWithDefaultValues(currentUserProfile);
-
-                        latestDTO = new LiveBrokerSituationDTO(situation.broker, defaultForm);
-                    }
-
-                    if ((KYCAyondoForm) latestDTO.kycForm != null)
+                new Func3<LiveBrokerSituationDTO, CountryDTOForSpinner, UserProfileDTO, LiveBrokerSituationDTO>()
+                {
+                    @Override public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation,
+                            CountryDTOForSpinner options,
+                            UserProfileDTO currentUserProfile)
                     {
-                        populate((KYCAyondoForm) latestDTO.kycForm);
-                        populateGender((KYCAyondoForm) latestDTO.kycForm, options.genders);
-                        populateMobileCountryCode((KYCAyondoForm) latestDTO.kycForm, currentUserProfile,
-                                options.allowedMobilePhoneCountryDTOs);
-                        populateNationality((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
-                        populateResidency((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
-                    }
+                        ////noinspection ConstantConditions
+                        LiveBrokerSituationDTO latestDTO = situation;
 
-                    return latestDTO;
+                        if (situation.kycForm instanceof EmptyKYCForm) {
+                            KYCAyondoForm defaultForm = new KYCAyondoForm();
+                            defaultForm.pickFromWithDefaultValues(currentUserProfile);
+
+                            latestDTO = new LiveBrokerSituationDTO(situation.broker, defaultForm);
+                        }
+
+                        if ((KYCAyondoForm) latestDTO.kycForm != null)
+                        {
+                            ProviderDTO providerDTO = providerCache.getCachedValue(new ProviderId(getProviderId(getArguments())));
+
+                            if (providerDTO != null) {
+                                if (providerDTO.isStrictlyForProviderCountry && providerDTO.providerCountries.length == 1) {
+                                    KYCAyondoForm updated = new KYCAyondoForm();
+                                    updated.setNationality(CountryCode.getByCode(providerDTO.providerCountries[0]));
+                                    updated.setResidency(CountryCode.getByCode(providerDTO.providerCountries[0]));
+
+                                    //latestDTO = new LiveBrokerSituationDTO(latestDTO.broker, updated);
+                                    onNext(new LiveBrokerSituationDTO(latestDTO.broker, updated));
+                                }
+                            }
+
+                            populate((KYCAyondoForm) latestDTO.kycForm);
+                            populateGender((KYCAyondoForm) latestDTO.kycForm, options.genders);
+                            populateMobileCountryCode((KYCAyondoForm) latestDTO.kycForm, currentUserProfile,
+                                    options.allowedMobilePhoneCountryDTOs);
+                            populateNationality((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
+                            populateResidency((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
+                        }
+
+                        return latestDTO;
+                    }
                 })
                 .subscribe(
                         new EmptyAction1<LiveBrokerSituationDTO>(),
@@ -377,30 +513,54 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         subscriptions.add(
                 Observable.combineLatest(
                         AdapterViewObservable.selects(spinnerPhoneCountryCode)
-                                .filter(onSelectedEvent -> onSelectedEvent instanceof OnItemSelectedEvent)
+                                .filter(new Func1<OnSelectedEvent, Boolean>()
+                                {
+                                    @Override public Boolean call(OnSelectedEvent onSelectedEvent)
+                                    {
+                                        return onSelectedEvent instanceof OnItemSelectedEvent;
+                                    }
+                                })
                                 .cast(OnItemSelectedEvent.class),
                         WidgetObservable.text(phoneNumber),
-                        (onSelectedEvent, onTextChangeEvent) -> {
-                            CountrySpinnerAdapter.DTO selectedDTO = (CountrySpinnerAdapter.DTO) onSelectedEvent.parent.getItemAtPosition(
-                                    onSelectedEvent.position);
-                            return new PhoneNumberDTO(
-                                    selectedDTO.country,
-                                    selectedDTO.phoneCountryCode,
-                                    onTextChangeEvent.text().toString());
-                        })
-                        .doOnNext(phoneNumberDTO -> {
-                            buttonVerifyPhone.setText(R.string.verify);
-                            buttonVerifyPhone.setEnabled(false);
-                            if (isValidPhoneNumber(phoneNumberDTO))
+                        new Func2<OnItemSelectedEvent, OnTextChangeEvent, PhoneNumberDTO>()
+                        {
+                            @Override public PhoneNumberDTO call(OnItemSelectedEvent onSelectedEvent, OnTextChangeEvent onTextChangeEvent)
                             {
-                                buttonVerifyPhone.setBackgroundResource(R.drawable.basic_green_selector);
-                                buttonVerifyPhone.setEnabled(true);
+                                CountrySpinnerAdapter.DTO selectedDTO = (CountrySpinnerAdapter.DTO) onSelectedEvent.parent.getItemAtPosition(
+                                        onSelectedEvent.position);
+                                return new PhoneNumberDTO(
+                                        selectedDTO.country,
+                                        selectedDTO.phoneCountryCode,
+                                        onTextChangeEvent.text().toString());
+                            }
+                        })
+                        .doOnNext(new Action1<PhoneNumberDTO>()
+                        {
+                            @Override public void call(PhoneNumberDTO phoneNumberDTO)
+                            {
+                                //buttonVerifyPhone.setText(R.string.verify);
+                                //buttonVerifyPhone.setEnabled(false);
+                                //if (isValidPhoneNumber(phoneNumberDTO))
+                                //{
+                                //    buttonVerifyPhone.setBackgroundResource(R.drawable.basic_green_selector);
+                                //    buttonVerifyPhone.setEnabled(true);
+                                //}
+
+                                if (isValidPhoneNumber(phoneNumberDTO)) {
+                                    phoneVerifyButton.setState(VerifyButtonState.PENDING);
+                                } else {
+                                    phoneVerifyButton.setState(VerifyButtonState.BEGIN);
+                                }
                             }
                         })
                         .distinctUntilChanged()
-                        .doOnNext(phoneNumberDTO -> {
-                            smsId = null;
-                            expectedCode = null;
+                        .doOnNext(new Action1<PhoneNumberDTO>()
+                        {
+                            @Override public void call(PhoneNumberDTO phoneNumberDTO)
+                            {
+                                smsId = null;
+                                expectedCode = null;
+                            }
                         })
                         .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<PhoneNumberDTO, LiveBrokerSituationDTO, PhoneNumberDTO>()
                         {
@@ -418,80 +578,171 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 return phoneNumberDTO;
                             }
                         })
-                        .filter(phoneNumberDTO -> isValidPhoneNumber(phoneNumberDTO))
-                        .flatMap(numberDTO -> {
-                            String numberText = VerifyPhoneDialogFragment.getFormattedPhoneNumber(numberDTO.dialingPrefix, numberDTO.typedNumber);
-                            return liveServiceWrapper.getPhoneNumberVerifiedStatus(numberText)
-                                    .map(verifiedStatusDTO -> new PhoneNumberAndVerifiedDTO(
-                                            numberDTO.dialingCountry,
-                                            numberDTO.dialingPrefix,
-                                            numberDTO.typedNumber,
-                                            verifiedStatusDTO.verified));
+                        .filter(new Func1<PhoneNumberDTO, Boolean>()
+                        {
+                            @Override public Boolean call(PhoneNumberDTO phoneNumberDTO)
+                            {
+                                return isValidPhoneNumber(phoneNumberDTO);
+                            }
+                        })
+                        .flatMap(new Func1<PhoneNumberDTO, Observable<PhoneNumberAndVerifiedDTO>>()
+                        {
+                            @Override public Observable<PhoneNumberAndVerifiedDTO> call(
+                                    final PhoneNumberDTO numberDTO)
+                            {
+                                String numberText = VerifyPhoneDialogFragment.getFormattedPhoneNumber(numberDTO.dialingPrefix, numberDTO.typedNumber);
+                                return liveServiceWrapper.getPhoneNumberVerifiedStatus(numberText)
+                                        .map(new Func1<PhoneNumberVerifiedStatusDTO, PhoneNumberAndVerifiedDTO>()
+                                        {
+                                            @Override public PhoneNumberAndVerifiedDTO call(
+                                                    PhoneNumberVerifiedStatusDTO verifiedStatusDTO)
+                                            {
+                                                return new PhoneNumberAndVerifiedDTO(
+                                                        numberDTO.dialingCountry,
+                                                        numberDTO.dialingPrefix,
+                                                        numberDTO.typedNumber,
+                                                        verifiedStatusDTO.verified);
+                                            }
+                                        });
+                            }
                         })
                         .withLatestFrom(liveBrokerSituationDTOObservable,
-                                (phoneNumberAndVerifiedDTO, liveBrokerSituationDTO) -> {
-                                    KYCAyondoForm update = new KYCAyondoForm();
-
-                                    int dialingPrefix = phoneNumberAndVerifiedDTO.dialingPrefix;
-                                    String newNumber = phoneNumberAndVerifiedDTO.typedNumber;
-
-                                    if (phoneNumberAndVerifiedDTO.verified)
+                                new Func2<PhoneNumberAndVerifiedDTO, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                                {
+                                    @Override public LiveBrokerSituationDTO call(PhoneNumberAndVerifiedDTO phoneNumberAndVerifiedDTO,
+                                            LiveBrokerSituationDTO liveBrokerSituationDTO)
                                     {
-                                        update.setVerifiedMobileNumberDialingPrefix(dialingPrefix);
-                                        update.setVerifiedMobileNumber(newNumber);
+                                        KYCAyondoForm update = new KYCAyondoForm();
+
+                                        int dialingPrefix = phoneNumberAndVerifiedDTO.dialingPrefix;
+                                        String newNumber = phoneNumberAndVerifiedDTO.typedNumber;
+
+                                        if (phoneNumberAndVerifiedDTO.verified)
+                                        {
+                                            update.setVerifiedMobileNumberDialingPrefix(dialingPrefix);
+                                            update.setVerifiedMobileNumber(newNumber);
+                                        }
+
+                                        //noinspection ConstantConditions
+                                        liveBrokerSituationDTO.kycForm.pickFrom(update);
+                                        populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, phoneNumberAndVerifiedDTO);
+
+                                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
                                     }
-
-                                    //noinspection ConstantConditions
-                                    liveBrokerSituationDTO.kycForm.pickFrom(update);
-                                    populateVerifyMobile((KYCAyondoForm) liveBrokerSituationDTO.kycForm, phoneNumberAndVerifiedDTO);
-
-                                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
                                 })
-                        .subscribe(liveBrokerSituationDTO -> onNext(liveBrokerSituationDTO), throwable -> {
+                        .subscribe(new Action1<LiveBrokerSituationDTO>()
+                        {
+                            @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                            {
+                                onNext(liveBrokerSituationDTO);
+                            }
+                        }, new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
 
+                            }
                         }));
 
         subscriptions.add(ViewObservable.clicks(dob)
-                .withLatestFrom(kycAyondoFormOptionsDTOObservable, (onClickEvent, kycAyondoFormOptionsDTO) -> kycAyondoFormOptionsDTO)
-                .map(kycAyondoFormOptionsDTO -> {
-                    Calendar c = Calendar.getInstance();
-                    int year = c.get(Calendar.YEAR) - kycAyondoFormOptionsDTO.minAge;
-                    c.set(Calendar.YEAR, year);
-                    return c;
-                })
-                .subscribe(calendar -> {
-                    Calendar selected = null;
-                    if (!TextUtils.isEmpty(dob.getText()))
+                .withLatestFrom(kycAyondoFormOptionsDTOObservable, new Func2<OnClickEvent, KYCAyondoFormOptionsDTO, KYCAyondoFormOptionsDTO>()
+                {
+                    @Override public KYCAyondoFormOptionsDTO call(OnClickEvent onClickEvent, KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
                     {
-                        Date d = DateUtils.parseString(dob.getText().toString(), KYCAyondoForm.DATE_FORMAT_AYONDO);
-                        if (d != null)
-                        {
-                            selected = Calendar.getInstance();
-                            selected.setTime(d);
-                        }
+                        return kycAyondoFormOptionsDTO;
                     }
-                    DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance(calendar, selected);
-                    dpf.setTargetFragment(LiveSignUpStep1AyondoFragment.this, REQUEST_PICK_DATE);
-                    dpf.show(getChildFragmentManager(), dpf.getClass().getName());
+                })
+                .map(new Func1<KYCAyondoFormOptionsDTO, Calendar>()
+                {
+                    @Override public Calendar call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
+                    {
+                        Calendar c = Calendar.getInstance();
+                        int year = c.get(Calendar.YEAR) - kycAyondoFormOptionsDTO.minAge;
+                        c.set(Calendar.YEAR, year);
+                        return c;
+                    }
+                })
+                .subscribe(new Action1<Calendar>()
+                {
+                    @Override public void call(Calendar calendar)
+                    {
+                        Calendar selected = null;
+                        if (!TextUtils.isEmpty(dob.getText()))
+                        {
+                            Date d = DateUtils.parseString(dob.getText().toString(), KYCAyondoForm.DATE_FORMAT_AYONDO);
+                            if (d != null)
+                            {
+                                selected = Calendar.getInstance();
+                                selected.setTime(d);
+                            }
+                        }
+                        DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance(calendar, selected);
+                        dpf.setTargetFragment(LiveSignUpStep1AyondoFragment.this, REQUEST_PICK_DATE);
+                        dpf.show(getChildFragmentManager(), dpf.getClass().getName());
+                    }
                 }, new TimberOnErrorAction1("Failed to listen to DOB clicks")));
 
-        subscriptions.add(ViewObservable.clicks(buttonVerifyPhone)
-                .withLatestFrom(liveBrokerSituationDTOObservable, (onClickEvent, liveBrokerSituationDTO) -> liveBrokerSituationDTO)
-                .subscribe(liveBrokerSituationDTO -> offerToEnterCode(), new TimberOnErrorAction1("Failed to present verify phone dialog")));
+        //subscriptions.add(ViewObservable.clicks(buttonVerifyPhone)
+        //        .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnClickEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+        //        {
+        //            @Override public LiveBrokerSituationDTO call(OnClickEvent onClickEvent, LiveBrokerSituationDTO liveBrokerSituationDTO)
+        //            {
+        //                return liveBrokerSituationDTO;
+        //            }
+        //        })
+        //        .subscribe(new Action1<LiveBrokerSituationDTO>()
+        //        {
+        //            @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+        //            {
+        //                offerToEnterCode();
+        //            }
+        //        }, new TimberOnErrorAction1("Failed to present verify phone dialog")));
 
         subscriptions.add(verifiedPublishSubject.withLatestFrom(liveBrokerSituationDTOObservable,
-                (verifiedPhonePair, liveBrokerSituationDTO) -> {
-                    KYCAyondoForm update = new KYCAyondoForm();
-                    update.setVerifiedMobileNumberDialingPrefix(verifiedPhonePair.first);
-                    update.setVerifiedMobileNumber(verifiedPhonePair.second);
-                    //noinspection ConstantConditions
-                    liveServiceWrapper.submitPhoneNumberVerifiedStatus(
-                            VerifyPhoneDialogFragment.getFormattedPhoneNumber(verifiedPhonePair.first, verifiedPhonePair.second));
-                    buttonVerifyPhone.setEnabled(false);
-                    buttonVerifyPhone.setText(R.string.verified);
-                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
+                new Func2<Pair<Integer, String>, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                {
+                    @Override
+                    public LiveBrokerSituationDTO call(Pair<Integer, String> verifiedPhonePair, LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        KYCAyondoForm update = new KYCAyondoForm();
+                        update.setVerifiedMobileNumberDialingPrefix(verifiedPhonePair.first);
+                        update.setVerifiedMobileNumber(verifiedPhonePair.second);
+                        //noinspection ConstantConditions
+
+                        liveServiceWrapper.submitPhoneNumberVerifiedStatus(
+                                VerifyPhoneDialogFragment.getFormattedPhoneNumber(verifiedPhonePair.first, verifiedPhonePair.second));
+                        //buttonVerifyPhone.setEnabled(false);
+                        //buttonVerifyPhone.setText(R.string.verified);
+                        phoneVerifyButton.setState(VerifyButtonState.FINISH);
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
+                    }
                 }).subscribe(
-                liveBrokerSituationDTO -> onNext(liveBrokerSituationDTO), new TimberOnErrorAction1("Failed to update verified mobile number")));
+                new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        onNext(liveBrokerSituationDTO);
+                    }
+                }, new TimberOnErrorAction1("Failed to update verified mobile number")));
+
+        subscriptions.add(verifiedPublishEmail.withLatestFrom(liveBrokerSituationDTOObservable,
+                new Func2<String, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                {
+                    @Override
+                    public LiveBrokerSituationDTO call(String verifiedEmail, LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        KYCAyondoForm update = new KYCAyondoForm();
+                        update.setVerifiedEmailAddress(verifiedEmail);
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
+                    }
+                }).subscribe(
+                new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        onNext(liveBrokerSituationDTO);
+                    }
+                }, new TimberOnErrorAction1("Failed to update email address")));
 
         Log.v("ayondoStep1", "Subscriptions final "+subscriptions.size());
         return subscriptions;
@@ -500,6 +751,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private boolean isValidPhoneNumber(PhoneNumberDTO phoneNumberDTO)
     {
         return phoneNumberDTO.dialingPrefix > 0 && phoneNumberDTO.typedNumber.length() > PHONE_NUM_MIN_LENGTH;
+    }
+
+    private boolean isValidEmail(String email)
+    {
+        return emailPattern.matcher(email).matches();
     }
 
     @Override public void onDestroyView()
@@ -512,6 +768,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onDestroy();
         verifiedPublishSubject = null;
+        verifiedPublishEmail = null;
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -550,6 +807,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (email != null && emailText != null && !emailText.equals(email.getText().toString()))
         {
             email.setText(emailText);
+            String currentVerifiedEmail = kycForm.getVerifiedEmailAddress();
+            if(currentVerifiedEmail!=null && currentVerifiedEmail.equals(emailText)){
+                emailVerifybutton.setState(VerifyButtonState.FINISH);
+            }
         }
 
         String nricNumberText = kycForm.getIdentificationNumber();
@@ -574,12 +835,25 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @MainThread
     protected void populateVerifyMobile(@NonNull KYCAyondoForm kycForm, PhoneNumberDTO phoneNumberDTO)
     {
-        if (buttonVerifyPhone != null)
-        {
-            boolean verified = Integer.valueOf(phoneNumberDTO.dialingPrefix).equals(kycForm.getVerifiedMobileNumberDialingPrefix())
+        //if (buttonVerifyPhone != null)
+        //{
+        //    boolean verified = Integer.valueOf(phoneNumberDTO.dialingPrefix).equals(kycForm.getVerifiedMobileNumberDialingPrefix())
+        //            && phoneNumberDTO.typedNumber.equals(kycForm.getVerifiedMobileNumber());
+        //    buttonVerifyPhone.setEnabled(!verified && isValidPhoneNumber(phoneNumberDTO));
+        //    buttonVerifyPhone.setText(verified ? R.string.verified : R.string.verify);
+        //}
+
+        boolean verified = Integer.valueOf(phoneNumberDTO.dialingPrefix).equals(kycForm.getVerifiedMobileNumberDialingPrefix())
                     && phoneNumberDTO.typedNumber.equals(kycForm.getVerifiedMobileNumber());
-            buttonVerifyPhone.setEnabled(!verified && isValidPhoneNumber(phoneNumberDTO));
-            buttonVerifyPhone.setText(verified ? R.string.verified : R.string.verify);
+
+        if (verified) {
+            phoneVerifyButton.setState(VerifyButtonState.FINISH);
+        } else {
+            if (isValidPhoneNumber(phoneNumberDTO)) {
+                phoneVerifyButton.setState(VerifyButtonState.PENDING);
+            } else {
+                phoneVerifyButton.setState(VerifyButtonState.BEGIN);
+            }
         }
     }
 
@@ -786,10 +1060,22 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             }
 
             VerifyPhoneDialogFragment.show(REQUEST_VERIFY_PHONE_NUMBER_CODE, this, phoneCountryCode, phoneNumberInt, expectedCode);
-            buttonVerifyPhone.setText(R.string.enter_code);
-            buttonVerifyPhone.setBackgroundResource(R.drawable.basic_red_selector);
+            //buttonVerifyPhone.setText(R.string.enter_code);
+            //buttonVerifyPhone.setBackgroundResource(R.drawable.basic_red_selector);
         }
     }
+
+    @MainThread
+    protected void validateEmail()
+    {
+        final String email = this.email.getText().toString();
+
+//        liveServiceWrapper.verifyEmail(currentUserId.get(), email).subscribe();
+
+        VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email, this.providerIdInt);
+        setupSignalR(email);
+    }
+
     //for email subscription pop up box
     protected void checkEmailSubscription(Integer userId) {
         Subscription subs = kycServices.validatedEmail(userId ,email.getText().toString()).subscribe(kycEmailIsValid -> {
@@ -823,6 +1109,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             {
                 verifiedPublishSubject.onNext(verifiedPhoneNumberPair);
             }
+        }else if (requestCode == REQUEST_VERIFY_EMAIL_CODE && resultCode == Activity.RESULT_OK)
+        {
+            Log.v(getTag(), "Jeff email ok");
+            String verifiedEmail = VerifyEmailDialogFragment.getVerifiedFromIntent(data);
+            if (verifiedEmail != null)
+            {
+                verifiedPublishEmail.onNext(verifiedEmail);
+            }
         }
     }
 
@@ -838,9 +1132,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     private Boolean isAllInputValidated() {
         if (nricNumber.length() != 12) {
-            Drawable redAlert = getResources().getDrawable(R.drawable.red_alert);
-            redAlert.setBounds(0,0,redAlert.getIntrinsicWidth(), redAlert.getIntrinsicHeight());
-            nricNumber.setError("NRIC must be 12 digits.", redAlert);
+            nricNumber.setError("NRIC must be 12 digits.", noErrorIconDrawable);
         }
 
         return true;
@@ -854,7 +1146,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             return;
         }
 
-        if (firstName.length() == 0 || lastName.length() == 0 || !emailPattern.matcher(email.getText()).matches() || !buttonVerifyPhone.getText().toString().equalsIgnoreCase("verified") || dob.length() == 0) {
+        if (firstName.length() == 0 || lastName.length() == 0 || !emailPattern.matcher(email.getText()).matches() || dob.length() == 0
+                || !tncCheckbox.isChecked()) {
             return;
         }
 
@@ -864,17 +1157,104 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
 
-        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(brokerApplicationDTO -> liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get()).subscribe(aBoolean -> {
-            if (aBoolean)
-            {
-                providerCache.fetch(providerId).subscribe(providerDTO -> {
-                    ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
+        liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(
+                brokerApplicationDTO -> liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get())
+                        .subscribe(aBoolean -> {
+                    if (aBoolean)
+                    {
+                        ProviderListKey key = new ProviderListKey();
+                        providerListCache.invalidate(key);
+                        providerListCache.get(key).subscribe(providerListKeyProviderDTOListPair -> {
+                                    ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
+                                    THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
+                        }, throwable -> progress.dismiss());
+                    }
+                }, throwable -> progress.dismiss()), throwable -> {
+                    THToast.show(throwable.getMessage());
                     progress.dismiss();
-                }, throwable -> progress.dismiss());
-            }
-        }, throwable -> progress.dismiss()), throwable -> {
-            THToast.show(throwable.getMessage());
-            progress.dismiss();
-        });
+                });
     }
+
+    @OnCheckedChanged(R.id.step_1_tnc_checkbox)
+    public void tncCheckboxClicked(CheckBox checkBox) {
+        Log.v(getTag(), "Jeff checkbox "+checkBox.isChecked());
+    }
+
+    @MainThread
+    public void updateEmailVerification(String emailAddress){
+        emailVerifybutton.setState(VerifyButtonState.FINISH);
+        KYCAyondoForm updated = new KYCAyondoForm();
+        updated.setVerifiedEmailAddress(emailAddress);
+        verifiedPublishEmail.onNext(emailAddress);
+    }
+
+    public void setupSignalR(String emailAddress) {
+
+        signalRManager = new SignalRManager(requestHeaders, currentUserId);
+        signalRManager.initWithEvent(LiveNetworkConstants.HUB_NAME,
+                "SetValidationStatus",
+                new String[]{emailAddress},
+                emailVerifybutton, emailVerifiedDTO ->{
+                    Log.v(getTag(), "Jeff signalR Received "+((EmailVerifiedDTO)emailVerifiedDTO).getMessage()
+                            +"::"+((EmailVerifiedDTO)emailVerifiedDTO).isValidated());
+                    if(((EmailVerifiedDTO)emailVerifiedDTO).isValidated()){
+                        updateEmailVerification(emailAddress);
+                    }
+                }, EmailVerifiedDTO.class);
+
+//        HubConnection connection = setConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
+//        connection.setCredentials(new Credentials() {
+//            @Override
+//            public void prepareRequest(Request request) {
+//                request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
+//                request.addHeader(Constants.USER_ID, currentUserId.get().toString());
+//            }
+//        });
+//        try {
+//            proxy = setProxy(LiveNetworkConstants.HUB_NAME, connection);
+//            connection.start().done(aVoid -> {
+////                SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS);
+////                signalProxy.done(req -> com.tencent.mm.sdk.platformtools.Log.i("Yay", "Nayy"));
+//            });
+//            connection.connected(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.v(getTag(), "Jeff signalR connected");
+////                    com.tencent.mm.sdk.platformtools.Log.i("SD", "cONNECTED");
+//                }
+//            });
+//            connection.connectionSlow(new Runnable() {
+//                @Override
+//                public void run() {
+////                    com.tencent.mm.sdk.platformtools.Log.i("Slow", "Slow Connection");
+//                }
+//            });
+//            connection.reconnected(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                }
+//            });
+//            connection.closed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.v(getTag(), "Jeff signalR closed");
+//                }
+//            });
+//            proxy.on("SetValidationStatus", emailVerifiedDTO-> {
+//                Log.v(getTag(), "Jeff signalR Received "+emailVerifiedDTO.getMessage()+"::"+emailVerifiedDTO.isValidated());
+//                updateVerifyEmailButton();
+//            }, EmailVerifiedDTO.class);
+//
+//            proxy.subscribe(this);
+//        } catch (Exception e) {
+////            com.tencent.mm.sdk.platformtools.Log.e("Error", "Could not connect to Hub Name");
+//        }
+    }
+//
+//    public HubConnection setConnection(String url) {
+//        return new HubConnection(url);
+//    }
+//
+//    public HubProxy setProxy(String hubName, HubConnection connection) { return connection.createHubProxy(hubName); }
 }

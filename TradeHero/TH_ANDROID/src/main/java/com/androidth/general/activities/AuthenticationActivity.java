@@ -312,9 +312,9 @@ public class AuthenticationActivity extends BaseActivity
 
     protected void trackSocialRegistration(@NonNull SocialNetworkEnum socialNetworkEnum)
     {
-        THAppsFlyer.sendTrackingWithEvent(
-                this,
-                String.format(AppsFlyerConstants.REGISTRATION_SOCIAL,
-                        socialNetworkEnum.name()));
+//        THAppsFlyer.sendTrackingWithEvent(
+//                this,
+//                String.format(AppsFlyerConstants.REGISTRATION_SOCIAL,
+//                        socialNetworkEnum.name()));
     }
 }

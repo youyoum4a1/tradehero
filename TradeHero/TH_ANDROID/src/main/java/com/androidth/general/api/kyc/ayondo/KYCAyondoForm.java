@@ -101,6 +101,7 @@ public class KYCAyondoForm implements KYCForm
     @Nullable private Boolean subscribeTradeNotifications;
 
     @Nullable private Currency currency;
+    @Nullable private String verifiedEmailAddress;
 
     //TODO Hardcoded for now
     private final String language = "EN";
@@ -256,6 +257,7 @@ public class KYCAyondoForm implements KYCForm
             this.stepStatuses = ayondoForm.stepStatuses != null ? ayondoForm.stepStatuses : this.stepStatuses;
             this.currency = ayondoForm.getCurrency() != null ? ayondoForm.getCurrency() : this.currency;
             this.identificationNumber = ayondoForm.getIdentificationNumber() != null ? ayondoForm.getIdentificationNumber() : this.getIdentificationNumber();
+            this.verifiedEmailAddress = ayondoForm.verifiedEmailAddress!=null? ayondoForm.verifiedEmailAddress:this.verifiedEmailAddress;
         }
     }
 
@@ -414,7 +416,8 @@ public class KYCAyondoForm implements KYCForm
 
     @Nullable public CountryCode getResidency()
     {
-        return residency;
+//        return residency;
+        return addressCountry;
     }
 
     public void setResidency(@Nullable CountryCode residency)
@@ -487,6 +490,16 @@ public class KYCAyondoForm implements KYCForm
     {
         this.employerRegulatedFinancial = employerRegulatedFinancial;
     }
+
+    @Nullable
+    public String getVerifiedEmailAddress() {
+        return verifiedEmailAddress;
+    }
+
+    public void setVerifiedEmailAddress(@Nullable String verifiedEmailAddress) {
+        this.verifiedEmailAddress = verifiedEmailAddress;
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Academic Knowledge">

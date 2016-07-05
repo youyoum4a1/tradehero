@@ -201,7 +201,7 @@ public class KYCAddressWidget extends LinearLayout
         if (value != null && !value.equals(text.getText().toString()))
         {
             text.setText(value);
-        }
+        }    
         else if (value == null)
         {
             text.setText("");
