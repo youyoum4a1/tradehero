@@ -464,11 +464,6 @@ public class MainCompetitionFragment extends DashboardFragment
             setActionBarImage(this.providerDTO.navigationLogoUrl);
 
 
-            //ProviderDTO providerDTO = providerCache.getCachedValue(new ProviderId(getProviderId(getArguments())));
-
-            //Picasso.with(getContext()).load(providerDTO.navigationLogoUrl).into(navigationLogo);
-            //actionBarOwnerMixin.setCustomView(navigationBar);
-
         }
     }
     private boolean setActionBarImage(String url){

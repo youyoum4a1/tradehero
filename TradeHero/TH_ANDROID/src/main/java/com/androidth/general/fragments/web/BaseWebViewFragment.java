@@ -86,6 +86,7 @@ public class BaseWebViewFragment extends BaseFragment
         webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
+        webView.setVerticalScrollBarEnabled(true);
 
         if (SDKUtils.isKitKatOrHigher() && !Constants.RELEASE)
         {

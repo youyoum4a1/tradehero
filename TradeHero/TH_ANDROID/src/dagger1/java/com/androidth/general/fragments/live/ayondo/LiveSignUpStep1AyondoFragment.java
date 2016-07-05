@@ -47,11 +47,11 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
-import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
 import com.androidth.general.fragments.live.VerifyEmailDialogFragment;
 import com.androidth.general.fragments.live.VerifyPhoneDialogFragment;
+import com.androidth.general.fragments.web.BaseWebViewFragment;
 import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
@@ -201,10 +201,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         ButterKnife.bind(getActivity());
         termsCond.setOnClickListener(click->{
             Bundle args = new Bundle();
-            CompetitionWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
+            BaseWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
+
             if (navigator != null)
             {
-                navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
+                navigator.get().pushFragment(BaseWebViewFragment.class, args);
             }
         });
 
@@ -1050,7 +1051,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @MainThread
     protected void offerToEnterCode()
     {
-        final int phoneCountryCode =
+       final int phoneCountryCode =
                 ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
         final String phoneNumberInt = phoneNumber.getText().toString();
 
@@ -1184,6 +1185,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @MainThread
     public void updateEmailVerification(String emailAddress){
+        emailVerifybutton.setState(VerifyButtonState.FINISH);
         KYCAyondoForm updated = new KYCAyondoForm();
         updated.setVerifiedEmailAddress(emailAddress);
 
@@ -1194,8 +1196,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 //might be closed or not in view
             }
         }
-        emailVerifybutton.setState(VerifyButtonState.FINISH);
-
         verifiedPublishEmail.onNext(emailAddress);
 
     }
