@@ -29,6 +29,7 @@ import com.androidth.general.activities.ActivityHelper;
 import com.androidth.general.api.competition.EmailVerifiedDTO;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.ProviderListKey;
 import com.androidth.general.api.kyc.CountryDocumentTypes;
 import com.androidth.general.api.kyc.EmptyKYCForm;
@@ -46,6 +47,7 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
+import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
 import com.androidth.general.fragments.live.VerifyEmailDialogFragment;
@@ -112,6 +114,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     //@RouteProperty("enrollProviderId") protected Integer enrollProviderId;
     @Inject THRouter thRouter;
     @Inject KycServicesRx kycServices;
+    @Inject ProviderUtil providerUtil;
     private static final int PHONE_NUM_MIN_LENGTH = 7;
 
     @LayoutRes private static final int LAYOUT_COUNTRY = R.layout.spinner_live_country_dropdown_item;
@@ -133,6 +136,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.info_phone_number) EditText phoneNumber;
     @Bind(R.id.info_dob) TextView dob;
     @Bind(R.id.step_1_tnc_checkbox) CheckBox tncCheckbox;
+    @Bind(R.id.step_1_tnc) TextView termsCond;
     //@Bind(R.id.btn_verify_phone) TextView buttonVerifyPhone;
     //@Bind(R.id.info_nationality) Spinner spinnerNationality;
     //@Bind(R.id.info_residency) Spinner spinnerResidency;
@@ -194,6 +198,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(getActivity());
+        termsCond.setOnClickListener(click->{
+            Bundle args = new Bundle();
+            CompetitionWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
+            if (navigator != null)
+            {
+                navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
+            }
+        });
+
         phoneNumber.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE && phoneVerifyButton.getState() == VerifyButtonState.PENDING)
             {
