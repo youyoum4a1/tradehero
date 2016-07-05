@@ -20,6 +20,7 @@ import android.widget.EditText;
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
 import com.androidth.general.activities.AuthenticationActivity;
+import com.androidth.general.api.form.UserFormDTO;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.auth.AuthData;
@@ -46,7 +47,10 @@ import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.view.OnClickEvent;
 import rx.android.view.ViewObservable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.internal.util.SubscriptionList;
 
 public class EmailSignUpFragment extends Fragment
@@ -197,26 +201,6 @@ public class EmailSignUpFragment extends Fragment
     {
         return ViewObservable.clicks(signUpButton, false)
                 .subscribeOn(AndroidSchedulers.mainThread())
-<<<<<<< HEAD
-                .flatMap(view1 -> profileView.obtainUserFormDTO())
-                .flatMap(userFormDTO -> {
-                    ProgressDialog progressDialog = ProgressDialog.show(EmailSignUpFragment.this.getActivity(),
-                            EmailSignUpFragment.this.getString(R.string.alert_dialog_please_wait),
-                            EmailSignUpFragment.this.getString(R.string.authentication_connecting_tradehero_only), true);
-
-                    final AuthData authData = new AuthData(userFormDTO.email, userFormDTO.password);
-                    return userServiceWrapper.signUpWithEmailRx(authData, userFormDTO)
-                            .map(userProfileDTO -> Pair.create(authData, userProfileDTO))
-                            .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(pair -> {
-                    THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.REGISTRATION_EMAIL);
-                    AuthDataUtil.saveAccountAndResult(getActivity(), pair.first, pair.second.email);
-                    ActivityHelper.launchDashboard(
-                            getActivity(),
-                            deepLink);
-=======
                 .flatMap(new Func1<OnClickEvent, Observable<? extends UserFormDTO>>()
                 {
                     @Override public Observable<? extends UserFormDTO> call(OnClickEvent view1)
@@ -249,7 +233,6 @@ public class EmailSignUpFragment extends Fragment
                                 getActivity(),
                                 deepLink);
                     }
->>>>>>> 1b802b31f4f84780e1962057daa8d4abd87cb5b3
                 })
                 .doOnError(new ToastOnErrorAction1())
                 .retry();

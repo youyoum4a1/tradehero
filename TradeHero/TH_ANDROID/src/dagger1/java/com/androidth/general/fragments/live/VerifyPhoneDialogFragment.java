@@ -78,11 +78,12 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     }) EditText[] codeViews;
 
     @Bind(R.id.banner_logo) ImageView banner;
+    @Bind(R.id.header) RelativeLayout header;
     @Bind(R.id.btn_verify_phone) View buttonVerify;
     @Bind(R.id.btn_send_code) View buttonResend;
     @Bind(R.id.sms_sent_description) TextView sentDescription;
     @Bind(R.id.sms_sent_status) TextView sentStatus;
-    @Bind(R.id.header) RelativeLayout header;
+
 
 
     private BehaviorSubject<SMSSentConfirmationDTO> mSMSConfirmationSubject;

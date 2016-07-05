@@ -2,37 +2,27 @@ package com.androidth.general.fragments.live;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.util.Pair;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.androidth.general.R;
-import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.BaseDialogFragment;
-import com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment;
-import com.androidth.general.models.sms.SMSId;
-import com.androidth.general.models.sms.SMSRequestFactory;
-import com.androidth.general.models.sms.SMSSentConfirmationDTO;
-import com.androidth.general.models.sms.empty.EmptySMSSentConfirmationDTO;
-import com.androidth.general.models.sms.twilio.TwilioSMSId;
 import com.androidth.general.network.service.LiveServiceWrapper;
-import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
-import com.androidth.general.rx.dialog.OnDialogClickEvent;
-import com.androidth.general.utils.AlertDialogRxUtil;
 import com.squareup.picasso.Picasso;
 
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -41,8 +31,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
+import rx.schedulers.Schedulers;
 
 public class VerifyEmailDialogFragment extends BaseDialogFragment
 {
@@ -53,6 +45,9 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 
     private static final long DEFAULT_POLL_INTERVAL_MILLISEC = 1000;
 
+    public static String notificationLogoUrl = LiveSignUpMainFragment.notificationLogoUrl;
+    public static String hexColor = LiveSignUpMainFragment.hexColor;
+
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
 
@@ -62,6 +57,8 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
     @Bind(R.id.email_sent_description) TextView sentDescription;
     @Bind(R.id.email_sent_recipient) TextView recipient;
     @Bind(R.id.email_sent_banner) ImageView bannerImageView;
+    @Bind(R.id.header)
+    RelativeLayout header;
 
 //    private BehaviorSubject<SMSSentConfirmationDTO> mSMSConfirmationSubject;
 
@@ -150,7 +147,31 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
         sentDescription.setText("A confirmation email has been sent to your mailbox. Click on the confirmation link in the email to complete verification");
         resendDescription.setText("Didn't receive a confirmation email?");
         recipient.setText(emailAddress);
+        try {
 
+            Observable<Bitmap> observable = Observable.defer(()->{
+                try {
+                    return Observable.just(Picasso.with(getContext()).load(notificationLogoUrl).get());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return Observable.error(e);
+                }
+            });
+
+            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
+                int height = (int)(bannerImageView.getHeight()*0.6);
+                int bitmapHt = bitmap.getHeight();
+                int bitmapWd = bitmap.getWidth();
+                int width = height * (bitmapWd / bitmapHt);
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                bannerImageView.setImageBitmap(bitmap);
+            }, throwable -> {
+                Log.e("Error",""+throwable.getMessage());
+            });
+
+        }
+        catch (Exception e){
+        }
 //        picasso.load()
 
 //        onDestroyViewSubscriptions = new SubscriptionList();

@@ -1,25 +1,15 @@
 package com.androidth.general.network.service;
 
-import android.provider.ContactsContract;
-import android.support.annotation.MainThread;
 import android.util.Log;
 
 import com.androidth.general.api.competition.EmailVerifiedDTO;
-import com.androidth.general.api.kyc.KYCForm;
-import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
-import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.users.CurrentUserId;
-import com.androidth.general.common.persistence.DTO;
-import com.androidth.general.fragments.live.ayondo.KYCAyondoFormFactory;
 import com.androidth.general.fragments.live.ayondo.LiveSignUpStep1AyondoFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.utils.Constants;
-import com.androidth.general.utils.StringUtils;
-import com.androidth.general.widget.validation.EmailValidationDTO;
 import com.androidth.general.widget.validation.KYCVerifyButton;
-import com.androidth.general.widget.validation.VerifyButtonState;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,7 +19,6 @@ import javax.inject.Inject;
 
 import microsoft.aspnet.signalr.client.Action;
 import microsoft.aspnet.signalr.client.Platform;
-import microsoft.aspnet.signalr.client.http.Request;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
