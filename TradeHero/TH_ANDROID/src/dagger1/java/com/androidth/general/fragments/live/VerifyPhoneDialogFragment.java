@@ -144,9 +144,23 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         mDialingPrefix = bundle.getInt(KEY_BUNDLE_DIALING_PREFIX);
         mPhoneNumber = bundle.getString(KEY_BUNDLE_PHONE_NUMBER);
         mFormattedNumber = getFormattedPhoneNumber(mDialingPrefix, mPhoneNumber);
-        header.setBackgroundColor(Color.parseColor(hexcolor));
         mSMSConfirmationSubject = BehaviorSubject.create();
 
+
+    }
+
+
+    @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        return inflater.inflate(R.layout.dialog_fragment_verify_phone_number, container, false);
+    }
+
+    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, view);
+
+        header.setBackgroundColor(Color.parseColor("#"+hexcolor));
         smsSubscription = getSMSSubscription();
         if (smsSubscription == null)
         {
@@ -177,19 +191,6 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
         }
         catch (Exception e){
         }
-
-    }
-
-
-    @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        return inflater.inflate(R.layout.dialog_fragment_verify_phone_number, container, false);
-    }
-
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
 
         sentDescription.setText(getResources().getString(R.string.sms_verification_description, mFormattedNumber));
 

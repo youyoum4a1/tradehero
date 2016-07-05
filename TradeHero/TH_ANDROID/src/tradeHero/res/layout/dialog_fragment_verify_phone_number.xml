@@ -27,7 +27,6 @@
         android:layout_centerInParent="true"
         android:layout_marginLeft="@dimen/margin_xsmall"
         android:layout_marginStart="@dimen/margin_xsmall"
-        android:src="@drawable/ic_logo_thlive"
         />
 
     <ImageView
