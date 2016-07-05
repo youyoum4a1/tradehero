@@ -146,6 +146,9 @@ public class ContestCenterFragment extends DashboardFragment
         pagerSlidingTabLayout.setDistributeEvenly(true);
         pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
         pagerSlidingTabLayout.setViewPager(viewPager);
+
+        //hide the Active and Joined tabs
+        pagerSlidingTabLayout.setVisibility(View.GONE);
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
@@ -174,7 +177,8 @@ public class ContestCenterFragment extends DashboardFragment
 
         @Override public int getCount()
         {
-            return ContestCenterTabType.values().length;
+            //return ContestCenterTabType.values().length;
+            return 1;//only Active tab
         }
 
         @Override public CharSequence getPageTitle(int position)
