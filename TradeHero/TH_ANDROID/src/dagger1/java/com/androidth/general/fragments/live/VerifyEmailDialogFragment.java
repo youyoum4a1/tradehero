@@ -3,6 +3,7 @@ package com.androidth.general.fragments.live;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -45,25 +46,24 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 
     private static final long DEFAULT_POLL_INTERVAL_MILLISEC = 1000;
 
-    public static String notificationLogoUrl = LiveSignUpMainFragment.notificationLogoUrl;
-    public static String hexColor = LiveSignUpMainFragment.hexColor;
-
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
 
+    @Bind(R.id.email_sent_banner) ImageView bannerImageView;
+    @Bind(R.id.header) RelativeLayout header;
     @Bind(R.id.email_sent_go_to_inbox_button) Button goToInboxButton;
     @Bind(R.id.email_sent_resend_button) Button resendButton;
     @Bind(R.id.email_sent_ask_resend) TextView resendDescription;
     @Bind(R.id.email_sent_description) TextView sentDescription;
     @Bind(R.id.email_sent_recipient) TextView recipient;
-    @Bind(R.id.email_sent_banner) ImageView bannerImageView;
-    @Bind(R.id.header)
-    RelativeLayout header;
+
 
 //    private BehaviorSubject<SMSSentConfirmationDTO> mSMSConfirmationSubject;
 
 //    private int mDialingPrefix;
 //    private String mExpectedCode;
+    public static String notificationLogoUrl = LiveSignUpMainFragment.notificationLogoUrl;
+    public static String hexColor = LiveSignUpMainFragment.hexColor;
     private String emailAddress;
     private int userId, providerId;
     private SubscriptionList onDestroyViewSubscriptions;
@@ -144,14 +144,12 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
-        sentDescription.setText("A confirmation email has been sent to your mailbox. Click on the confirmation link in the email to complete verification");
-        resendDescription.setText("Didn't receive a confirmation email?");
-        recipient.setText(emailAddress);
+        header.setBackgroundColor(Color.parseColor("#"+hexColor));
         try {
 
             Observable<Bitmap> observable = Observable.defer(()->{
                 try {
-                    return Observable.just(Picasso.with(getContext()).load(notificationLogoUrl).get());
+                    return Observable.just(picasso.with(getContext()).load(notificationLogoUrl).get());
                 } catch (IOException e) {
                     e.printStackTrace();
                     return Observable.error(e);
@@ -172,6 +170,9 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
         }
         catch (Exception e){
         }
+        sentDescription.setText("A confirmation email has been sent to your mailbox. Click on the confirmation link in the email to complete verification");
+        resendDescription.setText("Didn't receive a confirmation email?");
+        recipient.setText(emailAddress);
 //        picasso.load()
 
 //        onDestroyViewSubscriptions = new SubscriptionList();
