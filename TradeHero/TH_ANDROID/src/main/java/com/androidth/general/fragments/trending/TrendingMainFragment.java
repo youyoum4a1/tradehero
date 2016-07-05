@@ -408,8 +408,8 @@ public class TrendingMainFragment extends DashboardFragment
                                             }
 
                                             @Override public void onNext(UserProfileDTO userProfileDTO)
-                                            {
-                                                if (offOnViewSwitcherEvent.isOn && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
+                                            {   //TODO This is onboard logic. We will comment it now till it's back
+                                                if (Constants.ONBOARD_OANDA_ENABLED && offOnViewSwitcherEvent.isOn && userProfileDTO.fxPortfolio == null && fxPortfolioId == null)
                                                 {
                                                     if (fxDialogShowed)
                                                     {

@@ -27,8 +27,6 @@ import com.androidth.general.network.service.SessionServiceWrapper;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.view.DismissDialogAction0;
-import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
-import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,13 +76,7 @@ public class AuthenticationActivity extends BaseActivity
 
         selectedSocialNetworkSubject = PublishSubject.create();
         authenticationObservable = selectedSocialNetworkSubject
-                .flatMap(new Func1<SocialNetworkEnum, Observable<? extends Pair<AuthData, UserProfileDTO>>>()
-                {
-                    @Override public Observable<? extends Pair<AuthData, UserProfileDTO>> call(SocialNetworkEnum socialNetworkEnum)
-                    {
-                        return handleConnectionRequest(socialNetworkEnum);
-                    }
-                });
+                .flatMap(socialNetworkEnum -> handleConnectionRequest(socialNetworkEnum));
 
         deepLink = getIntent().getData();
         Bundle args = new Bundle();

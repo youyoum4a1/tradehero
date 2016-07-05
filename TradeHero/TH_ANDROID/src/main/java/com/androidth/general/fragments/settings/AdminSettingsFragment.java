@@ -32,6 +32,8 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
+import com.androidth.general.utils.Constants;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 import rx.android.app.AppObservable;
@@ -175,7 +177,8 @@ public class AdminSettingsFragment extends BasePreferenceFragment
         {
             @Override public boolean onPreferenceClick(Preference preference)
             {
-                FxOnBoardDialogFragment.showOnBoardDialog(AdminSettingsFragment.this.getActivity().getSupportFragmentManager());
+                if(Constants.ONBOARD_OANDA_ENABLED)
+                    FxOnBoardDialogFragment.showOnBoardDialog(AdminSettingsFragment.this.getActivity().getSupportFragmentManager());
                 return true;
             }
         });

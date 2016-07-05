@@ -21,6 +21,7 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/powered_by"
         android:drawablePadding="@dimen/size_1"
+        android:visibility="invisible"
         android:drawableRight="@drawable/fx_onboard_oanda"
         />
   </LinearLayout>

@@ -8,6 +8,8 @@ public class Constants
 {
     public static final boolean RELEASE = !BuildConfig.DEBUG;
 
+    public static final boolean ONBOARD_OANDA_ENABLED = false;
+
     public static final boolean USE_BETA_HOME_PAGE = true;
 
     public static final boolean DOGFOOD_BUILD = false;

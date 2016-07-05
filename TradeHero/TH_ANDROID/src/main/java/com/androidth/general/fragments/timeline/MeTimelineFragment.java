@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
+import com.androidth.general.utils.Constants;
 import com.tradehero.route.Routable;
 import com.androidth.general.R;
 import com.androidth.general.activities.UpdateCenterActivity;
@@ -112,7 +113,7 @@ public class MeTimelineFragment extends TimelineFragment
 
     private void popEnrollFx()
     {
-        if (onBoardDialogFragment == null)
+        if (onBoardDialogFragment == null && Constants.ONBOARD_OANDA_ENABLED)//better than comment HAHA
         {
             onBoardDialogFragment = FxOnBoardDialogFragment.showOnBoardDialog(getActivity().getSupportFragmentManager());
             onBoardDialogFragment.getDismissedObservable()

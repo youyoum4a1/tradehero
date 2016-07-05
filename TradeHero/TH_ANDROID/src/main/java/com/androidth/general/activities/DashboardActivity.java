@@ -610,7 +610,8 @@ public class DashboardActivity extends BaseActivity
                                 if (!isFxShown.get() && userProfileDTO != null && userProfileDTO.fxPortfolio == null)
                                 {
                                     isFxShown.set(true);
-                                    FxOnBoardDialogFragment.showOnBoardDialog(DashboardActivity.this.getSupportFragmentManager());
+                                    if(Constants.ONBOARD_OANDA_ENABLED)
+                                        FxOnBoardDialogFragment.showOnBoardDialog(DashboardActivity.this.getSupportFragmentManager());
                                     return;
                                 }
 
