@@ -161,6 +161,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static PublishSubject<String> verifiedPublishEmail;
     private Drawable noErrorIconDrawable;
     private int providerIdInt = 0;
+    private VerifyEmailDialogFragment vedf;
 
     HubProxy proxy;
 
@@ -367,8 +368,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         ViewObservable.clicks(emailVerifybutton)
                 .subscribe(new Action1<OnClickEvent>() {
                     @Override
-                    public void call(OnClickEvent onClickEvent) {
-                        switch (emailVerifybutton.getState()) {
+                    public void call(OnClickEvent onClickEvent) {switch (emailVerifybutton.getState()) {
                             case BEGIN:
                                 email.setError(LiveSignUpStep1AyondoFragment.this.getString(R.string.validation_incorrect_pattern_email), noErrorIconDrawable);
                                 emailVerifybutton.setState(VerifyButtonState.ERROR);
@@ -1037,7 +1037,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @MainThread
     protected void offerToEnterCode()
     {
-        final int phoneCountryCode =
+44        final int phoneCountryCode =
                 ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
         final String phoneNumberInt = phoneNumber.getText().toString();
 
@@ -1061,7 +1061,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
 //        liveServiceWrapper.verifyEmail(currentUserId.get(), email).subscribe();
 
-        VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email, this.providerIdInt);
+        vedf = VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email, this.providerIdInt);
         setupSignalR(email);
     }
 
@@ -1174,7 +1174,16 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         emailVerifybutton.setState(VerifyButtonState.FINISH);
         KYCAyondoForm updated = new KYCAyondoForm();
         updated.setVerifiedEmailAddress(emailAddress);
+
+        if(vedf.isVisible()){
+            try{
+                vedf.dismiss();
+            }catch (Exception e){
+                //might be closed or not in view
+            }
+        }
         verifiedPublishEmail.onNext(emailAddress);
+
     }
 
     public void setupSignalR(String emailAddress) {
