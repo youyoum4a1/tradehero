@@ -204,7 +204,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             CompetitionWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
             if (navigator != null)
             {
-                navigator.get().pushFragment(CompetitionWebViewFragment.class, savedInstanceState);
+                navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
             }
         });
 
@@ -1050,7 +1050,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @MainThread
     protected void offerToEnterCode()
     {
-44        final int phoneCountryCode =
+       final int phoneCountryCode =
                 ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
         final String phoneNumberInt = phoneNumber.getText().toString();
 
