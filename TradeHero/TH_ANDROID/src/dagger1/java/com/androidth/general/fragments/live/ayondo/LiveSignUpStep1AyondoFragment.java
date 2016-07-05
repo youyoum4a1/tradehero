@@ -28,6 +28,7 @@ import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
 import com.androidth.general.api.competition.EmailVerifiedDTO;
 import com.androidth.general.api.competition.ProviderDTO;
+import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.ProviderListKey;
@@ -1161,18 +1162,25 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
 
         liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(
-                brokerApplicationDTO -> liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get())
-                        .subscribe(aBoolean -> {
-                    if (aBoolean)
-                    {
-                        ProviderListKey key = new ProviderListKey();
-                        providerListCache.invalidate(key);
-                        providerListCache.get(key).subscribe(providerListKeyProviderDTOListPair -> {
-                                    ActivityHelper.launchDashboard(getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
-                                    THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
-                        }, throwable -> progress.dismiss());
-                    }
-                }, throwable -> progress.dismiss()), throwable -> {
+                brokerApplicationDTO -> {
+                    liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get())
+                            .subscribe(aBoolean -> {
+                                if (aBoolean) {
+                                    ProviderListKey key = new ProviderListKey();
+                                    providerListCache.invalidate(key);
+                                    providerListCache.get(key).subscribe(new Action1<android.util.Pair<ProviderListKey, ProviderDTOList>>() {
+                                        @Override
+                                        public void call(android.util.Pair<ProviderListKey, ProviderDTOList> providerListKeyProviderDTOListPair) {
+                                            ActivityHelper.launchDashboard(LiveSignUpStep1AyondoFragment.this.getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
+                                            THAppsFlyer.sendTrackingWithEvent(LiveSignUpStep1AyondoFragment.this.getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
+                                        }
+                                    }, throwable -> progress.dismiss());
+//hacky way of doing it, TODO review jeff
+                                    ActivityHelper.launchDashboard(LiveSignUpStep1AyondoFragment.this.getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
+                                    progress.dismiss();
+                                }
+                            }, throwable -> progress.dismiss());
+                }, throwable -> {
                     THToast.show(throwable.getMessage());
                     progress.dismiss();
                 });
