@@ -203,7 +203,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             CompetitionWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
             if (navigator != null)
             {
-                navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
+                navigator.get().pushFragment(CompetitionWebViewFragment.class, savedInstanceState);
             }
         });
 

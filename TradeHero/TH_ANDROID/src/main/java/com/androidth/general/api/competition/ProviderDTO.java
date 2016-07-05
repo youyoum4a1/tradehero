@@ -1,11 +1,13 @@
 package com.androidth.general.api.competition;
 
 import android.support.annotation.Nullable;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.androidth.general.common.persistence.DTO;
+
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
+import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.utils.SecurityUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 import java.util.List;
 
@@ -61,7 +63,6 @@ public class ProviderDTO implements DTO
     public boolean isStrictlyForProviderCountry;
 
     public PortfolioCompactDTO associatedPortfolio;
-
     public Date startDateUtc;
     public Date endDateUtc;
     public String durationType;

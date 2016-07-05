@@ -1,13 +1,18 @@
 package com.androidth.general.fragments.security;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.R;
@@ -30,10 +35,17 @@ import com.androidth.general.models.intent.THIntentPassedListener;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.DeviceUtil;
+import com.squareup.picasso.Picasso;
+
+import java.io.IOException;
+
 import javax.inject.Inject;
+
+import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class ProviderSecurityListRxFragment
         extends SecurityListRxFragment
@@ -192,11 +204,48 @@ public class ProviderSecurityListRxFragment
     {
         if (providerDTO != null)
         {
-            setActionBarTitle(providerDTO.name);
+            //setActionBarTitle(providerDTO.name);
+            setActionBarTitle("");
+            setActionBarColor(providerDTO.hexColor);
+            setActionBarImage(providerDTO.navigationLogoUrl);
         }
         else
         {
             setActionBarTitle(R.string.provider_security_list_title);
+        }
+    }
+    private boolean setActionBarImage(String url){
+        try {
+            ActionBar actionBar = getSupportActionBar();
+            ImageView imageView = new ImageView(getContext());
+            Observable<Bitmap> observable = Observable.defer(()->{
+                try {
+                    return Observable.just(Picasso.with(getContext()).load(url).get());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return Observable.error(e);
+                }
+            });
+
+            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
+                int height = (int)(actionBar.getHeight()*0.6);
+                int bitmapHt = bitmap.getHeight();
+                int bitmapWd = bitmap.getWidth();
+                int width = height * (bitmapWd / bitmapHt);
+                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                imageView.setImageBitmap(bitmap);
+                ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
+                actionBar.setCustomView(imageView, layoutParams);
+                actionBar.setElevation(5);
+                actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+            }, throwable -> {
+                Log.e("Error",""+throwable.getMessage());
+            });
+
+            return true;
+        }
+        catch (Exception e){
+            return false;
         }
     }
 

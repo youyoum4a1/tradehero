@@ -3,6 +3,9 @@ package com.androidth.general.fragments.web;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+
+import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
+
 import timber.log.Timber;
 
 public class THWebChromeClient extends WebChromeClient
@@ -33,11 +36,13 @@ public class THWebChromeClient extends WebChromeClient
     @Override public void onReceivedTitle(WebView view, String title)
     {
         super.onReceivedTitle(view, title);
+
         BaseWebViewFragment fragmentCopy = baseWebViewFragment;
-        if (fragmentCopy != null && fragmentCopy.shouldDisplayTitleInActionBar())
+        if (!(fragmentCopy instanceof CompetitionWebViewFragment) && fragmentCopy != null && fragmentCopy.shouldDisplayTitleInActionBar())
         {
             fragmentCopy.setActionBarTitle(view.getTitle());
         }
+
     }
 
     @Override public void onConsoleMessage(String message, int lineNumber, String sourceID)
