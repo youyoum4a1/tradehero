@@ -1050,7 +1050,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @MainThread
     protected void offerToEnterCode()
     {
-44        final int phoneCountryCode =
+        final int phoneCountryCode =
                 ((CountrySpinnerAdapter.DTO) spinnerPhoneCountryCode.getSelectedItem()).phoneCountryCode;
         final String phoneNumberInt = phoneNumber.getText().toString();
 
@@ -1184,7 +1184,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @MainThread
     public void updateEmailVerification(String emailAddress){
-        emailVerifybutton.setState(VerifyButtonState.FINISH);
         KYCAyondoForm updated = new KYCAyondoForm();
         updated.setVerifiedEmailAddress(emailAddress);
 
@@ -1195,6 +1194,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 //might be closed or not in view
             }
         }
+        emailVerifybutton.setState(VerifyButtonState.FINISH);
+
         verifiedPublishEmail.onNext(emailAddress);
 
     }
