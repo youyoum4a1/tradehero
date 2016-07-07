@@ -23,14 +23,19 @@ import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit.client.Response;
+import retrofit.mime.TypedInput;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -236,15 +241,36 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 
     protected Subscription createEmailSubscription()
     {
-        return liveServiceWrapper.verifyEmail(userId, emailAddress, providerId).subscribe(new Action1<Boolean>() {
+//        return liveServiceWrapper.verifyEmail(userId, emailAddress, providerId).subscribe(new Action1<Boolean>() {
+//            @Override
+//            public void call(Boolean aBoolean) {
+//
+//                Log.v(getTag(), "JEFF SUCCESS EMAIL "+aBoolean);
+//            }
+//        },
+//                new TimberOnErrorAction1("Failed on sending sms message"));
+
+        return liveServiceWrapper.verifyEmail(userId, emailAddress, providerId).subscribe(new Subscriber<Response>() {
             @Override
-            public void call(Boolean aBoolean) {
-
-                Log.v(getTag(), "JEFF SUCCESS EMAIL "+aBoolean);
+            public void onCompleted() {
+                Log.v(getTag(), "Verify api on complete");
             }
-        },
-                new TimberOnErrorAction1("Failed on sending sms message"));
 
+            @Override
+            public void onError(Throwable e) {
+                new TimberOnErrorAction1("Failed on sending email verification");
+            }
+
+            @Override
+            public void onNext(Response response) {
+                String responseString = getStringFromResponse(response);
+                Log.v(getTag(), "JEFF SUCCESS EMAIL "+responseString+"...");
+                if(responseString.equals("Verified")){
+                    Log.v(getTag(), "JEFF SUCCESS EMAIL "+responseString);
+                    dismissWithResult();
+                }
+            }
+        });
 
 
 
@@ -309,6 +335,26 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 //                               }
 //                           },
 //                        new TimberOnErrorAction1("Failed on sending sms message"));
+    }
+
+    private String getStringFromResponse(Response response) {
+        TypedInput body = response.getBody();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(body.in()));
+            StringBuilder out = new StringBuilder();
+            String newLine = System.getProperty("line.separator");
+            String line;
+            while ((line = reader.readLine()) != null) {
+                out.append(line);
+                out.append(newLine);
+            }
+
+            // Prints the correct String representation of body.
+            return out.toString().replace("\"", "").trim();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 //    @Nullable protected Subscription getEmailSubscription()
@@ -423,6 +469,7 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
     private void dismissWithResult()
     {
         Intent i = new Intent();
+        i.putExtra("VerifiedEmailAddress", emailAddress);
         VerifyEmailDialogFragment.crateVerifiedBundle(i, userId, emailAddress, providerId);
         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, i);
         dismiss();

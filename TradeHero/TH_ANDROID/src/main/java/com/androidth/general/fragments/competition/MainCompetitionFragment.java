@@ -58,6 +58,7 @@ import com.androidth.general.fragments.competition.zone.dto.CompetitionZoneWizar
 import com.androidth.general.fragments.leaderboard.CompetitionLeaderboardMarkUserRecyclerFragment;
 import com.androidth.general.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.androidth.general.fragments.social.friend.FriendsInvitationFragment;
+import com.androidth.general.fragments.web.BaseWebViewFragment;
 import com.androidth.general.fragments.web.BaseWebViewIntentFragment;
 import com.androidth.general.fragments.web.WebViewFragment;
 import com.androidth.general.fragments.web.WebViewIntentFragment;
@@ -717,15 +718,15 @@ public class MainCompetitionFragment extends DashboardFragment
             Bundle args = new Bundle();
             if (linkType.equals(CompetitionZoneLegalMentionsView.LinkType.RULES))
             {
-                CompetitionWebViewFragment.putUrl(args, providerUtil.getRulesPage(providerId));
+                BaseWebViewFragment.putUrl(args, providerUtil.getRulesPage(providerId));
             }
             else
             {
-                CompetitionWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
+                BaseWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
             }
             if (navigator != null)
             {
-                navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
+                navigator.get().pushFragment(BaseWebViewFragment.class, args);
             }
         }
         else if (userAction instanceof AdView.UserAction)
