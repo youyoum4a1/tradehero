@@ -212,4 +212,13 @@ public class KYCAddressWidget extends LinearLayout
     {
         return ViewObservable.clicks(btnPickLocation);
     }
+
+    public boolean isValidated(){
+        return (txtLine1.length()>0||txtLine2.length()>0)
+                &&txtPostalCode.length()>0;
+    }
+
+    public boolean hasStayedLessThanAYear(){
+        return checkBoxLessThanAYear.isChecked() && checkBoxLessThanAYear.getVisibility()== View.VISIBLE;
+    }
 }
