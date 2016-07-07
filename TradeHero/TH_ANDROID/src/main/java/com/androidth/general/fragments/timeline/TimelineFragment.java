@@ -32,7 +32,6 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.common.widget.FlagNearEdgeScrollListener;
 import com.androidth.general.fragments.achievement.AchievementListFragment;
-import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.fragments.dashboard.RootFragmentType;
 import com.androidth.general.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
@@ -130,7 +129,7 @@ abstract public class TimelineFragment extends DashboardFragment
     @NonNull public TabType currentTab = TabType.PORTFOLIO_LIST;
     protected boolean mIsOtherProfile = false;
     private boolean cancelRefreshingOnResume;
-    private BaseLiveFragmentUtil liveFragmentUtil;
+    //private BaseLiveFragmentUtil liveFragmentUtil;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -188,7 +187,7 @@ abstract public class TimelineFragment extends DashboardFragment
         displayablePortfolioFetchAssistant = displayablePortfolioFetchAssistantProvider.get();
         registerButtonClicks();
         fetchLevelDefList();
-        liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
+        //liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -259,13 +258,13 @@ abstract public class TimelineFragment extends DashboardFragment
             swipeRefreshContainer.setRefreshing(false);
             cancelRefreshingOnResume = false;
         }
-        liveFragmentUtil.onResume();
+        //liveFragmentUtil.onResume();
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
-        liveFragmentUtil.setCallToAction(isLive);
+        //liveFragmentUtil.setCallToAction(isLive);
     }
 
     protected void loadLatestTimeline()
@@ -353,8 +352,8 @@ abstract public class TimelineFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        liveFragmentUtil.onDestroyView();
-        liveFragmentUtil = null;
+        //liveFragmentUtil.onDestroyView();
+        //liveFragmentUtil = null;
         displayablePortfolioFetchAssistant = null;
         this.userProfileView = null;
         this.timelineListView.setOnItemClickListener(null);

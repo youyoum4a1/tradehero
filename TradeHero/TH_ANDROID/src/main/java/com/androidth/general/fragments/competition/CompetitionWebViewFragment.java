@@ -82,7 +82,10 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
                     providerId));
         }
         CompetitionWebViewFragment.putIsOptionMenuVisible(getArguments(), true);
+
+
     }
+
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -99,6 +102,11 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
 
             return false;
         });
+    }
+    @Override public void onStart(){
+        super.onStart();
+
+
     }
 
     @Override public void onAttach(Activity activity)

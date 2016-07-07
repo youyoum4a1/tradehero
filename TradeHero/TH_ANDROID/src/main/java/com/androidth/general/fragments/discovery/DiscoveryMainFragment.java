@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
-import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.metrics.AnalyticsDuration;
@@ -47,7 +46,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     private long beginTime;
     private int oldPageItem;
 
-    private BaseLiveFragmentUtil liveFragmentUtil;
+    //private BaseLiveFragmentUtil liveFragmentUtil;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -110,19 +109,19 @@ public class DiscoveryMainFragment extends DashboardFragment
             tabViewPager.setCurrentItem(tabIndex);
             tabIndex = null;
         }
-        liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
+        //liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        liveFragmentUtil.onResume();
+        //liveFragmentUtil.onResume();
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
-        liveFragmentUtil.setCallToAction(isLive);
+        //liveFragmentUtil.setCallToAction(isLive);
     }
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -133,8 +132,8 @@ public class DiscoveryMainFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        liveFragmentUtil.onDestroyView();
-        liveFragmentUtil = null;
+        //liveFragmentUtil.onDestroyView();
+        //liveFragmentUtil = null;
         reportAnalytics();
         tabViewPager.setAdapter(null);
         ButterKnife.unbind(this);

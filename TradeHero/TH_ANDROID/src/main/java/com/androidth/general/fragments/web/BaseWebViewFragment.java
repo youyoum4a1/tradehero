@@ -103,17 +103,13 @@ public class BaseWebViewFragment extends BaseFragment
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
-        webView.setOnKeyListener(new View.OnKeyListener()
-        {
-            @Override public boolean onKey(View v, int keyCode, KeyEvent event)
+        webView.setOnKeyListener((v1, keyCode, event) -> {
+            if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack())
             {
-                if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack())
-                {
-                    webView.goBack();
-                    return true;
-                }
-                return false;
+                webView.goBack();
+                return true;
             }
+            return false;
         });
         webChromeClient = new THWebChromeClient(this);
         webView.setWebChromeClient(webChromeClient);

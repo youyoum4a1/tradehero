@@ -6,49 +6,43 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.ProviderListKey;
-import com.androidth.general.api.portfolio.OwnedPortfolioId;
-import com.androidth.general.common.utils.THToast;
-import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.base.DashboardFragment;
-import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
-import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import timber.log.Timber;
 
 public class ContestCenterFragment extends DashboardFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    @Bind(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
-    @Bind(R.id.pager) ViewPager viewPager;
-    @Inject
-    ProviderListCacheRx providerListCache;
-    @Inject
-    ProviderUtil providerUtil;
-    ProviderDTOList providerDTOs;
 
-    private BaseLiveFragmentUtil liveFragmentUtil;
+    @Inject ProviderListCacheRx providerListCache;
+    @Inject ProviderUtil providerUtil;
+    @Bind(R.id.competition_list) RecyclerView competitionList;
+    List<MultipleCompetitionData> multipleCompetitionDatas = new ArrayList<>();
+
+    //private BaseLiveFragmentUtil liveFragmentUtil;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -63,14 +57,16 @@ public class ContestCenterFragment extends DashboardFragment
 
         View view = inflater.inflate(R.layout.fragment_contest_center, container, false);
         ButterKnife.bind(this, view);
-        initViews();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        competitionList.setLayoutManager(layoutManager);
+        fetchProviderIdList();
+        //initViews();
         return view;
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        liveFragmentUtil.onResume();
         //loadContestData();
     }
     @Override public void onStart(){
@@ -81,81 +77,151 @@ public class ContestCenterFragment extends DashboardFragment
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
-        liveFragmentUtil.setCallToAction(isLive);
+
     }
 
     @Override public void onDestroyView()
     {
-        liveFragmentUtil.onDestroyView();
-        liveFragmentUtil = null;
+
         ButterKnife.unbind(this);
         super.onDestroyView();
-    }
-    private void loadContestData()
-    {
-        // get the data
-        fetchProviderIdList();
     }
 
     private void fetchProviderIdList()
     {
-        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, providerListCache.fetch(new ProviderListKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<ProviderDTOList>()
-                        {
-                            @Override public void call(ProviderDTOList latestProviderDTOs) {
-                                providerDTOs = latestProviderDTOs;
-                                if (providerDTOs != null && providerDTOs.size() != 0) {
-                                    ProviderDTO providerDTO = providerDTOs.get(0);
-                                    if (providerDTO != null && providerDTO.isUserEnrolled) {
-                                        Bundle args = new Bundle();
-                                        MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-                                        OwnedPortfolioId applicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
-                                        if (applicablePortfolioId != null) {
-                                            MainCompetitionFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-                                        }
-                                        navigator.get().pushFragment(MainCompetitionFragment.class, args);
-                                    } else if (providerDTO != null) {
-                                        Bundle args = new Bundle();
-                                        CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                                                providerDTO.getProviderId()
-                                        ));
-                                        navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
-                                    }
-                                }
+        ProviderDTOList providerList = providerListCache.getCachedValue(new ProviderListKey());
+        for(int i = 0; i < providerList.size(); i++){
+            ProviderDTO providerDTO = providerList.get(i);
+            multipleCompetitionDatas.add(new MultipleCompetitionData(providerDTO.multiImageUrl, providerDTO.isUserEnrolled));
+        }
+        competitionList.setAdapter(new MultipleCompetitionsAdapter(multipleCompetitionDatas, getContext()));
 
-                            }
-
-                        },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable throwable)
-                            {
-                                THToast.show(getString(R.string.error_fetch_provider_info_list));
-                                Timber.e("Failed retrieving the list of competition providers", throwable);
-                            }
-                        }));
+        /*if (providerList != null && providerList.size() != 0) {
+            ProviderDTO providerDTO = providerList.get(0);
+            if (providerDTO != null && providerDTO.isUserEnrolled) {
+                Bundle args = new Bundle();
+                MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
+                OwnedPortfolioId applicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
+                if (applicablePortfolioId != null) {
+                    MainCompetitionFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                }
+                navigator.get().pushFragment(MainCompetitionFragment.class, args);
+            } else if (providerDTO != null) {
+                Bundle args = new Bundle();
+                CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
+                        providerDTO.getProviderId()
+                ));
+                navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
+            }
+        }*/
     }
 
     private void initViews()
     {
         ContestCenterPagerAdapter adapter = new ContestCenterPagerAdapter(getChildFragmentManager());
-        viewPager.setAdapter(adapter);
-        pagerSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
-        pagerSlidingTabLayout.setDistributeEvenly(true);
-        pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
-        pagerSlidingTabLayout.setViewPager(viewPager);
-
-        //hide the Active and Joined tabs
-        pagerSlidingTabLayout.setVisibility(View.GONE);
+        //fetchProviderIdList();
     }
 
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
+
     }
+
+    private class SingleCompetitionWebview {
+        String webViewUrl;
+        SingleCompetitionWebview(String webViewUrl){
+            this.webViewUrl = webViewUrl;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    private class MultipleCompetitionData{
+        String imageUrl;
+        boolean isEnrolled;
+        MultipleCompetitionData(String imageUrl, boolean isEnrolled){
+            this.imageUrl = imageUrl;
+            this.isEnrolled = isEnrolled;
+        }
+    }
+    class MultipleCompetitionsAdapter extends RecyclerView.Adapter<MultipleCompetitionViewHolder>{
+        List<MultipleCompetitionData> multipleCompetitionDataList;
+        Context context;
+        MultipleCompetitionsAdapter(List<MultipleCompetitionData> multipleCompetitionDataList, Context context){
+            this.multipleCompetitionDataList = multipleCompetitionDataList;
+            this.context = context;
+        }
+        @Override
+        public MultipleCompetitionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.competition_list_item, null);
+            MultipleCompetitionViewHolder multipleCompetitionViewHolder = new MultipleCompetitionViewHolder(view);
+            return multipleCompetitionViewHolder;
+        }
+
+        @Override
+        public void onBindViewHolder(MultipleCompetitionViewHolder holder, int position) {
+            MultipleCompetitionData multipleCompetitionData = multipleCompetitionDataList.get(position);
+            Picasso.with(context).load(multipleCompetitionData.imageUrl).into(holder.imageView);
+            if(multipleCompetitionData.isEnrolled){
+                holder.enrolledImage.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.enrolledImage.setVisibility(View.INVISIBLE);
+            }
+        }
+
+
+        @Override
+        public int getItemCount() {
+            return multipleCompetitionDataList.size();
+        }
+    }
+    class MultipleCompetitionViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+        ImageView enrolledImage;
+        public MultipleCompetitionViewHolder(View itemView) {
+            super(itemView);
+            this.imageView = (ImageView)itemView.findViewById(R.id.competition_banner);
+            this.enrolledImage = (ImageView)itemView.findViewById(R.id.enrolled_tick);
+        }
+    }
+
+
+
+
+
+
+
+
+
+    /*class SingleCompetitionsAdapter extends RecyclerView.Adapter<>{
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        }
+
+        @Override
+        public int getItemCount() {
+            return 0;
+        }
+    }*/
+    //We also need an observable which will fire CompetitionData as they are recieved from cache to Picasso which will again fire bitmap to our list of adapter
+
 
     private class ContestCenterPagerAdapter extends FragmentPagerAdapter
     {

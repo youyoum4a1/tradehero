@@ -162,6 +162,12 @@ public class DashboardNavigator extends Navigator<FragmentActivity>
             dashboardFragmentWatcher.onFragmentChanged(activity, fragmentClass, args);
         }
     }
+    public int totalBackStacks(){
+        return manager.getBackStackEntryCount();
+    }
+    public FragmentManager.BackStackEntry currentStack(){
+        return manager.getBackStackEntryAt(totalBackStacks()-1);
+    }
 
     public void addDashboardFragmentWatcher(DashboardFragmentWatcher watcher)
     {
