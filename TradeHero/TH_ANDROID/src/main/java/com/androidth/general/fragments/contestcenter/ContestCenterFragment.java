@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -45,7 +46,7 @@ import butterknife.ButterKnife;
 
 public class ContestCenterFragment extends DashboardFragment
 {
-    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;// Why?
 
 
     @Inject ProviderListCacheRx providerListCache;
@@ -70,7 +71,7 @@ public class ContestCenterFragment extends DashboardFragment
         ButterKnife.bind(this, view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         competitionList.setLayoutManager(layoutManager);
-        fetchProviderIdList();
+        fetchProviderIdList(container);
         return view;
     }
 
@@ -102,19 +103,22 @@ public class ContestCenterFragment extends DashboardFragment
             this.webViewUrl = webViewUrl;
         }
     }
-    private void fetchProviderIdList()
+    private void fetchProviderIdList(ViewGroup container)
     {
         ProviderDTOList providerList = providerListCache.getCachedValue(new ProviderListKey());
         if(providerList != null && providerList.size()==1){
             ProviderDTO providerDTO = providerList.get(0);
             if(providerDTO.isUserEnrolled){
                 Bundle args = new Bundle();
-                MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
+                MainCompetitionFragment mainCompetitionFragment = new MainCompetitionFragment();
+                mainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
                 OwnedPortfolioId applicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
                 if (applicablePortfolioId != null) {
-                    MainCompetitionFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                    mainCompetitionFragment.putApplicablePortfolioId(args, applicablePortfolioId);
                 }
-                navigator.get().pushFragment(MainCompetitionFragment.class, args);
+                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(container.getId(), mainCompetitionFragment);
+                ft.commit();
             }
             else{
                 String url = providerUtil.getLandingPage(providerDTO.getProviderId());
