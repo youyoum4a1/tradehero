@@ -286,7 +286,20 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         StepStatus fourthStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(3);
         if (btnNext != null)
         {
-            btnNext.setEnabled((fourthStatus != null && StepStatus.COMPLETE.equals(fourthStatus)));
+            if(primaryWidget.isValidated()){
+                if(primaryWidget.hasStayedLessThanAYear()){
+                    if(secondaryWidget.isValidated()){
+                        btnNext.setEnabled(true);
+                    }else{
+                        btnNext.setEnabled(false);
+                    }
+                }else{
+                    btnNext.setEnabled(true);
+                }
+            }else{
+                btnNext.setEnabled(false);
+            }
+//            btnNext.setEnabled((fourthStatus != null && StepStatus.COMPLETE.equals(fourthStatus)));
         }
     }
 

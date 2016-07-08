@@ -11,6 +11,7 @@ import com.androidth.general.api.kyc.CountryDocumentTypes;
 
 import java.util.ArrayList;
 
+import retrofit.client.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
@@ -63,7 +64,7 @@ public interface LiveServiceRx {
     );
 
     @GET("/email/confirmation/{userId}/{email}/{providerId}")
-    Observable<Boolean> verifyEmail(
+    Observable<Response> verifyEmail(
             @Path("userId") Integer userId,
             @Path("email") String email,
             @Path("providerId") Integer providerId

@@ -452,7 +452,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 //        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);
                                 //nationalityAdapter.addAll(options.allowedNationalityCountryDTOs);
                                 //spinnerNationality.setAdapter(nationalityAdapter);
-                                //spinnerNationality.setEnabled(options.allowedNationalityCountryDTOs.size() > 1);w
+                                //spinnerNationality.setEnabled(options.allowedNationalityCountryDTOs.size() > 1);
 
                                 LollipopArrayAdapter<String> residenceStateAdapter = new LollipopArrayAdapter<>(
                                         getActivity(), options.residenceStateList);
@@ -1121,6 +1121,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             {
                 verifiedPublishEmail.onNext(verifiedEmail);
             }
+            updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"));
         }
     }
 
@@ -1135,11 +1136,44 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
 
     private Boolean isAllInputValidated() {
+        boolean resultFlag = true;
         if (nricNumber.length() != 12) {
             nricNumber.setError("NRIC must be 12 digits.", noErrorIconDrawable);
+            resultFlag = false;
+        }
+        if (firstName.length() == 0) {
+            firstName.setError("Must not be empty", noErrorIconDrawable);
+            resultFlag = false;
+        }
+        if(lastName.length() == 0){
+            lastName.setError("Must not be empty", noErrorIconDrawable);
+            resultFlag = false;
         }
 
-        return true;
+        if(nricVerifyButton.getState() != VerifyButtonState.FINISH){
+            nricNumber.setError("Click right button to verify", noErrorIconDrawable);
+            resultFlag = false;
+        }else if(emailVerifybutton.getState() != VerifyButtonState.FINISH){
+            email.setError("Click right button to verify", noErrorIconDrawable);
+            if(!emailPattern.matcher(email.getText()).matches()) {
+                email.setError("Invalid email address", noErrorIconDrawable);
+            }
+            resultFlag = false;
+        }else if(phoneVerifyButton.getState() != VerifyButtonState.FINISH){
+            phoneNumber.setError("Click right button to verify", noErrorIconDrawable);
+            resultFlag = false;
+        }
+
+        if(dob.length() == 0){
+            dob.setError("Must not be empty", noErrorIconDrawable);
+            resultFlag = false;
+        }
+        if(!tncCheckbox.isChecked()){
+            tncCheckbox.setError("Please check to agree", noErrorIconDrawable);
+            resultFlag = false;
+        }
+
+        return resultFlag;
     }
 
     @SuppressWarnings("unused")
@@ -1147,11 +1181,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     public void onClickedJoinButton() {
 
         if (!isAllInputValidated()) {
-            return;
-        }
-
-        if (firstName.length() == 0 || lastName.length() == 0 || !emailPattern.matcher(email.getText()).matches() || dob.length() == 0
-                || !tncCheckbox.isChecked()) {
             return;
         }
 
@@ -1194,8 +1223,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @MainThread
     public void updateEmailVerification(String emailAddress){
         emailVerifybutton.setState(VerifyButtonState.FINISH);
-        KYCAyondoForm updated = new KYCAyondoForm();
-        updated.setVerifiedEmailAddress(emailAddress);
 
         if(vedf.isVisible()){
             try{
@@ -1215,8 +1242,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 "SetValidationStatus",
                 new String[]{emailAddress},
                 emailVerifybutton, emailVerifiedDTO ->{
-                    Log.v(getTag(), "Jeff signalR Received "+((EmailVerifiedDTO)emailVerifiedDTO).getMessage()
-                            +"::"+((EmailVerifiedDTO)emailVerifiedDTO).isValidated());
                     if(((EmailVerifiedDTO)emailVerifiedDTO).isValidated()){
                         updateEmailVerification(emailAddress);
                     }

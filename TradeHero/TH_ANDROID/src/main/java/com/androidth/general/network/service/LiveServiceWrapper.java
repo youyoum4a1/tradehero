@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 
+import retrofit.client.Response;
 import retrofit.http.Path;
 import rx.Observable;
 import rx.functions.Func0;
@@ -263,7 +264,8 @@ public class LiveServiceWrapper
         return liveServiceRx.enrollCompetition(providerId, userId);
     }
 
-    public Observable<Boolean> verifyEmail(int userId, String email, int providerId)
+    @RxLogObservable
+    public Observable<Response> verifyEmail(int userId, String email, int providerId)
     {
         return liveServiceRx.verifyEmail(userId, email, providerId);
     }
