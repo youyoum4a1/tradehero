@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -228,48 +225,6 @@ public class ContestCenterFragment extends DashboardFragment
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private class ContestCenterPagerAdapter extends FragmentPagerAdapter
-    {
-        public ContestCenterPagerAdapter(FragmentManager fm)
-        {
-            super(fm);
-        }
-
-        @Override public Fragment getItem(int position)
-        {
-            ContestCenterTabType tabType = ContestCenterTabType.values()[position];
-            Bundle args = getArguments();
-            if (args == null)
-            {
-                args = new Bundle();
-            }
-            return Fragment.instantiate(getActivity(), tabType.tabClass.getName(), args);
-        }
-
-        @Override public int getCount()
-        {
-            //return ContestCenterTabType.values().length;
-            return 1;//only Active tab
-        }
-
-        @Override public CharSequence getPageTitle(int position)
-        {
-            return getString(ContestCenterTabType.values()[position].titleRes);
-        }
-    }
     private WebView setWebView(WebView webView)
     {
         webView.getSettings().setBuiltInZoomControls(false);
@@ -283,12 +238,7 @@ public class ContestCenterFragment extends DashboardFragment
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
-
         webView.setVerticalScrollBarEnabled(true);
-
-
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !Constants.RELEASE) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
@@ -298,7 +248,6 @@ public class ContestCenterFragment extends DashboardFragment
         else {
             webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
-
 
         webView.setOnKeyListener((v1, keyCode, event) -> {
             if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack())
