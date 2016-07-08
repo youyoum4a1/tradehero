@@ -5,6 +5,7 @@
     <WebView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/competition_webview"></WebView>
+        android:background="@color/transparent"
+        android:id="@+id/competition_webview"/>
 
 </LinearLayout>
