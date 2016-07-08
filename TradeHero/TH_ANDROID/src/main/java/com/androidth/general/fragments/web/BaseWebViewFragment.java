@@ -2,6 +2,7 @@ package com.androidth.general.fragments.web;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
@@ -87,21 +88,21 @@ public class BaseWebViewFragment extends BaseFragment
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.setVerticalScrollBarEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        if (Build.VERSION.SDK_INT >= 19) {
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
+        else {
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
 
         if (SDKUtils.isKitKatOrHigher() && !Constants.RELEASE)
         {
             WebView.setWebContentsDebuggingEnabled(true);
         }
 
-        if (SDKUtils.isKitKatOrHigher())
-        {
-            webView.setLayerType(View.LAYER_TYPE_NONE, null);
-        }
-        else
-        {
-            //To fix animation on Pre Chromium WebViews.
-            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
 
         webView.setOnKeyListener((v1, keyCode, event) -> {
             if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack())
