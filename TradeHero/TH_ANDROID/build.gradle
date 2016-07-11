@@ -915,8 +915,7 @@ project.afterEvaluate {
                     "Adding a version build bump to task " + theTask.name)
             theTask.doLast {
                 // Bump version Build
-                versionProps.setProperty('VERSION_BUILD', (project.
-                        ext.versionBuild + 1).toString())
+                versionProps.setProperty('VERSION_BUILD', (project.ext.versionBuild + 1).toString())
                 def map = versionProps.sort(
                         new Comparator<Object>() {
                             @Override

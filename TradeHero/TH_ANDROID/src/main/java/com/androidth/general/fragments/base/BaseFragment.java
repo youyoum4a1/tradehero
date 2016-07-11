@@ -19,9 +19,9 @@ import com.androidth.general.fragments.tutorial.WithTutorial;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.utils.AlertDialogUtil;
 
-import dagger.Lazy;
-
 import javax.inject.Inject;
+
+import dagger.Lazy;
 import rx.Subscription;
 import rx.internal.util.SubscriptionList;
 import timber.log.Timber;
