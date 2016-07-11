@@ -67,6 +67,9 @@ public class ProviderDTO implements DTO
     public Date endDateUtc;
     public String durationType;
     public String totalPrize;
+    public String termsConditionsUrl;
+    public String riskDisclosureUrl;
+    public String dataSharingUrl;
     @Nullable public Boolean vip;
 
     /**
@@ -164,6 +167,18 @@ public class ProviderDTO implements DTO
         return associatedPortfolio.getOwnedPortfolioId();
     }
 
+    public String getDataSharingUrl() {
+        return dataSharingUrl;
+    }
+
+    public String getRiskDisclosureUrl() {
+        return riskDisclosureUrl;
+    }
+
+    public String getTermsConditionsUrl() {
+        return termsConditionsUrl;
+    }
+
     @Override public String toString()
     {
         return "ProviderDTO{" +
@@ -219,6 +234,9 @@ public class ProviderDTO implements DTO
                 ", tradeNowStartDateUtc=" + tradeNowStartDateUtc +
                 ", canTradeNow=" + canTradeNow +
                 ", isStrictlyForProviderCountry=" + isStrictlyForProviderCountry +
+                ", T&C=" + termsConditionsUrl +
+                ", riskDisclosure=" + riskDisclosureUrl +
+                ", dataSharing=" + dataSharingUrl +
                 '}';
     }
 }

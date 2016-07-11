@@ -116,6 +116,9 @@ public class DocumentActionWidget extends RelativeLayout implements Target
         imgPreview.setImageResource(drawableResId);
         hideAction();
     }
+    public boolean hasImageUploaded(){
+        return imgPreview!=null && imgPreview.getDrawable()!=null;
+    }
 
     public void setLoading(boolean isLoading)
     {

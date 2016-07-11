@@ -21,6 +21,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/android_tabs"
+      android:fillViewport="false"
       />
 
   <com.androidth.general.common.widget.NonSwipeableViewPager

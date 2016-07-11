@@ -140,7 +140,7 @@
   <string name="live_agree_to_risks_and_warnings_disclaimer">Risks and Warnings Disclosure</string>
   <string name="live_agree_to_data_sharing_agreement">Data Sharing Agreement</string>
   <string name="live_agree_read_it">Read</string>
-  <string name="live_subscribe_offers">Subscribe me to Ayondo offers</string>
+  <string name="live_subscribe_offers">Subscribe me to marketing offers</string>
   <string name="live_subscribe_trade_notifications">Subscribe me to trade notifications</string>
 
   <string name="live_username_invalid">\'%1$s\' is not valid. Must be 5 – 20 alphanumeric characters</string>

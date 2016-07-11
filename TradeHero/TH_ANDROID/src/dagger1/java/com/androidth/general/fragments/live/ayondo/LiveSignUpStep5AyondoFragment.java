@@ -3,12 +3,15 @@ package com.androidth.general.fragments.live.ayondo;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,8 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.ViewSwitcher;
 
+import com.androidth.general.api.competition.ProviderDTO;
+import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.kyc.BrokerApplicationDTO;
 import com.androidth.general.api.kyc.BrokerDocumentUploadResponseDTO;
 import com.androidth.general.api.kyc.Currency;
@@ -33,6 +38,7 @@ import com.androidth.general.fragments.settings.ImageRequesterUtil;
 import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
 import com.androidth.general.models.fastfill.ResidenceScannedDocumentType;
 import com.androidth.general.models.fastfill.ScanReference;
+import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.ReplaceWithFunc1;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -90,13 +96,14 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.agree_data_sharing) View dataSharing;
     @Bind(R.id.cb_subscribe_offers) CheckBox subscribeOffersCheckBox;
     @Bind(R.id.cb_subscribe_trade_notifications) CheckBox subscribeTradeNotificationsCheckBox;
-    @Bind(R.id.btn_create) Button btnCreate;
-    @Bind(R.id.create_switcher) ViewSwitcher createSwitcher;
+//    @Bind(R.id.btn_create) Button btnCreate;
+//    @Bind(R.id.create_switcher) ViewSwitcher createSwitcher;
     @Bind(R.id.btn_submit) View btnSubmit;
 
     private ImageRequesterUtil imageRequesterUtil;
 
     @Inject Picasso picasso;
+    @Inject ProviderCacheRx providerCacheRx;
     private ProgressDialog progressDialog;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -108,8 +115,25 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable,
             Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
+        ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
         List<Subscription> subscriptions = new ArrayList<>();
-
+        if(providerDTO.getTermsConditionsUrl()==null)
+        {
+            termsConditions.setVisibility(View.GONE);
+            termsConditionsCheckBox.setVisibility(View.GONE);
+            termsConditionsCheckBox.setChecked(true);
+        }
+        if(providerDTO.getDataSharingUrl()==null)
+        {
+            dataSharing.setVisibility(View.GONE);
+            dataSharingCheckBox.setVisibility(View.GONE);
+            dataSharingCheckBox.setChecked(true);
+        }
+        if(providerDTO.getRiskDisclosureUrl()==null){
+            riskWarning.setVisibility(View.GONE);
+            riskWarningCheckBox.setVisibility(View.GONE);
+            riskWarningCheckBox.setChecked(true);
+        }
         subscriptions.add(
                 Observable.zip(
                         kycAyondoFormOptionsDTOObservable
@@ -340,6 +364,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 populate((KYCAyondoForm) situationDTO.kycForm);
                                 populate(documentActionIdentity, ((KYCAyondoForm) situationDTO.kycForm).getIdentityDocumentUrl());
                                 populate(documentActionResidence, ((KYCAyondoForm) situationDTO.kycForm).getResidenceDocumentUrl());
+                                checkFormToEnableButton();
                             }
                         },
                         new TimberOnErrorAction1("Failed to prepare files from KYC")));
@@ -550,11 +575,11 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         return Observable.merge(
                                 ViewObservable.clicks(termsConditions)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.termsConditionsUrl)),
+                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(providerDTO.getTermsConditionsUrl())),
                                 ViewObservable.clicks(riskWarning)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.riskWarningDisclaimerUrl)),
+                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(providerDTO.getRiskDisclosureUrl())),
                                 ViewObservable.clicks(dataSharing)
-                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(optionsDTO.dataSharingAgreementUrl))
+                                        .map(new ReplaceWithFunc1<OnClickEvent, String>(providerDTO.getDataSharingUrl()))
                         );
                     }
                 })
@@ -619,23 +644,42 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Override protected void onNextButtonEnabled(List<StepStatus> stepStatuses)
     {
-        StepStatus fifthStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(4);
-        if (btnCreate != null)
-        {
-            if (fifthStatus != null && StepStatus.COMPLETE.equals(fifthStatus))
-            {
-                if (createSwitcher.getDisplayedChild() != INDEX_VIEW_SUBMIT_BUTTON)
-                {
-                    createSwitcher.setDisplayedChild(INDEX_VIEW_SUBMIT_BUTTON);
-                }
-            }
-            else
-            {
-                if (createSwitcher.getDisplayedChild() != INDEX_VIEW_CREATE_BUTTON)
-                {
-                    createSwitcher.setDisplayedChild(INDEX_VIEW_CREATE_BUTTON);
-                }
-            }
+        checkFormToEnableButton();
+//        StepStatus fifthStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(4);
+//        if (btnCreate != null)
+//        {
+//            if (fifthStatus != null && StepStatus.COMPLETE.equals(fifthStatus))
+//            {
+//                if (createSwitcher.getDisplayedChild() != INDEX_VIEW_SUBMIT_BUTTON)
+//                {
+//                    createSwitcher.setDisplayedChild(INDEX_VIEW_SUBMIT_BUTTON);
+//                }
+//            }
+//            else
+//            {
+//                if (createSwitcher.getDisplayedChild() != INDEX_VIEW_CREATE_BUTTON)
+//                {
+//                    createSwitcher.setDisplayedChild(INDEX_VIEW_CREATE_BUTTON);
+//                }
+//            }
+//        }
+    }
+
+    private void checkFormToEnableButton(){
+        if(documentActionResidence.hasImageUploaded()
+                && documentActionIdentity.hasImageUploaded()
+                && termsConditionsCheckBox.isChecked()
+                && riskWarningCheckBox.isChecked()
+                && dataSharingCheckBox.isChecked()){
+
+//                createSwitcher.showNext();
+            btnSubmit.setBackground(getResources().getDrawable(R.drawable.basic_green_selector));
+            btnSubmit.setEnabled(true);
+
+        }else{
+            btnSubmit.setBackground(null);
+            btnSubmit.setBackgroundColor(Color.LTGRAY);
+            btnSubmit.setEnabled(false);
         }
     }
 
