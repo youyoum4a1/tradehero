@@ -4,31 +4,20 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.androidth.general.R;
-import com.androidth.general.activities.IdentityPromptActivity;
-import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.trending.TrendingMainFragment;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.fastfill.FastFillUtil;
-import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.persistence.prefs.LiveAvailability;
-import com.androidth.general.widget.GoLiveWidget;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.Observable;
-import rx.android.view.OnClickEvent;
-import rx.android.view.ViewObservable;
-import rx.functions.Action1;
-import rx.functions.Func2;
 
 public class BaseLiveFragmentUtil
 {
-    @Bind(R.id.live_button_go_live)
-    GoLiveWidget liveWidget;
+
     Fragment fragment;
 
     @Inject DashboardNavigator navigator;
@@ -53,27 +42,6 @@ public class BaseLiveFragmentUtil
         ButterKnife.bind(this, view);
         HierarchyInjector.inject(f.getActivity(), this);
 
-        Observable.combineLatest(
-                ViewObservable.clicks(liveWidget),
-                fastFill.isAvailable(f.getActivity()),
-                new Func2<OnClickEvent, Boolean, Boolean>()
-                {
-                    @Override public Boolean call(OnClickEvent onClickEvent, Boolean fastFillAvailable)
-                    {
-                        return fastFillAvailable;
-                    }
-                })
-                .subscribe(
-                        new Action1<Boolean>()
-                        {
-                            @Override public void call(Boolean fastFillAvailable)
-                            {
-                                navigator.launchActivity(fastFillAvailable
-                                        ? IdentityPromptActivity.class
-                                        : SignUpLiveActivity.class);
-                            }
-                        },
-                        new TimberOnErrorAction1("Failed to listen to liveWidget in BaseLiveFragmentUtil"));
     }
 
     public static void setDarkBackgroundColor(boolean isLive, View... views)
@@ -100,24 +68,8 @@ public class BaseLiveFragmentUtil
         }
     }
 
-    public void setCallToAction(boolean isLive)
-    {
-        showCallToActionBubbleVisible();//Jeff force
-//        if(liveAvailability.get())
-//        {
-//            showCallToActionBubbleVisible();
-//        }
-    }
 
-    protected void showCallToActionBubbleVisible()
-    {
-        liveWidget.setVisibility(View.GONE);
-    }
 
-    protected void showCallToActionBubbleGone()
-    {
-        liveWidget.setVisibility(View.GONE);
-    }
 
     public void onDestroyView()
     {

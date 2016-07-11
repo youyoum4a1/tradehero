@@ -54,7 +54,7 @@ public enum RootFragmentType
             R.string.dashboard_contest_center,
             R.string.dashboard_contest_center_key,
             R.drawable.icn_menu_contest_center,
-            ContestCenterFragment.class,
+            ContestCenterFragment.class,/*Just a fix; change to ContestCenterFragment fro more than one running comp.*/
             null,
             AnalyticsConstants.TabBar_ContestCenter),
     ME(R.layout.left_drawer_item,

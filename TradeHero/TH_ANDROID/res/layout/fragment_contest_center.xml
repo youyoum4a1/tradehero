@@ -5,30 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-
-  <com.android.common.SlidingTabLayout
-      android:id="@+id/android_tabs"
-      style="@style/TradeHero.TabContainer"
+ 
+  <android.support.v7.widget.RecyclerView
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      />
+      android:id="@+id/competition_list">
 
-  <android.support.v4.view.ViewPager
-      android:id="@+id/pager"
-      android:layout_below="@id/android_tabs"
+  </android.support.v7.widget.RecyclerView>
+  <WebView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      tools:background="@android:color/holo_red_dark"
-      />
-
-  <include
-      layout="@layout/live_call_to_action"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:layout_centerHorizontal="true"
-      android:layout_marginBottom="@dimen/size_10"
-      tools:visibility="visible"
-      />
+      android:id="@+id/hack_webview"
+      android:layout_marginBottom="@dimen/size_6"/>
 
 </RelativeLayout>

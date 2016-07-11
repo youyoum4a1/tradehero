@@ -37,28 +37,7 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
         super(f, view);
     }
 
-    @Override public void setCallToAction(boolean isLive)
-    {
-        super.setCallToAction(isLive);
-        //if (isLive)
-        //{
-        //    if (showCallToActionFragment.get())
-        //    {
-        //        setCallToActionFragmentVisible();
-        //        showCallToActionBubbleGone();
-        //    }
-        //    else
-        //    {
-        //        showCallToActionBubbleVisible();
-        //        setCallToActionFragmentGone();
-        //    }
-        //}
-        //else
-        //{
-        //    setCallToActionFragmentGone();
-        //    showCallToActionBubbleGone();
-        //}
-    }
+
 
     private void setCallToActionFragmentVisible()
     {
@@ -99,15 +78,11 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
         pager.setVisibility(View.VISIBLE);
     }
 
-    @Override protected void showCallToActionBubbleGone()
-    {
-        super.showCallToActionBubbleGone();
-        showCallToActionFragment.set(true);
-    }
+
 
     @Override public void onResume()
     {
         super.onResume();
-        setCallToAction(isLiveTrading.get());
+
     }
 }

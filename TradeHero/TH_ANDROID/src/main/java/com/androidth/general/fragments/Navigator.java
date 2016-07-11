@@ -126,6 +126,17 @@ class Navigator<ActivityType extends Activity>
         }
         popFragment(backStackName);
     }
+    public String getBackStackName(){
+        Fragment currentDashboardFragment = manager.findFragmentById(fragmentContentId);
+
+        String backStackName = null;
+        if (currentDashboardFragment != null && currentDashboardFragment.getArguments() != null)
+        {
+            Bundle args = currentDashboardFragment.getArguments();
+            backStackName = args.getString(BUNDLE_KEY_RETURN_FRAGMENT);
+        }
+        return backStackName;
+    }
 
     public void popFragment(String backStackName)
     {

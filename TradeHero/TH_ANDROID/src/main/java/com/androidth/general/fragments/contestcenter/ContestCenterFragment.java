@@ -1,54 +1,60 @@
 package com.androidth.general.fragments.contestcenter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ImageView;
 
-import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
+import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
+import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.ProviderListKey;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
-import com.androidth.general.common.utils.THToast;
-import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.base.DashboardFragment;
-import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
+import com.androidth.general.utils.Constants;
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import rx.android.app.AppObservable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import timber.log.Timber;
 
 public class ContestCenterFragment extends DashboardFragment
 {
-    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
+    @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;// Why?
 
-    @Bind(R.id.android_tabs) SlidingTabLayout pagerSlidingTabLayout;
-    @Bind(R.id.pager) ViewPager viewPager;
-    @Inject
-    ProviderListCacheRx providerListCache;
-    @Inject
-    ProviderUtil providerUtil;
-    ProviderDTOList providerDTOs;
 
-    private BaseLiveFragmentUtil liveFragmentUtil;
+    @Inject ProviderListCacheRx providerListCache;
+    @Inject ProviderUtil providerUtil;
+    @Bind(R.id.competition_list) RecyclerView competitionList;
+    @Bind(R.id.hack_webview) WebView hackWebview;
+    List<MultipleCompetitionData> multipleCompetitionDatas = new ArrayList<>();
+    SingleCompetitionWebviewData singleCompetitionWebviewData;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -63,127 +69,213 @@ public class ContestCenterFragment extends DashboardFragment
 
         View view = inflater.inflate(R.layout.fragment_contest_center, container, false);
         ButterKnife.bind(this, view);
-        initViews();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        competitionList.setLayoutManager(layoutManager);
+        fetchProviderIdList(container);
         return view;
     }
 
     @Override public void onResume()
     {
         super.onResume();
-        liveFragmentUtil.onResume();
-        //loadContestData();
+
     }
     @Override public void onStart(){
         super.onStart();
-        //loadContestData();
+
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
-        liveFragmentUtil.setCallToAction(isLive);
+
     }
 
     @Override public void onDestroyView()
     {
-        liveFragmentUtil.onDestroyView();
-        liveFragmentUtil = null;
+
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
-    private void loadContestData()
-    {
-        // get the data
-        fetchProviderIdList();
-    }
-
-    private void fetchProviderIdList()
-    {
-        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, providerListCache.fetch(new ProviderListKey()))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        new Action1<ProviderDTOList>()
-                        {
-                            @Override public void call(ProviderDTOList latestProviderDTOs) {
-                                providerDTOs = latestProviderDTOs;
-                                if (providerDTOs != null && providerDTOs.size() != 0) {
-                                    ProviderDTO providerDTO = providerDTOs.get(0);
-                                    if (providerDTO != null && providerDTO.isUserEnrolled) {
-                                        Bundle args = new Bundle();
-                                        MainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-                                        OwnedPortfolioId applicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
-                                        if (applicablePortfolioId != null) {
-                                            MainCompetitionFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-                                        }
-                                        navigator.get().pushFragment(MainCompetitionFragment.class, args);
-                                    } else if (providerDTO != null) {
-                                        Bundle args = new Bundle();
-                                        CompetitionWebViewFragment.putUrl(args, providerUtil.getLandingPage(
-                                                providerDTO.getProviderId()
-                                        ));
-                                        navigator.get().pushFragment(CompetitionWebViewFragment.class, args);
-                                    }
-                                }
-
-                            }
-
-                        },
-                        new Action1<Throwable>()
-                        {
-                            @Override public void call(Throwable throwable)
-                            {
-                                THToast.show(getString(R.string.error_fetch_provider_info_list));
-                                Timber.e("Failed retrieving the list of competition providers", throwable);
-                            }
-                        }));
-    }
-
-    private void initViews()
-    {
-        ContestCenterPagerAdapter adapter = new ContestCenterPagerAdapter(getChildFragmentManager());
-        viewPager.setAdapter(adapter);
-        pagerSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
-        pagerSlidingTabLayout.setDistributeEvenly(true);
-        pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
-        pagerSlidingTabLayout.setViewPager(viewPager);
-
-        //hide the Active and Joined tabs
-        pagerSlidingTabLayout.setVisibility(View.GONE);
-    }
-
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
-    }
-
-    private class ContestCenterPagerAdapter extends FragmentPagerAdapter
-    {
-        public ContestCenterPagerAdapter(FragmentManager fm)
-        {
-            super(fm);
+    private class SingleCompetitionWebviewData {
+        String webViewUrl;
+        SingleCompetitionWebviewData(String webViewUrl){
+            this.webViewUrl = webViewUrl;
         }
-
-        @Override public Fragment getItem(int position)
-        {
-            ContestCenterTabType tabType = ContestCenterTabType.values()[position];
-            Bundle args = getArguments();
-            if (args == null)
-            {
-                args = new Bundle();
+    }
+    private void fetchProviderIdList(ViewGroup container)
+    {
+        ProviderDTOList providerList = providerListCache.getCachedValue(new ProviderListKey());
+        if(providerList != null && providerList.size()==1){
+            ProviderDTO providerDTO = providerList.get(0);
+            if(providerDTO.isUserEnrolled){
+                Bundle args = new Bundle();
+                MainCompetitionFragment mainCompetitionFragment = new MainCompetitionFragment();
+                mainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
+                OwnedPortfolioId applicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
+                if (applicablePortfolioId != null) {
+                    mainCompetitionFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                }
+                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.replace(container.getId(), mainCompetitionFragment);
+                ft.commit();
             }
-            return Fragment.instantiate(getActivity(), tabType.tabClass.getName(), args);
+            else{
+                String url = providerUtil.getLandingPage(providerDTO.getProviderId());
+                singleCompetitionWebviewData = new SingleCompetitionWebviewData(url);
+                hackWebview.setVisibility(View.VISIBLE);
+                competitionList.setVisibility(View.GONE);
+                WebView webView = setWebView(hackWebview);
+                webView.loadUrl(singleCompetitionWebviewData.webViewUrl);
+                webView.setOnTouchListener((v, event) -> {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN)
+                    {
+                        Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
+                        kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, providerDTO.id);
+                        kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, true);
+                        startActivity(kycIntent);
+                    }
+
+                    return false;
+                });
+            }
+        }
+        else if(providerList != null) {
+            for (int i = 0; i < providerList.size(); i++) {
+                ProviderDTO providerDTO = providerList.get(i);
+                multipleCompetitionDatas.add(new MultipleCompetitionData(providerDTO.multiImageUrl, providerDTO.isUserEnrolled, providerDTO.id, providerDTO.getProviderId()));
+            }
+            competitionList.setVisibility(View.VISIBLE);
+            hackWebview.setVisibility(View.GONE);
+            competitionList.setAdapter(new MultipleCompetitionsAdapter(multipleCompetitionDatas, getContext()));
+        }
+        else  {
+            //fetch from somewhere else
+        }
+    }
+    private class MultipleCompetitionData{
+        String imageUrl;
+        boolean isEnrolled;
+        int intProviderId;
+        ProviderId providerId;
+        MultipleCompetitionData(String imageUrl, boolean isEnrolled, int intProviderId, ProviderId providerId){
+            this.imageUrl = imageUrl;
+            this.isEnrolled = isEnrolled;
+            this.providerId = providerId;
+            this.intProviderId = intProviderId;
+        }
+    }
+    class MultipleCompetitionsAdapter extends RecyclerView.Adapter<MultipleCompetitionViewHolder>{
+        List<MultipleCompetitionData> multipleCompetitionDataList;
+        Context context;
+        MultipleCompetitionsAdapter(List<MultipleCompetitionData> multipleCompetitionDataList, Context context){
+            this.multipleCompetitionDataList = multipleCompetitionDataList;
+            this.context = context;
+        }
+        @Override
+        public MultipleCompetitionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.competition_list_item, null);
+            view.setOnClickListener(click ->{
+                handleCompetitionItemClicked(multipleCompetitionDataList.get(competitionList.indexOfChild(view)));
+            });
+            MultipleCompetitionViewHolder multipleCompetitionViewHolder = new MultipleCompetitionViewHolder(view);
+            return multipleCompetitionViewHolder;
         }
 
-        @Override public int getCount()
-        {
-            //return ContestCenterTabType.values().length;
-            return 1;//only Active tab
+        @Override
+        public void onBindViewHolder(MultipleCompetitionViewHolder holder, int position) {
+            MultipleCompetitionData multipleCompetitionData = multipleCompetitionDataList.get(position);
+            Picasso.with(context).load(multipleCompetitionData.imageUrl).into(holder.imageView);
+            if(multipleCompetitionData.isEnrolled){
+                holder.enrolledImage.setVisibility(View.VISIBLE);
+            }
+            else {
+                holder.enrolledImage.setVisibility(View.INVISIBLE);
+            }
         }
 
-        @Override public CharSequence getPageTitle(int position)
-        {
-            return getString(ContestCenterTabType.values()[position].titleRes);
+
+        @Override
+        public int getItemCount() {
+            return multipleCompetitionDataList.size();
         }
+    }
+    class MultipleCompetitionViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView;
+        ImageView enrolledImage;
+        public MultipleCompetitionViewHolder(View itemView) {
+            super(itemView);
+            this.imageView = (ImageView)itemView.findViewById(R.id.competition_banner);
+            this.enrolledImage = (ImageView)itemView.findViewById(R.id.enrolled_tick);
+        }
+    }
+    private void handleCompetitionItemClicked(MultipleCompetitionData data)
+    {
+        if (navigator == null)
+        {
+            return;
+        }
+        if (data != null && data.isEnrolled)
+        {
+            Bundle args = new Bundle();
+            MainCompetitionFragment.putProviderId(args, data.providerId);
+            navigator.get().pushFragment(MainCompetitionFragment.class, args);
+        }
+        else if(data!=null && !data.isEnrolled) {
+            Intent kycIntent = new Intent(getActivity(), SignUpLiveActivity.class);
+            kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, data.intProviderId);
+            kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, true);
+            startActivity(kycIntent);
+        }
+
+    }
+    private WebView setWebView(WebView webView)
+    {
+        webView.getSettings().setBuiltInZoomControls(false);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            webView.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        }
+        webView.setVerticalScrollBarEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && !Constants.RELEASE) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
+        if (Build.VERSION.SDK_INT >= 19) {
+            webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        }
+        else {
+            webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        }
+
+        webView.setOnKeyListener((v1, keyCode, event) -> {
+            if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack())
+            {
+                webView.goBack();
+                return true;
+            }
+            return false;
+        });
+        WebChromeClient webChromeClient = new WebChromeClient();
+        webView.setWebChromeClient(webChromeClient);
+        webView.setWebViewClient(new WebViewClient(){
+            ProgressDialog progressDialog = ProgressDialog.show(getContext(), "Loading","Please wait ...",true);
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon)
+            {
+                progressDialog.show();
+            }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                progressDialog.dismiss();
+            }
+
+        });
+        return webView;
     }
 }
