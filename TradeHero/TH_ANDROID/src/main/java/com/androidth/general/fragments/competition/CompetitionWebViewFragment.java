@@ -141,7 +141,8 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
         if (providerList != null) {
             ProviderDTO providerDTO = null;
             for(int i =0 ; i < providerList.size(); i++){
-                if(providerList.get(i).id == providerIdInteger){
+                Integer id = providerList.get(i).id;
+                if(providerIdInteger==id){
                     providerDTO = providerList.get(i);
                     break;
                 }

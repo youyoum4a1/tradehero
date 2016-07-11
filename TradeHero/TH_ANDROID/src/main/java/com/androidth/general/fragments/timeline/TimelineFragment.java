@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.androidth.general.R;
+import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.level.LevelDefDTOList;
 import com.androidth.general.api.level.key.LevelDefListId;
@@ -33,6 +34,7 @@ import com.androidth.general.common.utils.THToast;
 import com.androidth.general.common.widget.FlagNearEdgeScrollListener;
 import com.androidth.general.fragments.achievement.AchievementListFragment;
 import com.androidth.general.fragments.base.DashboardFragment;
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.dashboard.RootFragmentType;
 import com.androidth.general.fragments.discussion.AbstractDiscussionCompactItemViewLinear;
 import com.androidth.general.fragments.discussion.AbstractDiscussionCompactItemViewLinearDTOFactory;
@@ -45,6 +47,7 @@ import com.androidth.general.fragments.social.hero.HeroesFragment;
 import com.androidth.general.fragments.watchlist.MainWatchlistPositionFragment;
 import com.androidth.general.models.discussion.UserDiscussionAction;
 import com.androidth.general.models.portfolio.DisplayablePortfolioFetchAssistant;
+import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.level.LevelDefListCacheRx;
 import com.androidth.general.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.androidth.general.persistence.timeline.TimelineCacheRx;
@@ -113,6 +116,7 @@ abstract public class TimelineFragment extends DashboardFragment
     @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
     @Inject CurrentUserId currentUserId;
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
+    @Inject ProviderCacheRx providerCacheRx;
 
     @Bind(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
     @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
@@ -526,12 +530,27 @@ abstract public class TimelineFragment extends DashboardFragment
             TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
             if (portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
             {
-                TabbedPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
-                navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
-                return;
+                ProviderId providerId =  new ProviderId(portfolioDTO.providerId);
+                providerCacheRx.get(providerId).subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
+                    @Override
+                    public void call(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair) {
+                            if(!providerIdProviderDTOPair.second.canTradeNow){
+                                MainCompetitionFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
+                                MainCompetitionFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                                navigator.get().pushFragment(MainCompetitionFragment.class, args);
+                                return;
+                            }
+                            else {
+                                TabbedPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
+                                navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
+                                return;
+                            }
+                    }
+                });
+
             }
         }
-        navigator.get().pushFragment(TabbedPositionListFragment.class, args);
+        else navigator.get().pushFragment(TabbedPositionListFragment.class, args);
     }
 
     private void pushWatchlistPositionFragment()

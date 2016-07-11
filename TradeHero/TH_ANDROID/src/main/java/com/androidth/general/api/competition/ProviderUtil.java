@@ -55,14 +55,14 @@ public class ProviderUtil
 
     @NonNull public String getRulesPage(@NonNull ProviderId providerId, boolean showNextButton)
     {
-        String url = competitionUrl + RULES;
+        String url = "competitionpages/" + RULES;
         url = appendProviderId(url, '?', providerId);
         url = appendUserId(url, '&');
         if (showNextButton)
         {
             url = appendShowNextButton(url, '&');
         }
-        return appendAuthorization(url, '&');
+        return url;
     }
 
     @NonNull public String getTermsPage(@NonNull ProviderId providerId)

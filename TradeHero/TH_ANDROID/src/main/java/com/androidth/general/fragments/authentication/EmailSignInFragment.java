@@ -370,6 +370,7 @@ public class EmailSignInFragment extends Fragment
         final String email1 = validatedEmail.getText().toString();
         TextValidator textValidator = validatedEmail.getValidator();
         textValidator.setText(email1);
+        textValidator.validate();
         return textValidator.getValidationMessageObservable()
                 .flatMap(new Func1<ValidationMessage, Observable<OnDialogClickEvent>>()
                 {

@@ -13,47 +13,43 @@
       tools:background="@color/black"
       >
 
-    <com.androidth.general.widget.validation.ValidatedText
-        android:id="@+id/authentication_sign_up_email"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/authentication_sign_up_email_til"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="start|bottom"
-        android:hint="@string/user_profile_email"
-        android:textColorHint="@color/red"
-        android:inputType="textEmailAddress"
-        android:imeOptions="actionNext"
-        style="@style/TH.Authentication.EditText"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small">
+      <com.androidth.general.widget.validation.EmailValidatedText
+          android:id="@+id/authentication_sign_up_email"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:focusable="true"
+          android:hint="@string/user_profile_email"
+          android:imeOptions="actionNext"
+          android:inputType="textEmailAddress"
+          app:minTextLength="1"
+          app:validatePattern="@string/regex_email_validator">
+      </com.androidth.general.widget.validation.EmailValidatedText>
 
-        android:drawableRight="@drawable/accounts_glyph_transparent_default"
-        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
-        app:invalidDrawableRight="@drawable/warning_red"
-        app:validDrawableRight="@drawable/tick_green"
+    </android.support.design.widget.TextInputLayout>
 
-        app:minTextLength="1"
-        app:validatePattern="@string/regex_email_validator"
-        app:invalidPatternMessage="@string/validation_incorrect_pattern_email"
-        app:delayValidationByMilliSec="500"
-        />
-
-    <com.androidth.general.widget.validation.PasswordValidatedText
-        android:id="@+id/authentication_sign_up_password"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/authentication_sign_up_password_til"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_gravity="center_vertical"
-        android:hint="@string/user_profile_password"
-        android:textColorHint="@color/red"
-        android:inputType="textPassword"
-        style="@style/TH.Authentication.EditText"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_small">
+      <com.androidth.general.widget.validation.PasswordValidatedText
+          android:id="@+id/authentication_sign_up_password"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:hint="@string/user_profile_password"
+          android:inputType="textPassword"
+          app:minTextLength="6"
+          />
 
-        android:drawableRight="@drawable/accounts_glyph_transparent_default"
-        android:drawableEnd="@drawable/accounts_glyph_transparent_default"
-        app:invalidDrawableRight="@drawable/warning_red"
-        app:validDrawableRight="@drawable/tick_green"
-
-        app:minTextLength="6"
-        app:delayValidationByMilliSec="1000"
-        />
+    </android.support.design.widget.TextInputLayout>
 
     <com.androidth.general.widget.validation.MatchingPasswordText
         android:id="@+id/authentication_sign_up_confirm_password"
@@ -81,25 +77,22 @@
         android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/margin_small">
 
-      <com.androidth.general.widget.validation.DisplayNameValidatedText
-          android:id="@+id/authentication_sign_up_username"
+      <android.support.design.widget.TextInputLayout
+          android:id="@+id/authentication_sign_up_username_til"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:hint="@string/user_profile_display_name"
-          android:textColorHint="@color/red"
-          android:inputType="text"
-          style="@style/TH.Authentication.EditText"
-
-          android:drawableRight="@drawable/accounts_glyph_transparent_default"
-          android:drawableEnd="@drawable/accounts_glyph_transparent_default"
-          app:invalidDrawableRight="@drawable/warning_red"
-          app:validDrawableRight="@drawable/tick_green"
-
-          app:minTextLength="1"
-          app:delayValidationByMilliSec="500"
-          app:progressIndicator="@+id/authentication_sign_up_username_validator"
-          >
-      </com.androidth.general.widget.validation.DisplayNameValidatedText>
+          android:layout_gravity="center_horizontal"
+          android:layout_marginTop="@dimen/margin_small">
+        <com.androidth.general.widget.validation.DisplayNameValidatedText
+            android:id="@+id/authentication_sign_up_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/user_profile_display_name"
+            android:inputType="text"
+            app:minTextLength="1"
+            >
+        </com.androidth.general.widget.validation.DisplayNameValidatedText>
+      </android.support.design.widget.TextInputLayout>
 
       <ProgressBar
           android:id="@+id/authentication_sign_up_username_validator"

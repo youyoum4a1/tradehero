@@ -61,6 +61,7 @@ public class ContestCenterFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle(R.string.dashboard_contest_center);
+
     }
 
     @Override
@@ -93,7 +94,7 @@ public class ContestCenterFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-
+        competitionList.invalidate();
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
@@ -124,7 +125,7 @@ public class ContestCenterFragment extends DashboardFragment
                 String url = providerUtil.getLandingPage(providerDTO.getProviderId());
                 singleCompetitionWebviewData = new SingleCompetitionWebviewData(url);
                 hackWebview.setVisibility(View.VISIBLE);
-                competitionList.setVisibility(View.GONE);
+                competitionList.setVisibility(View.INVISIBLE);
                 WebView webView = setWebView(hackWebview);
                 webView.loadUrl(singleCompetitionWebviewData.webViewUrl);
                 webView.setOnTouchListener((v, event) -> {
@@ -146,7 +147,7 @@ public class ContestCenterFragment extends DashboardFragment
                 multipleCompetitionDatas.add(new MultipleCompetitionData(providerDTO.multiImageUrl, providerDTO.isUserEnrolled, providerDTO.id, providerDTO.getProviderId()));
             }
             competitionList.setVisibility(View.VISIBLE);
-            hackWebview.setVisibility(View.GONE);
+            hackWebview.setVisibility(View.INVISIBLE);
             competitionList.setAdapter(new MultipleCompetitionsAdapter(multipleCompetitionDatas, getContext()));
         }
         else  {
@@ -217,6 +218,8 @@ public class ContestCenterFragment extends DashboardFragment
         }
         if (data != null && data.isEnrolled)
         {
+            multipleCompetitionDatas.clear();
+            competitionList.getAdapter().notifyDataSetChanged();
             Bundle args = new Bundle();
             MainCompetitionFragment.putProviderId(args, data.providerId);
             navigator.get().pushFragment(MainCompetitionFragment.class, args);
