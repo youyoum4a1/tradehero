@@ -148,7 +148,7 @@
           android:paddingLeft="@dimen/margin_xsmall"
           android:text="@string/empty"
           android:theme="@style/TradeHero.Live.Form"
-          />
+          android:checked="false" />
 
       <TextView
           android:id="@+id/agree_terms_conditions"
@@ -269,62 +269,35 @@
           android:text="@string/previous"
           />
 
-      <ViewSwitcher
-          android:id="@+id/create_switcher"
-          android:layout_width="wrap_content"
+      <LinearLayout
+          android:id="@+id/btn_submit"
           android:layout_alignParentEnd="true"
           android:layout_alignParentRight="true"
+          android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:layout_toRightOf="@id/btn_prev"
-          android:inAnimation="@anim/alpha_in"
-          android:outAnimation="@anim/alpha_out"
-          >
+          android:minHeight="@dimen/clickable_element_min_dimen"
+          android:paddingLeft="@dimen/margin_small"
+          android:paddingRight="@dimen/margin_small"
+          android:background="@drawable/basic_green_selector"
+          android:orientation="vertical"
+          android:layout_gravity="right|end"
+          android:gravity="center">
 
-        <Button
-            android:id="@+id/btn_create"
-            style="@style/TH.Button.LiveForm"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/create"
-            android:layout_gravity="right|end"
+            style="@style/TH.Caption.Inverse"
+            android:text="@string/submit_form_top"/>
+
+        <TextView
+            style="@style/TH.Button.Inverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/submit_form"
             tools:enabled="true"
             />
 
-        <LinearLayout
-            android:id="@+id/btn_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/clickable_element_min_dimen"
-            android:paddingLeft="@dimen/margin_small"
-            android:paddingRight="@dimen/margin_small"
-            android:background="@drawable/basic_green_selector"
-            android:orientation="vertical"
-            android:layout_gravity="right|end"
-            android:gravity="center">
-
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/TH.Caption.Inverse"
-              android:text="@string/submit_form_top"/>
-
-          <TextView
-              style="@style/TH.Button.Inverse"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/submit_form"
-              tools:enabled="true"
-              />
-
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              style="@style/TH.Caption.Inverse"
-              android:text="@string/submit_form_bottom"/>
-
-        </LinearLayout>
-
-      </ViewSwitcher>
+      </LinearLayout>
 
     </RelativeLayout>
 

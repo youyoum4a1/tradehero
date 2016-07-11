@@ -1222,8 +1222,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @MainThread
     public void updateEmailVerification(String emailAddress){
-        emailVerifybutton.setState(VerifyButtonState.FINISH);
-
         if(vedf.isVisible()){
             try{
                 vedf.dismiss();
@@ -1231,6 +1229,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 //might be closed or not in view
             }
         }
+        emailVerifybutton.setState(VerifyButtonState.FINISH);
         verifiedPublishEmail.onNext(emailAddress);
 
     }
