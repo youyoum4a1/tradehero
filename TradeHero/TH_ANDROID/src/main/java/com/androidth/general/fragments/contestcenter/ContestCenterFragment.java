@@ -32,6 +32,7 @@ import com.androidth.general.api.competition.key.ProviderListKey;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
+import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.utils.Constants;
 import com.squareup.picasso.Picasso;
@@ -141,7 +142,7 @@ public class ContestCenterFragment extends DashboardFragment
                 });
             }
         }
-        else if(providerList != null) {
+        else if(providerList != null && providerList.size() > 1) {
             for (int i = 0; i < providerList.size(); i++) {
                 ProviderDTO providerDTO = providerList.get(i);
                 multipleCompetitionDatas.add(new MultipleCompetitionData(providerDTO.multiImageUrl, providerDTO.isUserEnrolled, providerDTO.id, providerDTO.getProviderId()));
@@ -151,7 +152,12 @@ public class ContestCenterFragment extends DashboardFragment
             competitionList.setAdapter(new MultipleCompetitionsAdapter(multipleCompetitionDatas, getContext()));
         }
         else  {
-            //fetch from somewhere else
+            //if providerlist is null
+            hackWebview.setVisibility(View.VISIBLE);
+            competitionList.setVisibility(View.INVISIBLE);
+            WebView webView = setWebView(hackWebview);
+            webView.loadUrl(NetworkConstants.NO_COMPETITION);
+
         }
     }
     private class MultipleCompetitionData{

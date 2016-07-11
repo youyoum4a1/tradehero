@@ -3,9 +3,7 @@ package com.androidth.general.fragments.competition;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,8 +15,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.androidth.general.R;
@@ -151,7 +147,7 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
                 setActionBarTitle("");
                 setActionBarColor(providerDTO.hexColor);
                 setActionBarImage(providerDTO.navigationLogoUrl);
-                Window window = getActivity().getWindow();
+                /*Window window = getActivity().getWindow();
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 String color = providerDTO.hexColor;
@@ -161,7 +157,7 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
                 color = "0D"+color;
                 color = color.startsWith("#") ? color : "#".concat(color);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && color.length()>0)
-                    window.setStatusBarColor(Color.parseColor(color));
+                    window.setStatusBarColor(Color.parseColor(color));*/
             }
 
         }

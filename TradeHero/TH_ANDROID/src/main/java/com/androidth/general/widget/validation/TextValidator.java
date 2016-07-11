@@ -42,6 +42,11 @@ public class TextValidator implements View.OnFocusChangeListener, TextWatcher
         this.text = text;
         performValidation();
     }
+    public void setText2(@NonNull CharSequence text)
+    {
+        this.text = text;
+        validate();
+    }
 
     @NonNull public Observable<ValidationMessage> getValidationMessageObservable()
     {
