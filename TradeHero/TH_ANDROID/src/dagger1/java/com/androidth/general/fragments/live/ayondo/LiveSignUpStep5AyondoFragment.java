@@ -170,9 +170,11 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 {
                                     @Override public void call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
                                     {
+
                                         LollipopArrayAdapter<IdentityDocumentDTO> identityDocumentTypeAdapter = new LollipopArrayAdapter<>(
                                                 getActivity(),
                                                 IdentityDocumentDTO.createList(getResources(), kycAyondoFormOptionsDTO.getIdentityDocumentTypes()));
+
                                         identityDocumentTypeSpinner.setAdapter(identityDocumentTypeAdapter);
 
                                         LollipopArrayAdapter<ResidenceDocumentDTO> residenceDocumentTypeAdapter = new LollipopArrayAdapter<>(
@@ -837,33 +839,12 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 //                        scanReference,
 //                        data.<NetverifyDocumentData>getParcelableExtra(NetverifySDK.EXTRA_SCAN_DATA)));
 
-                fastFillUtil.onActivityResult(getActivity(), requestCode, resultCode, data);
+//                fastFillUtil.onActivityResult(getActivity(), requestCode, resultCode, data);
                 String scanRef = data.getStringExtra(NetverifySDK.EXTRA_SCAN_REFERENCE);
                 String dataType = NVDocumentType.IDENTITY_CARD.toString();
-                JumioVerifyBodyDTO jumioDTO = new JumioVerifyBodyDTO(dataType, scanRef);
 
-                liveServiceWrapper.uploadScanReference(jumioDTO).subscribe(new Subscriber<Response>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.v(getTag(), "Scan ref: "+dataType+":"+scanRef);
-                    }
+                updateLayoutFromJumio(dataType, scanRef);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.v(getTag(), "Onerror Scan ref: "+dataType+":"+scanRef);
-//                        THToast.show("Upload document failed");
-                    }
-
-                    @Override
-                    public void onNext(Response response) {
-                        Log.v(getTag(), "On next Scan ref: "+dataType+":"+scanRef);
-                        Log.v(getTag(), "On next Scan ref: "+response.getStatus());
-                        if(response.getStatus() == 200){
-                            hasUploadedJumio = true;
-                            checkFormToEnableButton();
-                        }
-                    }
-                });
             default:break;
         }
     }
@@ -1004,5 +985,44 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             picasso.load(imageUrl).into(widget);
         }
+    }
+
+    @MainThread
+    private void updateLayoutFromJumio(String dataType, String scanRef){
+        JumioVerifyBodyDTO jumioDTO = new JumioVerifyBodyDTO(dataType, scanRef);
+
+        liveServiceWrapper.uploadScanReference(jumioDTO).subscribe(new Subscriber<Response>() {
+            @Override
+            public void onCompleted() {
+                Log.v(getTag(), "Scan ref: "+dataType+":"+scanRef);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.v(getTag(), "Onerror Scan ref: "+dataType+":"+scanRef);
+//                        THToast.show("Upload document failed");
+            }
+
+            @Override
+            public void onNext(Response response) {
+                Log.v(getTag(), "On next Scan ref: "+dataType+":"+scanRef);
+                if(response.getStatus() == 200){
+                    Log.v(getTag(), "On next Scan ref: "+response.getStatus());
+//                    Observable.just(updateUILayout()).observeOn(AndroidSchedulers.mainThread()).subscribe();
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            hasUploadedJumio = true;
+                            scanButton.setImageResource(R.drawable.green_tick);
+                            scanButton.setClickable(false);
+                            identityDocumentTypeSpinner.setEnabled(false);
+                            checkFormToEnableButton();
+                        }
+                    });
+                }
+
+            }
+        });
     }
 }
