@@ -223,6 +223,17 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             return false;
         });
 
+        email.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_NEXT &&
+                    (emailVerifybutton.getState() == VerifyButtonState.PENDING
+                    || emailVerifybutton.getState() == VerifyButtonState.FINISH))
+            {
+                vedf = VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email.getText().toString(), this.providerIdInt);
+            }
+
+            return false;
+        });
+
         providerIdInt = getProviderId(getArguments());
 
         if (providerIdInt != 0) {
