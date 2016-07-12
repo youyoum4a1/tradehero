@@ -362,7 +362,12 @@ public class EmailSignInFragment extends Fragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new EmptyAction1<OnDialogClickEvent>(),
-                        new TimberOnErrorAction1("Failed to ask for forgotten password")));
+                        throwable -> {
+                            AlertDialogRxUtil.buildDefault(getActivity())
+                                    .setTitle(R.string.forgot_email_incorrect_input_email)
+                                    .setNegativeButton(R.string.ok)
+                                    .build().subscribe();
+                        }));
     }
 
     @NonNull protected Observable<OnDialogClickEvent> validateForgottenEmail(@NonNull ValidatedText validatedEmail)

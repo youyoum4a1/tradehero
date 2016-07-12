@@ -230,7 +230,6 @@ public class LiveSignUpMainFragment extends BaseFragment
         for (int i = 0; i < childCount && i < stepSize; i++)
         {
             Checkable textView = (Checkable) tabLayout.getTabStrip().getChildAt(i);
-
             StepStatus step = stepStatusList.get(i);
             boolean isComplete = step.equals(StepStatus.COMPLETE);
             textView.setChecked(isComplete);
