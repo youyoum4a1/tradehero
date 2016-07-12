@@ -42,6 +42,7 @@ import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.rx.view.DismissDialogAction1;
 import com.androidth.general.utils.AlertDialogRxUtil;
+import com.androidth.general.utils.AlertDialogUtil;
 import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
@@ -49,6 +50,9 @@ import com.androidth.general.widget.validation.TextValidator;
 import com.androidth.general.widget.validation.ValidatedText;
 import com.androidth.general.widget.validation.ValidatedView;
 import com.androidth.general.widget.validation.ValidationMessage;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -57,6 +61,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.Lazy;
+import retrofit.RetrofitError;
+import retrofit.mime.TypedByteArray;
 import rx.Notification;
 import rx.Observable;
 import rx.Observer;
@@ -362,7 +368,18 @@ public class EmailSignInFragment extends Fragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new EmptyAction1<OnDialogClickEvent>(),
-                        new TimberOnErrorAction1("Failed to ask for forgotten password")));
+                        error -> {
+                            RetrofitError err = (RetrofitError) error;
+                            String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
+                            JsonObject obj = new JsonParser().parse(string).getAsJsonObject();
+                            JsonElement element = obj.get("Message");
+                            String title = element.getAsString();
+
+                            AlertDialogRxUtil.build (getActivity())
+                                    .setTitle(title)
+                                    .setNegativeButton(R.string.ok)
+                                    .build().subscribe();
+                        }));
     }
 
     @NonNull protected Observable<OnDialogClickEvent> validateForgottenEmail(@NonNull ValidatedText validatedEmail)
