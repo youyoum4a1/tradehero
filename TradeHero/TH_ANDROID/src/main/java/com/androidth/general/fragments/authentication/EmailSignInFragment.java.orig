@@ -42,6 +42,7 @@ import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.rx.view.DismissDialogAction1;
 import com.androidth.general.utils.AlertDialogRxUtil;
+import com.androidth.general.utils.AlertDialogUtil;
 import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
@@ -367,6 +368,11 @@ public class EmailSignInFragment extends Fragment
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         new EmptyAction1<OnDialogClickEvent>(),
+<<<<<<< HEAD
+                        throwable -> {
+                            AlertDialogRxUtil.buildDefault(getActivity())
+                                    .setTitle(R.string.forgot_email_incorrect_input_email)
+=======
                         error -> {
                             RetrofitError err = (RetrofitError) error;
                             String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
@@ -376,6 +382,7 @@ public class EmailSignInFragment extends Fragment
 
                             AlertDialogRxUtil.build (getActivity())
                                     .setTitle(title)
+>>>>>>> 8efcdf0555f76c52b762343b0d97488fb9151c98
                                     .setNegativeButton(R.string.ok)
                                     .build().subscribe();
                         }));

@@ -16,7 +16,7 @@ public class ActivityHelper
 
     public static void launchDashboard(@NonNull Activity activity, @Nullable Uri deepLink)
     {
-        presentFromActivity(activity, DashboardActivity.class, /* Intent.FLAG_ACTIVITY_NO_HISTORY*/ Intent.FLAG_ACTIVITY_CLEAR_TOP, deepLink);
+        presentFromActivity(activity, DashboardActivity.class, /* Intent.FLAG_ACTIVITY_NO_HISTORY*/ Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP, deepLink);
     }
 
     public static void presentFromActivity(@NonNull Activity fromActivity, @NonNull Class toActivityClass, int flags, @Nullable Uri deepLink)

@@ -2,6 +2,7 @@ package com.androidth.general.fragments.live.ayondo;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -10,13 +11,16 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -130,8 +134,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Bind(R.id.nric_number) EditText nricNumber;
     @Bind(R.id.info_title) Spinner title;
-    @Bind(R.id.info_first_name) TextView firstName;
-    @Bind(R.id.info_last_name) TextView lastName;
+    @Bind(R.id.info_first_name) EditText firstName;
+    @Bind(R.id.info_last_name) EditText lastName;
     @Bind(R.id.sign_up_email) EditText email;
     @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
     @Bind(R.id.info_phone_number) EditText phoneNumber;
@@ -214,6 +218,17 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             if (actionId == EditorInfo.IME_ACTION_DONE && phoneVerifyButton.getState() == VerifyButtonState.PENDING)
             {
                 offerToEnterCode();
+            }
+
+            return false;
+        });
+
+        email.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_NEXT &&
+                    (emailVerifybutton.getState() == VerifyButtonState.PENDING
+                    || emailVerifybutton.getState() == VerifyButtonState.FINISH))
+            {
+                vedf = VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email.getText().toString(), this.providerIdInt);
             }
 
             return false;
@@ -1117,11 +1132,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             Log.v(getTag(), "Jeff email ok");
             String verifiedEmail = VerifyEmailDialogFragment.getVerifiedFromIntent(data);
-            if (verifiedEmail != null)
-            {
-                verifiedPublishEmail.onNext(verifiedEmail);
+            if(data.hasExtra("VerificationEmailError")){
+                updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), data.getStringExtra("VerificationEmailError"), false);
+            }else{
+                if (verifiedEmail != null)
+                {
+                    verifiedPublishEmail.onNext(verifiedEmail);
+                }
+                updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), null, true);
             }
-            updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"));
         }
     }
 
@@ -1136,44 +1155,73 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
 
     private Boolean isAllInputValidated() {
-        boolean resultFlag = true;
-        if (nricNumber.length() != 12) {
-            nricNumber.setError("NRIC must be 12 digits.", noErrorIconDrawable);
-            resultFlag = false;
-        }
+
         if (firstName.length() == 0) {
             firstName.setError("Must not be empty", noErrorIconDrawable);
-            resultFlag = false;
+            requestFocusAndShowKeyboard(firstName);
+            return false;
+        }else{
+            firstName.setError(null);
         }
         if(lastName.length() == 0){
             lastName.setError("Must not be empty", noErrorIconDrawable);
-            resultFlag = false;
+            requestFocusAndShowKeyboard(lastName);
+            return false;
+        }else{
+            lastName.setError(null);
         }
-
+        if (nricNumber.length() != 12) {
+            nricNumber.setError("NRIC must be 12 digits.", noErrorIconDrawable);
+            requestFocusAndShowKeyboard(nricNumber);
+            return false;
+        }else{
+            nricNumber.setError(null);
+        }
         if(nricVerifyButton.getState() != VerifyButtonState.FINISH){
             nricNumber.setError("Click right button to verify", noErrorIconDrawable);
-            resultFlag = false;
-        }else if(emailVerifybutton.getState() != VerifyButtonState.FINISH){
+            requestFocusAndShowKeyboard(nricNumber);
+            return false;
+        }else{
+            nricNumber.setError(null);
+        }
+        if(emailVerifybutton.getState() != VerifyButtonState.FINISH){
             email.setError("Click right button to verify", noErrorIconDrawable);
             if(!emailPattern.matcher(email.getText()).matches()) {
                 email.setError("Invalid email address", noErrorIconDrawable);
             }
-            resultFlag = false;
-        }else if(phoneVerifyButton.getState() != VerifyButtonState.FINISH){
+            requestFocusAndShowKeyboard(email);
+            return false;
+        }else{
+            email.setError(null);
+        }
+        if(phoneVerifyButton.getState() != VerifyButtonState.FINISH){
             phoneNumber.setError("Click right button to verify", noErrorIconDrawable);
-            resultFlag = false;
+            requestFocusAndShowKeyboard(phoneNumber);
+            return false;
+        }else{
+            phoneNumber.setError(null);
         }
 
         if(dob.length() == 0){
-            dob.setError("Must not be empty", noErrorIconDrawable);
-            resultFlag = false;
+            Snackbar.make(dob, "Must not be empty", Snackbar.LENGTH_LONG).show();
+            return false;
         }
         if(!tncCheckbox.isChecked()){
-            tncCheckbox.setError("Please check to agree", noErrorIconDrawable);
-            resultFlag = false;
+            Snackbar.make(termsCond, "Please agree to terms and conditions", Snackbar.LENGTH_LONG).show();
+            return false;
         }
 
-        return resultFlag;
+        return true;
+
+    }
+
+    private void requestFocusAndShowKeyboard(EditText textView) {
+        if(textView.requestFocus()){
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(textView, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -1221,17 +1269,28 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
 
     @MainThread
-    public void updateEmailVerification(String emailAddress){
-        if(vedf.isVisible()){
-            try{
-                vedf.dismiss();
-            }catch (Exception e){
-                //might be closed or not in view
+    public void updateEmailVerification(String emailAddress, String errorMessage, boolean isSuccess){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(vedf.isVisible()){
+                    try{
+                        vedf.dismiss();
+                    }catch (Exception e){
+                        //might be closed or not in view
+                    }
+                }
+                if(isSuccess){
+                    emailVerifybutton.setState(VerifyButtonState.FINISH);
+                    verifiedPublishEmail.onNext(emailAddress);
+                }else{
+                    if(errorMessage!=null){
+                        email.setError(errorMessage, noErrorIconDrawable);
+                        requestFocusAndShowKeyboard(email);
+                    }
+                }
             }
-        }
-        emailVerifybutton.setState(VerifyButtonState.FINISH);
-        verifiedPublishEmail.onNext(emailAddress);
-
+        });
     }
 
     public void setupSignalR(String emailAddress) {
@@ -1242,63 +1301,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 new String[]{emailAddress},
                 emailVerifybutton, emailVerifiedDTO ->{
                     if(((EmailVerifiedDTO)emailVerifiedDTO).isValidated()){
-                        updateEmailVerification(emailAddress);
+                        updateEmailVerification(emailAddress, null, true);
                     }
                 }, EmailVerifiedDTO.class);
-
-//        HubConnection connection = setConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
-//        connection.setCredentials(new Credentials() {
-//            @Override
-//            public void prepareRequest(Request request) {
-//                request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
-//                request.addHeader(Constants.USER_ID, currentUserId.get().toString());
-//            }
-//        });
-//        try {
-//            proxy = setProxy(LiveNetworkConstants.HUB_NAME, connection);
-//            connection.start().done(aVoid -> {
-////                SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS);
-////                signalProxy.done(req -> com.tencent.mm.sdk.platformtools.Log.i("Yay", "Nayy"));
-//            });
-//            connection.connected(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.v(getTag(), "Jeff signalR connected");
-////                    com.tencent.mm.sdk.platformtools.Log.i("SD", "cONNECTED");
-//                }
-//            });
-//            connection.connectionSlow(new Runnable() {
-//                @Override
-//                public void run() {
-////                    com.tencent.mm.sdk.platformtools.Log.i("Slow", "Slow Connection");
-//                }
-//            });
-//            connection.reconnected(new Runnable() {
-//                @Override
-//                public void run() {
-//
-//                }
-//            });
-//            connection.closed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.v(getTag(), "Jeff signalR closed");
-//                }
-//            });
-//            proxy.on("SetValidationStatus", emailVerifiedDTO-> {
-//                Log.v(getTag(), "Jeff signalR Received "+emailVerifiedDTO.getMessage()+"::"+emailVerifiedDTO.isValidated());
-//                updateVerifyEmailButton();
-//            }, EmailVerifiedDTO.class);
-//
-//            proxy.subscribe(this);
-//        } catch (Exception e) {
-////            com.tencent.mm.sdk.platformtools.Log.e("Error", "Could not connect to Hub Name");
-//        }
     }
-//
-//    public HubConnection setConnection(String url) {
-//        return new HubConnection(url);
-//    }
-//
-//    public HubProxy setProxy(String hubName, HubConnection connection) { return connection.createHubProxy(hubName); }
 }
