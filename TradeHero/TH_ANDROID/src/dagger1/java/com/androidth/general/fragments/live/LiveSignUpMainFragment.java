@@ -93,6 +93,7 @@ public class LiveSignUpMainFragment extends BaseFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.settings_menu, menu);
         ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
+        //notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
         notificationLogoUrl = providerDTO.navigationLogoUrl;
         hexColor = providerDTO.hexColor;
         setActionBarTitle("");
@@ -229,6 +230,7 @@ public class LiveSignUpMainFragment extends BaseFragment
         for (int i = 0; i < childCount && i < stepSize; i++)
         {
             Checkable textView = (Checkable) tabLayout.getTabStrip().getChildAt(i);
+
             StepStatus step = stepStatusList.get(i);
             boolean isComplete = step.equals(StepStatus.COMPLETE);
             textView.setChecked(isComplete);

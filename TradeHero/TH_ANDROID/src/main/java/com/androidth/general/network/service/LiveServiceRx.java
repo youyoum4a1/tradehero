@@ -76,8 +76,9 @@ public interface LiveServiceRx {
             @Path("scanReference") String scanReference
     );
 
-    @POST("/kyc/ayondo/scanReference")
+    @POST("/kyc/ayondo/scanReference/{scanReference}")
     Observable<Response> uploadScanReference(
-            @Body JumioVerifyBodyDTO jumioVerifyBodyDTO
+            @Body JumioVerifyBodyDTO jumioVerifyBodyDTO,
+            @Path("scanReference") String scanReference
     );
 }

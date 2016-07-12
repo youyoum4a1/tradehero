@@ -28,7 +28,6 @@ import com.androidth.general.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
 import com.androidth.general.api.kyc.ayondo.DummyAyondoData;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
-import com.androidth.general.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.api.live.LiveBrokerKnowledge;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
@@ -48,10 +47,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.List;
-
 import java.util.Map;
+
 import javax.inject.Inject;
 
 import retrofit.client.Response;
@@ -242,11 +240,11 @@ public class LiveServiceWrapper
         return liveServiceAyondoRx.checkNeedResidency(ayondoLeadAddressDTO);
     }
 
-    public Observable<BrokerApplicationDTO> submitApplication(KYCForm kycForm)
+    public Observable<BrokerApplicationDTO> submitApplication(KYCForm kycForm, int providerId)
     {
         if (kycForm instanceof KYCAyondoForm)
         {
-            return liveServiceAyondoRx.submitApplication(new AyondoAccountCreationDTO((KYCAyondoForm) kycForm));
+            return liveServiceAyondoRx.submitApplication(new AyondoAccountCreationDTO((KYCAyondoForm) kycForm), providerId);
         }
         else
         {
@@ -275,9 +273,9 @@ public class LiveServiceWrapper
         return liveServiceRx.scanJumioResult(scanReferene);
     }
 
-    public Observable<Response> uploadScanReference(JumioVerifyBodyDTO jumioVerifyBodyDTO)
+    public Observable<Response> uploadScanReference(JumioVerifyBodyDTO jumioVerifyBodyDTO, String scanReference)
     {
-        return liveServiceRx.uploadScanReference(jumioVerifyBodyDTO);
+        return liveServiceRx.uploadScanReference(jumioVerifyBodyDTO, scanReference);
     }
 
     @NonNull public static List<Country> createNoBusinessNationalities()

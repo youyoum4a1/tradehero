@@ -12,13 +12,11 @@ import com.androidth.general.api.kyc.ayondo.AyondoLeadAddressDTO;
 import com.androidth.general.api.kyc.ayondo.AyondoLeadDTO;
 import com.androidth.general.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
 import com.androidth.general.api.kyc.ayondo.AyondoLiveAvailabilityDTO;
-import com.androidth.general.api.kyc.ayondo.UsernameValidationResultDTO;
 
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
-import retrofit.http.Query;
 import rx.Observable;
 
 public interface LiveServiceAyondoRx
@@ -53,6 +51,6 @@ public interface LiveServiceAyondoRx
     Observable<AyondoAddressCheckDTO> checkNeedResidency(
             @Body AyondoLeadAddressDTO ayondoLeadAddressDTO);
 
-    @POST("/kyc/ayondo/createAccount")
-    Observable<BrokerApplicationDTO> submitApplication(@Body AyondoAccountCreationDTO ayondoAccountCreationDTO);
+    @POST("/kyc/ayondo/createAccount/{providerId}")
+    Observable<BrokerApplicationDTO> submitApplication(@Body AyondoAccountCreationDTO ayondoAccountCreationDTO, @Path("providerId") int providerId);
 }
