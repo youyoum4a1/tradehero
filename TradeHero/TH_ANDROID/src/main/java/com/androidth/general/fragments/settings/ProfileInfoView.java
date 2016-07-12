@@ -433,10 +433,10 @@ public class ProfileInfoView extends LinearLayout
                         switch (event.which)
                         {
                             case INDEX_CHOICE_FROM_CAMERA:
-                                imageRequesterUtil.onImageFromCameraRequested((Activity) getContext());
+                                imageRequesterUtil.onImageFromCameraRequested((Activity) getContext(), ImageRequesterUtil.REQUEST_CAMERA);
                                 break;
                             case INDEX_CHOICE_FROM_LIBRARY:
-                                imageRequesterUtil.onImageFromLibraryRequested((Activity) getContext());
+                                imageRequesterUtil.onImageFromLibraryRequested((Activity) getContext(), ImageRequesterUtil.REQUEST_GALLERY);
                                 break;
                         }
                         return imageRequesterUtil.getBitmapObservable();

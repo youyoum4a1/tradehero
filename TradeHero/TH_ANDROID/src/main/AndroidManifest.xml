@@ -201,6 +201,12 @@
         android:label="@string/help">
     </activity>
 
+    <activity
+        android:theme="@style/Theme.Netverify"
+        android:hardwareAccelerated="true"
+        android:name="com.jumio.nv.NetverifyActivity"
+        android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
+
     <!--TODO: For Kenanga challenge, remove after challenge finish-->
     <receiver android:name="com.appsflyer.MultipleInstallBroadcastReceiver" android:exported="true">
       <intent-filter>

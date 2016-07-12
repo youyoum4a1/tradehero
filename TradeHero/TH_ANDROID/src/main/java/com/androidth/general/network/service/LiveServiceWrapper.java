@@ -2,6 +2,7 @@ package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
 
+import com.androidth.general.api.competition.JumioVerifyBodyDTO;
 import com.androidth.general.api.kyc.AnnualIncomeRange;
 import com.androidth.general.api.kyc.BrokerApplicationDTO;
 import com.androidth.general.api.kyc.BrokerDocumentUploadResponseDTO;
@@ -264,10 +265,19 @@ public class LiveServiceWrapper
         return liveServiceRx.enrollCompetition(providerId, userId);
     }
 
-    @RxLogObservable
     public Observable<Response> verifyEmail(int userId, String email, int providerId)
     {
         return liveServiceRx.verifyEmail(userId, email, providerId);
+    }
+
+    public Observable<Boolean> scanJumioResult(String scanReferene)
+    {
+        return liveServiceRx.scanJumioResult(scanReferene);
+    }
+
+    public Observable<Response> uploadScanReference(JumioVerifyBodyDTO jumioVerifyBodyDTO)
+    {
+        return liveServiceRx.uploadScanReference(jumioVerifyBodyDTO);
     }
 
     @NonNull public static List<Country> createNoBusinessNationalities()

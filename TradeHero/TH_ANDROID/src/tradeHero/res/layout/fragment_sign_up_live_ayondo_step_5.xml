@@ -21,19 +21,32 @@
         android:text="@string/required_document"
         />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/info_identity_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         >
 
       <TextView
+          android:id="@+id/step_5_proof_label"
           style="@style/TH.Caption"
+          android:layout_alignParentTop="true"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="start"
           android:text="@string/proof_identity_caption"
+          />
+
+      <ImageButton
+          android:id="@+id/step_5_scan_id_button"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          android:layout_alignParentEnd="true"
+          android:layout_below="@id/step_5_proof_label"
+          android:background="@android:color/transparent"
+          android:src="@drawable/ic_file_file_upload"
+          android:enabled="true"
           />
 
       <Spinner
@@ -41,18 +54,22 @@
           style="@style/TH.Spinner"
           android:layout_width="match_parent"
           android:layout_height="@dimen/clickable_element_min_dimen"
+          android:layout_below="@id/step_5_proof_label"
+          android:layout_alignBaseline="@id/step_5_scan_id_button"
+          android:layout_marginRight="10sp"
+          android:layout_toLeftOf="@id/step_5_scan_id_button"
           />
 
-      <com.androidth.general.widget.DocumentActionWidget
-          android:id="@+id/document_action_identity"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:drawableLeft="@drawable/ic_file_file_upload"
-          android:drawableStart="@drawable/ic_file_file_upload"
-          android:text="@string/tap_to_upload"
-          />
+      <!--<com.androidth.general.widget.DocumentActionWidget-->
+      <!--android:id="@+id/document_action_identity"-->
+      <!--android:layout_width="match_parent"-->
+      <!--android:layout_height="wrap_content"-->
+      <!--android:drawableLeft="@drawable/ic_file_file_upload"-->
+      <!--android:drawableStart="@drawable/ic_file_file_upload"-->
+      <!--android:text="@string/tap_to_upload"-->
+      <!--/>-->
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/info_residency_container"
@@ -88,40 +105,40 @@
 
     </LinearLayout>
 
-    <TextView
-        style="@style/TH.Subhead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_xsmall"
-        android:layout_marginTop="@dimen/margin_small"
-        android:gravity="center_horizontal"
-        android:text="@string/account_currency"
-        />
+    <!--<TextView-->
+        <!--style="@style/TH.Subhead"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginBottom="@dimen/margin_xsmall"-->
+        <!--android:layout_marginTop="@dimen/margin_small"-->
+        <!--android:gravity="center_horizontal"-->
+        <!--android:text="@string/account_currency"-->
+        <!--/>-->
 
-    <LinearLayout
-        android:id="@+id/account_currency_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+    <!--<LinearLayout-->
+        <!--android:id="@+id/account_currency_container"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical"-->
+        <!--&gt;-->
 
-      <TextView
-          style="@style/TH.Caption"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="start"
-          android:text="@string/currency"
-          />
+      <!--<TextView-->
+          <!--style="@style/TH.Caption"-->
+          <!--android:layout_width="wrap_content"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--android:layout_gravity="start"-->
+          <!--android:text="@string/currency"-->
+          <!--/>-->
 
-      <Spinner
-          android:id="@+id/currency_spinner"
-          style="@style/TH.Spinner"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/clickable_element_min_dimen"
-          android:layout_marginTop="@dimen/margin_xsmall"
-          />
+      <!--<Spinner-->
+          <!--android:id="@+id/currency_spinner"-->
+          <!--style="@style/TH.Spinner"-->
+          <!--android:layout_width="match_parent"-->
+          <!--android:layout_height="@dimen/clickable_element_min_dimen"-->
+          <!--android:layout_marginTop="@dimen/margin_xsmall"-->
+          <!--/>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
     <TextView
         style="@style/TH.Subhead"

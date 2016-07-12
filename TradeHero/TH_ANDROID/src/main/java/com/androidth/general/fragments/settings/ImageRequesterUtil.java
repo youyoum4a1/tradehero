@@ -26,9 +26,9 @@ import timber.log.Timber;
 
 public class ImageRequesterUtil implements ActivityResultRequester
 {
-    private static final int REQUEST_GALLERY = 1309;
-    private static final int REQUEST_CAMERA = 1310;
-    private final static int REQUEST_PHOTO_ZOOM = 1311;
+    public static final int REQUEST_GALLERY = 1309;
+    public static final int REQUEST_CAMERA = 1310;
+    public final static int REQUEST_PHOTO_ZOOM = 1311;
 
     @Nullable private final Integer cropAspectX;
     @Nullable private final Integer cropAspectY;
@@ -62,7 +62,7 @@ public class ImageRequesterUtil implements ActivityResultRequester
         return croppedPhotoFile;
     }
 
-    public void onImageFromCameraRequested(@NonNull Activity activity)
+    public void onImageFromCameraRequested(@NonNull Activity activity, @NonNull int requestCode)
     {
         PackageManager pm = activity.getPackageManager();
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -78,7 +78,7 @@ public class ImageRequesterUtil implements ActivityResultRequester
             }
             cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                     Uri.fromFile(mCurrentPhotoFile));
-            activity.startActivityForResult(cameraIntent, REQUEST_CAMERA);
+            activity.startActivityForResult(cameraIntent, requestCode);
         }
         else
         {
@@ -86,13 +86,13 @@ public class ImageRequesterUtil implements ActivityResultRequester
         }
     }
 
-    public void onImageFromLibraryRequested(@NonNull Activity activity)
+    public void onImageFromLibraryRequested(@NonNull Activity activity, @NonNull int requestCode)
     {
         Intent libraryIntent = new Intent(Intent.ACTION_PICK);
         libraryIntent.setType("image/jpeg");
         try
         {
-            activity.startActivityForResult(libraryIntent, REQUEST_GALLERY);
+            activity.startActivityForResult(libraryIntent, requestCode);
         } catch (ActivityNotFoundException e)
         {
             Timber.e(e, "Could not request gallery");

@@ -1,6 +1,7 @@
 package com.androidth.general.network.service;
 
 
+import com.androidth.general.api.competition.JumioVerifyBodyDTO;
 import com.androidth.general.api.kyc.BrokerDocumentUploadResponseDTO;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
@@ -68,5 +69,15 @@ public interface LiveServiceRx {
             @Path("userId") Integer userId,
             @Path("email") String email,
             @Path("providerId") Integer providerId
+    );
+
+    @GET("/kyc/idProof/scanResult/{scanReference}")
+    Observable<Boolean>scanJumioResult(
+            @Path("scanReference") String scanReference
+    );
+
+    @POST("/kyc/ayondo/scanReference")
+    Observable<Response> uploadScanReference(
+            @Body JumioVerifyBodyDTO jumioVerifyBodyDTO
     );
 }
