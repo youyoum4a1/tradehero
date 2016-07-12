@@ -720,7 +720,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 {
                     @Override public void call(Throwable throwable)
                     {
-                        THToast.show(new THException(throwable));
+                        Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }));
 
@@ -832,6 +832,16 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 //                fastFillUtil.onActivityResult(getActivity(), requestCode, resultCode, data);
                 String scanRef = data.getStringExtra(NetverifySDK.EXTRA_SCAN_REFERENCE);
                 String dataType = NVDocumentType.IDENTITY_CARD.toString();
+<<<<<<< HEAD
+                JumioVerifyBodyDTO jumioDTO = new JumioVerifyBodyDTO(dataType, scanRef);
+
+                liveServiceWrapper.uploadScanReference(jumioDTO, scanRef).subscribe(new Subscriber<Response>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.v(getTag(), "Scan ref: "+dataType+":"+scanRef);
+                    }
+=======
+>>>>>>> 50049a797d9fe6907f970e129da7da9090153417
 
                 updateLayoutFromJumio(dataType, scanRef);
 
