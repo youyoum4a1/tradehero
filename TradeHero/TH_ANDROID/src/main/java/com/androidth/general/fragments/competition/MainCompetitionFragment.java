@@ -511,7 +511,9 @@ public class MainCompetitionFragment extends DashboardFragment
         OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
 //        ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(navigator.get(), args, ownedPortfolioId, providerDTO.associatedPortfolio,
 //                providerId); //old securities screen
-        ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(navigator.get(), args, ownedPortfolioId, providerId);
+
+        SecurityCompositeDTO securityCompositeDTO = securityCompositeListCacheRx.getCachedValue(new BasicProviderSecurityV2ListType(providerId));
+        ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(navigator.get(), args, ownedPortfolioId, providerId, securityCompositeDTO);
     }
 
     private void displayTradeNowButton()

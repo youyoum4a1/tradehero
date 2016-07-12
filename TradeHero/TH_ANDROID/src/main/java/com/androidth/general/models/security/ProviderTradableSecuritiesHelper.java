@@ -4,13 +4,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
+import com.androidth.general.api.security.SecurityCompactDTO;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.billing.BasePurchaseManagerFragment;
 import com.androidth.general.fragments.competition.ProviderFxListFragment;
 import com.androidth.general.fragments.security.ProviderSecurityListRxFragment;
 import com.androidth.general.fragments.security.ProviderSecurityV2RxFragment;
+import com.androidth.general.fragments.security.ProviderSecurityV2RxSubFragment;
 import com.androidth.general.fragments.security.WarrantCompetitionPagerFragment;
 
 public class ProviderTradableSecuritiesHelper
@@ -56,12 +60,20 @@ public class ProviderTradableSecuritiesHelper
             @NonNull DashboardNavigator navigator,
             @NonNull Bundle args,
             @Nullable OwnedPortfolioId ownedPortfolioId,
-            @NonNull ProviderId providerId) {
+            @NonNull ProviderId providerId,
+            SecurityCompositeDTO securityCompositeDTO) {
+
         if (ownedPortfolioId != null) {
             BasePurchaseManagerFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
 
-        ProviderSecurityV2RxFragment.putProviderId(args, providerId);
-        navigator.pushFragment(ProviderSecurityV2RxFragment.class, args);
+        if(securityCompositeDTO.SecurityTypes.size() == 1 && securityCompositeDTO.Exchanges.size() == 1) {
+            ProviderSecurityV2RxSubFragment.setItems(securityCompositeDTO.Securities);
+            navigator.pushFragment(ProviderSecurityV2RxSubFragment.class, args);
+        }
+        else {
+            ProviderSecurityV2RxFragment.putProviderId(args, providerId);
+            navigator.pushFragment(ProviderSecurityV2RxFragment.class, args);
+        }
     }
 }

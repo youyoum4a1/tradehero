@@ -102,7 +102,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_contest_center, container, false);
+        View view = inflater.inflate(R.layout.fragment_contest_securities, container, false);
         ButterKnife.bind(this, view);
         initViews();
         return view;
@@ -117,6 +117,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
 
     @Override public void onResume()
     {
+        displayTitle();
         super.onResume();
     }
 
@@ -181,10 +182,11 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     protected void displayTitle()
     {
         //setActionBarTitle(providerDTO.name);
-        setActionBarTitle("");
-        setActionBarColor(providerDTO.hexColor);
-        setActionBarImage(providerDTO.navigationLogoUrl);
-
+        if(providerDTO != null) {
+            setActionBarTitle("");
+            setActionBarColor(providerDTO.hexColor);
+            setActionBarImage(providerDTO.navigationLogoUrl);
+        }
     }
     private boolean setActionBarImage(String url){
         try {
