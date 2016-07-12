@@ -14,4 +14,5 @@
     android:background="@drawable/sign_up_tab_selector"
     android:orientation="vertical"
     tools:text="1"
+    tools:textAlignment="center"
     />

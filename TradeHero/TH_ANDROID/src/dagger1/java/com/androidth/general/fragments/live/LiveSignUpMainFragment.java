@@ -93,12 +93,12 @@ public class LiveSignUpMainFragment extends BaseFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.settings_menu, menu);
         ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
-        //notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
-        notificationLogoUrl = providerDTO.navigationLogoUrl;
+        notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl; //I know this is very bad code. I am sorry for that! This was the fastest way I could do it
+        //notificationLogoUrl = providerDTO.navigationLogoUrl;
         hexColor = providerDTO.hexColor;
         setActionBarTitle("");
         setActionBarColor(providerDTO.hexColor);
-        setActionBarImage(providerDTO.navigationLogoUrl);
+        setActionBarImage(notificationLogoUrl);
 
     }
     private boolean setActionBarImage(String url){
@@ -115,11 +115,6 @@ public class LiveSignUpMainFragment extends BaseFragment
             });
 
             observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
-                int height = (int)(actionBar.getHeight()*0.6);
-                int bitmapHt = bitmap.getHeight();
-                int bitmapWd = bitmap.getWidth();
-                int width = height * (bitmapWd / bitmapHt);
-                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
                 imageView.setImageBitmap(bitmap);
                 ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
                 actionBar.setCustomView(imageView, layoutParams);
@@ -147,8 +142,8 @@ public class LiveSignUpMainFragment extends BaseFragment
         ButterKnife.bind(this, view);
         showCallToActionFragment.set(false);
 
-        tabLayout.setCustomTabView(R.layout.th_sign_up_tab_indicator, android.R.id.title);
         tabLayout.setDistributeEvenly(true);
+        tabLayout.setCustomTabView(R.layout.th_sign_up_tab_indicator, android.R.id.title);
         tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.transparent));
 
         ConnectableObservable<SignUpLiveAyondoPagerAdapter> pagerAdapterObservable = ConnectableObservable.just(new SignUpLiveAyondoPagerAdapter(getChildFragmentManager(), getArguments())).publish();
@@ -164,7 +159,6 @@ public class LiveSignUpMainFragment extends BaseFragment
 
         onDestroyViewSubscriptions.add(
                 pagerAdapterObservable
-                        .observeOn(AndroidSchedulers.mainThread())
                         .doOnNext(new Action1<PagerAdapter>()
                         {
                             @Override public void call(PagerAdapter pagerAdapter)
@@ -174,6 +168,7 @@ public class LiveSignUpMainFragment extends BaseFragment
                                     //if already joined, show the second page
                                     viewPager.setCurrentItem(1);
                                 }
+                                tabLayout.setDistributeEvenly(true);
                                 tabLayout.setViewPager(viewPager);
                             }
                         })
@@ -191,7 +186,6 @@ public class LiveSignUpMainFragment extends BaseFragment
                                     })
                                     ;
                         })
-                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 updatedSteps -> {
                                     updatePageIndicator(updatedSteps.stepStatuses);
