@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.androidth.general.R;
 import com.androidth.general.api.competition.JumioVerifyBodyDTO;
@@ -981,7 +980,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private void updateLayoutFromJumio(String dataType, String scanRef){
         JumioVerifyBodyDTO jumioDTO = new JumioVerifyBodyDTO(dataType, scanRef);
 
-        liveServiceWrapper.uploadScanReference(jumioDTO).subscribe(new Subscriber<Response>() {
+        liveServiceWrapper.uploadScanReference(jumioDTO, scanRef).subscribe(new Subscriber<Response>() {
             @Override
             public void onCompleted() {
                 Log.v(getTag(), "Scan ref: "+dataType+":"+scanRef);
