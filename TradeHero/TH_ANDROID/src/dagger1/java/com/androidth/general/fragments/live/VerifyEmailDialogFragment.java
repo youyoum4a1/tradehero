@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
 import rx.Observable;
@@ -258,21 +259,27 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 
             @Override
             public void onError(Throwable e) {
-                new TimberOnErrorAction1("Failed on sending email verification");
+                Log.e(getTag(), "Email verify error "+e.getMessage());
+//                new TimberOnErrorAction1("Failed on sending email verification");
+                String errorMessage = e.getMessage();
+                if(e instanceof RetrofitError){
+                    errorMessage = getStringFromResponse(((RetrofitError)e).getResponse());
+                    Log.e(getTag(),"Email verify error:"+ errorMessage);
+                }
+                dismissWithResult(errorMessage);
             }
 
             @Override
             public void onNext(Response response) {
+                Log.v(getTag(), "JEFF SUCCESS EMAIL "+response.getStatus());
                 String responseString = getStringFromResponse(response);
                 Log.v(getTag(), "JEFF SUCCESS EMAIL "+responseString+"...");
                 if(responseString.equals("Verified")){
                     Log.v(getTag(), "JEFF SUCCESS EMAIL "+responseString);
-                    dismissWithResult();
+                    dismissWithResult(null);
                 }
             }
         });
-
-
 
 //                sendMessage(
 //                SMSRequestFactory.create(
@@ -466,10 +473,14 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 //        }
 //    }
 
-    private void dismissWithResult()
+    private void dismissWithResult(String message)
     {
         Intent i = new Intent();
         i.putExtra("VerifiedEmailAddress", emailAddress);
+        if(message!=null){
+            i.putExtra("VerificationEmailError", message);
+        }
+
         VerifyEmailDialogFragment.crateVerifiedBundle(i, userId, emailAddress, providerId);
         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, i);
         dismiss();

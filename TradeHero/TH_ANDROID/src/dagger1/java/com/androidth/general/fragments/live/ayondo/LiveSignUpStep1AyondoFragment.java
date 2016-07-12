@@ -1121,11 +1121,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             Log.v(getTag(), "Jeff email ok");
             String verifiedEmail = VerifyEmailDialogFragment.getVerifiedFromIntent(data);
-            if (verifiedEmail != null)
-            {
-                verifiedPublishEmail.onNext(verifiedEmail);
+            if(data.hasExtra("VerificationEmailError")){
+                updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), data.getStringExtra("VerificationEmailError"), false);
+            }else{
+                if (verifiedEmail != null)
+                {
+                    verifiedPublishEmail.onNext(verifiedEmail);
+                }
+                updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), null, true);
             }
-            updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"));
         }
     }
 
@@ -1188,15 +1192,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         if(dob.length() == 0){
-//            dob.setError("Must not be empty", noErrorIconDrawable);
-//            dob.requestFocus();
             Snackbar.make(dob, "Must not be empty", Snackbar.LENGTH_LONG).show();
             return false;
         }
         if(!tncCheckbox.isChecked()){
             Snackbar.make(termsCond, "Please agree to terms and conditions", Snackbar.LENGTH_LONG).show();
-//            termsCond.setError("Please check to agree", noErrorIconDrawable);
-//            termsCond.requestFocus();
             return false;
         }
 
@@ -1258,17 +1258,28 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
 
     @MainThread
-    public void updateEmailVerification(String emailAddress){
-        if(vedf.isVisible()){
-            try{
-                vedf.dismiss();
-            }catch (Exception e){
-                //might be closed or not in view
+    public void updateEmailVerification(String emailAddress, String errorMessage, boolean isSuccess){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(vedf.isVisible()){
+                    try{
+                        vedf.dismiss();
+                    }catch (Exception e){
+                        //might be closed or not in view
+                    }
+                }
+                if(isSuccess){
+                    emailVerifybutton.setState(VerifyButtonState.FINISH);
+                    verifiedPublishEmail.onNext(emailAddress);
+                }else{
+                    if(errorMessage!=null){
+                        email.setError(errorMessage, noErrorIconDrawable);
+                        requestFocusAndShowKeyboard(email);
+                    }
+                }
             }
-        }
-        emailVerifybutton.setState(VerifyButtonState.FINISH);
-        verifiedPublishEmail.onNext(emailAddress);
-
+        });
     }
 
     public void setupSignalR(String emailAddress) {
@@ -1279,63 +1290,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 new String[]{emailAddress},
                 emailVerifybutton, emailVerifiedDTO ->{
                     if(((EmailVerifiedDTO)emailVerifiedDTO).isValidated()){
-                        updateEmailVerification(emailAddress);
+                        updateEmailVerification(emailAddress, null, true);
                     }
                 }, EmailVerifiedDTO.class);
-
-//        HubConnection connection = setConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
-//        connection.setCredentials(new Credentials() {
-//            @Override
-//            public void prepareRequest(Request request) {
-//                request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
-//                request.addHeader(Constants.USER_ID, currentUserId.get().toString());
-//            }
-//        });
-//        try {
-//            proxy = setProxy(LiveNetworkConstants.HUB_NAME, connection);
-//            connection.start().done(aVoid -> {
-////                SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS);
-////                signalProxy.done(req -> com.tencent.mm.sdk.platformtools.Log.i("Yay", "Nayy"));
-//            });
-//            connection.connected(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.v(getTag(), "Jeff signalR connected");
-////                    com.tencent.mm.sdk.platformtools.Log.i("SD", "cONNECTED");
-//                }
-//            });
-//            connection.connectionSlow(new Runnable() {
-//                @Override
-//                public void run() {
-////                    com.tencent.mm.sdk.platformtools.Log.i("Slow", "Slow Connection");
-//                }
-//            });
-//            connection.reconnected(new Runnable() {
-//                @Override
-//                public void run() {
-//
-//                }
-//            });
-//            connection.closed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.v(getTag(), "Jeff signalR closed");
-//                }
-//            });
-//            proxy.on("SetValidationStatus", emailVerifiedDTO-> {
-//                Log.v(getTag(), "Jeff signalR Received "+emailVerifiedDTO.getMessage()+"::"+emailVerifiedDTO.isValidated());
-//                updateVerifyEmailButton();
-//            }, EmailVerifiedDTO.class);
-//
-//            proxy.subscribe(this);
-//        } catch (Exception e) {
-////            com.tencent.mm.sdk.platformtools.Log.e("Error", "Could not connect to Hub Name");
-//        }
     }
-//
-//    public HubConnection setConnection(String url) {
-//        return new HubConnection(url);
-//    }
-//
-//    public HubProxy setProxy(String hubName, HubConnection connection) { return connection.createHubProxy(hubName); }
 }
