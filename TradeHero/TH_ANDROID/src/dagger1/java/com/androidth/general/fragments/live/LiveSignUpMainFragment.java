@@ -178,21 +178,22 @@ public class LiveSignUpMainFragment extends BaseFragment
                         .filter(situationDTO -> situationDTO.kycForm != null)
                         .throttleLast(3, TimeUnit.SECONDS)
                         .distinctUntilChanged()
-                        .flatMap(situationDTO -> {
-                            //noinspection ConstantConditions
-                            return liveServiceWrapper.applyToLiveBroker(situationDTO.broker.id, situationDTO.kycForm)
-                                    .doOnNext(stepStatusesDTO -> {
-                                        KYCForm form = KYCFormUtil.from(situationDTO.kycForm);
-                                        form.setStepStatuses(stepStatusesDTO.stepStatuses);
-                                        liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(situationDTO.broker, form));
-                                    })
-                                    ;
-                        })
-                        .subscribe(
-                                updatedSteps -> {
-                                    updatePageIndicator(updatedSteps.stepStatuses);
-                                },
-                                new TimberOnErrorAction1("Error on updating step status")));
+                        .subscribe());
+//                        .flatMap(situationDTO -> {
+//                            //noinspection ConstantConditions
+//                            return liveServiceWrapper.applyToLiveBroker(situationDTO.broker.id, situationDTO.kycForm)
+//                                    .doOnNext(stepStatusesDTO -> {
+//                                        KYCForm form = KYCFormUtil.from(situationDTO.kycForm);
+//                                        form.setStepStatuses(stepStatusesDTO.stepStatuses);
+//                                        liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(situationDTO.broker, form));
+//                                    })
+//                                    ;
+//                        })
+//                        .subscribe(
+//                                updatedSteps -> {
+//                                    updatePageIndicator(updatedSteps.stepStatuses);
+//                                },
+//                                new TimberOnErrorAction1("Error on updating step status")));
 
         onDestroyViewSubscriptions.add(pagerAdapterObservable
                 .flatMap(new Func1<PagerAdapter, Observable<Boolean>>()
