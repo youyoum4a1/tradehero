@@ -42,6 +42,7 @@ import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.androidth.general.api.kyc.ayondo.ProviderQuestionnaireDTO;
 import com.androidth.general.api.live.CountryUtil;
 import com.androidth.general.api.live.LiveBrokerDTO;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
@@ -160,6 +161,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject protected RequestHeaders requestHeaders;
+    protected ProgressDialog loadingFieldProgressDialog;
     SignalRManager signalRManager;
 
     private Pattern emailPattern;
@@ -171,6 +173,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private Drawable noErrorIconDrawable;
     private int providerIdInt = 0;
     private VerifyEmailDialogFragment vedf;
+    private boolean hasClickedJoinButton = false;
 
     HubProxy proxy;
 
@@ -228,7 +231,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     (emailVerifybutton.getState() == VerifyButtonState.PENDING
                     || emailVerifybutton.getState() == VerifyButtonState.FINISH))
             {
-                vedf = VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email.getText().toString(), this.providerIdInt);
+                showEmailVerificationPopup();
             }
 
             return false;
@@ -262,6 +265,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 }
             });
         }
+
+        loadingFieldProgressDialog = new ProgressDialog(getContext());
+        loadingFieldProgressDialog.setMessage("Loading fields");
+//        loadingFieldProgressDialog.setCancelable(false);
+//        loadingFieldProgressDialog.show();
     }
 
     @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
@@ -272,7 +280,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getContext(),R.array.live_title_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         title.setAdapter(adapter);
-
 
         WidgetObservable.text(firstName).withLatestFrom(liveBrokerSituationDTOObservable,
                 (onTextChangeEvent, liveBrokerSituationDTO) -> {
@@ -354,7 +361,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 KYCAyondoForm form = (KYCAyondoForm)liveBrokerSituationDTO.kycForm;
 
                                 ProgressDialog progress = new ProgressDialog(getContext());
-                                progress.setMessage("Loading...");
+                                progress.setMessage("Verifying NRIC...");
                                 progress.show();
 
                                 liveServiceWrapper.documentsForCountry(form.getNationality().getAlpha2()).subscribe(
@@ -376,6 +383,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 //                                                                if (aBoolean)
 //                                                                {
                                                                     nricVerifyButton.setState(VerifyButtonState.FINISH);
+                                                                nricNumber.setError(null);
+                                                                if(hasClickedJoinButton){
+                                                                    onClickedJoinButton();
+                                                                }
 //                                                                }
 
                                                                 progress.dismiss();
@@ -405,7 +416,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 break;
                             case PENDING:
                             case VALIDATE:
-                                LiveSignUpStep1AyondoFragment.this.validateEmail();
+                                validateEmail();
                                 break;
                         }
                     }
@@ -474,6 +485,17 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 spinnerResidenceState.setAdapter(residenceStateAdapter);
                                 spinnerResidenceState.setEnabled(options.residenceStateList.size() > 1);
 
+//                                liveServiceWrapper.getAdditionalQuestionnaires(providerIdInt).subscribe(new Action1<ArrayList<ProviderQuestionnaireDTO>>() {
+//                                    @Override
+//                                    public void call(ArrayList<ProviderQuestionnaireDTO> providerQuestionnaireDTO) {
+//                                        for(ProviderQuestionnaireDTO dto: providerQuestionnaireDTO){
+////TODO by Jeff
+//                                        }
+//
+//                                    }
+//                                });
+
+
                                 LollipopArrayAdapter<String> howYouKnowTHAdapter = new LollipopArrayAdapter<>(
                                         getActivity(), options.howYouKnowTHList);
                                 spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
@@ -520,6 +542,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     options.allowedMobilePhoneCountryDTOs);
                             populateNationality((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
                             populateResidency((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
+
+//                            dismissLocalProgressDialog();
                         }
 
                         return latestDTO;
@@ -765,6 +789,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         Log.v("ayondoStep1", "Subscriptions final "+subscriptions.size());
         return subscriptions;
+    }
+
+    @MainThread
+    private void dismissLocalProgressDialog() {
+        loadingFieldProgressDialog.dismiss();
     }
 
     private boolean isValidPhoneNumber(PhoneNumberDTO phoneNumberDTO)
@@ -1091,7 +1120,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
 //        liveServiceWrapper.verifyEmail(currentUserId.get(), email).subscribe();
 
-        vedf = VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email, this.providerIdInt);
+        showEmailVerificationPopup();
         setupSignalR(email);
     }
 
@@ -1128,6 +1157,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             {
                 verifiedPublishSubject.onNext(verifiedPhoneNumberPair);
             }
+            if(hasClickedJoinButton){
+                onClickedJoinButton();
+            }
         }else if (requestCode == REQUEST_VERIFY_EMAIL_CODE && resultCode == Activity.RESULT_OK)
         {
             Log.v(getTag(), "Jeff email ok");
@@ -1140,6 +1172,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     verifiedPublishEmail.onNext(verifiedEmail);
                 }
                 updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), null, true);
+                if(hasClickedJoinButton){
+                    onClickedJoinButton();
+                }
             }
         }
     }
@@ -1177,31 +1212,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }else{
             nricNumber.setError(null);
         }
-        if(nricVerifyButton.getState() != VerifyButtonState.FINISH){
-            nricNumber.setError("Click right button to verify", noErrorIconDrawable);
-            requestFocusAndShowKeyboard(nricNumber);
-            return false;
-        }else{
-            nricNumber.setError(null);
-        }
-        if(emailVerifybutton.getState() != VerifyButtonState.FINISH){
-            email.setError("Click right button to verify", noErrorIconDrawable);
-            if(!emailPattern.matcher(email.getText()).matches()) {
-                email.setError("Invalid email address", noErrorIconDrawable);
-            }
-            requestFocusAndShowKeyboard(email);
-            return false;
-        }else{
-            email.setError(null);
-        }
-        if(phoneVerifyButton.getState() != VerifyButtonState.FINISH){
-            phoneNumber.setError("Click right button to verify", noErrorIconDrawable);
-            requestFocusAndShowKeyboard(phoneNumber);
-            return false;
-        }else{
-            phoneNumber.setError(null);
-        }
-
         if(dob.length() == 0){
             Snackbar.make(dob, "Date of birth must not be empty", Snackbar.LENGTH_LONG).show();
             return false;
@@ -1211,8 +1221,42 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             return false;
         }
 
+        //make this automatic
+        if(nricVerifyButton.getState() != VerifyButtonState.FINISH){
+            hasClickedJoinButton = true;
+            nricVerifyButton.performClick();
+            onClickedJoinButton();
+            return false;
+        }else{
+            nricNumber.setError(null);
+        }
+
+        if(emailVerifybutton.getState() != VerifyButtonState.FINISH){
+            if(!emailPattern.matcher(email.getText()).matches()) {
+                email.setError("Invalid email address", noErrorIconDrawable);
+                requestFocusAndShowKeyboard(email);
+            }else{
+                hasClickedJoinButton = true;
+                emailVerifybutton.performClick();
+            }
+            return false;
+        }else{
+            email.setError(null);
+        }
+        if(phoneVerifyButton.getState() != VerifyButtonState.FINISH){
+            hasClickedJoinButton = true;
+            phoneVerifyButton.performClick();
+            return false;
+        }else{
+            phoneNumber.setError(null);
+        }
+
         return true;
 
+    }
+
+    private void showEmailVerificationPopup() {
+        vedf = VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email.getText().toString(), this.providerIdInt);
     }
 
     private void requestFocusAndShowKeyboard(EditText textView) {
@@ -1234,6 +1278,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         ProgressDialog progress = new ProgressDialog(getContext());
         progress.setMessage("Loading...");
+        progress.setCancelable(false);
         progress.show();
 
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
