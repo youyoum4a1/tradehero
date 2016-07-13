@@ -79,6 +79,8 @@ import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.validation.KYCVerifyButton;
 import com.androidth.general.widget.validation.VerifyButtonState;
 import com.neovisionaries.i18n.CountryCode;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -112,12 +114,12 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-//@Routable({
-//        "enrollchallenge/:enrollProviderId"
-//})
+@Routable({
+        "enrollchallenge/:providerId"
+})
 public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
-    //@RouteProperty("enrollProviderId") protected Integer enrollProviderId;
+    @RouteProperty("providerId") protected Integer enrollProviderId;
     @Inject THRouter thRouter;
     @Inject KycServicesRx kycServices;
     @Inject ProviderUtil providerUtil;
@@ -384,10 +386,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 //                                                                {
                                                                     nricVerifyButton.setState(VerifyButtonState.FINISH);
                                                                 nricNumber.setError(null);
+//                                                                }
                                                                 if(hasClickedJoinButton){
                                                                     onClickedJoinButton();
                                                                 }
-//                                                                }
 
                                                                 progress.dismiss();
                                                             }, throwable -> {
@@ -1160,6 +1162,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             if(hasClickedJoinButton){
                 onClickedJoinButton();
             }
+
         }else if (requestCode == REQUEST_VERIFY_EMAIL_CODE && resultCode == Activity.RESULT_OK)
         {
             Log.v(getTag(), "Jeff email ok");
@@ -1225,7 +1228,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if(nricVerifyButton.getState() != VerifyButtonState.FINISH){
             hasClickedJoinButton = true;
             nricVerifyButton.performClick();
-            onClickedJoinButton();
             return false;
         }else{
             nricNumber.setError(null);
