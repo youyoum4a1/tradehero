@@ -102,6 +102,7 @@ public class KYCAyondoForm implements KYCForm
 
     @Nullable private Currency currency;
     @Nullable private String verifiedEmailAddress;
+    @Nullable private ProviderQuestionnaireAnswerDto[] additionalData;
 
     //TODO Hardcoded for now
     private final String language = "EN";
@@ -856,6 +857,15 @@ public class KYCAyondoForm implements KYCForm
     public String getWhiteLabel()
     {
         return whiteLabel;
+    }
+
+    @Nullable
+    public ProviderQuestionnaireAnswerDto[] getAdditionalData() {
+        return additionalData;
+    }
+
+    public void setAdditionalData(@Nullable ProviderQuestionnaireAnswerDto[] additionalData) {
+        this.additionalData = additionalData;
     }
 
     public void setGuid(String guid)

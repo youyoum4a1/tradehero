@@ -41,8 +41,8 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
     @NonNull public final String dataSharingAgreementUrl;
     public final int minAge;
     @NonNull public final List<Currency> currencies;
-    @NonNull public final List<String> residenceState;
-    @NonNull public final List<String> howYouKnowTH;
+    @NonNull public List<String> residenceState;
+    @NonNull public List<String> howYouKnowTH;
 
     public KYCAyondoFormOptionsDTO(
             @JsonProperty("genders") @Nullable List<Gender> genders,
@@ -142,5 +142,23 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
                 ", residenceState=" + residenceState +
                 ", howYouKnowTH=" + howYouKnowTH +
                 '}';
+    }
+
+    @NonNull
+    public List<String> getResidenceState() {
+        return residenceState;
+    }
+
+    public void setResidenceState(@NonNull List<String> residenceState) {
+        this.residenceState = residenceState;
+    }
+
+    @NonNull
+    public List<String> getHowYouKnowTH() {
+        return howYouKnowTH;
+    }
+
+    public void setHowYouKnowTH(@NonNull List<String> howYouKnowTH) {
+        this.howYouKnowTH = howYouKnowTH;
     }
 }

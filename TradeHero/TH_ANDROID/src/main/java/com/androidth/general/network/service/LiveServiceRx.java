@@ -6,6 +6,7 @@ import com.androidth.general.api.kyc.BrokerDocumentUploadResponseDTO;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.StepStatusesDTO;
+import com.androidth.general.api.kyc.ayondo.ProviderQuestionnaireDTO;
 import com.androidth.general.api.kyc.ayondo.UsernameValidationResultDTO;
 import com.androidth.general.api.live.LiveTradingSituationDTO;
 import com.androidth.general.api.kyc.CountryDocumentTypes;
@@ -79,6 +80,11 @@ public interface LiveServiceRx {
     @POST("/kyc/ayondo/scanReference/{providerId}")
     Observable<Response> uploadScanReference(
             @Body JumioVerifyBodyDTO jumioVerifyBodyDTO,
+            @Path("providerId") int providerId
+    );
+
+    @GET("/kyc/ayondo/getAdditionalQuestionnaires/{providerId}")
+    Observable<ArrayList<ProviderQuestionnaireDTO>> getAdditionalQuestionnaires(
             @Path("providerId") int providerId
     );
 }
