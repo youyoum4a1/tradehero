@@ -273,9 +273,9 @@ public class LiveServiceWrapper
         return liveServiceRx.scanJumioResult(scanReferene);
     }
 
-    public Observable<Response> uploadScanReference(JumioVerifyBodyDTO jumioVerifyBodyDTO, String scanReference)
+    public Observable<Response> uploadScanReference(JumioVerifyBodyDTO jumioVerifyBodyDTO, int providerId)
     {
-        return liveServiceRx.uploadScanReference(jumioVerifyBodyDTO, scanReference);
+        return liveServiceRx.uploadScanReference(jumioVerifyBodyDTO, providerId);
     }
 
     @NonNull public static List<Country> createNoBusinessNationalities()

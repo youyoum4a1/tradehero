@@ -105,8 +105,10 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements Date
         }
 
         // Create a new instance of DatePickerDialog and return it
-        DatePickerDialog d = new DatePickerDialog(getActivity(), this, year, month, day);
-        d.getDatePicker().setMaxDate(maxDate.getTime());
+        DatePickerDialog d = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Dialog, this, year, month, day);
+//        d.getDatePicker().setMaxDate(maxDate.getTime());
+//        d.getDatePicker().setSpinnersShown(true);
+        d.getDatePicker().setCalendarViewShown(false);
         return d;
     }
 

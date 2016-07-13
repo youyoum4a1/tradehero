@@ -1203,7 +1203,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         if(dob.length() == 0){
-            Snackbar.make(dob, "Must not be empty", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(dob, "Date of birth must not be empty", Snackbar.LENGTH_LONG).show();
             return false;
         }
         if(!tncCheckbox.isChecked()){
@@ -1261,11 +1261,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     THToast.show(throwable.getMessage());
                     progress.dismiss();
                 });
-    }
-
-    @OnCheckedChanged(R.id.step_1_tnc_checkbox)
-    public void tncCheckboxClicked(CheckBox checkBox) {
-        Log.v(getTag(), "Jeff checkbox "+checkBox.isChecked());
     }
 
     @MainThread

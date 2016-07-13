@@ -56,6 +56,7 @@ public class ContestCenterFragment extends DashboardFragment
     @Bind(R.id.hack_webview) WebView hackWebview;
     List<MultipleCompetitionData> multipleCompetitionDatas = new ArrayList<>();
     SingleCompetitionWebviewData singleCompetitionWebviewData;
+@Inject MainCompetitionFragment mainCompetitionFragment;
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
@@ -111,16 +112,24 @@ public class ContestCenterFragment extends DashboardFragment
         if(providerList != null && providerList.size()==1){
             ProviderDTO providerDTO = providerList.get(0);
             if(providerDTO.isUserEnrolled){
-                Bundle args = new Bundle();
-                MainCompetitionFragment mainCompetitionFragment = new MainCompetitionFragment();
-                mainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
-                OwnedPortfolioId applicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
-                if (applicablePortfolioId != null) {
-                    mainCompetitionFragment.putApplicablePortfolioId(args, applicablePortfolioId);
-                }
-                final FragmentTransaction ft = getFragmentManager().beginTransaction();
-                ft.replace(container.getId(), mainCompetitionFragment);
-                ft.commit();
+//                Bundle args = new Bundle();
+//                mainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
+//                OwnedPortfolioId applicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();
+//                if (applicablePortfolioId != null) {
+//                    mainCompetitionFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+//                }
+//                mainCompetitionFragment.setArguments(args);
+//                final FragmentTransaction ft = getFragmentManager().beginTransaction();
+//                ft.replace(container.getId(), mainCompetitionFragment);
+//                ft.commit();
+
+
+                multipleCompetitionDatas.add(new MultipleCompetitionData(providerDTO.multiImageUrl, providerDTO.isUserEnrolled, providerDTO.id, providerDTO.getProviderId()));
+
+                competitionList.setVisibility(View.VISIBLE);
+                hackWebview.setVisibility(View.INVISIBLE);
+                competitionList.setAdapter(new MultipleCompetitionsAdapter(multipleCompetitionDatas, getContext()));
+
             }
             else{
                 String url = providerUtil.getLandingPage(providerDTO.getProviderId());
