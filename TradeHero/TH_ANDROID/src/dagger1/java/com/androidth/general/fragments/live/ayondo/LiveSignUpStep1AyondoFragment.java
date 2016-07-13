@@ -1244,17 +1244,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             .subscribe(aBoolean -> {
                                 if (aBoolean) {
                                     ProviderListKey key = new ProviderListKey();
-                                    providerListCache.invalidate(key);
-                                    providerListCache.get(key).subscribe(new Action1<android.util.Pair<ProviderListKey, ProviderDTOList>>() {
+                                    providerListCache.fetch(key).subscribe(new Action1<ProviderDTOList>() {
                                         @Override
-                                        public void call(android.util.Pair<ProviderListKey, ProviderDTOList> providerListKeyProviderDTOListPair) {
+                                        public void call(ProviderDTOList providerDTOs) {
+                                            progress.dismiss();
                                             ActivityHelper.launchDashboard(LiveSignUpStep1AyondoFragment.this.getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
                                             THAppsFlyer.sendTrackingWithEvent(LiveSignUpStep1AyondoFragment.this.getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
                                         }
                                     }, throwable -> progress.dismiss());
-//hacky way of doing it, TODO review jeff
-                                    ActivityHelper.launchDashboard(LiveSignUpStep1AyondoFragment.this.getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
-                                    progress.dismiss();
                                 }
                             }, throwable -> progress.dismiss());
                 }, throwable -> {
