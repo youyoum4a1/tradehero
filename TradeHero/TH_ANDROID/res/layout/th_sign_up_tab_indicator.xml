@@ -8,8 +8,11 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/size_4"
     android:textStyle="bold"
+    android:layout_gravity="center"
     android:gravity="center"
+    android:layout_centerInParent="true"
     android:background="@drawable/sign_up_tab_selector"
     android:orientation="vertical"
     tools:text="1"
+    tools:textAlignment="center"
     />
