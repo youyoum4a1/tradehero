@@ -28,6 +28,7 @@ import com.androidth.general.api.kyc.ayondo.AyondoLeadUserIdentityDTO;
 import com.androidth.general.api.kyc.ayondo.DummyAyondoData;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.androidth.general.api.kyc.ayondo.ProviderQuestionnaireDTO;
 import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.api.live.LiveBrokerKnowledge;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
@@ -276,6 +277,11 @@ public class LiveServiceWrapper
     public Observable<Response> uploadScanReference(JumioVerifyBodyDTO jumioVerifyBodyDTO, int providerId)
     {
         return liveServiceRx.uploadScanReference(jumioVerifyBodyDTO, providerId);
+    }
+
+    public Observable<ArrayList<ProviderQuestionnaireDTO>> getAdditionalQuestionnaires(int providerId)
+    {
+        return liveServiceRx.getAdditionalQuestionnaires(providerId);
     }
 
     @NonNull public static List<Country> createNoBusinessNationalities()

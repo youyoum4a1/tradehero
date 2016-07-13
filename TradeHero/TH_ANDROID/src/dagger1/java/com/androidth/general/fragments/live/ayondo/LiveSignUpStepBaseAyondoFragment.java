@@ -104,6 +104,7 @@ abstract public class LiveSignUpStepBaseAyondoFragment extends LiveSignUpStepBas
     @Override public void onDestroyView()
     {
         kycAyondoFormOptionsObservable = null;
+        onDisconnectObservables();
         super.onDestroyView();
     }
 

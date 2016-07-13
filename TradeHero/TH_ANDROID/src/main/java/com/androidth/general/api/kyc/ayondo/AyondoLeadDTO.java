@@ -41,6 +41,7 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
 
     @JsonProperty("IsTestRecord") @Nullable public final Boolean isTestRecord;
     @JsonProperty("WhiteLabel") public final String whiteLabel;
+    @JsonProperty("AdditionalData") public final ProviderQuestionnaireAnswerDto[] additionalData;
 
     public AyondoLeadDTO(KYCAyondoForm kycAyondoForm)
     {
@@ -65,6 +66,7 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
         this.guid = kycAyondoForm.getGuid();
         this.isTestRecord = kycAyondoForm.isTestRecord();
         this.whiteLabel = kycAyondoForm.getWhiteLabel();
+        this.additionalData = kycAyondoForm.getAdditionalData();
     }
 
     @Override public boolean equals(Object o)
@@ -108,6 +110,10 @@ public class AyondoLeadDTO extends AyondoLeadAddressDTO
         }
         if (guid != null ? !guid.equals(that.guid) : that.guid != null) return false;
         if (isTestRecord != null ? !isTestRecord.equals(that.isTestRecord) : that.isTestRecord != null) return false;
+
+        if (additionalData != null ? !additionalData.equals(that.additionalData) : that.additionalData != null) return false;
+
         return !(whiteLabel != null ? !whiteLabel.equals(that.whiteLabel) : that.whiteLabel != null);
+
     }
 }
