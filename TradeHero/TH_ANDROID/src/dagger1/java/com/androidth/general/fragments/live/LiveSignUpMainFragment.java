@@ -71,6 +71,7 @@ public class LiveSignUpMainFragment extends BaseFragment
 
     public static String notificationLogoUrl;
     public static String hexColor;
+    private boolean isEnrolled;
 
     public static void putProviderId(@NonNull Bundle args, int providerId)
     {
@@ -97,6 +98,7 @@ public class LiveSignUpMainFragment extends BaseFragment
             notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
         else notificationLogoUrl = providerDTO.navigationLogoUrl; //I know this is very bad code. I am sorry for that! This was the fastest way I could do it
         //notificationLogoUrl = providerDTO.navigationLogoUrl;
+        isEnrolled = providerDTO.isUserEnrolled;
         hexColor = providerDTO.hexColor;
         setActionBarTitle("");
         setActionBarColor(providerDTO.hexColor);
@@ -117,6 +119,14 @@ public class LiveSignUpMainFragment extends BaseFragment
             });
 
             observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
+
+                if(!isEnrolled){
+                    int height = (int)(actionBar.getHeight()*0.6);
+                    int bitmapHt = bitmap.getHeight();
+                    int bitmapWd = bitmap.getWidth();
+                    int width = height * (bitmapWd / bitmapHt);
+                    bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+                }
                 imageView.setImageBitmap(bitmap);
                 ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
                 actionBar.setCustomView(imageView, layoutParams);

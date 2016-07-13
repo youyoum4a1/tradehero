@@ -93,7 +93,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import rx.Observable;
@@ -423,7 +422,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             }
         });
 
-        //AdapterViewObservable.selects(title).subscribe(KYCAyondoFormFactory::fromTitleEvent);
+        AdapterViewObservable.selects(title).subscribe(KYCAyondoFormFactory::fromTitleEvent);
         //AdapterViewObservable.selects(spinnerNationality).subscribe(KYCAyondoFormFactory::fromNationalityEvent);
         //AdapterViewObservable.selects(spinnerResidency).subscribe(KYCAyondoFormFactory::fromResidencyEvent);
 

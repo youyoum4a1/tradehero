@@ -3,7 +3,6 @@ package com.androidth.general.fragments.live.ayondo;
 import android.support.annotation.NonNull;
 
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
-import com.androidth.general.api.market.Country;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
@@ -20,8 +19,9 @@ public class KYCAyondoFormFactory
         KYCAyondoForm created = new KYCAyondoForm();
         if (titleEvent instanceof OnItemSelectedEvent)
         {
-            Gender newGender = ((GenderDTO) titleEvent.parent.getItemAtPosition(
-                    ((OnItemSelectedEvent) titleEvent).position)).gender;
+            Gender newGender;
+            int pos = ((OnItemSelectedEvent) titleEvent).position;
+            newGender = Gender.values()[pos];
             created.setGender(newGender);
         }
         return created;
