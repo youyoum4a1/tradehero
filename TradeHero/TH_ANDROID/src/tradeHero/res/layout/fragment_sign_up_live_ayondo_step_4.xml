@@ -1,58 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     >
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_alignParentTop="true"
+      android:layout_height="wrap_content">
+    <LinearLayout
+        style="@style/TradeHero.Live.SignUpInnerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        >
 
+      <TextView
+          style="@style/TH.Subhead"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/margin_xsmall"
+          android:gravity="center_horizontal"
+          android:text="@string/postal_address"
+          />
+
+      <com.tradehero.th.widget.KYCAddressWidget
+          android:id="@+id/info_address_pri"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          />
+
+      <TextView
+          android:id="@+id/info_address_sec_title"
+          style="@style/TH.Subhead"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="@dimen/margin_xsmall"
+          android:layout_marginTop="@dimen/margin_xsmall"
+          android:gravity="center_horizontal"
+          android:text="@string/previous_address"
+          android:visibility="gone"
+          tools:visibility="visible"
+          />
+
+      <com.tradehero.th.widget.KYCAddressWidget
+          android:id="@+id/info_address_sec"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="gone"
+          app:showCheckbox="false"
+          tools:visibility="visible"
+          />
+
+
+
+    </LinearLayout>
+  </ScrollView>
   <LinearLayout
       style="@style/TradeHero.Live.SignUpInnerContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:animateLayoutChanges="true"
-      >
-
-    <TextView
-        style="@style/TH.Subhead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_xsmall"
-        android:gravity="center_horizontal"
-        android:text="@string/postal_address"
-        />
-
-    <com.androidth.general.widget.KYCAddressWidget
-        android:id="@+id/info_address_pri"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
-    <TextView
-        android:id="@+id/info_address_sec_title"
-        style="@style/TH.Subhead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_xsmall"
-        android:layout_marginTop="@dimen/margin_xsmall"
-        android:gravity="center_horizontal"
-        android:text="@string/previous_address"
-        android:visibility="gone"
-        tools:visibility="visible"
-        />
-
-    <com.androidth.general.widget.KYCAddressWidget
-        android:id="@+id/info_address_sec"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:showCheckbox="false"
-        tools:visibility="visible"
-        />
-
+      android:layout_alignParentBottom="true">
     <include layout="@layout/live_form_control" />
-
   </LinearLayout>
-
-</ScrollView>
+</RelativeLayout>

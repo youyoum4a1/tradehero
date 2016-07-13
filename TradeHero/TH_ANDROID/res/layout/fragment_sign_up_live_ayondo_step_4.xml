@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
     >
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_alignParentTop="true"
+    android:layout_height="wrap_content">
   <LinearLayout
       style="@style/TradeHero.Live.SignUpInnerContainer"
       android:layout_width="match_parent"
@@ -51,8 +54,15 @@
         tools:visibility="visible"
         />
 
-    <include layout="@layout/live_form_control" />
+
 
   </LinearLayout>
-
 </ScrollView>
+  <LinearLayout
+      style="@style/TradeHero.Live.SignUpInnerContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true">
+    <include layout="@layout/live_form_control" />
+  </LinearLayout>
+</RelativeLayout>

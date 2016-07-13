@@ -202,40 +202,6 @@
 
     </LinearLayout>
 
-    <!--<TextView-->
-        <!--style="@style/TH.Caption"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="start"-->
-        <!--android:layout_marginLeft="4dp"-->
-        <!--android:layout_marginTop="@dimen/margin_xsmall"-->
-        <!--android:text="@string/nationality"-->
-    <!--/>-->
-
-    <!--<Spinner-->
-        <!--android:id="@+id/info_nationality"-->
-        <!--style="@style/TH.Spinner"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="?attr/selectableItemBackground"-->
-    <!--/>-->
-
-    <!--<TextView-->
-        <!--style="@style/TH.Caption"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="start"-->
-        <!--android:layout_marginLeft="4dp"-->
-        <!--android:text="@string/residency"-->
-    <!--/>-->
-
-    <!--<Spinner-->
-        <!--android:id="@+id/info_residency"-->
-        <!--style="@style/TH.Spinner"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="?attr/selectableItemBackground"-->
-    <!--/>-->
 
     <TextView
         style="@style/TH.Caption"
@@ -293,16 +259,7 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/btn_next"
-        style="@style/TH.Button.LiveForm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:text="@string/next"
-        tools:enabled="true"
-        />
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -325,6 +282,16 @@
           android:text="@string/terms_conditions"/>
 
     </RelativeLayout>
+    <Button
+        android:id="@+id/btn_next"
+        style="@style/TH.Button.LiveForm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:text="@string/next"
+        tools:enabled="true"
+        />
 
     <Button
         android:id="@+id/btn_join_competition"

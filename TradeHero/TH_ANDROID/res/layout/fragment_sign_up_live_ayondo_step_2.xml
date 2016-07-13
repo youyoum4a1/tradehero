@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     >
 
-  <LinearLayout
+   <ScrollView
+       android:layout_alignParentTop="true"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+    <LinearLayout
       style="@style/TradeHero.Live.SignUpInnerContainer"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -86,9 +91,18 @@
           android:minHeight="@dimen/clickable_element_min_dimen"
           android:text="@string/employment_regulated_by_authority_ayondo"
           />
+    </LinearLayout>
+   </ScrollView>
 
-      <include layout="@layout/live_form_control" />
 
-  </LinearLayout>
+    <LinearLayout
+        style="@style/TradeHero.Live.SignUpInnerContainer"
+          android:layout_alignParentBottom="true"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+            <include layout="@layout/live_form_control" />
+      </LinearLayout>
 
-</ScrollView>
+
+</RelativeLayout>

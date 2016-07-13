@@ -1,96 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+
     >
 
-  <LinearLayout
-      style="@style/TradeHero.Live.SignUpInnerContainer"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      >
+    <ScrollView
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            style="@style/TradeHero.Live.SignUpInnerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
 
-      <TextView
-          style="@style/TH.Subhead"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/margin_xsmall"
-          android:gravity="center_horizontal"
-          android:text="@string/income_and_employment"
-          />
+            <TextView
+                style="@style/TH.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xsmall"
+                android:gravity="center_horizontal"
+                android:text="@string/income_and_employment"
+                />
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="left"
-          style="@style/TH.Caption"
-          android:text="@string/annual_income"
-          />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                style="@style/TH.Caption"
+                android:text="@string/annual_income"
+                />
 
-      <Spinner
-          android:id="@+id/info_annual_income"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/clickable_element_min_dimen"
-          style="@style/TH.Spinner"
-          />
+            <Spinner
+                android:id="@+id/info_annual_income"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/clickable_element_min_dimen"
+                style="@style/TH.Spinner"
+                />
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="left"
-          style="@style/TH.Caption"
-          android:text="@string/net_worth"
-          />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                style="@style/TH.Caption"
+                android:text="@string/net_worth"
+                />
 
-      <Spinner
-          android:id="@+id/info_net_worth"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/clickable_element_min_dimen"
-          style="@style/TH.Spinner"
-          />
+            <Spinner
+                android:id="@+id/info_net_worth"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/clickable_element_min_dimen"
+                style="@style/TH.Spinner"
+                />
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="left"
-          style="@style/TH.Caption"
-          android:text="@string/percent_for_investment"
-          />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                style="@style/TH.Caption"
+                android:text="@string/percent_for_investment"
+                />
 
-      <Spinner
-          android:id="@+id/info_percent_for_investment"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/clickable_element_min_dimen"
-          style="@style/TH.Spinner"
-          />
+            <Spinner
+                android:id="@+id/info_percent_for_investment"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/clickable_element_min_dimen"
+                style="@style/TH.Spinner"
+                />
 
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="left"
-          style="@style/TH.Caption"
-          android:text="@string/employment_status"
-          />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                style="@style/TH.Caption"
+                android:text="@string/employment_status"
+                />
 
-      <Spinner
-          android:id="@+id/info_employment_status"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/clickable_element_min_dimen"
-          style="@style/TH.Spinner"
-          />
+            <Spinner
+                android:id="@+id/info_employment_status"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/clickable_element_min_dimen"
+                style="@style/TH.Spinner"
+                />
 
-      <CheckBox
-          android:id="@+id/employer_regulated_financial"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/employment_regulated_by_authority_ayondo"
-          />
+            <CheckBox
+                android:id="@+id/employer_regulated_financial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/clickable_element_min_dimen"
+                android:text="@string/employment_regulated_by_authority_ayondo"
+                />
+        </LinearLayout>
+    </ScrollView>
 
-      <include layout="@layout/live_form_control" />
 
-  </LinearLayout>
+    <LinearLayout
+        style="@style/TradeHero.Live.SignUpInnerContainer"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <include layout="@layout/live_form_control" />
+    </LinearLayout>
 
-</ScrollView>
+
+</RelativeLayout>
