@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+  <RelativeLayout
+      android:id="@+id/page_control_buttons"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:paddingLeft="@dimen/margin_small"
+      android:paddingRight="@dimen/margin_small"
+      android:paddingBottom="@dimen/margin_small">
+    <Button
+        android:id="@+id/btn_next"
+        style="@style/TH.Button.LiveForm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|right"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:text="@string/next"
+        tools:enabled="true"
+        />
 
+    <Button
+        android:id="@+id/btn_join_competition"
+        style="@style/TH.Button.LiveForm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:text="@string/join_competition"
+        tools:enabled="true"
+        />
+  </RelativeLayout>
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_above="@id/page_control_buttons"
+      android:isScrollContainer="false" >
   <LinearLayout
       style="@style/TradeHero.Live.SignUpInnerContainer"
       android:layout_width="match_parent"
@@ -282,28 +316,7 @@
           android:text="@string/terms_conditions"/>
 
     </RelativeLayout>
-    <Button
-        android:id="@+id/btn_next"
-        style="@style/TH.Button.LiveForm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:text="@string/next"
-        tools:enabled="true"
-        />
-
-    <Button
-        android:id="@+id/btn_join_competition"
-        style="@style/TH.Button.LiveForm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/margin_medium"
-        android:text="@string/join_competition"
-        tools:enabled="true"
-    />
-
   </LinearLayout>
+  </ScrollView>
 
-</ScrollView>
+</RelativeLayout>

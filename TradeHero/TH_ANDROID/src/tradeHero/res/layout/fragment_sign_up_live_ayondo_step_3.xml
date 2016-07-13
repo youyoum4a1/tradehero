@@ -4,9 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+    <LinearLayout
+        android:id="@+id/page_control_buttons"
+        style="@style/TradeHero.Live.SignUpInnerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <include layout="@layout/live_form_control"
+            />
+    </LinearLayout>
     <ScrollView
+        android:layout_above="@id/page_control_buttons"
         android:layout_width="match_parent"
         android:layout_alignParentTop="true"
+        android:isScrollContainer="false"
         android:layout_height="wrap_content">
         <LinearLayout
             style="@style/TradeHero.Live.SignUpInnerContainer"
@@ -96,13 +107,6 @@
 
         </LinearLayout>
     </ScrollView>
-    <LinearLayout
-        style="@style/TradeHero.Live.SignUpInnerContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-        <include layout="@layout/live_form_control"
-            />
-    </LinearLayout>
+
 
 </RelativeLayout>

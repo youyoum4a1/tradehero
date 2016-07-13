@@ -5,10 +5,60 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-
-    <ScrollView
+    <RelativeLayout
+        android:id="@+id/page_control_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/margin_small"
+        android:paddingRight="@dimen/margin_small"
+        android:paddingBottom="@dimen/margin_small"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom">
+        <Button
+            android:id="@+id/btn_prev"
+            style="@style/TH.Button.LiveForm.Previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:enabled="true"
+            android:text="@string/previous"
+            />
+
+        <LinearLayout
+            android:id="@+id/btn_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/clickable_element_min_dimen"
+            android:paddingLeft="@dimen/margin_small"
+            android:paddingRight="@dimen/margin_small"
+            android:background="@drawable/basic_green_selector"
+            android:orientation="vertical"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TH.Caption.Inverse"
+                android:text="@string/submit_form_top"/>
+
+            <TextView
+                style="@style/TH.Button.Inverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/submit_form"
+                tools:enabled="true"
+                />
+
+        </LinearLayout>
+    </RelativeLayout>
+    <ScrollView
+        android:layout_above="@id/page_control_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:isScrollContainer="false"
         android:layout_alignParentTop="true">
         <LinearLayout
             style="@style/TradeHero.Live.SignUpInnerContainer"
@@ -231,53 +281,5 @@
                 />
         </LinearLayout>
     </ScrollView>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/margin_small"
-        android:paddingRight="@dimen/margin_small"
-        android:paddingBottom="@dimen/margin_small"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom">
-        <Button
-            android:id="@+id/btn_prev"
-            style="@style/TH.Button.LiveForm.Previous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:enabled="true"
-            android:text="@string/previous"
-            />
-
-        <LinearLayout
-            android:id="@+id/btn_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minHeight="@dimen/clickable_element_min_dimen"
-            android:paddingLeft="@dimen/margin_small"
-            android:paddingRight="@dimen/margin_small"
-            android:background="@drawable/basic_green_selector"
-            android:orientation="vertical"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/TH.Caption.Inverse"
-                android:text="@string/submit_form_top"/>
-
-            <TextView
-                style="@style/TH.Button.Inverse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/submit_form"
-                tools:enabled="true"
-                />
-
-        </LinearLayout>
-    </RelativeLayout>
 
 </RelativeLayout>

@@ -93,7 +93,9 @@ public class LiveSignUpMainFragment extends BaseFragment
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.settings_menu, menu);
         ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
-        notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl; //I know this is very bad code. I am sorry for that! This was the fastest way I could do it
+        if(providerDTO.isUserEnrolled)
+            notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
+        else notificationLogoUrl = providerDTO.navigationLogoUrl; //I know this is very bad code. I am sorry for that! This was the fastest way I could do it
         //notificationLogoUrl = providerDTO.navigationLogoUrl;
         hexColor = providerDTO.hexColor;
         setActionBarTitle("");

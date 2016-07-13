@@ -6,9 +6,19 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     >
+  <LinearLayout
+      android:id="@+id/page_control_buttons"
+      style="@style/TradeHero.Live.SignUpInnerContainer"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true">
+    <include layout="@layout/live_form_control" />
+  </LinearLayout>
   <ScrollView
       android:layout_width="match_parent"
       android:layout_alignParentTop="true"
+      android:isScrollContainer="false"
+      android:layout_above="@id/page_control_buttons"
       android:layout_height="wrap_content">
     <LinearLayout
         style="@style/TradeHero.Live.SignUpInnerContainer"
@@ -26,7 +36,7 @@
           android:text="@string/postal_address"
           />
 
-      <com.tradehero.th.widget.KYCAddressWidget
+      <com.androidth.general.widget.KYCAddressWidget
           android:id="@+id/info_address_pri"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -45,7 +55,7 @@
           tools:visibility="visible"
           />
 
-      <com.tradehero.th.widget.KYCAddressWidget
+      <com.androidth.general.widget.KYCAddressWidget
           android:id="@+id/info_address_sec"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -58,11 +68,5 @@
 
     </LinearLayout>
   </ScrollView>
-  <LinearLayout
-      style="@style/TradeHero.Live.SignUpInnerContainer"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true">
-    <include layout="@layout/live_form_control" />
-  </LinearLayout>
+
 </RelativeLayout>
