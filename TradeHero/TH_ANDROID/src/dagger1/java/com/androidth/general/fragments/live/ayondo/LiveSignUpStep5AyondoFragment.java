@@ -117,6 +117,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private ProgressDialog progressDialog;
     @Inject FastFillUtil fastFillUtil;
     private boolean hasUploadedJumio = false;
+    private int providerId = 0;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -128,6 +129,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
         ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
+        providerId = providerDTO.id;
+
         List<Subscription> subscriptions = new ArrayList<>();
         final Observable<ScannedDocument> documentObservable =
                 fastFillUtil.getScannedDocumentObservable().throttleLast(300, TimeUnit.MILLISECONDS); //HACK
@@ -980,7 +983,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private void updateLayoutFromJumio(String dataType, String scanRef){
         JumioVerifyBodyDTO jumioDTO = new JumioVerifyBodyDTO(dataType, scanRef);
 
-        liveServiceWrapper.uploadScanReference(jumioDTO, scanRef).subscribe(new Subscriber<Response>() {
+Log.v(getTag(), "Provider id: "+providerId);
+        liveServiceWrapper.uploadScanReference(jumioDTO, providerId).subscribe(new Subscriber<Response>() {
             @Override
             public void onCompleted() {
                 Log.v(getTag(), "Scan ref: "+dataType+":"+scanRef);
@@ -989,7 +993,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @Override
             public void onError(Throwable e) {
                 Log.v(getTag(), "Onerror Scan ref: "+dataType+":"+scanRef);
-//                        THToast.show("Upload document failed");
+                THToast.show("Upload document failed");
             }
 
             @Override
