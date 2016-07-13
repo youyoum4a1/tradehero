@@ -1263,11 +1263,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 });
     }
 
-    @OnCheckedChanged(R.id.step_1_tnc_checkbox)
-    public void tncCheckboxClicked(CheckBox checkBox) {
-        Log.v(getTag(), "Jeff checkbox "+checkBox.isChecked());
-    }
-
     @MainThread
     public void updateEmailVerification(String emailAddress, String errorMessage, boolean isSuccess){
         getActivity().runOnUiThread(new Runnable() {
