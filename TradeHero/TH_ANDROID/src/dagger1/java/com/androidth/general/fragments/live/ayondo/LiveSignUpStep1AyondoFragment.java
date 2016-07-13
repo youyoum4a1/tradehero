@@ -242,7 +242,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (providerIdInt != 0) {
             this.providerId = new ProviderId(providerIdInt);
 
-            providerCache.get(providerId).subscribe(providerIdProviderDTOPair -> {
+            Subscription subscription = providerCache.get(providerId).subscribe(providerIdProviderDTOPair -> {
                 ProviderDTO providerDTO = providerIdProviderDTOPair.second;
 
                 if (providerDTO != null) {
@@ -264,6 +264,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 }
             });
+            onDestroySubscriptions.add(subscription);
         }
 
         loadingFieldProgressDialog = new ProgressDialog(getContext());
