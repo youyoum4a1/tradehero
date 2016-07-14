@@ -215,6 +215,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             if (navigator != null)
             {
                 navigator.get().pushFragment(BaseWebViewFragment.class, args);
+
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+
             }
         });
 
@@ -1134,6 +1138,7 @@ dismissLocalProgressDialog();
             }
 
             VerifyPhoneDialogFragment.show(REQUEST_VERIFY_PHONE_NUMBER_CODE, this, phoneCountryCode, phoneNumberInt, expectedCode);
+
             //buttonVerifyPhone.setText(R.string.enter_code);
             //buttonVerifyPhone.setBackgroundResource(R.drawable.basic_red_selector);
         }
