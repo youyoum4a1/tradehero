@@ -96,7 +96,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import rx.Observable;
@@ -334,7 +333,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                     return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                 }).subscribe(this::onNext);
+        AdapterViewObservable.selects(title).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
+            public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                KYCAyondoForm updated = KYCAyondoFormFactory.fromTitleEvent(onSelectedEvent);
 
+                return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+            }
+        }).subscribe(this::onNext);
         AdapterViewObservable.selects(spinnerPhoneCountryCode).withLatestFrom(liveBrokerSituationDTOObservable,
                 new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
                 {
@@ -437,7 +442,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             }
         });
 
-        //AdapterViewObservable.selects(title).subscribe(KYCAyondoFormFactory::fromTitleEvent);
+
         //AdapterViewObservable.selects(spinnerNationality).subscribe(KYCAyondoFormFactory::fromNationalityEvent);
         //AdapterViewObservable.selects(spinnerResidency).subscribe(KYCAyondoFormFactory::fromResidencyEvent);
 
