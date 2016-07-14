@@ -1323,18 +1323,20 @@ dismissLocalProgressDialog();
 //                                                }
 //                                            });
 //                                        }
+                                    //                                    }, throwable -> progress.dismiss());
+
                                     ProviderDTOList dtoList = providerListCache.getCachedValue(key);
                                     for (ProviderDTO dto : dtoList) {
 
                                         if (dto.id == providerId.key) {
                                             dto.isUserEnrolled = true;
+                                            break;
                                         }
                                     }
                                     progress.dismiss();
                                     ActivityHelper.launchDashboard(LiveSignUpStep1AyondoFragment.this.getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
                                     THAppsFlyer.sendTrackingWithEvent(LiveSignUpStep1AyondoFragment.this.getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
                                 }
-//                                    }, throwable -> progress.dismiss());
 
                             }, throwable -> progress.dismiss());
                 }, throwable -> {
