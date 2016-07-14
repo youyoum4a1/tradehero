@@ -262,7 +262,7 @@ public class DashboardActivity extends BaseActivity
     {
         try
         {
-            getWindow().getDecorView().findViewById(R.id.drawer_bg_image).setBackgroundResource(R.drawable.login_bg_1);
+            getWindow().getDecorView().findViewById(R.id.drawer_bg_image).setBackgroundResource(R.drawable.sidemenubg3);
         } catch (Throwable e)
         {
             Timber.e(e, "Failed to set drawer background");

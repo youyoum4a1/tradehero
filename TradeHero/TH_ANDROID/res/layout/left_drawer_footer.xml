@@ -15,7 +15,8 @@
       android:layout_height="wrap_content"
       android:text="@string/left_drawer_footer_title"
       android:alpha="1.0"
-      style="@style/TH.Caption.Inverse"
+      android:textColor="#333333"
+      style="@style/TH.Caption"
       android:textSize="@dimen/text_xxsmall"
       android:layout_marginLeft="@dimen/activity_horizontal_margin"
       android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -27,6 +28,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:layout_gravity="center_horizontal"
+        android:tint="#333333"
         >
 
       <ImageView
@@ -34,6 +36,7 @@
           android:layout_height="wrap_content"
           style="@style/TH.ContentPartnersLogo"
           android:src="@drawable/logo_tmf_white"
+          android:tint="#333333"
           />
 
       <ImageView
@@ -41,6 +44,7 @@
           android:layout_height="wrap_content"
           style="@style/TH.ContentPartnersLogo"
           android:src="@drawable/logo_seeking_alpha_white"
+          android:tint="#333333"
           />
 
       <ImageView
@@ -48,6 +52,7 @@
           android:layout_height="wrap_content"
           style="@style/TH.ContentPartnersLogo"
           android:src="@drawable/logo_yahoo_white"
+          android:tint="#333333"
           />
 
       <ImageView
@@ -55,6 +60,7 @@
           android:layout_height="wrap_content"
           style="@style/TH.ContentPartnersLogo"
           android:src="@drawable/logo_repustate_white"
+          android:tint="#333333"
           />
 
       <ImageView
@@ -62,6 +68,7 @@
           android:layout_height="wrap_content"
           style="@style/TH.ContentPartnersLogo"
           android:src="@drawable/logo_google_white"
+          android:tint="#333333"
           />
 
     </LinearLayout>
