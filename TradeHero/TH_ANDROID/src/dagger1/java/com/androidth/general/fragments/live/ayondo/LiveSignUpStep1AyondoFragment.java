@@ -114,13 +114,13 @@ import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import timber.log.Timber;
 
-@Routable({
-        "enrollchallenge/:providerId"
-})
+//@Routable({
+//        "enrollchallenge/:providerId"
+//})
 public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
     @RouteProperty("providerId") protected Integer enrollProviderId;
-    @Inject THRouter thRouter;
+//    @Inject THRouter thRouter;
     @Inject KycServicesRx kycServices;
     @Inject ProviderUtil providerUtil;
     private static final int PHONE_NUM_MIN_LENGTH = 7;
@@ -183,7 +183,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onCreate(savedInstanceState);
 
-        thRouter.inject(this);
+//        thRouter.inject(this);
         verifiedPublishSubject = PublishSubject.create();
         verifiedPublishEmail = PublishSubject.create();
         if (savedInstanceState != null)
