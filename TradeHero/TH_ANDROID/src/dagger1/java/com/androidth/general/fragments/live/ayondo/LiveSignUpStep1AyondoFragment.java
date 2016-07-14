@@ -268,16 +268,22 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             onDestroySubscriptions.add(subscription);
         }
 
-        loadingFieldProgressDialog = new ProgressDialog(getContext());
-        loadingFieldProgressDialog.setMessage("Loading fields");
-//        loadingFieldProgressDialog.setCancelable(false);
-//        loadingFieldProgressDialog.show();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadingFieldProgressDialog = new ProgressDialog(getContext());
+                loadingFieldProgressDialog.setMessage("Loading fields");
+                loadingFieldProgressDialog.setCancelable(false);
+                loadingFieldProgressDialog.show();
+            }
+        });
     }
 
     @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
             final Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable,
             Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
+
         List<Subscription> subscriptions = new ArrayList<>();
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getContext(),R.array.live_title_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -548,12 +554,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             populateGender((KYCAyondoForm) latestDTO.kycForm, options.genders);
                             populateMobileCountryCode((KYCAyondoForm) latestDTO.kycForm, currentUserProfile,
                                     options.allowedMobilePhoneCountryDTOs);
-                            populateNationality((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
-                            populateResidency((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
+//                            populateNationality((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedNationalityCountryDTOs);
+//                            populateResidency((KYCAyondoForm) latestDTO.kycForm, currentUserProfile, options.allowedResidencyCountryDTOs);
 
-//                            dismissLocalProgressDialog();
                         }
 
+dismissLocalProgressDialog();
                         return latestDTO;
                     }
                 })
@@ -801,7 +807,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @MainThread
     private void dismissLocalProgressDialog() {
-        loadingFieldProgressDialog.dismiss();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.v(getTag(), "Jeff loading dialog dismiss");
+                loadingFieldProgressDialog.dismiss();
+            }
+        });
     }
 
     private boolean isValidPhoneNumber(PhoneNumberDTO phoneNumberDTO)
@@ -886,6 +898,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             dob.setText(dobText);
         }
+
+        dismissLocalProgressDialog();
     }
 
     @MainThread
@@ -1181,9 +1195,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     verifiedPublishEmail.onNext(verifiedEmail);
                 }
                 updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), null, true);
-                if(hasClickedJoinButton){
-                    onClickedJoinButton();
-                }
             }
         }
     }
@@ -1297,15 +1308,34 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             .subscribe(aBoolean -> {
                                 if (aBoolean) {
                                     ProviderListKey key = new ProviderListKey();
-                                    providerListCache.fetch(key).subscribe(new Action1<ProviderDTOList>() {
-                                        @Override
-                                        public void call(ProviderDTOList providerDTOs) {
-                                            progress.dismiss();
-                                            ActivityHelper.launchDashboard(LiveSignUpStep1AyondoFragment.this.getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
-                                            THAppsFlyer.sendTrackingWithEvent(LiveSignUpStep1AyondoFragment.this.getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
+//                                    providerListCache.fetch(key).subscribe(new Action1<ProviderDTOList>() {
+//                                        @Override
+//                                        public void call(ProviderDTOList providerDTOs) {
+//                                            Log.v(getTag(), "Dismissing for launchboard1");
+//                                            getActivity().runOnUiThread(new Runnable() {
+//                                                @Override
+//                                                public void run() {
+//                                                    //run on main thread to make sure, as loading takes too long for unknown reason -Jeff
+//                                                    Log.v(getTag(), "Dismissing for launchboard");
+//                                                    progress.dismiss();
+//                                                    ActivityHelper.launchDashboard(LiveSignUpStep1AyondoFragment.this.getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
+//                                                    THAppsFlyer.sendTrackingWithEvent(LiveSignUpStep1AyondoFragment.this.getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
+//                                                }
+//                                            });
+//                                        }
+                                    ProviderDTOList dtoList = providerListCache.getCachedValue(key);
+                                    for (ProviderDTO dto : dtoList) {
+
+                                        if (dto.id == providerId.key) {
+                                            dto.isUserEnrolled = true;
                                         }
-                                    }, throwable -> progress.dismiss());
+                                    }
+                                    progress.dismiss();
+                                    ActivityHelper.launchDashboard(LiveSignUpStep1AyondoFragment.this.getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
+                                    THAppsFlyer.sendTrackingWithEvent(LiveSignUpStep1AyondoFragment.this.getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
                                 }
+//                                    }, throwable -> progress.dismiss());
+
                             }, throwable -> progress.dismiss());
                 }, throwable -> {
                     THToast.show(throwable.getMessage());
@@ -1328,6 +1358,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 if(isSuccess){
                     emailVerifybutton.setState(VerifyButtonState.FINISH);
                     verifiedPublishEmail.onNext(emailAddress);
+
+                    if(hasClickedJoinButton){
+                        onClickedJoinButton();
+                    }
                 }else{
                     if(errorMessage!=null){
                         email.setError(errorMessage, noErrorIconDrawable);
