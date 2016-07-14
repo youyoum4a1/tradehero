@@ -29,6 +29,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/live_reward_widget"
+      android:background="@color/white"
       tools:background="@color/background_material_light"
       />
 </RelativeLayout>
