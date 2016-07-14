@@ -1,6 +1,7 @@
 package com.androidth.general.fragments.live;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -14,6 +15,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -252,6 +255,24 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
                             }
                         })
         );
+
+        requestFocusShowKeyboard();
+    }
+
+    private void requestFocusShowKeyboard() {
+        EditText editText = codeViews[0];
+        editText.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(editText.requestFocus()){
+                    getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+                }
+            }
+        }, 100);
+
     }
 
     protected Subscription createSMSSubscription()
