@@ -566,7 +566,7 @@
       parent="TH.LeftDrawerMenu">
     <item name="android:layout_width">@dimen/size_3</item>
     <item name="android:layout_height">@dimen/size_3</item>
-    <item name="android:tint">#333333</item>
+    <item name="android:tint">@color/thV5Gray</item>
     <item name="android:scaleType">fitCenter</item>
   </style>
 

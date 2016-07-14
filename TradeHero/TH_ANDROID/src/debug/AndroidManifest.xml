@@ -5,7 +5,7 @@
     >
 
   <application
-      android:icon="@drawable/notification_logo"
+      android:icon="@drawable/v5_icon"
       android:label="@string/app_name_dev"
       tools:replace="android:icon,android:label">
 
