@@ -252,10 +252,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         if(providerDTO.isUserEnrolled){
                             btnNext.setVisibility(View.VISIBLE);
                             joinCompetitionButton.setVisibility(View.GONE);
+                            termsCond.setVisibility(View.GONE);
+                            tncCheckbox.setVisibility(View.GONE);
                         }else{
                             btnNext.setVisibility(View.GONE);
                             joinCompetitionButton.setVisibility(View.VISIBLE);
                             joinCompetitionButton.setEnabled(true);
+                            termsCond.setVisibility(View.VISIBLE);
+                            tncCheckbox.setVisibility(View.VISIBLE);
                         }
                     }
 
@@ -273,7 +277,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             public void run() {
                 loadingFieldProgressDialog = new ProgressDialog(getContext());
                 loadingFieldProgressDialog.setMessage("Loading fields");
-                loadingFieldProgressDialog.setCancelable(false);
+//                loadingFieldProgressDialog.setCancelable(false);
                 loadingFieldProgressDialog.show();
             }
         });
