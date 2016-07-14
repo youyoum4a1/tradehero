@@ -2,8 +2,6 @@ package com.androidth.general.api.kyc.ayondo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Objects;
-
 /**
  * Created by jeffgan on 13/7/16.
  */
@@ -16,12 +14,15 @@ public class ProviderQuestionnaireAnswerDto {
     public String question;
 
     @JsonProperty("answer")
-    public String accountNumber;
+    public String answer;
 
-    public ProviderQuestionnaireAnswerDto(int id, String question, String accountNumber) {
+    public ProviderQuestionnaireAnswerDto(@JsonProperty("answer")String answer, @JsonProperty("Id")int id, @JsonProperty("question") String question) {
         this.id = id;
         this.question = question;
-        this.accountNumber = accountNumber;
+        this.answer = answer;
+    }
+    public ProviderQuestionnaireAnswerDto(){
+
     }
 
     public int getId() {
@@ -40,12 +41,12 @@ public class ProviderQuestionnaireAnswerDto {
         this.question = question;
     }
 
-    public String getAccountNumber() {
-        return accountNumber;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     @Override
@@ -55,6 +56,6 @@ public class ProviderQuestionnaireAnswerDto {
         ProviderQuestionnaireAnswerDto that = (ProviderQuestionnaireAnswerDto) o;
         return id == that.id &&
                 question.equals(that.question) &&
-                question.equals(that.accountNumber);
+                question.equals(that.answer);
     }
 }

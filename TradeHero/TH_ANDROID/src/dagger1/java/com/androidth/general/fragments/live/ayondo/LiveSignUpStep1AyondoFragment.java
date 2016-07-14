@@ -42,6 +42,7 @@ import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.PhoneNumberVerifiedStatusDTO;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.androidth.general.api.kyc.ayondo.ProviderQuestionnaireAnswerDto;
 import com.androidth.general.api.kyc.ayondo.ProviderQuestionnaireDTO;
 import com.androidth.general.api.live.CountryUtil;
 import com.androidth.general.api.live.LiveBrokerDTO;
@@ -83,6 +84,7 @@ import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -144,9 +146,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.info_dob) TextView dob;
     @Bind(R.id.step_1_tnc_checkbox) CheckBox tncCheckbox;
     @Bind(R.id.step_1_tnc) TextView termsCond;
-    //@Bind(R.id.btn_verify_phone) TextView buttonVerifyPhone;
-    //@Bind(R.id.info_nationality) Spinner spinnerNationality;
-    //@Bind(R.id.info_residency) Spinner spinnerResidency;
 
     @Bind(R.id.email_verify_button) KYCVerifyButton emailVerifybutton;
     @Bind(R.id.nric_verify_button) KYCVerifyButton nricVerifyButton;
@@ -176,6 +175,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private VerifyEmailDialogFragment vedf;
     private boolean hasClickedJoinButton = false;
 
+    Observable<ArrayList<ProviderQuestionnaireDTO>> proQuesList;
+
     HubProxy proxy;
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -201,6 +202,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+
         return inflater.inflate(R.layout.fragment_sign_up_live_ayondo_step_1, container, false);
     }
 
@@ -270,15 +272,41 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
         loadingFieldProgressDialog = new ProgressDialog(getContext());
         loadingFieldProgressDialog.setMessage("Loading fields");
-//        loadingFieldProgressDialog.setCancelable(false);
-//        loadingFieldProgressDialog.show();
-    }
 
+
+    }
+    private List<String> cityLists = new ArrayList<>();
+    private List<String> howYouKnowThLists = new ArrayList<>();
+    LollipopArrayAdapter<String> howYouKnowTHAdapter;
+    LollipopArrayAdapter<String> cityListAdapter;
+    ArrayList<ProviderQuestionnaireDTO> providerQuestionnaireDTOz;
+    ProviderQuestionnaireAnswerDto[] proQueAns = new ProviderQuestionnaireAnswerDto[2];
     @Override protected List<Subscription> onInitAyondoSubscription(Observable<LiveBrokerDTO> brokerDTOObservable,
             final Observable<LiveBrokerSituationDTO> liveBrokerSituationDTOObservable,
             Observable<KYCAyondoFormOptionsDTO> kycAyondoFormOptionsDTOObservable)
     {
         List<Subscription> subscriptions = new ArrayList<>();
+        providerIdInt = getProviderId(getArguments());
+        proQuesList = liveServiceWrapper.getAdditionalQuestionnaires(providerIdInt);
+        proQuesList.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<ArrayList<ProviderQuestionnaireDTO>>() {
+            @Override
+            public void call(ArrayList<ProviderQuestionnaireDTO> providerQuestionnaireDTOs) {
+                providerQuestionnaireDTOz = providerQuestionnaireDTOs;
+                String cList = providerQuestionnaireDTOs.get(0).values;
+                String howUKnoTh = providerQuestionnaireDTOs.get(1).values;
+                String delimeter = "\\|";
+                cityLists = Arrays.asList(cList.split(delimeter));
+                howYouKnowThLists = Arrays.asList(howUKnoTh.split(delimeter));
+
+                howYouKnowTHAdapter = new LollipopArrayAdapter<>(getActivity(), howYouKnowThLists);
+                cityListAdapter = new LollipopArrayAdapter<>(getActivity(), cityLists);
+
+                spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
+                spinnerResidenceState.setAdapter(cityListAdapter);
+                spinnerHowYouKnowTH.setEnabled(!howYouKnowTHAdapter.isEmpty());
+                spinnerResidenceState.setEnabled(!cityListAdapter.isEmpty());
+            }
+        });
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getContext(),R.array.live_title_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         title.setAdapter(adapter);
@@ -340,6 +368,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
             }
         }).subscribe(this::onNext);
+        /*AdapterViewObservable.selects(spinnerHowYouKnowTH).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
+            public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                KYCAyondoForm updated = KYCAyondoFormFactory.fromHowYouKnowTHEvent(onSelectedEvent);
+                return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+            }
+        }).subscribe(this::onNext);*/
         AdapterViewObservable.selects(spinnerPhoneCountryCode).withLatestFrom(liveBrokerSituationDTOObservable,
                 new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
                 {
@@ -349,6 +383,28 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                     }
                 }).subscribe(this::onNext);
+
+        AdapterViewObservable.selects(spinnerHowYouKnowTH).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
+            public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                ProviderQuestionnaireDTO proQuesDto = providerQuestionnaireDTOz.get(1);
+                Object selectedResidency = onSelectedEvent.parent.getItemAtPosition(((OnItemSelectedEvent) onSelectedEvent).position);
+                proQueAns[1] = new ProviderQuestionnaireAnswerDto(selectedResidency.toString(),proQuesDto.id, proQuesDto.question );
+                KYCAyondoForm updated = KYCAyondoFormFactory.additionalDataEvent(proQueAns);
+                return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+
+            }
+        }).subscribe(this::onNext);
+
+        AdapterViewObservable.selects(spinnerResidenceState).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
+            public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                ProviderQuestionnaireDTO proQuesDto = providerQuestionnaireDTOz.get(0);
+                Object selectedResidency = onSelectedEvent.parent.getItemAtPosition(((OnItemSelectedEvent) onSelectedEvent).position);
+                proQueAns[0] = new ProviderQuestionnaireAnswerDto(selectedResidency.toString(),proQuesDto.id, proQuesDto.question );
+                KYCAyondoForm updated = KYCAyondoFormFactory.additionalDataEvent(proQueAns);
+                return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+
+            }
+        }).subscribe(this::onNext);
 
 
         // clicks observable
@@ -371,8 +427,21 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 ProgressDialog progress = new ProgressDialog(getContext());
                                 progress.setMessage("Verifying NRIC...");
                                 progress.show();
+                                String str = "";
+                                if(form.getNationality()==null){
+                                    str = "MY";
+                                }
+                                else {
+                                   try {
+                                       str = form.getNationality().getAlpha2();
+                                   }
+                                   catch (Exception e){
 
-                                liveServiceWrapper.documentsForCountry(form.getNationality().getAlpha2()).subscribe(
+                                   }
+
+                                }
+
+                                liveServiceWrapper.documentsForCountry(str).subscribe(
                                         countryDocumentTypes -> {
                                             // possible have multiple items, currently UI is hardcoded for NRIC, I(James) still not sure how to handle this things because the form is not totally dynamic...
                                             // need to thing some ways to handle all the cases and make it dynamic.
@@ -488,10 +557,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 //spinnerNationality.setAdapter(nationalityAdapter);
                                 //spinnerNationality.setEnabled(options.allowedNationalityCountryDTOs.size() > 1);
 
-                                LollipopArrayAdapter<String> residenceStateAdapter = new LollipopArrayAdapter<>(
+                                /*LollipopArrayAdapter<String> residenceStateAdapter = new LollipopArrayAdapter<>(
                                         getActivity(), options.residenceStateList);
                                 spinnerResidenceState.setAdapter(residenceStateAdapter);
-                                spinnerResidenceState.setEnabled(options.residenceStateList.size() > 1);
+                                spinnerResidenceState.setEnabled(options.residenceStateList.size() > 1);*/
 
 //                                liveServiceWrapper.getAdditionalQuestionnaires(providerIdInt).subscribe(new Action1<ArrayList<ProviderQuestionnaireDTO>>() {
 //                                    @Override
@@ -504,10 +573,10 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 //                                });
 
 
-                                LollipopArrayAdapter<String> howYouKnowTHAdapter = new LollipopArrayAdapter<>(
+                                /*LollipopArrayAdapter<String> howYouKnowTHAdapter = new LollipopArrayAdapter<>(
                                         getActivity(), options.howYouKnowTHList);
                                 spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
-                                spinnerHowYouKnowTH.setEnabled(options.howYouKnowTHList.size() > 1);
+                                spinnerHowYouKnowTH.setEnabled(options.howYouKnowTHList.size() > 1);*/
                             }
                         }),
                 userProfileCache.getOne(currentUserId.toUserBaseKey())
@@ -1312,6 +1381,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     progress.dismiss();
                 });
     }
+
 
     @MainThread
     public void updateEmailVerification(String emailAddress, String errorMessage, boolean isSuccess){

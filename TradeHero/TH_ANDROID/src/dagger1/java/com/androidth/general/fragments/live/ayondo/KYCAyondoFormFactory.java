@@ -3,6 +3,7 @@ package com.androidth.general.fragments.live.ayondo;
 import android.support.annotation.NonNull;
 
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
+import com.androidth.general.api.kyc.ayondo.ProviderQuestionnaireAnswerDto;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.models.fastfill.Gender;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
@@ -14,6 +15,7 @@ import rx.android.widget.OnTextChangeEvent;
 
 public class KYCAyondoFormFactory
 {
+
     @NonNull public static KYCAyondoForm fromTitleEvent(@NonNull OnSelectedEvent titleEvent)
     {
         KYCAyondoForm created = new KYCAyondoForm();
@@ -26,6 +28,8 @@ public class KYCAyondoFormFactory
         }
         return created;
     }
+
+
 
     @Deprecated
     @NonNull public static KYCAyondoForm fromFullNameEvent(@NonNull OnTextChangeEvent fullNameEvent)
@@ -91,6 +95,12 @@ public class KYCAyondoFormFactory
         }
         return created;
     }
+    @NonNull public static KYCAyondoForm additionalDataEvent(ProviderQuestionnaireAnswerDto[] providerQuestionnaireAnswerDtos){
+        KYCAyondoForm created = new KYCAyondoForm();
+        created.setAdditionalData(providerQuestionnaireAnswerDtos);
+        return created;
+    }
+
 
     @NonNull public static KYCAyondoForm fromPhoneCountryCode(@NonNull OnSelectedEvent phoneCountryCodeEvent)
     {

@@ -68,12 +68,10 @@ public class LiveServiceWrapper
     // enum?
     public static final String PROVIDER_ID = "{providerId}";
     public static final String INPUT = "{input}";
-
     @NonNull private final com.androidth.general.network.service.LiveServiceRx liveServiceRx;
     @NonNull private final LiveServiceAyondoRx liveServiceAyondoRx;
     @NonNull private final LiveBrokerSituationPreference liveBrokerSituationPreference;
     @NonNull private final PhoneNumberVerifiedPreference phoneNumberVerifiedPreference;
-
     @Inject public LiveServiceWrapper(
             @NonNull LiveServiceRx liveServiceRx,
             @NonNull LiveServiceAyondoRx liveServiceAyondoRx,
@@ -161,6 +159,7 @@ public class LiveServiceWrapper
 //        return liveServiceRx.getKYCFormOptions(optionsId.brokerId.key);
         List<Country> nationalities = new ArrayList<>(Arrays.asList(Country.values()));
         nationalities.removeAll(createNoBusinessNationalities());
+
         KYCFormOptionsDTO options = new KYCAyondoFormOptionsDTO(
                 Arrays.asList(Gender.values()),
                 Arrays.asList(Country.MY, Country.SG, Country.TH, Country.ID),
@@ -179,10 +178,12 @@ public class LiveServiceWrapper
                 DummyAyondoData.DATA_SHARING_AGREEMENT_URL,
                 AYONDO_MINIMUM_AGE,
                 Arrays.asList(Currency.values()),
-                Arrays.asList("Kuala Lumpur", "Labuan", "Sarawak", "Penang", "Selangor", "Malacca", "Negeri Sembilan", "Pahang", "Johor", "Terengganu", "Perak", "Sabah", "Perlis", "Kedah", "Kelantan"),
+                Arrays.asList("asdf"),
                 Arrays.asList("Online", "Events"));
         return Observable.just(options);
     }
+
+    //@NonNull public Observable<KYCFormOptionsDTO> getKYCForm(@NonNull KYC)
 
     @NonNull public Observable<IdentityPromptInfoDTO> getIdentityPromptInfo(@NonNull Country country)
     {
@@ -206,6 +207,7 @@ public class LiveServiceWrapper
 
         return liveServiceRx.validateData(partialURL);
     }
+
 
     public void submitPhoneNumberVerifiedStatus(String formattedPhoneNumber)
     {

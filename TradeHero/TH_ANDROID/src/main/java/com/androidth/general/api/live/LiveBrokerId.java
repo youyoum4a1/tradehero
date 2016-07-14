@@ -7,7 +7,7 @@ import com.androidth.general.common.persistence.DTOKey;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
-
+//deprecated
 public class LiveBrokerId implements DTOKey
 {
     @NonNull public final Integer key;
