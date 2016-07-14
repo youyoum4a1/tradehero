@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.androidth.general.R;
 
 public class DrawerLayoutUtil
 {
@@ -17,6 +18,7 @@ public class DrawerLayoutUtil
         image.setImageResource(tabType.drawableResId);
         TextView title = (TextView) created.findViewById(android.R.id.text1);
         title.setText(tabType.stringResId);
+        title.setTextColor(context.getResources().getColor(R.color.thV5Gray));
         created.setTag(tabType);
 
         //Add the background selector
