@@ -963,7 +963,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         KYCAyondoForm update = new KYCAyondoForm();
-        candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
+        //candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
         Integer index = setSpinnerOnFirst(spinnerPhoneCountryCode, candidates, liveCountryDTOs);
         if (savedMobileNumberDialingPrefix == null)
         {
@@ -1011,7 +1011,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         KYCAyondoForm update = new KYCAyondoForm();
-        candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
+        //candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
         //Integer index = setSpinnerOnFirst(spinnerNationality, candidates, liveCountryDTOs);
         //if (savedNationality == null)
         //{
@@ -1059,7 +1059,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         KYCAyondoForm update = new KYCAyondoForm();
-        candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
+        //candidates.addAll(getFilteredByCountries(liveCountryDTOs, kycForm, currentUserProfile));
         //Integer index = setSpinnerOnFirst(spinnerResidency, candidates, liveCountryDTOs);
         //if (savedResidency == null)
         //{
