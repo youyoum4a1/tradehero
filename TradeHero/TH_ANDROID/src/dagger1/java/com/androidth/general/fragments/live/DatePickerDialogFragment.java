@@ -122,19 +122,19 @@ public class DatePickerDialogFragment extends BaseDialogFragment implements Date
         c.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
 
         Date selected = c.getTime();
-        if (selected.after(maxDate))
-        {
-            int minAge = currentYear - c.get(Calendar.YEAR);
-            THToast.show(getString(R.string.error_date_earlier, minAge));
-        }
-        else
-        {
+//        if (selected.after(maxDate))
+//        {
+//            int minAge = currentYear - c.get(Calendar.YEAR);
+//            THToast.show(getString(R.string.error_date_earlier, minAge));
+//        }
+//        else
+//        {
             Intent i = new Intent();
             Bundle b = new Bundle();
             DatePickerDialogFragment.setCalendar(b, BUNDLE_KEY_SELECTED_DATE, c);
             i.putExtra(INTENT_KEY_DATE_BUNDLE, b);
             getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, i);
             dismiss();
-        }
+//        }
     }
 }
