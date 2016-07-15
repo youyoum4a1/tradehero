@@ -83,9 +83,9 @@ public enum Exchange
     TSE(R.drawable.square_jp, true),
 
     //Swiss
-    SIX(R.drawable.square_ch, true);
+    SIX(R.drawable.square_ch, true),
 
-
+    ISE(R.drawable.square_ie, true);
 
     @DrawableRes public final int logoId;
     public final boolean isCountryDefault;

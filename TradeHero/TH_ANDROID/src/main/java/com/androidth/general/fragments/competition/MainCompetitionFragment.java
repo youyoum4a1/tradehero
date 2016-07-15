@@ -205,7 +205,7 @@ public class MainCompetitionFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        this.progressBar.setVisibility(View.VISIBLE);
+//        this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
 
         this.listView.setAdapter(this.competitionZoneListItemAdapter);

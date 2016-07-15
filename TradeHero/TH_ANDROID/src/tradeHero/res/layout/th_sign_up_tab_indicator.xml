@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:textColor="@color/sign_up_tab_text_selector"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/size_4"
+    android:layout_height="@dimen/size_5"
     android:textStyle="bold"
     android:layout_gravity="center"
     android:gravity="center"

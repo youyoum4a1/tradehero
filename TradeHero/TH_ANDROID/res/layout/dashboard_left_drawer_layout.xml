@@ -13,16 +13,25 @@
     android:fitsSystemWindows="true"
     android:clipChildren="false"
     android:clipToPadding="false"
+    android:backgroundTint="#EDEDED"
     >
 
   <ImageView
       android:id="@+id/drawer_bg_image"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:scaleType="centerCrop"
-      tools:background="@drawable/login_bg_1"
+      android:scaleType="centerInside"
+      android:background="@drawable/test_bg"
       android:fitsSystemWindows="true"
       android:layout_marginTop="-32dp"
+  />
+
+  <ImageView
+      android:id="@+id/drawer_bg_image"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:scaleType="centerCrop"
+      android:background="@drawable/sidemenubg3"
       />
 
   <LinearLayout

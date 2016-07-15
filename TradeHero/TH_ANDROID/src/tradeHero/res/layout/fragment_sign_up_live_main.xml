@@ -9,7 +9,7 @@
 
   <com.android.common.SlidingTabLayout
       android:id="@+id/android_tabs"
-      android:minHeight="@dimen/size_4"
+      android:minHeight="@dimen/size_5"
       android:background="@color/grey"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
@@ -22,6 +22,7 @@
       android:layout_height="wrap_content"
       android:layout_below="@id/android_tabs"
       android:fillViewport="false"
+      android:background="@color/white"
       />
 
   <com.androidth.general.common.widget.NonSwipeableViewPager
@@ -29,6 +30,7 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/live_reward_widget"
+      android:background="@color/white"
       tools:background="@color/background_material_light"
       />
 </RelativeLayout>

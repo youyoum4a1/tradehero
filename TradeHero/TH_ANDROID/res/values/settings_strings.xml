@@ -34,7 +34,7 @@
   <string name="settings_translations">Translations</string>
   <string name="settings_translations_language_preferred">Preferred Language</string>
   <string name="settings_translations_auto_translate">Auto-Translate</string>
-  <string name="settings_location">Location</string>
+  <string name="settings_location">Country</string>
 
   <string name="settings_notifications">Notifications</string>
   <string name="settings_notifications_email">Email Notifications</string>
