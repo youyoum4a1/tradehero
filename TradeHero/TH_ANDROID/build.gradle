@@ -13,6 +13,8 @@ buildscript {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
 
+        maven { url "https://jitpack.io" }
+
 
         //crashlytics is fabric now
         //maven { url 'http://download.crashlytics.com/maven' }
@@ -47,6 +49,7 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.fernandocejas.frodo'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'realm-android'
 
 
 repositories {
@@ -636,7 +639,8 @@ dependencies {
         exclude group: 'com.squareup.retrofit', module: 'retrofit'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
     }
-    compile('com.viewpagerindicator:library:2.4.1') {
+
+    compile ('com.github.JakeWharton:ViewPagerIndicator:2.4.1'){
         exclude group: 'com.google.android', module: 'support-v4'
     }
     compile "in.srain.cube:grid-view-with-header-footer:${GRID_VIEW_WITH_HEADER_VERSION}"

@@ -16,6 +16,7 @@ import android.widget.SearchView;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.DashboardActivity;
+import com.androidth.general.api.SignatureContainer;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.SecurityCompactDTO;
@@ -47,7 +48,6 @@ import microsoft.aspnet.signalr.client.http.Request;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
-
 
 
 public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment implements SignalRInterface, ObservableScrollView.ScrollViewListener
@@ -126,10 +126,11 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
                 }
             });
+            proxy.on("UpdateQuote",  s -> Log.v("String",s), String.class);
             proxy.on("UpdateQuote", signatureContainer -> {
                 Log.i("Okay", "What's this");
                 Log.i("Response", signatureContainer.toString());
-                update(signatureContainer.signedObject);
+                update((LiveQuoteDTO) signatureContainer.signedObject);
 
 
             }, SignatureContainer.class);
@@ -150,15 +151,6 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     public void onScrollChanged(int i) {
 
     }
-
-    class SignatureContainer {
-        public String Signature;
-        public LiveQuoteDTO signedObject;
-
-    }
-
-
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
