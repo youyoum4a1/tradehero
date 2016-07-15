@@ -20,13 +20,15 @@ public class LiveQuoteDTO {
     @Nullable
     public double v;//Volume
 
-    public DateDeserializers.DateDeserializer l;
+    public String l;
 
     @Nullable
     public double usdr;//toUSDRate
 
+    @Nullable
     public String ciso;//currencyISO
 
+    @Nullable
     public String cd;//currencyDisplay
 
     public String g;//GroupId
@@ -89,7 +91,7 @@ public class LiveQuoteDTO {
         return v;
     }
 
-    public DateDeserializers.DateDeserializer getDate() {
+    public String getDate() {
         return l;
     }
 

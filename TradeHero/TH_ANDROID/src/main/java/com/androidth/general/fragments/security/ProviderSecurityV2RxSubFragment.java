@@ -48,8 +48,6 @@ import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 
-
-
 public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment implements SignalRInterface, ObservableScrollView.ScrollViewListener
 
 {
@@ -126,13 +124,13 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
                 }
             });
-            proxy.on("UpdateQuote", signatureContainer -> {
-                Log.i("Okay", "What's this");
-                Log.i("Response", signatureContainer.toString());
-                update(signatureContainer.signedObject);
 
+            proxy.on("UpdateQuote", liveQuoteDTO -> {
+                Log.v(getTag(), "Object signalR: "+liveQuoteDTO.toString());
+                update(liveQuoteDTO);
+            }, LiveQuoteDTO.class);
+//            proxy.subscribe(ProviderSecurityV2RxSubFragment.class);
 
-            }, SignatureContainer.class);
         } catch (Exception e) {
             Log.e("Error", "Could not connect to Hub Name");
         }
@@ -150,14 +148,6 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     public void onScrollChanged(int i) {
 
     }
-
-    class SignatureContainer {
-        public String Signature;
-        public LiveQuoteDTO signedObject;
-
-    }
-
-
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
