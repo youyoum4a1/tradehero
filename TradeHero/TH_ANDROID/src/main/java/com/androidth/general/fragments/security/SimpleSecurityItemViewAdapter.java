@@ -3,14 +3,17 @@ package com.androidth.general.fragments.security;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.widget.Filter;
-import com.androidth.general.common.widget.filter.ListCharSequencePredicateFilter;
+
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityIntegerId;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
+import com.androidth.general.common.widget.filter.ListCharSequencePredicateFilter;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.inject.Inject;
 
 public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
@@ -58,28 +61,34 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                 securityCompactDTO = (SecurityCompactDTO) getItem(index);
                 if (quoteUpdate != null && quoteUpdate.getSecurityId() == securityCompactDTO.id)
                 {
+                    Double askPrice = quoteUpdate.getAskPrice();
+                    Double bidPrice = quoteUpdate.getBidPrice();
                     if (securityCompactDTO instanceof FxSecurityCompactDTO)
                     {
-                        ((FxSecurityCompactDTO) securityCompactDTO).setAskPrice(quoteUpdate.getAskPrice());
-                        ((FxSecurityCompactDTO) securityCompactDTO).setBidPrice(quoteUpdate.getBidPrice());
+                        ((FxSecurityCompactDTO) securityCompactDTO).setAskPrice(askPrice);
+                        ((FxSecurityCompactDTO) securityCompactDTO).setBidPrice(bidPrice);
                         ((FxSecurityCompactDTO) securityCompactDTO).currencyDisplay = quoteUpdate.getCurrencyDisplay();
                         ((FxSecurityCompactDTO) securityCompactDTO).currencyISO = quoteUpdate.getCurrencyISO();
                         ((FxSecurityCompactDTO) securityCompactDTO).volume = quoteUpdate.getVolume();
                         ((FxSecurityCompactDTO) securityCompactDTO).toUSDRate = quoteUpdate.getUsdRate();
+                        ((FxSecurityCompactDTO) securityCompactDTO).lastPrice = (askPrice + bidPrice)/2;
                     }
                     else
                     {
-                        securityCompactDTO.askPrice = quoteUpdate.getAskPrice();
-                        securityCompactDTO.bidPrice = quoteUpdate.getBidPrice();
+
+                        securityCompactDTO.askPrice = askPrice;
+                        securityCompactDTO.bidPrice = bidPrice;
                         securityCompactDTO.currencyDisplay = quoteUpdate.getCurrencyDisplay();
                         securityCompactDTO.currencyISO = quoteUpdate.getCurrencyISO();
                         securityCompactDTO.volume = quoteUpdate.getVolume();
                         securityCompactDTO.toUSDRate = quoteUpdate.getUsdRate();
+                        securityCompactDTO.lastPrice = (askPrice + bidPrice)/2;
                     }
                 }
             }
         }
     }
+
     public void updatePricesQuoteDTO(@NonNull Context context, @NonNull List<? extends QuoteDTO> quotes)
     {
         Map<SecurityIntegerId, QuoteDTO> map = new HashMap<>();

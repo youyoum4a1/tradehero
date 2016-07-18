@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
  */
 
 public class LiveQuoteDTO {
-    public int id;//SecurityId
+    public long id;//SecurityId
 
     @Nullable
     public double a;//AskPrice
@@ -71,7 +71,7 @@ public class LiveQuoteDTO {
         this.cd = cd;
     }
 
-    public int getSecurityId() {
+    public long getSecurityId() {
 
         return id;
     }
