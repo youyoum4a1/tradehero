@@ -1,10 +1,16 @@
-package com.androidth.general.auth;
+package com.tradehero.th.auth;
 
 import android.content.Context;
+
+import com.androidth.general.auth.AuthenticationModuleBase;
+import com.androidth.general.auth.AuthenticationProvider;
+import com.androidth.general.auth.FacebookAuthenticationProvider;
+import com.androidth.general.auth.SocialAuth;
+import com.androidth.general.auth.TwitterAuthenticationProvider;
 import com.facebook.TokenCachingStrategy;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.auth.linkedin.LinkedInAuthenticationProvider;
-import com.androidth.general.auth.tencent_qq.QQAuthenticationProvider;
+import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
 import com.androidth.general.auth.weibo.WeiboAuthenticationProvider;
 import dagger.Lazy;
 import dagger.Module;
@@ -20,7 +26,8 @@ import javax.inject.Singleton;
 public class AuthenticationModule
 {
     /** TODO waiting for dagger to have map injection feature, it would make following method nicer */
-    @Provides @Singleton @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> provideSocialAuthTypeToSocialProviderMap(
+    @Provides @Singleton @SocialAuth
+    Map<SocialNetworkEnum, AuthenticationProvider> provideSocialAuthTypeToSocialProviderMap(
             Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider,
             Lazy<TwitterAuthenticationProvider> twitterAuthenticationProvider,
             Lazy<LinkedInAuthenticationProvider> linkedInAuthenticationProvider,

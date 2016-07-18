@@ -1,98 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+    <LinearLayout
+        android:id="@+id/page_control_buttons"
+        style="@style/TradeHero.Live.SignUpInnerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+        <include layout="@layout/live_form_control"
+            />
+    </LinearLayout>
+    <ScrollView
+        android:layout_above="@id/page_control_buttons"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:isScrollContainer="false"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            style="@style/TradeHero.Live.SignUpInnerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
 
-  <LinearLayout
-      style="@style/TradeHero.Live.SignUpInnerContainer"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      >
+            <TextView
+                style="@style/TH.Subhead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xsmall"
+                android:gravity="center_horizontal"
+                android:text="@string/trading_experience"
+                />
 
-      <TextView
-          style="@style/TH.Subhead"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/margin_xsmall"
-          android:gravity="center_horizontal"
-          android:text="@string/trading_experience"
-          />
+            <CheckBox
+                android:id="@+id/worked_finance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/clickable_element_min_dimen"
+                android:text="@string/experience_financial_sector_ayondo"
+                />
 
-      <CheckBox
-          android:id="@+id/worked_finance"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/experience_financial_sector_ayondo"
-          />
+            <CheckBox
+                android:id="@+id/attended_seminar_ayondo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/clickable_element_min_dimen"
+                android:text="@string/experience_financial_seminars_ayondo"
+                />
 
-      <CheckBox
-          android:id="@+id/attended_seminar_ayondo"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/experience_financial_seminars_ayondo"
-          />
+            <CheckBox
+                android:id="@+id/have_other_qualification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/clickable_element_min_dimen"
+                android:text="@string/experience_financial_qualifications_ayondo"
+                />
 
-      <CheckBox
-          android:id="@+id/have_other_qualification"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/experience_financial_qualifications_ayondo"
-          />
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/live_trades_per_quarter"
+                android:layout_marginTop="@dimen/margin_small"
+                />
 
-      <TextView
-          style="@style/TH.Caption"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="start"
-          android:text="@string/live_trades_per_quarter"
-          android:layout_marginTop="@dimen/margin_small"
-          />
+            <Spinner
+                android:id="@+id/info_trading_per_quarter"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/clickable_element_min_dimen"
+                style="@style/TH.Spinner"
+                />
 
-      <Spinner
-          android:id="@+id/info_trading_per_quarter"
-          android:layout_width="match_parent"
-          android:layout_height="@dimen/clickable_element_min_dimen"
-          style="@style/TH.Spinner"
-          />
+            <TextView
+                style="@style/TH.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/experience_product_traded"
+                />
 
-      <TextView
-          style="@style/TH.Caption"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/experience_product_traded"
-          />
+            <CheckBox
+                android:id="@+id/traded_shares_bonds"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/clickable_element_min_dimen"
+                android:text="@string/experience_bonds"
+                />
 
-      <CheckBox
-          android:id="@+id/traded_shares_bonds"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/experience_bonds"
-          />
+            <CheckBox
+                android:id="@+id/traded_otc_derivative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/clickable_element_min_dimen"
+                android:text="@string/experience_otc_derivatives"
+                />
 
-      <CheckBox
-          android:id="@+id/traded_otc_derivative"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/experience_otc_derivatives"
-          />
+            <CheckBox
+                android:id="@+id/traded_etc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/clickable_element_min_dimen"
+                android:text="@string/experience_exchange_traded_derivatives"
+                />
 
-      <CheckBox
-          android:id="@+id/traded_etc"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:minHeight="@dimen/clickable_element_min_dimen"
-          android:text="@string/experience_exchange_traded_derivatives"
-          />
+        </LinearLayout>
+    </ScrollView>
 
-      <include layout="@layout/live_form_control" />
 
-  </LinearLayout>
-
-</ScrollView>
+</RelativeLayout>

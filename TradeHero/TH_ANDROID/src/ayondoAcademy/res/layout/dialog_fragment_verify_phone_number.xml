@@ -19,25 +19,19 @@
       android:paddingBottom="@dimen/margin_xsmall"
       >
 
-    <ImageView
-        android:layout_width="@dimen/medium_image_w_h"
-        android:layout_height="@dimen/medium_image_w_h"
-        android:src="@drawable/th_app_logo"
-        />
 
     <ImageView
         android:layout_width="wrap_content"
+        android:id="@+id/banner_logo"
         android:layout_height="@dimen/medium_image_w_h"
         android:layout_centerInParent="true"
         android:layout_marginLeft="@dimen/margin_xsmall"
         android:layout_marginStart="@dimen/margin_xsmall"
-        android:src="@drawable/ic_logo_thlive"
         />
 
     <ImageView
         android:id="@android:id/closeButton"
         style="@style/TH.Btn_Popup_Close.Inverse"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         />

@@ -68,4 +68,6 @@ public class Constants
     private Constants()
     {
     }
+
+    public static final String REALM_DB_NAME = "TH_DB_REALM.realm";
 }

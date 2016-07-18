@@ -11,40 +11,45 @@
 
   <ImageView
       android:id="@+id/live_reward_20"
-      android:layout_width="@dimen/big_image_w_h"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_weight="1"
       android:src="@drawable/ic_reward_20"
       style="@style/TradeHero.Live.RewardWidget"
       />
 
   <ImageView
       android:id="@+id/live_reward_40"
-      android:layout_width="@dimen/big_image_w_h"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_weight="1"
       android:src="@drawable/ic_reward_40"
       style="@style/TradeHero.Live.RewardWidget"
       />
 
   <ImageView
       android:id="@+id/live_reward_60"
-      android:layout_width="@dimen/big_image_w_h"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_weight="1"
       android:src="@drawable/ic_reward_60"
       style="@style/TradeHero.Live.RewardWidget"
       />
 
   <ImageView
       android:id="@+id/live_reward_80"
-      android:layout_width="@dimen/big_image_w_h"
+      android:layout_width="0dp"
       android:layout_height="wrap_content"
+      android:layout_weight="1"
       android:src="@drawable/ic_reward_80"
       style="@style/TradeHero.Live.RewardWidget"
       />
 
   <ImageView
       android:id="@+id/live_reward_100"
-      android:layout_width="@dimen/big_image_w_h"
-      android:layout_height="@dimen/medium_image_w_h"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_weight="1"
       android:src="@drawable/ic_reward_100"
       style="@style/TradeHero.Live.RewardWidget"
       />

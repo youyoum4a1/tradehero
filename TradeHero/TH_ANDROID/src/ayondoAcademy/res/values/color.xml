@@ -6,4 +6,8 @@
   <color name="tradehero_red_status_bar">@color/tradehero_red</color>
   <color name="tradehero_dark_red">#A8342A</color>
   <color name="sign_up_indicator_bg">#888888</color>
+  <color name="toolbar_color">#377BFF</color>
+
+  <color name="thV5Gray">#333333</color>
+  <color name="menu_bg">#EDEDED</color>
 </resources>

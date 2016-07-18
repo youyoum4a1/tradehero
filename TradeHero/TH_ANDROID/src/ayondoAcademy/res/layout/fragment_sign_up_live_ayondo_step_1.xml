@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <RelativeLayout
+      android:id="@+id/page_control_buttons"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:background="@color/transparent"
+      android:paddingLeft="@dimen/margin_xsmall"
+      android:paddingRight="@dimen/margin_xsmall"
+      android:paddingBottom="@dimen/margin_xsmall">
+
+    <Button
+        android:id="@+id/btn_next"
+        style="@style/TH.Button.LiveForm"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        android:text="@string/next"
+        tools:enabled="true"
+        />
+
+    <Button
+        android:id="@+id/btn_join_competition"
+        style="@style/TH.Button.LiveForm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_xsmall"
+        android:text="@string/join_competition"
+        android:visibility="gone"
+        tools:enabled="true"
+        />
+  </RelativeLayout>
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_alignParentTop="true"
+      android:layout_above="@id/page_control_buttons"
+      android:background="@color/white"
+      android:isScrollContainer="false" >
+    <LinearLayout
+        style="@style/TradeHero.Live.SignUpInnerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:gravity="center_vertical"
+          android:orientation="horizontal"
+          >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gender"
+            style="@style/TH.Caption"
+            android:layout_marginLeft="4dp"/>
+
+        <Spinner
+            android:id="@+id/info_title"
+            style="@style/TH.Spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:minHeight="@dimen/clickable_element_min_dimen"
+            android:minWidth="@dimen/clickable_element_min_dimen"
+            tools:layout_height="48dp"
+            tools:layout_width="48dp"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/info_title"
+            android:layout_alignParentRight="true">
+
+          <android.support.design.widget.TextInputLayout
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="0.5"
+              app:hintTextAppearance="@style/TH.Caption"
+              >
+
+            <EditText
+                android:id="@+id/info_first_name"
+                style="@style/TH.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_first_name"
+                android:inputType="textPersonName|textCapWords"
+                tools:text="My First Name"
+                />
+          </android.support.design.widget.TextInputLayout>
+
+          <android.support.design.widget.TextInputLayout
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="0.5"
+              app:hintTextAppearance="@style/TH.Caption"
+              >
+
+            <EditText
+                android:id="@+id/info_last_name"
+                style="@style/TH.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_last_name"
+                android:inputType="textPersonName|textCapWords"
+                tools:text="My Last Name"
+                />
+          </android.support.design.widget.TextInputLayout>
+
+
+        </LinearLayout>
+
+      </RelativeLayout>
+
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            app:hintTextAppearance="@style/TH.Caption">
+
+          <EditText
+              android:id="@+id/nric_number"
+              style="@style/TH.Body"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/nric"
+              android:inputType="number"
+              android:maxLength="12"
+              />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <com.androidth.general.widget.validation.KYCVerifyButton
+            android:id="@+id/nric_verify_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:background="?android:attr/selectableItemBackground"
+            android:backgroundTint="@color/transparent"
+            android:src="@drawable/ic_grey_alert"/>
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            app:hintTextAppearance="@style/TH.Caption">
+
+          <EditText
+              android:id="@+id/sign_up_email"
+              style="@style/TH.Body"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/email"
+              android:inputType="textEmailAddress"
+              />
+        </android.support.design.widget.TextInputLayout>
+
+        <com.androidth.general.widget.validation.KYCVerifyButton
+            android:id="@+id/email_verify_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:background="?android:attr/selectableItemBackground"
+            android:backgroundTint="@color/transparent"
+            android:src="@drawable/ic_grey_alert"/>
+
+      </LinearLayout>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="@dimen/margin_xsmall"
+          android:gravity="center_vertical"
+          >
+
+        <Spinner
+            android:id="@+id/country_code_spinner"
+            style="@style/TH.Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:minHeight="@dimen/clickable_element_min_dimen"
+            android:spinnerMode="dropdown" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            app:hintTextAppearance="@style/TH.Caption"
+            >
+
+          <EditText
+              android:id="@+id/info_phone_number"
+              style="@style/TH.Body"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/mobile_number"
+              android:inputType="number|phone"
+              />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <com.androidth.general.widget.validation.KYCVerifyButton
+            android:id="@+id/phone_verify_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.8"
+            android:background="?android:attr/selectableItemBackground"
+            android:backgroundTint="@color/transparent"
+            android:src="@drawable/ic_grey_alert"/>
+
+      </LinearLayout>
+
+
+      <TextView
+          style="@style/TH.Caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:layout_marginLeft="4dp"
+          android:text="@string/residence_state"
+          />
+
+      <Spinner
+          android:id="@+id/residence_state"
+          style="@style/TH.Spinner"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="?attr/selectableItemBackground"
+          />
+
+      <TextView
+          style="@style/TH.Caption"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="start"
+          android:layout_marginLeft="4dp"
+          android:text="@string/how_you_know_th"
+          />
+
+      <Spinner
+          android:id="@+id/how_you_know_th"
+          style="@style/TH.Spinner"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="?attr/selectableItemBackground"
+          />
+
+      <android.support.design.widget.TextInputLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          app:hintTextAppearance="@style/TH.Caption"
+          >
+
+        <EditText
+            android:id="@+id/info_dob"
+            style="@style/TH.Body"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/clickable_element_min_dimen"
+            android:background="?attr/editTextBackground"
+            android:clickable="true"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:gravity="left|center_vertical"
+            android:hint="@string/date_of_birth"
+            android:textColor="?attr/editTextColor"
+            />
+
+      </android.support.design.widget.TextInputLayout>
+
+
+
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content">
+
+        <CheckBox
+            android:id="@+id/step_1_tnc_checkbox"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/step_1_tnc"
+            android:layout_toRightOf="@id/step_1_tnc_checkbox"
+            android:layout_alignBaseline="@id/step_1_tnc_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:linksClickable="true"
+            android:text="@string/terms_conditions"/>
+
+      </RelativeLayout>
+    </LinearLayout>
+  </ScrollView>
+
+</RelativeLayout>
