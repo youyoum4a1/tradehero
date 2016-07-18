@@ -1,7 +1,7 @@
 package com.androidth.general.fragments.security;
 
 import android.os.Bundle;
-import android.support.annotation.MainThread;
+import android.support.annotation.UiThread;
 import android.support.v4.view.MenuItemCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,7 +29,6 @@ import com.androidth.general.network.service.SignalRInterface;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.DeviceUtil;
 import com.tencent.mm.sdk.platformtools.Log;
-import com.twitter.sdk.android.core.internal.util.ObservableScrollView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -47,8 +46,9 @@ import microsoft.aspnet.signalr.client.http.Request;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 
-public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment implements SignalRInterface, ObservableScrollView.ScrollViewListener
+public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment implements SignalRInterface
 
 {
     @Bind(R.id.listview) protected AbsListView listView;
@@ -98,18 +98,17 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                 currentVisibleItemsList = getCurrentVisibleItems(listView);
                 String str[] = getSecurityIds(currentVisibleItemsList);
                 SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str, currentUserId.get());
-                signalProxy.done(req -> Log.i("Yay", "Nayy"));
             });
             connection.connected(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("SD", "cONNECTED");
+
                 }
             });
             connection.connectionSlow(new Runnable() {
                 @Override
                 public void run() {
-                    Log.i("Slow", "Slow Connection");
+
                 }
             });
             connection.reconnected(new Runnable() {
@@ -125,11 +124,36 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                 }
             });
 
-            proxy.on("UpdateQuote", liveQuoteDTO -> {
-                Log.v(getTag(), "Object signalR: "+liveQuoteDTO.toString());
-                update(liveQuoteDTO);
-            }, LiveQuoteDTO.class);
-//            proxy.subscribe(ProviderSecurityV2RxSubFragment.class);
+            /*proxy.on("UpdateQuote", new SubscriptionHandler1<Object>() {
+
+                @Override
+                public void run(Object object) {
+                    //SignatureContainer2 signatureContainer = (object);
+                    Log.v(getTag(), "Object signalR: "+object.toString());
+                    //update(signatureContainer2.signedObject);
+                }
+            }, Object.class);*/
+
+            proxy.on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
+
+                @Override
+                public void run(SignatureContainer2 signatureContainer2) {
+                    Log.v(getTag(), "Object signalR: "+signatureContainer2.toString());
+                    if(signatureContainer2==null || signatureContainer2.signedObject==null || signatureContainer2.signedObject.id==121234) {
+                        return;
+                    }
+                    else{
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                update(signatureContainer2.signedObject);
+                            }
+                        });
+
+                    }
+                    //update(signatureContainer2.signedObject);
+                }
+            }, SignatureContainer2.class);
 
         } catch (Exception e) {
             Log.e("Error", "Could not connect to Hub Name");
@@ -138,16 +162,20 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         //proxy.subscribe()
     }
 
-    @MainThread
+    class SignatureContainer2
+    {
+        public LiveQuoteDTO signedObject;
+        public String Signature;
+    }
+
+    @UiThread
     public void update(LiveQuoteDTO dto){
         Log.i("This is Live", dto.toString());
         adapter.updatePrices(dto);
         adapter.notifyDataSetChanged();
-    }
-    @Override
-    public void onScrollChanged(int i) {
 
     }
+
 
     @Override public void onCreate(Bundle savedInstanceState)
     {

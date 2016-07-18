@@ -980,9 +980,7 @@ task showMeCache << {
             "##### Heap utilization statistics [MB] #####");
 
     //Print used memory
-    System
-
-            .out.println("Used Memory:"
+    System.out.println("Used Memory:"
             + (runtime.totalMemory() - runtime.freeMemory()) / mb);
 
     //Print free memory
