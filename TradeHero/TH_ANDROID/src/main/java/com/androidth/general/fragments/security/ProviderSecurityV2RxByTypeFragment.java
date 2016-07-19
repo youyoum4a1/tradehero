@@ -16,14 +16,11 @@ import android.widget.TextView;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
-import com.androidth.general.api.market.Exchange;
-import com.androidth.general.api.security.ExchangeCompactDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.SecurityTypeDTO;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
-import com.androidth.general.utils.StringUtils;
 import com.squareup.picasso.Picasso;
 import com.tencent.mm.sdk.platformtools.Log;
 
@@ -62,7 +59,8 @@ public class ProviderSecurityV2RxByTypeFragment extends BaseFragment
         super.onCreate(savedInstanceState);
         this.providerId = getProviderId(getArguments());
         securityCompositeDTO = securityCompositeListCacheRx.getCachedValue(new BasicProviderSecurityV2ListType(providerId));
-        securityTypeAdapter = new SecurityTypeAdapter(getContext(), securityCompositeDTO.SecurityTypes.toArray(new SecurityTypeDTO[securityCompositeDTO.SecurityTypes.size()]));
+        if(securityCompositeDTO!=null)
+            securityTypeAdapter = new SecurityTypeAdapter(getContext(), securityCompositeDTO.SecurityTypes.toArray(new SecurityTypeDTO[securityCompositeDTO.SecurityTypes.size()]));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

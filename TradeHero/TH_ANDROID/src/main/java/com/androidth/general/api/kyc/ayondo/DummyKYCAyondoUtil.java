@@ -10,7 +10,6 @@ import com.androidth.general.api.kyc.NetWorthRange;
 import com.androidth.general.api.kyc.PercentNetWorthForInvestmentRange;
 import com.androidth.general.api.kyc.StepStatus;
 import com.androidth.general.api.kyc.StepStatusesDTO;
-import com.androidth.general.api.kyc.TradingPerQuarter;
 import com.androidth.general.api.live.CountryUtil;
 
 import java.util.Arrays;
@@ -63,8 +62,7 @@ public class DummyKYCAyondoUtil
 
     @NonNull public static StepStatus getStep3(@NonNull KYCAyondoForm kycForm)
     {
-        return (kycForm.getTradingPerQuarter() != null
-                && !kycForm.getTradingPerQuarter().equals(TradingPerQuarter.EMPTY))
+        return (kycForm.getTradingPerQuarter() != null)
                 ? StepStatus.COMPLETE
                 : StepStatus.UNSTARTED;
     }

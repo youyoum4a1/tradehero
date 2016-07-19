@@ -223,8 +223,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull List<TradingPerQuarter> tradingPerQuarters)
     {
         KYCAyondoForm update = new KYCAyondoForm();
-        TradingPerQuarter savedTrading = kycForm.getTradingPerQuarter()==TradingPerQuarter.EMPTY?
-                TradingPerQuarter.ONE_TO_FIVE: kycForm.getTradingPerQuarter();
+        TradingPerQuarter savedTrading = kycForm.getTradingPerQuarter();
 
         Integer indexTrading = populateSpinner(tradingPerQuarterSpinner,
                 savedTrading,

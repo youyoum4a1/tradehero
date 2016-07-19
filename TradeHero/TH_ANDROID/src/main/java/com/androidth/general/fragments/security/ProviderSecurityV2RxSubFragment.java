@@ -1,5 +1,6 @@
 package com.androidth.general.fragments.security;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.UiThread;
 import android.support.v4.view.MenuItemCompat;
@@ -9,6 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
@@ -159,7 +162,6 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
             Log.e("Error", "Could not connect to Hub Name");
         }
 
-        //proxy.subscribe()
     }
 
     class SignatureContainer2
@@ -171,8 +173,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     @UiThread
     public void update(LiveQuoteDTO dto){
         Log.i("This is Live", dto.toString());
-        adapter.updatePrices(dto);
-        adapter.notifyDataSetChanged();
+        adapter.updatePrices(dto, listView);
 
     }
 
@@ -250,12 +251,43 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         SearchView searchView = new SearchView(((DashboardActivity) getActivity()).getSupportActionBar().getThemedContext());
         MenuItemCompat.setShowAsAction(item, MenuItemCompat.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
         MenuItemCompat.setActionView(item, searchView);
-
         searchView.setFocusable(true);
         searchView.setFocusableInTouchMode(true);
-        searchView.requestFocus();
-        searchView.requestFocusFromTouch();
-        searchView.setIconified(false);
+        searchView.setIconifiedByDefault(true);
+
+        MenuItemCompat.setOnActionExpandListener(item, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                return true;
+            }
+        });
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                searchView.requestFocus();
+                searchView.requestFocusFromTouch();
+                searchView.setIconified(false);
+                return false;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+                searchView.clearFocus();
+                MenuItemCompat.collapseActionView(item);
+                return false;
+            }
+        });
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

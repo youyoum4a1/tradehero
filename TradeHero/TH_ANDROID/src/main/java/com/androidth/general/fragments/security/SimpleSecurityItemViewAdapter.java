@@ -2,13 +2,19 @@ package com.androidth.general.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Filter;
+import android.widget.TextView;
 
+import com.androidth.general.R;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityIntegerId;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.common.widget.filter.ListCharSequencePredicateFilter;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +28,11 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
     @Inject ListCharSequencePredicateFilter<SecurityCompactDTO> securityCompactPredicateFilter;
 
     //<editor-fold desc="Constructors">
+    int layourResourceId;
     public SimpleSecurityItemViewAdapter(Context context, int layoutResourceId)
     {
         super(context, layoutResourceId);
+        this.layourResourceId = layoutResourceId;
         filterToUse = new SecurityItemFilter(securityCompactPredicateFilter);
     }
     //</editor-fold>
@@ -33,6 +41,7 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
     {
         return securityCompactPredicateFilter;
     }
+
 
     @Override public Filter getFilter()
     {
@@ -51,7 +60,7 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
         updatePrices(map);
     }*/
     //we can improve the complexity [Later]
-    public void updatePrices(@NonNull LiveQuoteDTO quoteUpdate)// Map is about mapping vertex(in listview) with SecurityCompactDTO
+    public void updatePrices(@NonNull LiveQuoteDTO quoteUpdate, AbsListView listView)// Map is about mapping vertex(in listview) with SecurityCompactDTO
     {
         SecurityCompactDTO securityCompactDTO;
         if (getCount() > 0)
@@ -63,6 +72,7 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                 {
                     Double askPrice = quoteUpdate.getAskPrice();
                     Double bidPrice = quoteUpdate.getBidPrice();
+                    Double lastPrice = securityCompactDTO.lastPrice;
                     if (securityCompactDTO instanceof FxSecurityCompactDTO)
                     {
                         ((FxSecurityCompactDTO) securityCompactDTO).setAskPrice(askPrice);
@@ -84,10 +94,20 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                         securityCompactDTO.toUSDRate = quoteUpdate.getUsdRate();
                         securityCompactDTO.lastPrice = (askPrice + bidPrice)/2;
                     }
+                    Double newLastPrice = securityCompactDTO.lastPrice;
+
+                    notifyDataSetChanged();
+                    if(listView != null && (!lastPrice.equals(newLastPrice)) && listView.getChildAt(index)!=null){
+                            View v = listView.getChildAt(index);
+                            TextView txtView = (TextView)v.findViewById(R.id.last_price);
+                            YoYo.with(Techniques.Flash).playOn(txtView);
+                    }
+
                 }
             }
         }
     }
+
 
     public void updatePricesQuoteDTO(@NonNull Context context, @NonNull List<? extends QuoteDTO> quotes)
     {

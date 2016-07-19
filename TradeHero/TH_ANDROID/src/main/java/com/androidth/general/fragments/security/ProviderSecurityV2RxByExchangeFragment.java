@@ -61,7 +61,8 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
         super.onCreate(savedInstanceState);
         this.providerId = getProviderId(getArguments());
         securityCompositeDTO = securityCompositeListCacheRx.getCachedValue(new BasicProviderSecurityV2ListType(providerId));
-        exchangeAdapter = new ExchangeAdapter(getContext(), securityCompositeDTO.Exchanges.toArray(new ExchangeCompactDTO[securityCompositeDTO.Exchanges.size()]));
+        if(securityCompositeDTO!=null)
+            exchangeAdapter = new ExchangeAdapter(getContext(), securityCompositeDTO.Exchanges.toArray(new ExchangeCompactDTO[securityCompositeDTO.Exchanges.size()]));
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

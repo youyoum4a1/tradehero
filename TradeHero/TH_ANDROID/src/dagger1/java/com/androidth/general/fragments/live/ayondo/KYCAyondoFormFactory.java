@@ -217,8 +217,7 @@ public class KYCAyondoFormFactory
         if (tradingPerQuarterEvent instanceof OnItemSelectedEvent)
         {
             created.setTradingPerQuarter(
-                    ((TradingPerQuarterDTO) tradingPerQuarterEvent.parent.getItemAtPosition(
-                            ((OnItemSelectedEvent) tradingPerQuarterEvent).position)).tradingPerQuarter);
+                    ((TradingPerQuarterDTO) tradingPerQuarterEvent.parent.getItemAtPosition(((OnItemSelectedEvent) tradingPerQuarterEvent).position)).tradingPerQuarter);
         }
         return created;
     }
