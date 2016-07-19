@@ -20,7 +20,9 @@
     <!-- Required by Jumio -->
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
 
-    <application>
+    <application
+        android:icon="@drawable/v5_icon"
+        android:label="@string/app_name_dev">
 
         <!-- REQUIRED for PlayServiceUtils.handleAnyPlayServicesError to handle Google Play Services recoverable errors. -->
         <activity android:name="com.urbanairship.google.PlayServicesErrorActivity"

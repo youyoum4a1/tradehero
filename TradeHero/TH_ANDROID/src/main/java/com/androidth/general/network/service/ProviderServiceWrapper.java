@@ -28,6 +28,7 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.models.BaseDTOListProcessor;
 import com.androidth.general.models.portfolio.DTOProcessorPortfolioReceived;
 import com.androidth.general.models.provider.DTOProcessorProviderReceived;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.tencent.mm.sdk.platformtools.Log;
 
 import javax.inject.Inject;
@@ -52,7 +53,7 @@ import rx.functions.Action1;
     //</editor-fold>
 
     //<editor-fold desc="Get Providers">
-    @NonNull public Observable<ProviderDTOList> getProvidersRx()
+    @NonNull @RxLogObservable public Observable<ProviderDTOList> getProvidersRx()
     {
         return this.providerServiceRx.getProviders()
                 .map(new BaseDTOListProcessor<ProviderDTO, ProviderDTOList>(

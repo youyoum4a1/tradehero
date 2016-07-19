@@ -10,9 +10,9 @@ import dagger.Lazy;
 import java.util.HashMap;
 import java.util.Map;
 
-class AuthenticationModuleBase
+public class AuthenticationModuleBase
 {
-    static Map<SocialNetworkEnum, AuthenticationProvider> provideSocialAuthTypeToSocialProviderMap(
+    public static Map<SocialNetworkEnum, AuthenticationProvider> provideSocialAuthTypeToSocialProviderMap(
             Lazy<FacebookAuthenticationProvider> facebookAuthenticationProvider,
             Lazy<TwitterAuthenticationProvider> twitterAuthenticationProvider,
             Lazy<LinkedInAuthenticationProvider> linkedInAuthenticationProvider,
@@ -26,7 +26,7 @@ class AuthenticationModuleBase
         return enumToUtilMap;
     }
 
-    static TokenCachingStrategy provideFacebookTokenCachingStrategy(Context context)
+    public static TokenCachingStrategy provideFacebookTokenCachingStrategy(Context context)
     {
         return new SharedPreferencesTokenCachingStrategy(context);
     }

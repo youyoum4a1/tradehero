@@ -32,6 +32,8 @@ import com.tapstream.sdk.Event;
 import javax.inject.Inject;
 
 import dagger.Lazy;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import rx.Subscription;
 import rx.android.app.AppObservable;
 import rx.functions.Action1;
@@ -75,6 +77,8 @@ public class SplashActivity extends BaseActivity
             getWindow().getDecorView().findViewById(android.R.id.content).setBackgroundColor(
                     getResources().getColor(R.color.authentication_guide_bg_color));
         }
+
+        setupRealm();
 
         deepLink = getIntent().getData();
 
@@ -160,5 +164,9 @@ public class SplashActivity extends BaseActivity
     @Override protected boolean requireLogin()
     {
         return false;
+    }
+
+    private void setupRealm(){
+        Realm.getInstance(new RealmConfiguration.Builder(this).name(Constants.REALM_DB_NAME).build());
     }
 }

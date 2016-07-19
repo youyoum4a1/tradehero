@@ -91,7 +91,7 @@ android {
 
     compileSdkVersion 23
 
-    buildToolsVersion "23.0.3"
+    buildToolsVersion "24.0.0"
     //useOldManifestMerger=true
 
     dexOptions {
@@ -142,7 +142,10 @@ android {
             minifyEnabled true
             proguardFile 'proguard/proguard-android.txt'
             shrinkResources false
+            multiDexEnabled true
             signingConfig signingConfigs.release
+
+            debuggable true
         }
     }
 
@@ -345,7 +348,6 @@ android {
         ayondoAcademyDebug {
             java {
                 srcDir 'src/ayondoAcademyDebug/java'
-                srcDir 'src/dagger1LiveDebug/java'
             }
             res {
                 srcDir 'src/ayondoAcademy/res'
@@ -602,9 +604,11 @@ dependencies {
     compile "com.android.support:design:${SUPPORT_V7_VERSION}"
     compile "com.android.support:cardview-v7:${SUPPORT_V7_VERSION}"
     compile "com.android.support:design:${SUPPORT_V7_VERSION}"
-    compile('com.twitter.sdk.android:twitter-core:1.6.6@aar') {
+    compile('com.twitter.sdk.android:twitter-core:1.7.0@aar') {
         transitive = true;
     }
+    compile 'com.appsflyer:af-android-sdk:4+@aar'
+//    releaseCompile "com.appsflyer:library:${APPS_FLYER_VERSION}"//jeff
     //  googleplayCompile 'com.android.support:multidex:1.0.1'//jeff
     //  samsungCompile 'com.android.support:multidex:1.0.1' //jeff
     //provided 'proguard:annotations:4.6'
@@ -676,7 +680,6 @@ dependencies {
     compile("com.jakewharton:butterknife:${BUTTER_KNIFE_VERSION}") {
         exclude group: 'se.emilsjolander', module: 'stickylistheaders'
     }
-    releaseCompile "com.appsflyer:library:${APPS_FLYER_VERSION}"
     //provided 'com.kenai.nbpwr:edu-umd-cs-findbugs-annotations:1.3.2-201002241900'
     compile "com.jumio.android:core:${JUMIO_SDK_VERSION}@aar"
     compile "com.jumio.android:nv:${JUMIO_SDK_VERSION}@aar"
@@ -727,8 +730,6 @@ dependencies {
   compile("com.jakewharton:butterknife:${BUTTER_KNIFE_VERSION}") {
     exclude group: 'se.emilsjolander', module: 'stickylistheaders'
   }
-
-  compile 'com.appsflyer:af-android-sdk:4.4.0@aar'
 
   compile "com.jumio.android:core:${JUMIO_SDK_VERSION}@aar"
   compile "com.jumio.android:nv:${JUMIO_SDK_VERSION}@aar"
@@ -925,8 +926,7 @@ project.afterEvaluate {
                             @Override
                             int compare(Object left, Object right) {
                                 // TODO this does not appear to save the properties in the desired order
-                                return
-                                versionPropIndex(left.toString()).compareTo(
+                                return versionPropIndex(left.toString()).compareTo(
                                         versionPropIndex(
 
                                                 right.toString()))
@@ -939,14 +939,10 @@ project.afterEvaluate {
                                 newWriter(), null)
             }
         }
-        Matcher m =
-                flavorsPattern.matcher(theTask.getName())
+        Matcher m = flavorsPattern.matcher(theTask.getName())
         while (m.find()) {
-            println("Adding copy to " + theTask.
-                    getName() +
-                    " from " +
-                    "${projectDir}/src/test/resources" +
-                    " to " +
+            println("Adding copy to " + theTask.getName() +
+                    " from " + "${projectDir}/src/test/resources" + " to " +
                     "${buildDir}/intermediates/classes/test/${m.group(1).toLowerCase()}/debug")
             theTask.dependsOn
             ("copyTestResources")
