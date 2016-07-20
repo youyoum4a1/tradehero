@@ -84,6 +84,7 @@ if (project.ext.javahome == null) {
 }
 
 android {
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -783,6 +784,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile files('libs/signalr-client-sdk-android.jar')
 }
+
 
 File propFile = file('signing.properties');
 if (propFile.

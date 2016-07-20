@@ -795,24 +795,20 @@ public final class SettingsFragment extends BasePreferenceFragment
 
         onStopSubscriptions.add(sessionServiceWrapper.logoutRx()
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends UserProfileDTO>>()
-                {
-                    @Override public Observable<? extends UserProfileDTO> call(final Throwable throwable)
+                .onErrorResumeNext(throwable -> {
+                    if (progressDialog != null)
                     {
-                        if (progressDialog != null)
-                        {
-                            progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
-                            progressDialog.setMessage("");
-                        }
-                        else
-                        {
-                            THToast.show(new THException(throwable));
-                        }
-                        return Observable.just(0)
-                                .delay(3000, TimeUnit.MILLISECONDS)
-                                .flatMap(new ReplaceWithFunc1<Integer, Observable<UserProfileDTO>>(
-                                        Observable.<UserProfileDTO>error(throwable)));
+                        progressDialog.setTitle(R.string.settings_misc_sign_out_failed);
+                        progressDialog.setMessage("");
                     }
+                    else
+                    {
+                        THToast.show(new THException(throwable));
+                    }
+                    return Observable.just(0)
+                            .delay(3000, TimeUnit.MILLISECONDS)
+                            .flatMap(new ReplaceWithFunc1<>(
+                                    Observable.<UserProfileDTO>error(throwable)));
                 })
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog))
                 .subscribe(

@@ -7,12 +7,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
+
 import com.androidth.general.R;
 import com.androidth.general.activities.AdminSettingsActivity;
 import com.androidth.general.activities.AlertManagerActivity;
 import com.androidth.general.activities.FriendsInvitationActivity;
 import com.androidth.general.activities.SettingsActivity;
-import com.androidth.general.activities.StoreScreenActivity;
 import com.androidth.general.activities.UpdateCenterActivity;
 import com.androidth.general.fragments.contestcenter.ContestCenterFragment;
 import com.androidth.general.fragments.discovery.DiscoveryMainFragment;
@@ -21,6 +21,7 @@ import com.androidth.general.fragments.timeline.MeTimelineFragment;
 import com.androidth.general.fragments.trending.TrendingMainFragment;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.metrics.AnalyticsConstants;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -54,7 +55,7 @@ public enum RootFragmentType
             R.string.dashboard_contest_center,
             R.string.dashboard_contest_center_key,
             R.drawable.icn_menu_contest_center,
-            ContestCenterFragment.class,/*Just a fix; change to ContestCenterFragment fro more than one running comp.*/
+            ContestCenterFragment.class,
             null,
             AnalyticsConstants.TabBar_ContestCenter),
     ME(R.layout.left_drawer_item,

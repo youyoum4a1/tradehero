@@ -531,7 +531,7 @@ abstract public class TimelineFragment extends DashboardFragment
             if (portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
             {
                 ProviderId providerId =  new ProviderId(portfolioDTO.providerId);
-                providerCacheRx.get(providerId).subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
+                onStopSubscriptions.add(providerCacheRx.get(providerId).subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
                     @Override
                     public void call(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair) {
                             if(!providerIdProviderDTOPair.second.canTradeNow){
@@ -546,7 +546,7 @@ abstract public class TimelineFragment extends DashboardFragment
                                 return;
                             }
                     }
-                });
+                }));
 
             }
         }

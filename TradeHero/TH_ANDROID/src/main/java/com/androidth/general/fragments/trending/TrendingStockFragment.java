@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
@@ -64,6 +65,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Actions;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class TrendingStockFragment extends TrendingBaseFragment
@@ -252,13 +254,18 @@ public class TrendingStockFragment extends TrendingBaseFragment
                 this,
                 providerListCache.get(new ProviderListKey())
                         .map(new PairGetSecond<ProviderListKey, ProviderDTOList>()))
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
                 .subscribe(
                         new Action1<ProviderDTOList>()
                         {
                             @Override public void call(ProviderDTOList list)
                             {
-                                linkWith(list);
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        linkWith(list);
+                                    }
+                                });
                             }
                         },
                         new ToastOnErrorAction1(getString(R.string.error_fetch_provider_competition_list))));
@@ -279,6 +286,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         providerDTOs = providers;
         wrapperAdapter.setProviderEnabled(!providerDTOs.isEmpty());
+        if(providerDTOs.isEmpty())
+            Toast.makeText(getContext()," Dto is empty",Toast.LENGTH_SHORT).show();
+
     }
 
     private void fetchWatchlist()
