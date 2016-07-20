@@ -547,10 +547,10 @@ abstract public class TimelineFragment extends DashboardFragment
                             }
                     }
                 }));
-
+                return;
             }
         }
-        else navigator.get().pushFragment(TabbedPositionListFragment.class, args);
+        navigator.get().pushFragment(TabbedPositionListFragment.class, args);
     }
 
     private void pushWatchlistPositionFragment()
