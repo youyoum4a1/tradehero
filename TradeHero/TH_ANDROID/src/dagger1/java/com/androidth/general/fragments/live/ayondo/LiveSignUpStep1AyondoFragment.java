@@ -30,7 +30,6 @@ import android.widget.TextView;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
-import com.androidth.general.api.competition.EmailVerifiedDTO;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
@@ -130,7 +129,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @LayoutRes private static final int LAYOUT_PHONE_SELECTED_FLAG = R.layout.spinner_live_phone_country_dropdown_item_selected;
     private static final int REQUEST_PICK_DATE = 2805;
     private static final int REQUEST_VERIFY_PHONE_NUMBER_CODE = 2808;
-    private static final int REQUEST_VERIFY_EMAIL_CODE = 2809;
     private static final String KEY_EXPECTED_SMS_CODE = LiveSignUpStep1AyondoFragment.class.getName() + ".expectedCode";
     private static final String KEY_SMS_ID = LiveSignUpStep1AyondoFragment.class.getName() + ".smsId";
 
@@ -138,14 +136,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.info_first_name) EditText firstName;
     @Bind(R.id.info_last_name) EditText lastName;
-    @Bind(R.id.sign_up_email) EditText email;
+    //@Bind(R.id.sign_up_email) EditText email;
     @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
     @Bind(R.id.info_phone_number) EditText phoneNumber;
     @Bind(R.id.info_dob) TextView dob;
     @Bind(R.id.step_1_tnc_checkbox) CheckBox tncCheckbox;
     @Bind(R.id.step_1_tnc) TextView termsCond;
 
-    @Bind(R.id.email_verify_button) KYCVerifyButton emailVerifybutton;
+    //@Bind(R.id.email_verify_button) KYCVerifyButton emailVerifybutton;
     @Bind(R.id.nric_verify_button) KYCVerifyButton nricVerifyButton;
     @Bind(R.id.phone_verify_button) KYCVerifyButton phoneVerifyButton;
 
@@ -158,19 +156,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
-    @Inject protected RequestHeaders requestHeaders;
     protected ProgressDialog loadingFieldProgressDialog;
-    SignalRManager signalRManager;
 
-    private Pattern emailPattern;
     private String expectedCode;
     private String smsId;
     private ProviderId providerId;
     private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
-    private static PublishSubject<String> verifiedPublishEmail;
     private Drawable noErrorIconDrawable;
     private int providerIdInt = 0;
-    private VerifyEmailDialogFragment vedf;
     private boolean hasClickedJoinButton = false;
 
     Observable<ArrayList<ProviderQuestionnaireDTO>> proQuesList;
@@ -183,14 +176,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
 //        thRouter.inject(this);
         verifiedPublishSubject = PublishSubject.create();
-        verifiedPublishEmail = PublishSubject.create();
         if (savedInstanceState != null)
         {
             expectedCode = savedInstanceState.getString(KEY_EXPECTED_SMS_CODE, null);
             smsId = savedInstanceState.getString(KEY_SMS_ID, null);
         }
 
-        emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
         noErrorIconDrawable = getResources().getDrawable(R.drawable.red_alert);
         if (noErrorIconDrawable != null)
         {
@@ -226,17 +217,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             if (actionId == EditorInfo.IME_ACTION_DONE && phoneVerifyButton.getState() == VerifyButtonState.PENDING)
             {
                 offerToEnterCode();
-            }
-
-            return false;
-        });
-
-        email.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_NEXT &&
-                    (emailVerifybutton.getState() == VerifyButtonState.PENDING
-                    || emailVerifybutton.getState() == VerifyButtonState.FINISH))
-            {
-                showEmailVerificationPopup();
             }
 
             return false;
@@ -348,21 +328,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 .withLatestFrom(liveBrokerSituationDTOObservable,
                 (onTextChangeEvent, liveBrokerSituationDTO) -> {
                     KYCAyondoForm updated = KYCAyondoFormFactory.fromIdentificationNumber(onTextChangeEvent);
-
-                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-                }).subscribe(this::onNext);
-
-        WidgetObservable.text(email)
-                .doOnNext(onTextChangeEvent -> {
-                    if (isValidEmail(onTextChangeEvent.text().toString())) {
-                        emailVerifybutton.setState(VerifyButtonState.PENDING);
-                    } else {
-                        emailVerifybutton.setState(VerifyButtonState.BEGIN);
-                    }
-                })
-                .withLatestFrom(liveBrokerSituationDTOObservable,
-                (onTextChangeEvent, liveBrokerSituationDTO) -> {
-                    KYCAyondoForm updated = KYCAyondoFormFactory.fromEmailEvent(onTextChangeEvent);
 
                     return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                 }).subscribe(this::onNext);
@@ -492,22 +457,6 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         });
                             }
                             break;
-                    }
-                });
-
-        ViewObservable.clicks(emailVerifybutton)
-                .subscribe(new Action1<OnClickEvent>() {
-                    @Override
-                    public void call(OnClickEvent onClickEvent) {switch (emailVerifybutton.getState()) {
-                            case BEGIN:
-                                email.setError(LiveSignUpStep1AyondoFragment.this.getString(R.string.validation_incorrect_pattern_email), noErrorIconDrawable);
-                                emailVerifybutton.setState(VerifyButtonState.ERROR);
-                                break;
-                            case PENDING:
-                            case VALIDATE:
-                                validateEmail();
-                                break;
-                        }
                     }
                 });
 
@@ -857,25 +806,6 @@ dismissLocalProgressDialog();
                     }
                 }, new TimberOnErrorAction1("Failed to update verified mobile number")));
 
-        subscriptions.add(verifiedPublishEmail.withLatestFrom(liveBrokerSituationDTOObservable,
-                new Func2<String, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
-                {
-                    @Override
-                    public LiveBrokerSituationDTO call(String verifiedEmail, LiveBrokerSituationDTO liveBrokerSituationDTO)
-                    {
-                        KYCAyondoForm update = new KYCAyondoForm();
-                        update.setVerifiedEmailAddress(verifiedEmail);
-                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
-                    }
-                }).subscribe(
-                new Action1<LiveBrokerSituationDTO>()
-                {
-                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
-                    {
-                        onNext(liveBrokerSituationDTO);
-                    }
-                }, new TimberOnErrorAction1("Failed to update email address")));
-
         Log.v("ayondoStep1", "Subscriptions final "+subscriptions.size());
         return subscriptions;
     }
@@ -896,11 +826,6 @@ dismissLocalProgressDialog();
         return phoneNumberDTO.dialingPrefix > 0 && phoneNumberDTO.typedNumber.length() > PHONE_NUM_MIN_LENGTH;
     }
 
-    private boolean isValidEmail(String email)
-    {
-        return emailPattern.matcher(email).matches();
-    }
-
     @Override public void onDestroyView()
     {
         ButterKnife.unbind(this);
@@ -911,7 +836,6 @@ dismissLocalProgressDialog();
     {
         super.onDestroy();
         verifiedPublishSubject = null;
-        verifiedPublishEmail = null;
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -944,16 +868,6 @@ dismissLocalProgressDialog();
         if (lastName != null && lastNameText != null && !lastNameText.equals(lastName.getText().toString()))
         {
             lastName.setText(lastNameText);
-        }
-
-        String emailText = kycForm.getEmail();
-        if (email != null && emailText != null && !emailText.equals(email.getText().toString()))
-        {
-            email.setText(emailText);
-            String currentVerifiedEmail = kycForm.getVerifiedEmailAddress();
-            if(currentVerifiedEmail!=null && currentVerifiedEmail.equals(emailText)){
-                emailVerifybutton.setState(VerifyButtonState.FINISH);
-            }
         }
 
         String nricNumberText = kycForm.getIdentificationNumber();
@@ -1211,35 +1125,6 @@ dismissLocalProgressDialog();
         }
     }
 
-    @MainThread
-    protected void validateEmail()
-    {
-        final String email = this.email.getText().toString();
-
-//        liveServiceWrapper.verifyEmail(currentUserId.get(), email).subscribe();
-
-        showEmailVerificationPopup();
-        setupSignalR(email);
-    }
-
-    //for email subscription pop up box
-    protected void checkEmailSubscription(Integer userId) {
-        Subscription subs = kycServices.validatedEmail(userId ,email.getText().toString()).subscribe(kycEmailIsValid -> {
-            if (kycEmailIsValid) {
-                Log.i("Valid", "Cool");
-                //Pop up dialog
-            } else {
-                Log.i("InValid", "James lied");
-                //Make tick sign green
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                Log.i("Error",throwable.getMessage());
-            }
-        });
-    }
-
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1259,19 +1144,6 @@ dismissLocalProgressDialog();
                 onClickedJoinButton();
             }
 
-        }else if (requestCode == REQUEST_VERIFY_EMAIL_CODE && resultCode == Activity.RESULT_OK)
-        {
-            Log.v(getTag(), "Jeff email ok");
-            String verifiedEmail = VerifyEmailDialogFragment.getVerifiedFromIntent(data);
-            if(data.hasExtra("VerificationEmailError")){
-                updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), data.getStringExtra("VerificationEmailError"), false);
-            }else{
-                if (verifiedEmail != null)
-                {
-                    verifiedPublishEmail.onNext(verifiedEmail);
-                }
-                updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), null, true);
-            }
         }
     }
 
@@ -1326,18 +1198,6 @@ dismissLocalProgressDialog();
             nricNumber.setError(null);
         }
 
-        if(emailVerifybutton.getState() != VerifyButtonState.FINISH){
-            if(!emailPattern.matcher(email.getText()).matches()) {
-                email.setError("Invalid email address", noErrorIconDrawable);
-                requestFocusAndShowKeyboard(email);
-            }else{
-                hasClickedJoinButton = true;
-                emailVerifybutton.performClick();
-            }
-            return false;
-        }else{
-            email.setError(null);
-        }
         if(phoneVerifyButton.getState() != VerifyButtonState.FINISH){
             hasClickedJoinButton = true;
             phoneVerifyButton.performClick();
@@ -1348,10 +1208,6 @@ dismissLocalProgressDialog();
 
         return true;
 
-    }
-
-    private void showEmailVerificationPopup() {
-        vedf = VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email.getText().toString(), this.providerIdInt);
     }
 
     private void requestFocusAndShowKeyboard(EditText textView) {
@@ -1419,48 +1275,5 @@ dismissLocalProgressDialog();
                     THToast.show(throwable.getMessage());
                     progress.dismiss();
                 });
-    }
-
-
-    @MainThread
-    public void updateEmailVerification(String emailAddress, String errorMessage, boolean isSuccess){
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if(vedf.isVisible()){
-                    try{
-                        vedf.dismiss();
-                    }catch (Exception e){
-                        //might be closed or not in view
-                    }
-                }
-                if(isSuccess){
-                    emailVerifybutton.setState(VerifyButtonState.FINISH);
-                    verifiedPublishEmail.onNext(emailAddress);
-
-                    if(hasClickedJoinButton){
-                        onClickedJoinButton();
-                    }
-                }else{
-                    if(errorMessage!=null){
-                        email.setError(errorMessage, noErrorIconDrawable);
-                        requestFocusAndShowKeyboard(email);
-                    }
-                }
-            }
-        });
-    }
-
-    public void setupSignalR(String emailAddress) {
-
-        signalRManager = new SignalRManager(requestHeaders, currentUserId);
-        signalRManager.initWithEvent(LiveNetworkConstants.HUB_NAME,
-                "SetValidationStatus",
-                new String[]{emailAddress},
-                emailVerifybutton, emailVerifiedDTO ->{
-                    if(((EmailVerifiedDTO)emailVerifiedDTO).isValidated()){
-                        updateEmailVerification(emailAddress, null, true);
-                    }
-                }, EmailVerifiedDTO.class);
     }
 }
