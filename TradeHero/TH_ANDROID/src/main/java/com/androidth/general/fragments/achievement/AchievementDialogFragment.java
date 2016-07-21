@@ -27,7 +27,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -36,8 +36,8 @@ public class AchievementDialogFragment extends AbstractAchievementDialogFragment
 {
     private static final String PROPERTY_DOLLARS_EARNED = "dollarsEarned";
 
-    @Bind(R.id.achievement_progress_indicator) AchievementProgressIndicator achievementProgressIndicator;
-    @Bind(R.id.achievement_virtual_dollar_earned) TextView dollarEarned;
+    @BindView(R.id.achievement_progress_indicator) AchievementProgressIndicator achievementProgressIndicator;
+    @BindView(R.id.achievement_virtual_dollar_earned) TextView dollarEarned;
 
     @Inject CurrentUserId currentUserId;
     @Inject AchievementCategoryCacheRx achievementCategoryCache;

@@ -14,15 +14,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.achievement.AchievementDefDTO;
 import java.util.List;
 
 public class AchievementProgressIndicator extends LinearLayout
 {
-    @Bind(R.id.achievement_indicator_image_container) ViewGroup imageContainer;
-    @Bind(R.id.achievement_indicator_text_container) ViewGroup textContainer;
+    @BindView(R.id.achievement_indicator_image_container) ViewGroup imageContainer;
+    @BindView(R.id.achievement_indicator_text_container) ViewGroup textContainer;
 
     SparseArray<ViewHolder> indicatorLists = new SparseArray<>();
     private int mCurrentLevel;

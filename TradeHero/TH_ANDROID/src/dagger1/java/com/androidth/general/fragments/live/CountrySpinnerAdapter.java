@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
@@ -136,9 +136,9 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.DT
 
     public static class CountryViewHolder implements DTOView<DTO>
     {
-        @Bind(R.id.live_country_icon) @Nullable ImageView imgCountry;
-        @Bind(R.id.live_country_label) @Nullable TextView txtCountry;
-        @Bind(R.id.live_country_phone_code) @Nullable TextView txtCountryCode;
+        @BindView(R.id.live_country_icon) @Nullable ImageView imgCountry;
+        @BindView(R.id.live_country_label) @Nullable TextView txtCountry;
+        @BindView(R.id.live_country_phone_code) @Nullable TextView txtCountryCode;
 
         public CountryViewHolder(@NonNull View itemView)
         {

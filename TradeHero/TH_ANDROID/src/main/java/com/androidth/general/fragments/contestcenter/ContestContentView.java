@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
@@ -25,13 +25,13 @@ public class ContestContentView extends RelativeLayout
     private ContestPageDTO communityPageDTO;
     @Nullable private ProviderDTO providerDTO;
 
-    @Bind(R.id.img_provider) ImageView imgActionProvider;
-    @Bind(R.id.tv_action_name) TextView tvActionName;
-    @Bind(R.id.tv_action_date) TextView tvActionDate;
-    @Bind(R.id.tv_action_money) TextView tvActionMoney;
-    @Bind(R.id.tv_action_duration_type) TextView tvActionDurationType;
-    @Bind(R.id.tv_action_rank) TextView tvActionRank;
-    @Bind(R.id.tv_action_roi) TextView tvActionRoi;
+    @BindView(R.id.img_provider) ImageView imgActionProvider;
+    @BindView(R.id.tv_action_name) TextView tvActionName;
+    @BindView(R.id.tv_action_date) TextView tvActionDate;
+    @BindView(R.id.tv_action_money) TextView tvActionMoney;
+    @BindView(R.id.tv_action_duration_type) TextView tvActionDurationType;
+    @BindView(R.id.tv_action_rank) TextView tvActionRank;
+    @BindView(R.id.tv_action_roi) TextView tvActionRoi;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")

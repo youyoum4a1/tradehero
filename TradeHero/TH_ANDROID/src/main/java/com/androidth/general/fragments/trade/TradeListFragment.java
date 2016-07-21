@@ -60,10 +60,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -96,8 +97,8 @@ public class TradeListFragment extends DashboardFragment
     //TODO Change Analytics
     //@Inject Analytics analytics;
 
-    @Bind(R.id.trade_list) protected ListView tradeListView;
-    @Bind(R.id.btn_trade_now) protected View buttonTrade;
+    @BindView(R.id.trade_list) protected ListView tradeListView;
+    @BindView(R.id.btn_trade_now) protected View buttonTrade;
     protected StockActionBarRelativeLayout actionBarLayout;
 
     @RouteProperty("userId") Integer routeUserId;
@@ -115,6 +116,7 @@ public class TradeListFragment extends DashboardFragment
     @Nullable protected TradeDTOList tradeDTOs;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
+    private Unbinder unbinder;
     protected TradeListItemAdapter adapter;
 
     public static void putPositionDTOKey(@NonNull Bundle args, @NonNull PositionDTOKey positionDTOKey)
@@ -177,7 +179,7 @@ public class TradeListFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         tradeListView.setAdapter(adapter);
         tradeListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
     }
@@ -254,7 +256,7 @@ public class TradeListFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         tradeListView.setOnScrollListener(null);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

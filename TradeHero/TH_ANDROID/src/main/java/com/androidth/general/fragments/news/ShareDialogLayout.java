@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.androidth.general.common.persistence.DTO;
@@ -20,20 +20,24 @@ import com.androidth.general.models.share.ShareDestination;
 import com.androidth.general.models.share.ShareDestinationFactory;
 import java.util.Comparator;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 public class ShareDialogLayout extends LinearLayout
 {
-    @Bind(R.id.news_action_share_title2) protected TextView shareTitleView;
-    @Bind(R.id.news_action_share_cancel) protected View cancelView;
-    @Bind(R.id.news_action_list_sharing_items) protected ListView listViewSharingOptions;
+    @BindView(R.id.news_action_share_title2) protected TextView shareTitleView;
+    @BindView(R.id.news_action_share_cancel) protected View cancelView;
+    @BindView(R.id.news_action_list_sharing_items) protected ListView listViewSharingOptions;
 
     @Inject ShareDestinationFactory shareDestinationFactory;
     @Inject @NonNull Comparator<ShareDestination> shareDestinationIndexResComparator;
 
     @Nullable protected DTO whatToShare;
     @NonNull protected BehaviorSubject<UserAction> shareActionBehavior;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     public ShareDialogLayout(Context context, AttributeSet attrs)
@@ -48,13 +52,13 @@ public class ShareDialogLayout extends LinearLayout
     protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         if (!isInEditMode())
         {
             listViewSharingOptions.setAdapter(new ShareDestinationSetAdapter(
@@ -67,7 +71,7 @@ public class ShareDialogLayout extends LinearLayout
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

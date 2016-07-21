@@ -38,9 +38,10 @@ import com.androidth.general.utils.DeviceUtil;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnTextChanged;
+import butterknife.Unbinder;
 import dagger.Lazy;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -54,8 +55,8 @@ public class SendMessageFragment extends BaseFragment
     @NonNull private MessageType messageType = MessageType.BROADCAST_ALL_FOLLOWERS;
     /** ProgressDialog to show progress when sending message */
 
-    @Bind(R.id.message_input_edittext) EditText inputText;
-    @Bind(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
+    @BindView(R.id.message_input_edittext) EditText inputText;
+    @BindView(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<MessageServiceWrapper> messageServiceWrapper;
@@ -66,6 +67,7 @@ public class SendMessageFragment extends BaseFragment
 
     protected UserProfileDTO currentUserProfileDTO;
 
+    private Unbinder unbinder;
     public static void putMessageType(@NonNull Bundle args, @NonNull MessageType messageType)
     {
         args.putInt(KEY_MESSAGE_TYPE, messageType.typeId);
@@ -117,7 +119,7 @@ public class SendMessageFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         DeviceUtil.showKeyboardDelayed(inputText);
         mentionTaggedStockHandler.setDiscussionPostContent(inputText);
         mentionActionButtonsView.setReturnFragmentName(getClass().getName());
@@ -146,7 +148,7 @@ public class SendMessageFragment extends BaseFragment
     {
         mentionTaggedStockHandler.setDiscussionPostContent(null);
         DeviceUtil.dismissKeyboard(inputText);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

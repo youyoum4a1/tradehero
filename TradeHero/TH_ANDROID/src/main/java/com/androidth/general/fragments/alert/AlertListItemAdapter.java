@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.adapters.ViewDTOSetAdapter;
 import com.androidth.general.api.users.CurrentUserId;
@@ -114,7 +114,7 @@ public class AlertListItemAdapter extends ViewDTOSetAdapter<AlertItemView.DTO, A
 
     public static class TextHolder
     {
-        @Bind(R.id.title) public TextView text;
+        @BindView(R.id.title) public TextView text;
 
         public TextHolder(View view)
         {

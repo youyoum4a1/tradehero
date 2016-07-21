@@ -6,7 +6,8 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import com.androidth.general.common.fragment.HasSelectedItem;
 import com.androidth.general.R;
@@ -16,6 +17,8 @@ import com.androidth.general.fragments.social.AllRelationsRecyclerFragment;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.rx.view.ViewArrayObservable;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.view.OnClickEvent;
 import rx.functions.Func1;
@@ -26,7 +29,7 @@ public class MentionActionButtonsView extends LinearLayout
 
     @NonNull private String returnFragmentName;
 
-    @Bind({R.id.btn_mention, R.id.btn_security_tag})
+    @BindViews({R.id.btn_mention, R.id.btn_security_tag})
     View[] buttons;
 
     //<editor-fold desc="Constructors">

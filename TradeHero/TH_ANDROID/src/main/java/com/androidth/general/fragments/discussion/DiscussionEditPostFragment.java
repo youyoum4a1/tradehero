@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnTextChanged;
 import com.androidth.general.common.fragment.HasSelectedItem;
 import com.androidth.general.common.utils.EditableUtil;
@@ -41,6 +41,8 @@ import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.DeviceUtil;
+
+import butterknife.Unbinder;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observer;
@@ -53,8 +55,8 @@ import timber.log.Timber;
 
 public class DiscussionEditPostFragment extends DashboardFragment
 {
-    @Bind(R.id.discussion_post_content) EditText discussionPostContent;
-    @Bind(R.id.discussion_new_post_action_buttons) protected DiscussionPostActionButtonsView discussionPostActionButtonsView;
+    @BindView(R.id.discussion_post_content) EditText discussionPostContent;
+    @BindView(R.id.discussion_new_post_action_buttons) protected DiscussionPostActionButtonsView discussionPostActionButtonsView;
 
     @Inject DiscussionServiceWrapper discussionServiceWrapper;
     @Inject SecurityCompactCacheRx securityCompactCache;
@@ -70,6 +72,8 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Nullable private DiscussionKey discussionKey;
     private DiscussionPostedListener discussionPostedListener;
 
+    private Unbinder unbinder;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -79,7 +83,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_discussion_edit_post, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         initView();
         return view;
     }
@@ -156,7 +160,7 @@ public class DiscussionEditPostFragment extends DashboardFragment
         unsubscribe(hasSelectedSubscription);
         hasSelectedSubscription = null;
         mentionTaggedStockHandler.setDiscussionPostContent(null);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

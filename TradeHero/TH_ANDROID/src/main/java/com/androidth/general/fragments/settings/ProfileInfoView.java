@@ -45,9 +45,10 @@ import java.io.File;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Observer;
 import rx.android.widget.OnTextChangeEvent;
@@ -68,27 +69,29 @@ public class ProfileInfoView extends LinearLayout
     private static final int INDEX_CHOICE_FROM_LIBRARY = 1;
 
 
-    @Bind(R.id.authentication_sign_up_email) EmailValidatedText email;
-    @Bind(R.id.authentication_sign_up_email_til) TextInputLayout email_til;
+    @BindView(R.id.authentication_sign_up_email) EmailValidatedText email;
+    @BindView(R.id.authentication_sign_up_email_til) TextInputLayout email_til;
     EmailValidator emailValidator;
 
 
 
-    @Bind(R.id.authentication_sign_up_password) PasswordValidatedText password;
-    @Bind(R.id.authentication_sign_up_password_til) TextInputLayout password_til;
+    @BindView(R.id.authentication_sign_up_password) PasswordValidatedText password;
+    @BindView(R.id.authentication_sign_up_password_til) TextInputLayout password_til;
     TextValidator passwordValidator;
     TextWatcher targetPasswordWatcher;
-    @Bind(R.id.authentication_sign_up_username) DisplayNameValidatedText displayName;
-    @Bind(R.id.authentication_sign_up_username_til) TextInputLayout displayName_til;
+    @BindView(R.id.authentication_sign_up_username) DisplayNameValidatedText displayName;
+    @BindView(R.id.authentication_sign_up_username_til) TextInputLayout displayName_til;
     DisplayNameValidator displayNameValidator;
-    @Bind(R.id.et_firstname) EditText firstName;
-    @Bind(R.id.et_lastname) EditText lastName;
+    @BindView(R.id.et_firstname) EditText firstName;
+    @BindView(R.id.et_lastname) EditText lastName;
     @Inject Provider<UserFormDTO.Builder2> userFormBuilderProvider;
 
     @NonNull final AccountManager accountManager;
     private UserProfileDTO userProfileDTO;
     @NonNull protected SubscriptionList subscriptions;
     private ImageRequesterUtil imageRequesterUtil;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     public ProfileInfoView(Context context, AttributeSet attrs)
@@ -103,7 +106,7 @@ public class ProfileInfoView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         emailValidator = email.getValidator();
         passwordValidator = password.getValidator();
         displayNameValidator = displayName.getValidator();
@@ -112,7 +115,7 @@ public class ProfileInfoView extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         displayProfileImage();
 
         /*email.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -187,7 +190,7 @@ public class ProfileInfoView extends LinearLayout
         email.setOnFocusChangeListener(null);
         subscriptions.unsubscribe();
         subscriptions = new SubscriptionList();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

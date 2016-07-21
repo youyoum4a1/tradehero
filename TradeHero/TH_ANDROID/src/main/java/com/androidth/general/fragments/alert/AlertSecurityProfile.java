@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.alert.AlertDTO;
@@ -23,14 +23,14 @@ import rx.Observable;
 public class AlertSecurityProfile extends RelativeLayout
         implements DTOView<AlertSecurityProfile.DTO>
 {
-    @Bind(R.id.security_circle) SecurityCircleProgressBar securityCircleProgressBar;
-    @Bind(R.id.stock_symbol) TextView stockSymbol;
-    @Bind(R.id.company_name) TextView companyName;
-    @Bind(R.id.target_price) TextView targetPrice;
-    @Bind(R.id.target_price_label) TextView targetPriceLabel;
-    @Bind(R.id.current_price) TextView currentPrice;
-    @Bind(R.id.as_of_date) TextView asOfDate;
-    @Bind(R.id.active_until) TextView activeUntil;
+    @BindView(R.id.security_circle) SecurityCircleProgressBar securityCircleProgressBar;
+    @BindView(R.id.stock_symbol) TextView stockSymbol;
+    @BindView(R.id.company_name) TextView companyName;
+    @BindView(R.id.target_price) TextView targetPrice;
+    @BindView(R.id.target_price_label) TextView targetPriceLabel;
+    @BindView(R.id.current_price) TextView currentPrice;
+    @BindView(R.id.as_of_date) TextView asOfDate;
+    @BindView(R.id.active_until) TextView activeUntil;
 
     //<editor-fold desc="Constructors">
     public AlertSecurityProfile(Context context)

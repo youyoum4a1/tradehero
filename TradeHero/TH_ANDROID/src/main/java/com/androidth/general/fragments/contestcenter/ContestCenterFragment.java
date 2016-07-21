@@ -42,8 +42,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class ContestCenterFragment extends DashboardFragment
 {
@@ -52,10 +53,12 @@ public class ContestCenterFragment extends DashboardFragment
 
     @Inject ProviderListCacheRx providerListCache;
     @Inject ProviderUtil providerUtil;
-    @Bind(R.id.competition_list) RecyclerView competitionList;
-    @Bind(R.id.hack_webview) WebView hackWebview;
+    @BindView(R.id.competition_list) RecyclerView competitionList;
+    @BindView(R.id.hack_webview) WebView hackWebview;
     List<MultipleCompetitionData> multipleCompetitionDatas = new ArrayList<>();
     SingleCompetitionWebviewData singleCompetitionWebviewData;
+
+    private Unbinder unbinder;
 @Inject MainCompetitionFragment mainCompetitionFragment;
 
     @Override
@@ -71,7 +74,7 @@ public class ContestCenterFragment extends DashboardFragment
     {
 
         View view = inflater.inflate(R.layout.fragment_contest_center, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         competitionList.setLayoutManager(layoutManager);
         fetchProviderIdList(container);
@@ -97,7 +100,7 @@ public class ContestCenterFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         competitionList.invalidate();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
     private class SingleCompetitionWebviewData {

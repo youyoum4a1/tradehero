@@ -19,7 +19,7 @@ import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
 import com.androidth.general.api.leaderboard.key.LeaderboardKey;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMarkUserRecyclerAdapter<LeaderboardItemDisplayDTO>
@@ -48,7 +48,7 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
 
     public static class CompetitionLbmuItemViewHolder extends LbmuItemViewHolder<LeaderboardItemDisplayDTO>
     {
-        @Bind(R.id.lbmu_item_prize) ImageView prizeIcon;
+        @BindView(R.id.lbmu_item_prize) ImageView prizeIcon;
 
         //TODO Change Analytics
         // 3rd argument was analytics
@@ -73,9 +73,9 @@ public class CompetitionLeaderboardMarkUserRecyclerAdapter extends LeaderboardMa
 
     public static class CompetitionLbmuHeaderViewHolder extends LbmuHeaderViewHolder<LeaderboardItemDisplayDTO>
     {
-        @Bind(R.id.competition_own_ranking_info_text) TextView infoText;
-        @Bind(R.id.competition_own_ranking_info_container) ViewGroup container;
-        @Bind(R.id.lbmu_item_prize) ImageView prizeIcon;
+        @BindView(R.id.competition_own_ranking_info_text) TextView infoText;
+        @BindView(R.id.competition_own_ranking_info_container) ViewGroup container;
+        @BindView(R.id.lbmu_item_prize) ImageView prizeIcon;
         private ClickableSpan clickableSpan;
 
         //TODO Change Analytics

@@ -30,7 +30,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.chrisbanes.colorfinder.ColorScheme;
@@ -67,6 +68,8 @@ import com.androidth.general.utils.SocialAlertDialogRxUtil;
 import com.androidth.general.utils.StringUtils;
 import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.androidth.general.widget.UserLevelProgressBar;
+
+import butterknife.Unbinder;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,29 +99,26 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     public static final int SHARE_PANEL_FAILED_INDEX = 2;
     public static final int SHARE_PANEL_SHARING_INDEX = 3;
 
-    @Bind(R.id.achievement_content_container) ViewGroup contentContainer;
+    @BindView(R.id.achievement_content_container) ViewGroup contentContainer;
 
-    @Bind(R.id.achievement_header) TextView header;
+    @BindView(R.id.achievement_header) TextView header;
 
-    @Bind(R.id.achievement_share_flipper) ViewFlipper shareFlipper;
+    @BindView(R.id.achievement_share_flipper) ViewFlipper shareFlipper;
 
-    @Bind(R.id.achievement_title) TextView title;
-    @Bind(R.id.achievement_description) TextView description;
-    @Bind(R.id.achievement_more_description) TextView moreDescription;
-    @Bind(R.id.achievement_badge) ImageView badge;
+    @BindView(R.id.achievement_title) TextView title;
+    @BindView(R.id.achievement_description) TextView description;
+    @BindView(R.id.achievement_more_description) TextView moreDescription;
+    @BindView(R.id.achievement_badge) ImageView badge;
 
-    @Bind(R.id.achievement_pulsating) PulsatingRing pulsatingRing;
-    @Bind(R.id.achievement_starburst) ImageView starBurst;
+    @BindView(R.id.achievement_pulsating) PulsatingRing pulsatingRing;
+    @BindView(R.id.achievement_starburst) ImageView starBurst;
 
-    @Bind(R.id.user_level_progress_xp_earned) TextView xpEarned;
+    @BindView(R.id.user_level_progress_xp_earned) TextView xpEarned;
 
-    @Bind(R.id.btn_achievement_share) Button btnShare;
-    @Bind(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
+    @BindView(R.id.btn_achievement_share) Button btnShare;
+    @BindView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
-    @Bind({
-            R.id.btn_achievement_dismiss,
-            R.id.achievement_starburst})
-    ImageView[] imagesToColorFilter;
+    @BindViews({R.id.btn_achievement_dismiss, R.id.achievement_starburst}) ImageView[] imagesToColorFilter;
 
     @Inject UserAchievementCacheRx userAchievementCache;
     @Inject Picasso picasso;
@@ -138,6 +138,8 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @NonNull private LevelDefListId mLevelDefListId = new LevelDefListId();
     private Callback mBadgeCallback;
     @Nullable Subscription levelDefSubscription;
+
+    private Unbinder unbinder;
 
     @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
@@ -165,7 +167,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         initView();
     }
 

@@ -7,11 +7,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
 import com.androidth.general.exception.THException;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -19,10 +21,11 @@ import rx.subjects.PublishSubject;
 
 public class OnBoardHeaderLinearView extends LinearLayout
 {
-    @Bind(R.id.btn_retry) protected TextView buttonRetry;
+    @BindView(R.id.btn_retry) protected TextView buttonRetry;
 
     @NonNull protected PublishSubject<Boolean> clickedRetrySubject;
 
+    private Unbinder unbinder;
     //<editor-fold desc="Constructors">
     public OnBoardHeaderLinearView(Context context)
     {
@@ -46,18 +49,18 @@ public class OnBoardHeaderLinearView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

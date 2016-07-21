@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import android.support.annotation.Nullable;
 import com.androidth.general.common.annotation.ViewVisibilityValue;
@@ -15,6 +15,8 @@ import com.androidth.general.R;
 import com.androidth.general.api.discussion.AbstractDiscussionCompactDTO;
 import com.androidth.general.models.discussion.UserDiscussionAction;
 import com.androidth.general.widget.VotePair;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -23,16 +25,17 @@ public class DiscussionActionButtonsView extends LinearLayout
     public static final boolean HAS_DOWN_VOTE = true;
     private static final boolean DEFAULT_SHOW_MORE = false;
 
-    @Bind(R.id.vote_pair) @Nullable protected VotePair votePair;
-    @Bind(R.id.discussion_action_button_comment_count) @Nullable CompoundButton commentCount;
-    @Bind(R.id.discussion_action_button_share) @Nullable View shareButton;
-    @Bind(R.id.discussion_action_button_more) @Nullable View moreButton;
+    @BindView(R.id.vote_pair) @Nullable protected VotePair votePair;
+    @BindView(R.id.discussion_action_button_comment_count) @Nullable CompoundButton commentCount;
+    @BindView(R.id.discussion_action_button_share) @Nullable View shareButton;
+    @BindView(R.id.discussion_action_button_more) @Nullable View moreButton;
 
     protected boolean downVote = HAS_DOWN_VOTE;
     private boolean showMore = DEFAULT_SHOW_MORE;
     protected AbstractDiscussionCompactDTO discussionDTO;
     @NonNull protected PublishSubject<UserDiscussionAction> userActionBehavior;
 
+    private Unbinder unbinder;
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
     public DiscussionActionButtonsView(Context context)
@@ -59,19 +62,19 @@ public class DiscussionActionButtonsView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         display();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

@@ -21,9 +21,10 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
@@ -39,9 +40,11 @@ public class LiveCallToActionFragment extends DashboardFragment
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject FastFillUtil fastFill;
 
-    @Bind(R.id.live_button_go_live) View goLiveButton;
-    @Bind(R.id.live_description) TextView liveDescription;
-    @Bind(R.id.live_powered_by) TextView livePoweredBy;
+    @BindView(R.id.live_button_go_live) View goLiveButton;
+    @BindView(R.id.live_description) TextView liveDescription;
+    @BindView(R.id.live_powered_by) TextView livePoweredBy;
+
+    private Unbinder unbinder;
 
     PublishSubject<View> laterClickedSubject = PublishSubject.create();
 
@@ -53,7 +56,7 @@ public class LiveCallToActionFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         onDestroyViewSubscriptions.add(
                 getBrokerSituationToUse()
                         .subscribeOn(Schedulers.io())
@@ -99,7 +102,7 @@ public class LiveCallToActionFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

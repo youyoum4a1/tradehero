@@ -13,7 +13,7 @@ import com.androidth.general.api.leaderboard.LeaderboardDTO;
 import com.androidth.general.api.leaderboard.key.PerPagedFilteredLeaderboardKey;
 import com.androidth.general.inject.HierarchyInjector;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LeaderboardFilterSliderContainer extends LinearLayout
@@ -21,12 +21,12 @@ public class LeaderboardFilterSliderContainer extends LinearLayout
     //TODO Change Analytics
     //@Inject Analytics analytics;
 
-    @Bind(R.id.leaderboard_filter_monthly_activity_container) protected LeaderboardFilterValueSlider minMonthlyActivityView;
-    @Bind(R.id.leaderboard_filter_win_ratio_container) protected LeaderboardFilterValueSlider minWinRatioView;
-    @Bind(R.id.leaderboard_filter_holding_period_container) protected LeaderboardFilterValueSlider minHoldingPeriodView;
-    @Bind(R.id.leaderboard_filter_relative_performance_container) protected LeaderboardFilterValueSlider minRelativePerformanceView;
-    @Bind(R.id.leaderboard_filter_consistency_container) protected MinConsistencyLeaderboardFilterValueSlider minConsistencyView;
-    @Bind(R.id.leaderboard_filter_reset_button) protected View buttonResetFilters;
+    @BindView(R.id.leaderboard_filter_monthly_activity_container) protected LeaderboardFilterValueSlider minMonthlyActivityView;
+    @BindView(R.id.leaderboard_filter_win_ratio_container) protected LeaderboardFilterValueSlider minWinRatioView;
+    @BindView(R.id.leaderboard_filter_holding_period_container) protected LeaderboardFilterValueSlider minHoldingPeriodView;
+    @BindView(R.id.leaderboard_filter_relative_performance_container) protected LeaderboardFilterValueSlider minRelativePerformanceView;
+    @BindView(R.id.leaderboard_filter_consistency_container) protected MinConsistencyLeaderboardFilterValueSlider minConsistencyView;
+    @BindView(R.id.leaderboard_filter_reset_button) protected View buttonResetFilters;
 
     @NonNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
     @Nullable protected LeaderboardDTO leaderboardDTO;

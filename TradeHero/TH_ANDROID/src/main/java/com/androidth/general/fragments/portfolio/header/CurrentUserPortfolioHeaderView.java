@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import android.support.annotation.Nullable;
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
@@ -23,10 +23,10 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
 {
     protected PortfolioCompactDTO portfolioCompactDTO;
 
-    @Bind(R.id.header_portfolio_total_value) protected TextView totalValueTextView;
-    @Bind(R.id.header_portfolio_cash_value) @Nullable protected TextView cashValueTextView;
-    @Bind(R.id.roi_value) @Nullable protected TextView roiTextView;
-    @Bind(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
+    @BindView(R.id.header_portfolio_total_value) protected TextView totalValueTextView;
+    @BindView(R.id.header_portfolio_cash_value) @Nullable protected TextView cashValueTextView;
+    @BindView(R.id.roi_value) @Nullable protected TextView roiTextView;
+    @BindView(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
 
     //<editor-fold desc="Constructors">
     public CurrentUserPortfolioHeaderView(Context context)

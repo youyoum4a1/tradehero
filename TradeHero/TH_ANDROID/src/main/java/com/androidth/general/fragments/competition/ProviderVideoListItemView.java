@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
@@ -22,10 +22,10 @@ public class ProviderVideoListItemView extends RelativeLayout
 {
     @Inject Picasso picasso;
 
-    @Bind(R.id.help_video_thumbnail) protected ImageView thumbnail;
-    @Bind(R.id.help_video_title) protected TextView title;
-    @Bind(R.id.help_video_description) protected TextView description;
-    @Bind(R.id.help_video_url) protected TextView url;
+    @BindView(R.id.help_video_thumbnail) protected ImageView thumbnail;
+    @BindView(R.id.help_video_title) protected TextView title;
+    @BindView(R.id.help_video_description) protected TextView description;
+    @BindView(R.id.help_video_url) protected TextView url;
 
     //<editor-fold desc="Constructors">
     public ProviderVideoListItemView(Context context, AttributeSet attrs)

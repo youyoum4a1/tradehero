@@ -18,7 +18,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -81,13 +81,13 @@ public class MessagesCenterNewFragment extends BaseFragment
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
     @Nullable private MessageListKey nextMoreRecentMessageListKey;
 
-    @Bind(R.id.layout_listview) RelativeLayout layout_listview;
-    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.listview) ListView listView;
-    @Bind(android.R.id.progress) ProgressBar progressBar;
-    @Bind(android.R.id.empty) TextView emptyView;
-    @Bind(R.id.error) View errorView;
-    @Bind(R.id.composeLayout) View composeLayout;
+    @BindView(R.id.layout_listview) RelativeLayout layout_listview;
+    @BindView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.listview) ListView listView;
+    @BindView(android.R.id.progress) ProgressBar progressBar;
+    @BindView(android.R.id.empty) TextView emptyView;
+    @BindView(R.id.error) View errorView;
+    @BindView(R.id.composeLayout) View composeLayout;
 
     private boolean hasMorePage = true;
     private MessageListViewAdapter listAdapter;

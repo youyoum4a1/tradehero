@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.adapters.ExpandableListItem;
 import com.androidth.general.api.position.PositionDTO;
@@ -14,10 +14,10 @@ import com.androidth.general.models.number.THSignedPercentage;
 
 public class PositionPartialBottomClosedView extends AbstractPartialBottomView
 {
-    @Bind(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
-    @Bind(R.id.realised_pl_value) protected TextView realisedPLValue;
-    @Bind(R.id.roi_value) protected TextView roiValue;
-    @Bind(R.id.total_invested_value) protected TextView totalInvestedValue;
+    @BindView(R.id.realised_pl_value_header) protected TextView realisedPLValueHeader;
+    @BindView(R.id.realised_pl_value) protected TextView realisedPLValue;
+    @BindView(R.id.roi_value) protected TextView roiValue;
+    @BindView(R.id.total_invested_value) protected TextView totalInvestedValue;
 
     protected PositionPartialBottomInPeriodViewHolder inPeriodViewHolder;
 

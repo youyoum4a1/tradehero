@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import android.support.annotation.Nullable;
 import com.androidth.general.common.annotation.ViewVisibilityValue;
@@ -26,6 +26,8 @@ import com.androidth.general.network.share.dto.TranslateResult;
 import com.androidth.general.rx.ReplaceWithFunc1;
 import javax.inject.Inject;
 import org.ocpsoft.prettytime.PrettyTime;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -52,14 +54,14 @@ public class AbstractDiscussionCompactItemViewHolder
         //</editor-fold>
     }
 
-    @Bind(R.id.discussion_action_buttons) @Nullable public DiscussionActionButtonsView discussionActionButtonsView;
-    @Bind(R.id.discussion_time) @Nullable protected TextView time;
+    @BindView(R.id.discussion_action_buttons) @Nullable public DiscussionActionButtonsView discussionActionButtonsView;
+    @BindView(R.id.discussion_time) @Nullable protected TextView time;
 
-    @Bind(R.id.private_text_stub_container) @Nullable protected View stubTextContainer;
+    @BindView(R.id.private_text_stub_container) @Nullable protected View stubTextContainer;
 
-    @Bind(R.id.discussion_translate_notice_wrapper) @Nullable protected View translateNoticeWrapper;
-    @Bind(R.id.discussion_translate_notice) @Nullable protected TextView translateNotice;
-    @Bind(R.id.discussion_translate_notice_image) @Nullable protected ImageView translateNoticeImage;
+    @BindView(R.id.discussion_translate_notice_wrapper) @Nullable protected View translateNoticeWrapper;
+    @BindView(R.id.discussion_translate_notice) @Nullable protected TextView translateNotice;
+    @BindView(R.id.discussion_translate_notice_image) @Nullable protected ImageView translateNoticeImage;
 
     @Inject protected SocialShareTranslationHelper socialShareHelper;
 
@@ -67,6 +69,7 @@ public class AbstractDiscussionCompactItemViewHolder
     @Nullable protected DTO viewDTO;
     @NonNull protected final PublishSubject<UserDiscussionAction> userActionSubject;
 
+    private Unbinder unbinder;
     //<editor-fold desc="Constructors">
     public AbstractDiscussionCompactItemViewHolder()
     {
@@ -78,18 +81,18 @@ public class AbstractDiscussionCompactItemViewHolder
     public void onFinishInflate(@NonNull View view)
     {
         HierarchyInjector.inject(view.getContext(), this);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
     }
 
     public void onAttachedToWindow(@NonNull View view)
     {
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
     }
 
     @SuppressLint("MissingSuperCall")
     public void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @NonNull public Observable<UserDiscussionAction> getUserActionObservable()

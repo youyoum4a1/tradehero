@@ -11,6 +11,8 @@ import android.view.View;
 import butterknife.ButterKnife;
 import com.androidth.general.R;
 import com.androidth.general.inject.HierarchyInjector;
+
+import butterknife.Unbinder;
 import rx.Subscription;
 import rx.internal.util.SubscriptionList;
 
@@ -18,7 +20,7 @@ public abstract class BaseDialogSupportFragment extends DialogFragment
 {
     private OnDismissedListener dismissedListener;
     @NonNull protected SubscriptionList onStopSubscriptions;
-
+    private Unbinder unbinder;
     @Override @NonNull public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
@@ -41,7 +43,7 @@ public abstract class BaseDialogSupportFragment extends DialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
     }
 
     @Override public void onStart()
@@ -58,7 +60,7 @@ public abstract class BaseDialogSupportFragment extends DialogFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

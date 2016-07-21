@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
@@ -44,6 +44,8 @@ import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.route.THRouter;
 import java.util.List;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -64,11 +66,11 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject THRouter router;
 
-    @Bind(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.follower_list) RecyclerView followerList;
-    @Bind(android.R.id.progress) ProgressBar progressBar;
-    @Bind(R.id.followers_broadcast_button) Button broadcast;
-    @Bind(R.id.empty_view_stub) ViewStub emptyStub;
+    @BindView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.follower_list) RecyclerView followerList;
+    @BindView(android.R.id.progress) ProgressBar progressBar;
+    @BindView(R.id.followers_broadcast_button) Button broadcast;
+    @BindView(R.id.empty_view_stub) ViewStub emptyStub;
     @Nullable View emptyView;
 
     @RouteProperty("heroId") Integer routedHeroId;
@@ -76,6 +78,8 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
     private FollowerRecyclerItemAdapter followerRecyclerAdapter;
     private UserBaseKey heroId;
     private FollowerSummaryDTO followerSummaryDTO;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Argument passing">
     public static void putHeroId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
@@ -116,7 +120,7 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         if(!isCurrentUser())
         {
@@ -243,7 +247,7 @@ public class FollowersFragment extends DashboardFragment implements SwipeRefresh
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

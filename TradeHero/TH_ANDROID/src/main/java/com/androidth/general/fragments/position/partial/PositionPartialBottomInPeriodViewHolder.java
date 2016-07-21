@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import android.support.annotation.Nullable;
 import com.androidth.general.common.annotation.ViewVisibilityValue;
 import com.androidth.general.R;
@@ -18,15 +18,15 @@ import com.androidth.general.utils.DateUtils;
 
 public class PositionPartialBottomInPeriodViewHolder implements DTOView<PositionPartialBottomInPeriodViewHolder.DTO>
 {
-    @Bind(R.id.position_list_bottom_in_period_container) @Nullable protected View inPeriodPositionContainer;
-    @Bind(R.id.position_list_in_period_title) @Nullable protected View inPeriodTitle;
-    @Bind(R.id.position_list_overall_title) @Nullable protected View overallTitle;
-    @Bind(R.id.in_period_pl_value_header) @Nullable protected TextView inPeriodPLHeader;
-    @Bind(R.id.in_period_pl_value) @Nullable protected TextView inPeriodPL;
-    @Bind(R.id.in_period_additional_invested) @Nullable protected TextView inPeriodAdditionalInvested;
-    @Bind(R.id.in_period_start_value) @Nullable protected TextView inPeriodValueAtStart;
-    @Bind(R.id.in_period_start_value_date) @Nullable protected TextView inPeriodStartValueDate;
-    @Bind(R.id.in_period_roi_value) @Nullable protected TextView inPeriodRoiValue;
+    @BindView(R.id.position_list_bottom_in_period_container) @Nullable protected View inPeriodPositionContainer;
+    @BindView(R.id.position_list_in_period_title) @Nullable protected View inPeriodTitle;
+    @BindView(R.id.position_list_overall_title) @Nullable protected View overallTitle;
+    @BindView(R.id.in_period_pl_value_header) @Nullable protected TextView inPeriodPLHeader;
+    @BindView(R.id.in_period_pl_value) @Nullable protected TextView inPeriodPL;
+    @BindView(R.id.in_period_additional_invested) @Nullable protected TextView inPeriodAdditionalInvested;
+    @BindView(R.id.in_period_start_value) @Nullable protected TextView inPeriodValueAtStart;
+    @BindView(R.id.in_period_start_value_date) @Nullable protected TextView inPeriodStartValueDate;
+    @BindView(R.id.in_period_roi_value) @Nullable protected TextView inPeriodRoiValue;
 
     //<editor-fold desc="Constructors">
     public PositionPartialBottomInPeriodViewHolder(@NonNull View container)

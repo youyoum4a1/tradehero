@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.androidth.general.common.fragment.HasSelectedItem;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -36,6 +36,8 @@ import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.widget.MultiScrollListener;
 import java.util.List;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -50,10 +52,10 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
 {
     private static final String DISCUSSION_KEY_BUNDLE_KEY = AbstractDiscussionFragment.class.getName() + ".discussionKey";
 
-    @Bind(android.R.id.list) protected ListView discussionList;
-    @Bind(R.id.post_comment_text) @Nullable protected EditText postCommentText;
-    @Bind(R.id.mention_widget) @Nullable protected MentionActionButtonsView mentionActionButtonsView;
-    @Bind(R.id.discussion_comment_widget) @Nullable protected PostCommentView postCommentView;
+    @BindView(android.R.id.list) protected ListView discussionList;
+    @BindView(R.id.post_comment_text) @Nullable protected EditText postCommentText;
+    @BindView(R.id.mention_widget) @Nullable protected MentionActionButtonsView mentionActionButtonsView;
+    @BindView(R.id.discussion_comment_widget) @Nullable protected PostCommentView postCommentView;
 
     @Inject protected DiscussionCacheRx discussionCache;
     @Inject protected DiscussionListCacheRx discussionListCache;
@@ -67,6 +69,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     private Subscription hasSelectedSubscription;
     private PublishSubject<Boolean> nearEdgeSubject; // True means start reached, False means end reached
 
+    private Unbinder unbinder;
     //region Inflow bundling
     public static void putDiscussionKey(@NonNull Bundle args, @NonNull DiscussionKey discussionKey)
     {
@@ -95,7 +98,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         discussionList.setOnScrollListener(new MultiScrollListener(fragmentElements.getListViewScrollListener(), createListScrollListener()));
 
         onDestroyViewSubscriptions.add(getTopicViewObservable()
@@ -170,7 +173,7 @@ abstract public class AbstractDiscussionFragment extends BaseFragment
         unsubscribe(hasSelectedSubscription);
         hasSelectedSubscription = null;
         mentionTaggedStockHandler.setDiscussionPostContent(null);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

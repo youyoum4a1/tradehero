@@ -5,7 +5,9 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.Unbinder;
+
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.i18n.LanguageDTO;
@@ -13,22 +15,24 @@ import com.androidth.general.api.translation.UserTranslationSettingDTO;
 
 public class TranslatableLanguageItemViewHolder implements DTOView<LanguageDTO>
 {
-    @Bind(R.id.translatable_text_code) protected TextView languageCode;
-    @Bind(R.id.translatable_text_local) protected  TextView languageName;
-    @Bind(R.id.translatable_text_own_language) protected TextView languageNameOwn;
-    @Bind(R.id.translatable_tick_is_current) protected View isCurrentView;
+    @BindView(R.id.translatable_text_code) protected TextView languageCode;
+    @BindView(R.id.translatable_text_local) protected  TextView languageName;
+    @BindView(R.id.translatable_text_own_language) protected TextView languageNameOwn;
+    @BindView(R.id.translatable_tick_is_current) protected View isCurrentView;
 
     @Nullable private UserTranslationSettingDTO currentTranslationSetting;
     private LanguageDTO languageDTO;
 
+    private Unbinder unbinder;
+
     public void initViews(@NonNull View view)
     {
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
     }
 
     public void resetViews()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     public void setCurrentTranslationSetting(@Nullable UserTranslationSettingDTO currentTranslationSetting)

@@ -10,6 +10,8 @@ import android.support.v4.app.DialogFragment;
 import butterknife.ButterKnife;
 import com.androidth.general.R;
 import com.androidth.general.inject.HierarchyInjector;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscription;
 import rx.internal.util.SubscriptionList;
@@ -19,6 +21,8 @@ public abstract class BaseDialogFragment extends DialogFragment
 {
     private BehaviorSubject<DialogInterface> dismissedSubject;
     @NonNull protected SubscriptionList onStopSubscriptions;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     public BaseDialogFragment()
@@ -62,7 +66,7 @@ public abstract class BaseDialogFragment extends DialogFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

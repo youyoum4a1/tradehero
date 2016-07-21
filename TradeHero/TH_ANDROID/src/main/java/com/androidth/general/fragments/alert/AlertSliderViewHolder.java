@@ -1,7 +1,7 @@
 package com.androidth.general.fragments.alert;
 
 import android.support.annotation.NonNull;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.alert.AlertDTO;
 import rx.Observable;
@@ -11,8 +11,8 @@ import rx.functions.Func2;
 
 public class AlertSliderViewHolder
 {
-    @Bind(R.id.alert_slider_target) AlertSliderView alertSliderTarget;
-    @Bind(R.id.alert_slider_percentage) AlertSliderView alertSliderPercentage;
+    @BindView(R.id.alert_slider_target) AlertSliderView alertSliderTarget;
+    @BindView(R.id.alert_slider_percentage) AlertSliderView alertSliderPercentage;
 
     private Status currentStatus;
 

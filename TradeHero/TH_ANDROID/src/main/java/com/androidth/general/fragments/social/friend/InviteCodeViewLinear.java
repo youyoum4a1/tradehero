@@ -7,7 +7,7 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
 import com.androidth.general.api.users.CurrentUserId;
@@ -16,6 +16,8 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -26,11 +28,13 @@ public class InviteCodeViewLinear extends LinearLayout
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
 
-    @Bind(R.id.btn_cancel) View cancelButton;
-    @Bind(R.id.btn_send_code) View sendCodeButton;
-    @Bind(R.id.btn_cancel_submit) View cancelSubmitButton;
+    @BindView(R.id.btn_cancel) View cancelButton;
+    @BindView(R.id.btn_send_code) View sendCodeButton;
+    @BindView(R.id.btn_cancel_submit) View cancelSubmitButton;
 
     @Nullable private Subscription userProfileCacheSubscription;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration") public InviteCodeViewLinear(Context context, AttributeSet attrs)
@@ -43,7 +47,7 @@ public class InviteCodeViewLinear extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         if (!isInEditMode())
         {
             viewHolder.attachView(this);
@@ -53,7 +57,7 @@ public class InviteCodeViewLinear extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         if (!isInEditMode())
         {
             viewHolder.attachView(this);
@@ -66,7 +70,7 @@ public class InviteCodeViewLinear extends LinearLayout
         userProfileCacheSubscription = null;
         detachUserProfileCache();
         viewHolder.detachView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

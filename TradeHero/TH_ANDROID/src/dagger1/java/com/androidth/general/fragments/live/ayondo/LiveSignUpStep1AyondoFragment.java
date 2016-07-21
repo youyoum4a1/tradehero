@@ -94,9 +94,10 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import rx.Observable;
 import rx.Subscription;
@@ -134,24 +135,24 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final String KEY_EXPECTED_SMS_CODE = LiveSignUpStep1AyondoFragment.class.getName() + ".expectedCode";
     private static final String KEY_SMS_ID = LiveSignUpStep1AyondoFragment.class.getName() + ".smsId";
 
-    @Bind(R.id.nric_number) EditText nricNumber;
-    @Bind(R.id.info_title) Spinner title;
-    @Bind(R.id.info_first_name) EditText firstName;
-    @Bind(R.id.info_last_name) EditText lastName;
-    @Bind(R.id.sign_up_email) EditText email;
-    @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
-    @Bind(R.id.info_phone_number) EditText phoneNumber;
-    @Bind(R.id.info_dob) TextView dob;
-    @Bind(R.id.step_1_tnc_checkbox) CheckBox tncCheckbox;
-    @Bind(R.id.step_1_tnc) TextView termsCond;
+    @BindView(R.id.nric_number) EditText nricNumber;
+    @BindView(R.id.info_title) Spinner title;
+    @BindView(R.id.info_first_name) EditText firstName;
+    @BindView(R.id.info_last_name) EditText lastName;
+    @BindView(R.id.sign_up_email) EditText email;
+    @BindView(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
+    @BindView(R.id.info_phone_number) EditText phoneNumber;
+    @BindView(R.id.info_dob) TextView dob;
+    @BindView(R.id.step_1_tnc_checkbox) CheckBox tncCheckbox;
+    @BindView(R.id.step_1_tnc) TextView termsCond;
 
-    @Bind(R.id.email_verify_button) KYCVerifyButton emailVerifybutton;
-    @Bind(R.id.nric_verify_button) KYCVerifyButton nricVerifyButton;
-    @Bind(R.id.phone_verify_button) KYCVerifyButton phoneVerifyButton;
+    @BindView(R.id.email_verify_button) KYCVerifyButton emailVerifybutton;
+    @BindView(R.id.nric_verify_button) KYCVerifyButton nricVerifyButton;
+    @BindView(R.id.phone_verify_button) KYCVerifyButton phoneVerifyButton;
 
-    @Bind(R.id.residence_state) Spinner spinnerResidenceState;
-    @Bind(R.id.how_you_know_th) Spinner spinnerHowYouKnowTH;
-    @Bind(R.id.btn_join_competition) Button joinCompetitionButton;
+    @BindView(R.id.residence_state) Spinner spinnerResidenceState;
+    @BindView(R.id.how_you_know_th) Spinner spinnerHowYouKnowTH;
+    @BindView(R.id.btn_join_competition) Button joinCompetitionButton;
 
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderListCacheRx providerListCache;
@@ -172,6 +173,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private int providerIdInt = 0;
     private VerifyEmailDialogFragment vedf;
     private boolean hasClickedJoinButton = false;
+
+    private Unbinder unbinder;
 
     Observable<ArrayList<ProviderQuestionnaireDTO>> proQuesList;
 
@@ -207,7 +210,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(getActivity());
+        unbinder = ButterKnife.bind(getActivity());
         termsCond.setOnClickListener(click->{
             Bundle args = new Bundle();
             BaseWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
@@ -903,7 +906,7 @@ dismissLocalProgressDialog();
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

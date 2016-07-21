@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.common.widget.BetterViewAnimator;
@@ -30,6 +30,8 @@ import com.androidth.general.network.service.NotificationServiceWrapper;
 import com.androidth.general.persistence.notification.NotificationListCacheRx;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.EndlessScrollingHelper;
+
+import butterknife.Unbinder;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.android.schedulers.AndroidSchedulers;
@@ -38,10 +40,10 @@ import rx.internal.util.SubscriptionList;
 
 public class NotificationsView extends BetterViewAnimator
 {
-    @Bind(android.R.id.empty) View emptyView;
-    @Bind(R.id.notification_pull_to_refresh_list) AbsListView notificationList;
-    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.readAllLayout) View readAllLayout;
+    @BindView(android.R.id.empty) View emptyView;
+    @BindView(R.id.notification_pull_to_refresh_list) AbsListView notificationList;
+    @BindView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.readAllLayout) View readAllLayout;
 
     @Inject Lazy<NotificationListCacheRx> notificationListCache;
     @Inject NotificationServiceWrapper notificationServiceWrapper;
@@ -56,6 +58,7 @@ public class NotificationsView extends BetterViewAnimator
     private ArrayDTOAdapterNew<NotificationDTO, NotificationItemView> notificationListAdapter;
     private SwipeRefreshLayout.OnRefreshListener notificationRefreshListener;
 
+    private Unbinder unbinder;
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
     public NotificationsView(Context context)
@@ -81,7 +84,7 @@ public class NotificationsView extends BetterViewAnimator
     {
         super.onFinishInflate();
 
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         HierarchyInjector.inject(this);
 
         notificationListAdapter = createNotificationListAdapter();
@@ -136,7 +139,7 @@ public class NotificationsView extends BetterViewAnimator
         swipeRefreshLayout.setOnRefreshListener(null);
         notificationList.setOnItemClickListener(null);
 
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

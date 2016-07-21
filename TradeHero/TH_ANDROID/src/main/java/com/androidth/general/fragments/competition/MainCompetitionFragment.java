@@ -87,10 +87,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import butterknife.Unbinder;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import rx.Observable;
@@ -111,9 +112,9 @@ public class MainCompetitionFragment extends DashboardFragment
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             MainCompetitionFragment.class.getName() + ".purchaseApplicablePortfolioId";
 
-    @Bind(android.R.id.progress) ProgressBar progressBar;
-    @Bind(R.id.competition_zone_list) AbsListView listView;
-    @Bind(R.id.btn_trade_now) Button btnTradeNow;
+    @BindView(android.R.id.progress) ProgressBar progressBar;
+    @BindView(R.id.competition_zone_list) AbsListView listView;
+    @BindView(R.id.btn_trade_now) Button btnTradeNow;
 
     private CompetitionZoneListItemAdapter competitionZoneListItemAdapter;
 
@@ -147,6 +148,8 @@ public class MainCompetitionFragment extends DashboardFragment
     protected List<ProviderPrizePoolDTO> providerPrizePoolDTOs;
     private List<CompetitionPreSeasonDTO> competitionPreSeasonDTOs;
     private OwnedPortfolioId applicablePortfolioId;
+
+    private Unbinder unbinder;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
@@ -204,7 +207,7 @@ public class MainCompetitionFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 //        this.progressBar.setVisibility(View.VISIBLE);
         this.listView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
 
@@ -256,7 +259,7 @@ public class MainCompetitionFragment extends DashboardFragment
     @Override public void onDestroyView()
     {
         this.listView.setOnScrollListener(null);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

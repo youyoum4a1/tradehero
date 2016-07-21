@@ -10,14 +10,17 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemSelected;
+import butterknife.Unbinder;
+
 import com.androidth.general.R;
 
 public final class NewsPagerFragment extends Fragment
 {
-    @Bind(R.id.spinner_news) Spinner newsSpinner;
+    @BindView(R.id.spinner_news) Spinner newsSpinner;
 
+    private Unbinder unbinder;
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.discovery_news_pager, container, false);
@@ -26,13 +29,13 @@ public final class NewsPagerFragment extends Fragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         newsSpinner.setAdapter(new NewsSpinnerAdapter(getActivity(), NewsType.values()));
     }
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

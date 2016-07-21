@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
@@ -34,6 +34,8 @@ import com.androidth.general.persistence.system.SystemStatusCache;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -53,16 +55,18 @@ public class SettingsReferralCodeFragment extends BaseFragment
     @Inject SystemStatusCache systemStatusCache;
     @Inject SocialShareHelper socialShareHelper;
 
-    @Bind(R.id.invite_code_claimed_switcher) ViewSwitcher alreadyClaimedSwitcher;
-    @Bind(R.id.txt_message_2) TextView message2;
-    @Bind(R.id.txt_message_3) TextView message3;
-    @Bind(R.id.txt_message_4) TextView message4;
-    @Bind(R.id.btn_referral_copy) View btnCopy;
-    @Bind(R.id.btn_referral_share) View btnShare;
-    @Bind(R.id.settings_referral_code) TextView mReferralCode;
+    @BindView(R.id.invite_code_claimed_switcher) ViewSwitcher alreadyClaimedSwitcher;
+    @BindView(R.id.txt_message_2) TextView message2;
+    @BindView(R.id.txt_message_3) TextView message3;
+    @BindView(R.id.txt_message_4) TextView message4;
+    @BindView(R.id.btn_referral_copy) View btnCopy;
+    @BindView(R.id.btn_referral_share) View btnShare;
+    @BindView(R.id.settings_referral_code) TextView mReferralCode;
 
     private ClipboardManager clipboardManager;
     private UserProfileDTO userProfileDTO;
+
+    private Unbinder unbinder;
 
     @Override public void onAttach(Activity activity)
     {
@@ -78,7 +82,7 @@ public class SettingsReferralCodeFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         message2.setText(Html.fromHtml(getString(MESSAGE_2)));
     }
 
@@ -97,7 +101,7 @@ public class SettingsReferralCodeFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

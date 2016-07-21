@@ -25,8 +25,9 @@ import com.tradehero.route.RouteProperty;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 ;
 
@@ -38,14 +39,15 @@ public class DiscoveryMainFragment extends DashboardFragment
     //TODO Change Analytics
     //@Inject Analytics analytics;
     @Inject THRouter thRouter;
-    @Bind(R.id.pager) ViewPager tabViewPager;
-    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @BindView(R.id.pager) ViewPager tabViewPager;
+    @BindView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     @RouteProperty("tabIndex") Integer tabIndex;
     private DiscoveryPagerAdapter discoveryPagerAdapter;
     private long beginTime;
     private int oldPageItem;
 
+    private Unbinder unbinder;
     //private BaseLiveFragmentUtil liveFragmentUtil;
 
     public static void registerAliases(@NonNull THRouter router)
@@ -70,7 +72,7 @@ public class DiscoveryMainFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         tabViewPager.setAdapter(discoveryPagerAdapter);
         if (!Constants.RELEASE)
         {
@@ -136,7 +138,7 @@ public class DiscoveryMainFragment extends DashboardFragment
         //liveFragmentUtil = null;
         reportAnalytics();
         tabViewPager.setAdapter(null);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Gallery;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.R;
 import com.androidth.general.api.security.SecurityCompactDTOList;
@@ -19,6 +19,8 @@ import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.utils.route.THRouter;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -27,10 +29,12 @@ import rx.functions.Action1;
 public class OnBoardLastFragment extends BaseFragment
 {
     @Inject THRouter thRouter;
-    @Bind(R.id.favorite_gallery) Gallery favoriteGallery;
+    @BindView(R.id.favorite_gallery) Gallery favoriteGallery;
     Observable<SecurityCompactDTOList> selectedSecuritiesObservable;
 
     private OnBoardFavoriteAdapter favoriteAdapter;
+
+    private Unbinder unbinder;
 
     @Override public void onAttach(Activity activity)
     {
@@ -47,7 +51,7 @@ public class OnBoardLastFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         favoriteGallery.setAdapter(favoriteAdapter);
     }
 
@@ -59,7 +63,7 @@ public class OnBoardLastFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

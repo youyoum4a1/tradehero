@@ -16,6 +16,8 @@ import com.androidth.general.fragments.base.BaseDialogSupportFragment;
 import com.androidth.general.models.alert.SecurityAlertCountingHelper;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -26,6 +28,8 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
     @Inject protected SecurityAlertCountingHelper securityAlertCountingHelper;
 
     BaseAlertEditFragmentHolder viewHolder;
+
+    private Unbinder unbinder;
 
     @NonNull @Override public Dialog onCreateDialog(@NonNull Bundle savedInstanceState)
     {
@@ -43,9 +47,9 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
-        ButterKnife.bind(viewHolder, view);
-        ButterKnife.bind(viewHolder.alertSliderViewHolder, view);
+        unbinder = ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(viewHolder, view);
+        unbinder = ButterKnife.bind(viewHolder.alertSliderViewHolder, view);
     }
 
     @Override public void onStart()
@@ -62,7 +66,7 @@ abstract public class BaseAlertEditDialogFragment extends BaseDialogSupportFragm
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

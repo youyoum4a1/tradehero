@@ -7,7 +7,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.Unbinder;
+
 import com.androidth.general.common.api.SelectableDTO;
 import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.R;
@@ -19,8 +21,9 @@ public class OnBoardSelectableViewLinear<
         SelectableDTOType extends SelectableDTO<ValueDTOType>> extends LinearLayout
         implements DTOView<SelectableDTOType>
 {
-    @Bind(android.R.id.icon2) View selectedView;
+    @BindView(android.R.id.icon2) View selectedView;
     private final float alphaUnSelected;
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     public OnBoardSelectableViewLinear(Context context)
@@ -56,7 +59,7 @@ public class OnBoardSelectableViewLinear<
         HierarchyInjector.inject(this);
         if (!isInEditMode())
         {
-            ButterKnife.bind(this);
+            unbinder = ButterKnife.bind(this);
         }
     }
 
@@ -65,13 +68,13 @@ public class OnBoardSelectableViewLinear<
         super.onAttachedToWindow();
         if (!isInEditMode())
         {
-            ButterKnife.bind(this);
+            unbinder = ButterKnife.bind(this);
         }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

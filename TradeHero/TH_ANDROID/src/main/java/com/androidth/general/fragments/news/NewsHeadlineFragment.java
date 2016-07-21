@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -37,6 +37,8 @@ import com.androidth.general.persistence.security.SecurityCompactCacheRx;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.metrics.AnalyticsConstants;
+
+import butterknife.Unbinder;
 import dagger.Lazy;
 import java.util.List;
 import javax.inject.Inject;
@@ -62,9 +64,11 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
     @Inject DiscussionFragmentUtil discussionFragmentUtil;
     @Inject FragmentOuterElements fragmentElements;
 
-    @Bind(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
-    @Bind(R.id.list_news_headline) ListView listView;
-    @Bind(R.id.list_news_headline_progressbar) ProgressBar progressBar;
+    @BindView(R.id.list_news_headline_wrapper) BetterViewAnimator listViewWrapper;
+    @BindView(R.id.list_news_headline) ListView listView;
+    @BindView(R.id.list_news_headline_progressbar) ProgressBar progressBar;
+
+    private Unbinder unbinder;
 
     private NewsHeadlineAdapter adapter;
 
@@ -89,7 +93,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         listView.setAdapter(adapter);
         listView.setOnScrollListener(fragmentElements.getListViewScrollListener());
         fetchSecurityNews();
@@ -102,7 +106,7 @@ public class NewsHeadlineFragment extends AbstractSecurityInfoFragment
         {
             listView.setOnScrollListener(null);
         }
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

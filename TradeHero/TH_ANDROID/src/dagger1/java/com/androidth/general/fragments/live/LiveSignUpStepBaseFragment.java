@@ -26,7 +26,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.Subscription;
@@ -42,8 +42,8 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @Inject LiveBrokerSituationPreference liveBrokerSituationPreference;
     @Inject protected KYCFormOptionsCache kycFormOptionsCache;
 
-    @Bind(R.id.btn_prev) @Nullable protected View btnPrev;
-    @Bind(R.id.btn_next) @Nullable protected View btnNext;
+    @BindView(R.id.btn_prev) @Nullable protected View btnPrev;
+    @BindView(R.id.btn_next) @Nullable protected View btnNext;
 
     @NonNull protected PublishSubject<Boolean> prevNextSubject;
     @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;

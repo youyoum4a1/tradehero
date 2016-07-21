@@ -3,13 +3,13 @@ package com.androidth.general.fragments.leaderboard.filter;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.models.number.THSignedNumber;
 
 public class MinConsistencyLeaderboardFilterValueSlider extends LeaderboardFilterValueSlider
 {
-    @Bind(R.id.leaderboard_filter_max) TextView maxValueText;
+    @BindView(R.id.leaderboard_filter_max) TextView maxValueText;
 
     //<editor-fold desc="Constructors">
     public MinConsistencyLeaderboardFilterValueSlider(Context context)

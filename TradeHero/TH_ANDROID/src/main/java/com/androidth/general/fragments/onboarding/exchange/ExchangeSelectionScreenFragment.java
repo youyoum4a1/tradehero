@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
@@ -43,6 +43,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -69,9 +71,9 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @Inject UserProfileCacheRx userProfileCache;
 
     MarketRegionSwitcherView mapHeaderSwitcherView;
-    @Bind(android.R.id.list) ListView exchangeList;
-    @Bind(android.R.id.button2) View backButton;
-    @Bind(android.R.id.button1) View nextButton;
+    @BindView(android.R.id.list) ListView exchangeList;
+    @BindView(android.R.id.button2) View backButton;
+    @BindView(android.R.id.button1) View nextButton;
     ArrayAdapter<SelectableExchangeDTO> exchangeAdapter;
     @Nullable MarketRegion initialRegion;
     boolean hadInitialExchangeSelected;
@@ -81,6 +83,8 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @NonNull BehaviorSubject<MarketRegion> selectedRegionSubject;
     @NonNull BehaviorSubject<ExchangeCompactDTOList> selectedExchangesSubject;
     @NonNull PublishSubject<Boolean> nextClickedSubject;
+
+    private Unbinder unbinder;
 
     public static void putRequisites(@NonNull Bundle args,
             @Nullable MarketRegion initialRegion,
@@ -166,7 +170,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         exchangeList.addHeaderView(LayoutInflater.from(getActivity()).inflate(R.layout.on_board_started_header, null), "title", false);
         exchangeList.addHeaderView(mapHeaderSwitcherView, MAP_ITEM_DTO, true);
         exchangeList.setAdapter(exchangeAdapter);
@@ -182,7 +186,7 @@ public class ExchangeSelectionScreenFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

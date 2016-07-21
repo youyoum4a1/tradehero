@@ -15,12 +15,11 @@ buildscript {
 
         maven { url "https://jitpack.io" }
 
-
         //crashlytics is fabric now
         //maven { url 'http://download.crashlytics.com/maven' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
+        classpath "com.android.tools.build:gradle:${GRADLE_VERSION}"
         classpath 'io.fabric.tools:gradle:1.+'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.fernandocejas.frodo:frodo-plugin:0.8.1'
@@ -46,7 +45,7 @@ project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.fernandocejas.frodo'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'realm-android'
@@ -89,9 +88,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    compileSdkVersion 23
+    compileSdkVersion 24
 
-    buildToolsVersion "24.0.0"
+    buildToolsVersion "24.0.1"
     //useOldManifestMerger=true
 
     dexOptions {
@@ -140,12 +139,12 @@ android {
         release {
             resValue "string", "google_places_api_key", "AIzaSyDUqz0A077IaXZ-8SNwGmpqzEEzL-d2yFc"
             minifyEnabled true
-            proguardFile 'proguard/proguard-android.txt'
+            proguardFile 'proguard/proguard-android-fast.txt'
             shrinkResources false
             multiDexEnabled true
             signingConfig signingConfigs.release
 
-            debuggable true
+//            debuggable true
         }
     }
 
@@ -230,7 +229,7 @@ android {
 
         release {
             java {
-                srcDir 'src/dagger1Release/java'
+                srcDir 'src/dagger1Debug/java'
             }
         }
 
@@ -377,7 +376,7 @@ android {
 
         tradeHeroDebug {
             java {
-                srcDir 'src/tradeHeroDebug/java'
+                srcDir 'src/tradeHero/java'
             }
             res {
                 srcDir 'src/tradeHero/res'
@@ -574,25 +573,38 @@ android {
 }
 
 dependencies {
+
     // Helper here http://gradleplease.appspot.com
     androidTestCompile "junit:junit:${JUNIT_VERSION}"
     testCompile "junit:junit:${JUNIT_VERSION}"
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    releaseCompile fileTree(include: ['*.jar'], dir: 'libs/analytics')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    releaseCompile fileTree(dir: 'libs/analytics', include: ['*.jar'])
     // For swipelistview
+
     // for qq
-    releaseCompile fileTree(include: ['*.jar'], dir: 'libs/qq')
+    releaseCompile fileTree(dir: 'libs/qq', include: ['*.jar'])
     //  samsungCompile 'com.sec.android.iap:library:3.0@aar'//jeff
+
     //  samsungCompile 'com.sec.android.iap:library:3.0@aar'//jeff
+
     // TODO confirm on a hardware that it is "provided" and not "compile"
+
     //  amazonCompile 'com.amazon:in-app-purchasing:2.0.61'//jeff
+
     //  testAmazonCompile 'com.amazon:in-app-purchasing:2.0.0'
+
     // This does not work as we would hope. Second "setProperty" wins
+
     //def fbproj = project(':facebook-android-sdk:facebook')
+
     //fbproj.ext.TEST_GOOGLE_PLAY = "true" // Swap to this one for others
+
     ////fbproj.ext.TEST_GOOGLE_PLAY = "false" // Swap to this one for Amazon
+
     //compile(fbproj) {
+
     //  exclude group: 'com.android.support', module: 'support-v4'
+
     //}
     debugCompile 'com.facebook.android:library:3.15.0@aar'
     // 3.19.1 gives 65k error
@@ -604,21 +616,27 @@ dependencies {
     compile "com.android.support:design:${SUPPORT_V7_VERSION}"
     compile "com.android.support:cardview-v7:${SUPPORT_V7_VERSION}"
     compile "com.android.support:design:${SUPPORT_V7_VERSION}"
+    compile 'com.appsflyer:af-android-sdk:4+@aar'
+    //    releaseCompile "com.appsflyer:library:${APPS_FLYER_VERSION}"//jeff
     compile('com.twitter.sdk.android:twitter-core:1.7.0@aar') {
         transitive = true;
     }
-    compile 'com.appsflyer:af-android-sdk:4+@aar'
-//    releaseCompile "com.appsflyer:library:${APPS_FLYER_VERSION}"//jeff
     //  googleplayCompile 'com.android.support:multidex:1.0.1'//jeff
+
     //  samsungCompile 'com.android.support:multidex:1.0.1' //jeff
+
     //provided 'proguard:annotations:4.6'
     compile("se.emilsjolander:stickylistheaders:${STICKY_LIST_HEADERS_VERSION}@aar") {
         exclude group: 'com.google.android', module: 'support-v4'
     }
     //  compile('com.fortysevendeg.swipelistview:swipelistview:1.0-SNAPSHOT@aar') {
+
     //    transitive = true
+
     //    exclude group: 'com.nineoldandroids', module: 'library'
+
     //    // exclude group: 'com.android.support', module: 'appcompat-v7'
+
     //  }
     compile('com.github.lawloretienne:quickreturn:0.0.1') {
         exclude group: 'com.android.support', module: 'support-v13'
@@ -627,29 +645,32 @@ dependencies {
         exclude group: 'com.nineoldandroids', module: 'library'
     }
     compile('com.squareup.picasso:picasso:2.5.2') {
-        exclude group: "com.squareup.okhttp", module: "okhttp"
-        exclude group: "com.squareup.okhttp", module: "okhttp-urlconnection"
+        exclude group: "com.squareup.okhttp3", module: "okhttp"
+        exclude group: "com.squareup.okhttp3", module: "okhttp-urlconnection"
     }
-    compile "com.squareup.okhttp:okhttp:${OKHTTP_VERSION}"
-    compile("com.squareup.okhttp:okhttp-urlconnection:${OKHTTP_VERSION}") {
-        exclude group: "com.squareup.okhttp", module: "okhttp"
+
+    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.0.2'
+    compile "com.squareup.okhttp3:okhttp:${OKHTTP_VERSION}"
+    compile("com.squareup.okhttp3:okhttp-urlconnection:${OKHTTP_VERSION}") {
+        exclude group: "com.squareup.okhttp3", module: "okhttp"
     }
-    compile("com.squareup.retrofit:retrofit:${RETROFIT_VERSION}") {
+    compile("com.squareup.retrofit2:retrofit:${RETROFIT_VERSION}") {
         exclude module: 'gson'
         exclude module: 'rxjava'
     }
-    compile("com.squareup.retrofit:converter-jackson:${RETROFIT_VERSION}") {
+    compile("com.squareup.retrofit2:converter-jackson:${CONVERTER_JACKSON_VERSION}") {
         exclude module: 'gson'
-        exclude group: 'com.squareup.retrofit', module: 'retrofit'
+        exclude group: 'com.squareup.retrofit2', module: 'retrofit'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-databind'
     }
-
-    compile ('com.github.JakeWharton:ViewPagerIndicator:2.4.1'){
+    compile('com.github.JakeWharton:ViewPagerIndicator:2.4.1') {
         exclude group: 'com.google.android', module: 'support-v4'
     }
     compile "in.srain.cube:grid-view-with-header-footer:${GRID_VIEW_WITH_HEADER_VERSION}"
     //Dont need these anymore
+
     //Deleted the dependency
+
     //compile 'com.tradehero:metrics:2.1.1-SNAPSHOT'
     compile "com.squareup.dagger:dagger:${DAGGER_VERSION}"
     provided "com.squareup.dagger:dagger-compiler:${DAGGER_VERSION}"
@@ -712,61 +733,64 @@ dependencies {
     if (project.ext.isIntelliJ && file('build/test-classes').exists()) {
         testCompile files('build/test-classes')
     }
-  compile("oauth.signpost:signpost-core:${SIGNPOST_VERSION}") {
-    exclude group: 'commons-codec', module: 'commons-codec'
-  }
-  compile("oauth.signpost:signpost-commonshttp4:${SIGNPOST_VERSION}") {
-    exclude group: 'commons-logging', module: 'commons-logging'
-    exclude group: 'commons-codec', module: 'commons-codec'
-    exclude group: 'org.apache.httpcomponents', module: 'httpcore'
-    exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-  }
-
-
-  releaseCompile("com.localytics.android:library:${LOCALYTICS_VERSION}") {
-    exclude group: 'com.google.android', module: 'support-v4'
-  }
-  compile "org.ocpsoft.prettytime:prettytime:${PRETTY_TIME_VERSION}"
-  compile("com.jakewharton:butterknife:${BUTTER_KNIFE_VERSION}") {
-    exclude group: 'se.emilsjolander', module: 'stickylistheaders'
-  }
-
-  compile "com.jumio.android:core:${JUMIO_SDK_VERSION}@aar"
-  compile "com.jumio.android:nv:${JUMIO_SDK_VERSION}@aar"
-  compile "com.neovisionaries:nv-i18n:${NV_I18N_VERSION}"
-  compile "com.googlecode.libphonenumber:libphonenumber:${LIB_PHONE_NUMBER_VERSION}"
-
-  // For Test
-  testCompile('org.robolectric:robolectric:3.0-rc2') {
-    exclude module: 'classworlds'
-    exclude module: 'commons-logging'
-    exclude module: 'httpclient'
-    exclude module: 'maven-artifact'
-    exclude module: 'maven-artifact-manager'
-    exclude module: 'maven-error-diagnostics'
-    exclude module: 'maven-model'
-    exclude module: 'maven-project'
-    exclude module: 'maven-settings'
-    exclude module: 'plexus-container-default'
-    exclude module: 'plexus-interpolation'
-    exclude module: 'plexus-utils'
-    exclude module: 'wagon-file'
-    exclude module: 'wagon-http-lightweight'
-    exclude module: 'wagon-provider-api'
-  }
-  testCompile 'org.easytesting:fest-assert-core:2.0M10'
-  testCompile 'org.mockito:mockito-core:1.10.19'
-  testCompile 'org.apache.commons:commons-lang3:3.2'
-  testCompile 'org.apache.commons:commons-io:1.3.2'
-  testCompile 'org.reflections:reflections:0.9.8'
-  if (project.ext.isIntelliJ && file('build/test-classes').exists()) {
-    testCompile files('build/test-classes')
-  }
-
-  // Remove those when building for Amazon
+    compile("oauth.signpost:signpost-core:${SIGNPOST_VERSION}") {
+        exclude group: 'commons-codec', module: 'commons-codec'
+    }
+    compile("oauth.signpost:signpost-commonshttp4:${SIGNPOST_VERSION}") {
+        exclude group: 'commons-logging', module: 'commons-logging'
+        exclude group: 'commons-codec', module: 'commons-codec'
+        exclude group: 'org.apache.httpcomponents', module: 'httpcore'
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+    releaseCompile("com.localytics.android:library:${LOCALYTICS_VERSION}") {
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
+    compile "org.ocpsoft.prettytime:prettytime:${PRETTY_TIME_VERSION}"
+    compile("com.jakewharton:butterknife:${BUTTER_KNIFE_VERSION}") {
+        exclude group: 'se.emilsjolander', module: 'stickylistheaders'
+    }
+    compile "com.jumio.android:core:${JUMIO_SDK_VERSION}@aar"
+    compile "com.jumio.android:nv:${JUMIO_SDK_VERSION}@aar"
+//    compile "com.neovisionaries:nv-i18n:${NV_I18N_VERSION}"
+//    compile "com.googlecode.libphonenumber:libphonenumber:${LIB_PHONE_NUMBER_VERSION}"
+    // For Test
+    testCompile('org.robolectric:robolectric:3.0-rc2') {
+        exclude module: 'classworlds'
+        exclude module: 'commons-logging'
+        exclude module: 'httpclient'
+        exclude module: 'maven-artifact'
+        exclude module: 'maven-artifact-manager'
+        exclude module: 'maven-error-diagnostics'
+        exclude module: 'maven-model'
+        exclude module: 'maven-project'
+        exclude module: 'maven-settings'
+        exclude module: 'plexus-container-default'
+        exclude module: 'plexus-interpolation'
+        exclude module: 'plexus-utils'
+        exclude module: 'wagon-file'
+        exclude module: 'wagon-http-lightweight'
+        exclude module: 'wagon-provider-api'
+    }
+    testCompile 'org.easytesting:fest-assert-core:2.0M10'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'org.apache.commons:commons-lang3:3.2'
+    testCompile 'org.apache.commons:commons-io:1.3.2'
+    testCompile 'org.reflections:reflections:0.9.8'
+    if (project.ext.isIntelliJ && file('build/test-classes').exists()) {
+        testCompile files('build/test-classes')
+    }
+    // Remove those when building for Amazon
 
     // This one has fewer methods
+
     //releaseCompile 'com.google.android.gms:play-services:6.1.+'
+    compile "com.google.android.gms:play-services-base:${PLAY_SERVICES_VERSION}"
+    compile "com.google.android.gms:play-services-ads:${PLAY_SERVICES_VERSION}"
+    compile "com.google.android.gms:play-services-gcm:${PLAY_SERVICES_VERSION}"
+    compile "com.google.android.gms:play-services-analytics:${PLAY_SERVICES_VERSION}"
+    compile "com.google.android.gms:play-services-location:${PLAY_SERVICES_VERSION}"
+    compile files('libs/signalr-client-sdk-android.jar')
+    compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.easing:library:1.0.1@aar'
     compile 'com.daimajia.androidanimations:library:1.1.3@aar'
@@ -775,13 +799,10 @@ dependencies {
     compile 'com.tradehero.route:route:0.2-SNAPSHOT'
     compile 'com.flurry:FlurryAnalytics:6.1.0'
     compile 'com.flurry:FlurryAds:6.1.0'
-    compile "com.google.android.gms:play-services-base:${PLAY_SERVICES_VERSION}"
-    compile "com.google.android.gms:play-services-ads:${PLAY_SERVICES_VERSION}"
-    compile "com.google.android.gms:play-services-gcm:${PLAY_SERVICES_VERSION}"
-    compile "com.google.android.gms:play-services-analytics:${PLAY_SERVICES_VERSION}"
-    compile "com.google.android.gms:play-services-location:${PLAY_SERVICES_VERSION}"
-    compile 'com.google.code.gson:gson:2.2.4'
-    compile files('libs/signalr-client-sdk-android.jar')
+    compile 'com.google.android.gms:play-services:9.2.1'
+    compile 'com.google.android.gms:play-services-auth:9.2.1'
+    compile 'com.google.android.gms:play-services-ads:9.2.1'
+    compile 'com.google.android.gms:play-services-gcm:9.2.1'
 }
 
 File propFile = file('signing.properties');
@@ -993,3 +1014,4 @@ task showMeCache << {
     //Print Maximum available memory
     System.out.println("Max Memory:" + runtime.maxMemory() / mb);
 }
+apply plugin: 'com.google.gms.google-services'

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -21,18 +21,21 @@ import com.androidth.general.api.social.UserFriendsWeiboDTO;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.graphics.ForUserPhoto;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import timber.log.Timber;
 
 public class SocialFriendUserView extends SocialFriendItemView
 {
-    @Bind(R.id.social_item_logo) ImageView friendLogo;
-    @Bind(R.id.social_item_title) TextView friendTitle;
-    @Bind(R.id.social_item_action_btn) TextView actionBtn;
-    @Bind(R.id.social_friend_item_ll) LinearLayout socialFriendItem;
-    @Bind(R.id.social_item_action_cb) CheckBox actionCb;
+    @BindView(R.id.social_item_logo) ImageView friendLogo;
+    @BindView(R.id.social_item_title) TextView friendTitle;
+    @BindView(R.id.social_item_action_btn) TextView actionBtn;
+    @BindView(R.id.social_friend_item_ll) LinearLayout socialFriendItem;
+    @BindView(R.id.social_item_action_cb) CheckBox actionCb;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
+    private Unbinder unbinder;
     private SocialFriendListItemUserDTO socialFriendListItemUserDTO;
     @Nullable private OnElementClickListener onElementClickListener;
 
@@ -54,20 +57,20 @@ public class SocialFriendUserView extends SocialFriendItemView
     protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         HierarchyInjector.inject(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         picasso.cancelRequest(friendLogo);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

@@ -13,7 +13,7 @@ import android.widget.Gallery;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemClick;
 import butterknife.OnItemSelected;
 import com.androidth.general.R;
@@ -38,10 +38,10 @@ public class VideoCategoryView extends RelativeLayout
     public final static int FIRST_PAGE = 1;
     public final static int DEFAULT_PER_PAGE = 50; //No pagination for now
 
-    @Bind(R.id.video_category_name) TextView textName;
-    @Bind(R.id.video_gallery) Gallery gallery;
-    @Bind(android.R.id.empty) View emptyView;
-    @Bind(android.R.id.progress) View progress;
+    @BindView(R.id.video_category_name) TextView textName;
+    @BindView(R.id.video_gallery) Gallery gallery;
+    @BindView(android.R.id.empty) View emptyView;
+    @BindView(android.R.id.progress) View progress;
     @NonNull private final VideoAdapter galleryAdapter;
 
     @Inject PaginatedVideoCacheRx paginatedVideoCache;

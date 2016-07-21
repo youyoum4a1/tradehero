@@ -40,10 +40,11 @@ import java.util.Comparator;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -58,8 +59,8 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     @Inject CurrentUserId currentUserId;
     @Inject ProviderUtil providerUtil;
 
-    @Bind(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
-    @Bind(android.R.id.list) ListView contestListView;
+    @BindView(R.id.contest_center_content_screen) BetterViewAnimator contest_center_content_screen;
+    @BindView(android.R.id.list) ListView contestListView;
 
     public ContestItemAdapter contestListAdapter;
     @IdRes private int currentDisplayedChildLayoutId;
@@ -67,6 +68,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     private BaseWebViewIntentFragment webFragment;
     private THIntentPassedListener thIntentPassedListener;
 
+    private Unbinder unbinder;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -78,7 +80,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.contest_center_content_screen, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
@@ -109,7 +111,7 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

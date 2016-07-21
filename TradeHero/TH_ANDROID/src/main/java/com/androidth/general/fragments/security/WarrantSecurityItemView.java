@@ -3,7 +3,7 @@ package com.androidth.general.fragments.security;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.compact.WarrantDTO;
@@ -13,9 +13,9 @@ import java.util.Locale;
 
 public class WarrantSecurityItemView extends SecurityItemView
 {
-    @Bind(R.id.combined_strike_price_type) TextView combinedStrikePriceType;
-    @Bind(R.id.warrant_type) TextView warrantType;
-    @Bind(R.id.expiry_date) TextView expiryDate;
+    @BindView(R.id.combined_strike_price_type) TextView combinedStrikePriceType;
+    @BindView(R.id.warrant_type) TextView warrantType;
+    @BindView(R.id.expiry_date) TextView expiryDate;
 
     //<editor-fold desc="Constructors">
     public WarrantSecurityItemView(Context context)

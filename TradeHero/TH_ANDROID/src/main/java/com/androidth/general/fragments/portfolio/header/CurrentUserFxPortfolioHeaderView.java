@@ -3,7 +3,7 @@ package com.androidth.general.fragments.portfolio.header;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.models.number.THSignedMoney;
@@ -13,10 +13,10 @@ import com.androidth.general.models.number.THSignedMoney;
  */
 public class CurrentUserFxPortfolioHeaderView extends CurrentUserPortfolioHeaderView
 {
-    @Bind(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
-    @Bind(R.id.header_portfolio_margin_available) protected TextView marginAvailable;
-    @Bind(R.id.header_portfolio_margin_used) protected TextView marginUsed;
-    @Bind(R.id.header_portfolio_pl_unrealised) protected TextView unrealisedPl;
+    @BindView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
+    @BindView(R.id.header_portfolio_margin_available) protected TextView marginAvailable;
+    @BindView(R.id.header_portfolio_margin_used) protected TextView marginUsed;
+    @BindView(R.id.header_portfolio_pl_unrealised) protected TextView unrealisedPl;
 
     //<editor-fold desc="Constructors">
     public CurrentUserFxPortfolioHeaderView(Context context)

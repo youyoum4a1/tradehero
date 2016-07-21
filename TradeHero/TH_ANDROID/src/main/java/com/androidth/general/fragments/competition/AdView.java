@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 
 import com.androidth.general.activities.SignUpLiveActivity;
@@ -28,6 +28,8 @@ import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.network.service.UserServiceWrapper;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.DateUtils;
+
+import butterknife.Unbinder;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,7 +41,7 @@ import rx.subjects.PublishSubject;
 public class AdView extends RelativeLayout
         implements DTOView<CompetitionZoneAdvertisementDTO>
 {
-    @Bind(R.id.banner) ImageView banner;
+    @BindView(R.id.banner) ImageView banner;
     @Inject UserServiceWrapper userServiceWrapper;
     @Nullable protected CompetitionZoneAdvertisementDTO viewDTO;
 
@@ -49,6 +51,8 @@ public class AdView extends RelativeLayout
     @Inject CurrentUserId currentUserId;
 
     private Context context;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     public AdView(Context context, AttributeSet attrs)
@@ -63,13 +67,13 @@ public class AdView extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         picasso.get().cancelRequest(banner);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

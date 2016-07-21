@@ -22,7 +22,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
 import com.androidth.general.api.level.LevelDefDTO;
@@ -42,10 +42,10 @@ public class LevelUpDialogFragment extends BaseDialogFragment
 
     private static final float DIM_AMOUNT = 0.8f;
 
-    @Bind(R.id.user_level_next_badge) ImageView nextBadge;
-    @Bind(R.id.user_level_current_badge) ImageView currentBadge;
-    @Bind(R.id.user_level_up_description) TextView levelUpDescription;
-    @Bind(R.id.user_level_up_main_container) ViewGroup container;
+    @BindView(R.id.user_level_next_badge) ImageView nextBadge;
+    @BindView(R.id.user_level_current_badge) ImageView currentBadge;
+    @BindView(R.id.user_level_up_description) TextView levelUpDescription;
+    @BindView(R.id.user_level_up_main_container) ViewGroup container;
 
     @Inject Picasso picasso;
     @Inject LevelDefCacheRx levelDefCache;

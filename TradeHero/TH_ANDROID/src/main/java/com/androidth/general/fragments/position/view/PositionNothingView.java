@@ -7,7 +7,7 @@ import android.support.annotation.StringRes;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.adapters.TypedRecyclerAdapter;
 
@@ -46,7 +46,7 @@ public class PositionNothingView extends RelativeLayout
 
     public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
     {
-        @Bind(R.id.position_nothing_description) protected TextView description;
+        @BindView(R.id.position_nothing_description) protected TextView description;
 
         public ViewHolder(PositionNothingView itemView)
         {

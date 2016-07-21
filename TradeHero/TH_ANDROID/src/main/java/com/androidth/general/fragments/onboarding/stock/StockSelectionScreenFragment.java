@@ -10,7 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import butterknife.Bind;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
@@ -28,6 +29,8 @@ import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.fragments.onboarding.OnBoardHeaderLinearView;
 import com.androidth.general.persistence.security.SecurityCompactListCacheRx;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
+
+import butterknife.Unbinder;
 import in.srain.cube.views.GridViewWithHeaderAndFooter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,8 +54,8 @@ public class StockSelectionScreenFragment extends BaseFragment
 
     @Inject SecurityCompactListCacheRx securityCompactListCache;
 
-    @Bind(android.R.id.list) GridViewWithHeaderAndFooter stockList;
-    @Bind(android.R.id.button1) View nextButton;
+    @BindView(android.R.id.list) GridViewWithHeaderAndFooter stockList;
+    @BindView(android.R.id.button1) View nextButton;
     protected OnBoardHeaderLinearView headerView;
     ArrayAdapter<SelectableSecurityDTO> stockAdapter;
     @NonNull final Map<SecurityId, SecurityCompactDTO> knownStocks;
@@ -60,6 +63,7 @@ public class StockSelectionScreenFragment extends BaseFragment
     @NonNull final BehaviorSubject<SecurityCompactDTOList> selectedStocksSubject;
     @NonNull final PublishSubject<Boolean> nextClickedSubject;
     Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable;
+    private Unbinder unbinder;
 
     public static void putInitialStocks(@NonNull Bundle args, @NonNull List<SecurityId> securityIds)
     {
@@ -120,7 +124,7 @@ public class StockSelectionScreenFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         stockList.addHeaderView(headerView, "title", false);
         stockList.setAdapter(stockAdapter);
         displayNextButton();
@@ -134,7 +138,7 @@ public class StockSelectionScreenFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

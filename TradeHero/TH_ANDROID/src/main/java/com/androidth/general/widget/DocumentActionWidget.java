@@ -22,15 +22,15 @@ import com.androidth.general.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DocumentActionWidget extends RelativeLayout implements Target
 {
-    @Bind(R.id.document_action) Button btnAction;
-    @Bind(R.id.document_clear) ImageButton btnClear;
-    @Bind(R.id.document_preview) ImageView imgPreview;
-    @Bind(R.id.document_progress) ProgressBar progressBar;
+    @BindView(R.id.document_action) Button btnAction;
+    @BindView(R.id.document_clear) ImageButton btnClear;
+    @BindView(R.id.document_preview) ImageView imgPreview;
+    @BindView(R.id.document_progress) ProgressBar progressBar;
 
     @Nullable private View.OnClickListener clearOnClickListener;
 

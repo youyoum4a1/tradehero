@@ -16,7 +16,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.Unbinder;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -37,10 +39,10 @@ public class UserLevelProgressBar extends RelativeLayout
     private static final String PROPERTY_PROGRESS = "progress";
     private static final String PROPERTY_SECONDARY_PROGRESS = "secondaryProgress";
 
-    @Bind(R.id.user_level_progress_next) protected ImageView nextLevelLabel;
-    @Bind(R.id.user_level_progress_current) protected ImageView currentLevelLabel;
+    @BindView(R.id.user_level_progress_next) protected ImageView nextLevelLabel;
+    @BindView(R.id.user_level_progress_current) protected ImageView currentLevelLabel;
 
-    @Bind(R.id.user_level_main_progress_bar) protected ProgressBar xpProgressBar;
+    @BindView(R.id.user_level_main_progress_bar) protected ProgressBar xpProgressBar;
 
     @Inject Picasso picasso;
     @Inject @ForUserNextLevelBadge Transformation nextLevelBadgeTransformation;

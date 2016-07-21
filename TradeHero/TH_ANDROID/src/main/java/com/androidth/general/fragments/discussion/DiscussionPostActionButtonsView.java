@@ -22,27 +22,30 @@ import com.androidth.general.rx.EmptyAction1;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.functions.Action1;
 
 public class DiscussionPostActionButtonsView extends LinearLayout
 {
-    @Bind(R.id.btn_share_fb) ToggleButton facebookShareButton;
-    //@Bind(R.id.btn_share_tw) ToggleButton twitterShareButton;
-    //@Bind(R.id.btn_share_li) ToggleButton linkedInShareButton;
-    @Bind(R.id.btn_share_wb) ToggleButton weiboShareButton;
-    @Bind(R.id.btn_share_wechat) ToggleButton weChatShareButton;
-    @Bind(R.id.btn_location) ToggleButton locationShareButton;
-    @Bind(R.id.switch_share_public) ToggleButton isPublic;
-    @Bind(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
+    @BindView(R.id.btn_share_fb) ToggleButton facebookShareButton;
+    //@BindView(R.id.btn_share_tw) ToggleButton twitterShareButton;
+    //@BindView(R.id.btn_share_li) ToggleButton linkedInShareButton;
+    @BindView(R.id.btn_share_wb) ToggleButton weiboShareButton;
+    @BindView(R.id.btn_share_wechat) ToggleButton weChatShareButton;
+    @BindView(R.id.btn_location) ToggleButton locationShareButton;
+    @BindView(R.id.switch_share_public) ToggleButton isPublic;
+    @BindView(R.id.mention_widget) MentionActionButtonsView mentionActionButtonsView;
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     @Inject SocialSharePreferenceHelper socialSharePreferenceHelper;
     @Inject SocialShareHelper socialShareHelper;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     public DiscussionPostActionButtonsView(Context context, AttributeSet attrs)
@@ -54,7 +57,7 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         HierarchyInjector.inject(this);
         initSocialBtnStatus();
     }
@@ -95,12 +98,12 @@ public class DiscussionPostActionButtonsView extends LinearLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

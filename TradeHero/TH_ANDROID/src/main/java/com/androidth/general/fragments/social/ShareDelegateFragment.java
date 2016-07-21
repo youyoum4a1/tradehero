@@ -31,8 +31,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -52,10 +54,10 @@ public class ShareDelegateFragment
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject protected SocialShareHelper socialShareHelper;
 
-    @Bind(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
-    @Nullable @Bind({
-            R.id.btn_share_fb,
-            R.id.btn_share_wb})
+    private Unbinder unbinder;
+
+    @BindView(R.id.btn_share_wechat) protected ToggleButton mBtnShareWeChat;
+    @Nullable @BindViews({R.id.btn_share_fb, R.id.btn_share_wb})
     SocialLinkToggleButton[] socialLinkingButtons;
 
     @Nullable protected UserProfileDTO userProfileDTO;
@@ -80,7 +82,7 @@ public class ShareDelegateFragment
 
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         socialSharePreferenceHelper.load();
         fetchUserProfile();
@@ -90,7 +92,7 @@ public class ShareDelegateFragment
 
     public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         unsubscribeWeChatButton();
         unsubscribeSocialLinkingButtons();
     }

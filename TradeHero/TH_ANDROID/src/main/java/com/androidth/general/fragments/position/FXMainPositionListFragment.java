@@ -14,7 +14,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
@@ -30,8 +30,8 @@ public class FXMainPositionListFragment extends BasePurchaseManagerFragment
 
     @Inject THRouter thRouter;
     @Inject CurrentUserId currentUserId;
-    @Bind(R.id.pager) ViewPager tabViewPager;
-    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @BindView(R.id.pager) ViewPager tabViewPager;
+    @BindView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     protected OwnedPortfolioId fxPortfolioId;
 

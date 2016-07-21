@@ -5,16 +5,19 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.R;
 import com.androidth.general.fragments.competition.zone.dto.CompetitionZoneDTO;
+
+import butterknife.Unbinder;
 import timber.log.Timber;
 
 public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneListItemView
 {
-    @Bind(R.id.competition_legal_rules) TextView rules;
-    @Bind(R.id.competition_legal_terms) TextView terms;
+    @BindView(R.id.competition_legal_rules) TextView rules;
+    @BindView(R.id.competition_legal_terms) TextView terms;
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -39,18 +42,18 @@ public class CompetitionZoneLegalMentionsView extends AbstractCompetitionZoneLis
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

@@ -38,9 +38,10 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -56,18 +57,20 @@ public class GuideAuthenticationFragment extends Fragment
     private static final String BUNDLE_KEY_DEEP_LINK = GuideAuthenticationFragment.class.getName() + ".deepLink";
 
     private static final int PAGER_INITIAL_POSITION = 0;
-    @Bind(R.id.twitter_login_button) TwitterLoginButton loginButton;
+    @BindView(R.id.twitter_login_button) TwitterLoginButton loginButton;
+
+    private Unbinder unbinder;
 
 
     @Inject DashboardNavigator navigator;
     //TODO Change Analytics
     //@Inject Analytics analytics;
 
-    //@Bind(R.id.guide_page_indicator) PageIndicator guidePageIndicator;
-    //@Bind(R.id.viewpager) ViewPager guidePager;
-    @Bind(R.id.login_text) ImageView loginText;
-    @Bind(R.id.login_logo) ImageView loginLogo;
-    @Bind(R.id.entry_carrdview) CardView cardView;
+    //@BindView(R.id.guide_page_indicator) PageIndicator guidePageIndicator;
+    //@BindView(R.id.viewpager) ViewPager guidePager;
+    @BindView(R.id.login_text) ImageView loginText;
+    @BindView(R.id.login_logo) ImageView loginLogo;
+    @BindView(R.id.entry_carrdview) CardView cardView;
 
     @NonNull final int[] guideRes = new int[] {
             R.layout.guide_1,
@@ -125,7 +128,7 @@ public class GuideAuthenticationFragment extends Fragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
@@ -179,7 +182,7 @@ public class GuideAuthenticationFragment extends Fragment
     {
         //guidePageIndicator.setOnPageChangeListener(null);
         onViewSubscriptions.unsubscribe();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 
@@ -307,7 +310,8 @@ public class GuideAuthenticationFragment extends Fragment
         @Override public void destroyItem(ViewGroup container, int position, Object object)
         {
             container.removeView((View) object);
-            ButterKnife.unbind(((View) object).getTag(R.id.txt_term_of_service_signin));
+//            ButterKnife.unbind(((View) object).getTag(R.id.txt_term_of_service_signin));
+            unbinder.unbind();
         }
     }
 
@@ -315,7 +319,7 @@ public class GuideAuthenticationFragment extends Fragment
     {
         GuideViewHolder(@NonNull View view)
         {
-            ButterKnife.bind(this, view);
+            unbinder = ButterKnife.bind(this, view);
         }
 
         @SuppressWarnings({"UnusedParameters", "unused"})

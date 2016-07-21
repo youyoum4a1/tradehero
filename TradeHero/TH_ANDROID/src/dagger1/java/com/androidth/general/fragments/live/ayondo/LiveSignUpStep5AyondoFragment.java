@@ -66,7 +66,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import retrofit.client.Response;
 import rx.Observable;
 import rx.Subscriber;
@@ -90,25 +90,25 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final int INDEX_VIEW_CREATE_BUTTON = 0;
     private static final int INDEX_VIEW_SUBMIT_BUTTON = 1;
 
-    @Bind(R.id.identity_document_type) Spinner identityDocumentTypeSpinner;
-    @Bind(R.id.residence_document_type) Spinner residenceDocumentTypeSpinner;
-//    @Bind(R.id.currency_spinner) Spinner currencySpinner;
-    @Bind(R.id.info_identity_container) ViewGroup identityContainer;
-    @Bind(R.id.info_residency_container) ViewGroup residencyContainer;
-//    @Bind(R.id.document_action_identity) DocumentActionWidget documentActionIdentity;
-    @Bind(R.id.document_action_residence) DocumentActionWidget documentActionResidence;
-    @Bind(R.id.cb_agree_terms_conditions) CheckBox termsConditionsCheckBox;
-    @Bind(R.id.agree_terms_conditions) View termsConditions;
-    @Bind(R.id.cb_agree_risk_warning) CheckBox riskWarningCheckBox;
-    @Bind(R.id.agree_risk_warning) View riskWarning;
-    @Bind(R.id.cb_agree_data_sharing) CheckBox dataSharingCheckBox;
-    @Bind(R.id.agree_data_sharing) View dataSharing;
-    @Bind(R.id.cb_subscribe_offers) CheckBox subscribeOffersCheckBox;
-    @Bind(R.id.cb_subscribe_trade_notifications) CheckBox subscribeTradeNotificationsCheckBox;
-    @Bind(R.id.step_5_scan_id_button) ImageButton scanButton;
-//    @Bind(R.id.btn_create) Button btnCreate;
-//    @Bind(R.id.create_switcher) ViewSwitcher createSwitcher;
-    @Bind(R.id.btn_submit) View btnSubmit;
+    @BindView(R.id.identity_document_type) Spinner identityDocumentTypeSpinner;
+    @BindView(R.id.residence_document_type) Spinner residenceDocumentTypeSpinner;
+//    @BindView(R.id.currency_spinner) Spinner currencySpinner;
+    @BindView(R.id.info_identity_container) ViewGroup identityContainer;
+    @BindView(R.id.info_residency_container) ViewGroup residencyContainer;
+//    @BindView(R.id.document_action_identity) DocumentActionWidget documentActionIdentity;
+    @BindView(R.id.document_action_residence) DocumentActionWidget documentActionResidence;
+    @BindView(R.id.cb_agree_terms_conditions) CheckBox termsConditionsCheckBox;
+    @BindView(R.id.agree_terms_conditions) View termsConditions;
+    @BindView(R.id.cb_agree_risk_warning) CheckBox riskWarningCheckBox;
+    @BindView(R.id.agree_risk_warning) View riskWarning;
+    @BindView(R.id.cb_agree_data_sharing) CheckBox dataSharingCheckBox;
+    @BindView(R.id.agree_data_sharing) View dataSharing;
+    @BindView(R.id.cb_subscribe_offers) CheckBox subscribeOffersCheckBox;
+    @BindView(R.id.cb_subscribe_trade_notifications) CheckBox subscribeTradeNotificationsCheckBox;
+    @BindView(R.id.step_5_scan_id_button) ImageButton scanButton;
+//    @BindView(R.id.btn_create) Button btnCreate;
+//    @BindView(R.id.create_switcher) ViewSwitcher createSwitcher;
+    @BindView(R.id.btn_submit) View btnSubmit;
 
     private ImageRequesterUtil imageRequesterUtil;
 

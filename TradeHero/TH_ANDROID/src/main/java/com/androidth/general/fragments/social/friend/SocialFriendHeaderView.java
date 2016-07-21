@@ -4,12 +4,14 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.Unbinder;
+
 import com.androidth.general.R;
 
 public class SocialFriendHeaderView extends SocialFriendItemView
 {
-    @Bind(R.id.social_friend_headline) TextView headLine;
+    @BindView(R.id.social_friend_headline) TextView headLine;
 
     private SocialFriendListItemHeaderDTO socialFriendListItemHeaderDTO;
 

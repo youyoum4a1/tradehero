@@ -40,8 +40,9 @@ import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import dagger.Lazy;
 import rx.Observable;
 import rx.Observer;
@@ -62,14 +63,14 @@ public class EmailSignUpFragment extends Fragment
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject UserServiceWrapper userServiceWrapper;
 
-    @Bind(R.id.profile_info) ProfileInfoView profileView;
-    @Bind(R.id.authentication_sign_up_email) EditText emailEditText;
+    @BindView(R.id.profile_info) ProfileInfoView profileView;
+    @BindView(R.id.authentication_sign_up_email) EditText emailEditText;
     //@Nullable
-    @Bind(R.id.btn_signUp) View signUpButton;
-    @Bind(R.id.toolbar)
+    @BindView(R.id.btn_signUp) View signUpButton;
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.signup_cardview1) CardView cardView1;
-    @Bind(R.id.signup_cardview2)CardView cardView2;
+    @BindView(R.id.signup_cardview1) CardView cardView1;
+    @BindView(R.id.signup_cardview2)CardView cardView2;
 
 
     private SubscriptionList onStopSubscriptions;
@@ -77,6 +78,7 @@ public class EmailSignUpFragment extends Fragment
     @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
     @Nullable Uri deepLink;
 
+    private Unbinder unbinder;
     @SuppressWarnings("UnusedDeclaration")
     /*@OnClick(R.id.authentication_back_button) void handleBackButtonClicked()
     {
@@ -120,7 +122,7 @@ public class EmailSignUpFragment extends Fragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         cardView1.setCardElevation(5);
         cardView2.setCardElevation(5);
 
@@ -187,7 +189,7 @@ public class EmailSignUpFragment extends Fragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

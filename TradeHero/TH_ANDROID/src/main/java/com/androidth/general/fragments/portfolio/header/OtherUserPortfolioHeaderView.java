@@ -9,7 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
@@ -25,21 +25,24 @@ import com.androidth.general.persistence.user.UserProfileCacheRx;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 public class OtherUserPortfolioHeaderView extends RelativeLayout implements PortfolioHeaderView
 {
-    @Bind(R.id.portfolio_header_avatar) ImageView userImageView;
-    @Bind(R.id.header_portfolio_username) TextView usernameTextView;
-    @Bind(R.id.follow_button) Button followButton;
-    @Bind(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
+    @BindView(R.id.portfolio_header_avatar) ImageView userImageView;
+    @BindView(R.id.header_portfolio_username) TextView usernameTextView;
+    @BindView(R.id.follow_button) Button followButton;
+    @BindView(R.id.last_updated_date) @Nullable protected TextView lastUpdatedDate;
 
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userCache;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation peopleIconTransformation;
 
+    private Unbinder unbinder;
     private UserProfileDTO shownUserProfileDTO;
     @NonNull protected BehaviorSubject<UserAction> userActionBehaviour;
     private boolean isFollowing;
@@ -68,20 +71,20 @@ public class OtherUserPortfolioHeaderView extends RelativeLayout implements Port
     {
         super.onFinishInflate();
         HierarchyInjector.inject(this);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         this.userActionBehaviour.onCompleted();
         this.userActionBehaviour = BehaviorSubject.create();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

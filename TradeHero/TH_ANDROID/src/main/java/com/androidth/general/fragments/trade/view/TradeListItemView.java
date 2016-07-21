@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.common.annotation.ViewVisibilityValue;
 import com.androidth.general.R;
 import com.androidth.general.adapters.ExpandableListItem;
@@ -29,12 +29,12 @@ import org.ocpsoft.prettytime.PrettyTime;
 public class TradeListItemView extends LinearLayout
         implements DTOView<TradeListItemView.DTO>
 {
-    @Bind(R.id.gain_indicator) protected ImageView gainIndicator;
-    @Bind(R.id.trade_date_label) protected TextView dateTextView;
-    @Bind(R.id.traded_quantity_verbose) protected TextView tradedQuantityVerbose;
-    @Bind(R.id.pl_container) protected View plContainer;
-    @Bind(R.id.pl_value_header) protected TextView plValueHeader;
-    @Bind(R.id.pl_value) protected TextView plValue;
+    @BindView(R.id.gain_indicator) protected ImageView gainIndicator;
+    @BindView(R.id.trade_date_label) protected TextView dateTextView;
+    @BindView(R.id.traded_quantity_verbose) protected TextView tradedQuantityVerbose;
+    @BindView(R.id.pl_container) protected View plContainer;
+    @BindView(R.id.pl_value_header) protected TextView plValueHeader;
+    @BindView(R.id.pl_value) protected TextView plValue;
 
     @Nullable private DTO tradeItemViewDTO;
 

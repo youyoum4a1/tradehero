@@ -23,7 +23,7 @@ import com.androidth.general.rx.view.DismissDialogAction1;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observer;
 import rx.android.app.AppObservable;
@@ -31,7 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 
 public class SettingsTransactionHistoryFragment extends BaseFragment
 {
-    @Bind(R.id.transaction_list) ListView transactionListView;
+    @BindView(R.id.transaction_list) ListView transactionListView;
     private SettingsTransactionHistoryAdapter transactionListViewAdapter;
 
     @Inject UserTransactionHistoryListCacheRx userTransactionHistoryListCache;

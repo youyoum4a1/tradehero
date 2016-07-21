@@ -27,24 +27,27 @@ import com.androidth.general.widget.validation.ValidatedText;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
 public class SettingsAlipayFragment extends BaseFragment
 {
-    @Bind(R.id.settings_alipay_email_text) protected ValidatedText alipayAccountText;
-    @Bind(R.id.settings_alipay_id_text) protected ValidatedText alipayAccountIDText;
-    @Bind(R.id.settings_alipay_realname_text) protected ValidatedText alipayAccountRealNameText;
+    @BindView(R.id.settings_alipay_email_text) protected ValidatedText alipayAccountText;
+    @BindView(R.id.settings_alipay_id_text) protected ValidatedText alipayAccountIDText;
+    @BindView(R.id.settings_alipay_realname_text) protected ValidatedText alipayAccountRealNameText;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
     //TODO Change Analytics
     //@Inject Analytics analytics;
+
+    private Unbinder unbinder;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -54,7 +57,7 @@ public class SettingsAlipayFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         // HACK: force this email to focus instead of the TabHost stealing focus..
         alipayAccountText.setOnTouchListener(new FocusableOnTouchListener());
@@ -86,7 +89,7 @@ public class SettingsAlipayFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

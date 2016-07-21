@@ -20,14 +20,14 @@ import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.models.staff.StaffDTO;
 import com.androidth.general.models.staff.StaffDTOFactory;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AboutFragment extends BaseFragment
 {
-    @Bind(R.id.main_content_wrapper) View mainContentWrapper;
-    @Bind(R.id.staff_list_holder) LinearLayout staffList;
-    @Bind(R.id.about_scroll) ScrollView scrollView;
+    @BindView(R.id.main_content_wrapper) View mainContentWrapper;
+    @BindView(R.id.staff_list_holder) LinearLayout staffList;
+    @BindView(R.id.about_scroll) ScrollView scrollView;
 
     //TODO Change Analytics
     //@Inject Analytics analytics;

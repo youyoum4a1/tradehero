@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.androidth.general.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
@@ -14,7 +14,7 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
     public static final int COLOR_ACTIVE = R.color.text_primary;
     public static final int COLOR_INACTIVE = R.color.text_secondary;
 
-    @Bind(R.id.competition_roi) protected TextView roiView;
+    @BindView(R.id.competition_roi) protected TextView roiView;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")

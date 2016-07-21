@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.android.common.SlidingTabLayout;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
@@ -49,8 +49,8 @@ public class TabbedPositionListFragment extends DashboardFragment
     @Inject THRouter thRouter;
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
-    @Bind(R.id.pager) ViewPager tabViewPager;
-    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @BindView(R.id.pager) ViewPager tabViewPager;
+    @BindView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     protected GetPositionsDTOKey getPositionsDTOKey;
     protected PortfolioDTO portfolioDTO;

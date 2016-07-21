@@ -5,14 +5,14 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.models.staff.StaffDTO;
 
 public class StaffTitleView extends LinearLayout
 {
-    @Bind(R.id.staff_name) TextView staffNameTextView;
-    @Bind(R.id.staff_title) TextView staffTitleTextView;
+    @BindView(R.id.staff_name) TextView staffNameTextView;
+    @BindView(R.id.staff_title) TextView staffTitleTextView;
 
     //<editor-fold desc="Constructors">
     public StaffTitleView(Context context)

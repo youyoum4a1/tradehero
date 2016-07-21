@@ -10,13 +10,15 @@ import butterknife.OnClick;
 import android.support.annotation.Nullable;
 import com.androidth.general.R;
 import com.androidth.general.api.social.SocialNetworkEnum;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class SocialNetworkButtonListLinear extends LinearLayout
 {
     @NonNull private final PublishSubject<SocialNetworkEnum> socialNetworkEnumSubject;
-
+    private Unbinder unbinder;
     //<editor-fold desc="Constructors">
     public SocialNetworkButtonListLinear(Context context)
     {
@@ -40,18 +42,18 @@ public class SocialNetworkButtonListLinear extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

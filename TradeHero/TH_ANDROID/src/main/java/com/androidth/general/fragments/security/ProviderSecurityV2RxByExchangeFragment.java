@@ -31,13 +31,14 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
+import butterknife.Unbinder;
 
 public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
 {
-    @Bind(R.id.listview) protected AbsListView listView;
+    @BindView(R.id.listview) protected AbsListView listView;
     @Inject protected SecurityCompositeListCacheRx securityCompositeListCacheRx;
     @Inject protected Picasso picasso;
 
@@ -45,6 +46,8 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
     protected ProviderId providerId;
     protected SecurityCompositeDTO securityCompositeDTO;
     protected ExchangeAdapter exchangeAdapter;
+
+    private Unbinder unbinder;
 
     @NonNull private static ProviderId getProviderId(@NonNull Bundle bundle)
     {
@@ -72,13 +75,13 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         this.listView.setAdapter(exchangeAdapter);
     }
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

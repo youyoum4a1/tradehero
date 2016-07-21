@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
 import com.androidth.general.api.news.NewsItemCompactDTO;
@@ -18,8 +18,8 @@ public class NewsItemCompactViewHolder
         extends AbstractDiscussionCompactItemViewHolder
 {
     @NonNull protected final Picasso picasso;
-    @Bind(R.id.news_title_title) @Nullable protected TextView newsTitle;
-    @Bind(R.id.news_icon) @Nullable ImageView newsIcon;
+    @BindView(R.id.news_title_title) @Nullable protected TextView newsTitle;
+    @BindView(R.id.news_icon) @Nullable ImageView newsIcon;
 
     //<editor-fold desc="Constructors">
     public NewsItemCompactViewHolder(@NonNull Picasso picasso)

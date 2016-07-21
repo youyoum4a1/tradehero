@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.inject.HierarchyInjector;
 import javax.inject.Inject;
@@ -13,7 +13,7 @@ import javax.inject.Inject;
 public class SettingsDrawerMenuItem extends LinearLayout
 {
     @Inject UnreadSettingPreferenceHolder unreadSettingPreferenceHolder;
-    @Bind(R.id.unread_icon) View unreadIcon;
+    @BindView(R.id.unread_icon) View unreadIcon;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")

@@ -25,7 +25,7 @@ import com.neovisionaries.i18n.CountryCode;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -43,15 +43,15 @@ public class KYCAddressWidget extends LinearLayout
     @LayoutRes private static final int LAYOUT_COUNTRY = R.layout.spinner_live_country_dropdown_item;
     @LayoutRes private static final int LAYOUT_COUNTRY_SELECTED_FLAG = R.layout.spinner_live_country_dropdown_item_selected;
 
-    @Bind(R.id.info_address_line1) EditText txtLine1;
-    @Bind(R.id.info_address_line2) EditText txtLine2;
-    @Bind(R.id.info_city) EditText txtCity;
-    @Bind(R.id.info_country) Spinner spinnerCountry;
-    @Bind(R.id.info_address_processing) View loadingView;
-    @Bind(R.id.info_postal_code) EditText txtPostalCode;
-    @Bind(R.id.info_pick_location) Button btnPickLocation;
-    @Bind(R.id.info_clear_all) Button btnClearAll;
-    @Bind(R.id.info_less_than_a_year) CheckBox checkBoxLessThanAYear;
+    @BindView(R.id.info_address_line1) EditText txtLine1;
+    @BindView(R.id.info_address_line2) EditText txtLine2;
+    @BindView(R.id.info_city) EditText txtCity;
+    @BindView(R.id.info_country) Spinner spinnerCountry;
+    @BindView(R.id.info_address_processing) View loadingView;
+    @BindView(R.id.info_postal_code) EditText txtPostalCode;
+    @BindView(R.id.info_pick_location) Button btnPickLocation;
+    @BindView(R.id.info_clear_all) Button btnClearAll;
+    @BindView(R.id.info_less_than_a_year) CheckBox checkBoxLessThanAYear;
     private boolean showCheckbox = DEFAULT_SHOW_CHECKBOX;
     private KYCAddress mKycAddress;
     private CountrySpinnerAdapter nationalityAdapter;

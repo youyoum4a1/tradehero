@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
@@ -43,6 +43,8 @@ import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.viewpagerindicator.PageIndicator;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -67,8 +69,8 @@ public class OnBoardFragment extends BaseFragment
     @Inject @FirstShowOnBoardDialog TimingIntervalPreference firstShowOnBoardDialogPreference;
     @Inject BroadcastUtils broadcastUtils;
 
-    @Bind(android.R.id.content) ViewPager pager;
-    @Bind(R.id.page_indicator) PageIndicator pageIndicator;
+    @BindView(android.R.id.content) ViewPager pager;
+    @BindView(R.id.page_indicator) PageIndicator pageIndicator;
 
     private MarketRegion selectedRegion;
     private boolean hadAutoSelectedExchange;
@@ -80,6 +82,8 @@ public class OnBoardFragment extends BaseFragment
     @NonNull private final BehaviorSubject<ExchangeCompactDTOList> selectedExchangesSubject;
     @NonNull private final BehaviorSubject<SectorDTOList> selectedSectorsSubject;
     @NonNull private BehaviorSubject<SecurityCompactDTOList> selectedSecuritiesBehavior;
+
+    private Unbinder unbinder;
 
     public OnBoardFragment()
     {
@@ -96,7 +100,7 @@ public class OnBoardFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
     }
 
     @Override public void onStart()
@@ -147,7 +151,7 @@ public class OnBoardFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

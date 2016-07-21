@@ -13,12 +13,16 @@ import android.widget.LinearLayout;
 
 import com.androidth.general.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class LiveRewardWidget extends LinearLayout
 {
-    @Bind({R.id.live_reward_20,
+
+    private Unbinder unbinder;
+    @BindViews({R.id.live_reward_20,
             R.id.live_reward_40,
             R.id.live_reward_60,
             R.id.live_reward_80,
@@ -53,7 +57,7 @@ public class LiveRewardWidget extends LinearLayout
         setOrientation(HORIZONTAL);
         setGravity(Gravity.BOTTOM | Gravity.FILL_HORIZONTAL);
         LayoutInflater.from(getContext()).inflate(R.layout.live_reward_steps_merged, this, true);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         if (attrs != null)
         {
             TypedArray a = getContext().getTheme().obtainStyledAttributes(attrs, R.styleable.LiveRewardWidget, 0, 0);

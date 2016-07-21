@@ -7,19 +7,22 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.R;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class TimelineHeaderButtonView extends LinearLayout
 {
-    @Bind(R.id.btn_profile_portfolios) TextView btnPortfolioList;
-    @Bind(R.id.btn_profile_timeline) TextView btnTimeline;
+    @BindView(R.id.btn_profile_portfolios) TextView btnPortfolioList;
+    @BindView(R.id.btn_profile_timeline) TextView btnTimeline;
 
     @NonNull private final PublishSubject<TimelineFragment.TabType> tabTypeSubject;
 
+    private Unbinder unbinder;
     //<editor-fold desc="Constructors">
     public TimelineHeaderButtonView(Context context)
     {
@@ -43,19 +46,19 @@ public class TimelineHeaderButtonView extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         setDividerDrawable(null);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

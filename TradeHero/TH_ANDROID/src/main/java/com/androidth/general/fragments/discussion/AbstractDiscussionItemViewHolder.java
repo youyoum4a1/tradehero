@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -28,11 +28,11 @@ public class AbstractDiscussionItemViewHolder
         extends AbstractDiscussionCompactItemViewHolder
 {
     @NonNull protected final Picasso picasso;
-    @Bind(R.id.text_container) @Nullable protected View textContainer;
-    @Bind(R.id.discussion_content) protected MarkdownTextView textContent;
-    @Bind(R.id.discussion_stub_content) @Nullable protected MarkdownTextView stubContent;
-    @Bind(R.id.discussion_user_picture) @Nullable ImageView discussionUserPicture;
-    @Bind(R.id.user_profile_name) @Nullable TextView userProfileName;
+    @BindView(R.id.text_container) @Nullable protected View textContainer;
+    @BindView(R.id.discussion_content) protected MarkdownTextView textContent;
+    @BindView(R.id.discussion_stub_content) @Nullable protected MarkdownTextView stubContent;
+    @BindView(R.id.discussion_user_picture) @Nullable ImageView discussionUserPicture;
+    @BindView(R.id.user_profile_name) @Nullable TextView userProfileName;
     @Inject @ForUserPhoto Transformation discussionUserPictureTransformation;
 
     //<editor-fold desc="Constructors">

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
@@ -86,11 +86,11 @@ public class FollowerRecyclerItemAdapter extends TypedRecyclerAdapter<FollowerDi
     public static class FollowerItemViewHolder extends TypedViewHolder<FollowerDisplayDTO>
     {
         private final Picasso picasso;
-        @Bind(R.id.follower_avatar) ImageView userIcon;
-        @Bind(R.id.follower_name) TextView name;
-        @Bind(R.id.follower_roi) TextView roiInfo;
-        @Bind(R.id.follower_since) TextView since;
-        @Bind(R.id.follower_button) ImageButton btnFollow;
+        @BindView(R.id.follower_avatar) ImageView userIcon;
+        @BindView(R.id.follower_name) TextView name;
+        @BindView(R.id.follower_roi) TextView roiInfo;
+        @BindView(R.id.follower_since) TextView since;
+        @BindView(R.id.follower_button) ImageButton btnFollow;
 
         private FollowerDisplayDTO currentDTO;
 

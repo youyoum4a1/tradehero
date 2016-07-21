@@ -8,7 +8,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.Unbinder;
+
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
@@ -20,14 +22,16 @@ import javax.inject.Inject;
 
 public class AchievementCellView extends RelativeLayout implements DTOView<AchievementCategoryDTO>
 {
-    @Bind(R.id.achievement_badge) protected ImageView badge;
+    @BindView(R.id.achievement_badge) protected ImageView badge;
 
-    @Bind(R.id.achievement_title) protected TextView title;
-    @Bind(R.id.achievement_description) protected TextView description;
+    @BindView(R.id.achievement_title) protected TextView title;
+    @BindView(R.id.achievement_description) protected TextView description;
 
-    @Bind(R.id.achievement_progress_indicator) protected AchievementProgressIndicator achievementProgressIndicator;
+    @BindView(R.id.achievement_progress_indicator) protected AchievementProgressIndicator achievementProgressIndicator;
 
     @Inject Picasso picasso;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -53,18 +57,18 @@ public class AchievementCellView extends RelativeLayout implements DTOView<Achie
     {
         super.onFinishInflate();
         HierarchyInjector.inject(this);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         picasso.cancelRequest(badge);
         super.onDetachedFromWindow();
     }

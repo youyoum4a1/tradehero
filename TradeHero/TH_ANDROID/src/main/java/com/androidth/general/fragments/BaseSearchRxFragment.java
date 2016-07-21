@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.common.api.PagedDTOKey;
 import com.androidth.general.common.persistence.ContainerDTO;
 import com.androidth.general.common.persistence.DTO;
@@ -37,8 +37,8 @@ abstract public class BaseSearchRxFragment<
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    @Bind(R.id.search_empty_textview) protected TextView searchEmptyTextView;
-    @Bind(R.id.search_empty_textview_wrapper) protected View searchEmptyTextViewWrapper;
+    @BindView(R.id.search_empty_textview) protected TextView searchEmptyTextView;
+    @BindView(R.id.search_empty_textview_wrapper) protected View searchEmptyTextViewWrapper;
 
     protected EditText mSearchTextField;
     protected String mSearchText;

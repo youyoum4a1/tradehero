@@ -104,8 +104,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -148,12 +149,12 @@ public class PositionListFragment
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
 
-    @Bind(R.id.list_flipper) ViewAnimator listViewFlipper;
+    @BindView(R.id.list_flipper) ViewAnimator listViewFlipper;
     SwipeRefreshLayout swipeToRefreshLayout;
     RecyclerView positionRecyclerView;
 
-    @Bind(R.id.btn_help) ImageView btnHelp;
-    @Bind(R.id.position_list_header_stub) ViewStub headerStub;
+    @BindView(R.id.btn_help) ImageView btnHelp;
+    @BindView(R.id.position_list_header_stub) ViewStub headerStub;
 
     @InjectRoute UserBaseKey injectedUserBaseKey;
     @InjectRoute PortfolioId injectedPortfolioId;
@@ -173,6 +174,8 @@ public class PositionListFragment
     private int firstPositionVisible = 0;
     private View inflatedView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
@@ -285,7 +288,7 @@ public class PositionListFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         btnHelp.setOnClickListener(new View.OnClickListener()
         {
             @Override public void onClick(View v)
@@ -468,7 +471,7 @@ public class PositionListFragment
         removeGlobalLayoutListener();
         portfolioHeaderView = null;
         inflatedView = null;
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.adapters.TypedRecyclerAdapter;
 import com.androidth.general.fragments.billing.store.StoreItemDisplayDTO;
@@ -38,10 +38,10 @@ public class StoreItemAdapter extends TypedRecyclerAdapter<StoreItemDisplayDTO>
 
     public static class StoreItemDisplayProductDTOViewHolder extends TypedViewHolder<StoreItemDisplayDTO>
     {
-        @Bind(R.id.icon) ImageView img;
-        @Bind(R.id.title) TextView title;
-        @Bind(R.id.description) TextView desc;
-        @Bind(R.id.price) TextView price;
+        @BindView(R.id.icon) ImageView img;
+        @BindView(R.id.title) TextView title;
+        @BindView(R.id.description) TextView desc;
+        @BindView(R.id.price) TextView price;
 
         public StoreItemDisplayProductDTOViewHolder(View itemView)
         {

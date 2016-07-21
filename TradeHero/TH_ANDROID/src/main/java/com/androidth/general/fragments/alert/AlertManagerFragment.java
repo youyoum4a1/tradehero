@@ -14,7 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.common.billing.BillingConstants;
 import com.androidth.general.common.widget.BetterViewAnimator;
@@ -39,6 +39,8 @@ import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.widget.list.BaseListHeaderView;
 import java.util.List;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -51,12 +53,12 @@ public class AlertManagerFragment extends BaseFragment
 {
     public static final String BUNDLE_KEY_USER_ID = AlertManagerFragment.class.getName() + ".userId";
 
-    @Bind(R.id.manage_alerts_header) View planHeader;
-    @Bind(R.id.manage_alerts_count) TextView alertPlanCount;
-    @Bind(R.id.icn_manage_alert_count) ImageView alertPlanCountIcon;
-    @Bind(R.id.progress_animator) BetterViewAnimator progressAnimator;
-    @Bind(R.id.btn_upgrade_plan) ImageButton btnPlanUpgrade;
-    @Bind(R.id.alerts_list) StickyListHeadersListView alertListView;
+    @BindView(R.id.manage_alerts_header) View planHeader;
+    @BindView(R.id.manage_alerts_count) TextView alertPlanCount;
+    @BindView(R.id.icn_manage_alert_count) ImageView alertPlanCountIcon;
+    @BindView(R.id.progress_animator) BetterViewAnimator progressAnimator;
+    @BindView(R.id.btn_upgrade_plan) ImageButton btnPlanUpgrade;
+    @BindView(R.id.alerts_list) StickyListHeadersListView alertListView;
     protected BaseListHeaderView footerView;
 
     @Inject CurrentUserId currentUserId;
@@ -67,6 +69,8 @@ public class AlertManagerFragment extends BaseFragment
 
     protected UserProfileDTO currentUserProfile;
     private AlertListItemAdapter alertListItemAdapter;
+
+    private Unbinder unbinder;
 
     @Override public void onAttach(Activity activity)
     {
@@ -91,7 +95,7 @@ public class AlertManagerFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         alertListView.addFooterView(footerView);
         alertListView.setAdapter(alertListItemAdapter);
         alertListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -136,7 +140,7 @@ public class AlertManagerFragment extends BaseFragment
             footerView.setOnClickListener(null);
         }
         footerView = null;
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

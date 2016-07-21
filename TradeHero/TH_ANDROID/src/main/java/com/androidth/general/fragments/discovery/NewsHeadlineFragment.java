@@ -17,7 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
 import com.androidth.general.common.utils.THToast;
@@ -77,9 +77,9 @@ public class NewsHeadlineFragment extends Fragment
     @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
     @Inject DiscussionFragmentUtil discussionFragmentUtil;
 
-    @Bind(android.R.id.progress) ProgressBar progressBar;
-    @Bind(R.id.discovery_news_list) ListView mNewsListView;
-    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(android.R.id.progress) ProgressBar progressBar;
+    @BindView(R.id.discovery_news_list) ListView mNewsListView;
+    @BindView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
 
     private ClipboardManager clipboardManager;
     private Subscription newsSubscription;

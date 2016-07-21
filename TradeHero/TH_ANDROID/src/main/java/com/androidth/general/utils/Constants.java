@@ -6,7 +6,7 @@ import com.androidth.general.utils.metrics.tapstream.TapStreamType;
 
 public class Constants
 {
-    public static final boolean RELEASE = !BuildConfig.DEBUG;
+    public static final boolean RELEASE = false; /*!BuildConfig.DEBUG;*/
 
     public static final boolean ONBOARD_OANDA_ENABLED = false;
 

@@ -29,9 +29,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Authenticator;
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.OkHttpClient;
+import okhttp3.Authenticator;
+import okhttp3.Cache;
+import okhttp3.OkHttpClient;
 
 import java.io.File;
 
@@ -151,11 +151,16 @@ public class RetrofitModule
 
     @Provides @Singleton OkHttpClient provideOkHttpClient(Cache cache, Authenticator authenticator, HostnameVerifier hostNameVerifier)
     {
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.setCache(cache);
-        okHttpClient.setHostnameVerifier(hostNameVerifier);
-        okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
-        okHttpClient.setAuthenticator(authenticator);
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .cache(cache)
+                .hostnameVerifier(hostNameVerifier)
+                .sslSocketFactory(NetworkUtils.createBadSslSocketFactory())
+                .authenticator(authenticator)
+                .build();
+//        okHttpClient.newBuilder().cache(cache).build();
+//        okHttpClient.setHostnameVerifier(hostNameVerifier);
+//        okHttpClient.setSslSocketFactory(NetworkUtils.createBadSslSocketFactory());
+//        okHttpClient.setAuthenticator(authenticator);
         return okHttpClient;
     }
 

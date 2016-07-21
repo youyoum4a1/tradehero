@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.common.activities.ActivityResultRequester;
 import com.androidth.general.common.utils.CollectionUtils;
 import com.androidth.general.R;
@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.functions.Action1;
 
 abstract public class OneFragmentActivity extends BaseActivity
@@ -26,13 +28,14 @@ abstract public class OneFragmentActivity extends BaseActivity
     OneFragmentActivityModule activityModule;
     @Inject protected THRouter thRouter;
     @Inject Set<ActivityResultRequester> activityResultRequesters;
-    @Bind(R.id.my_toolbar) protected Toolbar toolbar;
+    @BindView(R.id.my_toolbar) protected Toolbar toolbar;
 
+    private Unbinder unbinder;
     @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_one_fragment);
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
         activityModule.toolbar = toolbar;

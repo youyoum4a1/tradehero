@@ -12,6 +12,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -56,9 +57,10 @@ import com.google.gson.JsonParser;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import dagger.Lazy;
 import retrofit.RetrofitError;
 import retrofit.mime.TypedByteArray;
@@ -86,21 +88,19 @@ public class EmailSignInFragment extends Fragment
     @Inject Provider<LoginSignUpFormDTO.Builder2> loginSignUpFormDTOProvider;
     @Inject SessionServiceWrapper sessionServiceWrapper;
 
-    @Bind(R.id.authentication_sign_in_email) ValidatedText email;
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.coordinator) CoordinatorLayout coordinatorLayout;
+    @BindView(R.id.authentication_sign_in_email) ValidatedText email;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.coordinator) CoordinatorLayout coordinatorLayout;
     TextValidator emailValidator;
-    @Bind(R.id.et_pwd_login) ValidatedText password;
+    @BindView(R.id.et_pwd_login) ValidatedText password;
     TextValidator passwordValidator;
-    @Bind(R.id.btn_login) View loginButton;
+    @BindView(R.id.btn_login) View loginButton;
     SubscriptionList onStopSubscriptions;
-
-
 
     @Nullable Observer<SocialNetworkEnum> socialNetworkEnumObserver;
     @Nullable Uri deepLink;
 
-
+    private Unbinder unbinder;
 
     public static void putDeepLink(@NonNull Bundle args, @NonNull Uri deepLink)
     {
@@ -138,7 +138,7 @@ public class EmailSignInFragment extends Fragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         toolbar.setTitle("Login to account");
         toolbar.findViewById(R.id.arrow_back_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +152,9 @@ public class EmailSignInFragment extends Fragment
             imgr.showSoftInput(email, InputMethodManager.SHOW_IMPLICIT);
         }
 
-        loginButton.setEnabled(BuildConfig.DEBUG);
+//        loginButton.setEnabled(BuildConfig.DEBUG);//dont know why anyway - Jeff
+
+        setButtonEnabled(loginButton, false);
 
         emailValidator = email.getValidator();
         email.addTextChangedListener(emailValidator);
@@ -238,7 +240,8 @@ public class EmailSignInFragment extends Fragment
                         {
                             @Override public void call(Boolean areFieldsValid)
                             {
-                                loginButton.setEnabled(areFieldsValid);
+                                setButtonEnabled(loginButton, areFieldsValid);
+//                                loginButton.setEnabled(areFieldsValid);
                             }
                         },
                         new TimberOnErrorAction1("Error in validation")));
@@ -270,7 +273,7 @@ public class EmailSignInFragment extends Fragment
     {
         email.removeTextChangedListener(emailValidator);
         password.removeTextChangedListener(passwordValidator);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 
@@ -430,5 +433,13 @@ public class EmailSignInFragment extends Fragment
                                 .build();
                     }
                 });
+    }
+
+    private void setButtonEnabled(View button, boolean flag){
+        if(flag){
+            button.setBackgroundResource(android.R.color.holo_green_dark);
+        }else{
+            button.setBackgroundColor(Color.LTGRAY);
+        }
     }
 }

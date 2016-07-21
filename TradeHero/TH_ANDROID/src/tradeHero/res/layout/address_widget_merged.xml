@@ -52,8 +52,8 @@
       android:layout_height="wrap_content"
       android:layout_gravity="left"
       android:layout_marginTop="@dimen/margin_xsmall"
-      android:src="@drawable/powered_by_google_light"
       />
+  <!--android:src="@drawable/powered_by_google_light"-->
 
     <android.support.design.widget.TextInputLayout
       android:layout_width="match_parent"

@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -34,10 +34,10 @@ public class PortfolioListItemView extends RelativeLayout
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
 
-    @Bind(R.id.portfolio_title) protected TextView title;
-    @Bind(R.id.portfolio_description) protected TextView description;
-    @Bind(R.id.roi_value) @Nullable protected TextView roiValue;
-    @Bind(R.id.portfolio_image) @Nullable protected ImageView portfolioImage;
+    @BindView(R.id.portfolio_title) protected TextView title;
+    @BindView(R.id.portfolio_description) protected TextView description;
+    @BindView(R.id.roi_value) @Nullable protected TextView roiValue;
+    @BindView(R.id.portfolio_image) @Nullable protected ImageView portfolioImage;
 
     private DisplayablePortfolioDTO displayablePortfolioDTO;
     @Nullable private Subscription userWatchlistSubscription;

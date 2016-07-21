@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.market.MarketRegion;
 import com.androidth.general.models.market.MarketRegionDisplayUtil;
@@ -27,8 +27,8 @@ public class MarketRegionMapView extends FrameLayout
     private static final float ON_CLICK_ALPHA = 1f;
     private static final int HALF_CUBE_APPROXIMATION = 20;
 
-    @Bind(R.id.back_image) ImageView backImage;
-    @Bind(R.id.front_image) ImageView frontImage;
+    @BindView(R.id.back_image) ImageView backImage;
+    @BindView(R.id.front_image) ImageView frontImage;
     @NonNull private Map<MarketRegion, MapHitBoxView> feedbackHitBoxes;
     @NonNull private PublishSubject<MarketRegion> marketRegionClickedBehavior;
     @NonNull private PublishSubject<Boolean> switchClickedBehavior;

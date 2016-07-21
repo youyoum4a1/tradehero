@@ -7,24 +7,28 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.R;
 import com.androidth.general.api.discussion.AbstractDiscussionCompactDTO;
 import com.androidth.general.api.discussion.VoteDirection;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.discussion.UserDiscussionAction;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
 public class VotePair extends LinearLayout
 {
-    @Bind(R.id.timeline_action_button_vote_up) VoteView voteUp;
-    @Bind(R.id.timeline_action_button_vote_down) VoteView voteDown;
+    @BindView(R.id.timeline_action_button_vote_up) VoteView voteUp;
+    @BindView(R.id.timeline_action_button_vote_down) VoteView voteDown;
 
     private AbstractDiscussionCompactDTO discussionDTO;
     private boolean downVote = false;
     @NonNull private final PublishSubject<UserDiscussionAction> userActionSubject;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     @SuppressWarnings("UnusedDeclaration")
@@ -63,19 +67,19 @@ public class VotePair extends LinearLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         updateDownVoteVisibility();
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

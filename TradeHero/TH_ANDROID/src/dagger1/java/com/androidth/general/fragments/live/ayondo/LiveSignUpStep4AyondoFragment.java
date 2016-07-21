@@ -42,8 +42,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -60,9 +61,11 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final int PICK_LOCATION_REQUEST_SECONDARY = 2514;
     private Geocoder mGeocoder;
 
-    @Bind(R.id.info_address_pri) KYCAddressWidget primaryWidget;
-    @Bind(R.id.info_address_sec) KYCAddressWidget secondaryWidget;
-    @Bind(R.id.info_address_sec_title) TextView secondaryAddressWidget;
+    private Unbinder unbinder;
+
+    @BindView(R.id.info_address_pri) KYCAddressWidget primaryWidget;
+    @BindView(R.id.info_address_sec) KYCAddressWidget secondaryWidget;
+    @BindView(R.id.info_address_sec_title) TextView secondaryAddressWidget;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -320,7 +323,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

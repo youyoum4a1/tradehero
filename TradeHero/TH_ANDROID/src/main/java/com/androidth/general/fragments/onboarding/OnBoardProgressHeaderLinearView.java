@@ -3,12 +3,12 @@ package com.androidth.general.fragments.onboarding;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 
 public class OnBoardProgressHeaderLinearView extends OnBoardHeaderLinearView
 {
-    @Bind(R.id.progress) View progressView;
+    @BindView(R.id.progress) View progressView;
 
     //<editor-fold desc="Constructors">
     public OnBoardProgressHeaderLinearView(Context context)

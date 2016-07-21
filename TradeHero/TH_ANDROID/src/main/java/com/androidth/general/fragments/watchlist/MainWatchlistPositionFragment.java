@@ -28,8 +28,9 @@ import com.androidth.general.widget.MultiScrollListener;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -46,14 +47,16 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     //TODO Change Analytics
     //@Inject Analytics analytics;
 
-    @Bind(android.R.id.empty) @Nullable protected ProgressBar progressBar;
-    //@Bind(R.id.watchlist_swipe_listview) SwipeListView watchlistPositionListView;
-    //@Bind(R.id.swipe_container) SwipeRefreshLayout watchListRefreshableContainer;
+    @BindView(android.R.id.empty) @Nullable protected ProgressBar progressBar;
+    //@BindView(R.id.watchlist_swipe_listview) SwipeListView watchlistPositionListView;
+    //@BindView(R.id.swipe_container) SwipeRefreshLayout watchListRefreshableContainer;
 
     private WatchlistAdapter watchListAdapter;
     //private BroadcastReceiver broadcastReceiver;
 
     private WatchlistPositionDTOList watchlistPositionDTOs;
+
+    private Unbinder unbinder;
 
     public static void putShowActionBarTitle(@NonNull Bundle args, boolean showActionBarTitle)
     {
@@ -80,7 +83,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         //watchlistPositionListView.post(new Runnable()
         //{
@@ -168,7 +171,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         //watchListRefreshableContainer.setRefreshing(false);
         //watchListRefreshableContainer.setOnRefreshListener(null);
 
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

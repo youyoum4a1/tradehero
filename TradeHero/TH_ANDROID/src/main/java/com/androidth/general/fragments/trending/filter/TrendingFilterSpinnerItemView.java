@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import android.support.annotation.Nullable;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
@@ -16,8 +16,8 @@ import com.androidth.general.models.market.ExchangeCompactSpinnerDTO;
 public class TrendingFilterSpinnerItemView extends LinearLayout
     implements DTOView<ExchangeCompactSpinnerDTO>
 {
-    @Bind(R.id.trending_filter_spinner_item_label) TextView label;
-    @Nullable @Bind(R.id.trending_filter_spinner_item_icon) ImageView icon;
+    @BindView(R.id.trending_filter_spinner_item_label) TextView label;
+    @Nullable @BindView(R.id.trending_filter_spinner_item_icon) ImageView icon;
 
     @Nullable private ExchangeCompactSpinnerDTO exchangeCompactSpinnerDTO;
 

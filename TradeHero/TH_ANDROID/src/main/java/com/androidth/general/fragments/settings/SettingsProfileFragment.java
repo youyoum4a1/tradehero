@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
@@ -32,6 +32,8 @@ import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.DeviceUtil;
+
+import butterknife.Unbinder;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Observable;
@@ -44,15 +46,16 @@ import timber.log.Timber;
 
 public class SettingsProfileFragment extends BaseFragment
 {
-    @Bind(R.id.authentication_sign_up_button) protected Button updateButton;
-    @Bind(R.id.sign_up_form_wrapper) protected NotifyingScrollView scrollView;
-    @Bind(R.id.profile_info) protected ProfileInfoView profileView;
-    @Bind(R.id.authentication_sign_up_referral_code) protected EditText referralCodeEditText;
+    @BindView(R.id.authentication_sign_up_button) protected Button updateButton;
+    @BindView(R.id.sign_up_form_wrapper) protected NotifyingScrollView scrollView;
+    @BindView(R.id.profile_info) protected ProfileInfoView profileView;
+    @BindView(R.id.authentication_sign_up_referral_code) protected EditText referralCodeEditText;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
     @Inject Lazy<UserServiceWrapper> userServiceWrapper;
 
+    private Unbinder unbinder;
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_settings_profile, container, false);
@@ -61,7 +64,7 @@ public class SettingsProfileFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         updateButton.setText(R.string.update);
         referralCodeEditText.setVisibility(View.GONE);
         setHasOptionsMenu(true);
@@ -87,7 +90,7 @@ public class SettingsProfileFragment extends BaseFragment
         scrollView.setOnScrollChangedListener(null);
         updateButton = null;
         referralCodeEditText = null;
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

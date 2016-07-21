@@ -23,7 +23,7 @@ import com.tradehero.route.RouteProperty;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit.RetrofitError;
 import retrofit.mime.TypedByteArray;
@@ -42,11 +42,11 @@ public class RedeemFragment extends DashboardFragment {
 
     @RouteProperty("providerId") Integer routedProviderId;
 
-    @Bind(R.id.redeem_server_response)
+    @BindView(R.id.redeem_server_response)
     TextView redeemServerResponse;
-    @Bind(R.id.redemption_code)
+    @BindView(R.id.redemption_code)
     TextInputEditText redeemCode;
-    @Bind(R.id.redeem_button)
+    @BindView(R.id.redeem_button)
     AppCompatButton redeemButton;
 
     @Inject

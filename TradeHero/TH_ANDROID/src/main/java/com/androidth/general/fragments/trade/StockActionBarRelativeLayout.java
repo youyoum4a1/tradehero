@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.android.internal.util.Predicate;
@@ -36,6 +36,8 @@ import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.utils.StringUtils;
 import java.util.Map;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -49,15 +51,17 @@ public class StockActionBarRelativeLayout extends RelativeLayout
 
     @Inject Picasso picasso;
 
-    @Bind(R.id.stock_logo) @Nullable ImageView stockLogo;
-    @Bind(R.id.flags_container) @Nullable FxFlagContainer flagsContainer;
-    @Bind(R.id.tv_stock_title) protected TextView stockTitle;
-    @Bind(R.id.tv_stock_sub_title) protected TextView stockSubTitle;
-    @Bind(R.id.btn_watched) @Nullable protected ImageView btnWatched;
-    @Bind(R.id.btn_alerted) @Nullable protected View btnAlerted;
+    @BindView(R.id.stock_logo) @Nullable ImageView stockLogo;
+    @BindView(R.id.flags_container) @Nullable FxFlagContainer flagsContainer;
+    @BindView(R.id.tv_stock_title) protected TextView stockTitle;
+    @BindView(R.id.tv_stock_sub_title) protected TextView stockSubTitle;
+    @BindView(R.id.btn_watched) @Nullable protected ImageView btnWatched;
+    @BindView(R.id.btn_alerted) @Nullable protected View btnAlerted;
 
     @Nullable protected Requisite dto;
     @NonNull protected final PublishSubject<UserAction> userActionSubject;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     public StockActionBarRelativeLayout(Context context)
@@ -82,7 +86,7 @@ public class StockActionBarRelativeLayout extends RelativeLayout
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         HierarchyInjector.inject(this);
         if (stockLogo != null)
         {
@@ -93,7 +97,7 @@ public class StockActionBarRelativeLayout extends RelativeLayout
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -102,7 +106,7 @@ public class StockActionBarRelativeLayout extends RelativeLayout
         {
             picasso.cancelRequest(stockLogo);
         }
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

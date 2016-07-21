@@ -28,9 +28,10 @@ import com.androidth.general.widget.validation.ValidatedText;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -38,12 +39,14 @@ import timber.log.Timber;
 
 public class SettingsPayPalFragment extends BaseFragment
 {
-    @Bind(R.id.settings_paypal_email_text) protected ValidatedText paypalEmailText;
-    @Bind(R.id.settings_paypal_update_button) protected Button submitButton;
+    @BindView(R.id.settings_paypal_email_text) protected ValidatedText paypalEmailText;
+    @BindView(R.id.settings_paypal_update_button) protected Button submitButton;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;
+
+    private Unbinder unbinder;
     //TODO Change Analytics
     //@Inject Analytics analytics;
 
@@ -55,7 +58,7 @@ public class SettingsPayPalFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         // HACK: force this email to focus instead of the TabHost stealing focus..
         paypalEmailText.setOnTouchListener(new FocusableOnTouchListener());
     }
@@ -83,7 +86,7 @@ public class SettingsPayPalFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

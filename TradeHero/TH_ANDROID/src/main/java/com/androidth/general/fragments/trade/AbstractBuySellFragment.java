@@ -10,7 +10,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import android.support.annotation.Nullable;
 import com.android.internal.util.Predicate;
@@ -60,6 +60,8 @@ import com.androidth.general.utils.route.THRouter;
 
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -91,11 +93,11 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Inject @ShowAskForInviteDialog protected TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject protected BroadcastUtils broadcastUtils;
 
-    @Bind(R.id.portfolio_selector_container) protected PortfolioSelectorView selectedPortfolioContainer;
-    @Bind(R.id.quote_refresh_countdown) protected ProgressBar quoteRefreshProgressBar;
-    @Bind(R.id.bottom_button) protected ViewGroup buySellBtnContainer;
-    @Bind(R.id.btn_buy) protected Button buyBtn;
-    @Bind(R.id.btn_sell) protected Button sellBtn;
+    @BindView(R.id.portfolio_selector_container) protected PortfolioSelectorView selectedPortfolioContainer;
+    @BindView(R.id.quote_refresh_countdown) protected ProgressBar quoteRefreshProgressBar;
+    @BindView(R.id.bottom_button) protected ViewGroup buySellBtnContainer;
+    @BindView(R.id.btn_buy) protected Button buyBtn;
+    @BindView(R.id.btn_sell) protected Button sellBtn;
 
     @RouteProperty("applicablePortfolioId")
     @Nullable protected Integer routedApplicablePortfolioId;
@@ -114,6 +116,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     private Observable<Void> quoteRepeatDelayedObservable;
     public Observable<QuoteDTO> quoteObservable;
     public Observable<SecurityCompactDTO> securityObservable;
+
+    private Unbinder unbinder;
 
     public static void putRequisite(@NonNull Bundle args, @NonNull Requisite requisite)
     {
@@ -148,7 +152,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         setRetainInstance(true);
 
         buySellBtnContainer.setVisibility(View.GONE);
@@ -392,7 +396,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteRefreshProgressBar.clearAnimation();
         progressAnimation = null;
 
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

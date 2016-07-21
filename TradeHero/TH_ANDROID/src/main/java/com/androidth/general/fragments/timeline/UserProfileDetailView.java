@@ -8,12 +8,15 @@ import butterknife.ButterKnife;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.level.LevelDefDTOList;
 import com.androidth.general.api.users.UserProfileDTO;
+
+import butterknife.Unbinder;
 import rx.Observable;
 
 public class UserProfileDetailView extends LinearLayout implements DTOView<UserProfileDTO>
 {
     @NonNull protected final UserProfileDetailViewHolder userProfileDetailViewHolder;
 
+    private Unbinder unbinder;
     //<editor-fold desc="Constructors">
     public UserProfileDetailView(Context context, AttributeSet attrs)
     {
@@ -27,7 +30,7 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
         super.onFinishInflate();
         if (!isInEditMode())
         {
-            ButterKnife.bind(userProfileDetailViewHolder, this);
+            unbinder = ButterKnife.bind(userProfileDetailViewHolder, this);
         }
     }
 
@@ -36,13 +39,14 @@ public class UserProfileDetailView extends LinearLayout implements DTOView<UserP
         super.onAttachedToWindow();
         if (!isInEditMode())
         {
-            ButterKnife.bind(userProfileDetailViewHolder, this);
+            unbinder = ButterKnife.bind(userProfileDetailViewHolder, this);
         }
     }
 
     @Override protected void onDetachedFromWindow()
     {
-        ButterKnife.unbind(userProfileDetailViewHolder);
+//        ButterKnife.unbind(userProfileDetailViewHolder);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

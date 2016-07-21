@@ -8,8 +8,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.Unbinder;
+
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.androidth.general.R;
@@ -29,15 +31,17 @@ public class NotificationItemView
         extends LinearLayout
         implements DTOView<NotificationDTO>
 {
-    @Bind(R.id.discussion_content) TextView notificationContent;
-    @Bind(R.id.notification_user_picture) ImageView notificationPicture;
-    @Bind(R.id.discussion_time) TextView notificationTime;
-    @Bind(R.id.notification_unread_flag) ImageView notificationUnreadFlag;
+    @BindView(R.id.discussion_content) TextView notificationContent;
+    @BindView(R.id.notification_user_picture) ImageView notificationPicture;
+    @BindView(R.id.discussion_time) TextView notificationTime;
+    @BindView(R.id.notification_unread_flag) ImageView notificationUnreadFlag;
 
     @Inject DashboardNavigator navigator;
     @Inject CurrentUserId currentUserId;
     @Inject Picasso picasso;
     @Inject @ForUserPhoto Transformation userPhotoTransformation;
+
+    private Unbinder unbinder;
 
     PrettyTime prettyTime;
     private NotificationDTO notificationDTO;
@@ -66,7 +70,7 @@ public class NotificationItemView
     {
         super.onFinishInflate();
 
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         HierarchyInjector.inject(this);
         prettyTime = new PrettyTime();
     }
@@ -74,13 +78,13 @@ public class NotificationItemView
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
     {
         resetView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

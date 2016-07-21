@@ -47,8 +47,9 @@ import com.tradehero.route.Routable;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -70,13 +71,15 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject Toolbar toolbar;
 
-    @Bind(R.id.community_screen) BetterViewAnimator communityScreen;
-    @Bind(R.id.pager) ViewPager tabViewPager;
-    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @BindView(R.id.community_screen) BetterViewAnimator communityScreen;
+    @BindView(R.id.pager) ViewPager tabViewPager;
+    @BindView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     private BaseWebViewIntentFragment webFragment;
     private int currentDisplayedChildLayoutId;
     private LeaderboardDefDTOList leaderboardDefDTOs;
+
+    private Unbinder unbinder;
 
     /* The following 2 static fields are used to save the status of ActionBar and Tabs, so that users can still
     * return to the same page from other fragments.
@@ -96,7 +99,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         //liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
     }
 
@@ -200,7 +203,7 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
     {
         //liveFragmentUtil.onDestroyView();
         //liveFragmentUtil = null;
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

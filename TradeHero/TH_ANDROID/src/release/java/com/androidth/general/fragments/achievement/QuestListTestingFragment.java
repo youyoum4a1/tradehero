@@ -34,8 +34,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -43,9 +44,9 @@ import timber.log.Timber;
 
 public class QuestListTestingFragment extends BaseFragment
 {
-    @Bind(R.id.generic_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.generic_ptr_list) protected ListView listView;
-    @Bind(android.R.id.progress) protected ProgressBar emptyView;
+    @BindView(R.id.generic_swipe_refresh_layout) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.generic_ptr_list) protected ListView listView;
+    @BindView(android.R.id.progress) protected ProgressBar emptyView;
 
     @Inject QuestBonusListCacheRx questBonusListCache;
     @Inject AchievementMockServiceWrapper achievementMockServiceWrapper;
@@ -57,6 +58,8 @@ public class QuestListTestingFragment extends BaseFragment
     private EditText mXPFrom;
     private EditText mXPEarned;
 
+    private Unbinder unbinder;
+
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         return inflater.inflate(R.layout.fragment_generic_list, container, false);
@@ -65,7 +68,7 @@ public class QuestListTestingFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         swipeRefreshLayout.setEnabled(false);
         listView.addHeaderView(createHeaderView());
         initAdapter();
@@ -143,7 +146,7 @@ public class QuestListTestingFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

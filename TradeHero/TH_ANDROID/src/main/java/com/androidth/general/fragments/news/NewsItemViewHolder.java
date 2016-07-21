@@ -10,7 +10,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.squareup.picasso.Picasso;
@@ -39,13 +39,13 @@ import rx.functions.Func1;
 public class NewsItemViewHolder extends
         NewsItemCompactViewHolder
 {
-    @Bind(R.id.news_detail_wrapper) @Nullable protected BetterViewAnimator mNewsContentWrapper;
-    @Bind(R.id.news_detail_loading) @Nullable protected View loadingTextContent;
-    @Bind(R.id.discussion_content) protected MarkdownTextView textContent;
-    @Bind(R.id.news_detail_title_placeholder) @Nullable ImageView mNewsDetailTitlePlaceholder;
-    @Bind(R.id.news_detail_reference) @Nullable GridView mNewsDetailReference;
-    @Bind(R.id.news_detail_reference_container) @Nullable LinearLayout mNewsDetailReferenceContainer;
-    @Bind(R.id.news_view_on_web) View openOnWebView;
+    @BindView(R.id.news_detail_wrapper) @Nullable protected BetterViewAnimator mNewsContentWrapper;
+    @BindView(R.id.news_detail_loading) @Nullable protected View loadingTextContent;
+    @BindView(R.id.discussion_content) protected MarkdownTextView textContent;
+    @BindView(R.id.news_detail_title_placeholder) @Nullable ImageView mNewsDetailTitlePlaceholder;
+    @BindView(R.id.news_detail_reference) @Nullable GridView mNewsDetailReference;
+    @BindView(R.id.news_detail_reference_container) @Nullable LinearLayout mNewsDetailReferenceContainer;
+    @BindView(R.id.news_view_on_web) View openOnWebView;
 
     @NonNull protected SimpleSecurityItemViewAdapter simpleSecurityItemViewAdapter;
 

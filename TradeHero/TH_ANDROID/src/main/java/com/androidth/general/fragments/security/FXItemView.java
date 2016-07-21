@@ -7,7 +7,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.security.SecurityCompactDTO;
@@ -19,10 +19,10 @@ import com.androidth.general.models.number.THSignedFXRate;
 
 public class FXItemView extends RelativeLayout implements DTOView<SecurityCompactDTO>
 {
-    @Bind(R.id.fx_pair_name) TextView fxPairName;
-    @Bind(R.id.flags_container) protected FxFlagContainer flagsContainer;
-    @Bind(R.id.fx_price_buy) TextView buyPrice;
-    @Bind(R.id.fx_price_sell) TextView sellPrice;
+    @BindView(R.id.fx_pair_name) TextView fxPairName;
+    @BindView(R.id.flags_container) protected FxFlagContainer flagsContainer;
+    @BindView(R.id.fx_price_buy) TextView buyPrice;
+    @BindView(R.id.fx_price_sell) TextView sellPrice;
 
     protected FxSecurityCompactDTO fxSecurityCompactDTO;
     private int mBlinkDuration;

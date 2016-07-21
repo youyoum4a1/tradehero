@@ -41,8 +41,9 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -59,10 +60,12 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     @SuppressWarnings("UnusedDeclaration") @Inject
     Context doNotRemoveOrItFails;
 
-    @Bind(R.id.android_tabs)
+    @BindView(R.id.android_tabs)
     SlidingTabLayout pagerSlidingTabLayout;
-    @Bind(R.id.pager)
+    @BindView(R.id.pager)
     ViewPager viewPager;
+
+    private Unbinder unbinder;
 
 
     private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityV2RxFragment.class.getName() + ".providerId";
@@ -103,7 +106,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_contest_securities, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         initViews();
         return view;
     }
@@ -129,7 +132,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
 
     @Override public void onDestroy()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroy();
     }
 

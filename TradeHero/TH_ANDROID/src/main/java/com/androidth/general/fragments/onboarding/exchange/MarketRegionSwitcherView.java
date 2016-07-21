@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.market.ExchangeIntegerId;
 import com.androidth.general.api.market.MarketRegion;
@@ -27,10 +27,10 @@ public class MarketRegionSwitcherView extends OnBoardHeaderLinearView
     private static final int INDEX_CHILD_MAP = 0;
     private static final int INDEX_CHILD_BUTTON = 1;
 
-    @Bind(R.id.switcher) ViewSwitcher switcher;
-    @Bind(R.id.market_map_selector) MarketRegionMapView mapView;
-    @Bind(R.id.market_button_selector) MarketRegionButtonView buttonView;
-    @Bind(android.R.id.hint) TextView hint;
+    @BindView(R.id.switcher) ViewSwitcher switcher;
+    @BindView(R.id.market_map_selector) MarketRegionMapView mapView;
+    @BindView(R.id.market_button_selector) MarketRegionButtonView buttonView;
+    @BindView(android.R.id.hint) TextView hint;
 
     private int maxSelectableExchanges;
     private boolean regionsLoaded;

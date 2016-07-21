@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemClick;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.androidth.general.common.utils.THToast;
@@ -27,6 +27,8 @@ import com.androidth.general.persistence.translation.UserTranslationSettingPrefe
 import java.io.IOException;
 import java.util.List;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -41,8 +43,10 @@ public class TranslatableLanguageListFragment extends BaseFragment
     private UserTranslationSettingDTO currentSettings;
     private TranslatableLanguageItemAdapter itemAdapter;
     private Subscription tokenFetchSubscription;
-    @Bind(android.R.id.list) ListView listView;
-    @Bind(android.R.id.empty) View emptyView;
+    @BindView(android.R.id.list) ListView listView;
+    @BindView(android.R.id.empty) View emptyView;
+
+    private Unbinder unbinder;
 
     @Override public void onAttach(Activity activity)
     {
@@ -53,7 +57,7 @@ public class TranslatableLanguageListFragment extends BaseFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_translatable_language_list, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
@@ -74,7 +78,7 @@ public class TranslatableLanguageListFragment extends BaseFragment
     {
         unsubscribe(tokenFetchSubscription);
         listView.setEmptyView(null);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

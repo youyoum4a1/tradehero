@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.android.internal.util.Predicate;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.common.widget.BetterViewAnimator;
@@ -62,13 +62,13 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
     @Inject protected PositionListCacheRx positionCompactListCache;
     @Inject protected QuoteServiceWrapper quoteServiceWrapper;
 
-    @Bind(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
-    @Bind(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
-    @Bind(R.id.my_charts_view) protected KChartsView mKChartsView;
-    @Bind(R.id.chart_time_span_button_set) protected TimeSpanButtonSet mTimeSpanButtonSet;
-    @Bind(R.id.ll_position_status) protected LinearLayout llPositionStatus;
-    @Bind(R.id.tv_position_units) protected TextView tvPositionUnits;
-    @Bind(R.id.tv_position_money) protected TextView tvPositionMoney;
+    @BindView(R.id.margin_close_out_status) protected MarginCloseOutStatusTextView marginCloseOutStatus;
+    @BindView(R.id.chart_image_wrapper) protected BetterViewAnimator mChartWrapper;
+    @BindView(R.id.my_charts_view) protected KChartsView mKChartsView;
+    @BindView(R.id.chart_time_span_button_set) protected TimeSpanButtonSet mTimeSpanButtonSet;
+    @BindView(R.id.ll_position_status) protected LinearLayout llPositionStatus;
+    @BindView(R.id.tv_position_units) protected TextView tvPositionUnits;
+    @BindView(R.id.tv_position_money) protected TextView tvPositionMoney;
 
     @Nullable protected PositionDTOList positionDTOList;
     @Nullable protected PositionDTOCompact positionDTOCompact;

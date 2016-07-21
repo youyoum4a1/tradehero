@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
@@ -18,7 +18,7 @@ import rx.functions.Action1;
 
 public class PortfolioSelectorView extends RelativeLayout
 {
-    @Bind(R.id.portfolio_selected) TextView selectedPortfolio;
+    @BindView(R.id.portfolio_selected) TextView selectedPortfolio;
     @Nullable private OwnedPortfolioId defaultPortfolioId;
     @Nullable private MenuOwnedPortfolioId defaultMenuPortfolioId;
     @Nullable private MenuOwnedPortfolioId currentMenu;

@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
@@ -25,8 +25,8 @@ import timber.log.Timber;
 public class PositionView extends LinearLayout
         implements DTOView<PositionView.DTO>
 {
-    @Bind(R.id.position_partial_top) protected PositionPartialTopView topView;
-    @Bind(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTO, ExpandableListItem<PositionDTO>>*/ bottomView;
+    @BindView(R.id.position_partial_top) protected PositionPartialTopView topView;
+    @BindView(R.id.expanding_layout) protected AbstractPartialBottomView/*<PositionDTO, ExpandableListItem<PositionDTO>>*/ bottomView;
 
     @Inject Picasso picasso;
     private PositionPartialTopView.ViewHolder topViewHolder;

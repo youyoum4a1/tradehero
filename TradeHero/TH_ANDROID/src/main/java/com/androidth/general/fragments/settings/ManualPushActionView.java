@@ -18,17 +18,20 @@ import com.urbanairship.actions.Action;
 import com.urbanairship.actions.ActionArguments;
 import com.urbanairship.actions.ActionValue;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.subjects.BehaviorSubject;
 
 public class ManualPushActionView extends ScrollView
 {
-    @Bind(R.id.channel_id) TextView channelIdView;
-    @Bind(R.id.situation_spinner) Spinner situationSpinner;
-    @Bind(R.id.arguments) EditText argumentView;
-    @Bind(R.id.action_name) EditText actionNameView;
+    @BindView(R.id.channel_id) TextView channelIdView;
+    @BindView(R.id.situation_spinner) Spinner situationSpinner;
+    @BindView(R.id.arguments) EditText argumentView;
+    @BindView(R.id.action_name) EditText actionNameView;
+
+    private Unbinder unbinder;
 
     ArrayAdapter<SituationDTO> situationAdapter;
     private BehaviorSubject<Pair<String, ActionArguments>> actionArgumentObservable;
@@ -56,7 +59,7 @@ public class ManualPushActionView extends ScrollView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
         situationAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, SituationDTO.getAll());
         situationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         situationSpinner.setAdapter(situationAdapter);
@@ -75,7 +78,7 @@ public class ManualPushActionView extends ScrollView
     @Override protected void onAttachedToWindow()
     {
         super.onAttachedToWindow();
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
     }
 
     @Override protected void onDetachedFromWindow()
@@ -93,7 +96,7 @@ public class ManualPushActionView extends ScrollView
             Timber.e(e, "Failed to pass on action value");
             actionArgumentObservable.onError(e);
         }*/
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

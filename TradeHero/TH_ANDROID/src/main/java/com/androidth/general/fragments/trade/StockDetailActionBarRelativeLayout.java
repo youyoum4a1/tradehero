@@ -4,14 +4,14 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.fragments.security.SecurityCircleProgressBar;
 
 public class StockDetailActionBarRelativeLayout extends StockActionBarRelativeLayout
 {
-    @Bind(R.id.circle_progressbar) protected SecurityCircleProgressBar circleProgressBar;
-    @Bind(R.id.action_bar_market_closed_icon) protected View marketCloseIcon;
+    @BindView(R.id.circle_progressbar) protected SecurityCircleProgressBar circleProgressBar;
+    @BindView(R.id.action_bar_market_closed_icon) protected View marketCloseIcon;
 
     //<editor-fold desc="Constructors">
     public StockDetailActionBarRelativeLayout(Context context)

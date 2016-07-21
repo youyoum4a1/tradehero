@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidth.general.R;
 import com.androidth.general.api.users.CurrentUserId;
@@ -63,6 +65,8 @@ public class SplashActivity extends BaseActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.splash_screen);
+        Log.e("Jeff.Debug", "Setting up");
+        makeToast("Setting up");
         TextView appVersion = (TextView) findViewById(R.id.app_version);
         if (appVersion != null)
         {
@@ -78,10 +82,16 @@ public class SplashActivity extends BaseActivity
                     getResources().getColor(R.color.authentication_guide_bg_color));
         }
 
+        makeToast("Setting up realm");
+        Log.e("Jeff.Debug", "Setting up realm");
         setupRealm();
+        Log.e("Jeff.Debug", "Setup realm completed");
 
+        makeToast("Setting realm completed");
         deepLink = getIntent().getData();
 
+        Log.e("Jeff.Debug", "Deeplink "+deepLink);
+        makeToast("Deeplink "+deepLink);
         if (deepLink != null)
         {
             ActivityHelper.launchDashboard(this, deepLink);
@@ -105,6 +115,8 @@ public class SplashActivity extends BaseActivity
         THAppsFlyer.setAppsFlyerKey(this, MetricsModule.APP_FLYER_KEY);
         THAppsFlyer.sendTracking(this);
 
+        Log.e("Jeff.Debug", "Setup Appsflyer done");
+        makeToast("Setting appsflyer done");
         if (!Constants.RELEASE)
         {
             VersionUtils.logScreenMeasurements(this);
@@ -114,6 +126,8 @@ public class SplashActivity extends BaseActivity
 
         if (firstLaunchPreference.get() || resetHelpScreens.get() || authToken == null)
         {
+            Log.e("Jeff.Debug", "Launching deeplink");
+            makeToast("Launching deeplink");
             ActivityHelper.launchAuthentication(this, deepLink);
             firstLaunchPreference.set(false);
             resetHelpScreens.set(false);
@@ -121,6 +135,8 @@ public class SplashActivity extends BaseActivity
         }
         else
         {
+            Log.e("Jeff.Debug", "From user profile "+currentUserId);
+            makeToast("User "+currentUserId);
             userProfileSubscription = AppObservable.bindActivity(
                     this,
                     userProfileCache.get(currentUserId.toUserBaseKey()))
@@ -129,6 +145,8 @@ public class SplashActivity extends BaseActivity
                             {
                                 @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
                                 {
+                                    Log.e("Jeff.Debug", "Subscribed!");
+                                    makeToast("subscribed");
                                     dtoCacheUtil.prefetchesUponLogin(pair.second);
                                     ActivityHelper.launchDashboard(SplashActivity.this, deepLink);
                                     finish();
@@ -138,6 +156,8 @@ public class SplashActivity extends BaseActivity
                             {
                                 @Override public void call(Throwable throwable)
                                 {
+                                    Log.e("Jeff.Debug", "Throwable");
+                                    makeToast("Throwable");
                                     ActivityHelper.launchAuthentication(SplashActivity.this, deepLink);
                                     finish();
                                 }
@@ -168,5 +188,9 @@ public class SplashActivity extends BaseActivity
 
     private void setupRealm(){
         Realm.getInstance(new RealmConfiguration.Builder(this).name(Constants.REALM_DB_NAME).build());
+    }
+
+    private void makeToast(String message){
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }

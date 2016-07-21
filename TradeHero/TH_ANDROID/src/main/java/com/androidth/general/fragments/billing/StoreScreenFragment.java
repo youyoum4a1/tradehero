@@ -46,8 +46,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -76,12 +77,13 @@ public class StoreScreenFragment extends BaseFragment
 
     @RouteProperty("action") Integer productDomainIdentifierOrdinal;
 
-    @Bind(R.id.store_option_list) protected RecyclerView listView;
+    @BindView(R.id.store_option_list) protected RecyclerView listView;
 
     private StoreItemAdapter storeItemAdapter;
     @Nullable protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
     @Nullable protected Subscription purchaseSubscription;
 
+    private Unbinder unbinder;
     public static void registerAliases(@NonNull THRouter router)
     {
         router.registerAlias("cash", "store/" + ProductIdentifierDomain.DOMAIN_VIRTUAL_DOLLAR.ordinal());
@@ -165,7 +167,7 @@ public class StoreScreenFragment extends BaseFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         listView.setLayoutManager(new LinearLayoutManager(getActivity()));
         listView.setHasFixedSize(true);
         listView.addItemDecoration(new TypedRecyclerAdapter.DividerItemDecoration(getActivity()));
@@ -228,7 +230,7 @@ public class StoreScreenFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

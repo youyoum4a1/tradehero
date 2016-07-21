@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
 import com.androidth.general.adapters.PagedRecyclerAdapter;
@@ -43,8 +43,8 @@ public class AllRelationsRecyclerAdapter extends PagedRecyclerAdapter<RelationIt
     {
         private final Picasso picasso;
 
-        @Bind(R.id.user_profile_avatar) ImageView avatar;
-        @Bind(R.id.user_name) TextView userName;
+        @BindView(R.id.user_profile_avatar) ImageView avatar;
+        @BindView(R.id.user_name) TextView userName;
         private AllowableRecipientDTO recipientDTO;
 
         public RelationItemViewholder(View itemView, Picasso picasso)

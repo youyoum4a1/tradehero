@@ -7,13 +7,13 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 
 public class LeaderboardFilterValueSlider extends RelativeLayout
 {
-    @Bind(R.id.leaderboard_filter_value) protected TextView valueText;
-    @Bind(R.id.leaderboard_filter_value_slider) protected SeekBar valueSlider;
+    @BindView(R.id.leaderboard_filter_value) protected TextView valueText;
+    @BindView(R.id.leaderboard_filter_value_slider) protected SeekBar valueSlider;
 
     protected float minValue = 0;
     protected float maxValue = 100;

@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.android.view.OnClickEvent;
@@ -19,8 +21,8 @@ import rx.subjects.PublishSubject;
 
 public class TwitterEmailFragment extends Fragment
 {
-    @Bind(R.id.authentication_twitter_email_txt) EditText twitterEmail;
-    @Bind(R.id.authentication_twitter_email_button) View twitterConfirm;
+    @BindView(R.id.authentication_twitter_email_txt) EditText twitterEmail;
+    @BindView(R.id.authentication_twitter_email_button) View twitterConfirm;
 
     @NonNull private PublishSubject<String> loginRequestSubject = PublishSubject.create();
 

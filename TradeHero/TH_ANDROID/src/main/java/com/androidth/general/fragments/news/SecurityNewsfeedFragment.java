@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.R;
@@ -48,8 +48,8 @@ public class SecurityNewsfeedFragment extends AbstractSecurityInfoFragment
     @Inject NewsItemCompactListCacheRx newsTitleCache;
     @Inject Lazy<DashboardNavigator> dashboardNavigatorLazy;
 
-    @Bind(R.id.recycler_news_headline_progressbar) ProgressBar progressBar;
-    @Bind(R.id.recycler_news_headline) RecyclerView recyclerView;
+    @BindView(R.id.recycler_news_headline_progressbar) ProgressBar progressBar;
+    @BindView(R.id.recycler_news_headline) RecyclerView recyclerView;
     private PrettyTime prettyTime;
     private NewsfeedPaginatedAdapter newsfeedPaginatedAdapter;
 

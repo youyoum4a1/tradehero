@@ -100,8 +100,6 @@ import dagger.Provides;
                 FriendsInvitationFragment.class,
                 FXInfoFragment.class,
                 FXMainFragment.class,
-                FXMainFragment.class,
-                HeroesFragment.class,
                 LeaderboardCommunityFragment.class,
                 MainCompetitionFragment.class,
                 RedeemFragment.class,

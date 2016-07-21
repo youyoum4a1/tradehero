@@ -11,7 +11,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
@@ -29,10 +29,10 @@ public class AlertSliderView extends RelativeLayout
     @SuppressWarnings("FieldCanBeLocal") private final int SWITCHER_INDEX_ENABLED = 1;
     private final int SLIDER_INITIAL_VALUE = 50;
 
-    @Bind(R.id.alert_slider_toggle) Switch alertToggle;
-    @Bind(R.id.value_switcher) ViewSwitcher valueSwitcher;
-    @Bind(R.id.alert_value) TextView alertValue;
-    @Bind(R.id.alert_seek_bar) SeekBar alertSlider;
+    @BindView(R.id.alert_slider_toggle) Switch alertToggle;
+    @BindView(R.id.value_switcher) ViewSwitcher valueSwitcher;
+    @BindView(R.id.alert_value) TextView alertValue;
+    @BindView(R.id.alert_seek_bar) SeekBar alertSlider;
 
     @NonNull public final Type type;
     private Requisite requisite;

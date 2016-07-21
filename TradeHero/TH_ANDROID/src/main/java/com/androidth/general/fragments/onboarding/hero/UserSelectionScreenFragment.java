@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -59,8 +61,8 @@ public class UserSelectionScreenFragment extends BaseFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LeaderboardUserListCacheRx leaderboardUserListCache;
 
-    @Bind(android.R.id.list) ListView userList;
-    @Bind(android.R.id.button1) View nextButton;
+    @BindView(android.R.id.list) ListView userList;
+    @BindView(android.R.id.button1) View nextButton;
     protected OnBoardHeaderLinearView headerView;
     Observable<ExchangeCompactSectorListDTO> selectedExchangesSectorsObservable;
     ArrayAdapter<OnBoardUserItemView.DTO> userAdapter;
@@ -68,6 +70,8 @@ public class UserSelectionScreenFragment extends BaseFragment
     @NonNull Set<UserBaseKey> selectedUsers;
     @NonNull BehaviorSubject<LeaderboardUserDTOList> selectedUsersSubject;
     @NonNull PublishSubject<Boolean> nextClickedSubject;
+
+    private Unbinder unbinder;
 
     public static void putInitialHeroes(@NonNull Bundle args, @NonNull List<? extends UserBaseDTO> initialHeroes)
     {
@@ -123,7 +127,7 @@ public class UserSelectionScreenFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         userList.addHeaderView(headerView, "title", false);
         userList.setAdapter(userAdapter);
         displayNextButton();
@@ -137,7 +141,7 @@ public class UserSelectionScreenFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

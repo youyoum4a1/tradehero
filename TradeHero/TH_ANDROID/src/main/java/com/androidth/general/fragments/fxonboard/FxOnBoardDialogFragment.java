@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ViewAnimator;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -34,6 +34,8 @@ import com.androidth.general.network.service.VideoServiceWrapper;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
+
+import butterknife.Unbinder;
 import dagger.Lazy;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +52,10 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
 {
     private static final String TAG = FxOnBoardDialogFragment.class.getName();
 
-    @Bind(R.id.view_animator) ViewAnimator viewAnimator;
-    @Bind(R.id.introduction_videos_grid) GridView videosGrid;
-    @Bind(android.R.id.empty) View emptyView;
-    @Bind(R.id.progress) View progressBar;
+    @BindView(R.id.view_animator) ViewAnimator viewAnimator;
+    @BindView(R.id.introduction_videos_grid) GridView videosGrid;
+    @BindView(android.R.id.empty) View emptyView;
+    @BindView(R.id.progress) View progressBar;
 
     @Inject CurrentUserId currentUserId;
     @Inject Lazy<UserProfileCacheRx> userProfileCache;
@@ -63,6 +65,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     private VideoAdapter videoAdapter;
     @NonNull private BehaviorSubject<UserAction> userActionTypeBehaviorSubject;
 
+    private Unbinder unbinder;
     //<editor-fold desc="Constructors">
     public FxOnBoardDialogFragment()
     {
@@ -85,7 +88,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         videosGrid.setAdapter(videoAdapter);
     }
 
@@ -172,7 +175,7 @@ public class FxOnBoardDialogFragment extends BaseDialogFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

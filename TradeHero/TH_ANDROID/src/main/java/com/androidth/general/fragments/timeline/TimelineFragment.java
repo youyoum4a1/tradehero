@@ -65,8 +65,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import dagger.Lazy;
 import rx.Observable;
 import rx.Observer;
@@ -82,7 +83,7 @@ import timber.log.Timber;
 abstract public class TimelineFragment extends DashboardFragment
 {
     private static final String USER_BASE_KEY_BUNDLE_KEY = TimelineFragment.class.getName() + ".userBaseKey";
-
+    private Unbinder unbinder;
     //<editor-fold desc="Argument passing">
     public static void putUserBaseKey(@NonNull Bundle bundle, @NonNull UserBaseKey userBaseKey)
     {
@@ -118,8 +119,8 @@ abstract public class TimelineFragment extends DashboardFragment
     @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject ProviderCacheRx providerCacheRx;
 
-    @Bind(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
-    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
+    @BindView(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
+    @BindView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
 
     protected UserBaseKey shownUserBaseKey;
 
@@ -178,7 +179,7 @@ abstract public class TimelineFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         timelineListView.addHeaderView(userProfileView, null, false);
         timelineListView.setAdapter(getAdapter());
         timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -362,7 +363,7 @@ abstract public class TimelineFragment extends DashboardFragment
         this.userProfileView = null;
         this.timelineListView.setOnItemClickListener(null);
 
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

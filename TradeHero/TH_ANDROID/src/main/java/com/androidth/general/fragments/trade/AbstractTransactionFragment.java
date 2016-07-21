@@ -82,10 +82,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import butterknife.Unbinder;
 import dagger.Lazy;
 import rx.Observable;
 import rx.Observer;
@@ -107,17 +108,17 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     private static final String KEY_REQUISITE = AbstractTransactionFragment.class.getName() + ".requisite";
     private static final double INITIAL_VALUE = 5000;
 
-    @Bind(R.id.vcash_left) protected TextView mCashShareLeftTextView;
-    @Bind(R.id.vtrade_value) protected EditText mTradeValueTextView;
-    @Bind(R.id.vmarket_symbol) protected TextView mMarketPriceSymbol;
-    @Bind(R.id.price_updated_time) protected TextView mPriceUpdatedTime;
-    @Bind(R.id.vtrade_symbol) protected TextView mTradeSymbol;
-    @Bind(R.id.market_price) protected TextView mStockPriceTextView;
-    @Bind(R.id.vquantity) protected EditText mQuantityEditText;
-    @Bind(R.id.comments) protected TextView mCommentsEditText;
-    @Bind(R.id.btn_confirm) protected Button mConfirm;
-    @Bind(R.id.portfolio_spinner) protected Spinner mPortfolioSpinner;
-    @Bind(R.id.cash_or_stock_left) protected TextView mCashOrStockLeft;
+    @BindView(R.id.vcash_left) protected TextView mCashShareLeftTextView;
+    @BindView(R.id.vtrade_value) protected EditText mTradeValueTextView;
+    @BindView(R.id.vmarket_symbol) protected TextView mMarketPriceSymbol;
+    @BindView(R.id.price_updated_time) protected TextView mPriceUpdatedTime;
+    @BindView(R.id.vtrade_symbol) protected TextView mTradeSymbol;
+    @BindView(R.id.market_price) protected TextView mStockPriceTextView;
+    @BindView(R.id.vquantity) protected EditText mQuantityEditText;
+    @BindView(R.id.comments) protected TextView mCommentsEditText;
+    @BindView(R.id.btn_confirm) protected Button mConfirm;
+    @BindView(R.id.portfolio_spinner) protected Spinner mPortfolioSpinner;
+    @BindView(R.id.cash_or_stock_left) protected TextView mCashOrStockLeft;
 
     @Inject SecurityCompactCacheRx securityCompactCache;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
@@ -152,6 +153,8 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             @Nullable PositionDTOCompact closeablePosition);
 
     protected abstract boolean hasValidInfo();
+
+    private Unbinder unbinder;
 
     abstract protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO);
 
@@ -210,7 +213,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
         mQuantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener()
         {
@@ -432,7 +435,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     {
         unsubscribe(buySellSubscription);
         buySellSubscription = null;
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         shareDelegateFragment.onDestroyView();
         super.onDestroyView();
     }

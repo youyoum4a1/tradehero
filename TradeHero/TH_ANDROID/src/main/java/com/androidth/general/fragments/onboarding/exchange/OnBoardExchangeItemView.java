@@ -8,7 +8,9 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.Unbinder;
+
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.androidth.general.common.api.SelectableDTO;
@@ -25,12 +27,13 @@ public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<Exchang
 
     @Inject Picasso picasso;
 
-    @Bind(android.R.id.icon) ImageView flagImage;
-    @Bind(android.R.id.icon1) ImageView logoImage;
-    @Bind(android.R.id.text1) TextView nameView;
-    @Bind(android.R.id.text2) TextView shortNameView;
-    @Bind(R.id.top_stock_list) TopStockListView topStockListView;
+    @BindView(android.R.id.icon) ImageView flagImage;
+    @BindView(android.R.id.icon1) ImageView logoImage;
+    @BindView(android.R.id.text1) TextView nameView;
+    @BindView(android.R.id.text2) TextView shortNameView;
+    @BindView(R.id.top_stock_list) TopStockListView topStockListView;
 
+    private Unbinder unbinder;
     @NonNull private final Transformation whiteTransformation;
 
     //<editor-fold desc="Constructors">
@@ -59,7 +62,7 @@ public class OnBoardExchangeItemView extends OnBoardSelectableViewLinear<Exchang
         {
             picasso.cancelRequest(logoImage);
         }
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

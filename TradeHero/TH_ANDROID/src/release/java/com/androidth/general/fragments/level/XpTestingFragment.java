@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
@@ -22,16 +22,16 @@ import javax.inject.Inject;
 
 public class XpTestingFragment extends BaseFragment
 {
-    @Bind(R.id.xp_test_reason) EditText xpReason;
-    @Bind(R.id.xp_test_from) EditText xpFrom;
-    @Bind(R.id.xp_test_earned) EditText xpEarned;
-    @Bind(R.id.xp_test_multiplier_1_reason) EditText xpM1Reason;
-    @Bind(R.id.xp_test_multiplier_1_value) EditText xpM1Value;
-    @Bind(R.id.xp_test_multiplier_2_reason) EditText xpM2Reason;
-    @Bind(R.id.xp_test_multiplier_2_value) EditText xpM2Value;
-    @Bind(R.id.xp_test_multiplier_3_reason) EditText xpM3Reason;
-    @Bind(R.id.xp_test_multiplier_3_value) EditText xpM3Value;
-    @Bind(R.id.xp_test_launch) Button launch;
+    @BindView(R.id.xp_test_reason) EditText xpReason;
+    @BindView(R.id.xp_test_from) EditText xpFrom;
+    @BindView(R.id.xp_test_earned) EditText xpEarned;
+    @BindView(R.id.xp_test_multiplier_1_reason) EditText xpM1Reason;
+    @BindView(R.id.xp_test_multiplier_1_value) EditText xpM1Value;
+    @BindView(R.id.xp_test_multiplier_2_reason) EditText xpM2Reason;
+    @BindView(R.id.xp_test_multiplier_2_value) EditText xpM2Value;
+    @BindView(R.id.xp_test_multiplier_3_reason) EditText xpM3Reason;
+    @BindView(R.id.xp_test_multiplier_3_value) EditText xpM3Value;
+    @BindView(R.id.xp_test_launch) Button launch;
 
     @Inject BroadcastUtils broadcastUtils;
 

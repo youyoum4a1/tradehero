@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.androidth.general.R;
@@ -16,9 +16,9 @@ import javax.inject.Inject;
 
 public class CompetitionZoneListItemView extends AbstractCompetitionZoneListItemView
 {
-    @Bind(R.id.icn_competition_zone) protected ImageView zoneIcon;
-    @Bind(R.id.competition_zone_title) protected TextView title;
-    @Bind(R.id.competition_zone_description) protected TextView description;
+    @BindView(R.id.icn_competition_zone) protected ImageView zoneIcon;
+    @BindView(R.id.competition_zone_title) protected TextView title;
+    @BindView(R.id.competition_zone_description) protected TextView description;
 
     @Inject protected Picasso picasso;
 

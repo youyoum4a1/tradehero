@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
+
 import com.androidth.general.R;
 import com.androidth.general.fragments.base.BaseDialogFragment;
 import javax.inject.Inject;
@@ -16,6 +18,7 @@ public class InviteCodeDialogFragment extends BaseDialogFragment
 {
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
+    private Unbinder unbinder;
     public static InviteCodeDialogFragment showInviteCodeDialog(FragmentManager fragmentManager)
     {
         InviteCodeDialogFragment dialogFragment = new InviteCodeDialogFragment();
@@ -37,12 +40,12 @@ public class InviteCodeDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
     }
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

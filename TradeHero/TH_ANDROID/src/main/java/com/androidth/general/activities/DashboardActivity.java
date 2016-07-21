@@ -82,8 +82,9 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import dagger.Lazy;
 import rx.Notification;
 import rx.Observable;
@@ -132,11 +133,11 @@ public class DashboardActivity extends BaseActivity
     private final Set<Integer> enrollmentScreenOpened = new HashSet<>();
     private boolean enrollmentScreenIsOpened = false;
 
-    @Nullable @Bind(R.id.my_toolbar) Toolbar toolbar;
-    @Bind(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
-    @Bind(R.id.drawer_content_container) ViewGroup drawerContents;
-    @Bind(R.id.left_drawer) ViewGroup leftDrawerContainer;
-    @Bind(android.R.id.tabhost) DashboardTabHost dashboardTabHost;
+    @Nullable @BindView(R.id.my_toolbar) Toolbar toolbar;
+    @BindView(R.id.dashboard_drawer_layout) DrawerLayout drawerLayout;
+    @BindView(R.id.drawer_content_container) ViewGroup drawerContents;
+    @BindView(R.id.left_drawer) ViewGroup leftDrawerContainer;
+    @BindView(android.R.id.tabhost) DashboardTabHost dashboardTabHost;
 
     private Subscription notificationFetchSubscription;
 
@@ -148,6 +149,8 @@ public class DashboardActivity extends BaseActivity
     private CompositeSubscription onPauseSubscriptions;
 
     private LiveActivityUtil liveActivityUtil;
+
+    private Unbinder unbinder;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -171,7 +174,7 @@ public class DashboardActivity extends BaseActivity
         suggestUpgradeIfNecessary();
         showStartDialogsPlease();
 
-        ButterKnife.bind(this);
+        unbinder = ButterKnife.bind(this);
 
         liveActivityUtil = new LiveActivityUtil(this);
         activityModule.liveActivityUtil = liveActivityUtil;
@@ -576,7 +579,7 @@ public class DashboardActivity extends BaseActivity
 
         localBroadcastManager.unregisterReceiver(onlineStateReceiver);
 
-        ButterKnife.unbind(this);
+        unbinder.unbind();
 
         liveActivityUtil.onDestroy();
         super.onDestroy();

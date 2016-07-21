@@ -12,7 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
 import com.androidth.general.activities.DashboardActivity;
@@ -36,9 +36,9 @@ import timber.log.Timber;
 public class XpToast extends RelativeLayout
         implements UserLevelProgressBar.UserLevelProgressBarLevelUpListener, UserLevelProgressBar.UserLevelProgressBarListener
 {
-    @Bind(R.id.xp_toast_text) TextView xpTextSwitcher; // TODO reinstate it as a Switcher
-    @Bind(R.id.xp_toast_value) TextView xpValue;
-    @Bind(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
+    @BindView(R.id.xp_toast_text) TextView xpTextSwitcher; // TODO reinstate it as a Switcher
+    @BindView(R.id.xp_toast_value) TextView xpValue;
+    @BindView(R.id.user_level_progress_bar) UserLevelProgressBar userLevelProgressBar;
 
     @Inject LevelDefListCacheRx levelDefListCache;
     @Inject BroadcastUtils broadcastUtils;

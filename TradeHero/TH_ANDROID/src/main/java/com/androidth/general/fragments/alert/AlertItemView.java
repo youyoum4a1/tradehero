@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 import com.androidth.general.common.graphics.WhiteToTransparentTransformation;
@@ -33,12 +33,12 @@ public class AlertItemView extends RelativeLayout
 {
     @Inject protected Picasso picasso;
 
-    @Bind(R.id.logo) ImageView stockLogo;
-    @Bind(R.id.stock_symbol) TextView stockSymbol;
-    @Bind(R.id.alert_value) TextView alertValue;
-    @Bind(R.id.company_name) TextView companyName;
-    @Bind(R.id.alert_description) TextView alertDescription;
-    @Bind(R.id.alert_status) TextView alertStatus;
+    @BindView(R.id.logo) ImageView stockLogo;
+    @BindView(R.id.stock_symbol) TextView stockSymbol;
+    @BindView(R.id.alert_value) TextView alertValue;
+    @BindView(R.id.company_name) TextView companyName;
+    @BindView(R.id.alert_description) TextView alertDescription;
+    @BindView(R.id.alert_status) TextView alertStatus;
 
     //<editor-fold desc="Constructors">
     public AlertItemView(Context context, AttributeSet attrs)

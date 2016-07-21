@@ -4,17 +4,17 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.market.Country;
 
 class LocationViewHolder implements DTOView<ListedLocationDTO>
 {
-    @Bind(R.id.country_logo) protected ImageView logo;
-    @Bind(R.id.country_code) protected TextView code;
-    @Bind(R.id.country_name) protected TextView name;
-    @Bind(R.id.location_tick_is_current) protected View currentView;
+    @BindView(R.id.country_logo) protected ImageView logo;
+    @BindView(R.id.country_code) protected TextView code;
+    @BindView(R.id.country_name) protected TextView name;
+    @BindView(R.id.location_tick_is_current) protected View currentView;
 
     @Nullable protected ListedLocationDTO listedLocationDTO;
     @Nullable protected Country currentCountry;

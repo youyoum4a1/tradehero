@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
@@ -23,7 +23,7 @@ import rx.internal.util.SubscriptionList;
 
 public class UpdateCenterDrawerMenuItem extends LinearLayout
 {
-    @Bind(R.id.unread_count) TextView tvUnreadCount;
+    @BindView(R.id.unread_count) TextView tvUnreadCount;
 
     @Inject UserProfileCacheRx userProfileCache;
     @Inject CurrentUserId currentUserId;

@@ -15,7 +15,7 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.BottomTabsQuickReturnListViewListener;
 import com.androidth.general.R;
 import com.androidth.general.api.pagination.RangeDTO;
@@ -60,9 +60,9 @@ public class DiscoveryDiscussionFragment extends Fragment
 {
     private static final String DISCOVERY_LIST_LOADER_ID = DiscoveryDiscussionFragment.class.getName() + ".discoveryList";
 
-    @Bind(android.R.id.progress) ProgressBar progressBar;
-    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.timeline_list_view) ListView mTimelineListView;
+    @BindView(android.R.id.progress) ProgressBar progressBar;
+    @BindView(R.id.swipe_container) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.timeline_list_view) ListView mTimelineListView;
     @Inject @BottomTabsQuickReturnListViewListener AbsListView.OnScrollListener dashboardBottomTabsScrollListener;
     @Inject RxLoaderManager rxLoaderManager;
     @Inject CurrentUserId currentUserId;

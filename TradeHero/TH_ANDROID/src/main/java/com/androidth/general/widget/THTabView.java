@@ -10,13 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TabWidget;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 
 public class THTabView extends LinearLayout
 {
-    @Bind(android.R.id.icon) ImageView icon;
-    @Bind(android.R.id.title) TextView titleView;
+    @BindView(android.R.id.icon) ImageView icon;
+    @BindView(android.R.id.title) TextView titleView;
     private String title;
 
     public THTabView(Context context)

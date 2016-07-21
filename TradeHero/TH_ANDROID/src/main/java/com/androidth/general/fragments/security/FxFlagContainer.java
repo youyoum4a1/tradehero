@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.security.FxCurrency;
@@ -15,8 +15,8 @@ import com.androidth.general.api.security.key.FxPairSecurityId;
 public class FxFlagContainer extends LinearLayout
     implements DTOView<FxPairSecurityId>
 {
-    @Bind(R.id.flag_left) protected ImageView flagLeft;
-    @Bind(R.id.flag_right) protected ImageView flagRight;
+    @BindView(R.id.flag_left) protected ImageView flagLeft;
+    @BindView(R.id.flag_right) protected ImageView flagRight;
 
     @Nullable private FxPairSecurityId fxPairSecurityId;
 

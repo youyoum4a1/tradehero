@@ -36,9 +36,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
+import butterknife.Unbinder;
 import microsoft.aspnet.signalr.client.Credentials;
 import microsoft.aspnet.signalr.client.Platform;
 import microsoft.aspnet.signalr.client.SignalRFuture;
@@ -51,8 +52,8 @@ import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment implements SignalRInterface
 
 {
-    @Bind(R.id.listview) protected AbsListView listView;
-    @Bind(R.id.progress) protected ProgressBar progressBar;
+    @BindView(R.id.listview) protected AbsListView listView;
+    @BindView(R.id.progress) protected ProgressBar progressBar;
     @Inject protected CurrentUserId currentUserId;
     @Inject protected RequestHeaders requestHeaders;
 
@@ -62,6 +63,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     SimpleSecurityItemViewAdapter adapter;
     HubProxy proxy;
     List<SecurityCompactDTO> currentVisibleItemsList;
+    private Unbinder unbinder;
 
     public HubConnection setConnection(String url) {
         return new HubConnection(url);
@@ -201,7 +203,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         this.listView.setAdapter(adapter);
         progressBar.setVisibility(View.INVISIBLE);
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -228,7 +230,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         DeviceUtil.dismissKeyboard(getActivity());
 
         super.onDestroyView();

@@ -48,9 +48,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -78,20 +79,22 @@ public class IdentityPromptActivity extends BaseActivity
 
     @Inject protected ProviderCacheRx providerCacheRx;
 
-    @Bind(R.id.identity_prompt_image_passport)
+    @BindView(R.id.identity_prompt_image_passport)
     ImageView imgPassport;
 
-    @Bind(R.id.identity_prompt_passport)
+    @BindView(R.id.identity_prompt_passport)
     Button scanPassport;
 
-    @Bind(R.id.identity_prompt_image_specific)
+    @BindView(R.id.identity_prompt_image_specific)
     ImageView imgSpecific;
 
-    @Bind(R.id.identity_prompt_specific)
+    @BindView(R.id.identity_prompt_specific)
     Button scanSpecificId;
 
-    @Bind(R.id.dummy_action_bar)
+    @BindView(R.id.dummy_action_bar)
     ImageView imgActionBar;
+
+    private Unbinder unbinder;
 
     //@RouteProperty("brokerId") int routedBrokerId;
     //@RouteProperty("providerId") protected int providerId;
@@ -108,7 +111,7 @@ public class IdentityPromptActivity extends BaseActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_identity_prompt);
-        ButterKnife.bind(IdentityPromptActivity.this);
+        unbinder = ButterKnife.bind(IdentityPromptActivity.this);
 
         providerId = getIntent().getIntExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
         providerDTO = providerCacheRx.getCachedValue(new ProviderId(providerId));
@@ -292,7 +295,7 @@ public class IdentityPromptActivity extends BaseActivity
     protected void onDestroy()
     {
         //fastFillSubscription.unsubscribe();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroy();
     }
 

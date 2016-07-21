@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
@@ -19,9 +19,9 @@ import javax.inject.Inject;
 public class VideoView extends RelativeLayout implements DTOView<VideoDTO>
 {
     @Inject Picasso picasso;
-    @Bind(R.id.video_thumbnail) ImageView thumbnail;
-    @Bind(R.id.video_title) TextView title;
-    @Bind(R.id.video_padlock) View padlock;
+    @BindView(R.id.video_thumbnail) ImageView thumbnail;
+    @BindView(R.id.video_title) TextView title;
+    @BindView(R.id.video_padlock) View padlock;
 
     public VideoView(Context context, AttributeSet attrs)
     {

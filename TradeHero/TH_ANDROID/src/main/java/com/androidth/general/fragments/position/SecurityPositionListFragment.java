@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ViewAnimator;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -46,6 +46,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -72,9 +74,9 @@ public class SecurityPositionListFragment
     @Inject UserProfileCacheRx userProfileCache;
     @Inject FragmentOuterElements fragmentElements;
 
-    @Bind(R.id.list_flipper) ViewAnimator listViewFlipper;
-    @Bind(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
-    @Bind(R.id.position_recycler_view) RecyclerView positionListView;
+    @BindView(R.id.list_flipper) ViewAnimator listViewFlipper;
+    @BindView(R.id.swipe_to_refresh_layout) SwipeRefreshLayout swipeToRefreshLayout;
+    @BindView(R.id.position_recycler_view) RecyclerView positionListView;
 
     protected SecurityId securityId;
     protected SecurityCompactDTO securityCompactDTO;
@@ -86,6 +88,8 @@ public class SecurityPositionListFragment
     protected PositionItemAdapter positionItemAdapter;
 
     private int firstPositionVisible = 0;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Arguments Handling">
     public static void putShownUser(@NonNull Bundle args, @NonNull UserBaseKey shownUser)
@@ -160,7 +164,7 @@ public class SecurityPositionListFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         positionListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         positionListView.setAdapter(positionItemAdapter);
         swipeToRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
@@ -200,7 +204,7 @@ public class SecurityPositionListFragment
     {
         positionListView.clearOnScrollListeners();
         swipeToRefreshLayout.setOnRefreshListener(null);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

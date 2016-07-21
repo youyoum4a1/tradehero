@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderId;
@@ -22,8 +22,8 @@ public class WarrantCompetitionPagerFragment extends DashboardFragment
 {
     private static final String BUNDLE_PROVIDER_ID = WarrantCompetitionPagerFragment.class.getName() + ".providerId";
 
-    @Bind(R.id.android_tabs) SlidingTabLayout slidingTabLayout;
-    @Bind(R.id.pager) ViewPager pager;
+    @BindView(R.id.android_tabs) SlidingTabLayout slidingTabLayout;
+    @BindView(R.id.pager) ViewPager pager;
     @NonNull private ProviderId providerId;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)

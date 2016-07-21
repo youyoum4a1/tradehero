@@ -64,8 +64,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.app.AppObservable;
@@ -89,8 +90,8 @@ public class TrendingMainFragment extends DashboardFragment
     private static final String KEY_ASSET_CLASS = TrendingMainFragment.class.getName() + ".assetClass";
     private static final String KEY_EXCHANGE_ID = TrendingMainFragment.class.getName() + ".exchangeId";
 
-    @Bind(R.id.pager) ViewPager tabViewPager;
-    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @BindView(R.id.pager) ViewPager tabViewPager;
+    @BindView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject THRouter thRouter;
@@ -120,6 +121,8 @@ public class TrendingMainFragment extends DashboardFragment
     private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
     private BehaviorSubject<ExchangeCompactSpinnerDTO> exchangeSpinnerDTOSubject;
     private ExchangeCompactSpinnerDTOList exchangeCompactSpinnerDTOList;
+
+    private Unbinder unbinder;
 
     public static void registerAliases(@NonNull THRouter router)
     {
@@ -224,7 +227,7 @@ public class TrendingMainFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         trendingLiveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
         pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
@@ -313,7 +316,7 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         trendingLiveFragmentUtil.onDestroyView();
         super.onDestroyView();
     }

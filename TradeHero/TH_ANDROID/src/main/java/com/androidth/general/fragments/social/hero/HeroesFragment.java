@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.tradehero.route.Routable;
@@ -42,6 +42,8 @@ import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.route.THRouter;
 import java.util.List;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -62,16 +64,18 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
     @Inject protected UserProfileCacheRx userProfileCache;
     @Inject THRouter router;
 
-    @Bind(R.id.swipe_to_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
-    @Bind(R.id.heros_list) protected RecyclerView heroListView;
-    @Bind(android.R.id.progress) protected ProgressBar progressBar;
-    @Bind(R.id.empty_view_stub) ViewStub emptyStub;
+    @BindView(R.id.swipe_to_refresh_layout) protected SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.heros_list) protected RecyclerView heroListView;
+    @BindView(android.R.id.progress) protected ProgressBar progressBar;
+    @BindView(R.id.empty_view_stub) ViewStub emptyStub;
     @Nullable View emptyView;
 
     @RouteProperty("followerId") Integer routedFollowerId;
 
     private UserBaseKey followerId;
     private HeroRecyclerItemAdapter heroRecyclerItemAdapter;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Argument Passing">
     public static void putFollowerId(@NonNull Bundle args, @NonNull UserBaseKey followerId)
@@ -112,7 +116,7 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         this.swipeRefreshLayout.setOnRefreshListener(this);
         this.heroListView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -327,7 +331,7 @@ public class HeroesFragment extends DashboardFragment implements OnRefreshListen
     @Override public void onDestroyView()
     {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     @Override public void onDestroy()

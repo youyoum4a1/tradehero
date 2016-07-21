@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -27,6 +27,8 @@ import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.network.service.UserServiceWrapper;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.ToastOnErrorAction1;
+
+import butterknife.Unbinder;
 import dagger.Lazy;
 import javax.inject.Inject;
 import rx.Subscription;
@@ -45,7 +47,9 @@ public class LocationListFragment extends BaseFragment
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject UserProfileCacheRx userProfileCache;
 
-    @Bind(android.R.id.list) ListView listView;
+    @BindView(android.R.id.list) ListView listView;
+
+    private Unbinder unbinder;
 
     @Override public void onAttach(Activity activity)
     {
@@ -59,7 +63,7 @@ public class LocationListFragment extends BaseFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_settings_location_list, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
@@ -99,7 +103,7 @@ public class LocationListFragment extends BaseFragment
     {
         listView.setOnScrollListener(null);
         listView.setEmptyView(null);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

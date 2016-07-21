@@ -13,7 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnItemClick;
 import com.androidth.general.common.utils.THToast;
@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -53,8 +55,8 @@ public class SectorSelectionScreenFragment extends BaseFragment
 
     @Inject SectorListCacheRx sectorListCache;
 
-    @Bind(android.R.id.list) ListView sectorList;
-    @Bind(android.R.id.button1) View nextButton;
+    @BindView(android.R.id.list) ListView sectorList;
+    @BindView(android.R.id.button1) View nextButton;
     protected OnBoardHeaderLinearView headerView;
     ArrayAdapter<SelectableSectorDTO> sectorAdapter;
     @NonNull Map<SectorId, SectorDTO> knownSectors;
@@ -62,6 +64,8 @@ public class SectorSelectionScreenFragment extends BaseFragment
     @NonNull Set<SectorId> selectedSectors;
     @NonNull BehaviorSubject<SectorDTOList> selectedSectorsSubject;
     @NonNull PublishSubject<Boolean> nextClickedSubject;
+
+    private Unbinder unbinder;
 
     public static void putRequisites(@NonNull Bundle args,
             boolean hadInitialExchangeSelected,
@@ -129,7 +133,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         sectorList.addHeaderView(headerView, "title", false);
         sectorList.setAdapter(sectorAdapter);
         displayNextButton();
@@ -143,7 +147,7 @@ public class SectorSelectionScreenFragment extends BaseFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

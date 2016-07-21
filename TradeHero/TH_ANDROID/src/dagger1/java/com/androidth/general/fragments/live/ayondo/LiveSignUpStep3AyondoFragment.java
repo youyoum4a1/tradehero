@@ -26,7 +26,7 @@ import com.androidth.general.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -39,13 +39,13 @@ import rx.functions.Func3;
 
 public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
-    @Bind(R.id.info_trading_per_quarter) Spinner tradingPerQuarterSpinner;
-    @Bind(R.id.worked_finance) CompoundButton workInFinanceButton;
-    @Bind(R.id.attended_seminar_ayondo) CompoundButton attendedSeminarAyondoButton;
-    @Bind(R.id.have_other_qualification) CompoundButton haveOtherQualificationButton;
-    @Bind(R.id.traded_shares_bonds) CompoundButton tradedSharesBondsButton;
-    @Bind(R.id.traded_otc_derivative) CompoundButton tradedOtcDerivativeButton;
-    @Bind(R.id.traded_etc) CompoundButton tradedEtcButton;
+    @BindView(R.id.info_trading_per_quarter) Spinner tradingPerQuarterSpinner;
+    @BindView(R.id.worked_finance) CompoundButton workInFinanceButton;
+    @BindView(R.id.attended_seminar_ayondo) CompoundButton attendedSeminarAyondoButton;
+    @BindView(R.id.have_other_qualification) CompoundButton haveOtherQualificationButton;
+    @BindView(R.id.traded_shares_bonds) CompoundButton tradedSharesBondsButton;
+    @BindView(R.id.traded_otc_derivative) CompoundButton tradedOtcDerivativeButton;
+    @BindView(R.id.traded_etc) CompoundButton tradedEtcButton;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

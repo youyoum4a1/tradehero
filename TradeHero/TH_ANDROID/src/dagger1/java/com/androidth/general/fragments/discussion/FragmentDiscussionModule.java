@@ -16,7 +16,6 @@ import dagger.Module;
                 AbstractDiscussionFragment.class,
 
                 SecurityDiscussionFragment.class,
-                SecurityDiscussionFragment.class,
                 SecurityDiscussionItemViewLinear.class,
                 SecurityDiscussionCommentFragment.class,
 

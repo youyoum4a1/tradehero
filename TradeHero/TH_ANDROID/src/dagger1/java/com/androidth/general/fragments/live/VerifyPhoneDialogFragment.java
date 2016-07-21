@@ -43,9 +43,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -73,21 +75,21 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
 
     @Inject SMSServiceWrapper smsServiceWrapper;
 
-    @Bind({
+    @BindViews({
             R.id.verify_code_1,
             R.id.verify_code_2,
             R.id.verify_code_3,
             R.id.verify_code_4
     }) EditText[] codeViews;
 
-    @Bind(R.id.banner_logo) ImageView banner;
-    @Bind(R.id.header) RelativeLayout header;
-    @Bind(R.id.btn_verify_phone) View buttonVerify;
-    @Bind(R.id.btn_send_code) View buttonResend;
-    @Bind(R.id.sms_sent_description) TextView sentDescription;
-    @Bind(R.id.sms_sent_status) TextView sentStatus;
+    @BindView(R.id.banner_logo) ImageView banner;
+    @BindView(R.id.header) RelativeLayout header;
+    @BindView(R.id.btn_verify_phone) View buttonVerify;
+    @BindView(R.id.btn_send_code) View buttonResend;
+    @BindView(R.id.sms_sent_description) TextView sentDescription;
+    @BindView(R.id.sms_sent_status) TextView sentStatus;
 
-
+    private Unbinder unbinder;
 
     private BehaviorSubject<SMSSentConfirmationDTO> mSMSConfirmationSubject;
     public static String notificationLogoUrl = LiveSignUpMainFragment.notificationLogoUrl;
@@ -162,7 +164,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         header.setBackgroundColor(Color.parseColor("#"+hexcolor));
         smsSubscription = getSMSSubscription();
@@ -279,8 +281,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
     {
         return smsServiceWrapper.sendMessage(
                 SMSRequestFactory.create(
-                        mFormattedNumber,
-                        getString(R.string.sms_verification_sms_content, mExpectedCode)))
+                        mFormattedNumber, getString(R.string.sms_verification_sms_content, mExpectedCode)))
                 .doOnNext(new Action1<SMSSentConfirmationDTO>()
                 {
                     @Override public void call(SMSSentConfirmationDTO smsSentConfirmationDTO)
@@ -480,7 +481,7 @@ public class VerifyPhoneDialogFragment extends BaseDialogFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         onDestroyViewSubscriptions.unsubscribe();
         super.onDestroyView();
     }

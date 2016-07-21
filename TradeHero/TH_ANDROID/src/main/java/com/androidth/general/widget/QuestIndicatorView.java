@@ -14,16 +14,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.achievement.QuestBonusDTO;
 
 public class QuestIndicatorView extends RelativeLayout implements DTOView<QuestBonusDTO>
 {
-    @Bind(R.id.quest_logo_indicator) ImageView logo;
-    @Bind(R.id.quest_top_indicator) TextView topIndicator;
-    @Bind(R.id.quest_bottom_indicator) TextView botIndicator;
+    @BindView(R.id.quest_logo_indicator) ImageView logo;
+    @BindView(R.id.quest_top_indicator) TextView topIndicator;
+    @BindView(R.id.quest_bottom_indicator) TextView botIndicator;
     private int mCurrentColor = Color.BLACK;
     private int mCurrentLevel;
     @Nullable private QuestBonusDTO mQuestBonusDTO;

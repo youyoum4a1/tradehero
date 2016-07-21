@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
@@ -172,9 +172,9 @@ public class FriendsLeaderboardRecyclerAdapter extends LeaderboardMarkUserRecycl
 
     public static class SocialFriendViewHolder extends TypedViewHolder<LeaderboardItemDisplayDTO>
     {
-        @Bind(R.id.leaderboard_user_item_network_label) ImageView networkLabel;
-        @Bind(R.id.leaderboard_user_item_profile_picture) ImageView avatar;
-        @Bind(R.id.leaderboard_user_item_social_name) TextView socialName;
+        @BindView(R.id.leaderboard_user_item_network_label) ImageView networkLabel;
+        @BindView(R.id.leaderboard_user_item_profile_picture) ImageView avatar;
+        @BindView(R.id.leaderboard_user_item_social_name) TextView socialName;
 
         private final PublishSubject<LeaderboardFriendUserAction> friendUserActionPublishSubject;
         private final Picasso picasso;

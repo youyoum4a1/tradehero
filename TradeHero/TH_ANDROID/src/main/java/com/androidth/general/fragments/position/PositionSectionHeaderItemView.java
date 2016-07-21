@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.adapters.TypedRecyclerAdapter;
 import com.androidth.general.api.position.PositionStatus;
@@ -77,8 +77,8 @@ public class PositionSectionHeaderItemView extends RelativeLayout
 
     public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
     {
-        @Bind(R.id.header_text) protected TextView headerText;
-        @Bind(R.id.header_time_base) protected TextView timeBaseText;
+        @BindView(R.id.header_text) protected TextView headerText;
+        @BindView(R.id.header_time_base) protected TextView timeBaseText;
 
         public ViewHolder(PositionSectionHeaderItemView itemView)
         {

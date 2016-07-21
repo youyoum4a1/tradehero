@@ -2,7 +2,9 @@ package com.androidth.general.models.fastfill.jumio;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import com.squareup.okhttp.OkHttpClient;
+import okhttp3.OkHttpClient;
+
+import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -41,10 +43,10 @@ public class NetverifyModule
 
     @Provides @ForDocumentChecker Picasso provideNetverifyPicasso(Context context, @ForPicasso LruCache lruFileCache, OkHttpClient okHttpClient)
     {
-        OkHttpClient netverifyClient = okHttpClient.clone();
+        OkHttpClient netverifyClient = okHttpClient;
         netverifyClient.interceptors().add(new NetverifyPicassoRequestInterceptor());
         Picasso mPicasso = new Picasso.Builder(context)
-                .downloader(new OkHttpDownloader(netverifyClient))
+                .downloader(new OkHttp3Downloader(netverifyClient))
                 .memoryCache(lruFileCache)
                 .build();
         mPicasso.setIndicatorsEnabled(Constants.PICASSO_DEBUG);

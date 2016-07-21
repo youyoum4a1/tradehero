@@ -69,9 +69,10 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import dagger.Lazy;
 import rx.Observable;
 import rx.Subscription;
@@ -96,49 +97,49 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     private static final float ALPHA_INACTIVE = 0.5f;
     private static final float ALPHA_ACTIVE = 1f;
 
-    @Bind(R.id.chart_imageView) protected ChartImageView chartImage;
+    @BindView(R.id.chart_imageView) protected ChartImageView chartImage;
     private TimeSpanButtonSet timeSpanButtonSet;
     private TimeSpanButtonSet.OnTimeSpanButtonSelectedListener timeSpanButtonSetListener;
     private ChartDTO chartDTO;
     @Nullable private WarrantDTO warrantDTO;
     @ViewVisibilityValue private int timeSpanButtonSetVisibility = View.VISIBLE;
 
-    @Bind(R.id.chart_scroll_view) @Nullable NotifyingScrollView scrollView;
+    @BindView(R.id.chart_scroll_view) @Nullable NotifyingScrollView scrollView;
 
-    @Bind(R.id.close) @Nullable protected Button mCloseButton;
+    @BindView(R.id.close) @Nullable protected Button mCloseButton;
 
-    @Bind(R.id.chart_image_wrapper) @Nullable protected BetterViewAnimator chartImageWrapper;
+    @BindView(R.id.chart_image_wrapper) @Nullable protected BetterViewAnimator chartImageWrapper;
 
     //Stock info
-    @Bind(R.id.buy_price) @Nullable TextView buyPrice;
-    @Bind(R.id.sell_price) @Nullable TextView sellPrice;
-    @Bind(R.id.tv_stock_roi) @Nullable TextView stockRoi;
-    @Bind(R.id.market_close_hint) @Nullable protected TextView marketCloseHint;
-    @Bind(R.id.btn_watched) @Nullable protected ImageView btnWatched;
-    @Bind(R.id.btn_alerted) @Nullable protected View btnAlerted;
+    @BindView(R.id.buy_price) @Nullable TextView buyPrice;
+    @BindView(R.id.sell_price) @Nullable TextView sellPrice;
+    @BindView(R.id.tv_stock_roi) @Nullable TextView stockRoi;
+    @BindView(R.id.market_close_hint) @Nullable protected TextView marketCloseHint;
+    @BindView(R.id.btn_watched) @Nullable protected ImageView btnWatched;
+    @BindView(R.id.btn_alerted) @Nullable protected View btnAlerted;
 
     // Warrant specific
-    @Bind(R.id.row_warrant_type) @Nullable protected View rowWarrantType;
-    @Bind(R.id.vwarrant_type) @Nullable protected TextView mWarrantType;
-    @Bind(R.id.row_warrant_code) @Nullable protected View rowWarrantCode;
-    @Bind(R.id.vwarrant_code) @Nullable protected TextView mWarrantCode;
-    @Bind(R.id.row_warrant_expiry) @Nullable protected View rowWarrantExpiry;
-    @Bind(R.id.vwarrant_expiry) @Nullable protected TextView mWarrantExpiry;
-    @Bind(R.id.row_warrant_strike_price) @Nullable protected View rowStrikePrice;
-    @Bind(R.id.vwarrant_strike_price) @Nullable protected TextView mStrikePrice;
-    @Bind(R.id.row_warrant_underlying) @Nullable protected View rowUnderlying;
-    @Bind(R.id.vwarrant_underlying) @Nullable protected TextView mUnderlying;
-    @Bind(R.id.row_warrant_issuer) @Nullable protected View rowIssuer;
-    @Bind(R.id.vwarrant_issuer) @Nullable protected TextView mIssuer;
+    @BindView(R.id.row_warrant_type) @Nullable protected View rowWarrantType;
+    @BindView(R.id.vwarrant_type) @Nullable protected TextView mWarrantType;
+    @BindView(R.id.row_warrant_code) @Nullable protected View rowWarrantCode;
+    @BindView(R.id.vwarrant_code) @Nullable protected TextView mWarrantCode;
+    @BindView(R.id.row_warrant_expiry) @Nullable protected View rowWarrantExpiry;
+    @BindView(R.id.vwarrant_expiry) @Nullable protected TextView mWarrantExpiry;
+    @BindView(R.id.row_warrant_strike_price) @Nullable protected View rowStrikePrice;
+    @BindView(R.id.vwarrant_strike_price) @Nullable protected TextView mStrikePrice;
+    @BindView(R.id.row_warrant_underlying) @Nullable protected View rowUnderlying;
+    @BindView(R.id.vwarrant_underlying) @Nullable protected TextView mUnderlying;
+    @BindView(R.id.row_warrant_issuer) @Nullable protected View rowIssuer;
+    @BindView(R.id.vwarrant_issuer) @Nullable protected TextView mIssuer;
 
-    @Bind(R.id.vprevious_close) @Nullable protected TextView mPreviousClose;
-    @Bind(R.id.vopen) @Nullable protected TextView mOpen;
-    @Bind(R.id.vdays_high) @Nullable protected TextView mDaysHigh;
-    @Bind(R.id.vdays_low) @Nullable protected TextView mDaysLow;
-    @Bind(R.id.vpe_ratio) @Nullable protected TextView mPERatio;
-    @Bind(R.id.veps) @Nullable protected TextView mEps;
-    @Bind(R.id.vvolume) @Nullable protected TextView mVolume;
-    @Bind(R.id.vavg_volume) @Nullable protected TextView mAvgVolume;
+    @BindView(R.id.vprevious_close) @Nullable protected TextView mPreviousClose;
+    @BindView(R.id.vopen) @Nullable protected TextView mOpen;
+    @BindView(R.id.vdays_high) @Nullable protected TextView mDaysHigh;
+    @BindView(R.id.vdays_low) @Nullable protected TextView mDaysLow;
+    @BindView(R.id.vpe_ratio) @Nullable protected TextView mPERatio;
+    @BindView(R.id.veps) @Nullable protected TextView mEps;
+    @BindView(R.id.vvolume) @Nullable protected TextView mVolume;
+    @BindView(R.id.vavg_volume) @Nullable protected TextView mAvgVolume;
 
     @Inject SecurityCompactCacheRx securityCompactCacheRx;
     @Inject Picasso picasso;
@@ -155,6 +156,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     private Callback chartImageCallback;
     private Subscription quoteSubscription;
 
+    private Unbinder unbinder;
     @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
     @Nullable protected WatchlistPositionDTOList watchedList;
 
@@ -220,7 +222,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     {
         View view = inflater.inflate(R.layout.fragment_chart, container, false);
 
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         Bundle args = getArguments();
         if (args != null)
@@ -677,7 +679,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         watchedList = null;
         mappedAlerts = null;
         chartImageCallback = null;
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

@@ -31,7 +31,7 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 
 import java.util.concurrent.TimeUnit;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -44,11 +44,11 @@ import rx.schedulers.Schedulers;
 })
 public class BuySellStockFragment extends AbstractBuySellFragment
 {
-    @Bind(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
-    @Bind(R.id.stock_details_header) ViewGroup stockDetailHeader;
+    @BindView(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
+    @BindView(R.id.stock_details_header) ViewGroup stockDetailHeader;
 
-    @Bind(R.id.chart_frame) protected RelativeLayout mInfoFrame;
-    @Bind(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
+    @BindView(R.id.chart_frame) protected RelativeLayout mInfoFrame;
+    @BindView(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
 
     //TODO Change Analytics
     //@Inject Analytics analytics;

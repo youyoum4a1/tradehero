@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemClick;
 import butterknife.OnTextChanged;
 import com.androidth.general.common.utils.THToast;
@@ -43,6 +43,8 @@ import com.androidth.general.persistence.prefs.ShowAskForInviteDialog;
 import com.androidth.general.persistence.timing.TimingIntervalPreference;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
+
+import butterknife.Unbinder;
 import dagger.Lazy;
 import java.util.Arrays;
 import java.util.List;
@@ -62,11 +64,11 @@ import timber.log.Timber;
 public class FriendsInvitationFragment extends BaseFragment
         implements SocialFriendUserView.OnElementClickListener
 {
-    @Bind(R.id.social_friend_type_list) ListView socialListView;
-    @Bind(R.id.social_friends_list) ListView friendsListView;
-    @Bind(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
-    @Bind(R.id.social_search_friends_none) TextView friendsListEmptyView;
-    @Bind(R.id.search_social_friends) EditText filterTextView;
+    @BindView(R.id.social_friend_type_list) ListView socialListView;
+    @BindView(R.id.social_friends_list) ListView friendsListView;
+    @BindView(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
+    @BindView(R.id.social_search_friends_none) TextView friendsListEmptyView;
+    @BindView(R.id.search_social_friends) EditText filterTextView;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
@@ -96,6 +98,7 @@ public class FriendsInvitationFragment extends BaseFragment
 
     private Bundle savedState;
 
+    private Unbinder unbinder;
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -122,7 +125,7 @@ public class FriendsInvitationFragment extends BaseFragment
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         restoreSavedData(savedInstanceState);
     }
 
@@ -152,7 +155,7 @@ public class FriendsInvitationFragment extends BaseFragment
     public void onDestroyView()
     {
         savedState = saveState();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

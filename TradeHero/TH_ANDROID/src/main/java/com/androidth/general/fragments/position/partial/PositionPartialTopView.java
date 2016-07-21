@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -421,28 +421,28 @@ public class PositionPartialTopView extends LinearLayout
 
     public static class ViewHolder extends TypedRecyclerAdapter.TypedViewHolder<Object>
     {
-        @Bind(R.id.gain_indicator) @Nullable ImageView gainIndicator;
-        @Bind(R.id.stock_logo) ImageView stockLogo;
-        @Bind(R.id.flags_container) FxFlagContainer flagsContainer;
-        @Bind(R.id.stock_symbol) @Nullable TextView stockSymbol;
-        @Bind(R.id.company_name) @Nullable TextView companyName;
-        @Bind(R.id.last_price_and_rise) @Nullable TextView lastPriceAndRise;
-        @Bind(R.id.share_count_row) @Nullable View shareCountRow;
-        @Bind(R.id.share_count_header) @Nullable TextView shareCountHeader;
-        @Bind(R.id.share_count_text) @Nullable TextView shareCountText;
-        @Bind(R.id.share_count) @Nullable TextView shareCount;
-        @Bind(R.id.hint_forward) @Nullable View forwardCaret;
-        @Bind(R.id.gain_loss_header) @Nullable TextView gainLossHeader;
+        @BindView(R.id.gain_indicator) @Nullable ImageView gainIndicator;
+        @BindView(R.id.stock_logo) ImageView stockLogo;
+        @BindView(R.id.flags_container) FxFlagContainer flagsContainer;
+        @BindView(R.id.stock_symbol) @Nullable TextView stockSymbol;
+        @BindView(R.id.company_name) @Nullable TextView companyName;
+        @BindView(R.id.last_price_and_rise) @Nullable TextView lastPriceAndRise;
+        @BindView(R.id.share_count_row) @Nullable View shareCountRow;
+        @BindView(R.id.share_count_header) @Nullable TextView shareCountHeader;
+        @BindView(R.id.share_count_text) @Nullable TextView shareCountText;
+        @BindView(R.id.share_count) @Nullable TextView shareCount;
+        @BindView(R.id.hint_forward) @Nullable View forwardCaret;
+        @BindView(R.id.gain_loss_header) @Nullable TextView gainLossHeader;
 
-        @Bind(R.id.gain_loss) @Nullable TextView gainLoss;
-        @Bind(R.id.gain_loss_percent) @Nullable TextView gainLossPercent;
-        @Bind(R.id.total_invested_value) @Nullable TextView totalInvested;
-        @Bind(R.id.position_percentage) @Nullable TextView positionPercent;
-        @Bind(R.id.position_unrealised_pl) @Nullable TextView positionUnrealisedPL;
-        @Bind(R.id.last_amount_container) @Nullable View lastAmountContainer;
-        @Bind(R.id.position_last_amount_header) @Nullable TextView positionLastAmountHeader;
-        @Bind(R.id.position_last_amount) @Nullable TextView positionLastAmount;
-        @Bind(R.id.btn_position_close) @Nullable TextView btnClose;
+        @BindView(R.id.gain_loss) @Nullable TextView gainLoss;
+        @BindView(R.id.gain_loss_percent) @Nullable TextView gainLossPercent;
+        @BindView(R.id.total_invested_value) @Nullable TextView totalInvested;
+        @BindView(R.id.position_percentage) @Nullable TextView positionPercent;
+        @BindView(R.id.position_unrealised_pl) @Nullable TextView positionUnrealisedPL;
+        @BindView(R.id.last_amount_container) @Nullable View lastAmountContainer;
+        @BindView(R.id.position_last_amount_header) @Nullable TextView positionLastAmountHeader;
+        @BindView(R.id.position_last_amount) @Nullable TextView positionLastAmount;
+        @BindView(R.id.btn_position_close) @Nullable TextView btnClose;
         @NonNull private final PublishSubject<CloseUserAction> userActionSubject;
 
         private DTO dto;

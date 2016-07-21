@@ -14,7 +14,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import com.facebook.FacebookOperationCanceledException;
@@ -52,13 +52,13 @@ import timber.log.Timber;
 public abstract class SocialFriendsFragment extends BaseFragment
         implements SocialFriendUserView.OnElementClickListener
 {
-    @Bind(R.id.friends_root_view) BetterViewAnimator friendsRootView;
-    @Bind(R.id.social_follow_invite_all_container) View inviteFollowAllContainer;
-    @Bind(R.id.social_follow_all) TextView followAllView;
-    @Bind(R.id.social_invite_all) TextView inviteAllView;
-    @Bind(R.id.social_friends_list) ListView listView;
-    @Bind(android.R.id.empty) TextView emptyView;
-    @Bind(R.id.search_social_friends) EditText filterTextView;
+    @BindView(R.id.friends_root_view) BetterViewAnimator friendsRootView;
+    @BindView(R.id.social_follow_invite_all_container) View inviteFollowAllContainer;
+    @BindView(R.id.social_follow_all) TextView followAllView;
+    @BindView(R.id.social_invite_all) TextView inviteAllView;
+    @BindView(R.id.social_friends_list) ListView listView;
+    @BindView(android.R.id.empty) TextView emptyView;
+    @BindView(R.id.search_social_friends) EditText filterTextView;
 
     @Inject FriendsListCacheRx friendsListCache;
     @Inject CurrentUserId currentUserId;

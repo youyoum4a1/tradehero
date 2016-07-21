@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -73,9 +73,9 @@ public class LiveSignUpMainFragment extends BaseFragment
     BooleanPreference showCallToActionFragment;
     static boolean isToJoinCompetition = false;
 
-    @Bind(R.id.android_tabs) protected SlidingTabLayout tabLayout;
-    @Bind(R.id.pager) protected ViewPager viewPager;
-    @Bind(R.id.live_reward_widget) protected LiveRewardWidget liveRewardWidget;
+    @BindView(R.id.android_tabs) protected SlidingTabLayout tabLayout;
+    @BindView(R.id.pager) protected ViewPager viewPager;
+    @BindView(R.id.live_reward_widget) protected LiveRewardWidget liveRewardWidget;
 
     public static String notificationLogoUrl;
     public static String hexColor;

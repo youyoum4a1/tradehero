@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
@@ -30,15 +30,15 @@ public class SecurityItemView extends RelativeLayout
         implements DTOView<SecurityCompactDTO>
 {
     @Inject protected Picasso picasso;
-    @Bind(R.id.stock_logo) ImageView stockLogo;
-    @Bind(R.id.ic_market_close) @Nullable ImageView marketCloseIcon;
-    @Bind(R.id.stock_name) TextView stockName;
-    @Bind(R.id.exchange_symbol) TextView exchangeSymbol;
-    @Bind(R.id.last_price) TextView lastPrice;
-    @Bind(R.id.tv_stock_roi) @Nullable TextView stockRoi;
-    @Bind(R.id.country_logo) @Nullable ImageView countryLogo;
-    @Bind(R.id.date) @Nullable TextView date;
-    @Bind(R.id.sec_type) @Nullable TextView securityType;
+    @BindView(R.id.stock_logo) ImageView stockLogo;
+    @BindView(R.id.ic_market_close) @Nullable ImageView marketCloseIcon;
+    @BindView(R.id.stock_name) TextView stockName;
+    @BindView(R.id.exchange_symbol) TextView exchangeSymbol;
+    @BindView(R.id.last_price) TextView lastPrice;
+    @BindView(R.id.tv_stock_roi) @Nullable TextView stockRoi;
+    @BindView(R.id.country_logo) @Nullable ImageView countryLogo;
+    @BindView(R.id.date) @Nullable TextView date;
+    @BindView(R.id.sec_type) @Nullable TextView securityType;
 
     protected SecurityCompactDTO securityCompactDTO;
     protected Map<SecurityId, AlertCompactDTO> alerts;

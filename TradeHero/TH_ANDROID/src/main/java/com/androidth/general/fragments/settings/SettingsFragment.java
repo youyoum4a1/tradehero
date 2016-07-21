@@ -67,7 +67,6 @@ import com.androidth.general.utils.StringUtils;
 import com.androidth.general.utils.VersionUtils;
 import com.androidth.general.utils.dagger.ForPicasso;
 import com.androidth.general.utils.metrics.MarketSegment;
-import com.squareup.okhttp.Cache;
 import com.squareup.picasso.LruCache;
 import com.tradehero.route.Routable;
 import com.urbanairship.UAirship;
@@ -79,6 +78,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import okhttp3.Cache;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
@@ -101,7 +101,8 @@ public final class SettingsFragment extends BasePreferenceFragment
     @Inject @AuthHeader String authHeader;
     @Inject @SocialAuth Map<SocialNetworkEnum, AuthenticationProvider> authenticationProviderMap;
     @Inject @ForPicasso LruCache lruCache;
-    @Inject Cache httpCache;
+    @Inject
+    Cache httpCache;
     @Inject @ResetHelpScreens BooleanPreference resetHelpScreen;
     @Inject protected PushNotificationManager pushNotificationManager;
     @Inject protected UserServiceWrapper userServiceWrapper;

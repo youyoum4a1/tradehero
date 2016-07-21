@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import com.squareup.picasso.Picasso;
@@ -26,11 +26,11 @@ import rx.subjects.PublishSubject;
 
 public class UserProfileCompactViewHolder
 {
-    @Bind(R.id.user_profile_avatar) @Nullable public ImageView avatar;
-    @Bind(R.id.user_profile_roi) @Nullable public TextView roiSinceInception;
-    @Bind(R.id.user_profile_followers_count) @Nullable public TextView followersCount;
-    @Bind(R.id.user_profile_heroes_count) @Nullable public TextView heroesCount;
-    @Bind(R.id.user_profile_display_name) @Nullable public TextView displayName;
+    @BindView(R.id.user_profile_avatar) @Nullable public ImageView avatar;
+    @BindView(R.id.user_profile_roi) @Nullable public TextView roiSinceInception;
+    @BindView(R.id.user_profile_followers_count) @Nullable public TextView followersCount;
+    @BindView(R.id.user_profile_heroes_count) @Nullable public TextView heroesCount;
+    @BindView(R.id.user_profile_display_name) @Nullable public TextView displayName;
 
     @Inject protected Context context;
     @Inject @ForUserPhoto protected Transformation peopleIconTransformation;

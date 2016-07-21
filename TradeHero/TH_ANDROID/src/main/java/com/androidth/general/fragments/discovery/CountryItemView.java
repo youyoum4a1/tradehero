@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.DTOView;
 import com.androidth.general.api.news.CountryLanguagePairDTO;
@@ -13,8 +13,8 @@ import com.androidth.general.api.news.CountryLanguagePairDTO;
 public class CountryItemView extends LinearLayout
         implements DTOView<CountryLanguagePairDTO>
 {
-    @Bind(R.id.country_name) TextView countryName;
-    @Bind(R.id.language_code) TextView languageCode;
+    @BindView(R.id.country_name) TextView countryName;
+    @BindView(R.id.language_code) TextView languageCode;
 
     public CountryItemView(Context context, AttributeSet attrs)
     {

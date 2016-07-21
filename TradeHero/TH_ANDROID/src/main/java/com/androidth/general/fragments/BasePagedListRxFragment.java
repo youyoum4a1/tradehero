@@ -10,7 +10,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemClick;
 import com.androidth.general.common.api.PagedDTOKey;
 import com.androidth.general.common.persistence.ContainerDTO;
@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -48,9 +50,9 @@ abstract public class BasePagedListRxFragment<
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    @Bind(R.id.search_empty_container) protected View emptyContainer;
-    @Bind(R.id.listview) protected AbsListView listView;
-    @Bind(R.id.progress) protected ProgressBar mProgress;
+    @BindView(R.id.search_empty_container) protected View emptyContainer;
+    @BindView(R.id.listview) protected AbsListView listView;
+    @BindView(R.id.progress) protected ProgressBar mProgress;
 
     protected int perPage = DEFAULT_PER_PAGE;
     protected FlagNearEdgeScrollListener nearEndScrollListener;
@@ -59,6 +61,8 @@ abstract public class BasePagedListRxFragment<
     @NonNull protected final Map<Integer, Subscription> pagedSubscriptions;
     @NonNull protected final Map<Integer, Subscription> pagedPastSubscriptions;
     protected DTOType selectedItem;
+
+    private Unbinder unbinder;
 
     public static void putPerPage(@NonNull Bundle args, int perPage)
     {
@@ -91,7 +95,7 @@ abstract public class BasePagedListRxFragment<
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         nearEndScrollListener = createFlagNearEdgeScrollListener();
         listView.setOnScrollListener(createListViewScrollListener());
         listView.setEmptyView(emptyContainer);
@@ -123,7 +127,7 @@ abstract public class BasePagedListRxFragment<
         unsubscribeListCache();
         listView.setOnScrollListener(null);
         nearEndScrollListener = null;
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

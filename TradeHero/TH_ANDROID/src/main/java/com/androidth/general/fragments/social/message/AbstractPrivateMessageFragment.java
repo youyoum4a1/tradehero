@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
@@ -67,11 +67,11 @@ abstract public class AbstractPrivateMessageFragment extends AbstractDiscussionF
     protected UserProfileDTO correspondentProfile;
 
     //@InjectView(android.R.id.list) protected ListView discussionList;
-    @Bind(R.id.discussion_comment_widget) protected PrivatePostCommentView postWidget;
-    @Bind(R.id.private_message_empty) protected TextView emptyHint;
-    @Bind(R.id.post_comment_action_submit) protected TextView buttonSend;
-    @Bind(R.id.post_comment_text) protected EditText messageToSend;
-    @Bind(R.id.mention_widget) protected MentionActionButtonsView mentionView;
+    @BindView(R.id.discussion_comment_widget) protected PrivatePostCommentView postWidget;
+    @BindView(R.id.private_message_empty) protected TextView emptyHint;
+    @BindView(R.id.post_comment_action_submit) protected TextView buttonSend;
+    @BindView(R.id.post_comment_text) protected EditText messageToSend;
+    @BindView(R.id.mention_widget) protected MentionActionButtonsView mentionView;
 
     @Nullable private Subscription messageHeaderFetchSubscription;
     private MessageHeaderId messageHeaderId;

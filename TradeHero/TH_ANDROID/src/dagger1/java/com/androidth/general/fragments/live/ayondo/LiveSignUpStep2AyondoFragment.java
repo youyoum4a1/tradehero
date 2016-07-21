@@ -29,7 +29,7 @@ import com.androidth.general.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -41,11 +41,11 @@ import rx.functions.Func2;
 
 public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
-    @Bind(R.id.info_annual_income) Spinner annualIncomeSpinner;
-    @Bind(R.id.info_net_worth) Spinner netWorthSpinner;
-    @Bind(R.id.info_percent_for_investment) Spinner percentageInvestmentSpinner;
-    @Bind(R.id.info_employment_status) Spinner employmentStatusSpinner;
-    @Bind(R.id.employer_regulated_financial) CheckBox employerRegulatedCheckBox;
+    @BindView(R.id.info_annual_income) Spinner annualIncomeSpinner;
+    @BindView(R.id.info_net_worth) Spinner netWorthSpinner;
+    @BindView(R.id.info_percent_for_investment) Spinner percentageInvestmentSpinner;
+    @BindView(R.id.info_employment_status) Spinner employmentStatusSpinner;
+    @BindView(R.id.employer_regulated_financial) CheckBox employerRegulatedCheckBox;
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {

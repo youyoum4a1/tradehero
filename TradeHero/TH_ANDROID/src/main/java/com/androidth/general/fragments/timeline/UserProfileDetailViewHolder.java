@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import android.support.annotation.Nullable;
 import com.androidth.general.R;
@@ -18,13 +18,13 @@ import timber.log.Timber;
 
 public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
 {
-    @Bind(R.id.portfolio_title) @Nullable protected TextView portfolioTitle;
-    @Bind(R.id.txt_total_wealth) @Nullable protected TextView totalWealth;
-    @Bind(R.id.txt_additional_cash) @Nullable protected TextView additionalCash;
-    @Bind(R.id.txt_cash_on_hand) @Nullable protected TextView cashOnHand;
-    @Bind(R.id.user_profile_achievement_count) @Nullable protected TextView achievementCount;
-    @Bind(R.id.user_level_progress_bar) @Nullable protected UserLevelProgressBar userLevelProgressBar;
-    @Bind(R.id.user_statistic_view) @Nullable protected UserStatisticView userStatisticView;
+    @BindView(R.id.portfolio_title) @Nullable protected TextView portfolioTitle;
+    @BindView(R.id.txt_total_wealth) @Nullable protected TextView totalWealth;
+    @BindView(R.id.txt_additional_cash) @Nullable protected TextView additionalCash;
+    @BindView(R.id.txt_cash_on_hand) @Nullable protected TextView cashOnHand;
+    @BindView(R.id.user_profile_achievement_count) @Nullable protected TextView achievementCount;
+    @BindView(R.id.user_level_progress_bar) @Nullable protected UserLevelProgressBar userLevelProgressBar;
+    @BindView(R.id.user_statistic_view) @Nullable protected UserStatisticView userStatisticView;
 
     //<editor-fold desc="Constructors">
     public UserProfileDetailViewHolder(@NonNull Context context)

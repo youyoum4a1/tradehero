@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.R;
 import com.androidth.general.adapters.WrapperRecyclerAdapter;
@@ -64,7 +64,7 @@ public class CompetitionLeaderboardWrapperRecyclerAdapter extends WrapperRecycle
 
     protected static class AdExtraItemViewHolder extends RecyclerView.ViewHolder
     {
-        @Bind(R.id.banner) ImageView banner;
+        @BindView(R.id.banner) ImageView banner;
 
         public AdExtraItemViewHolder(View itemView)
         {
@@ -75,10 +75,10 @@ public class CompetitionLeaderboardWrapperRecyclerAdapter extends WrapperRecycle
 
     public static class TimeExtraItemViewHolder extends RecyclerView.ViewHolder
     {
-        @Bind(R.id.value_day_count) protected TextView dayCountView;
-        @Bind(R.id.value_hour_count) protected TextView hourCountView;
-        @Bind(R.id.value_minute_count) protected TextView minuteCountView;
-        @Bind(R.id.value_second_count) protected TextView secondCountView;
+        @BindView(R.id.value_day_count) protected TextView dayCountView;
+        @BindView(R.id.value_hour_count) protected TextView hourCountView;
+        @BindView(R.id.value_minute_count) protected TextView minuteCountView;
+        @BindView(R.id.value_second_count) protected TextView secondCountView;
 
         //<editor-fold desc="Constructors">
         public TimeExtraItemViewHolder(View itemView)

@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.common.utils.THToast;
 import com.tradehero.route.Routable;
@@ -70,9 +70,9 @@ public class PushableTimelineFragment extends TimelineFragment
     @Inject Lazy<UserServiceWrapper> userServiceWrapperLazy;
     @Inject MessageThreadHeaderCacheRx messageThreadHeaderCache;
 
-    @Bind(R.id.follow_button) Button mFollowButton;
-    @Bind(R.id.message_button) Button mSendMsgButton;
-    @Bind(R.id.follow_message_container) ViewGroup btnContainer;
+    @BindView(R.id.follow_button) Button mFollowButton;
+    @BindView(R.id.message_button) Button mSendMsgButton;
+    @BindView(R.id.follow_message_container) ViewGroup btnContainer;
 
     protected boolean mIsHero = false;//whether the showUser follow the user
     protected MessageHeaderDTO messageThreadHeaderDTO;

@@ -15,7 +15,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.androidth.general.R;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +29,7 @@ public class OffOnViewSwitcher extends LinearLayout
 {
     private static final int ANIM_DELAY = 300;
 
-    @Bind(R.id.off_on_view_switcher) ViewSwitcher offOnViewSwitcher;
+    @BindView(R.id.off_on_view_switcher) ViewSwitcher offOnViewSwitcher;
     private boolean mIsOn;
     private PublishSubject<OffOnViewSwitcherEvent> mSwitchSubject;
 

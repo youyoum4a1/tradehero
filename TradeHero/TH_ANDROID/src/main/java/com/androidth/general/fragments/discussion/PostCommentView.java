@@ -11,7 +11,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.common.utils.EditableUtil;
 import com.androidth.general.common.utils.THToast;
@@ -34,6 +34,8 @@ import com.androidth.general.network.service.DiscussionServiceWrapper;
 import com.androidth.general.network.service.MessageServiceWrapper;
 import com.androidth.general.utils.DeviceUtil;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.internal.util.SubscriptionList;
@@ -50,10 +52,10 @@ public class PostCommentView extends RelativeLayout
     public static final boolean USE_QUICK_STUB_DISCUSSION = true;
     private boolean keypadIsShowing;
 
-    @Bind(R.id.post_comment_action_submit) TextView commentSubmit;
-    @Bind(R.id.post_comment_action_processing) View commentActionProcessing;
-    @Bind(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
-    @Bind(R.id.post_comment_text) EditText commentText;
+    @BindView(R.id.post_comment_action_submit) TextView commentSubmit;
+    @BindView(R.id.post_comment_action_processing) View commentActionProcessing;
+    @BindView(R.id.post_comment_action_wrapper) BetterViewAnimator commentActionWrapper;
+    @BindView(R.id.post_comment_text) EditText commentText;
 
     @NonNull private SubscriptionList postCommentSubscriptions;
 
@@ -65,6 +67,8 @@ public class PostCommentView extends RelativeLayout
     private DiscussionKey discussionKey = null;
     private CommentPostedListener commentPostedListener;
     private DiscussionKey nextStubKey;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     public PostCommentView(Context context)
@@ -89,7 +93,7 @@ public class PostCommentView extends RelativeLayout
 
         if (!isInEditMode())
         {
-            ButterKnife.bind(this);
+            unbinder = ButterKnife.bind(this);
             HierarchyInjector.inject(this);
             postCommentSubscriptions = new SubscriptionList();
             keypadIsShowing = false;
@@ -114,7 +118,7 @@ public class PostCommentView extends RelativeLayout
         commentPostedListener = null;
 
         DeviceUtil.dismissKeyboard(commentText);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

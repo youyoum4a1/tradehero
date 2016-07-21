@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ViewFlipper;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
@@ -17,6 +17,8 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.exception.THException;
 import com.androidth.general.network.service.UserServiceWrapper;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -27,14 +29,16 @@ public class InvitedCodeViewHolder
     public static final int VIEW_SUBMITTING = 1;
     public static final int VIEW_SUBMIT_DONE = 2;
 
-    @Bind(R.id.action_view_switcher) ViewFlipper viewSwitcher;
-    @Bind(R.id.invite_code) EditText inviteCode;
+    @BindView(R.id.action_view_switcher) ViewFlipper viewSwitcher;
+    @BindView(R.id.invite_code) EditText inviteCode;
 
     @NonNull private final CurrentUserId currentUserId;
     @NonNull private final UserServiceWrapper userServiceWrapper;
     @Nullable private UserProfileDTO userProfileDTO;
 
     @Nullable private Subscription updateInviteCodeSubscription;
+
+    private Unbinder unbinder;
 
     //<editor-fold desc="Constructors">
     @Inject public InvitedCodeViewHolder(
@@ -48,7 +52,7 @@ public class InvitedCodeViewHolder
 
     public void attachView(View view)
     {
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         displayCurrentInviteCode();
     }
 
@@ -56,7 +60,7 @@ public class InvitedCodeViewHolder
     {
         unsubscribe(updateInviteCodeSubscription);
         updateInviteCodeSubscription = null;
-        ButterKnife.unbind(this);
+        unbinder.unbind();
     }
 
     private void unsubscribe(@Nullable Subscription subscription)

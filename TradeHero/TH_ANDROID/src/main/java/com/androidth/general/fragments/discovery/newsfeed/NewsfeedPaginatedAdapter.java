@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.common.text.ClickableTagProcessor;
 import com.androidth.general.R;
@@ -151,10 +151,10 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
     public static class NewsfeedViewHolder extends TypedViewHolder<NewsfeedDisplayDTO>
     {
         protected final Picasso picasso;
-        @Bind(R.id.newsfeed_item_avatar) ImageView avatar;
-        @Bind(R.id.newsfeed_item_name) TextView name;
-        @Bind(R.id.newsfeed_item_time) TextView time;
-        @Bind(R.id.newsfeed_item_body) TextView body;
+        @BindView(R.id.newsfeed_item_avatar) ImageView avatar;
+        @BindView(R.id.newsfeed_item_name) TextView name;
+        @BindView(R.id.newsfeed_item_time) TextView time;
+        @BindView(R.id.newsfeed_item_body) TextView body;
 
         public NewsfeedViewHolder(View itemView, Picasso picasso)
         {
@@ -200,8 +200,8 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
 
     public static class NewsfeedNewsViewHolder extends NewsfeedViewHolder
     {
-        @Bind(R.id.newsfeed_item_hero_image) ImageView heroImg;
-        @Bind(R.id.newsfeed_item_title) TextView title;
+        @BindView(R.id.newsfeed_item_hero_image) ImageView heroImg;
+        @BindView(R.id.newsfeed_item_title) TextView title;
 
         public NewsfeedNewsViewHolder(View itemView, Picasso picasso)
         {
@@ -230,8 +230,8 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
 
     public static class NewsfeedDiscussionViewHolder extends NewsfeedViewHolder
     {
-        @Bind(R.id.newsfeed_item_discussion_content) TextView content;
-        @Bind(R.id.newsfeed_item_discussion_logo) ImageView logo;
+        @BindView(R.id.newsfeed_item_discussion_content) TextView content;
+        @BindView(R.id.newsfeed_item_discussion_logo) ImageView logo;
 
         public NewsfeedDiscussionViewHolder(View itemView, Picasso picasso)
         {
@@ -247,7 +247,7 @@ public class NewsfeedPaginatedAdapter extends PagedRecyclerAdapter<NewsfeedDispl
 
     public static class NewsfeedStockTwitViewHolder extends NewsfeedViewHolder
     {
-        @Bind(R.id.newsfeed_item_hero_image) ImageView heroImg;
+        @BindView(R.id.newsfeed_item_hero_image) ImageView heroImg;
 
         public NewsfeedStockTwitViewHolder(View itemView, Picasso picasso, PublishSubject<ClickableTagProcessor.UserAction> subject)
         {

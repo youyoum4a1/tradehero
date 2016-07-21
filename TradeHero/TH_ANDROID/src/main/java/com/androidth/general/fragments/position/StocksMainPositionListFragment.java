@@ -15,7 +15,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.android.common.SlidingTabLayout;
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
@@ -28,6 +28,8 @@ import com.androidth.general.fragments.billing.BasePurchaseManagerFragment;
 import com.androidth.general.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -40,10 +42,12 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
     @Inject CurrentUserId currentUserId;
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
 
-    @Bind(R.id.pager) ViewPager tabViewPager;
-    @Bind(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
+    @BindView(R.id.pager) ViewPager tabViewPager;
+    @BindView(R.id.tabs) SlidingTabLayout pagerSlidingTabStrip;
 
     protected Subscription portfolioIdSubscription;
+
+    private Unbinder unbinder;
 
     public enum TabType
     {
@@ -73,7 +77,7 @@ public class StocksMainPositionListFragment extends BasePurchaseManagerFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         portfolioIdSubscription = AppObservable.bindSupportFragment(
                 this,
                 portfolioCompactListCache.getOne(currentUserId.toUserBaseKey()))

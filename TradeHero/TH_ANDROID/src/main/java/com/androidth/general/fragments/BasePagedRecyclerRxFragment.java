@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ProgressBar;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.androidth.general.common.api.PagedDTOKey;
 import com.androidth.general.common.persistence.ContainerDTO;
@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
@@ -48,9 +50,9 @@ abstract public class BasePagedRecyclerRxFragment<
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
-    @Bind(R.id.search_empty_container) protected View emptyContainer;
-    @Bind(R.id.recycler_view) protected RecyclerView recyclerView;
-    @Bind(R.id.progress) protected ProgressBar mProgress;
+    @BindView(R.id.search_empty_container) protected View emptyContainer;
+    @BindView(R.id.recycler_view) protected RecyclerView recyclerView;
+    @BindView(R.id.progress) protected ProgressBar mProgress;
 
     protected int perPage = DEFAULT_PER_PAGE;
     protected FlagNearEdgeRecyclerScrollListener nearEndScrollListener;
@@ -58,6 +60,8 @@ abstract public class BasePagedRecyclerRxFragment<
     protected PagedRecyclerAdapter<DTOType> itemViewAdapter;
     @NonNull protected final Map<Integer, Subscription> pagedSubscriptions;
     @NonNull protected final Map<Integer, Subscription> pagedPastSubscriptions;
+
+    private Unbinder unbinder;
 
     public static void putPerPage(@NonNull Bundle args, int perPage)
     {
@@ -90,7 +94,7 @@ abstract public class BasePagedRecyclerRxFragment<
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         nearEndScrollListener = createFlagNearEdgeScrollListener();
         recyclerView.addOnScrollListener(createRecyclerViewScrollListener());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -118,7 +122,7 @@ abstract public class BasePagedRecyclerRxFragment<
         unsubscribeListCache();
         recyclerView.clearOnScrollListeners();
         nearEndScrollListener = null;
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

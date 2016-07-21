@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.AssetClass;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
@@ -48,7 +48,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
 
     @Inject SecurityServiceWrapper securityServiceWrapper;
 
-    @Bind(R.id.btn_enroll) View btnEnroll;
+    @BindView(R.id.btn_enroll) View btnEnroll;
 
     @Nullable private Subscription checkEnrollmentSubscription;
     @Nullable private Subscription waitForEnrolledSubscription;

@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import android.support.annotation.Nullable;
 import com.androidth.general.common.widget.GaugeView;
 import com.androidth.general.common.widget.NumericalAnimatedTextView;
@@ -20,15 +20,15 @@ import timber.log.Timber;
 public class UserStatisticView extends LinearLayout
     implements DTOView<UserStatisticView.DTO>
 {
-    @Bind(R.id.leaderboard_dayshold_tv) @Nullable NumericalAnimatedTextView daysHoldTv;
-    @Bind(R.id.leaderboard_position_tv) @Nullable NumericalAnimatedTextView positionsCountTv;
-    @Bind(R.id.leaderboard_tradecount_tv) @Nullable NumericalAnimatedTextView tradeCountTv;
+    @BindView(R.id.leaderboard_dayshold_tv) @Nullable NumericalAnimatedTextView daysHoldTv;
+    @BindView(R.id.leaderboard_position_tv) @Nullable NumericalAnimatedTextView positionsCountTv;
+    @BindView(R.id.leaderboard_tradecount_tv) @Nullable NumericalAnimatedTextView tradeCountTv;
 
-    @Bind(R.id.leaderboard_gauge_performance)
+    @BindView(R.id.leaderboard_gauge_performance)
     @Nullable GaugeView performanceGauge;
-    @Bind(R.id.leaderboard_gauge_tradeconsistency)
+    @BindView(R.id.leaderboard_gauge_tradeconsistency)
     @Nullable GaugeView tradeConsistencyGauge;
-    @Bind(R.id.leaderboard_gauge_winrate)
+    @BindView(R.id.leaderboard_gauge_winrate)
     @Nullable GaugeView winRateGauge;
 
     //<editor-fold desc="Constructors">

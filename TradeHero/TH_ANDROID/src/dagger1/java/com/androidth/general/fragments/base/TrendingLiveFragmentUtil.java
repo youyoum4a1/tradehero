@@ -15,14 +15,14 @@ import com.androidth.general.persistence.prefs.ShowCallToActionFragmentPreferenc
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import rx.Subscription;
 import rx.functions.Action1;
 
 public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
 {
-    @Bind(R.id.live_fragment_container) FrameLayout liveFragmentContainer;
-    @Nullable @Bind(R.id.pager) ViewPager pager;
+    @BindView(R.id.live_fragment_container) FrameLayout liveFragmentContainer;
+    @Nullable @BindView(R.id.pager) ViewPager pager;
     @Nullable private LiveCallToActionFragment callToActionFragment;
 
     @Inject @ShowCallToActionFragmentPreference

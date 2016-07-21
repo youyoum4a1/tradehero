@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnItemClick;
 import butterknife.OnItemLongClick;
 import com.androidth.general.common.utils.THToast;
@@ -41,6 +41,8 @@ import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.utils.route.THRouter;
 import java.util.List;
 import javax.inject.Inject;
+
+import butterknife.Unbinder;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -58,9 +60,9 @@ public class ProviderVideoListFragment extends DashboardFragment
     @Inject HelpVideoListCacheRx helpVideoListCache;
     @Inject THRouter thRouter;
 
-    @Bind(android.R.id.empty) View emptyView;
-    @Bind(R.id.help_videos_list) AbsListView videoListView;
-    @Bind(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
+    @BindView(android.R.id.empty) View emptyView;
+    @BindView(R.id.help_videos_list) AbsListView videoListView;
+    @BindView(R.id.help_video_list_screen) BetterViewAnimator helpVideoListScreen;
 
     @RouteProperty("providerId") protected Integer routedProviderId;
     @RouteProperty("videoId") Integer routedVideoId;
@@ -71,6 +73,8 @@ public class ProviderVideoListFragment extends DashboardFragment
     private ProviderVideoAdapter providerVideoAdapter;
     private int currentDisplayedChild;
     private ClipboardManager clipboardManager;
+
+    private Unbinder unbinder;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
@@ -108,7 +112,7 @@ public class ProviderVideoListFragment extends DashboardFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         helpVideoListScreen.setDisplayedChildByLayoutId(android.R.id.progress);
         videoListView.setAdapter(providerVideoAdapter);
         videoListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
@@ -149,7 +153,7 @@ public class ProviderVideoListFragment extends DashboardFragment
         providerVideoAdapter = null;
         videoListView.setEmptyView(null);
         videoListView.setOnScrollListener(null);
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDestroyView();
     }
 

@@ -29,9 +29,10 @@ import java.io.InputStreamReader;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
@@ -55,15 +56,15 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
     @Inject LiveServiceWrapper liveServiceWrapper;
     @Inject Picasso picasso;
 
-    @Bind(R.id.email_sent_banner) ImageView bannerImageView;
-    @Bind(R.id.header) RelativeLayout header;
-    @Bind(R.id.email_sent_go_to_inbox_button) Button goToInboxButton;
-    @Bind(R.id.email_sent_resend_button) Button resendButton;
-    @Bind(R.id.email_sent_ask_resend) TextView resendDescription;
-    @Bind(R.id.email_sent_description) TextView sentDescription;
-    @Bind(R.id.email_sent_recipient) TextView recipient;
+    @BindView(R.id.email_sent_banner) ImageView bannerImageView;
+    @BindView(R.id.header) RelativeLayout header;
+    @BindView(R.id.email_sent_go_to_inbox_button) Button goToInboxButton;
+    @BindView(R.id.email_sent_resend_button) Button resendButton;
+    @BindView(R.id.email_sent_ask_resend) TextView resendDescription;
+    @BindView(R.id.email_sent_description) TextView sentDescription;
+    @BindView(R.id.email_sent_recipient) TextView recipient;
 
-
+    private Unbinder unbinder;
 //    private BehaviorSubject<SMSSentConfirmationDTO> mSMSConfirmationSubject;
 
 //    private int mDialingPrefix;
@@ -148,7 +149,7 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         header.setBackgroundColor(Color.parseColor("#"+hexColor));
         try {
@@ -526,7 +527,7 @@ public class VerifyEmailDialogFragment extends BaseDialogFragment
 
     @Override public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
 //        onDestroyViewSubscriptions.unsubscribe();
         super.onDestroyView();
     }

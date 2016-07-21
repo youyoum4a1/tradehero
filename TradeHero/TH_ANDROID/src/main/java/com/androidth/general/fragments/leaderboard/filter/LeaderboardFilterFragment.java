@@ -18,7 +18,7 @@ import com.androidth.general.persistence.leaderboard.LeaderboardCacheRx;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LeaderboardFilterFragment extends DashboardFragment
@@ -29,7 +29,7 @@ public class LeaderboardFilterFragment extends DashboardFragment
     //TODO Change Analytics
     //@Inject Analytics analytics;
     @Inject LeaderboardCacheRx leaderboardCache;
-    @Bind(R.id.leaderboard_filter_slider_container) LeaderboardFilterSliderContainer filterSliderContainer;
+    @BindView(R.id.leaderboard_filter_slider_container) LeaderboardFilterSliderContainer filterSliderContainer;
 
     @NonNull protected PerPagedFilteredLeaderboardKey perPagedFilteredLeaderboardKey;
     @Nullable protected LeaderboardDTO leaderboardDTO;

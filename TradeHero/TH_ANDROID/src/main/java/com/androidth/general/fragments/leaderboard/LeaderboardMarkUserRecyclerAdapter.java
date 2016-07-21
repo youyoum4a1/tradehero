@@ -27,7 +27,7 @@ import com.androidth.general.widget.MarkdownTextView;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.subjects.PublishSubject;
@@ -288,16 +288,16 @@ public class LeaderboardMarkUserRecyclerAdapter<T extends LeaderboardItemDisplay
         private final Picasso picasso;
         protected final PublishSubject<LeaderboardItemUserAction> userActionSubject;
 
-        @Bind(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
-        @Bind(R.id.lbmu_roi) protected TextView lbmuRoi;
-        @Bind(R.id.lbmu_roi_period) protected TextView lbmurRoiPeriod;
-        @Bind(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
-        @Bind(R.id.leaderboard_user_item_position) TextView lbmuPosition;
+        @BindView(R.id.leaderboard_user_item_display_name) protected TextView lbmuDisplayName;
+        @BindView(R.id.lbmu_roi) protected TextView lbmuRoi;
+        @BindView(R.id.lbmu_roi_period) protected TextView lbmurRoiPeriod;
+        @BindView(R.id.leaderboard_user_item_profile_picture) ImageView lbmuProfilePicture;
+        @BindView(R.id.leaderboard_user_item_position) TextView lbmuPosition;
 
-        @Bind(R.id.expanding_layout) ExpandingLayout expandingLayout;
-        @Bind(R.id.user_statistic_view) @Nullable UserStatisticView userStatisticView;
-        @Bind(R.id.leaderboard_user_item_fof) @Nullable MarkdownTextView lbmuFoF;
-        @Bind(R.id.leaderboard_user_item_follow) ImageButton lbmuFollowUser;
+        @BindView(R.id.expanding_layout) ExpandingLayout expandingLayout;
+        @BindView(R.id.user_statistic_view) @Nullable UserStatisticView userStatisticView;
+        @BindView(R.id.leaderboard_user_item_fof) @Nullable MarkdownTextView lbmuFoF;
+        @BindView(R.id.leaderboard_user_item_follow) ImageButton lbmuFollowUser;
         @Nullable protected LeaderboardMarkedUserItemDisplayDto currentDto;
 
         public LbmuItemViewHolder(View itemView, Picasso picasso)

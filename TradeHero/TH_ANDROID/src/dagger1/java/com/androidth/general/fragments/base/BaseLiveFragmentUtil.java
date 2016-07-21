@@ -14,6 +14,7 @@ import com.androidth.general.persistence.prefs.LiveAvailability;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 public class BaseLiveFragmentUtil
 {
@@ -25,6 +26,7 @@ public class BaseLiveFragmentUtil
     FastFillUtil fastFill;
     @Inject @LiveAvailability
     BooleanPreference liveAvailability;
+    private Unbinder unbinder;
 
     public static BaseLiveFragmentUtil createFor(Fragment fragment, View view)
     {
@@ -39,7 +41,7 @@ public class BaseLiveFragmentUtil
     protected BaseLiveFragmentUtil(Fragment f, View view)
     {
         fragment = f;
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
         HierarchyInjector.inject(f.getActivity(), this);
 
     }
@@ -73,7 +75,7 @@ public class BaseLiveFragmentUtil
 
     public void onDestroyView()
     {
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         fragment = null;
     }
 

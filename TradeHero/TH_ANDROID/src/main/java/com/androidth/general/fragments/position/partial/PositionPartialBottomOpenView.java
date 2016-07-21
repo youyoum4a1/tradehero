@@ -5,7 +5,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.Bind;
+import butterknife.BindView;
 import android.support.annotation.Nullable;
 import com.androidth.general.R;
 import com.androidth.general.adapters.ExpandableListItem;
@@ -16,13 +16,13 @@ import com.androidth.general.models.number.THSignedPercentage;
 
 public class PositionPartialBottomOpenView extends AbstractPartialBottomView
 {
-    @Bind(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
-    @Bind(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
-    @Bind(R.id.unrealised_pl_percent) @Nullable protected TextView unrealisedPLPercent;
-    @Bind(R.id.realised_pl_value_header) @Nullable protected TextView realisedPLValueHeader;
-    @Bind(R.id.realised_pl_value) @Nullable protected TextView realisedPLValue;
-    @Bind(R.id.total_invested_value) protected TextView totalInvestedValue;
-    @Bind(R.id.average_price_value) protected TextView averagePriceValue;
+    @BindView(R.id.unrealised_pl_value_header) protected TextView unrealisedPLValueHeader;
+    @BindView(R.id.unrealised_pl_value) protected TextView unrealisedPLValue;
+    @BindView(R.id.unrealised_pl_percent) @Nullable protected TextView unrealisedPLPercent;
+    @BindView(R.id.realised_pl_value_header) @Nullable protected TextView realisedPLValueHeader;
+    @BindView(R.id.realised_pl_value) @Nullable protected TextView realisedPLValue;
+    @BindView(R.id.total_invested_value) protected TextView totalInvestedValue;
+    @BindView(R.id.average_price_value) protected TextView averagePriceValue;
 
     protected PositionPartialBottomInPeriodViewHolder inPeriodViewHolder;
 

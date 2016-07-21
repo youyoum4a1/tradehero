@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import com.squareup.picasso.Picasso;
 import com.androidth.general.common.annotation.ViewVisibilityValue;
@@ -28,8 +28,8 @@ import rx.functions.Func1;
 public class TimelineItemViewHolder
         extends AbstractDiscussionItemViewHolder
 {
-    @Bind(R.id.timeline_vendor_picture) ImageView vendorImage;
-    @Bind(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
+    @BindView(R.id.timeline_vendor_picture) ImageView vendorImage;
+    @BindView(R.id.in_watchlist_indicator) ImageView watchlistIndicator;
 
     //<editor-fold desc="Constructors">
     public TimelineItemViewHolder(@NonNull Picasso picasso)

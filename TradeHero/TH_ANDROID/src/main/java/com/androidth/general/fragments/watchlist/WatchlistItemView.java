@@ -39,9 +39,10 @@ import java.text.DecimalFormat;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 import dagger.Lazy;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -65,14 +66,16 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     @Inject Lazy<DashboardNavigator> navigator;
     @Inject CurrentUserId currentUserId;
 
-    @Bind(R.id.gain_indicator) @Nullable protected ImageView gainIndicator;
-    @Bind(R.id.stock_logo) protected ImageView stockLogo;
-    @Bind(R.id.stock_symbol) protected TextView stockSymbol;
-    @Bind(R.id.company_name) protected TextView companyName;
-    @Bind(R.id.position_percentage) protected TextView gainLossLabel;
-    @Bind(R.id.position_last_amount) protected TextView positionLastAmount;
-    @Bind(R.id.position_watchlist_delete) protected Button deleteButton;
-    @Bind(R.id.position_watchlist_more) protected Button moreButton;
+    @BindView(R.id.gain_indicator) @Nullable protected ImageView gainIndicator;
+    @BindView(R.id.stock_logo) protected ImageView stockLogo;
+    @BindView(R.id.stock_symbol) protected TextView stockSymbol;
+    @BindView(R.id.company_name) protected TextView companyName;
+    @BindView(R.id.position_percentage) protected TextView gainLossLabel;
+    @BindView(R.id.position_last_amount) protected TextView positionLastAmount;
+    @BindView(R.id.position_watchlist_delete) protected Button deleteButton;
+    @BindView(R.id.position_watchlist_more) protected Button moreButton;
+
+    private Unbinder unbinder;
 
     @Nullable private WatchlistPositionDTO watchlistPositionDTO;
     private SubscriptionList subscriptions;
@@ -107,7 +110,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         super.onFinishInflate();
         if (!isInEditMode())
         {
-            ButterKnife.bind(this);
+            unbinder = ButterKnife.bind(this);
         }
         subscriptions = new SubscriptionList();
     }
@@ -117,7 +120,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
         super.onAttachedToWindow();
         if (!isInEditMode())
         {
-            ButterKnife.bind(this);
+            unbinder = ButterKnife.bind(this);
         }
         subscriptions.add(ViewObservable.clicks(moreButton)
                 .flatMap(new Func1<OnClickEvent, Observable<AbstractBuySellFragment.Requisite>>()
@@ -159,7 +162,7 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
     {
         subscriptions.unsubscribe();
         subscriptions = new SubscriptionList();
-        ButterKnife.unbind(this);
+        unbinder.unbind();
         super.onDetachedFromWindow();
     }
 

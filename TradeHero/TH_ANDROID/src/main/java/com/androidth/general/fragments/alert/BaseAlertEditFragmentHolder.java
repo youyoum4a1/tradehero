@@ -6,7 +6,7 @@ import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.ScrollView;
-import butterknife.Bind;
+import butterknife.BindView;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
 import com.androidth.general.api.alert.AlertCompactDTO;
@@ -31,8 +31,8 @@ abstract public class BaseAlertEditFragmentHolder
 {
     private static final long QUOTE_REFRESH_DURATION_MILLI_SECONDS = 30000;
 
-    @Bind(R.id.alert_scroll_view) ScrollView scrollView;
-    @Bind(R.id.alert_security_profile) AlertSecurityProfile alertSecurityProfile;
+    @BindView(R.id.alert_scroll_view) ScrollView scrollView;
+    @BindView(R.id.alert_security_profile) AlertSecurityProfile alertSecurityProfile;
     protected AlertSliderViewHolder alertSliderViewHolder;
 
     @NonNull protected Activity activity;
