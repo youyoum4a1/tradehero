@@ -284,19 +284,21 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @Override
             public void call(ArrayList<ProviderQuestionnaireDTO> providerQuestionnaireDTOs) {
                 providerQuestionnaireDTOz = providerQuestionnaireDTOs;
-                String cList = providerQuestionnaireDTOs.get(0).values;
-                String howUKnoTh = providerQuestionnaireDTOs.get(1).values;
-                String delimeter = "\\|";
-                cityLists = Arrays.asList(cList.split(delimeter));
-                howYouKnowThLists = Arrays.asList(howUKnoTh.split(delimeter));
+                if(providerQuestionnaireDTOs.size()>1){
+                    String cList = providerQuestionnaireDTOs.get(0).values;
+                    String howUKnoTh = providerQuestionnaireDTOs.get(1).values;
+                    String delimeter = "\\|";
+                    cityLists = Arrays.asList(cList.split(delimeter));
+                    howYouKnowThLists = Arrays.asList(howUKnoTh.split(delimeter));
 
-                howYouKnowTHAdapter = new LollipopArrayAdapter<>(getActivity(), howYouKnowThLists);
-                cityListAdapter = new LollipopArrayAdapter<>(getActivity(), cityLists);
+                    howYouKnowTHAdapter = new LollipopArrayAdapter<>(getActivity(), howYouKnowThLists);
+                    cityListAdapter = new LollipopArrayAdapter<>(getActivity(), cityLists);
 
-                spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
-                spinnerResidenceState.setAdapter(cityListAdapter);
-                spinnerHowYouKnowTH.setEnabled(!howYouKnowTHAdapter.isEmpty());
-                spinnerResidenceState.setEnabled(!cityListAdapter.isEmpty());
+                    spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
+                    spinnerResidenceState.setAdapter(cityListAdapter);
+                    spinnerHowYouKnowTH.setEnabled(!howYouKnowTHAdapter.isEmpty());
+                    spinnerResidenceState.setEnabled(!cityListAdapter.isEmpty());
+                }
             }
         });
         ArrayAdapter adapter = ArrayAdapter.createFromResource(this.getContext(),R.array.live_title_array, android.R.layout.simple_spinner_item);

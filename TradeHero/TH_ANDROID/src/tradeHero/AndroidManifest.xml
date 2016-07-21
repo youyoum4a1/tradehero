@@ -36,6 +36,11 @@
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"/>
 
+    <!-- REQUIRED for Google Play Services (GCM)-->
+    <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
+
   </application>
 
 </manifest>

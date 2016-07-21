@@ -46,7 +46,7 @@ project.ext.versionBuild = Integer.parseInt((String) versionProps['VERSION_BUILD
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.fernandocejas.frodo'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'realm-android'
@@ -141,7 +141,7 @@ android {
         release {
             resValue "string", "google_places_api_key", "AIzaSyDUqz0A077IaXZ-8SNwGmpqzEEzL-d2yFc"
             minifyEnabled true
-            proguardFile 'proguard/proguard-android.txt'
+            proguardFile 'proguard/proguard-android-fast.txt'
             shrinkResources false
             multiDexEnabled true
             signingConfig signingConfigs.release
@@ -231,7 +231,7 @@ android {
 
         release {
             java {
-                srcDir 'src/dagger1Release/java'
+                srcDir 'src/dagger1Debug/java'
             }
         }
 
@@ -378,7 +378,7 @@ android {
 
         tradeHeroDebug {
             java {
-                srcDir 'src/tradeHeroDebug/java'
+                srcDir 'src/tradeHero/java'
             }
             res {
                 srcDir 'src/tradeHero/res'
@@ -995,3 +995,4 @@ task showMeCache << {
     //Print Maximum available memory
     System.out.println("Max Memory:" + runtime.maxMemory() / mb);
 }
+apply plugin: 'com.google.gms.google-services'
