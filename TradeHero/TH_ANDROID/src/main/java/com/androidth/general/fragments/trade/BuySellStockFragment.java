@@ -70,7 +70,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
     {
         super.onViewCreated(view, savedInstanceState);
         mSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
-        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.general_tab_indicator_color));
     }
 
     @Override public void onStart()

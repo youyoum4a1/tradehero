@@ -59,7 +59,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginLeft="10dip"
-          android:textColorLink="@color/tradehero_blue"
+          android:textColorLink="@color/general_brand_color"
           style="@style/TH.Body"
           android:layout_below="@id/discussion_time"
           tools:text="Tho Nguyen has become the best trader of the world!"

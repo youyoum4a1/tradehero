@@ -14,7 +14,7 @@
         <color android:color="@color/grey" />
       </item>
       <item>
-        <color android:color="@color/tradehero_blue" />
+        <color android:color="@color/general_brand_color" />
       </item>
     </selector>
   </item>

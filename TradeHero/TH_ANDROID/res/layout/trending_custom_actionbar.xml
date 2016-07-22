@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:animateLayoutChanges="true"
-    tools:background="@color/tradehero_blue"
+    tools:background="@color/general_brand_color"
     >
 
   <com.androidth.general.widget.OffOnViewSwitcher

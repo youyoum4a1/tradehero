@@ -8,7 +8,7 @@
   <style name="Base.TradeHero"
       parent="Theme.AppCompat.Light.NoActionBar">
     <item name="colorAccent">@color/text_secondary_accented</item>
-    <item name="colorPrimary">@color/tradehero_blue</item>
+    <item name="colorPrimary">@color/general_brand_color</item>
     <item name="colorPrimaryDark">#ff0b4a9e</item>
     <item name="colorControlNormal">@color/text_secondary</item>
     <item name="colorControlHighlight">#b7b7b7</item>
@@ -18,7 +18,7 @@
     <item name="android:textColorSecondaryInverse">@color/secondary_inverse_text</item>
     <item name="android:textColorHighlight">@color/accented_primary_text</item>
     <item name="android:textColorHighlightInverse">@color/accented_secondary_text</item>
-    <item name="slidingTabBackground">@color/tradehero_dark_blue</item>
+    <item name="slidingTabBackground">@color/white</item>
   </style>
 
   <style name="TradeHero"
@@ -457,7 +457,7 @@
     <item name="android:shadowDx">1</item>
     <item name="android:shadowRadius">1</item>
     <item name="android:shadowColor">@color/black</item>
-    <item name="android:textColor">@color/white</item>
+    <item name="android:textColor">@color/black</item>
   </style>
 
   <style name="TH.ButtonClose"
@@ -612,7 +612,7 @@
   </style>
 
   <style name="TradeHero.ActionBar.Spinner" parent="TradeHero.ActionBar">
-    <item name="android:background">@color/tradehero_blue</item>
+    <item name="android:background">@color/general_brand_color</item>
   </style>
 
   <style name="TH.CompetitionPrize">

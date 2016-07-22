@@ -5,18 +5,18 @@
   <color name="text_secondary">#ff888888</color>
   <color name="text_primary_inverse">#000000</color>
   <color name="text_secondary_inverse">#000000</color>
-  <color name="text_primary_accented">@color/tradehero_blue</color>
+  <color name="text_primary_accented">@color/general_brand_color</color>
   <color name="text_secondary_accented">#ff499bfb</color>
 
   <!--Tradehero Colors-->
-  <color name="tradehero_blue">#00adee</color>
+  <color name="general_brand_color">#00adee</color>
   <color name="tradehero_blue_pressed">#58b0dd</color>
   <color name="tradehero_blue_focused">#8cdddd</color>
-  <color name="tradehero_blue_status_bar">@color/tradehero_blue</color>
+  <color name="tradehero_blue_status_bar">@color/general_brand_color</color>
   <color name="tradehero_dark_blue">#ffff</color>
 
   <color name="tradehero_tab_bg_color">@color/tradehero_dark_blue</color>
-  <color name="tradehero_tab_indicator_color">#00adee</color>
+  <color name="general_tab_indicator_color">#00adee</color>
   <color name="tradehero_bottom_tab_bg_color">#3E454C</color>
   <color name="tradehero_divider_grey">@color/black</color>
   <color name="tradehero_dashboard_bg_color">@color/white</color>

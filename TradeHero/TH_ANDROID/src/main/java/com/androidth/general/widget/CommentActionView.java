@@ -36,7 +36,7 @@ public class CommentActionView extends CompoundButton
             Drawable drawableLeft = getResources().getDrawable(R.drawable.icn_actions_comment).mutate();
             if (checked)
             {
-                drawableLeft.setColorFilter(getResources().getColor(R.color.tradehero_blue), PorterDuff.Mode.SRC_ATOP);
+                drawableLeft.setColorFilter(getResources().getColor(R.color.general_brand_color), PorterDuff.Mode.SRC_ATOP);
             }
             setCompoundDrawablesWithIntrinsicBounds(drawableLeft, null, null, null);
             invalidate();

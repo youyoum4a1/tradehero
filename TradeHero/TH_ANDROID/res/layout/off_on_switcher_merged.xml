@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:background="@color/tradehero_blue"
+    tools:background="@color/general_brand_color"
     >
 
     <ViewSwitcher

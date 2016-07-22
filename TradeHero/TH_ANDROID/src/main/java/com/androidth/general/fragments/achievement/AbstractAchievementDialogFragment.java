@@ -488,7 +488,7 @@ public abstract class AbstractAchievementDialogFragment extends BaseShareableDia
 
         PropertyValuesHolder pvhColor = PropertyValuesHolder.ofObject(PROPERTY_BTN_COLOR,
                 new ArgbEvaluator(),
-                getResources().getColor(R.color.tradehero_blue),
+                getResources().getColor(R.color.general_brand_color),
                 Color.WHITE,
                 mCurrentColor);
 

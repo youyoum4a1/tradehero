@@ -38,12 +38,12 @@
 
   <style name="TH.Button.Link"
       parent="TH.Button">
-    <item name="android:textColor">@color/tradehero_blue</item>
+    <item name="android:textColor">@color/general_brand_color</item>
   </style>
 
   <style name="TH.Button.Small.Link"
       parent="TH.Button.Small">
-    <item name="android:textColor">@color/tradehero_blue</item>
+    <item name="android:textColor">@color/general_brand_color</item>
   </style>
 
   <style name="TH.LiveIdentityPromptImage">

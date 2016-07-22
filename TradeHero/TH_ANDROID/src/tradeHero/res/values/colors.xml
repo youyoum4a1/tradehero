@@ -18,7 +18,7 @@
   <color name="tradehero_tab_bg_color">@color/tradehero_dark_blue</color>
   <color name="general_tab_indicator_color">@color/general_brand_color</color>
   <color name="tradehero_bottom_tab_bg_color">#3E454C</color>
-  <color name="tradehero_divider_grey">@color/general_brand_color</color>
+  <color name="tradehero_divider_grey">@color/grey</color>
   <color name="tradehero_dashboard_bg_color">#E2E8EE</color>
   <color name="tradehero_grid_border_color">@color/darker_grey</color>
   <color name="tradehero_reside_menu_bg">#ff00a2e0</color>

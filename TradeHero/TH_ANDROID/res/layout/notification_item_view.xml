@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_small"
-        android:textColorLink="@color/tradehero_blue"
+        android:textColorLink="@color/general_brand_color"
         style="@style/TH.Body"
         android:lineSpacingExtra="2dp"
         android:layout_toLeftOf="@id/notification_unread_flag"

@@ -7,7 +7,7 @@
   </item>
   <item>
     <selector>
-      <item android:state_selected="true" android:drawable="@color/tradehero_blue" />
+      <item android:state_selected="true" android:drawable="@color/general_brand_color" />
       <item android:state_focused="true" android:drawable="@color/tradehero_blue_focused" />
       <item android:drawable="@color/transparent" />
     </selector>  </item>

@@ -8,7 +8,7 @@
 
   <LinearLayout
       android:tag="Bottom2"
-      android:background="@color/tradehero_blue"
+      android:background="@color/general_brand_color"
       android:layout_width="60dp"
       android:gravity="center"
       android:layout_height="fill_parent">
@@ -81,7 +81,7 @@
           android:id="@+id/message_item_title"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:textColorLink="@color/tradehero_blue"
+          android:textColorLink="@color/general_brand_color"
           style="@style/TH.UserNameTitle"
           android:layout_toLeftOf="@id/message_item_date"
           android:layout_toStartOf="@id/message_item_date"
@@ -94,7 +94,7 @@
           android:id="@+id/message_item_sub_title"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:textColorLink="@color/tradehero_blue"
+          android:textColorLink="@color/general_brand_color"
           style="@style/TH.Caption"
           android:layout_below="@id/message_item_title"
           tools:text="Subtitle"
@@ -106,7 +106,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_marginTop="6dip"
-          android:textColorLink="@color/tradehero_blue"
+          android:textColorLink="@color/general_brand_color"
           style="@style/TH.Body"
           android:layout_below="@id/message_item_sub_title"
           tools:text="Hello world!"

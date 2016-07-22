@@ -139,7 +139,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
         viewPager.setAdapter(adapter);
         pagerSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabLayout.setDistributeEvenly(true);
-        pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.tradehero_tab_indicator_color));
+        pagerSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.general_tab_indicator_color));
         pagerSlidingTabLayout.setViewPager(viewPager);
     }
 

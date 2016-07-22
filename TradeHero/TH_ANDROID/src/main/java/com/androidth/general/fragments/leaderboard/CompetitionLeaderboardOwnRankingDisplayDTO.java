@@ -53,7 +53,7 @@ public class CompetitionLeaderboardOwnRankingDisplayDTO extends CompetitionLeade
 
     private ForegroundColorSpan createTextColorSpan(Resources resources)
     {
-        return new ForegroundColorSpan(resources.getColor(R.color.tradehero_blue));
+        return new ForegroundColorSpan(resources.getColor(R.color.general_brand_color));
     }
 
     @Override protected void isQualifiedForPrize(boolean qualified)

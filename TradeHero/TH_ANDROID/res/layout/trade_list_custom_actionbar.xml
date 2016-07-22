@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/margin_xsmall"
     android:paddingBottom="@dimen/margin_xsmall"
-    tools:background="@color/tradehero_blue">
+    tools:background="@color/general_brand_color">
 
   <ImageButton
       android:id="@+id/btn_watched"

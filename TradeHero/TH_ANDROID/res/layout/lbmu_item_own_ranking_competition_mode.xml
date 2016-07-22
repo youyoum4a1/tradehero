@@ -25,7 +25,7 @@
       android:layout_alignParentRight="true"
       android:layout_alignParentTop="true"
       android:animateLayoutChanges="true"
-      android:background="@color/tradehero_blue"
+      android:background="@color/general_brand_color"
       android:gravity="center_vertical"
       android:orientation="horizontal"
       android:visibility="gone"

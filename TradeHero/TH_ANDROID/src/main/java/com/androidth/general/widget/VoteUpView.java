@@ -44,6 +44,6 @@ public class VoteUpView extends VoteView
 
     @Override protected int getCheckedColor()
     {
-        return getResources().getColor(R.color.tradehero_blue);
+        return getResources().getColor(R.color.general_brand_color);
     }
 }

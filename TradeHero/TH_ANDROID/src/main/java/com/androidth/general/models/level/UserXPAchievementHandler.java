@@ -21,7 +21,7 @@ import timber.log.Timber;
 public class UserXPAchievementHandler
 {
     @SuppressWarnings("FieldCanBeLocal")
-    private final int TAG_XP_SUBSCRIPTION = R.color.tradehero_blue;
+    private final int TAG_XP_SUBSCRIPTION = R.color.general_brand_color;
     @SuppressWarnings("FieldCanBeLocal")
     private final int TAG_ACHIEVEMENT_SUBSCRIPTION = R.color.tradehero_blue_focused;
 
