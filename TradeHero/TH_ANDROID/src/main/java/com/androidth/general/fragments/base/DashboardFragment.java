@@ -63,7 +63,7 @@ abstract public class DashboardFragment extends BaseFragment
     public void setActionBarColorSelf(String url, String hexColor){
 
         if(url == null || url.length()==0){
-            setActionBarColor(getString(R.string.tradehero_blue_default));
+            setActionBarColor(getString(R.string.nav_bar_color_default));
         } else {
             setActionBarColor(hexColor);
             setActionBarImage(url);
