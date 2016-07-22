@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.models.security.ProviderTradableSecuritiesHelper;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -20,15 +21,15 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardPositionListFragment.class + ".providerId";
-    public static String navigationLogoUrl;
-    public static String hexcolor;
+
+    private String navigationLogoUrl;
+    private String hexcolor;
     protected ProviderId providerId;
 
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
     }
-
 
     @Nullable private static ProviderId getProviderId(@NonNull Bundle args)
     {
@@ -39,16 +40,26 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
         }
         return new ProviderId(bundle);
     }
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarColorSelf(navigationLogoUrl,hexcolor);
+        setActionBarColorSelf(navigationLogoUrl, hexcolor);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.providerId = getProviderId(getArguments());
+        Bundle bundle = this.getArguments();
+        this.providerId = getProviderId(bundle);
+
+        if(bundle.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)!=null){
+            hexcolor = bundle.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
+        }
+
+        if(bundle.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL)!=null){
+            navigationLogoUrl = bundle.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL);
+        }
     }
 
     protected void pushTrendingFragment()

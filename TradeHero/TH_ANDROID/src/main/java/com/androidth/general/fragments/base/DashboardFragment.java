@@ -51,7 +51,6 @@ abstract public class DashboardFragment extends BaseFragment
     }
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        setActionBarColorSelf(null,null);
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public void onCreate(Bundle savedInstanceState){
@@ -61,11 +60,11 @@ abstract public class DashboardFragment extends BaseFragment
         super.onResume();
     }
 
-    public void setActionBarColorSelf( String url, String hexColor){
-        if(url == null || url.length()==0)
-        setActionBarColor(getString(R.string.tradehero_blue_default));
-        else {
+    public void setActionBarColorSelf(String url, String hexColor){
 
+        if(url == null || url.length()==0){
+            setActionBarColor(getString(R.string.tradehero_blue_default));
+        } else {
             setActionBarColor(hexColor);
             setActionBarImage(url);
             setActionBarTitle("");
@@ -96,6 +95,7 @@ abstract public class DashboardFragment extends BaseFragment
                 actionBar.setCustomView(imageView, layoutParams);
                 actionBar.setElevation(5);
                 actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+                actionBar.setTitle("");
             }, throwable -> {
                 Log.e("Error",""+throwable.getMessage());
             });

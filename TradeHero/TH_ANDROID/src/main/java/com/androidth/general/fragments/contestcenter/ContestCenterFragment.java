@@ -63,7 +63,7 @@ public class ContestCenterFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle(R.string.dashboard_contest_center);
-
+        setActionBarColor(getString(R.string.tradehero_blue_default));
     }
 
     @Override
@@ -78,20 +78,16 @@ public class ContestCenterFragment extends DashboardFragment
         return view;
     }
 
-    @Override public void onResume()
-    {
+    @Override public void onResume() {
         super.onResume();
-
     }
+
     @Override public void onStart(){
         super.onStart();
-
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive)
-    {
+    @Override public void onLiveTradingChanged(boolean isLive) {
         super.onLiveTradingChanged(isLive);
-
     }
 
     @Override public void onDestroyView()
@@ -112,6 +108,8 @@ public class ContestCenterFragment extends DashboardFragment
         if(providerList != null && providerList.size()==1){
             ProviderDTO providerDTO = providerList.get(0);
             if(providerDTO.isUserEnrolled){
+
+                //problem with root fragment
 //                Bundle args = new Bundle();
 //                mainCompetitionFragment.putProviderId(args, providerDTO.getProviderId());
 //                OwnedPortfolioId applicablePortfolioId = providerDTO.getAssociatedOwnedPortfolioId();

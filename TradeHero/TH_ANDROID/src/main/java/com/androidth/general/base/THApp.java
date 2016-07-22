@@ -12,8 +12,10 @@ import com.androidth.general.models.level.UserXPAchievementHandler;
 import com.androidth.general.models.push.PushNotificationManager;
 import com.androidth.general.utils.dagger.AppModule;
 import com.appsflyer.AppsFlyerLib;
+import com.crashlytics.android.Crashlytics;
 import com.flurry.android.FlurryAgent;
 
+import io.fabric.sdk.android.Fabric;
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
@@ -42,6 +44,7 @@ public class THApp extends BaseApplication
     @Override public void onCreate()
     {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         context = getApplicationContext();
 
         ActivityBuildTypeUtil.startCrashReports(this);

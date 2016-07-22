@@ -110,6 +110,8 @@ public class MainCompetitionFragment extends DashboardFragment
     private static final String BUNDLE_KEY_PROVIDER_ID = MainCompetitionFragment.class.getName() + ".providerId";
     private static final String BUNDLE_KEY_PURCHASE_APPLICABLE_PORTFOLIO_ID_BUNDLE =
             MainCompetitionFragment.class.getName() + ".purchaseApplicablePortfolioId";
+    public static final String BUNDLE_KEY_ACTION_BAR_NAV_URL = MainCompetitionFragment.class.getName() + ".actionBarNavUrl";
+    public static final String BUNDLE_KEY_ACTION_BAR_COLOR = MainCompetitionFragment.class.getName() + ".actionBarColor";
 
     @Bind(android.R.id.progress) ProgressBar progressBar;
     @Bind(R.id.competition_zone_list) AbsListView listView;
@@ -216,7 +218,6 @@ public class MainCompetitionFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         displayActionBarTitle();
-        //super.setActionBarColorSelf(providerDTO);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -563,8 +564,10 @@ public class MainCompetitionFragment extends DashboardFragment
                 CompetitionLeaderboardPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
                 CompetitionLeaderboardPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
                 CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
-                CompetitionLeaderboardPositionListFragment.navigationLogoUrl = providerDTO.navigationLogoUrl;
-                CompetitionLeaderboardPositionListFragment.hexcolor = providerDTO.hexColor;
+
+                args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL, providerDTO.navigationLogoUrl);
+                args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, providerDTO.hexColor);
+
                 if (providerDTO != null && providerDTO.associatedPortfolio != null)
                 {
                     CompetitionLeaderboardPositionListFragment.putIsFX(args, providerDTO.associatedPortfolio.assetClass);

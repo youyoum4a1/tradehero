@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import com.android.common.SlidingTabLayout;
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.tradehero.route.InjectRoute;
 import com.tradehero.route.Routable;
 import com.androidth.general.R;
@@ -63,6 +64,8 @@ public class TabbedPositionListFragment extends DashboardFragment
     ProviderId providerId;
 
     private int selectedTabIndex;
+
+    private String actionBarNavUrl, actionBarColor;
 
     public enum TabType
     {
@@ -220,6 +223,14 @@ public class TabbedPositionListFragment extends DashboardFragment
             }
         }
         this.purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
+
+        if(args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)!=null){
+            actionBarColor = args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
+        }
+
+        if(args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL)!=null){
+            actionBarNavUrl = args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL);
+        }
     }
 
     @Override public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -285,6 +296,9 @@ public class TabbedPositionListFragment extends DashboardFragment
             {
                 CompetitionLeaderboardPositionListFragment.putProviderId(args, providerId);
             }
+
+            args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL, actionBarNavUrl);
+            args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, actionBarColor);
 
             if (getPositionsDTOKey instanceof LeaderboardMarkUserId)
             {

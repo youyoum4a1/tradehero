@@ -19,6 +19,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.ViewAnimator;
 
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -174,6 +175,8 @@ public class PositionListFragment
     private View inflatedView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
 
+    private String actionBarColor, actionBarNavUrl;
+
     //<editor-fold desc="Arguments Handling">
     public static void putGetPositionsDTOKey(@NonNull Bundle args, @NonNull GetPositionsDTOKey getPositionsDTOKey)
     {
@@ -241,7 +244,6 @@ public class PositionListFragment
         }
         return null;
     }
-    //</editor-fold>
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -269,6 +271,14 @@ public class PositionListFragment
         positionType = getPositionType(args);
         this.purchaseApplicableOwnedPortfolioId = getApplicablePortfolioId(getArguments());
         this.positionItemAdapter = createPositionItemAdapter();
+
+        if(args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)!=null){
+            actionBarColor = args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
+        }
+
+        if(args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL)!=null){
+            actionBarNavUrl = args.getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL);
+        }
     }
 
     @Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -908,7 +918,12 @@ public class PositionListFragment
     protected void linkWith(@NonNull PortfolioDTO portfolioDTO)
     {
         this.portfolioDTO = portfolioDTO;
-        displayActionBarTitle(portfolioDTO);
+        if(portfolioDTO.providerId!=null && portfolioDTO.providerId>0){
+            setActionBarColorSelf(actionBarNavUrl, actionBarColor);
+        }else{
+            displayActionBarTitle(portfolioDTO);
+        }
+
         showPrettyReviewAndInvite(portfolioDTO);
         if (portfolioDTO.assetClass == AssetClass.FX)
         {
@@ -1218,7 +1233,11 @@ public class PositionListFragment
             title = getString(R.string.position_list_action_bar_header_unknown);
         }
 
-        if (getArguments().getBoolean(BUNDLE_KEY_SHOW_TITLE, true))
+        if(actionBarColor!=null && !actionBarColor.equals("") && actionBarNavUrl!=null && !actionBarNavUrl.equals("")){
+
+            setActionBarColorSelf(actionBarNavUrl, actionBarColor);
+
+        }else if (getArguments().getBoolean(BUNDLE_KEY_SHOW_TITLE, true))
         {
             setActionBarTitle(title);
         }

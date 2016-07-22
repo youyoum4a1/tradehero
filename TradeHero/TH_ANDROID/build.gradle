@@ -17,7 +17,7 @@ buildscript {
 
 
         //crashlytics is fabric now
-        //maven { url 'http://download.crashlytics.com/maven' }
+        //
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.2'
@@ -27,7 +27,7 @@ buildscript {
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath 'me.tatarka.retrolambda.projectlombok:lombok.ast:0.2.3.a2'
         //crashlytics is fabric now
-        //classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+        //
 
         //classpath 'com.amazon.device.tools.build:gradle:0.13.+' // When building for Amazon
     }
@@ -92,7 +92,7 @@ android {
 
     compileSdkVersion 23
 
-    buildToolsVersion "24.0.0"
+    buildToolsVersion "${BUILD_TOOLS_VERSION}"
     //useOldManifestMerger=true
 
     dexOptions {
@@ -141,7 +141,7 @@ android {
         release {
             resValue "string", "google_places_api_key", "AIzaSyDUqz0A077IaXZ-8SNwGmpqzEEzL-d2yFc"
             minifyEnabled true
-            proguardFile 'proguard/proguard-android-fast.txt'
+            proguardFile 'proguard/proguard-android-release.txt'
             shrinkResources false
             multiDexEnabled true
             signingConfig signingConfigs.release
@@ -662,7 +662,7 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
     compile "com.android.support:support-annotations:${SUPPORT_V7_VERSION}"
     //releaseCompile 'com.crashlytics.android:crashlytics:1.+'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
         transitive = true;
     }
     compile("oauth.signpost:signpost-core:${SIGNPOST_VERSION}") {

@@ -16,6 +16,7 @@ task wrapper(type: Wrapper) {
 }
 
 ext {
+  BUILD_TOOLS_VERSION = "24.0.1"
   SUPPORT_V13_VERSION = "23.3.0"
   SUPPORT_V7_VERSION = "23.3.0"
   JACKSON_VERSION = "2.6.0" // 2.5.0 ?
