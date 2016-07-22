@@ -232,10 +232,11 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                 });
     }
 
-    @Override public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
-    {
-        //Nothing to do, no longer displaying price here.
+    @Override
+    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull Double askPrice, @NonNull Double bidPrice) {
+        //No need to do this anymore
     }
+
 
     @Override protected void handleBuySellButtonsClicked(View view)
     {

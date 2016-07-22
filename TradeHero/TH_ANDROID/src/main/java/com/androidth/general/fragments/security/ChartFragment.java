@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.util.Pair;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +19,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.internal.util.Predicate;
-import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
-import com.squareup.widgets.AspectRatioImageViewCallback;
-import com.androidth.general.common.annotation.ViewVisibilityValue;
-import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.common.widget.BetterViewAnimator;
 import com.androidth.general.R;
 import com.androidth.general.activities.StockChartActivity;
 import com.androidth.general.api.alert.AlertCompactDTO;
@@ -37,6 +31,9 @@ import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.watchlist.WatchlistPositionDTO;
 import com.androidth.general.api.watchlist.WatchlistPositionDTOList;
+import com.androidth.general.common.annotation.ViewVisibilityValue;
+import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.common.widget.BetterViewAnimator;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.alert.AlertCreateDialogFragment;
 import com.androidth.general.fragments.alert.AlertEditDialogFragment;
@@ -53,6 +50,9 @@ import com.androidth.general.models.chart.ChartTimeSpan;
 import com.androidth.general.models.number.THSignedMoney;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.models.number.THSignedPercentage;
+import com.androidth.general.network.LiveNetworkConstants;
+import com.androidth.general.network.retrofit.RequestHeaders;
+import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.alert.AlertCompactListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompactCacheRx;
 import com.androidth.general.persistence.watchlist.UserWatchlistPositionCacheRx;
@@ -62,6 +62,10 @@ import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.DateUtils;
 import com.androidth.general.widget.news.TimeSpanButtonSet;
+import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+import com.squareup.widgets.AspectRatioImageViewCallback;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -73,6 +77,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.Lazy;
+import microsoft.aspnet.signalr.client.hubs.HubProxy;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -149,11 +155,14 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
     @Inject AlertCompactListCacheRx alertCompactListCache;
     @Inject CurrentUserId currentUserId;
+    @Inject RequestHeaders requestHeaders;
     @Inject Lazy<DashboardNavigator> navigator;
 
     private Runnable chooseChartImageSizeTask;
     private Callback chartImageCallback;
     private Subscription quoteSubscription;
+    private SignalRManager signalRManager;
+    private HubProxy hubProxy;
 
     @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
     @Nullable protected WatchlistPositionDTOList watchedList;
@@ -214,6 +223,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
         chartDTO = chartDTOFactory.createChartDTO();
+        signalRManager = new SignalRManager(requestHeaders, currentUserId);
+        hubProxy = signalRManager.getDefaultProxy();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -459,41 +470,39 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         }
     }
 
-    @Override public void onResume()
-    {
+    @Override
+    public void onResume() {
         super.onResume();
-        if (getParentFragment() instanceof AbstractBuySellFragment)
-        {
-            quoteSubscription = Observable.combineLatest(((AbstractBuySellFragment) getParentFragment()).quoteObservable,
-                    ((AbstractBuySellFragment) getParentFragment()).securityObservable.observeOn(AndroidSchedulers.mainThread())
-                            .doOnNext(new Action1<SecurityCompactDTO>()
-                            {
-                                @Override public void call(SecurityCompactDTO securityCompactDTO)
-                                {
-                                    linkWith(securityCompactDTO);
-                                }
-                            }), new Func2<QuoteDTO, SecurityCompactDTO, Pair<SecurityCompactDTO, QuoteDTO>>()
-                    {
-                        @Override public Pair<SecurityCompactDTO, QuoteDTO> call(QuoteDTO quoteDTO, SecurityCompactDTO securityCompactDTO)
-                        {
-                            return Pair.create(securityCompactDTO, quoteDTO);
-                        }
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            new Action1<Pair<SecurityCompactDTO, QuoteDTO>>()
-                            {
-                                @Override public void call(Pair<SecurityCompactDTO, QuoteDTO> securityCompactDTOQuoteDTOPair)
-                                {
-                                    displayBuySellPrice(securityCompactDTOQuoteDTOPair.first, securityCompactDTOQuoteDTOPair.second);
-                                }
-                            },
-                            new TimberOnErrorAction1("Failed to combine quote and security in ChartFragment"));
+        signalRBuySellPrices();
+        if (getParentFragment() instanceof AbstractBuySellFragment) {
+                quoteSubscription = Observable.combineLatest(((AbstractBuySellFragment) getParentFragment()).quoteObservable,
+                        ((AbstractBuySellFragment) getParentFragment()).securityObservable.observeOn(AndroidSchedulers.mainThread())
+                                .doOnNext(new Action1<SecurityCompactDTO>() {
+                                    @Override
+                                    public void call(SecurityCompactDTO securityCompactDTO) {
+                                        linkWith(securityCompactDTO);
+                                    }
+                                }), new Func2<QuoteDTO, SecurityCompactDTO, Pair<SecurityCompactDTO, QuoteDTO>>() {
+                            @Override
+                            public Pair<SecurityCompactDTO, QuoteDTO> call(QuoteDTO quoteDTO, SecurityCompactDTO securityCompactDTO) {
+                                return Pair.create(securityCompactDTO, quoteDTO);
+                            }
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                new Action1<Pair<SecurityCompactDTO, QuoteDTO>>() {
+                                    @Override
+                                    public void call(Pair<SecurityCompactDTO, QuoteDTO> securityCompactDTOQuoteDTOPair) {
+                                        if(securityCompactDTOQuoteDTOPair.second!=null)
+                                            displayBuySellPrice(securityCompactDTOQuoteDTOPair.first, securityCompactDTOQuoteDTOPair.second.ask, securityCompactDTOQuoteDTOPair.second.bid);
+                                    }
+                                },
+                                new TimberOnErrorAction1("Failed to combine quote and security in ChartFragment"));
+            }
         }
-    }
 
-    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
+    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, Double ask, Double bid)
     {
         if (buyPrice != null && sellPrice != null)
         {
@@ -502,25 +511,25 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             String sPrice;
             THSignedNumber bthSignedNumber;
             THSignedNumber sthSignedNumber;
-            if (quoteDTO.ask == null)
+            if (ask == null)
             {
                 bPrice = getString(R.string.buy_sell_ask_price_not_available);
             }
             else
             {
-                bthSignedNumber = THSignedNumber.builder(quoteDTO.ask)
+                bthSignedNumber = THSignedNumber.builder(ask)
                         .withOutSign()
                         .build();
                 bPrice = bthSignedNumber.toString();
             }
 
-            if (quoteDTO.bid == null)
+            if (bid == null)
             {
                 sPrice = getString(R.string.buy_sell_bid_price_not_available);
             }
             else
             {
-                sthSignedNumber = THSignedNumber.builder(quoteDTO.bid)
+                sthSignedNumber = THSignedNumber.builder(bid)
                         .withOutSign()
                         .build();
                 sPrice = sthSignedNumber.toString();
@@ -532,6 +541,38 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         }
 
         displayStockRoi(securityCompactDTO);
+    }
+    public void signalRBuySellPrices(){
+
+        onStopSubscriptions.add(((AbstractBuySellFragment) getParentFragment()).securityObservable.observeOn(AndroidSchedulers.mainThread()).subscribe(securityDTO ->{
+            signalRManager.getConncetion().start().done(actionVoid -> {
+                hubProxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, securityCompactDTO.id, currentUserId.get());
+            });
+            hubProxy.on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
+
+                @Override
+                public void run(SignatureContainer2 signatureContainer2) {
+                    Log.v(getTag(), "Object signalR: " + signatureContainer2.toString());
+                    LiveQuoteDTO liveQuote = signatureContainer2.signedObject;
+                    if (signatureContainer2 == null || signatureContainer2.signedObject == null || signatureContainer2.signedObject.id == 121234) {
+                        return;
+                    } else {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(liveQuote!=null) {
+                                    displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
+                                    if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
+                                        quoteSubscription.unsubscribe();
+                                }
+                            }
+                        });
+
+                    }
+                }
+            }, SignatureContainer2.class);
+
+        }));
     }
 
     private void displayStockRoi(SecurityCompactDTO securityCompactDTO)
