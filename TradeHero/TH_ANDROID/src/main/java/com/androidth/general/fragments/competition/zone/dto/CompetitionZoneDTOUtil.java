@@ -70,9 +70,9 @@ public class CompetitionZoneDTOUtil
             //prize pool
             if (providerPrizePoolDTOs == null)
             {
-                list.add(Pair.create(
-                        CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING,
-                        (CompetitionZoneDTO) new DummyLoadingCompetitionDTO()));
+                //list.add(Pair.create(
+                //        CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING,
+                //        (CompetitionZoneDTO) new DummyLoadingCompetitionDTO()));
             }
             else if (!providerPrizePoolDTOs.isEmpty())
             {
@@ -101,9 +101,9 @@ public class CompetitionZoneDTOUtil
 
             if (preSeasonDTOs == null)
             {
-                list.add(Pair.create(
-                        CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING,
-                        (CompetitionZoneDTO) new DummyLoadingCompetitionDTO()));
+                //list.add(Pair.create(
+                //        CompetitionZoneListItemAdapter.ITEM_TYPE_LOADING,
+                //        (CompetitionZoneDTO) new DummyLoadingCompetitionDTO()));
             }
             else
             {
