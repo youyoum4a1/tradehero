@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -29,7 +28,6 @@ import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.ProviderListKey;
-import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.network.NetworkConstants;
@@ -63,7 +61,7 @@ public class ContestCenterFragment extends DashboardFragment
     {
         super.onCreateOptionsMenu(menu, inflater);
         setActionBarTitle(R.string.dashboard_contest_center);
-        setActionBarColor(getString(R.string.tradehero_blue_default));
+        setActionBarColor(getString(R.string.nav_bar_color_default));
     }
 
     @Override

@@ -342,6 +342,12 @@ public class TrendingMainFragment extends DashboardFragment
         handlePageRouting();
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        setActionBarColor(getString(R.string.nav_bar_color_default));
+    }
+
     private void inflateCustomToolbarView()
     {
         if (actionBarOwnerMixin.getActionBar() != null)
