@@ -38,6 +38,9 @@ public class SignalRManager {
     private RequestHeaders requestHeaders;
     private CurrentUserId currentUserId;
     private THhubConnection connection;
+    public HubProxy getDefaultProxy(){
+        return connection.createHubProxy(LiveNetworkConstants.HUB_NAME);
+    }
 //    static {
 //        connection = new THhubConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
 //        connection.setCredentials(request -> {
@@ -55,6 +58,9 @@ public class SignalRManager {
             request.addHeader(Constants.USER_ID, currentUserId.get().toString());
         });
 
+    }
+    public HubConnection getConncetion(){
+        return connection;
     }
 //    private SignalRManager(String hubName) {
 //        this.proxy = connection.createHubProxy(hubName);

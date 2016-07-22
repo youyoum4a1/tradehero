@@ -12,13 +12,13 @@ public class LiveQuoteDTO {
     public long id;//SecurityId
 
     @Nullable
-    public double a;//AskPrice
+    public Double a;//AskPrice
 
     @Nullable
-    public double b;//BidPrice
+    public Double b;//BidPrice
 
     @Nullable
-    public double v;//Volume
+    public Double v;//Volume
 
     public String l;
 
@@ -77,17 +77,17 @@ public class LiveQuoteDTO {
     }
 
     @Nullable
-    public double getAskPrice() {
+    public Double getAskPrice() {
         return a;
     }
 
     @Nullable
-    public double getBidPrice() {
+    public Double getBidPrice() {
         return b;
     }
 
     @Nullable
-    public double getVolume() {
+    public Double getVolume() {
         return v;
     }
 
@@ -96,7 +96,7 @@ public class LiveQuoteDTO {
     }
 
     @Nullable
-    public double getUsdRate() {
+    public Double getUsdRate() {
         return usdr;
     }
 

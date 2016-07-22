@@ -164,11 +164,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
     }
 
-    class SignatureContainer2
-    {
-        public LiveQuoteDTO signedObject;
-        public String Signature;
-    }
+
 
     @UiThread
     public void update(LiveQuoteDTO dto){
