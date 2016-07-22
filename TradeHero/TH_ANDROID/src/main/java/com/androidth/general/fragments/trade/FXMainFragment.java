@@ -16,10 +16,8 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import butterknife.Bind;
+
 import com.android.common.SlidingTabLayout;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
@@ -39,7 +37,12 @@ import com.androidth.general.models.number.THSignedFXRate;
 import com.androidth.general.models.portfolio.MenuOwnedPortfolioId;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.THColorUtils;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
 import rx.Observable;
 import rx.Observer;
 import rx.functions.Func1;
@@ -178,34 +181,34 @@ public class FXMainFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
+    @Override public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, Double ask, Double bid)
     {
         if (buyBtn != null && sellBtn != null)
         {
             int precision = 0;
-            if (quoteDTO.ask != null && quoteDTO.bid != null)
+            if (ask != null && bid != null)
             {
-                precision = SecurityCompactDTOUtil.getExpectedPrecision(quoteDTO.ask, quoteDTO.bid);
+                precision = SecurityCompactDTOUtil.getExpectedPrecision(ask, bid);
             }
 
-            if (quoteDTO.ask == null)
+            if (ask == null)
             {
                 buyBtn.setText(R.string.buy_sell_ask_price_not_available);
             }
             else
             {
-                double diff = (oldQuoteDTO != null && oldQuoteDTO.ask != null) ? quoteDTO.ask - oldQuoteDTO.ask : 0.0;
-                formatButtonText(quoteDTO.ask, diff, precision, buyBtn, getString(R.string.fx_buy));
+                double diff = (oldQuoteDTO != null && oldQuoteDTO.ask != null) ? ask - oldQuoteDTO.ask : 0.0;
+                formatButtonText(ask, diff, precision, buyBtn, getString(R.string.fx_buy));
             }
 
-            if (quoteDTO.bid == null)
+            if (bid == null)
             {
                 sellBtn.setText(R.string.buy_sell_bid_price_not_available);
             }
             else
             {
-                double diff = (oldQuoteDTO != null && oldQuoteDTO.bid != null) ? quoteDTO.bid - oldQuoteDTO.bid : 0.0;
-                formatButtonText(quoteDTO.bid, diff, precision, sellBtn, getString(R.string.fx_sell));
+                double diff = (oldQuoteDTO != null && oldQuoteDTO.bid != null) ? bid - oldQuoteDTO.bid : 0.0;
+                formatButtonText(bid, diff, precision, sellBtn, getString(R.string.fx_sell));
             }
         }
     }
