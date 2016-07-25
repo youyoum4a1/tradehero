@@ -143,6 +143,7 @@ public class ImageRequesterUtil implements ActivityResultRequester
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(data, "image/*");
         intent.putExtra("crop", "true");
+        intent.putExtra("scale", "true");
         if (cropAspectX != null)
         {
             intent.putExtra("aspectX", cropAspectX);
