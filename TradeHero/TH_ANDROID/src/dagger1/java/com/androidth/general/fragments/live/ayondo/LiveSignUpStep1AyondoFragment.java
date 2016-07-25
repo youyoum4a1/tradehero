@@ -55,15 +55,11 @@ import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
-import com.androidth.general.fragments.live.VerifyEmailDialogFragment;
 import com.androidth.general.fragments.live.VerifyPhoneDialogFragment;
 import com.androidth.general.fragments.web.BaseWebViewFragment;
 import com.androidth.general.models.fastfill.Gender;
-import com.androidth.general.network.LiveNetworkConstants;
-import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.KycServicesRx;
 import com.androidth.general.network.service.LiveServiceWrapper;
-import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
@@ -89,7 +85,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -150,6 +145,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.residence_state) Spinner spinnerResidenceState;
     @Bind(R.id.how_you_know_th) Spinner spinnerHowYouKnowTH;
     @Bind(R.id.btn_join_competition) Button joinCompetitionButton;
+
+    @Bind(R.id.howDoYouText) TextView howDoYouKnow;
+    @Bind(R.id.residenceText) TextView residenceText;
 
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderListCacheRx providerListCache;
@@ -284,7 +282,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @Override
             public void call(ArrayList<ProviderQuestionnaireDTO> providerQuestionnaireDTOs) {
                 providerQuestionnaireDTOz = providerQuestionnaireDTOs;
-                if(providerQuestionnaireDTOs.size()>1){
+                if(providerQuestionnaireDTOs.size() > 0){
                     String cList = providerQuestionnaireDTOs.get(0).values;
                     String howUKnoTh = providerQuestionnaireDTOs.get(1).values;
                     String delimeter = "\\|";
@@ -294,10 +292,26 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     howYouKnowTHAdapter = new LollipopArrayAdapter<>(getActivity(), howYouKnowThLists);
                     cityListAdapter = new LollipopArrayAdapter<>(getActivity(), cityLists);
 
+
                     spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
                     spinnerResidenceState.setAdapter(cityListAdapter);
+
                     spinnerHowYouKnowTH.setEnabled(!howYouKnowTHAdapter.isEmpty());
                     spinnerResidenceState.setEnabled(!cityListAdapter.isEmpty());
+
+                    if(howYouKnowTHAdapter.isEmpty()){
+                        spinnerHowYouKnowTH.setVisibility(View.GONE);
+                    }
+                    if(cityListAdapter.isEmpty()){
+                        spinnerResidenceState.setVisibility(View.GONE);
+                    }
+                }
+                else {
+                    spinnerHowYouKnowTH.setVisibility(View.GONE);
+                    spinnerResidenceState.setVisibility(View.GONE);
+                    howDoYouKnow.setVisibility(View.GONE);
+                    residenceText.setVisibility(View.GONE);
+
                 }
             }
         });
