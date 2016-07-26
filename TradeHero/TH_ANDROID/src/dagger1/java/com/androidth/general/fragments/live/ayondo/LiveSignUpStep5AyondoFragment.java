@@ -1033,8 +1033,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @MainThread
     private void updateLayoutFromJumio(String dataType, String scanRef){
         JumioVerifyBodyDTO jumioDTO = new JumioVerifyBodyDTO(dataType, scanRef);
-
-Log.v(getTag(), "Provider id: "+providerId);
+        Log.v(getTag(), "Provider id: "+providerId);
         liveServiceWrapper.uploadScanReference(jumioDTO, providerId).subscribe(new Subscriber<Response>() {
             @Override
             public void onCompleted() {

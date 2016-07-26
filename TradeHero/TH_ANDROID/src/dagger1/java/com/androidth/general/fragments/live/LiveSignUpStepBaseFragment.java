@@ -69,7 +69,6 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                 public void execute(Realm realm) {
                     RealmQuery query = realm.where(CompetitionSteps.class);
                     RealmResults<CompetitionSteps> results = query.equalTo("step", step).findAll();
-                    int index = step - 1;
                     //results will always have one row
                     if(results.size()==0){
                         CompetitionSteps competitionSteps = realm.createObject(CompetitionSteps.class);

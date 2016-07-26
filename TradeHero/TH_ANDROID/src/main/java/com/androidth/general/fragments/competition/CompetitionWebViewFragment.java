@@ -61,6 +61,12 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
     @Inject ProviderListCacheRx providerListCache;
     protected ProviderId providerId;
     protected Integer providerIdInteger;
+    private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionWebViewFragment.class.getName() + ".providerId";
+
+    public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
+    {
+        args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+    }
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -68,23 +74,19 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
         HierarchyInjector.inject(this);
         thRouter.inject(this);
 
-        if (enrollProviderId != null)
-        {
-            providerId = new ProviderId(enrollProviderId);
-        }
 
-        if (encodedUrl != null)
-        {
-            CompetitionWebViewFragment.putUrl(getArguments(), Uri.decode(encodedUrl));
-        }
-        else if (providerId != null)
-        {
-            CompetitionWebViewFragment.putUrl(getArguments(), providerUtil.getLandingPage(
-                    providerId));
-        }
+
+    }
+
+    @Override public void onResume(){
+
+        super.onResume();
         CompetitionWebViewFragment.putIsOptionMenuVisible(getArguments(), true);
-
-
+        String url = CompetitionWebViewFragment.getUrl(getArguments());
+        //webView.stopLoading();
+        //webView.loadUrl(url);
+        //webView.onResume();
+        //loadUrl(url);
     }
 
 
@@ -99,10 +101,12 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
                 kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, providerIdInteger);
                     kycIntent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, true);
                 startActivity(kycIntent);
+                //webView.onPause();
             }
 
-            return false;
+            return true;
         });
+
     }
     @Override public void onStart(){
         super.onStart();
@@ -132,6 +136,7 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
 
         return args.getInt(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, 0);
     }
+
     private void displayActionBarTitle() {
         ProviderDTOList providerList = providerListCache.getCachedValue(new ProviderListKey());
         if (providerList != null) {
