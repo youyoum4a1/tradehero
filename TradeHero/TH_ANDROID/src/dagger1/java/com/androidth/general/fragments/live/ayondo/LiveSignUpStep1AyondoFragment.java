@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
@@ -249,6 +251,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     {
                         btnPrev.setVisibility(View.GONE);
                     }
+
+                    setupCompetitionCustomization(providerDTO);
                 }
             });
             onDestroySubscriptions.add(subscription);
@@ -450,13 +454,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                             .subscribeOn(Schedulers.newThread())
                                                             .observeOn(AndroidSchedulers.mainThread())
                                                             .subscribe(aBoolean -> {
-//                                                                if (aBoolean)
-//                                                                {
+                                                                if(aBoolean.equals(true)) {
                                                                     nricVerifyButton.setState(VerifyButtonState.FINISH);
-                                                                nricNumber.setError(null);
-//                                                                }
-                                                                if(hasClickedJoinButton){
-                                                                    onClickedJoinButton();
+                                                                    nricNumber.setError(null);
+                                                                    if(hasClickedJoinButton){
+                                                                        onClickedJoinButton();
+                                                                    }
+                                                                }else{
+                                                                    Toast.makeText(getActivity(), "NRIC verification failed", Toast.LENGTH_SHORT).show();
                                                                 }
 
                                                                 progress.dismiss();
@@ -479,7 +484,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         ViewObservable.clicks(phoneVerifyButton).subscribe(onClickEvent -> {
             switch (phoneVerifyButton.getState()) {
                 case BEGIN:
-                    phoneNumber.setError("Mobile number cannot less than 7 digits.", noErrorIconDrawable);
+                case ERROR:
+                    phoneNumber.setError("Mobile number cannot less than 8 digits.", noErrorIconDrawable);
                     phoneVerifyButton.setState(VerifyButtonState.ERROR);
                     break;
                 case PENDING:
@@ -1254,6 +1260,8 @@ dismissLocalProgressDialog();
                 brokerApplicationDTO -> {
                     liveServiceWrapper.enrollCompetition(providerId.key, currentUserId.get())
                             .subscribe(aBoolean -> {
+                                Timber.d("Boolean result " +aBoolean);
+
                                 if (aBoolean) {
                                     ProviderListKey key = new ProviderListKey();
 //                                    providerListCache.fetch(key).subscribe(new Action1<ProviderDTOList>() {
@@ -1273,10 +1281,12 @@ dismissLocalProgressDialog();
 //                                        }
                                     //                                    }, throwable -> progress.dismiss());
 
+                                    Timber.d("Result: "+key.toString());
                                     ProviderDTOList dtoList = providerListCache.getCachedValue(key);
                                     for (ProviderDTO dto : dtoList) {
-
+                                        Timber.d("Searching "+dto.id);
                                         if (dto.id == providerId.key) {
+                                            Timber.d("Found key: "+dto.id);
                                             dto.isUserEnrolled = true;
                                             break;
                                         }
@@ -1284,6 +1294,10 @@ dismissLocalProgressDialog();
                                     progress.dismiss();
                                     ActivityHelper.launchDashboard(LiveSignUpStep1AyondoFragment.this.getActivity(), Uri.parse("tradehero://providers/" + providerId.key));
                                     THAppsFlyer.sendTrackingWithEvent(LiveSignUpStep1AyondoFragment.this.getActivity(), AppsFlyerConstants.KYC_1_SUBMIT, null);
+
+                                }else{
+                                    progress.dismiss();
+                                    Toast.makeText(getActivity(), "Joining competition failed", Toast.LENGTH_SHORT).show();
                                 }
 
                             }, throwable -> progress.dismiss());
@@ -1291,5 +1305,17 @@ dismissLocalProgressDialog();
                     THToast.show(throwable.getMessage());
                     progress.dismiss();
                 });
+    }
+
+    private void setupCompetitionCustomization(ProviderDTO providerDTO){
+        switch (providerDTO.id){
+            case 55:
+                InputFilter[] filterArray = new InputFilter[1];
+                filterArray[0] = new InputFilter.LengthFilter(10);
+                phoneNumber.setFilters(filterArray);
+                break;
+            default:
+                break;
+        }
     }
 }
