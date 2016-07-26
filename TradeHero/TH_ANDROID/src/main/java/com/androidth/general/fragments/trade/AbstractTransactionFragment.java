@@ -1207,10 +1207,11 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                 return;
             }
 
-            if (shareDelegateFragment.shareTo(SocialNetworkEnum.FB))
-            {
-                shareFacebookClient(isBuy);
-            }
+            //server is handling this
+//            if (shareDelegateFragment.shareTo(SocialNetworkEnum.FB))
+//            {
+//                shareFacebookClient(isBuy);
+//            }
 
             if (shareDelegateFragment.isShareToWeChat())
             {
@@ -1263,36 +1264,37 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
         }
     }
 
-    protected void shareFacebookClient(boolean isBuy)
-    {
-        Intent shareIntent = new Intent(getActivity(), FacebookShareActivity.class);
-        Bundle extras = new Bundle();
-        FacebookShareActivity.setMessage(
-                extras,
-                String.format(
-                        getString(R.string.traded_facebook_share_message),
-                        mQuantityEditText.getText(),
-                        usedDTO.securityCompactDTO.name,
-                        SecurityCompactDTOUtil.getShortSymbol(usedDTO.securityCompactDTO),
-                        getFormattedPrice(isBuy ? usedDTO.quoteDTO.ask : usedDTO.quoteDTO.bid)));
-        FacebookShareActivity.setName(extras, "TradeHero");
-        FacebookShareActivity.setCaption(extras, "by myhero");
-        FacebookShareActivity.setDescription(
-                extras,
-                String.format(
-                        "Follow %s on TradeHero for great stock tips!",
-                        shareDelegateFragment.getUserProfileDTO().displayName));
-        if (usedDTO.securityCompactDTO.imageBlobUrl == null)
-        {
-            FacebookShareActivity.setDefaultPictureUrl(extras);
-        }
-        else
-        {
-            FacebookShareActivity.setPictureUrl(extras, usedDTO.securityCompactDTO.imageBlobUrl);
-        }
-        shareIntent.putExtras(extras);
-        startActivity(shareIntent);
-    }
+    //server is handling this
+//    protected void shareFacebookClient(boolean isBuy)
+//    {
+//        Intent shareIntent = new Intent(getActivity(), FacebookShareActivity.class);
+//        Bundle extras = new Bundle();
+//        FacebookShareActivity.setMessage(
+//                extras,
+//                String.format(
+//                        getString(R.string.traded_facebook_share_message),
+//                        mQuantityEditText.getText(),
+//                        usedDTO.securityCompactDTO.name,
+//                        SecurityCompactDTOUtil.getShortSymbol(usedDTO.securityCompactDTO),
+//                        getFormattedPrice(isBuy ? usedDTO.quoteDTO.ask : usedDTO.quoteDTO.bid)));
+//        FacebookShareActivity.setName(extras, "TradeHero");
+//        FacebookShareActivity.setCaption(extras, "by myhero");
+//        FacebookShareActivity.setDescription(
+//                extras,
+//                String.format(
+//                        "Follow %s on TradeHero for great stock tips!",
+//                        shareDelegateFragment.getUserProfileDTO().displayName));
+//        if (usedDTO.securityCompactDTO.imageBlobUrl == null)
+//        {
+//            FacebookShareActivity.setDefaultPictureUrl(extras);
+//        }
+//        else
+//        {
+//            FacebookShareActivity.setPictureUrl(extras, usedDTO.securityCompactDTO.imageBlobUrl);
+//        }
+//        shareIntent.putExtras(extras);
+//        startActivity(shareIntent);
+//    }
 
     protected void shareToWeChat(String commentString, boolean isTransactionTypeBuy)
     {
