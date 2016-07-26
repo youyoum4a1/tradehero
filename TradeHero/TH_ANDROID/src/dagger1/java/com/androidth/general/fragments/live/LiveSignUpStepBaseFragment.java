@@ -10,6 +10,7 @@ import android.widget.Spinner;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.SignUpLiveActivity;
+import com.androidth.general.activities.SplashActivity;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.KYCFormOptionsId;
 import com.androidth.general.api.live.LiveBrokerDTO;
@@ -69,7 +70,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                     RealmQuery query = realm.where(CompetitionSteps.class);
                     RealmResults<CompetitionSteps> results = query.equalTo("step", step).findAll();
                     int index = step - 1;
-
+                    //results will always have one row
                     if(results.size()==0){
                         CompetitionSteps competitionSteps = realm.createObject(CompetitionSteps.class);
                         competitionSteps.step = step;
@@ -77,7 +78,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                         competitionSteps.complete = complete;
                     }
                     else {
-                        results.get(index).complete = complete;
+                        results.get(0).complete = complete;
                     }
                 }
             });
@@ -119,6 +120,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
+        SplashActivity.setupRealm(getContext());
         realm = Realm.getDefaultInstance();
         ButterKnife.bind(this, view);
         brokerSituationObservable = createBrokerSituationObservable().publish();
