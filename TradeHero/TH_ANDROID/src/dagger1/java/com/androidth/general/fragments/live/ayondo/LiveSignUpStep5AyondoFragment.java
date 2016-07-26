@@ -547,7 +547,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public LiveBrokerDTO call(DocumentActionWidgetAction documentActionWidgetAction, LiveBrokerDTO brokerDTO)
                             {
-                                LiveSignUpStep5AyondoFragment.this.imageRequesterUtil = new ImageRequesterUtil(null, null, null, null);
+                                LiveSignUpStep5AyondoFragment.this.imageRequesterUtil = new ImageRequesterUtil(256, 256, 256, 256);//Android limit is 256x256
                                 return brokerDTO;
                             }
                         })
