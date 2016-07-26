@@ -1,5 +1,6 @@
 package com.androidth.general.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -78,7 +79,7 @@ public class SplashActivity extends BaseActivity
                     getResources().getColor(R.color.authentication_guide_bg_color));
         }
 
-        setupRealm();
+        setupRealm(this);
 
         deepLink = getIntent().getData();
 
@@ -166,7 +167,8 @@ public class SplashActivity extends BaseActivity
         return false;
     }
 
-    private void setupRealm(){
-        Realm.getInstance(new RealmConfiguration.Builder(this).name(Constants.REALM_DB_NAME).build());
+    public static void setupRealm(Context context){
+        RealmConfiguration conf = new RealmConfiguration.Builder(context).name(Constants.REALM_DB_NAME).deleteRealmIfMigrationNeeded().build();
+        Realm.setDefaultConfiguration(conf);
     }
 }

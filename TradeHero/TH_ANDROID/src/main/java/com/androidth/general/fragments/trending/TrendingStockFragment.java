@@ -286,8 +286,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         providerDTOs = providers;
         wrapperAdapter.setProviderEnabled(!providerDTOs.isEmpty());
-        if(providerDTOs.isEmpty())
-            Toast.makeText(getContext()," Dto is empty",Toast.LENGTH_SHORT).show();
+//        if(providerDTOs.isEmpty())
+//            Toast.makeText(getContext()," Dto is empty",Toast.LENGTH_SHORT).show();
 
     }
 

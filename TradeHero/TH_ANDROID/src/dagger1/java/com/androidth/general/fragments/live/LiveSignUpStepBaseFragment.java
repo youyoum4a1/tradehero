@@ -8,7 +8,9 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.Spinner;
 
+import com.androidth.general.R;
 import com.androidth.general.activities.SignUpLiveActivity;
+import com.androidth.general.activities.SplashActivity;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
 import com.androidth.general.api.kyc.KYCFormOptionsId;
 import com.androidth.general.api.live.LiveBrokerDTO;
@@ -16,9 +18,9 @@ import com.androidth.general.api.live.LiveBrokerId;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.base.BaseFragment;
+import com.androidth.general.fragments.live.realmDB.CompetitionSteps;
 import com.androidth.general.persistence.kyc.KYCFormOptionsCache;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
-import com.androidth.general.R;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import java.util.Collections;
@@ -28,6 +30,9 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import rx.Observable;
 import rx.Subscription;
 import rx.functions.Action1;
@@ -44,6 +49,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
 
     @Bind(R.id.btn_prev) @Nullable protected View btnPrev;
     @Bind(R.id.btn_next) @Nullable protected View btnNext;
+    protected Realm realm;
 
     @NonNull protected PublishSubject<Boolean> prevNextSubject;
     @NonNull private final BehaviorSubject<LiveBrokerSituationDTO> brokerSituationSubject;
@@ -56,6 +62,26 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     {
         this.prevNextSubject = PublishSubject.create();
         this.brokerSituationSubject = BehaviorSubject.create();
+    }
+    protected void updateDB(Boolean complete, Integer step){
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    RealmQuery query = realm.where(CompetitionSteps.class);
+                    RealmResults<CompetitionSteps> results = query.equalTo("step", step).findAll();
+                    int index = step - 1;
+                    //results will always have one row
+                    if(results.size()==0){
+                        CompetitionSteps competitionSteps = realm.createObject(CompetitionSteps.class);
+                        competitionSteps.step = step;
+                        competitionSteps.providerId = getProviderId(getArguments());
+                        competitionSteps.complete = complete;
+                    }
+                    else {
+                        results.get(0).complete = complete;
+                    }
+                }
+            });
     }
 
     protected static int getProviderId(@NonNull Bundle args)
@@ -94,9 +120,9 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-
+        SplashActivity.setupRealm(getContext());
+        realm = Realm.getDefaultInstance();
         ButterKnife.bind(this, view);
-
         brokerSituationObservable = createBrokerSituationObservable().publish();
         Observable<LiveBrokerDTO> brokerObservable = createBrokerObservable(brokerSituationObservable);
         kycOptionsObservable = createKYCFormOptionsObservable(brokerSituationObservable).publish();
@@ -164,6 +190,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     {
         brokerSituationObservable = null;
         kycOptionsObservable = null;
+        realm.close();
         super.onDestroyView();
     }
 

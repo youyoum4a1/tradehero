@@ -223,8 +223,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
         chartDTO = chartDTOFactory.createChartDTO();
-        signalRManager = new SignalRManager(requestHeaders, currentUserId);
-        hubProxy = signalRManager.getDefaultProxy();
+
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -473,6 +472,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Override
     public void onResume() {
         super.onResume();
+        signalRManager = new SignalRManager(requestHeaders, currentUserId);
+        hubProxy = signalRManager.getDefaultProxy();
         signalRBuySellPrices();
         if (getParentFragment() instanceof AbstractBuySellFragment) {
                 quoteSubscription = Observable.combineLatest(((AbstractBuySellFragment) getParentFragment()).quoteObservable,
@@ -544,7 +545,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     }
     public void signalRBuySellPrices(){
 
-        onStopSubscriptions.add(((AbstractBuySellFragment) getParentFragment()).securityObservable.observeOn(AndroidSchedulers.mainThread()).subscribe(securityDTO ->{
+        onStopSubscriptions.add(((AbstractBuySellFragment) getParentFragment()).securityObservable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(securityDTO ->{
             signalRManager.getConncetion().start().done(actionVoid -> {
                 hubProxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, securityCompactDTO.id, currentUserId.get());
             });
