@@ -220,6 +220,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
             @Override
             public void call(Subscriber<? super Void> subscriber) {
+                signalRManager = new SignalRManager(requestHeaders, currentUserId);
+                hubProxy = signalRManager.getDefaultProxy();
                 signalRBuySellPrices();
             }
 
