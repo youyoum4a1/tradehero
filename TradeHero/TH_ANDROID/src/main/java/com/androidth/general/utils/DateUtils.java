@@ -94,7 +94,8 @@ public class DateUtils
 
     public static String getFormattedUtcDateFromDate(@NonNull Resources resources, @NonNull Date date)
     {
-        SimpleDateFormat requiredFormat = new SimpleDateFormat(resources.getString(R.string.data_format_yyyy_mm_dd_hh_mm_ss));
+        String dateString = resources.getString(R.string.data_format_yyyy_mm_dd_hh_mm_ss);
+        SimpleDateFormat requiredFormat = new SimpleDateFormat(dateString);
         requiredFormat.setTimeZone(TimeZone.getTimeZone("GMT00:00"));
         return requiredFormat.format(date);
     }

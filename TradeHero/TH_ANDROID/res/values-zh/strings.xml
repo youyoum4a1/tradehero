@@ -254,7 +254,7 @@
   <string name="data_format_d_mmm_yyyy">yyyy年 MM月 d日</string>
   <string name="data_format_d_mmm_yyyy_hh_mm">yyyy年 MM月 d日 HH:mm</string>
   <string name="data_format_d_mmm_yyyy_kk_mm">更新时间 yyyy-MM-dd kk点</string>
-  <string name="data_format_yyyy_mm_dd_hh_mm_ss">年-月份-天数T\'HH:mm:ss\'Z\'</string>
+  <string name="data_format_yyyy_mm_dd_hh_mm_ss">yyyy年-M月份-dd天数\'T\'HH:mm:ss\'Z\'</string>
   <string name="date">日期：%1$s</string>
   <string name="date_of_birth">出生日期</string>
   <string name="device_no_camera">不能删除任何相机</string>
