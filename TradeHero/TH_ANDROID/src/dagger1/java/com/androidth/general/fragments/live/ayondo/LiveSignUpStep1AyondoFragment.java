@@ -1235,13 +1235,20 @@ dismissLocalProgressDialog();
         }
     }
 
+
+
     @SuppressWarnings("unused")
     @OnClick(R.id.btn_join_competition)
     public void onClickedJoinButton() {
 
         if (!isAllInputValidated()) {
+            updateDB(false, 1);
             return;
         }
+        updateDB(true, 1);
+
+
+
 
         ProgressDialog progress = new ProgressDialog(getContext());
         progress.setMessage("Loading...");

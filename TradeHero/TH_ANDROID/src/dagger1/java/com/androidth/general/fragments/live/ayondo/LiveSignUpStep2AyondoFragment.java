@@ -58,6 +58,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         if (btnNext != null)
         {
 //            btnNext.setEnabled(secondStatus != null && secondStatus.equals(StepStatus.COMPLETE));
+            updateDB(true, 2);//Just for now
             btnNext.setEnabled(true);//jeff todo
         }
     }

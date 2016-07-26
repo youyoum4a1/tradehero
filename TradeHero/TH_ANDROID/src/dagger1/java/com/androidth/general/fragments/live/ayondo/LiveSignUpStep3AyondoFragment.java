@@ -59,6 +59,7 @@ public class LiveSignUpStep3AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
 //            btnNext.setEnabled(thirdStatus != null && thirdStatus.equals(StepStatus.COMPLETE));
             btnNext.setEnabled(true);
+            updateDB(true, 3);//Just for now
         }
     }
 

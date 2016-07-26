@@ -167,6 +167,7 @@ public class SplashActivity extends BaseActivity
     }
 
     private void setupRealm(){
-        Realm.getInstance(new RealmConfiguration.Builder(this).name(Constants.REALM_DB_NAME).build());
+        RealmConfiguration conf = new RealmConfiguration.Builder(this).name(Constants.REALM_DB_NAME).deleteRealmIfMigrationNeeded().build();
+        Realm.setDefaultConfiguration(conf);
     }
 }
