@@ -43,6 +43,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
 {
     private static final String BUNDLE_KEY_PROVIDER_ID = CompetitionLeaderboardMarkUserRecyclerFragment.class.getName() + ".providerId";
     private static final String BUNDLE_KEY_COMPETITION_ID = CompetitionLeaderboardMarkUserRecyclerFragment.class.getName() + ".competitionId";
+    private static final String TITLE_KEY_ID = CompetitionLeaderboardMarkUserRecyclerFragment.class.getName() + ".titleId";
 
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderUtil providerUtil;
@@ -65,6 +66,14 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
     public static void putProviderId(@NonNull Bundle args, @NonNull ProviderId providerId)
     {
         args.putBundle(BUNDLE_KEY_PROVIDER_ID, providerId.getArgs());
+    }
+    public static void putTitle(@NonNull Bundle args, @NonNull String title)
+    {
+        args.putString(TITLE_KEY_ID,title);
+    }
+    @NonNull public static String getTitleKeyId(@NonNull Bundle args)
+    {
+        return args.getString(TITLE_KEY_ID);
     }
 
     @NonNull public static ProviderId getProviderId(@NonNull Bundle args)
@@ -109,12 +118,13 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-
+        getSupportActionBar().setTitle(getTitleKeyId(getArguments()));
         MenuItem wizardButton = menu.findItem(R.id.btn_wizard);
         if (wizardButton != null)
         {
             wizardButton.setVisible(providerDTO != null && providerDTO.hasWizard());
         }
+
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

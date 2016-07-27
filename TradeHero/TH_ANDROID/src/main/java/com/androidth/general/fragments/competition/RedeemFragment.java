@@ -2,11 +2,13 @@ package com.androidth.general.fragments.competition;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.AppCompatButton;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -67,6 +69,7 @@ public class RedeemFragment extends DashboardFragment {
         return inflater.inflate(R.layout.competition_redeem_fragment, container, false);
     }
 
+
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         thRouter.inject(this);
@@ -78,7 +81,14 @@ public class RedeemFragment extends DashboardFragment {
             }
         });
 
+
     }
+
+    @Override public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater)
+    {
+        //dont need to call super here because we need actionbar to remain as it is
+    }
+
     private void validate(String str){
         serviceRx.validatedRedeemCode(routedProviderId, str).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(response->{
             redeemServerResponse.setTextColor(Color.parseColor("#66B535"));

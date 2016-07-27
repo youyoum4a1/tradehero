@@ -215,8 +215,10 @@ public class MainCompetitionFragment extends DashboardFragment
     }
 
     //<editor-fold desc="ActionBar">
+    //View view;
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        //view = getSupportActionBar().getCustomView();
         displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -266,6 +268,8 @@ public class MainCompetitionFragment extends DashboardFragment
         this.webViewTHIntentPassedListener = null;
         this.competitionZoneListItemAdapter.clear();
         this.competitionZoneListItemAdapter = null;
+        //DashboardFragment.bundle = null;
+        //getSupportActionBar().setCustomView(view);
         super.onDestroy();
     }
 
@@ -467,6 +471,12 @@ public class MainCompetitionFragment extends DashboardFragment
 
 
         }
+        /*if(providerDTO!=null){
+            Bundle args = new Bundle();
+            DashboardFragment.putUrl(args, providerDTO.navigationLogoUrl);
+            DashboardFragment.putActionBarColor(args, providerDTO.hexColor);
+            DashboardFragment.bundle = args;
+        }*/
     }
     private boolean setActionBarImage(String url){
         try {
@@ -547,11 +557,11 @@ public class MainCompetitionFragment extends DashboardFragment
         }
         else
         {
-            handleItemClicked((CompetitionZoneDTO) itemClicked);
+            handleItemClicked((CompetitionZoneDTO) itemClicked, i);
         }
     }
 
-    protected void handleItemClicked(@NonNull CompetitionZoneDTO competitionZoneDTO)
+    protected void handleItemClicked(@NonNull CompetitionZoneDTO competitionZoneDTO, int i)
     {
         Bundle args = new Bundle();
         if (competitionZoneDTO instanceof CompetitionZonePortfolioDTO)
@@ -601,6 +611,7 @@ public class MainCompetitionFragment extends DashboardFragment
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
         {
+            CompetitionLeaderboardMarkUserRecyclerFragment.putTitle(args, competitionZoneListItemAdapter.getItem(i).title);
             CompetitionLeaderboardMarkUserRecyclerFragment.putProviderId(args, providerId);
             CompetitionLeaderboardMarkUserRecyclerFragment.putCompetition(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO);
             CompetitionLeaderboardMarkUserRecyclerFragment.putLeaderboardType(args,

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.UiThread;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -237,11 +239,18 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         items = null;
         super.onDestroy();
     }
-
+    View view;
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super.onCreateOptionsMenu(menu, inflater);
+        //super.onCreateOptionsMenu(menu, inflater);
         //menu.clear();
+        if(view == null){
+            view = getSupportActionBar().getCustomView();
+        }
+        //small hack to set back comp. action bar. Works like charm tho....
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(Gravity.CENTER);
+        getSupportActionBar().setCustomView(view, layoutParams);
+
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem item = menu.findItem(R.id.btn_search);
         SearchView searchView = new SearchView(((DashboardActivity) getActivity()).getSupportActionBar().getThemedContext());
