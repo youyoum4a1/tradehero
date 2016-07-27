@@ -429,7 +429,7 @@ public class MainCompetitionFragment extends DashboardFragment
 
                             }
                         })
-                        .subscribeOn(Schedulers.computation()))
+                .subscribeOn(Schedulers.io()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         elements -> {

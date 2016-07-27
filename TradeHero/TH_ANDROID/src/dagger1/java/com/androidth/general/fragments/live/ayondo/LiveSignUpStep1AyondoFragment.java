@@ -71,10 +71,12 @@ import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnItemSelectedEvent;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.DateUtils;
+import com.androidth.general.utils.ExceptionUtils;
 import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 import com.androidth.general.widget.validation.KYCVerifyButton;
 import com.androidth.general.widget.validation.VerifyButtonState;
+import com.google.gson.JsonElement;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.route.RouteProperty;
 
@@ -465,10 +467,15 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                                 }
 
                                                                 progress.dismiss();
-                                                            }, throwable -> {
-//                                                                THToast.show(throwable.getMessage());
-                                                                nricVerifyButton.setState(VerifyButtonState.ERROR);
-                                                                progress.dismiss();
+                                                            }, new Action1<Throwable>() {
+                                                                @Override
+                                                                public void call(Throwable throwable) {
+                                                                    progress.dismiss();
+                                                                    String errorMessage = ExceptionUtils.getStringElementFromThrowable(throwable, "Message");
+                                                                    nricVerifyButton.setState(VerifyButtonState.ERROR);
+                                                                    nricNumber.setError(errorMessage, noErrorIconDrawable);
+                                                                    LiveSignUpStep1AyondoFragment.this.requestFocusAndShowKeyboard(nricNumber);
+                                                                }
                                                             });
                                                 }
                                             }
@@ -779,11 +786,9 @@ dismissLocalProgressDialog();
                                 selected.setTime(d);
                             }
                         }
-                        DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance(calendar, selected);
-                        dpf.setTargetFragment(LiveSignUpStep1AyondoFragment.this, REQUEST_PICK_DATE);
-                        dpf.show(getChildFragmentManager(), dpf.getClass().getName());
+                        setupDatePickerDialog(calendar, selected);
                     }
-                }, new TimberOnErrorAction1("Failed to listen to DOB clicks")));
+                }, new TimberOnErrorAction1("Failed to listen to DOB clicks", getContext())));
 
         //subscriptions.add(ViewObservable.clicks(buttonVerifyPhone)
         //        .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnClickEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
@@ -1324,5 +1329,11 @@ dismissLocalProgressDialog();
             default:
                 break;
         }
+    }
+
+    private void setupDatePickerDialog(Calendar maxDate, Calendar selected){
+        DatePickerDialogFragment dpf = DatePickerDialogFragment.newInstance(maxDate, selected);
+        dpf.setTargetFragment(LiveSignUpStep1AyondoFragment.this, REQUEST_PICK_DATE);
+        dpf.show(getChildFragmentManager(), dpf.getClass().getName());
     }
 }
