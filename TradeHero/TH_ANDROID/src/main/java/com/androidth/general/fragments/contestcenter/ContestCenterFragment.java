@@ -59,9 +59,10 @@ public class ContestCenterFragment extends DashboardFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super.onCreateOptionsMenu(menu, inflater);
+
         setActionBarTitle(R.string.dashboard_contest_center);
         setActionBarColor(getString(R.string.nav_bar_color_default));
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

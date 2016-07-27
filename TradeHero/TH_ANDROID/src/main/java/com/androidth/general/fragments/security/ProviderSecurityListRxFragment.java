@@ -86,7 +86,7 @@ public class ProviderSecurityListRxFragment
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_provider_security_list, container, false);
-        tradeTitleView = (TextView) view.findViewById(R.id.provider_securities_tradable);
+        //tradeTitleView = (TextView) view.findViewById(R.id.provider_securities_tradable);
         return view;
     }
 

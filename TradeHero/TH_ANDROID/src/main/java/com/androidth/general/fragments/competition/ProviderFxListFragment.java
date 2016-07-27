@@ -26,7 +26,7 @@ public class ProviderFxListFragment extends ProviderSecurityListRxFragment
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        tradeTitleView.setText(R.string.provider_fx_list_tradable);
+        //tradeTitleView.setText(R.string.provider_fx_list_tradable);
     }
 
     @Override public void onStart()
