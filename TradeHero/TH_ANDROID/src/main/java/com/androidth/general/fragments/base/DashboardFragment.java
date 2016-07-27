@@ -25,7 +25,9 @@ import rx.schedulers.Schedulers;
 abstract public class DashboardFragment extends BaseFragment
 {
     @Inject protected Lazy<FragmentOuterElements> fragmentElements;
-
+    //private static final String BUNDLE_KEY_URL = MainCompetitionFragment.class.getName() + ".url";
+    //private static final String BUNDLE_KEY_COLOR = MainCompetitionFragment.class.getName() + ".color";
+    //public static Bundle bundle;
     public boolean shouldShowLiveTradingToggle()
     {
         return false;
@@ -51,6 +53,10 @@ abstract public class DashboardFragment extends BaseFragment
     }
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        /*if(this instanceof RedeemFragment){
+            setActionBarColor("#FFFFFF");
+        }*/
+        //setActionBarColorSelf(getBundleKeyUrl(bundle), getBundleKeyColor(bundle));
         super.onCreateOptionsMenu(menu, inflater);
     }
     @Override public void onCreate(Bundle savedInstanceState){
@@ -62,12 +68,12 @@ abstract public class DashboardFragment extends BaseFragment
 
     public void setActionBarColorSelf(String url, String hexColor){
 
-        if(url == null || url.length()==0){
-            setActionBarColor(getString(R.string.nav_bar_color_default));
-        } else {
+        if(url != null && url.length() != 0){
             setActionBarColor(hexColor);
             setActionBarImage(url);
             setActionBarTitle("");
+        } else {
+            setActionBarColor(getString(R.string.nav_bar_color_default));
         }
     }
 
@@ -106,4 +112,21 @@ abstract public class DashboardFragment extends BaseFragment
             return false;
         }
     }
+
+    /*public static void putUrl(Bundle args, String url){
+        args.putString(BUNDLE_KEY_URL, url);
+    }
+    public static void putActionBarColor(Bundle args, String url){
+        args.putString(BUNDLE_KEY_COLOR, url);
+    }
+    public static String getBundleKeyUrl(Bundle args){
+        if(args!=null)
+            return args.getString(BUNDLE_KEY_URL);
+        return null;
+    }
+    public static String getBundleKeyColor(Bundle args){
+        if(args!=null)
+            return args.getString(BUNDLE_KEY_COLOR);
+        return null;
+    }*/
 }

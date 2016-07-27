@@ -95,7 +95,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super.onCreateOptionsMenu(menu, inflater);
+        //super.onCreateOptionsMenu(menu, inflater);
         //setActionBarTitle(this.providerDTO.name);
     }
 
@@ -117,7 +117,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
 
     @Override public void onResume()
     {
-        displayTitle();
+        //displayTitle();
         super.onResume();
     }
 
@@ -176,7 +176,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
         this.providerDTO = providerDTO;
         getActivity().invalidateOptionsMenu();
         getActivity().supportInvalidateOptionsMenu();
-        displayTitle();
+        //displayTitle();
     }
 
     protected void displayTitle()

@@ -112,8 +112,8 @@ public class ProviderSecurityListRxFragment
 
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        super.onCreateOptionsMenu(menu, inflater);
-        displayTitle();
+        //super.onCreateOptionsMenu(menu, inflater);
+        //displayTitle();
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
