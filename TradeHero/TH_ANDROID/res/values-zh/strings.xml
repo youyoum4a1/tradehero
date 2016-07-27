@@ -550,9 +550,10 @@
   <string name="invite_friend_search_friends">搜索朋友</string>
   <string name="invite_friend_send_invitations">发送邀请</string>
   <string name="invite_friend_success">邀请朋友成功</string>
-  <string name="invite_from_email">邀请email好友</string>
+  <string name="invite_from_email">邀请Email好友</string>
   <string name="invite_from_facebook">邀请Facebook好友</string>
   <string name="invite_from_linkedIn">邀请领英好友</string>
+  <string name="invite_from_sms">邀请短信好友</string>
   <string name="invite_from_twitter">邀请推特好友</string>
   <string name="invite_from_wechat">邀请微信好友</string>
   <string name="invite_from_weibo">邀请微博好友</string>

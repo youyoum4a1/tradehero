@@ -2,6 +2,7 @@ package com.androidth.general.fragments.social.friend;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -15,14 +16,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnItemClick;
 import butterknife.OnTextChanged;
 import com.androidth.general.common.utils.THToast;
-import com.androidth.general.models.intent.IntentDaggerModule;
 import com.androidth.general.network.service.ProviderServiceRx;
-import com.androidth.general.utils.ExceptionUtils;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
@@ -244,6 +245,10 @@ public class FriendsInvitationFragment extends BaseFragment
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         final SocialTypeItem item = (SocialTypeItem) parent.getItemAtPosition(position);
+        final int stringId = getContext().getApplicationInfo().labelRes;
+        final UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
+        Intent intent;
+
         switch (item.socialNetwork){
             case WECHAT:
                 inviteWeChatFriends();
@@ -269,15 +274,27 @@ public class FriendsInvitationFragment extends BaseFragment
                 }
                 break;
             case EMAIL:
-                int stringId = getContext().getApplicationInfo().labelRes;
-
-                UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
-
-                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.invite_email_subject, getString(R.string.app_name)));
                 intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
-                getActivity().startActivity(intent);
+                try{
+                    getActivity().startActivity(intent);
+                }catch (Exception e){
+                    THToast.show(e.getMessage());
+                }
+                break;
+
+            case SMS:
+                intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("smsto:"));
+                intent.setType("vnd.android-dir/mms-sms");
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
+                try{
+                    getActivity().startActivity(intent);
+                }catch (Exception e){
+                    THToast.show(e.getMessage());
+                }
                 break;
             default:
                 break;
