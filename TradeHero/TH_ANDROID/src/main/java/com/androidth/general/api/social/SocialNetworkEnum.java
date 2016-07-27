@@ -19,7 +19,9 @@ public enum SocialNetworkEnum
     WECHAT("TH-WeChat", "WeChat", null, null, R.string.wechat),
     WB("TH-Weibo", "WeiBo", "weibo_access_token", null, R.string.sina_weibo),
     QQ("TH-QQ", "QQ", "qq_openid", "qq_access_token", R.string.tencent_qq),
-    EMAIL("TH-Email", "Email", "email_access_token", null, R.string.email);
+    EMAIL("TH-Email", "Email", null, null, R.string.email),
+    SMS("TH-SMS", "SMS", null, null, 0),
+    WHATSAPP("TH-Whatsapp", "Whatsapp", null, null, 0);
 
     private final String authHeader;
     private final String name;

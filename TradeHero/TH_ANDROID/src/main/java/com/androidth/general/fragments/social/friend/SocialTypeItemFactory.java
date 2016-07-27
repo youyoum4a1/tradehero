@@ -27,6 +27,13 @@ public class SocialTypeItemFactory
 
         socialList.add(emailItem);
 
+        SocialTypeItem smsItem = new SocialTypeItem(R.drawable.accounts_glyph_email_ok,
+                R.string.invite_from_sms,
+                R.drawable.sms_selector,
+                SocialNetworkEnum.EMAIL);
+        
+        socialList.add(smsItem);
+
         return socialList;
     }
 }
