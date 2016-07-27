@@ -18,7 +18,8 @@ public enum SocialNetworkEnum
     LN("TH-LinkedIn", "LinkedIn", "linkedin_access_token", "linkedin_access_token_secret", R.string.linkedin),
     WECHAT("TH-WeChat", "WeChat", null, null, R.string.wechat),
     WB("TH-Weibo", "WeiBo", "weibo_access_token", null, R.string.sina_weibo),
-    QQ("TH-QQ", "QQ", "qq_openid", "qq_access_token", R.string.tencent_qq);
+    QQ("TH-QQ", "QQ", "qq_openid", "qq_access_token", R.string.tencent_qq),
+    EMAIL("TH-Email", "Email", "email_access_token", null, R.string.email);
 
     private final String authHeader;
     private final String name;

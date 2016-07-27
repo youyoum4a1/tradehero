@@ -1,5 +1,7 @@
 package com.androidth.general.fragments.social.friend;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.Editable;
@@ -18,6 +20,9 @@ import butterknife.Bind;
 import butterknife.OnItemClick;
 import butterknife.OnTextChanged;
 import com.androidth.general.common.utils.THToast;
+import com.androidth.general.models.intent.IntentDaggerModule;
+import com.androidth.general.network.service.ProviderServiceRx;
+import com.androidth.general.utils.ExceptionUtils;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
@@ -53,6 +58,7 @@ import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Routable({
@@ -78,6 +84,7 @@ public class FriendsInvitationFragment extends BaseFragment
     @Inject Lazy<SocialSharer> socialSharerLazy;
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject SocialShareHelper socialShareHelper;
+    @Inject ProviderServiceRx serviceRx;
 
     @NonNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
@@ -237,29 +244,43 @@ public class FriendsInvitationFragment extends BaseFragment
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         final SocialTypeItem item = (SocialTypeItem) parent.getItemAtPosition(position);
-        if (item.socialNetwork == SocialNetworkEnum.WECHAT)
-        {
-            inviteWeChatFriends();
-            return;
-        }
+        switch (item.socialNetwork){
+            case WECHAT:
+                inviteWeChatFriends();
+                break;
+            case FB://must change after FB sdk update
+                boolean linked = checkLinkedStatus(item.socialNetwork);
+                if (linked)
+                {
+                    pushSocialInvitationFragment(item.socialNetwork);
+                }
+                else
+                {
+                    onStopSubscriptions.add(socialShareHelper.offerToConnect(item.socialNetwork)
+                            .subscribe(
+                                    new Action1<UserProfileDTO>()
+                                    {
+                                        @Override public void call(UserProfileDTO userProfileDTO)
+                                        {
+                                            pushSocialInvitationFragment(item.socialNetwork);
+                                        }
+                                    },
+                                    new EmptyAction1<Throwable>()));
+                }
+                break;
+            case EMAIL:
+                int stringId = getContext().getApplicationInfo().labelRes;
 
-        boolean linked = checkLinkedStatus(item.socialNetwork);
-        if (linked)
-        {
-            pushSocialInvitationFragment(item.socialNetwork);
-        }
-        else
-        {
-            onStopSubscriptions.add(socialShareHelper.offerToConnect(item.socialNetwork)
-                    .subscribe(
-                            new Action1<UserProfileDTO>()
-                            {
-                                @Override public void call(UserProfileDTO userProfileDTO)
-                                {
-                                    pushSocialInvitationFragment(item.socialNetwork);
-                                }
-                            },
-                            new EmptyAction1<Throwable>()));
+                UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.invite_email_subject, getString(R.string.app_name)));
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
+                getActivity().startActivity(intent);
+                break;
+            default:
+                break;
         }
     }
 
