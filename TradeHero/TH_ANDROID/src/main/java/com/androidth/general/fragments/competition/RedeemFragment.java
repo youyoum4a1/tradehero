@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.androidth.general.R;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.network.service.ProviderServiceRx;
+import com.androidth.general.utils.ExceptionUtils;
+import com.androidth.general.utils.StringUtils;
 import com.androidth.general.utils.route.THRouter;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -83,14 +85,12 @@ public class RedeemFragment extends DashboardFragment {
             redeemServerResponse.setVisibility(View.VISIBLE);
             redeemServerResponse.setText(response);
         }, error->{
-            RetrofitError err = (RetrofitError) error;
-            String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
-            JsonObject obj = new JsonParser().parse(string).getAsJsonObject();
-            JsonElement element = obj.get("Message");
+
+            String errorMessage = ExceptionUtils.getStringElementFromThrowable(error, "Message");
 
             redeemServerResponse.setTextColor(Color.parseColor("#B71C1C"));
             redeemServerResponse.setVisibility(View.VISIBLE);
-            redeemServerResponse.setText(element.getAsString());
+            redeemServerResponse.setText(errorMessage);
         });
     }
 }
