@@ -1,6 +1,10 @@
 package com.androidth.general.fragments.social.friend;
 
 import android.support.annotation.NonNull;
+
+import com.androidth.general.R;
+import com.androidth.general.api.social.SocialNetworkEnum;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +19,13 @@ public class SocialTypeItemFactory
         //socialList.add(new SocialTypeItemLinkedin());
         socialList.add(new SocialTypeItemWeibo());
         socialList.add(new SocialTypeItemWechat());
+
+        SocialTypeItem emailItem = new SocialTypeItem(R.drawable.accounts_glyph_email_default,
+                R.string.invite_from_email,
+                R.drawable.email_selector,
+                SocialNetworkEnum.EMAIL);
+
+        socialList.add(emailItem);
 
         return socialList;
     }
