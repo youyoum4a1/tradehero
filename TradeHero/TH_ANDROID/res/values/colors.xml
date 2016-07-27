@@ -74,6 +74,10 @@
   <color name="qq_pressed">@color/light_green_pressed</color>
   <color name="qq_focused">@color/light_green_focused</color>
 
+  <color name="whatsapp_normal">#25D366</color>
+  <color name="whatsapp_pressed">#25D366</color>
+  <color name="whatsapp_focused">#25D366</color>
+
   <color name="weibo_normal">@color/purple_normal</color>
   <color name="weibo_pressed">@color/purple_light</color>
   <color name="weibo_focused">@color/purple_dark</color>

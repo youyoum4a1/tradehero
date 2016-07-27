@@ -556,6 +556,7 @@
   <string name="invite_from_twitter">邀請推特好友</string>
   <string name="invite_from_wechat">邀請微信好友</string>
   <string name="invite_from_weibo">邀請微博好友</string>
+  <string name="invite_from_whatsapp">邀請WhatsApp好友</string>
   <string name="invite_number">邀請 (%s)</string>
   <string name="invite_social_friend">邀請%s好友</string>
   <string name="invite_your_friends_now">現在邀請您的朋友！</string>

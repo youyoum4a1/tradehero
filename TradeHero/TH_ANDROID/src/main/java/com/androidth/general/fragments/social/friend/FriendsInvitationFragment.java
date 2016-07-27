@@ -296,6 +296,20 @@ public class FriendsInvitationFragment extends BaseFragment
                     THToast.show(e.getMessage());
                 }
                 break;
+
+            case WHATSAPP:
+                intent = new Intent(Intent.ACTION_SEND);
+                intent.setPackage("com.whatsapp");
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
+                try{
+                    getActivity().startActivity(intent);
+                }catch (Exception e){
+                    if(e instanceof android.content.ActivityNotFoundException){
+                        THToast.show("WhatsApp is not installed in this device");
+                    }else{
+                        THToast.show(e.getMessage());
+                    }
+                }
             default:
                 break;
         }

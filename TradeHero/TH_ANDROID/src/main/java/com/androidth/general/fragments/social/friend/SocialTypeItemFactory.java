@@ -20,19 +20,20 @@ public class SocialTypeItemFactory
         socialList.add(new SocialTypeItemWeibo());
         socialList.add(new SocialTypeItemWechat());
 
-        SocialTypeItem emailItem = new SocialTypeItem(R.drawable.accounts_glyph_email_default,
+        socialList.add(new SocialTypeItem(R.drawable.accounts_glyph_email_default,
                 R.string.invite_from_email,
                 R.drawable.email_selector,
-                SocialNetworkEnum.EMAIL);
+                SocialNetworkEnum.EMAIL));
 
-        socialList.add(emailItem);
-
-        SocialTypeItem smsItem = new SocialTypeItem(R.drawable.accounts_glyph_email_ok,
+        socialList.add(new SocialTypeItem(R.drawable.accounts_glyph_email_ok,
                 R.string.invite_from_sms,
                 R.drawable.sms_selector,
-                SocialNetworkEnum.EMAIL);
-        
-        socialList.add(smsItem);
+                SocialNetworkEnum.EMAIL));
+
+        socialList.add(new SocialTypeItem(R.drawable.icn_whatsapp,
+                R.string.invite_from_whatsapp,
+                R.drawable.whatsapp_selector,
+                SocialNetworkEnum.WHATSAPP));
 
         return socialList;
     }
