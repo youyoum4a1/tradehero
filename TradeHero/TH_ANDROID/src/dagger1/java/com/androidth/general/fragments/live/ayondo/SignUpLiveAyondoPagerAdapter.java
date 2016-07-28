@@ -25,8 +25,6 @@ public class SignUpLiveAyondoPagerAdapter extends FragmentPagerAdapter
             new LiveSignUpStep4AyondoFragment(),
             new LiveSignUpStep5AyondoFragment()};
 
-    @NonNull private final LiveSignUpStepBaseAyondoFragment[] fragmentStep1 = new LiveSignUpStepBaseAyondoFragment[] {
-            new LiveSignUpStep1AyondoFragment()};
 
     public SignUpLiveAyondoPagerAdapter(@NonNull FragmentManager fm, @NonNull Bundle args)
     {
@@ -37,7 +35,7 @@ public class SignUpLiveAyondoPagerAdapter extends FragmentPagerAdapter
     @Override public int getCount()
     {
         if(showFirstStepOnly){
-            return fragmentStep1.length;
+            return 1;
         }else{
             return fragments.length;
         }
@@ -58,7 +56,7 @@ public class SignUpLiveAyondoPagerAdapter extends FragmentPagerAdapter
     @NonNull @Override public Observable<Boolean> getPrevNextObservable()
     {
         if(showFirstStepOnly){
-            return Observable.from(fragmentStep1)
+            return Observable.just(fragments[0])
                     .flatMap(LiveSignUpStepBaseFragment::getPrevNextObservabel);
         }else{
             return Observable.from(fragments)
