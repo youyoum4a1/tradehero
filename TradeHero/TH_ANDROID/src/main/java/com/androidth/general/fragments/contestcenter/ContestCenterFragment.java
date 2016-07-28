@@ -144,7 +144,7 @@ public class ContestCenterFragment extends DashboardFragment
                         startActivity(kycIntent);
                     }
 
-                    return false;
+                    return true;
                 });
             }
         }
