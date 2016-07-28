@@ -25,10 +25,7 @@ import com.androidth.general.R;
 import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
-import com.androidth.general.api.kyc.KYCForm;
-import com.androidth.general.api.kyc.KYCFormUtil;
 import com.androidth.general.api.kyc.StepStatus;
-import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.fragments.live.ayondo.SignUpLiveAyondoPagerAdapter;
@@ -105,8 +102,7 @@ public class LiveSignUpMainFragment extends BaseFragment
         ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
         if(providerDTO.isUserEnrolled)
             notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
-        else notificationLogoUrl = providerDTO.navigationLogoUrl; //I know this is very bad code. I am sorry for that! This was the fastest way I could do it
-        //notificationLogoUrl = providerDTO.navigationLogoUrl;
+        else notificationLogoUrl = providerDTO.navigationLogoUrl;
         isEnrolled = providerDTO.isUserEnrolled;
         hexColor = providerDTO.hexColor;
         setActionBarTitle("");

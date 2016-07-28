@@ -9,23 +9,27 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ProgressBar;
-import butterknife.Bind;
-import butterknife.ButterKnife;
+
+import com.androidth.general.R;
+import com.androidth.general.adapters.PagedRecyclerAdapter;
 import com.androidth.general.common.api.PagedDTOKey;
 import com.androidth.general.common.persistence.ContainerDTO;
 import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.common.persistence.DTOCacheRx;
 import com.androidth.general.common.widget.FlagNearEdgeRecyclerScrollListener;
-import com.androidth.general.R;
-import com.androidth.general.adapters.PagedRecyclerAdapter;
 import com.androidth.general.fragments.billing.BasePurchaseManagerFragment;
 import com.androidth.general.widget.MultiRecyclerScrollListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;

@@ -1,6 +1,7 @@
 package com.androidth.general.fragments.leaderboard;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,13 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import com.squareup.picasso.Picasso;
+
 import com.androidth.general.R;
+import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.adapters.WrapperRecyclerAdapter;
+import com.androidth.general.api.competition.AdDTO;
 import com.androidth.general.inject.HierarchyInjector;
+import com.squareup.picasso.Picasso;
+
 import javax.inject.Inject;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class CompetitionLeaderboardWrapperRecyclerAdapter extends WrapperRecyclerAdapter<WrapperRecyclerAdapter.ExtraItem>
 {
@@ -30,7 +36,7 @@ public class CompetitionLeaderboardWrapperRecyclerAdapter extends WrapperRecycle
     {
         if (viewType == CompetitionAdsExtraItem.VIEW_TYPE_ADS)
         {
-            return new AdExtraItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.competition_zone_ads, parent, false));
+            return new  AdExtraItemViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.competition_zone_ads, parent, false));
         }
         else if (viewType == CompetitionTimeExtraItem.VIEW_TYPE_TIME)
         {
@@ -48,8 +54,18 @@ public class CompetitionLeaderboardWrapperRecyclerAdapter extends WrapperRecycle
         {
             ExtraItem extraItem = getExtraItem(position);
             if (extraItem != null && extraItem instanceof CompetitionAdsExtraItem)
-            {
-                picasso.load(((CompetitionAdsExtraItem) extraItem).adDTO.bannerImageUrl).into(((AdExtraItemViewHolder) holder).banner);
+            {   ImageView banner = ((AdExtraItemViewHolder) holder).banner;
+                AdDTO adDTO = ((CompetitionAdsExtraItem) extraItem).adDTO;
+                picasso.load(adDTO.bannerImageUrl).into(banner);
+                banner.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), SignUpLiveActivity.class);
+                        intent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_JOIN_COMPETITION, false);//User has joined comp.
+                        intent.putExtra(SignUpLiveActivity.KYC_CORRESPONDENT_PROVIDER_ID, adDTO.providerId);
+                        v.getContext().startActivity(intent);
+                    }
+                });
             }
         }
         else if (holder instanceof TimeExtraItemViewHolder)

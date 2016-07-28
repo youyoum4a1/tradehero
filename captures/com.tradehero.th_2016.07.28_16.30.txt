@@ -1,0 +1,56 @@
+Applications Memory Usage (kB):
+Uptime: 23933730 Realtime: 23933730
+
+** MEMINFO in pid 30604 [com.tradehero.th] **
+                   Pss  Private  Private  Swapped     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------
+  Native Heap    19156    19060        0        0    36608    31977     4630
+  Dalvik Heap    44082    44032        0        0    47028    45182     1846
+ Dalvik Other     3298     3296        0        0                           
+        Stack      736      736        0        0                           
+       Ashmem      130      128        0        0                           
+    Other dev        8        0        8        0                           
+     .so mmap     2601      176      944        0                           
+    .apk mmap     3958       76       12        0                           
+    .ttf mmap      150        0       24        0                           
+    .dex mmap    40100      380    38844        0                           
+    .oat mmap     4751        0     1724        0                           
+    .art mmap     3155     2692       16        0                           
+   Other mmap     2532        8     2352        0                           
+      Unknown      321      320        0        0                           
+        TOTAL   124978    70904    43924        0    83636    77159     6476
+ 
+ App Summary
+                       Pss(KB)
+                        ------
+           Java Heap:    46740
+         Native Heap:    19060
+                Code:    42180
+               Stack:      736
+            Graphics:        0
+       Private Other:     6112
+              System:    10150
+ 
+               TOTAL:   124978      TOTAL SWAP (KB):        0
+ 
+ Objects
+               Views:      554         ViewRootImpl:        3
+         AppContexts:        3           Activities:        2
+              Assets:        3        AssetManagers:        3
+       Local Binders:       67        Proxy Binders:       32
+       Parcel memory:       19         Parcel count:       55
+    Death Recipients:        2      OpenSSL Sockets:        6
+ 
+ SQL
+         MEMORY_USED:      315
+  PAGECACHE_OVERFLOW:       75          MALLOC_SIZE:       62
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b)          cache  Dbname
+         4       24             95         3/18/4  /data/user/0/com.tradehero.th/no_backup/com.urbanairship.databases/ua_richpush.db
+         4       20             31         7/20/6  /data/user/0/com.tradehero.th/no_backup/com.urbanairship.databases/ua_analytics.db
+         4       20             31        42/19/5  /data/user/0/com.tradehero.th/no_backup/com.urbanairship.databases/ua_preferences.db
+ 
+ Asset Allocations
+    zip:/data/data/com.tradehero.th/files/instant-run/right/resources.ap_:/resources.arsc: 2194K

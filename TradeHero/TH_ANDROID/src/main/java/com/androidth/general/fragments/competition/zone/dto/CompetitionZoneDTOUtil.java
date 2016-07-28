@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
+
 import com.androidth.general.R;
 import com.androidth.general.api.competition.AdDTO;
 import com.androidth.general.api.competition.CompetitionDTO;
@@ -14,14 +15,16 @@ import com.androidth.general.api.competition.ProviderDisplayCellDTO;
 import com.androidth.general.api.competition.ProviderPrizePoolDTO;
 import com.androidth.general.api.portfolio.AssetClass;
 import com.androidth.general.api.portfolio.PortfolioCompactDTOUtil;
-import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.users.UserProfileCompactDTO;
 import com.androidth.general.fragments.competition.CompetitionZoneListItemAdapter;
 import com.androidth.general.fragments.leaderboard.LeaderboardType;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import javax.inject.Inject;
+
 import timber.log.Timber;
 
 public class CompetitionZoneDTOUtil
@@ -228,6 +231,7 @@ public class CompetitionZoneDTOUtil
             {
                 int randomAds = (int) (randomAd * providerDTO.advertisements.size());
                 AdDTO pickedAdDTO = providerDTO.advertisements.get(randomAds);
+                pickedAdDTO.providerId = providerDTO.id;
                 list.add(Pair.create(
                         CompetitionZoneListItemAdapter.ITEM_TYPE_ADS,
                         (CompetitionZoneDTO) new CompetitionZoneAdvertisementDTO(context, pickedAdDTO, providerDTO.getProviderId())));
