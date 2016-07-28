@@ -788,7 +788,7 @@ dismissLocalProgressDialog();
                         }
                         setupDatePickerDialog(calendar, selected);
                     }
-                }, new TimberOnErrorAction1("Failed to listen to DOB clicks", getContext())));
+                }, new TimberOnErrorAction1("Failed to listen to DOB clicks")));
 
         //subscriptions.add(ViewObservable.clicks(buttonVerifyPhone)
         //        .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnClickEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()

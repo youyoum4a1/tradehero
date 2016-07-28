@@ -251,7 +251,20 @@ public class FriendsInvitationFragment extends BaseFragment
 
         switch (item.socialNetwork){
             case WECHAT:
-                inviteWeChatFriends();
+//                inviteWeChatFriends();
+                intent = new Intent(Intent.ACTION_SEND);
+                intent.setPackage("com.tencent.mm");
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
+                try{
+                    getActivity().startActivity(intent);
+                }catch (Exception e){
+                    if(e instanceof android.content.ActivityNotFoundException){
+                        THToast.show("WeChat is not installed in this device");
+                    }else{
+                        THToast.show(e.getMessage());
+                    }
+                }
                 break;
             case FB://must change after FB sdk update
                 boolean linked = checkLinkedStatus(item.socialNetwork);
@@ -284,23 +297,23 @@ public class FriendsInvitationFragment extends BaseFragment
                     THToast.show(e.getMessage());
                 }
                 break;
-
             case SMS:
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("smsto:"));
                 intent.setType("vnd.android-dir/mms-sms");
                 intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
+                intent.setData(Uri.parse("sms:"));
                 try{
                     getActivity().startActivity(intent);
                 }catch (Exception e){
                     THToast.show(e.getMessage());
                 }
                 break;
-
             case WHATSAPP:
                 intent = new Intent(Intent.ACTION_SEND);
-                intent.setPackage("com.whatsapp");
                 intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
+                intent.setType("text/plain");
+                intent.setPackage("com.whatsapp");
                 try{
                     getActivity().startActivity(intent);
                 }catch (Exception e){
