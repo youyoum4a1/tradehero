@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -99,17 +100,23 @@ public class LiveSignUpMainFragment extends BaseFragment
         super.onCreateOptionsMenu(menu, inflater);
         thRouter.inject(this);
         inflater.inflate(R.menu.settings_menu, menu);
-        ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
-        if(providerDTO.isUserEnrolled)
-            notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
+        providerCacheRx.get(new ProviderId(getProviderId(getArguments()))).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
+            @Override
+            public void call(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair) {
+                ProviderDTO providerDTO = providerIdProviderDTOPair.second;
+                if(providerDTO.isUserEnrolled)
+                    notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
 
-        else notificationLogoUrl = providerDTO.navigationLogoUrl;
+                else notificationLogoUrl = providerDTO.navigationLogoUrl;
 
-        isEnrolled = providerDTO.isUserEnrolled;
-        hexColor = providerDTO.hexColor;
-        setActionBarTitle("");
-        setActionBarColor(providerDTO.hexColor);
-        setActionBarImage(notificationLogoUrl);
+                isEnrolled = providerDTO.isUserEnrolled;
+                hexColor = providerDTO.hexColor;
+                setActionBarTitle("");
+                setActionBarColor(providerDTO.hexColor);
+                setActionBarImage(notificationLogoUrl);
+            }
+        });
+
 
     }
     private boolean setActionBarImage(String url){
