@@ -16,12 +16,17 @@ public class SignUpLiveAyondoPagerAdapter extends FragmentPagerAdapter
     implements PrevNextObservable
 {
     @NonNull private final Bundle args;
+    private boolean showFirstStepOnly = false;
+
     @NonNull private final LiveSignUpStepBaseAyondoFragment[] fragments = new LiveSignUpStepBaseAyondoFragment[] {
             new LiveSignUpStep1AyondoFragment(),
             new LiveSignUpStep2AyondoFragment(),
             new LiveSignUpStep3AyondoFragment(),
             new LiveSignUpStep4AyondoFragment(),
             new LiveSignUpStep5AyondoFragment()};
+
+    @NonNull private final LiveSignUpStepBaseAyondoFragment[] fragmentStep1 = new LiveSignUpStepBaseAyondoFragment[] {
+            new LiveSignUpStep1AyondoFragment()};
 
     public SignUpLiveAyondoPagerAdapter(@NonNull FragmentManager fm, @NonNull Bundle args)
     {
@@ -31,7 +36,11 @@ public class SignUpLiveAyondoPagerAdapter extends FragmentPagerAdapter
 
     @Override public int getCount()
     {
-        return fragments.length;
+        if(showFirstStepOnly){
+            return fragmentStep1.length;
+        }else{
+            return fragments.length;
+        }
     }
 
     @Override public CharSequence getPageTitle(int position)
@@ -48,7 +57,16 @@ public class SignUpLiveAyondoPagerAdapter extends FragmentPagerAdapter
 
     @NonNull @Override public Observable<Boolean> getPrevNextObservable()
     {
-        return Observable.from(fragments)
-                .flatMap(LiveSignUpStepBaseFragment::getPrevNextObservabel);
+        if(showFirstStepOnly){
+            return Observable.from(fragmentStep1)
+                    .flatMap(LiveSignUpStepBaseFragment::getPrevNextObservabel);
+        }else{
+            return Observable.from(fragments)
+                    .flatMap(LiveSignUpStepBaseFragment::getPrevNextObservabel);
+        }
+    }
+
+    public void setShowFirstStepOnly(boolean showFirstStepOnly) {
+        this.showFirstStepOnly = showFirstStepOnly;
     }
 }

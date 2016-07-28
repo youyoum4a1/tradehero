@@ -1,6 +1,7 @@
 package com.androidth.general.network.service;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.androidth.general.api.competition.JumioVerifyBodyDTO;
 import com.androidth.general.api.kyc.AnnualIncomeRange;
@@ -58,6 +59,7 @@ import retrofit.http.Path;
 import rx.Observable;
 import rx.functions.Func0;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 
 public class LiveServiceWrapper
@@ -219,11 +221,13 @@ public class LiveServiceWrapper
         if (kycForm instanceof KYCAyondoForm)
         {
             //TODO change to specific class
+            Timber.d("Creating or updating lead..");
             return liveServiceAyondoRx.createOrUpdateLead(providerId, new AyondoLeadDTO((KYCAyondoForm) kycForm));
         }
         else
         {
             //TODO when we have multiple brokers
+            Timber.d("Creating or updating lead multiple..");
             return Observable.just(null);
         }
     }
@@ -263,6 +267,7 @@ public class LiveServiceWrapper
     }
 
     public Observable<Boolean>enrollCompetition(int providerId, int userId) {
+        Timber.d("Enrolling competition");
         return liveServiceRx.enrollCompetition(providerId, userId);
     }
 

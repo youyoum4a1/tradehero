@@ -105,7 +105,8 @@ public class LiveSignUpMainFragment extends BaseFragment
         ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
         if(providerDTO.isUserEnrolled)
             notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
-        else notificationLogoUrl = providerDTO.navigationLogoUrl; //I know this is very bad code. I am sorry for that! This was the fastest way I could do it
+        else
+            notificationLogoUrl = providerDTO.navigationLogoUrl; //I know this is very bad code. I am sorry for that! This was the fastest way I could do it
         //notificationLogoUrl = providerDTO.navigationLogoUrl;
         isEnrolled = providerDTO.isUserEnrolled;
         hexColor = providerDTO.hexColor;
@@ -167,16 +168,21 @@ public class LiveSignUpMainFragment extends BaseFragment
         tabLayout.setCustomTabView(R.layout.th_sign_up_tab_indicator, android.R.id.title);
         tabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.transparent));
 
-        ConnectableObservable<SignUpLiveAyondoPagerAdapter> pagerAdapterObservable = ConnectableObservable.just(new SignUpLiveAyondoPagerAdapter(getChildFragmentManager(), getArguments())).publish();
 //        signUpLivePagerAdapterFactory.create(
 //                getChildFragmentManager(),
 //                getArguments()).publish();
+
+        SignUpLiveAyondoPagerAdapter adapter = new SignUpLiveAyondoPagerAdapter(getChildFragmentManager(), getArguments());
 
         //Jeff
         if(isToJoinCompetition){
             liveRewardWidget.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
+            adapter.setShowFirstStepOnly(true);
         }
+
+        ConnectableObservable<SignUpLiveAyondoPagerAdapter> pagerAdapterObservable =
+                ConnectableObservable.just(adapter).publish();
 
         onDestroyViewSubscriptions.add(
                 pagerAdapterObservable
