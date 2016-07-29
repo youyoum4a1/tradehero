@@ -128,6 +128,7 @@ android {
             resValue "string", "google_places_api_key", "AIzaSyDUqz0A077IaXZ-8SNwGmpqzEEzL-d2yFc"
             minifyEnabled "true".equals(System.getenv("PROGUARD_FOR_DEBUG"))
             proguardFile 'proguard/proguard-android-fast.txt'
+            buildConfigField "boolean", "DEV_SETTINGS", "true"
             //zipAlign true
             // versionNameSuffix interferes with the version the server receives
             //This changes the package name and exception is thrown(Package not found exception for play services)
@@ -142,11 +143,12 @@ android {
             resValue "string", "google_places_api_key", "AIzaSyDUqz0A077IaXZ-8SNwGmpqzEEzL-d2yFc"
             minifyEnabled true
             proguardFile 'proguard/proguard-android-release.txt'
+            buildConfigField "boolean", "DEV_SETTINGS", "false"
             shrinkResources false
             multiDexEnabled true
             signingConfig signingConfigs.release
 
-            debuggable true
+            debuggable false
         }
     }
 
@@ -231,7 +233,7 @@ android {
 
         release {
             java {
-                srcDir 'src/dagger1Debug/java'
+                srcDir 'src/dagger1Release/java'
             }
         }
 

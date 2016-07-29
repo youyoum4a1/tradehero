@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TabHost;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
@@ -295,7 +296,7 @@ public class DashboardActivity extends BaseActivity
                     @Override public Collection<RootFragmentType> call(UserProfileDTO userProfileDTO)
                     {
                         Collection<RootFragmentType> menus = new LinkedHashSet<>(RootFragmentType.forLeftDrawer());
-                        if (userProfileDTO != null && userProfileDTO.isAdmin)
+                        if (userProfileDTO != null && userProfileDTO.isAdmin && BuildConfig.DEBUG)
                         {
                             menus.add(RootFragmentType.ADMIN_SETTINGS);
                         }
