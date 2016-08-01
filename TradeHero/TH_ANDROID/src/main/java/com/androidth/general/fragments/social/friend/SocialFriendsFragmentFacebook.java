@@ -42,30 +42,31 @@ public class SocialFriendsFragmentFacebook extends SocialFriendsFragment
         return facebookSocialFriendHandlerProvider.get();
     }
 
-    @NonNull @Override protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
-    {
-        return facebookSocialFriendHandlerProvider.get().getFetchFacebookInvitableObservable(getFriendsFields())
-                .flatMap(new Func1<UserFriendsDTOList, Observable<UserFriendsDTOList>>()
-                {
-                    @Override public Observable<UserFriendsDTOList> call(final UserFriendsDTOList fbInvitable)
-                    {
-                        // We are doing it sequentially because the access token may have changed and we give a chance to the server
-                        // to fetch again on its side
-                        return SocialFriendsFragmentFacebook.super.getFetchAllFriendsObservable()
-                                .map(new Func1<UserFriendsDTOList, UserFriendsDTOList>()
-                                {
-                                    @Override public UserFriendsDTOList call(
-                                            UserFriendsDTOList thUsers)
-                                    {
-                                        UserFriendsDTOList all = new UserFriendsDTOList();
-                                        all.addAll(thUsers.getTradeHeroUsers());
-                                        all.addAll(fbInvitable);
-                                        return all;
-                                    }
-                                });
-                    }
-                });
-    }
+    //Jeff- should not use this to invite from Facebook
+//    @NonNull @Override protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
+//    {
+//        return facebookSocialFriendHandlerProvider.get().getFetchFacebookInvitableObservable(getFriendsFields())
+//                .flatMap(new Func1<UserFriendsDTOList, Observable<UserFriendsDTOList>>()
+//                {
+//                    @Override public Observable<UserFriendsDTOList> call(final UserFriendsDTOList fbInvitable)
+//                    {
+//                        // We are doing it sequentially because the access token may have changed and we give a chance to the server
+//                        // to fetch again on its side
+//                        return SocialFriendsFragmentFacebook.super.getFetchAllFriendsObservable()
+//                                .map(new Func1<UserFriendsDTOList, UserFriendsDTOList>()
+//                                {
+//                                    @Override public UserFriendsDTOList call(
+//                                            UserFriendsDTOList thUsers)
+//                                    {
+//                                        UserFriendsDTOList all = new UserFriendsDTOList();
+//                                        all.addAll(thUsers.getTradeHeroUsers());
+//                                        all.addAll(fbInvitable);
+//                                        return all;
+//                                    }
+//                                });
+//                    }
+//                });
+//    }
 
     @NonNull protected Bundle getFriendsFields()
     {

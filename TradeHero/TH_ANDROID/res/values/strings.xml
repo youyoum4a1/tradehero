@@ -216,6 +216,7 @@
   <string name="invite_from_weibo">Invite from Weibo</string>
   <string name="invite_from_wechat">Invite from Wechat</string>
   <string name="invite_from_linkedIn">Invite from LinkedIn</string>
+  <string name="invite_from_messenger">Invite from Messenger</string>
   <string name="invite_from_sms">Invite from SMS</string>
   <string name="invite_from_twitter">Invite from Twitter</string>
   <string name="invite_from_whatsapp">Invite from WhatsApp</string>

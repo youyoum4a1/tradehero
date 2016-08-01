@@ -27,6 +27,8 @@ import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.persistence.level.LevelDefListCacheRx;
 import com.androidth.general.utils.broadcast.BroadcastUtils;
 import java.util.ArrayDeque;
+import java.util.NoSuchElementException;
+
 import javax.inject.Inject;
 import rx.Observer;
 import rx.Subscription;
@@ -185,14 +187,19 @@ public class XpToast extends RelativeLayout
     private void startXPAnimation()
     {
         // TODO https://crashlytics.com/tradehero/android/apps/com.tradehero.th/issues/543e1b85e3de5099ba0dbd14
-        currentLevelAnimationDefinition = levelAnimationDefinitions.pop();
+        try{
+            currentLevelAnimationDefinition = levelAnimationDefinitions.pop();
 
-        xpTextSwitcher.setText(currentLevelAnimationDefinition.text);
+            xpTextSwitcher.setText(currentLevelAnimationDefinition.text);
 
-        if (userLevelProgressBar.getLevelDefDTOList() != null)
-        {
-            userLevelProgressBar.increment(currentLevelAnimationDefinition.earned);
+            if (userLevelProgressBar.getLevelDefDTOList() != null)
+            {
+                userLevelProgressBar.increment(currentLevelAnimationDefinition.earned);
+            }
+        }catch(NoSuchElementException e){
+            e.printStackTrace();
         }
+
     }
 
     private void displayXPEarned(int value)

@@ -15,8 +15,8 @@ public class THLog
     /** Display KeyHash which is required by Facebook Application */
     public static void showDeveloperKeyHash(Context context)
     {
-        if (!Constants.RELEASE)
-        {
+//        if (!Constants.RELEASE)
+//        {
             try
             {
                 PackageInfo info = context
@@ -34,5 +34,5 @@ public class THLog
                 Timber.e(e, "KeyHash Error %s", e.getMessage());
             }
         }
-    }
+//    }
 }

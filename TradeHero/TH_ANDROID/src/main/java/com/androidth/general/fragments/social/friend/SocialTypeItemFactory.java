@@ -15,6 +15,11 @@ public class SocialTypeItemFactory
         List<SocialTypeItem> socialList = new ArrayList<>();
 
         socialList.add(new SocialTypeItemFacebook());
+
+        socialList.add(new SocialTypeItem(R.drawable.icn_fb_messenger,
+                R.string.invite_from_messenger,
+                R.drawable.fb_messenger_selector,
+                SocialNetworkEnum.FB_MSNGR));
         //socialList.add(new SocialTypeItemTwitter());
         //socialList.add(new SocialTypeItemLinkedin());
         socialList.add(new SocialTypeItemWeibo());
@@ -29,11 +34,6 @@ public class SocialTypeItemFactory
                 R.string.invite_from_sms,
                 R.drawable.sms_selector,
                 SocialNetworkEnum.EMAIL));
-
-        socialList.add(new SocialTypeItem(R.drawable.icn_whatsapp,
-                R.string.invite_from_whatsapp,
-                R.drawable.whatsapp_selector,
-                SocialNetworkEnum.WHATSAPP));
 
         return socialList;
     }

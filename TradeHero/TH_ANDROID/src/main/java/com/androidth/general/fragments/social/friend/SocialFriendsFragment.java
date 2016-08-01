@@ -84,7 +84,7 @@ public abstract class SocialFriendsFragment extends BaseFragment
         socialFriendsListAdapter = createSocialFriendsAdapter();
         socialFriendHandler = createFriendHandler();
         userFriendsSubject = BehaviorSubject.create();
-        fetchAllFriends();
+//        fetchAllFriends();
     }
 
     @Override
@@ -222,17 +222,18 @@ public abstract class SocialFriendsFragment extends BaseFragment
         }
     }
 
-    protected void fetchAllFriends()
-    {
-        onDestroySubscriptions.add(getFetchAllFriendsObservable()
-                .subscribe(userFriendsSubject));
-    }
-
-    @NonNull protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
-    {
-        return friendsListCache.get(friendsListKey)
-                .map(new PairGetSecond<FriendsListKey, UserFriendsDTOList>());
-    }
+//Jeff no need to fetch all friends
+//    protected void fetchAllFriends()
+//    {
+//        onDestroySubscriptions.add(getFetchAllFriendsObservable()
+//                .subscribe(userFriendsSubject));
+//    }
+//
+//    @NonNull protected Observable<UserFriendsDTOList> getFetchAllFriendsObservable()
+//    {
+//        return friendsListCache.get(friendsListKey)
+//                .map(new PairGetSecond<FriendsListKey, UserFriendsDTOList>());
+//    }
 
     protected void listenToSubject()
     {

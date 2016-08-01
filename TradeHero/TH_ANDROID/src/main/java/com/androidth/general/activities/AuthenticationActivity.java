@@ -63,6 +63,7 @@ public class AuthenticationActivity extends BaseActivity
     private Subscription socialButtonsSubscription;
     private PublishSubject<SocialNetworkEnum> selectedSocialNetworkSubject;
     private Observable<Pair<AuthData, UserProfileDTO>> authenticationObservable;
+    private ProgressDialog progressDialog;
     @Nullable Uri deepLink;
 
     @Override protected void onCreate(Bundle savedInstanceState)
@@ -112,6 +113,15 @@ public class AuthenticationActivity extends BaseActivity
     @Override protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode){
+            case RESULT_CANCELED:
+                if(progressDialog!=null){
+                    progressDialog.dismiss();
+                }
+                break;
+            default:
+                break;
+        }
         Timber.d("onActivityResult %d, %d, %s", requestCode, resultCode, data);
         CollectionUtils.apply(activityResultRequesters, new Action1<ActivityResultRequester>()
         {
@@ -144,7 +154,7 @@ public class AuthenticationActivity extends BaseActivity
 
     @NonNull protected Observable<Pair<AuthData, UserProfileDTO>> handleConnectionRequest(final SocialNetworkEnum socialNetworkEnum)
     {
-        final ProgressDialog progressDialog = ProgressDialog.show(
+        progressDialog = ProgressDialog.show(
                 this,
                 getString(R.string.alert_dialog_please_wait),
                 getString(R.string.authentication_connecting_to, socialNetworkEnum.getName()),

@@ -7,7 +7,6 @@ import com.androidth.general.auth.AuthenticationProvider;
 import com.androidth.general.auth.FacebookAuthenticationProvider;
 import com.androidth.general.auth.SocialAuth;
 import com.androidth.general.auth.TwitterAuthenticationProvider;
-import com.facebook.TokenCachingStrategy;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.auth.linkedin.LinkedInAuthenticationProvider;
 import com.tradehero.th.auth.tencent_qq.QQAuthenticationProvider;
@@ -43,9 +42,9 @@ public class AuthenticationModule
         enumToUtilMap.put(SocialNetworkEnum.QQ, qqAuthenticationProvider.get());
         return Collections.unmodifiableMap(enumToUtilMap);
     }
-
-    @Provides @Singleton TokenCachingStrategy provideFacebookTokenCachingStrategy(Context context)
-    {
-        return AuthenticationModuleBase.provideFacebookTokenCachingStrategy(context);
-    }
+//
+//    @Provides @Singleton TokenCachingStrategy provideFacebookTokenCachingStrategy(Context context)
+//    {
+//        return AuthenticationModuleBase.provideFacebookTokenCachingStrategy(context);
+//    }
 }

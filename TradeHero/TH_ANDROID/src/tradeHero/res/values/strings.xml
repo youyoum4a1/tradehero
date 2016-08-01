@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+  <string name="facebook_app_id">431745923529834</string>
   <string name="broker_name_none">No Broker</string>
   <string name="switch_to_live">Switch to Live</string>
   <string name="virtual">Virtual</string>

@@ -1,10 +1,16 @@
 package com.androidth.general.fragments.social.friend;
 
+import android.app.Dialog;
+import android.content.ActivityNotFoundException;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,8 +28,18 @@ import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnItemClick;
 import butterknife.OnTextChanged;
+
+import com.androidth.general.GooglePlayMarketUtilBase;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.network.service.ProviderServiceRx;
+import com.facebook.CallbackManager;
+import com.facebook.messenger.MessengerUtils;
+import com.facebook.messenger.ShareToMessengerParams;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.MessageDialog;
+import com.facebook.share.widget.SendButton;
+import com.facebook.share.widget.ShareDialog;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
@@ -103,6 +119,14 @@ public class FriendsInvitationFragment extends BaseFragment
     @RouteProperty(ROUTER_SOCIAL_USER_ID) String socialUserId;
 
     private Bundle savedState;
+    private CallbackManager callbackManager;
+    private ShareDialog shareDialog;
+
+    private static final String EXTRA_PROTOCOL_VERSION = "com.facebook.orca.extra.PROTOCOL_VERSION";
+    private static final String EXTRA_APP_ID = "com.facebook.orca.extra.APPLICATION_ID";
+    private static final int PROTOCOL_VERSION = 20150314;
+    private static final String YOUR_APP_ID = "[YOUR_FACEBOOK_APP_ID]";
+    private static final int SHARE_TO_MESSENGER_REQUEST_CODE = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -247,6 +271,7 @@ public class FriendsInvitationFragment extends BaseFragment
         final SocialTypeItem item = (SocialTypeItem) parent.getItemAtPosition(position);
         final int stringId = getContext().getApplicationInfo().labelRes;
         final UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
+        boolean linked = false;
         Intent intent;
 
         switch (item.socialNetwork){
@@ -267,10 +292,32 @@ public class FriendsInvitationFragment extends BaseFragment
                 }
                 break;
             case FB://must change after FB sdk update
-                boolean linked = checkLinkedStatus(item.socialNetwork);
+                linked = checkLinkedStatus(item.socialNetwork);
                 if (linked)
                 {
-                    pushSocialInvitationFragment(item.socialNetwork);
+//                    pushSocialInvitationFragment(item.socialNetwork);
+                    pushFacebookShareContent(userProfileDTO);
+                }
+                else
+                {
+                    onStopSubscriptions.add(socialShareHelper.offerToConnect(item.socialNetwork)
+                            .subscribe(
+                                    new Action1<UserProfileDTO>()
+                                    {
+                                        @Override public void call(UserProfileDTO userProfileDTO)
+                                        {
+                                            pushSocialInvitationFragment(item.socialNetwork);
+                                        }
+                                    },
+                                    new EmptyAction1<Throwable>()));
+                }
+                break;
+            case FB_MSNGR://must change after FB sdk update
+                linked = checkLinkedStatus(SocialNetworkEnum.FB);
+                if (linked)
+                {
+//                    pushSocialInvitationFragment(item.socialNetwork);
+                    pushFBMessenger(userProfileDTO);
                 }
                 else
                 {
@@ -613,5 +660,69 @@ public class FriendsInvitationFragment extends BaseFragment
         friendsListView.setVisibility(View.GONE);
         searchProgressBar.setVisibility(View.GONE);
         friendsListEmptyView.setVisibility(View.GONE);
+    }
+
+    private void pushFacebookShareContent(UserProfileDTO userProfileDTO){
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Join me!", getString(R.string.invite_email_text,
+                getString(R.string.app_name), userProfileDTO.referralCode));
+        clipboard.setPrimaryClip(clip);
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        dialog.setMessage(getString(R.string.invite_text_from_clipboard));
+        dialog.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                callbackManager = CallbackManager.Factory.create();
+                shareDialog = new ShareDialog(getActivity());
+
+                if (ShareDialog.canShow(ShareLinkContent.class)) {
+                    ShareLinkContent content = new ShareLinkContent.Builder()
+                            .setContentUrl(Uri.parse(GooglePlayMarketUtilBase.getAppMarketUrl()))
+                            .build();
+                    shareDialog.show(content);
+                }else{
+                    Toast.makeText(getActivity(), "Error in sharing link to FB", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void pushFBMessenger(UserProfileDTO userProfileDTO){
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Join me!", getString(R.string.invite_email_text,
+                getString(R.string.app_name), userProfileDTO.referralCode));
+        clipboard.setPrimaryClip(clip);
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        dialog.setMessage(getString(R.string.invite_text_from_clipboard));
+        dialog.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                callbackManager = CallbackManager.Factory.create();
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setPackage("com.facebook.orca");
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_TEXT, "");
+                intent.putExtra(EXTRA_PROTOCOL_VERSION, PROTOCOL_VERSION);
+                intent.putExtra(EXTRA_APP_ID, YOUR_APP_ID);
+
+                try{
+                    getActivity().startActivityForResult(intent, SHARE_TO_MESSENGER_REQUEST_CODE);
+                }catch (ActivityNotFoundException e){
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "FB Messenger is not installed in this device", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        dialog.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }

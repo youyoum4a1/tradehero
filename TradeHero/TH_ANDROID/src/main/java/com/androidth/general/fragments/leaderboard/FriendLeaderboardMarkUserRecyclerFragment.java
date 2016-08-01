@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.FacebookOperationCanceledException;
-import com.facebook.Session;
 import com.androidth.general.common.persistence.DTOCacheRx;
 import com.androidth.general.common.rx.PairGetFirst;
 import com.androidth.general.common.utils.THToast;
@@ -112,20 +111,22 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
                 {
                     @Override public Observable<UserProfileDTO> call(SocialNetworkEnum socialNetworkEnum)
                     {
-                        if (socialNetworkEnum.equals(SocialNetworkEnum.FB))
-                        {
-                            final ProgressDialog progress = ProgressDialog.show(getActivity(),
-                                    getString(R.string.loading_loading),
-                                    getString(R.string.alert_dialog_please_wait));
-                            return socialFriendHandlerFacebook.createProfileSessionObservable()
-                                    .map(new PairGetFirst<UserProfileDTO, Session>())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .doOnUnsubscribe(new DismissDialogAction0(progress));
-                        }
-                        else
-                        {
-                            return socialShareHelper.handleNeedToLink(socialNetworkEnum);
-                        }
+//                        if (socialNetworkEnum.equals(SocialNetworkEnum.FB))
+//                        {
+                            //Jeff disabled it
+//                            final ProgressDialog progress = ProgressDialog.show(getActivity(),
+//                                    getString(R.string.loading_loading),
+//                                    getString(R.string.alert_dialog_please_wait));
+//                            return socialFriendHandlerFacebook.createProfileSessionObservable()
+//                                    .map(new PairGetFirst<UserProfileDTO, Session>())
+//                                    .observeOn(AndroidSchedulers.mainThread())
+//                                    .doOnUnsubscribe(new DismissDialogAction0(progress));
+//                        }
+//                        else
+//                        {
+//                            return socialShareHelper.handleNeedToLink(socialNetworkEnum);
+//                        }
+                        return socialShareHelper.handleNeedToLink(socialNetworkEnum);
                     }
                 })
                 .doOnError(new TimberAndToastOnErrorAction1("Failed to listen to social network"))
@@ -253,42 +254,43 @@ public class FriendLeaderboardMarkUserRecyclerFragment extends BaseLeaderboardPa
                         }
                     });
         }
-        else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
-        {
-            return socialFriendHandlerFacebook
-                    .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO), null)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .onErrorResumeNext(new Func1<Throwable, Observable<? extends Bundle>>()
-                    {
-                        @Override public Observable<? extends Bundle> call(Throwable e)
-                        {
-                            if (e instanceof FacebookOperationCanceledException)
-                            {
-                                THToast.show(R.string.invite_friend_request_cancelled);
-                                return Observable.empty();
-                            }
-                            return Observable.error(e);
-                        }
-                    })
-                    .map(new Func1<Bundle, Boolean>()
-                    {
-                        @Override public Boolean call(Bundle bundle)
-                        {
-                            final String requestId = bundle.getString("request");
-                            Timber.d("next %s", bundle);
-                            if (requestId != null)
-                            {
-                                THToast.show(R.string.invite_friend_request_sent);
-                                return true;
-                            }
-                            else
-                            {
-                                THToast.show(R.string.invite_friend_request_cancelled);
-                                return false;
-                            }
-                        }
-                    });
-        }
+//        else if (userFriendsDTO instanceof UserFriendsFacebookDTO)
+//        {
+//            //Jeff disabled it
+////            return socialFriendHandlerFacebook
+////                    .createShareRequestObservable(Arrays.asList((UserFriendsFacebookDTO) userFriendsDTO), null)
+////                    .observeOn(AndroidSchedulers.mainThread())
+////                    .onErrorResumeNext(new Func1<Throwable, Observable<? extends Bundle>>()
+////                    {
+////                        @Override public Observable<? extends Bundle> call(Throwable e)
+////                        {
+////                            if (e instanceof FacebookOperationCanceledException)
+////                            {
+////                                THToast.show(R.string.invite_friend_request_cancelled);
+////                                return Observable.empty();
+////                            }
+////                            return Observable.error(e);
+////                        }
+////                    })
+////                    .map(new Func1<Bundle, Boolean>()
+////                    {
+////                        @Override public Boolean call(Bundle bundle)
+////                        {
+////                            final String requestId = bundle.getString("request");
+////                            Timber.d("next %s", bundle);
+////                            if (requestId != null)
+////                            {
+////                                THToast.show(R.string.invite_friend_request_sent);
+////                                return true;
+////                            }
+////                            else
+////                            {
+////                                THToast.show(R.string.invite_friend_request_cancelled);
+////                                return false;
+////                            }
+////                        }
+////                    });
+//        }
         else
         {
             return Observable.empty();
