@@ -3,7 +3,7 @@
 <com.androidth.general.fragments.competition.AdView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
   <com.maurycy.ScaleImageView
       android:id="@+id/banner"

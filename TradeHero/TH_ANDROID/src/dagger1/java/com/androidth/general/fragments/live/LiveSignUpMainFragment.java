@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,10 +26,7 @@ import com.androidth.general.R;
 import com.androidth.general.activities.SignUpLiveActivity;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
-import com.androidth.general.api.kyc.KYCForm;
-import com.androidth.general.api.kyc.KYCFormUtil;
 import com.androidth.general.api.kyc.StepStatus;
-import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.BaseFragment;
 import com.androidth.general.fragments.live.ayondo.SignUpLiveAyondoPagerAdapter;
@@ -102,17 +100,23 @@ public class LiveSignUpMainFragment extends BaseFragment
         super.onCreateOptionsMenu(menu, inflater);
         thRouter.inject(this);
         inflater.inflate(R.menu.settings_menu, menu);
-        ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(getProviderId(getArguments())));
-        if(providerDTO.isUserEnrolled)
-            notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
-        else
-            notificationLogoUrl = providerDTO.navigationLogoUrl; //I know this is very bad code. I am sorry for that! This was the fastest way I could do it
-        //notificationLogoUrl = providerDTO.navigationLogoUrl;
-        isEnrolled = providerDTO.isUserEnrolled;
-        hexColor = providerDTO.hexColor;
-        setActionBarTitle("");
-        setActionBarColor(providerDTO.hexColor);
-        setActionBarImage(notificationLogoUrl);
+        providerCacheRx.get(new ProviderId(getProviderId(getArguments()))).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
+            @Override
+            public void call(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair) {
+                ProviderDTO providerDTO = providerIdProviderDTOPair.second;
+                if(providerDTO.isUserEnrolled)
+                    notificationLogoUrl = providerDTO.advertisements.get(0).bannerImageUrl;
+
+                else notificationLogoUrl = providerDTO.navigationLogoUrl;
+
+                isEnrolled = providerDTO.isUserEnrolled;
+                hexColor = providerDTO.hexColor;
+                setActionBarTitle("");
+                setActionBarColor(providerDTO.hexColor);
+                setActionBarImage(notificationLogoUrl);
+            }
+        });
+
 
     }
     private boolean setActionBarImage(String url){

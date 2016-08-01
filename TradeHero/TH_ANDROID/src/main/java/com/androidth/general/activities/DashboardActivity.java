@@ -86,6 +86,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import dagger.Lazy;
+import retrofit.http.HEAD;
 import rx.Notification;
 import rx.Observable;
 import rx.Observer;
@@ -296,7 +297,9 @@ public class DashboardActivity extends BaseActivity
                     @Override public Collection<RootFragmentType> call(UserProfileDTO userProfileDTO)
                     {
                         Collection<RootFragmentType> menus = new LinkedHashSet<>(RootFragmentType.forLeftDrawer());
+
                         if (BuildConfig.DEBUG)
+
                         {
                             menus.add(RootFragmentType.ADMIN_SETTINGS);
                         }

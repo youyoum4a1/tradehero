@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.Spinner;
 
+import com.androidth.general.R;
 import com.androidth.general.api.kyc.AnnualIncomeRange;
 import com.androidth.general.api.kyc.EmploymentStatus;
 import com.androidth.general.api.kyc.NetWorthRange;
@@ -24,7 +25,6 @@ import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
-import com.androidth.general.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,23 +91,27 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                 new LollipopArrayAdapter<>(getActivity(),
                                                         AnnualIncomeDTO.createList(getResources(), kycAyondoFormOptionsDTO.annualIncomeOptions));
                                         annualIncomeSpinner.setAdapter(annualIncomeAdapter);
+                                        annualIncomeAdapter.notifyDataSetChanged();
 
                                         LollipopArrayAdapter<NetWorthDTO> netWorthAdapter =
                                                 new LollipopArrayAdapter<>(getActivity(),
                                                         NetWorthDTO.createList(getResources(), kycAyondoFormOptionsDTO.netWorthOptions));
                                         netWorthSpinner.setAdapter(netWorthAdapter);
+                                        netWorthAdapter.notifyDataSetChanged();
 
                                         LollipopArrayAdapter<PercentNetWorthDTO> percentageInvestmentAdapter =
                                                 new LollipopArrayAdapter<>(getActivity(),
                                                         PercentNetWorthDTO.createList(getResources(),
                                                                 kycAyondoFormOptionsDTO.percentNetWorthOptions));
                                         percentageInvestmentSpinner.setAdapter(percentageInvestmentAdapter);
+                                        percentageInvestmentAdapter.notifyDataSetChanged();
 
                                         LollipopArrayAdapter<EmploymentStatusDTO> employmentStatusAdapter =
                                                 new LollipopArrayAdapter<>(getActivity(),
                                                         EmploymentStatusDTO.createList(getResources(),
                                                                 kycAyondoFormOptionsDTO.employmentStatusOptions));
                                         employmentStatusSpinner.setAdapter(employmentStatusAdapter);
+                                        employmentStatusAdapter.notifyDataSetChanged();
                                     }
                                 }),
                         new Func2<LiveBrokerSituationDTO, KYCAyondoFormOptionsDTO, Object>()

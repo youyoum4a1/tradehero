@@ -8,6 +8,8 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import com.androidth.general.api.competition.AdDTO;
 import com.androidth.general.common.persistence.DTOCacheRx;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.R;
@@ -103,6 +105,7 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
         competitionId = getCompetitionId(getArguments());
         super.onCreate(savedInstanceState);
         this.webViewTHIntentPassedListener = new CompetitionLeaderboardListWebViewTHIntentPassedListener();
+
     }
 
     @Override public void onPrepareOptionsMenu(Menu menu)
@@ -268,7 +271,9 @@ public class CompetitionLeaderboardMarkUserRecyclerFragment extends LeaderboardM
             for (int i = competitionLeaderboardDTO.adStartRow; i < realSize; i += competitionLeaderboardDTO.adFrequencyRows)
             {
                 int randomAds = (int) (Math.random() * competitionLeaderboardDTO.ads.size());
-                competitionAdapter.addExtraItem(i, new CompetitionAdsExtraItem(getResources(), competitionLeaderboardDTO.ads.get(randomAds)));
+                AdDTO adDTO = competitionLeaderboardDTO.ads.get(randomAds);
+                adDTO.providerId = providerDTO.id;
+                competitionAdapter.addExtraItem(i, new CompetitionAdsExtraItem(getResources(), adDTO));
                 realSize++; //Add +1 because technically, the size of the list has grown by 1 when we add an extra tile.
             }
         }
