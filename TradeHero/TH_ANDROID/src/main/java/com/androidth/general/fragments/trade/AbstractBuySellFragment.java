@@ -149,7 +149,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
 
 
-       @Override public void onCreate(Bundle savedInstanceState)
+    @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
@@ -713,17 +713,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     protected void linkWith(PortfolioCompactDTO portfolioCompactDTO)
     {
         this.portfolioCompactDTO = portfolioCompactDTO;
-    }
-
-    @Nullable public Integer getMaxPurchasableShares(
-            @NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
-            @Nullable PositionDTO closeablePositionDTO)
-    {
-        return PortfolioCompactDTOUtil.getMaxPurchasableShares(
-                portfolioCompactDTO,
-                quoteDTO,
-                closeablePositionDTO);
     }
 
     @Nullable public Integer getMaxSellableShares(

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.android.internal.util.Predicate;
 import com.androidth.general.R;
+import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.position.PositionDTOCompact;
 import com.androidth.general.api.position.PositionStatus;
@@ -22,7 +23,8 @@ public class PortfolioCompactDTOUtil
     // TODO handle refCurrency different from USD
     @Nullable public static Integer getMaxPurchasableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO)
+            @Nullable QuoteDTO quoteDTO,
+            @Nullable ProviderDTO providerDTO)
     {
         if (quoteDTO == null || portfolioCompactDTO == null)
         {
@@ -33,7 +35,15 @@ public class PortfolioCompactDTOUtil
         {
             return null;
         }
+
         double availableUsd = portfolioCompactDTO.getUsableForTransactionUsd();
+
+        if (providerDTO != null && providerDTO.maxLimitPerTrade != null) {
+            if (portfolioCompactDTO.getUsableForTransactionRefCcy() > providerDTO.maxLimitPerTrade) {
+                availableUsd = providerDTO.maxLimitPerTrade * portfolioCompactDTO.getProperRefCcyToUsdRate();
+            }
+        }
+
         double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
         return (int) Math.floor((availableUsd - txnCostUsd) / quotePriceUsd);
     }
@@ -41,7 +51,8 @@ public class PortfolioCompactDTOUtil
     @Nullable public static Integer getMaxPurchasableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
             @Nullable QuoteDTO quoteDTO,
-            @Nullable PositionDTOCompact closeablePosition)
+            @Nullable PositionDTOCompact closeablePosition,
+            @Nullable ProviderDTO providerDTO)
     {
         if (portfolioCompactDTO == null)
         {
@@ -60,7 +71,7 @@ public class PortfolioCompactDTOUtil
             // TODO return null if transaction cost cannot be covered
             return closeablePosition.shares == null ? null : Math.abs(closeablePosition.shares);
         }
-        return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO);
+        return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, providerDTO);
     }
     //</editor-fold>
 
