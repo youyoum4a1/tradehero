@@ -15,56 +15,48 @@
       android:layout_centerVertical="true"
       >
 
-    <com.androidth.general.fragments.security.SecurityCircleProgressBar
-        android:id="@+id/circle_progressbar"
-        android:layout_width="@dimen/medium_image_w_h"
-        android:layout_height="@dimen/medium_image_w_h"
-        android:layout_gravity="center_vertical"
-        />
+      <com.androidth.general.fragments.security.SecurityCircleProgressBar
+          android:id="@+id/circle_progressbar"
+          android:layout_width="@dimen/medium_image_w_h"
+          android:layout_height="@dimen/medium_image_w_h"
+          android:layout_gravity="center_vertical"
+          />
 
-    <ImageView
-        android:id="@+id/action_bar_market_closed_icon"
-        android:layout_width="@dimen/size_3"
-        android:layout_height="@dimen/size_3"
-        android:layout_gravity="bottom|end"
-        android:contentDescription="@null"
-        android:scaleType="centerInside"
-        android:src="@drawable/buyscreen_stock_inactive_pressed"
-        android:visibility="visible"
-        />
+      <ImageView
+          android:id="@+id/action_bar_market_closed_icon"
+          android:layout_width="@dimen/size_3"
+          android:layout_height="@dimen/size_3"
+          android:layout_gravity="bottom|end"
+          android:contentDescription="@null"
+          android:scaleType="centerInside"
+          android:src="@drawable/buyscreen_stock_inactive_pressed"
+          android:visibility="visible"
+          />
 
   </FrameLayout>
 
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_centerVertical="true"
-      android:layout_margin="@dimen/margin_xsmall"
-      android:layout_toEndOf="@id/circle_progressbar_container"
-      android:layout_toRightOf="@id/circle_progressbar_container"
-      android:gravity="top"
-      android:orientation="vertical"
-      >
-
-    <TextView
-        android:id="@+id/tv_stock_title"
-        style="@style/TH.Title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:singleLine="true"
-        tools:text="Facebook Inc."
-        />
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/margin_xsmall"
+        android:layout_toEndOf="@id/circle_progressbar_container"
+        android:layout_toRightOf="@id/circle_progressbar_container"
+        android:gravity="top"
+        android:orientation="vertical"
+        >
 
-    <TextView
-        android:id="@+id/tv_stock_sub_title"
-        style="@style/TH.Caption"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ellipsize="end"
-        android:singleLine="true"
-        tools:text="NASDAQ:FB"
-        />
+
+
+      <TextView
+          android:id="@+id/tv_stock_sub_title"
+          style="@style/TH.Title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:ellipsize="end"
+          android:singleLine="true"
+          tools:text="NASDAQ:FB"
+          />
 
   </LinearLayout>
 
