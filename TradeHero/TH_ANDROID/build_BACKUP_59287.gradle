@@ -150,7 +150,10 @@ android {
             signingConfig signingConfigs.release
 
             debuggable false
+<<<<<<< HEAD
+=======
 //            buildConfigField "boolean", "DEBUG", "false"
+>>>>>>> dc13417a23f88239433adb2cad38bfb75339b3c2
         }
     }
 

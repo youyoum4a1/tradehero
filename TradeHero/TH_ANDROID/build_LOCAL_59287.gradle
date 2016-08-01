@@ -138,7 +138,6 @@ android {
             // Enabling multidex support.
             multiDexEnabled true
             debuggable true
-//            buildConfigField "boolean", "DEBUG", "true"
         }
         release {
             resValue "string", "google_places_api_key", "AIzaSyDUqz0A077IaXZ-8SNwGmpqzEEzL-d2yFc"
@@ -150,7 +149,6 @@ android {
             signingConfig signingConfigs.release
 
             debuggable false
-//            buildConfigField "boolean", "DEBUG", "false"
         }
     }
 
