@@ -1,4 +1,4 @@
-package com.androidth.general.activities;
+package com.tradehero.th.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,13 +9,14 @@ import android.util.Pair;
 import android.widget.TextView;
 
 import com.androidth.general.R;
+import com.androidth.general.activities.ActivityHelper;
+import com.androidth.general.activities.BaseActivity;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.models.time.AppTiming;
-import com.androidth.general.network.share.SocialConstants;
 import com.androidth.general.persistence.prefs.AuthHeader;
 import com.androidth.general.persistence.prefs.FirstLaunch;
 import com.androidth.general.persistence.prefs.ResetHelpScreens;

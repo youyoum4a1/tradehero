@@ -60,7 +60,7 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
         updatePrices(map);
     }*/
     //we can improve the complexity [Later]
-    public void updatePrices(@NonNull LiveQuoteDTO quoteUpdate, AbsListView listView)// Map is about mapping vertex(in listview) with SecurityCompactDTO
+    public void updatePrices(LiveQuoteDTO quoteUpdate, AbsListView listView)// Map is about mapping vertex(in listview) with SecurityCompactDTO
     {
         SecurityCompactDTO securityCompactDTO;
         if (getCount() > 0)
@@ -75,24 +75,42 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                     Double lastPrice = securityCompactDTO.lastPrice;
                     if (securityCompactDTO instanceof FxSecurityCompactDTO)
                     {
-                        ((FxSecurityCompactDTO) securityCompactDTO).setAskPrice(askPrice);
-                        ((FxSecurityCompactDTO) securityCompactDTO).setBidPrice(bidPrice);
+
                         ((FxSecurityCompactDTO) securityCompactDTO).currencyDisplay = quoteUpdate.getCurrencyDisplay();
                         ((FxSecurityCompactDTO) securityCompactDTO).currencyISO = quoteUpdate.getCurrencyISO();
                         ((FxSecurityCompactDTO) securityCompactDTO).volume = quoteUpdate.getVolume();
                         ((FxSecurityCompactDTO) securityCompactDTO).toUSDRate = quoteUpdate.getUsdRate();
-                        ((FxSecurityCompactDTO) securityCompactDTO).lastPrice = (askPrice + bidPrice)/2;
+                        ((FxSecurityCompactDTO) securityCompactDTO).setAskPrice(askPrice);
+                        ((FxSecurityCompactDTO) securityCompactDTO).setBidPrice(bidPrice);
+                        if(askPrice!=null && bidPrice!=null) {
+                            ((FxSecurityCompactDTO) securityCompactDTO).lastPrice = (askPrice + bidPrice) / 2;
+                        }
+                        else if(askPrice != null){
+                            ((FxSecurityCompactDTO) securityCompactDTO).lastPrice = askPrice;
+                        }
+                        else if(bidPrice != null){
+                            ((FxSecurityCompactDTO) securityCompactDTO).lastPrice = bidPrice;
+                        }
                     }
                     else
                     {
 
-                        securityCompactDTO.askPrice = askPrice;
-                        securityCompactDTO.bidPrice = bidPrice;
+
                         securityCompactDTO.currencyDisplay = quoteUpdate.getCurrencyDisplay();
                         securityCompactDTO.currencyISO = quoteUpdate.getCurrencyISO();
                         securityCompactDTO.volume = quoteUpdate.getVolume();
                         securityCompactDTO.toUSDRate = quoteUpdate.getUsdRate();
-                        securityCompactDTO.lastPrice = (askPrice + bidPrice)/2;
+                        securityCompactDTO.askPrice = askPrice;
+                        securityCompactDTO.bidPrice = bidPrice;
+                        if(askPrice!=null && bidPrice!=null) {
+                            securityCompactDTO.lastPrice = (askPrice + bidPrice) / 2;
+                        }
+                        else if(askPrice != null){
+                            securityCompactDTO.lastPrice = askPrice;
+                        }
+                        else if(bidPrice != null){
+                            securityCompactDTO.lastPrice = bidPrice;
+                        }
                     }
                     Double newLastPrice = securityCompactDTO.lastPrice;
 

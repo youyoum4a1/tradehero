@@ -66,6 +66,8 @@
   <color name="twitter_blue_pressed">#ff286892</color>
   <color name="twitter_blue_focused">#ff31d1ff</color>
 
+  <color name="fb_messenger_blue">#8b9dc3</color>
+
   <color name="light_blue_normal">#74D3FC</color>
   <color name="light_blue_pressed">#44A3CC</color>
   <color name="light_blue_focused">#94F3FF</color>

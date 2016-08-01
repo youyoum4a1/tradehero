@@ -24,7 +24,6 @@ import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
-import com.androidth.general.activities.FacebookShareActivity;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.OwnedPortfolioIdList;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;

@@ -1,8 +1,8 @@
 package com.androidth.general.auth;
 
 import android.content.Context;
-import com.facebook.SharedPreferencesTokenCachingStrategy;
-import com.facebook.TokenCachingStrategy;
+//import com.facebook.SharedPreferencesTokenCachingStrategy;
+//import com.facebook.TokenCachingStrategy;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.auth.linkedin.LinkedInAuthenticationProvider;
 import com.androidth.general.auth.weibo.WeiboAuthenticationProvider;
@@ -26,8 +26,8 @@ public class AuthenticationModuleBase
         return enumToUtilMap;
     }
 
-    public static TokenCachingStrategy provideFacebookTokenCachingStrategy(Context context)
-    {
-        return new SharedPreferencesTokenCachingStrategy(context);
-    }
+//    public static TokenCachingStrategy provideFacebookTokenCachingStrategy(Context context)
+//    {
+//        return new SharedPreferencesTokenCachingStrategy(context);
+//    }
 }

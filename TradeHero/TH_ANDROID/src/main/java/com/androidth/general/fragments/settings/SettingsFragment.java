@@ -67,6 +67,7 @@ import com.androidth.general.utils.StringUtils;
 import com.androidth.general.utils.VersionUtils;
 import com.androidth.general.utils.dagger.ForPicasso;
 import com.androidth.general.utils.metrics.MarketSegment;
+import com.facebook.AccessToken;
 import com.squareup.okhttp.Cache;
 import com.squareup.picasso.LruCache;
 import com.tradehero.route.Routable;

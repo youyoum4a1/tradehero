@@ -1,7 +1,6 @@
 package com.androidth.general.auth;
 
 import android.content.Context;
-import com.facebook.TokenCachingStrategy;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.auth.linkedin.LinkedInAuthenticationProvider;
 import com.androidth.general.auth.weibo.WeiboAuthenticationProvider;
@@ -33,8 +32,8 @@ public class AuthenticationModule
         return Collections.unmodifiableMap(enumToUtilMap);
     }
 
-    @Provides @Singleton TokenCachingStrategy provideFacebookTokenCachingStrategy(Context context)
-    {
-        return AuthenticationModuleBase.provideFacebookTokenCachingStrategy(context);
-    }
+//    @Provides @Singleton TokenCachingStrategy provideFacebookTokenCachingStrategy(Context context)
+//    {
+//        return AuthenticationModuleBase.provideFacebookTokenCachingStrategy(context);
+//    }
 }

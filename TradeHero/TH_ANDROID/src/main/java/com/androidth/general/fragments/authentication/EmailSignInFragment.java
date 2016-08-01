@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
-import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
 import com.androidth.general.activities.AuthenticationActivity;
@@ -151,8 +150,6 @@ public class EmailSignInFragment extends Fragment
             InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imgr.showSoftInput(email, InputMethodManager.SHOW_IMPLICIT);
         }
-
-        loginButton.setEnabled(BuildConfig.DEBUG);
 
         emailValidator = email.getValidator();
         email.addTextChangedListener(emailValidator);
