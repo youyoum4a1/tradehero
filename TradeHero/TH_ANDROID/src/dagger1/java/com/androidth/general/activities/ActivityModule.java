@@ -25,7 +25,7 @@ import dagger.Provides;
                 AlertManagerActivity.class,
                 AuthenticationActivity.class,
                 DashboardActivity.class,
-                FacebookShareActivity.class,
+//                FacebookShareActivity.class,
                 FriendsInvitationActivity.class,
                 OnBoardActivity.class,
                 PrivateDiscussionActivity.class,

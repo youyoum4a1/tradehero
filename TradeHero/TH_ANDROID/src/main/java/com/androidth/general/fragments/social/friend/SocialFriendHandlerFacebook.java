@@ -6,13 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Pair;
 import com.facebook.HttpMethod;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.widget.WebDialog;
+//import com.facebook.Response;
+//import com.facebook.Session;
+//import com.facebook.widget.WebDialog;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.facebook.FacebookConstants;
 import com.androidth.general.common.facebook.FacebookRequestOperator;
-import com.androidth.general.common.facebook.FacebookWebDialogOperator;
 import com.androidth.general.common.utils.CollectionUtils;
 import com.androidth.general.R;
 import com.androidth.general.api.BaseResponseDTO;
@@ -30,7 +29,6 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.auth.AuthData;
 import com.androidth.general.auth.FacebookAuthenticationProvider;
 import com.androidth.general.auth.operator.FacebookPermissions;
-import com.androidth.general.models.social.facebook.UserFriendsFacebookUtil;
 import com.androidth.general.network.service.SocialServiceWrapper;
 import com.androidth.general.network.service.UserServiceWrapper;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
@@ -77,185 +75,186 @@ public class SocialFriendHandlerFacebook extends SocialFriendHandler
     }
     //</editor-fold>
 
-    @NonNull @Override public Observable<BaseResponseDTO> inviteFriends(@NonNull UserBaseKey userKey, @NonNull InviteFormDTO inviteFormDTO)
-    {
-        if (!(inviteFormDTO instanceof InviteFormUserDTO))
-        {
-            return Observable.error(new IllegalArgumentException("Cannot handle inviteFormDTO of type " + inviteFormDTO.getClass()));
-        }
+//    @NonNull @Override public Observable<BaseResponseDTO> inviteFriends(@NonNull UserBaseKey userKey, @NonNull InviteFormDTO inviteFormDTO)
+//    {
+//        if (!(inviteFormDTO instanceof InviteFormUserDTO))
+//        {
+//            return Observable.error(new IllegalArgumentException("Cannot handle inviteFormDTO of type " + inviteFormDTO.getClass()));
+//        }
+//
+//        return createShareRequestObservable(
+//                CollectionUtils.map(
+//                        ((InviteFormUserDTO) inviteFormDTO).users,
+//                        new Func1<InviteDTO, String>()
+//                        {
+//                            @Override public String call(InviteDTO invite)
+//                            {
+//                                return ((InviteFacebookDTO) invite).fbId;
+//                            }
+//                        }),
+//                null)
+//                .flatMap(new Func1<Bundle, Observable<? extends String>>()
+//                {
+//                    @Override public Observable<? extends String> call(Bundle bundle)
+//                    {
+//                        final String requestId = bundle.getString("request");
+//                        if (requestId != null)
+//                        {
+//                            return Observable.just(requestId);
+//                        }
+//                        else
+//                        {
+//                            return Observable.error(new NullPointerException("RequestId was null in Facebook bundle"));
+//                        }
+//                    }
+//                })
+//                        // TODO This one should do something useful like trackshare
+//                .map(new Func1<String, BaseResponseDTO>()
+//                {
+//                    @Override public BaseResponseDTO call(String requestId)
+//                    {
+//                        return new BaseResponseDTO();
+//                    }
+//                });
+//    }
+//
+//    @NonNull public Observable<Bundle> createShareRequestObservable(
+//            @NonNull final List<UserFriendsFacebookDTO> friendsDTOs,
+//            @SuppressWarnings("UnusedParameters") @Nullable UserFriendsFacebookDTO typeQualifier)
+//    {
+//        return createShareRequestObservable(CollectionUtils.map(friendsDTOs, new Func1<UserFriendsFacebookDTO, String>()
+//        {
+//            @Override public String call(UserFriendsFacebookDTO friend)
+//            {
+//                return friend.fbId;
+//            }
+//        }), null);
+//    }
+//
+//    @NonNull public Observable<Bundle> createShareRequestObservable(
+//            @NonNull final List<String> fbIds,
+//            @SuppressWarnings("UnusedParameters") @Nullable String typeQualifier)
+//    {
+//        return createProfileSessionObservable()
+//                .take(1)
+//                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<? extends Bundle>>()
+//                {
+//                    @Override public Observable<? extends Bundle> call(Pair<UserProfileDTO, Session> pair)
+//                    {
+//                        return SocialFriendHandlerFacebook.this.createShareRequestObservable(pair.first, pair.second, fbIds);
+//                    }
+//                });
+//    }
+//
+//    @NonNull public Observable<Bundle> createShareRequestObservable(
+//            @NonNull UserProfileDTO userProfileDTO,
+//            @NonNull Session session,
+//            @NonNull List<String> fbIds)
+//    {
+//        String messageToFacebookFriends = activityProvider.get().getString(
+//                R.string.invite_friend_facebook_tradehero_refer_friend_message,
+//                userProfileDTO.referralCode);
+//        String concatFriends = concatIds(fbIds);
+//
+//        //if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
+//        //{
+//        //    messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
+//        //}
+//
+//        Bundle params = new Bundle();
+//        params.putString("message", messageToFacebookFriends);
+//        params.putString("to", concatFriends);
+//
+//        return Observable.create(
+//                new FacebookWebDialogOperator(
+//                        new WebDialog.RequestsDialogBuilder(
+//                                activityProvider.get(),
+//                                session,
+//                                params)))
+//                .subscribeOn(AndroidSchedulers.mainThread());
+//    }
+//
+//    @NonNull String concatIds(@NonNull List<String> fbIds)
+//    {
+//        StringBuilder stringBuilder = new StringBuilder();
+//        int size = fbIds.size();
+//        String separator = "";
+//        for (int i = 0; i < size && i < MAX_FACEBOOK_FRIENDS_RECEIVERS; ++i)
+//        {
+//            stringBuilder.append(separator).append(fbIds.get(i));
+//            separator = ",";
+//        }
+//        return stringBuilder.toString();
+//    }
+//
+//    @NonNull public Observable<Pair<UserProfileDTO, Session>> createProfileSessionObservable()
+//    {
+//        final List<String> newPermissions = new ArrayList<>(permissions);
+//        newPermissions.add(FacebookConstants.PERMISSION_FRIENDS);
+//        return Observable.combineLatest(
+//                userProfileCache.getOne(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
+//                facebookAuthenticationProvider.createSessionObservable(activityProvider.get(), newPermissions),
+//                new Func2<UserProfileDTO, Session, Pair<UserProfileDTO, Session>>()
+//                {
+//                    @Override public Pair<UserProfileDTO, Session> call(UserProfileDTO t1, Session t2)
+//                    {
+//                        return Pair.create(t1, t2);
+//                    }
+//                })
+//                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<? extends Pair<UserProfileDTO, Session>>>()
+//                {
+//                    @Override public Observable<? extends Pair<UserProfileDTO, Session>> call(Pair<UserProfileDTO, Session> pair)
+//                    {
+//                        if (pair.first.fbLinked)
+//                        {
+//                            return socialServiceWrapper.connectRx(
+//                                    pair.first.getBaseKey(),
+//                                    new AccessTokenForm(new AuthData(SocialNetworkEnum.FB,
+//                                            pair.second.getExpirationDate(),
+//                                            pair.second.getAccessToken())))
+//                                    .map(new ReplaceWithFunc1<UserProfileDTO, Pair<UserProfileDTO, Session>>(pair));
+//                        }
+//                        // Need to link then return
+//                        return Observable.combineLatest(
+//                                facebookAuthenticationProvider.createAuthDataObservable(activityProvider.get(), newPermissions)
+//                                        .observeOn(Schedulers.io())
+//                                        .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
+//                                Observable.just(Session.getActiveSession()),
+//                                new Func2<UserProfileDTO, Session, Pair<UserProfileDTO, Session>>()
+//                                {
+//                                    @Override public Pair<UserProfileDTO, Session> call(UserProfileDTO profile, Session session)
+//                                    {
+//                                        return Pair.create(profile, session);
+//                                    }
+//                                });
+//                    }
+//                });
+//    }
 
-        return createShareRequestObservable(
-                CollectionUtils.map(
-                        ((InviteFormUserDTO) inviteFormDTO).users,
-                        new Func1<InviteDTO, String>()
-                        {
-                            @Override public String call(InviteDTO invite)
-                            {
-                                return ((InviteFacebookDTO) invite).fbId;
-                            }
-                        }),
-                null)
-                .flatMap(new Func1<Bundle, Observable<? extends String>>()
-                {
-                    @Override public Observable<? extends String> call(Bundle bundle)
-                    {
-                        final String requestId = bundle.getString("request");
-                        if (requestId != null)
-                        {
-                            return Observable.just(requestId);
-                        }
-                        else
-                        {
-                            return Observable.error(new NullPointerException("RequestId was null in Facebook bundle"));
-                        }
-                    }
-                })
-                        // TODO This one should do something useful like trackshare
-                .map(new Func1<String, BaseResponseDTO>()
-                {
-                    @Override public BaseResponseDTO call(String requestId)
-                    {
-                        return new BaseResponseDTO();
-                    }
-                });
-    }
-
-    @NonNull public Observable<Bundle> createShareRequestObservable(
-            @NonNull final List<UserFriendsFacebookDTO> friendsDTOs,
-            @SuppressWarnings("UnusedParameters") @Nullable UserFriendsFacebookDTO typeQualifier)
-    {
-        return createShareRequestObservable(CollectionUtils.map(friendsDTOs, new Func1<UserFriendsFacebookDTO, String>()
-        {
-            @Override public String call(UserFriendsFacebookDTO friend)
-            {
-                return friend.fbId;
-            }
-        }), null);
-    }
-
-    @NonNull public Observable<Bundle> createShareRequestObservable(
-            @NonNull final List<String> fbIds,
-            @SuppressWarnings("UnusedParameters") @Nullable String typeQualifier)
-    {
-        return createProfileSessionObservable()
-                .take(1)
-                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<? extends Bundle>>()
-                {
-                    @Override public Observable<? extends Bundle> call(Pair<UserProfileDTO, Session> pair)
-                    {
-                        return SocialFriendHandlerFacebook.this.createShareRequestObservable(pair.first, pair.second, fbIds);
-                    }
-                });
-    }
-
-    @NonNull public Observable<Bundle> createShareRequestObservable(
-            @NonNull UserProfileDTO userProfileDTO,
-            @NonNull Session session,
-            @NonNull List<String> fbIds)
-    {
-        String messageToFacebookFriends = activityProvider.get().getString(
-                R.string.invite_friend_facebook_tradehero_refer_friend_message,
-                userProfileDTO.referralCode);
-        String concatFriends = concatIds(fbIds);
-
-        //if (messageToFacebookFriends.length() > MAX_FACEBOOK_MESSAGE_LENGTH)
-        //{
-        //    messageToFacebookFriends = messageToFacebookFriends.substring(0, MAX_FACEBOOK_MESSAGE_LENGTH);
-        //}
-
-        Bundle params = new Bundle();
-        params.putString("message", messageToFacebookFriends);
-        params.putString("to", concatFriends);
-
-        return Observable.create(
-                new FacebookWebDialogOperator(
-                        new WebDialog.RequestsDialogBuilder(
-                                activityProvider.get(),
-                                session,
-                                params)))
-                .subscribeOn(AndroidSchedulers.mainThread());
-    }
-
-    @NonNull String concatIds(@NonNull List<String> fbIds)
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        int size = fbIds.size();
-        String separator = "";
-        for (int i = 0; i < size && i < MAX_FACEBOOK_FRIENDS_RECEIVERS; ++i)
-        {
-            stringBuilder.append(separator).append(fbIds.get(i));
-            separator = ",";
-        }
-        return stringBuilder.toString();
-    }
-
-    @NonNull public Observable<Pair<UserProfileDTO, Session>> createProfileSessionObservable()
-    {
-        final List<String> newPermissions = new ArrayList<>(permissions);
-        newPermissions.add(FacebookConstants.PERMISSION_FRIENDS);
-        return Observable.combineLatest(
-                userProfileCache.getOne(currentUserId.toUserBaseKey()).map(new PairGetSecond<UserBaseKey, UserProfileDTO>()),
-                facebookAuthenticationProvider.createSessionObservable(activityProvider.get(), newPermissions),
-                new Func2<UserProfileDTO, Session, Pair<UserProfileDTO, Session>>()
-                {
-                    @Override public Pair<UserProfileDTO, Session> call(UserProfileDTO t1, Session t2)
-                    {
-                        return Pair.create(t1, t2);
-                    }
-                })
-                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<? extends Pair<UserProfileDTO, Session>>>()
-                {
-                    @Override public Observable<? extends Pair<UserProfileDTO, Session>> call(Pair<UserProfileDTO, Session> pair)
-                    {
-                        if (pair.first.fbLinked)
-                        {
-                            return socialServiceWrapper.connectRx(
-                                    pair.first.getBaseKey(),
-                                    new AccessTokenForm(new AuthData(SocialNetworkEnum.FB,
-                                            pair.second.getExpirationDate(),
-                                            pair.second.getAccessToken())))
-                                    .map(new ReplaceWithFunc1<UserProfileDTO, Pair<UserProfileDTO, Session>>(pair));
-                        }
-                        // Need to link then return
-                        return Observable.combineLatest(
-                                facebookAuthenticationProvider.createAuthDataObservable(activityProvider.get(), newPermissions)
-                                        .observeOn(Schedulers.io())
-                                        .flatMap(socialServiceWrapper.connectFunc1(pair.first.getBaseKey())),
-                                Observable.just(Session.getActiveSession()),
-                                new Func2<UserProfileDTO, Session, Pair<UserProfileDTO, Session>>()
-                                {
-                                    @Override public Pair<UserProfileDTO, Session> call(UserProfileDTO profile, Session session)
-                                    {
-                                        return Pair.create(profile, session);
-                                    }
-                                });
-                    }
-                });
-    }
-
-    @NonNull protected Observable<UserFriendsDTOList> getFetchFacebookInvitableObservable(@NonNull final Bundle parameters)
-    {
-        return createProfileSessionObservable()
-                .take(1)
-                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<? extends Response>>()
-                {
-                    @Override public Observable<? extends Response> call(Pair<UserProfileDTO, Session> pair)
-                    {
-                        return Observable.create(
-                                FacebookRequestOperator
-                                        .builder(pair.second, FacebookConstants.API_INVITABLE_FRIENDS)
-                                        .setParameters(parameters)
-                                        .setHttpMethod(HttpMethod.GET)
-                                        .build())
-                                .subscribeOn(AndroidSchedulers.mainThread());
-                    }
-                })
-                .map(new Func1<Response, UserFriendsDTOList>()
-                {
-                    @Override public UserFriendsDTOList call(Response response)
-                    {
-                        return UserFriendsFacebookUtil.convert(response);
-                    }
-                });
-    }
+    //Jeff- should not use this to invite from Facebook
+//    @NonNull protected Observable<UserFriendsDTOList> getFetchFacebookInvitableObservable(@NonNull final Bundle parameters)
+//    {
+//        return createProfileSessionObservable()
+//                .take(1)
+//                .flatMap(new Func1<Pair<UserProfileDTO, Session>, Observable<? extends Response>>()
+//                {
+//                    @Override public Observable<? extends Response> call(Pair<UserProfileDTO, Session> pair)
+//                    {
+//                        return Observable.create(
+//                                FacebookRequestOperator
+//                                        .builder(pair.second, FacebookConstants.API_INVITABLE_FRIENDS)
+//                                        .setParameters(parameters)
+//                                        .setHttpMethod(HttpMethod.GET)
+//                                        .build())
+//                                .subscribeOn(AndroidSchedulers.mainThread());
+//                    }
+//                })
+//                .map(new Func1<Response, UserFriendsDTOList>()
+//                {
+//                    @Override public UserFriendsDTOList call(Response response)
+//                    {
+//                        return UserFriendsFacebookUtil.convert(response);
+//                    }
+//                });
+//    }
 }

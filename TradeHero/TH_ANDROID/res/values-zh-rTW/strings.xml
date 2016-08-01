@@ -537,6 +537,7 @@
   <string name="invite_code_title">認領您的虛擬獎金!</string>
   <string name="invite_email_subject">加入%s</string>
   <string name="invite_email_text">下載%1$s，跟著頂尖英雄賺大錢! 使用我的邀請碼%2$s 更有額外獎勵哦</string>
+  <string name="invite_text_from_clipboard">Your friend invitation URL has been copied to your clipboard. Paste it in your text entry field and send it to your friends!</string>
   <string name="invite_friends">邀請朋友</string>
   <string name="invite_friend_add_all">全部添加</string>
   <string name="invite_friend_facebook_tradehero_refer_friend_message">下載全民股神，跟著頂尖英雄賺大錢! 使用我的邀請碼%1$s 更有額外獎勵哦！</string>
@@ -552,6 +553,7 @@
   <string name="invite_from_email">邀請Email好友</string>
   <string name="invite_from_facebook">邀請Facebook好友</string>
   <string name="invite_from_linkedIn">邀請領英好友</string>
+  <string name="invite_from_messenger">邀請Messenger好友</string>
   <string name="invite_from_sms">邀請短信好友</string>
   <string name="invite_from_twitter">邀請推特好友</string>
   <string name="invite_from_wechat">邀請微信好友</string>

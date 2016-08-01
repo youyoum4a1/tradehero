@@ -14,6 +14,7 @@ public enum SocialNetworkEnum
 {
     TH("Basic", "TradeHero", null, null, R.string.app_name),
     FB("TH-Facebook", "Facebook", "facebook_access_token", null, R.string.facebook),
+    FB_MSNGR("TH-Facebook", "Facebook", "facebook_access_token", null, R.string.facebook),
     TW("TH-Twitter", "Twitter", "twitter_access_token", "twitter_access_token_secret", R.string.twitter),
     LN("TH-LinkedIn", "LinkedIn", "linkedin_access_token", "linkedin_access_token_secret", R.string.linkedin),
     WECHAT("TH-WeChat", "WeChat", null, null, R.string.wechat),

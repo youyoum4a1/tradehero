@@ -2,6 +2,7 @@ package com.androidth.general.fragments.authentication;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -98,11 +99,18 @@ public class GuideAuthenticationFragment extends Fragment
         return link == null ? null : Uri.parse(link);
     }
 
-    @Override public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
-        ((Injector) activity).inject(this);
-        socialNetworkEnumObserver = ((AuthenticationActivity) activity).getSelectedSocialNetworkObserver();
+//    @Override public void onAttach(Activity activity)
+//    {
+//        super.onAttach(activity);
+//        ((Injector) activity).inject(this);
+//        socialNetworkEnumObserver = ((AuthenticationActivity) activity).getSelectedSocialNetworkObserver();
+//    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        ((Injector) context).inject(this);
+        socialNetworkEnumObserver = ((AuthenticationActivity) context).getSelectedSocialNetworkObserver();
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
@@ -201,7 +209,7 @@ public class GuideAuthenticationFragment extends Fragment
     {
         if (socialNetworkEnumObserver != null)
         {
-            socialNetworkEnumObserver.onNext(((AuthenticationButton) view).getType());
+            socialNetworkEnumObserver.onNext(((AuthenticationButton) view).getType());//TODO JEFF
         }
     }
 

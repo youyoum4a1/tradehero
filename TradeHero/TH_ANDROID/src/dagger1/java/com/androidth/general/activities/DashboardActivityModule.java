@@ -95,7 +95,7 @@ import dagger.Provides;
                 BuySellStockFragment.class,
                 CompetitionWebViewFragment.class,
                 DiscoveryMainFragment.class,
-                FacebookShareActivity.class,
+//                FacebookShareActivity.class,
                 FollowersFragment.class,
                 FriendsInvitationFragment.class,
                 FXInfoFragment.class,

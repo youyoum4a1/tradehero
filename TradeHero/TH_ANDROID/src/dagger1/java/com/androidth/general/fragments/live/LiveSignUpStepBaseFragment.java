@@ -119,7 +119,6 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        SplashActivity.setupRealm(getContext());
         realm = Realm.getDefaultInstance();
         ButterKnife.bind(this, view);
         brokerSituationObservable = createBrokerSituationObservable().publish();

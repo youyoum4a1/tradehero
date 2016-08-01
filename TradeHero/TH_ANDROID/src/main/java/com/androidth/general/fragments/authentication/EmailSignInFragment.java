@@ -152,7 +152,8 @@ public class EmailSignInFragment extends Fragment
             imgr.showSoftInput(email, InputMethodManager.SHOW_IMPLICIT);
         }
 
-        loginButton.setEnabled(BuildConfig.DEBUG);
+//        loginButton.setEnabled(BuildConfig.DEBUG);
+        loginButton.setEnabled(true);
 
         emailValidator = email.getValidator();
         email.addTextChangedListener(emailValidator);
