@@ -196,7 +196,7 @@ public class AuthenticationActivity extends BaseActivity
                 {
                     @Override public void call(Pair<AuthData, UserProfileDTO> authDataUserProfileDTOPair)
                     {
-                        ActivityHelper.launchDashboard(AuthenticationActivity.this, deepLink);
+                        ActivityHelper.launchDashboardWithFinish(AuthenticationActivity.this, deepLink);
                     }
                 })
                 ;

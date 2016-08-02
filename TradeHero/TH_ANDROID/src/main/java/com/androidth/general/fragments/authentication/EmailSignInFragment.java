@@ -209,7 +209,7 @@ public class EmailSignInFragment extends Fragment
                     @Override public void call(Pair<AuthData, UserProfileDTO> pair)
                     {
                         AuthDataUtil.saveAccountAndResult(getActivity(), pair.first, pair.second.email);
-                        ActivityHelper.launchDashboard(
+                        ActivityHelper.launchDashboardWithFinish(
                                 getActivity(),
                                 deepLink);
                     }

@@ -84,7 +84,7 @@ public class SplashActivity extends BaseActivity
 
         if (deepLink != null)
         {
-            ActivityHelper.launchDashboard(this, deepLink);
+            ActivityHelper.launchDashboardWithFinish(this, deepLink);
         }
     }
 
@@ -132,7 +132,7 @@ public class SplashActivity extends BaseActivity
                                 @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
                                 {
                                     dtoCacheUtil.prefetchesUponLogin(pair.second);
-                                    ActivityHelper.launchDashboard(SplashActivity.this, deepLink);
+                                    ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink);
                                     finish();
                                 }
                             },

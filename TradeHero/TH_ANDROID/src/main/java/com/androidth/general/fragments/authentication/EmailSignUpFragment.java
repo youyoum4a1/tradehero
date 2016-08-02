@@ -229,7 +229,7 @@ public class EmailSignUpFragment extends Fragment
                     {
                         THAppsFlyer.sendTrackingWithEvent(getActivity(), AppsFlyerConstants.COMPLETE_REGISTRATION, null);
                         AuthDataUtil.saveAccountAndResult(getActivity(), pair.first, pair.second.email);
-                        ActivityHelper.launchDashboard(
+                        ActivityHelper.launchDashboardWithFinish(
                                 getActivity(),
                                 deepLink);
                     }
