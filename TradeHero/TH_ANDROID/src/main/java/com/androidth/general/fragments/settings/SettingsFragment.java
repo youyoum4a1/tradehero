@@ -919,7 +919,8 @@ public final class SettingsFragment extends BasePreferenceFragment
                 sequence = confirmUnLinkRx(socialNetworkEnum, activityContext);
             }
             unsubscribe(sequenceSubscription);
-            sequenceSubscription = sequence.observeOn(AndroidSchedulers.mainThread())
+            sequenceSubscription = sequence
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             new Action1<UserProfileDTO>()
                             {
