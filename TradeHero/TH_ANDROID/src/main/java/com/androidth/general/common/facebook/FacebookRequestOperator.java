@@ -1,6 +1,7 @@
 package com.androidth.general.common.facebook;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,6 +41,7 @@ public class FacebookRequestOperator implements Observable.OnSubscribe<AccessTok
     @Nullable private final String version;
     @NonNull private final CallbackManager callbackManager;
     @NonNull private final Activity activity;
+    private String PUBLISH_PERMISSION = "publish_actions";
 
     //<editor-fold desc="Constructors">
     private FacebookRequestOperator(@NonNull Builder builder)
@@ -94,6 +96,7 @@ public class FacebookRequestOperator implements Observable.OnSubscribe<AccessTok
     }
 
     public void setupLoginByFacebook(Subscriber subscriber){
+
         LoginManager.getInstance().registerCallback(callbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
@@ -111,13 +114,17 @@ public class FacebookRequestOperator implements Observable.OnSubscribe<AccessTok
                             }
                         });
                         request.executeAsync();
-                        subscriber.onNext(loginResult.getAccessToken());
-                        subscriber.onCompleted();
+
+                        if(loginResult.getAccessToken().getPermissions().contains(PUBLISH_PERMISSION)){
+                            subscriber.onNext(loginResult.getAccessToken());
+                            subscriber.onCompleted();
+                        }else{
+                            LoginManager.getInstance().logInWithPublishPermissions(activity, Arrays.asList(PUBLISH_PERMISSION));
+                        }
                     }
 
                     @Override
                     public void onCancel() {
-                        // App code
                     }
 
                     @Override
@@ -128,7 +135,6 @@ public class FacebookRequestOperator implements Observable.OnSubscribe<AccessTok
                 });
 
         LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "email", "user_friends"));
-        LoginManager.getInstance().logInWithPublishPermissions(activity, Arrays.asList("publish_actions"));
     }
 
     public static class Builder
