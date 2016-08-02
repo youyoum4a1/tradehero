@@ -686,6 +686,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 }
             }
         });
+        dialog.show();
     }
 
     private void pushFBMessenger(UserProfileDTO userProfileDTO){

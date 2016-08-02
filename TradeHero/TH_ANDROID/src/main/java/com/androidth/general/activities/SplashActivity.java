@@ -83,7 +83,7 @@ public class SplashActivity extends BaseActivity
 
         if (deepLink != null)
         {
-            ActivityHelper.launchDashboard(this, deepLink);
+            ActivityHelper.launchDashboardWithFinish(this, deepLink);
         }
     }
 
@@ -106,10 +106,10 @@ public class SplashActivity extends BaseActivity
         THAppsFlyer.setAppsFlyerKey(this, MetricsModule.APP_FLYER_KEY);
         THAppsFlyer.sendTracking(this);
 
-        if (!Constants.RELEASE)
-        {
-            VersionUtils.logScreenMeasurements(this);
-        }
+//        if (!Constants.RELEASE)
+//        {
+//            VersionUtils.logScreenMeasurements(this);
+//        }
         //TODO Add code for Google Analytics
         //analytics.addEvent(new AppLaunchEvent()).addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
 
@@ -131,8 +131,7 @@ public class SplashActivity extends BaseActivity
                                 @Override public void call(Pair<UserBaseKey, UserProfileDTO> pair)
                                 {
                                     dtoCacheUtil.prefetchesUponLogin(pair.second);
-                                    ActivityHelper.launchDashboard(SplashActivity.this, deepLink);
-                                    finish();
+                                    ActivityHelper.launchDashboardWithFinish(SplashActivity.this, deepLink);
                                 }
                             },
                             new Action1<Throwable>()
