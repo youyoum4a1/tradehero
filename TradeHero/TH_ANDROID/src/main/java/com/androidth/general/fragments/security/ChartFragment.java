@@ -340,24 +340,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         else
         {
             onDestroyViewSubscriptions.add(Observable.combineLatest(createAlertsObservable(), createWatchlistObservable(),
-                    new Func2<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList, Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList>>()
-                    {
-                        @Override
-                        public Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList> call(
-                                Map<SecurityId, AlertCompactDTO> securityIdAlertCompactDTOMap,
-                                WatchlistPositionDTOList watchlistPositionDTOs)
-                        {
-                            return Pair.create(securityIdAlertCompactDTOMap, watchlistPositionDTOs);
-                        }
-                    })
+                    (securityIdAlertCompactDTOMap, watchlistPositionDTOs) -> Pair.create(securityIdAlertCompactDTOMap, watchlistPositionDTOs))
                     .subscribe(
-                            new Action1<Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList>>()
-                            {
-                                @Override public void call(Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList> pair)
-                                {
-                                    stockIsWatched(pair.second);
-                                    stockIsOnAlert(pair.first);
-                                }
+                            pair -> {
+                                stockIsWatched(pair.second);
+                                stockIsOnAlert(pair.first);
                             },
                             new TimberOnErrorAction1("Failed to listen to alerts and watchlist on chart fragment")));
         }
