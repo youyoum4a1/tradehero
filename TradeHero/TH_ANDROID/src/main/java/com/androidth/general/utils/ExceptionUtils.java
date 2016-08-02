@@ -44,7 +44,7 @@ public class ExceptionUtils
             String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
             JsonObject obj = new JsonParser().parse(string).getAsJsonObject();
             JsonElement element = obj.get(identifier);
-            return element.toString();
+            return element.toString().replace("\"", "");//omit all double quotes
 
         }else{
             return throwable.getLocalizedMessage();

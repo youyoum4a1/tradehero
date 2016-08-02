@@ -3,6 +3,8 @@ package com.androidth.general.network.service;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.api.BaseResponseDTO;
@@ -19,6 +21,9 @@ import com.androidth.general.models.user.DTOProcessorUserLogin;
 import com.androidth.general.persistence.prefs.IsOnBoardShown;
 import com.androidth.general.persistence.system.SystemStatusCache;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
+import com.androidth.general.utils.ExceptionUtils;
+import com.facebook.AccessToken;
+
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -121,16 +126,21 @@ import timber.log.Timber;
                     @Override public Boolean call(Integer integer, Throwable throwable)
                     {
                         THException thException = new THException(throwable);
-                        if (thException.getCode() == THException.ExceptionCode.RenewSocialToken)
-                        {
-                            try
-                            {
-                                SessionServiceWrapper.this.updateAuthorizationTokensRx(loginSignUpFormDTO).subscribe();
-                                return true;
-                            } catch (Exception ignored)
-                            {
+                        switch (thException.getCode()){
+                            case RenewSocialToken:
+                                try {
+                                    SessionServiceWrapper.this.updateAuthorizationTokensRx(loginSignUpFormDTO).subscribe();
+                                    return true;
+                                } catch (Exception ignored) {
+                                    return false;
+                                }
+                            case ExpiredFBAccessToken:
+                                AccessToken.setCurrentAccessToken(null);
+
                                 return false;
-                            }
+
+                            default:
+                                break;
                         }
                         return false;
                     }
