@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context="com.androidth.general.activities.DashboardActivity"
     >
@@ -30,14 +30,12 @@
         android:id="@+id/portfolio_selector_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/market_close_hint"
         android:layout_marginLeft="@dimen/size_14"
         android:layout_marginStart="@dimen/size_14"
         android:background="@drawable/basic_transparent_selector"
         android:visibility="gone"
         >
       <!--TODO use dropdown/spinner view-->
-
       <TextView
           android:id="@+id/selected_title_anchor"
           style="@style/TH.Body1.Inverse"
@@ -90,7 +88,7 @@
           android:orientation="vertical">
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="75dp"
                 android:scaleType="centerInside"
                 android:id="@+id/stock_image"/>
           <TextView
@@ -98,8 +96,8 @@
               style="@style/TH.Subhead.Inverse"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/margin_small"
               android:layout_gravity="bottom|center_horizontal"
-              android:layout_margin="@dimen/margin_small"
               tools:background="@color/number_up"
               tools:text="+408%"
               />
@@ -150,9 +148,6 @@
               android:id="@+id/btn_watched"
               android:layout_width="@dimen/clickable_element_min_dimen"
               android:layout_height="@dimen/clickable_element_min_dimen"
-              android:layout_alignParentEnd="true"
-              android:layout_alignParentRight="true"
-              android:layout_centerVertical="true"
               android:background="?attr/selectableItemBackgroundBorderless"
               android:padding="12dp"
               android:src="@drawable/icn_star"
@@ -163,9 +158,6 @@
               android:id="@+id/btn_alerted"
               android:layout_width="@dimen/clickable_element_min_dimen"
               android:layout_height="@dimen/clickable_element_min_dimen"
-              android:layout_centerVertical="true"
-              android:layout_toLeftOf="@id/btn_watched"
-              android:layout_toStartOf="@id/btn_watched"
               android:background="?attr/selectableItemBackgroundBorderless"
               android:tint="@color/darker_grey"
               android:padding="12dp"

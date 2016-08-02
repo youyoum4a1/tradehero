@@ -1,9 +1,12 @@
 package com.androidth.general.fragments.trade;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.util.Pair;
@@ -17,7 +20,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.common.SlidingTabLayout;
+import com.android.internal.util.Predicate;
 import com.androidth.general.R;
+import com.androidth.general.api.alert.AlertCompactDTO;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTOList;
@@ -28,18 +33,31 @@ import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.api.security.key.FxPairSecurityId;
 import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.api.watchlist.WatchlistPositionDTO;
+import com.androidth.general.api.watchlist.WatchlistPositionDTOList;
+import com.androidth.general.fragments.alert.AlertCreateDialogFragment;
+import com.androidth.general.fragments.alert.AlertEditDialogFragment;
+import com.androidth.general.fragments.alert.BaseAlertEditDialogFragment;
+import com.androidth.general.fragments.base.ActionBarOwnerMixin;
 import com.androidth.general.fragments.security.BuySellBottomStockPagerAdapter;
+import com.androidth.general.fragments.security.WatchlistEditFragment;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.models.number.THSignedPercentage;
+import com.androidth.general.persistence.alert.AlertCompactListCacheRx;
+import com.androidth.general.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.StringUtils;
 import com.squareup.picasso.Picasso;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -62,8 +80,15 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
     @Bind(R.id.buy_price) TextView buyPrice;
     @Bind(R.id.sell_price) TextView sellPrice;
 
+    @Inject UserWatchlistPositionCacheRx userWatchlistPositionCache;
+    @Inject AlertCompactListCacheRx alertCompactListCache;
+
     @Bind(R.id.stock_image) ImageView stockImage;
     @Bind(R.id.tv_stock_roi) TextView stockRoi;
+
+    private static final float ALPHA_INACTIVE = 0.5f;
+    private static final float ALPHA_ACTIVE = 1f;
+    protected SecurityId securityId;
     //TODO Change Analytics
     //@Inject Analytics analytics;
 
@@ -72,6 +97,13 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
 
     @Bind(R.id.btn_watched) @Nullable protected ImageView btnWatched;
     @Bind(R.id.btn_alerted) @Nullable protected View btnAlerted;
+
+
+    @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
+    @Nullable protected WatchlistPositionDTOList watchedList;
+
+    @ColorRes private static final int COLOR_RES_UNWATCHED = R.color.darker_grey;
+    @ColorRes private static final int COLOR_RES_WATCHED = R.color.watchlist_button_color;
 
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
 
@@ -89,6 +121,153 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
         super.onViewCreated(view, savedInstanceState);
         mSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.general_tab_indicator_color));
+        onDestroyViewSubscriptions.add(Observable.combineLatest(createAlertsObservable(), createWatchlistObservable(),
+                new Func2<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList, android.support.v4.util.Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList>>()
+                {
+                    @Override
+                    public android.support.v4.util.Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList> call(
+                            Map<SecurityId, AlertCompactDTO> securityIdAlertCompactDTOMap,
+                            WatchlistPositionDTOList watchlistPositionDTOs)
+                    {
+                        return android.support.v4.util.Pair.create(securityIdAlertCompactDTOMap, watchlistPositionDTOs);
+                    }
+                })
+                .subscribe(
+                        new Action1<android.support.v4.util.Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList>>()
+                        {
+                            @Override public void call(android.support.v4.util.Pair<Map<SecurityId, AlertCompactDTO>, WatchlistPositionDTOList> pair)
+                            {
+                                stockIsWatched(pair.second);
+                                stockIsOnAlert(pair.first);
+                            }
+                        },
+                        new TimberOnErrorAction1("Failed to listen to alerts and watchlist on chart fragment")));
+    }
+    @SuppressWarnings("unused")
+    @Nullable @OnClick(R.id.btn_watched)
+    protected void onButtonWatchedClicked(View view)
+    {
+        if (watchedList != null && securityId!=null)
+        {
+            handleAddToWatchlistRequested(securityId, watchedList.findFirstWhere(new Predicate<WatchlistPositionDTO>()
+            {
+                @Override public boolean apply(WatchlistPositionDTO watchlistPositionDTO)
+                {
+                    return watchlistPositionDTO.securityDTO != null
+                            && watchlistPositionDTO.securityDTO.getSecurityId().equals(securityId);
+                }
+            }) == null);
+        }
+    }
+    protected void handleAddToWatchlistRequested(@NonNull SecurityId securityId, boolean isAdd)
+    {
+        Bundle args = new Bundle();
+        WatchlistEditFragment.putSecurityId(args, securityId);
+        if (isAdd)
+        {
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_CreateWatchlist));
+            ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_add_title));
+        }
+        else
+        {
+            //TODO Change Analytics
+            //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Monitor_EditWatchlist));
+            ActionBarOwnerMixin.putActionBarTitle(args, getString(R.string.watchlist_edit_title));
+        }
+        if (navigator != null)
+        {
+            navigator.get().pushFragment(WatchlistEditFragment.class, args);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @Nullable @OnClick(R.id.btn_alerted)
+    protected void onButtonAlertedClicked(View view)
+    {
+        if (mappedAlerts != null && securityId!=null)
+        {
+            AlertCompactDTO alert = mappedAlerts.get(securityId);
+            if (alert == null)
+            {
+                handleAddAlertRequested(securityId);
+            }
+            else
+            {
+                handleUpdateAlertRequested(alert);
+            }
+        }
+    }
+    protected void handleUpdateAlertRequested(@NonNull AlertCompactDTO alertCompactDTO)
+    {
+        AlertEditDialogFragment.newInstance(alertCompactDTO.getAlertId(currentUserId.toUserBaseKey()))
+                .show(getFragmentManager(), AlertEditDialogFragment.class.getName());
+    }
+    protected void handleAddAlertRequested(@NonNull SecurityId securityId)
+    {
+        AlertCreateDialogFragment.newInstance(securityId)
+                .show(getFragmentManager(), BaseAlertEditDialogFragment.class.getName());
+    }
+    @NonNull protected Observable<Map<SecurityId, AlertCompactDTO>> createAlertsObservable()
+    {
+        return alertCompactListCache.getOneSecurityMappedAlerts(currentUserId.toUserBaseKey())
+                .map(new Func1<Map<SecurityId, AlertCompactDTO>, Map<SecurityId, AlertCompactDTO>>()
+                {
+                    @Override public Map<SecurityId, AlertCompactDTO> call(Map<SecurityId, AlertCompactDTO> map)
+                    {
+                        mappedAlerts = map;
+                        return map;
+                    }
+                })
+                .share();
+    }
+    @NonNull protected Observable<WatchlistPositionDTOList> createWatchlistObservable()
+    {
+        return userWatchlistPositionCache.getOne(currentUserId.toUserBaseKey())
+                .map(new Func1<android.util.Pair<UserBaseKey, WatchlistPositionDTOList>, WatchlistPositionDTOList>()
+                {
+                    @Override
+                    public WatchlistPositionDTOList call(@NonNull android.util.Pair<UserBaseKey, WatchlistPositionDTOList> pair)
+                    {
+                        watchedList = pair.second;
+                        return pair.second;
+                    }
+                })
+                .share();
+    }
+    private void stockIsWatched(WatchlistPositionDTOList watchedList)
+    {
+        this.watchedList = watchedList;
+        if (btnWatched != null)
+        {
+            boolean watched = watchedList.contains(securityId);
+            Drawable drawable = DrawableCompat.wrap(btnWatched.getDrawable());
+            DrawableCompat.setTint(
+                    drawable,
+                    getResources().getColor(watched ? COLOR_RES_WATCHED
+                            : COLOR_RES_UNWATCHED));
+            btnWatched.setImageDrawable(drawable);
+            btnWatched.setAlpha(watched ? ALPHA_ACTIVE : ALPHA_INACTIVE);
+        }
+    }
+
+    private void stockIsOnAlert(Map<SecurityId, AlertCompactDTO> mappedAlerts)
+    {
+        this.mappedAlerts = mappedAlerts;
+        if (btnAlerted != null)
+        {
+            float alpha;
+            AlertCompactDTO compactDTO = mappedAlerts.get(securityId);
+            if ((compactDTO != null) && compactDTO.active)
+            {
+                alpha = ALPHA_ACTIVE;
+            }
+            else
+            {
+                alpha = ALPHA_INACTIVE;
+            }
+            btnAlerted.setAlpha(alpha);
+        }
     }
 
     @Override public void onStart()
@@ -136,10 +315,11 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
                             @Override public void call(SecurityCompactDTO securityCompactDTO)
                             {
                                 //actionBarLayout.display9);
-                                StockDetailActionBarRelativeLayout.Requisite dto =new StockDetailActionBarRelativeLayout.Requisite(
+                                StockDetailActionBarRelativeLayout.Requisite dto = new StockDetailActionBarRelativeLayout.Requisite(
                                         requisite.securityId,
                                         securityCompactDTO,
                                         null, null);
+                                BuySellStockFragment.this.securityId = requisite.securityId;
                                 if (dto.securityCompactDTO != null)
                                 {
                                     FxPairSecurityId fxPairSecurityId = null;
