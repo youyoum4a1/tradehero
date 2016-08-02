@@ -32,6 +32,8 @@
   <string name="update_guide">Please reinstall TradeHero</string>
   <string name="suggest_to_upgrade">A new version is available, it is strongly recommended that you upgrade. Would you like to upgrade now?</string>
 
+  <string name="error_renew_fb_access_token">Facebook access token has expired</string>
+  
   <string name="please_update_token_title">Social authentication expired</string>
   <string name="please_update_token_description">Please reauthenticate with your preferred social network</string>
 

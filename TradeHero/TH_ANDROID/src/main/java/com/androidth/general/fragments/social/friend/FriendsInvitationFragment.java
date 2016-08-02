@@ -11,13 +11,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -30,8 +33,12 @@ import butterknife.OnItemClick;
 import butterknife.OnTextChanged;
 
 import com.androidth.general.GooglePlayMarketUtilBase;
+import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.competition.referral.MyProviderReferralDTO;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.network.service.ProviderServiceRx;
+import com.androidth.general.persistence.competition.MyProviderReferralCacheRx;
+import com.androidth.general.utils.route.THRouter;
 import com.facebook.CallbackManager;
 import com.facebook.messenger.MessengerUtils;
 import com.facebook.messenger.ShareToMessengerParams;
@@ -81,15 +88,18 @@ import timber.log.Timber;
 @Routable({
         "refer-friends",
         "refer-friend/:socialId/:socialUserId",
+        "provider-refer-friend/:providerId",
 })
 public class FriendsInvitationFragment extends BaseFragment
         implements SocialFriendUserView.OnElementClickListener
 {
+    @Bind(R.id.redeem_referral_code_card_view) CardView redeemReferralCodeContainer;
+    @Bind(R.id.redeem_referral_edit_text) EditText redeemReferralCodeEditText;
+    @Bind(R.id.redeem_referral_code_button) Button redeemReferralCodeButton;
     @Bind(R.id.social_friend_type_list) ListView socialListView;
     @Bind(R.id.social_friends_list) ListView friendsListView;
     @Bind(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
     @Bind(R.id.social_search_friends_none) TextView friendsListEmptyView;
-    @Bind(R.id.search_social_friends) EditText filterTextView;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
@@ -102,6 +112,8 @@ public class FriendsInvitationFragment extends BaseFragment
     @Inject @ShowAskForInviteDialog TimingIntervalPreference mShowAskForInviteDialogPreference;
     @Inject SocialShareHelper socialShareHelper;
     @Inject ProviderServiceRx serviceRx;
+    @Inject protected THRouter thRouter;
+    @Inject MyProviderReferralCacheRx myProviderReferralCacheRx;
 
     @NonNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
@@ -114,9 +126,11 @@ public class FriendsInvitationFragment extends BaseFragment
 
     public static final String ROUTER_SOCIAL_ID = "socialId";
     public static final String ROUTER_SOCIAL_USER_ID = "socialUserId";
+    public static final String ROUTER_PROVIDER_ID = "providerId";
 
     @RouteProperty(ROUTER_SOCIAL_ID) String socialId;
     @RouteProperty(ROUTER_SOCIAL_USER_ID) String socialUserId;
+    @RouteProperty(ROUTER_PROVIDER_ID) Integer providerId;
 
     private Bundle savedState;
     private CallbackManager callbackManager;
@@ -135,6 +149,7 @@ public class FriendsInvitationFragment extends BaseFragment
         socialFriendHandler = socialFriendHandlerProvider.get();
         socialFriendHandlerFacebook = facebookSocialFriendHandlerProvider.get();
         mShowAskForInviteDialogPreference.pushInFuture(TimingIntervalPreference.YEAR);
+        thRouter.inject(this);
     }
 
     @Override
@@ -156,6 +171,33 @@ public class FriendsInvitationFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         restoreSavedData(savedInstanceState);
+
+        if (providerId != null) {
+            myProviderReferralCacheRx.get(new ProviderId(providerId))
+                    .subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Action1<Pair<ProviderId, MyProviderReferralDTO>>()
+                    {
+                        @Override public void call(Pair<ProviderId, MyProviderReferralDTO> providerIdMyProviderReferralDTOPair)
+                        {
+                            MyProviderReferralDTO myProviderReferralDTO = providerIdMyProviderReferralDTOPair.second;
+
+                            if (myProviderReferralDTO.haveAlreadyRedeemed)
+                            {
+                                redeemReferralCodeContainer.setVisibility(View.GONE);
+                            }
+                        }
+                    }, new Action1<Throwable>()
+                    {
+                        @Override public void call(Throwable throwable)
+                        {
+                            Timber.e(throwable, throwable.getMessage());
+                        }
+                    });
+
+        } else {
+            redeemReferralCodeContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override public void onResume()
@@ -591,23 +633,6 @@ public class FriendsInvitationFragment extends BaseFragment
         {
             Timber.e(e, "SearchFriendsCallback error");
             // TODO need to tell user.
-            showSocialTypeList();
-        }
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    @OnTextChanged(value = R.id.search_social_friends,
-            callback = OnTextChanged.Callback.AFTER_TEXT_CHANGED)
-    public void afterTextChanged(Editable editable)
-    {
-        cancelPendingSearchTask();
-        if (editable != null && editable.toString().trim().length() > 0)
-        {
-            String query = editable.toString().trim();
-            scheduleSearch(query);
-        }
-        else
-        {
             showSocialTypeList();
         }
     }

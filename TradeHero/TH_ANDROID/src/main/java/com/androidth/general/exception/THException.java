@@ -1,6 +1,8 @@
 package com.androidth.general.exception;
 
 import android.support.annotation.StringRes;
+
+import com.androidth.general.utils.ExceptionUtils;
 import com.facebook.FacebookOperationCanceledException;
 import com.androidth.general.common.utils.RetrofitHelper;
 import com.androidth.general.R;
@@ -82,10 +84,16 @@ public class THException extends Exception
                         Timber.e(ex, ex.getMessage());
                     }
                     this.code = ExceptionCode.UnknownError;
-                    String errorMessage = dto != null
-                            ? THApp.context().getString(R.string.server_response) + dto.message
-                            : THApp.context().getString(R.string.error_unknown);
-                    return super.initCause(new Exception(errorMessage));
+                    if(ExceptionUtils.getStringElementFromThrowable(throwable, Constants.EXCEPTION_TYPE).equals(Constants.EXCEPTION_TYPE_FB)){
+                        this.code = ExceptionCode.ExpiredFBAccessToken;
+
+                    }else{
+                        String errorMessage = dto != null
+                                ? THApp.context().getString(R.string.server_response) + dto.message
+                                : THApp.context().getString(R.string.error_unknown);
+                        return super.initCause(new Exception(errorMessage));
+                    }
+
                 }
             }
         }
@@ -124,6 +132,7 @@ public class THException extends Exception
         NetworkError(R.string.error_network_connection),
         DoNotRunBelow(R.string.please_update),
         RenewSocialToken(R.string.please_update_token_title),
+        ExpiredFBAccessToken(R.string.error_renew_fb_access_token),
         ;
 
         private final boolean canContinue;

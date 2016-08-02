@@ -70,4 +70,8 @@ public class Constants
     }
 
     public static final String REALM_DB_NAME = "TH_DB_REALM.realm";
+
+    public static final String EXCEPTION_MESSAGE = "ExceptionMessage";
+    public static final String EXCEPTION_TYPE = "ExceptionType";
+    public static final String EXCEPTION_TYPE_FB = "Facebook.FacebookOAuthException";
 }
