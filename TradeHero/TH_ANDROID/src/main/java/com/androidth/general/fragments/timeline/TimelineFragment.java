@@ -79,69 +79,78 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 import timber.log.Timber;
 
-abstract public class TimelineFragment extends DashboardFragment
-{
+abstract public class TimelineFragment extends DashboardFragment {
     private static final String USER_BASE_KEY_BUNDLE_KEY = TimelineFragment.class.getName() + ".userBaseKey";
 
     //<editor-fold desc="Argument passing">
-    public static void putUserBaseKey(@NonNull Bundle bundle, @NonNull UserBaseKey userBaseKey)
-    {
+    public static void putUserBaseKey(@NonNull Bundle bundle, @NonNull UserBaseKey userBaseKey) {
         bundle.putBundle(USER_BASE_KEY_BUNDLE_KEY, userBaseKey.getArgs());
     }
 
-    @Nullable protected static UserBaseKey getUserBaseKey(@NonNull Bundle args)
-    {
+    @Nullable
+    protected static UserBaseKey getUserBaseKey(@NonNull Bundle args) {
         Bundle userBundle = args.getBundle(USER_BASE_KEY_BUNDLE_KEY);
-        if (userBundle != null)
-        {
+        if (userBundle != null) {
             return new UserBaseKey(userBundle);
         }
         return null;
     }
     //</editor-fold>
 
-    public enum TabType
-    {
+    public enum TabType {
         TIMELINE, PORTFOLIO_LIST,
     }
 
     //TODO Change Analytics
     //@Inject Analytics analytics;
-    @Inject Lazy<UserProfileCacheRx> userProfileCache;
-    @Inject LevelDefListCacheRx levelDefListCache;
-    @Inject Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
-    @Inject protected THRouter thRouter;
-    @Inject protected TimelineCacheRx timelineCache;
-    @Inject DiscussionFragmentUtil discussionFragmentUtil;
-    @Inject AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
-    @Inject CurrentUserId currentUserId;
-    @Inject protected PortfolioCompactListCacheRx portfolioCompactListCache;
-    @Inject ProviderCacheRx providerCacheRx;
+    @Inject
+    Lazy<UserProfileCacheRx> userProfileCache;
+    @Inject
+    LevelDefListCacheRx levelDefListCache;
+    @Inject
+    Provider<DisplayablePortfolioFetchAssistant> displayablePortfolioFetchAssistantProvider;
+    @Inject
+    protected THRouter thRouter;
+    @Inject
+    protected TimelineCacheRx timelineCache;
+    @Inject
+    DiscussionFragmentUtil discussionFragmentUtil;
+    @Inject
+    AbstractDiscussionCompactItemViewLinearDTOFactory viewDTOFactory;
+    @Inject
+    CurrentUserId currentUserId;
+    @Inject
+    protected PortfolioCompactListCacheRx portfolioCompactListCache;
+    @Inject
+    ProviderCacheRx providerCacheRx;
 
-    @Bind(R.id.timeline_list_view) StickyListHeadersListView timelineListView;
-    @Bind(R.id.swipe_container) SwipeRefreshLayout swipeRefreshContainer;
+    @Bind(R.id.timeline_list_view)
+    StickyListHeadersListView timelineListView;
+    @Bind(R.id.swipe_container)
+    SwipeRefreshLayout swipeRefreshContainer;
 
     protected UserBaseKey shownUserBaseKey;
 
-    @Nullable protected UserProfileDTO shownProfile;
+    @Nullable
+    protected UserProfileDTO shownProfile;
     private DisplayablePortfolioFetchAssistant displayablePortfolioFetchAssistant;
     private SimpleOwnPortfolioListItemAdapter portfolioListAdapter;
     private SubTimelineAdapterNew subTimelineAdapter;
 
     private UserProfileDetailView userProfileView;
 
-    @NonNull public TabType currentTab = TabType.PORTFOLIO_LIST;
+    @NonNull
+    public TabType currentTab = TabType.PORTFOLIO_LIST;
     protected boolean mIsOtherProfile = false;
     private boolean cancelRefreshingOnResume;
     //private BaseLiveFragmentUtil liveFragmentUtil;
 
-    @Override public void onCreate(Bundle savedInstanceState)
-    {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         thRouter.inject(this);
         shownUserBaseKey = getShownUserBaseKey();
-        if (shownUserBaseKey == null)
-        {
+        if (shownUserBaseKey == null) {
             throw new IllegalArgumentException("Should not end up with null shownUserBaseKey");
         }
         portfolioListAdapter = new SimpleOwnPortfolioListItemAdapter(
@@ -163,28 +172,27 @@ abstract public class TimelineFragment extends DashboardFragment
         subTimelineAdapter.appendHead(Arrays.asList(SubTimelineAdapterNew.DTO_LOADING));
     }
 
-    @Nullable protected UserBaseKey getShownUserBaseKey()
-    {
+    @Nullable
+    protected UserBaseKey getShownUserBaseKey() {
         return getUserBaseKey(getArguments());
     }
 
     @SuppressLint("InflateParams")
-    @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         userProfileView = (UserProfileDetailView) inflater.inflate(R.layout.user_profile_detail_view, null);
         return inflater.inflate(R.layout.fragment_timeline, container, false);
     }
 
-    @Override public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
-    {
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         timelineListView.addHeaderView(userProfileView, null, false);
         timelineListView.setAdapter(getAdapter());
-        timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
+        timelineListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 onMainItemClick(parent, view, position, id);
             }
         });
@@ -194,14 +202,14 @@ abstract public class TimelineFragment extends DashboardFragment
         //liveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
     }
 
-    @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         displayActionBarTitle();
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override public void onStart()
-    {
+    @Override
+    public void onStart() {
         super.onStart();
 
         fetchShownUserProfile();
@@ -215,18 +223,17 @@ abstract public class TimelineFragment extends DashboardFragment
                         portfolioListAdapter.getTabTypeObservable())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                new Action1<TabType>()
-                                {
-                                    @Override public void call(TabType tabType)
-                                    {
+                                new Action1<TabType>() {
+                                    @Override
+                                    public void call(TabType tabType) {
                                         display(tabType);
                                     }
                                 },
                                 new TimberOnErrorAction1("Failed to display tabType")));
     }
 
-    @Override public void onResume()
-    {
+    @Override
+    public void onResume() {
         super.onResume();
         loadLatestTimeline();
 
@@ -234,12 +241,10 @@ abstract public class TimelineFragment extends DashboardFragment
         nearEndScrollListener.lowerEndFlag();
         nearEndScrollListener.activateEnd();
         timelineListView.setOnScrollListener(new MultiScrollListener(fragmentElements.get().getListViewScrollListener(), nearEndScrollListener));
-        swipeRefreshContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener()
-        {
-            @Override public void onRefresh()
-            {
-                switch (currentTab)
-                {
+        swipeRefreshContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                switch (currentTab) {
                     case TIMELINE:
                         loadLatestTimeline();
                         break;
@@ -257,31 +262,28 @@ abstract public class TimelineFragment extends DashboardFragment
             }
         });
 
-        if (cancelRefreshingOnResume)
-        {
+        if (cancelRefreshingOnResume) {
             swipeRefreshContainer.setRefreshing(false);
             cancelRefreshingOnResume = false;
         }
         //liveFragmentUtil.onResume();
     }
 
-    @Override public void onLiveTradingChanged(boolean isLive)
-    {
+    @Override
+    public void onLiveTradingChanged(boolean isLive) {
         super.onLiveTradingChanged(isLive);
         //liveFragmentUtil.setCallToAction(isLive);
     }
 
-    protected void loadLatestTimeline()
-    {
+    protected void loadLatestTimeline() {
         onStopSubscriptions.add(getTimelineObservable(new TimelineKey(TimelineSection.Timeline,
                 shownUserBaseKey,
                 subTimelineAdapter.getLatestRange()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
-                        {
-                            @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> processed)
-                            {
+                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>() {
+                            @Override
+                            public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> processed) {
                                 subTimelineAdapter.appendHead(subTimelineAdapter.reprocess(processed));
                                 subTimelineAdapter.notifyDataSetChanged();
                                 swipeRefreshContainer.setRefreshing(false);
@@ -290,8 +292,7 @@ abstract public class TimelineFragment extends DashboardFragment
                         new ToastOnErrorAction1()));
     }
 
-    protected void loadOlderTimeline()
-    {
+    protected void loadOlderTimeline() {
         subTimelineAdapter.appendTail(Arrays.asList(SubTimelineAdapterNew.DTO_LOADING));
         subTimelineAdapter.notifyDataSetChanged();
         onStopSubscriptions.add(AppObservable.bindSupportFragment(
@@ -301,10 +302,9 @@ abstract public class TimelineFragment extends DashboardFragment
                         subTimelineAdapter.getOlderRange())))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>()
-                        {
-                            @Override public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> processed)
-                            {
+                        new Action1<List<AbstractDiscussionCompactItemViewLinear.DTO>>() {
+                            @Override
+                            public void call(List<AbstractDiscussionCompactItemViewLinear.DTO> processed) {
                                 subTimelineAdapter.appendTail(subTimelineAdapter.reprocess(processed));
                                 subTimelineAdapter.notifyDataSetChanged();
                             }
@@ -312,20 +312,18 @@ abstract public class TimelineFragment extends DashboardFragment
                         new ToastOnErrorAction1()));
     }
 
-    @NonNull protected Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> getTimelineObservable(
-            @NonNull TimelineKey key)
-    {
+    @NonNull
+    protected Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> getTimelineObservable(
+            @NonNull TimelineKey key) {
         return timelineCache.get(key)
                 .subscribeOn(Schedulers.computation())
                 .take(1)
-                .flatMap(new Func1<Pair<TimelineKey, TimelineDTO>, Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>>>()
-                {
-                    @Override public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> call(
-                            Pair<TimelineKey, TimelineDTO> pair)
-                    {
+                .flatMap(new Func1<Pair<TimelineKey, TimelineDTO>, Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>>>() {
+                    @Override
+                    public Observable<List<AbstractDiscussionCompactItemViewLinear.DTO>> call(
+                            Pair<TimelineKey, TimelineDTO> pair) {
                         List<TimelineItemDTO> enhancedItems = pair.second.getEnhancedItems();
-                        if (enhancedItems != null)
-                        {
+                        if (enhancedItems != null) {
                             return viewDTOFactory.createTimelineItemViewLinearDTOs(enhancedItems);
                         }
                         return Observable.<List<AbstractDiscussionCompactItemViewLinear.DTO>>just(
@@ -334,28 +332,26 @@ abstract public class TimelineFragment extends DashboardFragment
                 });
     }
 
-    private FlagNearEdgeScrollListener createNearEndScrollListener()
-    {
-        return new FlagNearEdgeScrollListener()
-        {
-            @Override public void raiseEndFlag()
-            {
+    private FlagNearEdgeScrollListener createNearEndScrollListener() {
+        return new FlagNearEdgeScrollListener() {
+            @Override
+            public void raiseEndFlag() {
                 super.raiseEndFlag();
                 loadOlderTimeline();
             }
         };
     }
 
-    @Override public void onPause()
-    {
+    @Override
+    public void onPause() {
         fragmentElements.get().getMovableBottom().setOnMovableBottomTranslateListener(null);
         timelineListView.setOnScrollListener(null);
         swipeRefreshContainer.setOnRefreshListener(null);
         super.onPause();
     }
 
-    @Override public void onDestroyView()
-    {
+    @Override
+    public void onDestroyView() {
         //liveFragmentUtil.onDestroyView();
         //liveFragmentUtil = null;
         displayablePortfolioFetchAssistant = null;
@@ -366,17 +362,16 @@ abstract public class TimelineFragment extends DashboardFragment
         super.onDestroyView();
     }
 
-    @Override public void onDestroy()
-    {
+    @Override
+    public void onDestroy() {
         portfolioListAdapter = null;
         subTimelineAdapter = null;
         super.onDestroy();
     }
 
-    @NonNull protected StickyListHeadersAdapter getAdapter()
-    {
-        switch (currentTab)
-        {
+    @NonNull
+    protected StickyListHeadersAdapter getAdapter() {
+        switch (currentTab) {
             case PORTFOLIO_LIST:
                 return portfolioListAdapter;
             case TIMELINE:
@@ -386,14 +381,12 @@ abstract public class TimelineFragment extends DashboardFragment
         }
     }
 
-    protected void registerButtonClicks()
-    {
+    protected void registerButtonClicks() {
         onDestroyViewSubscriptions.add(userProfileView.getButtonClickedObservable()
                 .subscribe(
-                        new Action1<UserProfileCompactViewHolder.ButtonType>()
-                        {
-                            @Override public void call(UserProfileCompactViewHolder.ButtonType buttonType)
-                            {
+                        new Action1<UserProfileCompactViewHolder.ButtonType>() {
+                            @Override
+                            public void call(UserProfileCompactViewHolder.ButtonType buttonType) {
                                 handleButtonClicked(buttonType);
                             }
                         },
@@ -401,24 +394,22 @@ abstract public class TimelineFragment extends DashboardFragment
     }
 
     //<editor-fold desc="Display methods">
-    private void fetchPortfolioList()
-    {
+    private void fetchPortfolioList() {
         onStopSubscriptions.add(displayablePortfolioFetchAssistant.get(shownUserBaseKey)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DisplayablePortfolioDTOList>()
-                {
-                    @Override public void onCompleted()
-                    {
+                .subscribe(new Observer<DisplayablePortfolioDTOList>() {
+                    @Override
+                    public void onCompleted() {
                         Timber.d("completed");
                     }
 
-                    @Override public void onError(Throwable e)
-                    {
+                    @Override
+                    public void onError(Throwable e) {
                         Timber.e(e, "error");
                     }
 
-                    @Override public void onNext(DisplayablePortfolioDTOList displayablePortfolioDTOs)
-                    {
+                    @Override
+                    public void onNext(DisplayablePortfolioDTOList displayablePortfolioDTOs) {
                         swipeRefreshContainer.setRefreshing(false);
                         cancelRefreshingOnResume = true;
                         portfolioListAdapter.setItems((List) displayablePortfolioDTOs);
@@ -427,15 +418,13 @@ abstract public class TimelineFragment extends DashboardFragment
                 }));
     }
 
-    protected void linkWith(@NonNull UserProfileDTO userProfileDTO)
-    {
+    protected void linkWith(@NonNull UserProfileDTO userProfileDTO) {
         this.shownProfile = userProfileDTO;
         userProfileView.display(shownProfile);
         displayActionBarTitle();
     }
 
-    protected void display(@NonNull TabType tabType)
-    {
+    protected void display(@NonNull TabType tabType) {
         currentTab = tabType;
         timelineListView.setAdapter(getAdapter());
         portfolioListAdapter.setCurrentTabType(tabType);
@@ -445,106 +434,84 @@ abstract public class TimelineFragment extends DashboardFragment
     }
     //</editor-fold>
 
-    protected void displayActionBarTitle()
-    {
-        if (shownProfile != null)
-        {
-            if (shownProfile.id == currentUserId.get())
-            {
+    protected void displayActionBarTitle() {
+        if (shownProfile != null) {
+            if (shownProfile.id == currentUserId.get()) {
                 setActionBarTitle(getString(R.string.me));
-            }
-            else
-            {
+            } else {
                 setActionBarTitle(UserBaseDTOUtil.getLongDisplayName(getResources(), shownProfile));
             }
-        }
-        else
-        {
+        } else {
             setActionBarTitle(R.string.loading_loading);
         }
     }
 
-    protected void fetchShownUserProfile()
-    {
+    protected void fetchShownUserProfile() {
         onStopSubscriptions.add(AppObservable.bindSupportFragment(this, userProfileCache.get().get(shownUserBaseKey))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new TimelineFragmentUserProfileCacheObserver()));
     }
 
-    protected void fetchLevelDefList()
-    {
+    protected void fetchLevelDefList() {
         onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(this, levelDefListCache.getOne(new LevelDefListId()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<Pair<LevelDefListId, LevelDefDTOList>>()
-                        {
-                            @Override public void call(Pair<LevelDefListId, LevelDefDTOList> pair)
-                            {
+                        new Action1<Pair<LevelDefListId, LevelDefDTOList>>() {
+                            @Override
+                            public void call(Pair<LevelDefListId, LevelDefDTOList> pair) {
                                 userProfileView.setLevelDef(pair.second);
                             }
                         },
                         new TimberOnErrorAction1("Failed to fetch level definitions")));
     }
 
-    protected void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l)
-    {
+    protected void onMainItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Object item = adapterView.getItemAtPosition(i);
-        if (item instanceof DisplayablePortfolioDTO)
-        {
+        if (item instanceof DisplayablePortfolioDTO) {
             DisplayablePortfolioDTO displayablePortfolioDTO = (DisplayablePortfolioDTO) item;
-            if (displayablePortfolioDTO.portfolioDTO != null)
-            {
-                if (displayablePortfolioDTO.portfolioDTO.isWatchlist)
-                {
+            if (displayablePortfolioDTO.portfolioDTO != null) {
+                if (displayablePortfolioDTO.portfolioDTO.isWatchlist) {
                     pushWatchlistPositionFragment();
-                }
-                else if (displayablePortfolioDTO.ownedPortfolioId != null)
-                {
+                } else if (displayablePortfolioDTO.ownedPortfolioId != null) {
                     pushPositionListFragment(displayablePortfolioDTO.ownedPortfolioId, displayablePortfolioDTO.portfolioDTO);
                 }
             }
-        }
-        else if (item.equals(SubTimelineAdapterNew.DTO_CALL_ACTION))
-        {
+        } else if (item.equals(SubTimelineAdapterNew.DTO_CALL_ACTION)) {
             navigator.get().goToTab(RootFragmentType.TRENDING);
-        }
-        else
-        {
+        } else {
             Timber.d("TimelineFragment, unhandled view %s", view);
         }
     }
 
-    private void pushPositionListFragment(@NonNull OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioDTO portfolioDTO)
-    {
+    private void pushPositionListFragment(@NonNull OwnedPortfolioId ownedPortfolioId, @Nullable PortfolioDTO portfolioDTO) {
         Bundle args = new Bundle();
 
-        if (ownedPortfolioId.userId.equals(currentUserId.get()))
-        {
+        if (ownedPortfolioId.userId.equals(currentUserId.get())) {
             TabbedPositionListFragment.putApplicablePortfolioId(args, ownedPortfolioId);
         }
         TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
         TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
 
-        if (portfolioDTO != null)
-        {
+        if (portfolioDTO != null) {
             TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
-            if (portfolioDTO.providerId != null && portfolioDTO.providerId > 0)
-            {
-                ProviderId providerId =  new ProviderId(portfolioDTO.providerId);
+            if (portfolioDTO.providerId != null && portfolioDTO.providerId > 0) {
+                ProviderId providerId = new ProviderId(portfolioDTO.providerId);
                 onStopSubscriptions.add(providerCacheRx.get(providerId).subscribe(new Action1<Pair<ProviderId, ProviderDTO>>() {
                     @Override
                     public void call(Pair<ProviderId, ProviderDTO> providerIdProviderDTOPair) {
-                            if(!providerIdProviderDTOPair.second.canTradeNow){
-                                MainCompetitionFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
-                                MainCompetitionFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-                                navigator.get().pushFragment(MainCompetitionFragment.class, args);
-                                return;
-                            }
-                            else {
-                                TabbedPositionListFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
-                                navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
-                                return;
-                            }
+                        if (!providerIdProviderDTOPair.second.canTradeNow) {
+                            MainCompetitionFragment.putProviderId(args, new ProviderId(portfolioDTO.providerId));
+                            MainCompetitionFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                            navigator.get().pushFragment(MainCompetitionFragment.class, args);
+                            return;
+                        } else {
+                            args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL, providerIdProviderDTOPair.second.navigationLogoUrl);
+                            args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, providerIdProviderDTOPair.second.hexColor);
+
+                            CompetitionLeaderboardPositionListFragment.putProviderId(args, providerIdProviderDTOPair.first);
+                            navigator.get().pushFragment(CompetitionLeaderboardPositionListFragment.class, args);
+                            return;
+                        }
                     }
                 }));
                 return;
@@ -553,60 +520,53 @@ abstract public class TimelineFragment extends DashboardFragment
         navigator.get().pushFragment(TabbedPositionListFragment.class, args);
     }
 
-    private void pushWatchlistPositionFragment()
-    {
+    private void pushWatchlistPositionFragment() {
         Bundle args = new Bundle();
         MainWatchlistPositionFragment.putShowActionBarTitle(args, true);
         navigator.get().pushFragment(MainWatchlistPositionFragment.class, args);
     }
 
-    protected class TimelineFragmentUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>>
-    {
-        @Override public void onNext(Pair<UserBaseKey, UserProfileDTO> pair)
-        {
+    protected class TimelineFragmentUserProfileCacheObserver implements Observer<Pair<UserBaseKey, UserProfileDTO>> {
+        @Override
+        public void onNext(Pair<UserBaseKey, UserProfileDTO> pair) {
             linkWith(pair.second);
         }
 
-        @Override public void onCompleted()
-        {
+        @Override
+        public void onCompleted() {
         }
 
-        @Override public void onError(Throwable e)
-        {
+        @Override
+        public void onError(Throwable e) {
             THToast.show(getString(R.string.error_fetch_user_profile));
         }
     }
 
-    protected boolean isFollowing()
-    {
+    protected boolean isFollowing() {
         UserBaseKey currentUser = currentUserId.toUserBaseKey();
         UserProfileDTO currentProfile = userProfileCache.get().getCachedValue(currentUser);
-        if (currentProfile != null)
-        {
+        if (currentProfile != null) {
             return currentProfile.isFollowingUser(shownUserBaseKey);
         }
         return false;
     }
 
-    protected void registerUserDiscussionActions()
-    {
+    protected void registerUserDiscussionActions() {
         onStopSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
                 subTimelineAdapter.getUserActionObservable())
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<UserDiscussionAction, Observable<UserDiscussionAction>>()
-                {
-                    @Override public Observable<UserDiscussionAction> call(UserDiscussionAction userDiscussionAction)
-                    {
+                .flatMap(new Func1<UserDiscussionAction, Observable<UserDiscussionAction>>() {
+                    @Override
+                    public Observable<UserDiscussionAction> call(UserDiscussionAction userDiscussionAction) {
                         return discussionFragmentUtil.handleUserAction(getActivity(), userDiscussionAction);
                     }
                 })
                 .retry()
                 .subscribe(
-                        new Action1<UserDiscussionAction>()
-                        {
-                            @Override public void call(UserDiscussionAction userDiscussionAction)
-                            {
+                        new Action1<UserDiscussionAction>() {
+                            @Override
+                            public void call(UserDiscussionAction userDiscussionAction) {
                                 Timber.e(new Exception("Not handled " + userDiscussionAction), "");
                             }
                         },
@@ -614,10 +574,8 @@ abstract public class TimelineFragment extends DashboardFragment
     }
 
     //<editor-fold desc="UserProfileCompactViewHolder">
-    protected void handleButtonClicked(@NonNull UserProfileCompactViewHolder.ButtonType buttonType)
-    {
-        switch (buttonType)
-        {
+    protected void handleButtonClicked(@NonNull UserProfileCompactViewHolder.ButtonType buttonType) {
+        switch (buttonType) {
             case HEROES:
                 pushHeroFragment();
                 break;
@@ -635,8 +593,7 @@ abstract public class TimelineFragment extends DashboardFragment
         }
     }
 
-    protected void pushHeroFragment()
-    {
+    protected void pushHeroFragment() {
         Bundle bundle = new Bundle();
         HeroesFragment.putFollowerId(
                 bundle,
@@ -644,8 +601,7 @@ abstract public class TimelineFragment extends DashboardFragment
         navigator.get().pushFragment(HeroesFragment.class, bundle);
     }
 
-    protected void pushFollowerFragment()
-    {
+    protected void pushFollowerFragment() {
         Bundle bundle = new Bundle();
         FollowersFragment.putHeroId(
                 bundle,
@@ -653,8 +609,7 @@ abstract public class TimelineFragment extends DashboardFragment
         navigator.get().pushFragment(FollowersFragment.class, bundle);
     }
 
-    protected void pushAchievementFragment()
-    {
+    protected void pushAchievementFragment() {
         Bundle bundle = new Bundle();
         AchievementListFragment.putUserId(bundle, mIsOtherProfile ? shownUserBaseKey : currentUserId.toUserBaseKey());
         navigator.get().pushFragment(AchievementListFragment.class, bundle);
