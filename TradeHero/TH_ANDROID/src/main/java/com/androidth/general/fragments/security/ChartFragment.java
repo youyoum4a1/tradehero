@@ -218,7 +218,6 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
         chartDTO = chartDTOFactory.createChartDTO();
-
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
