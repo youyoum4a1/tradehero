@@ -107,10 +107,10 @@ public class SplashActivity extends BaseActivity
         THAppsFlyer.setAppsFlyerKey(this, MetricsModule.APP_FLYER_KEY);
         THAppsFlyer.sendTracking(this);
 
-        if (!Constants.RELEASE)
-        {
-            VersionUtils.logScreenMeasurements(this);
-        }
+//        if (!Constants.RELEASE)
+//        {
+//            VersionUtils.logScreenMeasurements(this);
+//        }
         //TODO Add code for Google Analytics
         //analytics.addEvent(new AppLaunchEvent()).addEvent(new SimpleEvent(AnalyticsConstants.LoadingScreen));
 

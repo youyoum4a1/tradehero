@@ -97,7 +97,13 @@
   public static *** d(...);
 }
 
--assumenosideeffects class android.util.Log { *; }
+-assumenosideeffects class android.util.Log {
+    public static int v(...);
+    public static int i(...);
+    public static int w(...);
+    public static int d(...);
+    public static int e(...);
+}
 
 -keep class !com.tradehero.** { *; }
 -dontwarn java.nio.files.**
