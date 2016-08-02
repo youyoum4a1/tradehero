@@ -2,6 +2,7 @@ package com.androidth.general.network.service;
 
 
 import com.androidth.general.api.competition.JumioVerifyBodyDTO;
+import com.androidth.general.api.competition.referral.MyProviderReferralDTO;
 import com.androidth.general.api.kyc.BrokerDocumentUploadResponseDTO;
 import com.androidth.general.api.kyc.KYCForm;
 import com.androidth.general.api.kyc.KYCFormOptionsDTO;
@@ -87,4 +88,12 @@ public interface LiveServiceRx {
     Observable<ArrayList<ProviderQuestionnaireDTO>> getAdditionalQuestionnaires(
             @Path("providerId") int providerId
     );
+
+    //<editor-fold desc="Get Competition Referral Status">
+    @GET("/competition/myreferralcode/{providerId}")
+    Observable<MyProviderReferralDTO> getMyProviderReferralStatus(
+            @Path("providerId") int providerId
+    );
+    //</editor-fold>
+
 }

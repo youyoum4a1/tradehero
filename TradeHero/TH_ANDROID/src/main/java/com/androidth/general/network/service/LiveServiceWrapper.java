@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.androidth.general.api.competition.JumioVerifyBodyDTO;
+import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.competition.referral.MyProviderReferralDTO;
 import com.androidth.general.api.kyc.AnnualIncomeRange;
 import com.androidth.general.api.kyc.BrokerApplicationDTO;
 import com.androidth.general.api.kyc.BrokerDocumentUploadResponseDTO;
@@ -333,4 +335,8 @@ public class LiveServiceWrapper
         ));
     }
 
+    @NonNull public Observable<MyProviderReferralDTO> getMyProviderReferralStatusRx(@NonNull ProviderId providerId)
+    {
+        return this.liveServiceRx.getMyProviderReferralStatus(providerId.key);
+    }
 }

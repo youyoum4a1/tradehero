@@ -6,6 +6,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,49 +129,27 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
 
     private void fetchProviderIdList()
     {
-        //onStopSubscriptions.add(AppObservable.bindSupportFragment(this, providerListCache.get(new ProviderListKey()))
-        //        .observeOn(AndroidSchedulers.mainThread())
-        //        .subscribe(
-        //                new Action1<Pair<ProviderListKey, ProviderDTOList>>()
-        //                {
-        //                    @Override public void call(Pair<ProviderListKey, ProviderDTOList> pair)
-        //                    {
-        //                        providerDTOs = pair.second;
-        //                        sortProviderByVip();
-        //                        recreateAdapter();
-        //                    }
-        //                },
-        //                new Action1<Throwable>()
-        //                {
-        //                    @Override public void call(Throwable throwable)
-        //                    {
-        //                        setContestCenterScreen(R.id.error);
-        //                        THToast.show(getString(R.string.error_fetch_provider_info_list));
-        //                        Timber.e("Failed retrieving the list of competition providers", throwable);
-        //                    }
-        //                }));
-
-        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, providerListCache.fetch(new ProviderListKey()))
+        onStopSubscriptions.add(AppObservable.bindSupportFragment(this, providerListCache.get(new ProviderListKey()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                new Action1<ProviderDTOList>()
-                {
-                    @Override public void call(ProviderDTOList latestProviderDTOs)
-                    {
-                        providerDTOs = latestProviderDTOs;
-                        sortProviderByVip();
-                        recreateAdapter();
-                    }
-                },
-                new Action1<Throwable>()
-                {
-                    @Override public void call(Throwable throwable)
-                    {
-                        setContestCenterScreen(R.id.error);
-                        THToast.show(getString(R.string.error_fetch_provider_info_list));
-                        Timber.e("Failed retrieving the list of competition providers", throwable);
-                    }
-                }));
+                        new Action1<Pair<ProviderListKey, ProviderDTOList>>()
+                        {
+                            @Override public void call(Pair<ProviderListKey, ProviderDTOList> pair)
+                            {
+                                providerDTOs = pair.second;
+                                sortProviderByVip();
+                                recreateAdapter();
+                            }
+                        },
+                        new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                setContestCenterScreen(R.id.error);
+                                THToast.show(getString(R.string.error_fetch_provider_info_list));
+                                Timber.e("Failed retrieving the list of competition providers", throwable);
+                            }
+                        }));
     }
 
     /** make sure vip provider is in the front of the list */

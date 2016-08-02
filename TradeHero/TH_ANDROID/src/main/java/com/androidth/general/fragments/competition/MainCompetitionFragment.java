@@ -69,6 +69,7 @@ import com.androidth.general.models.security.ProviderTradableSecuritiesHelper;
 import com.androidth.general.network.service.ProviderServiceWrapper;
 import com.androidth.general.persistence.competition.CompetitionListCacheRx;
 import com.androidth.general.persistence.competition.CompetitionPreseasonCacheRx;
+import com.androidth.general.persistence.competition.MyProviderReferralCacheRx;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.competition.ProviderDisplayCellListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
@@ -133,6 +134,7 @@ public class MainCompetitionFragment extends DashboardFragment
     @Inject CompetitionPreseasonCacheRx competitionPreSeasonCacheRx;
     @Inject ProviderServiceWrapper providerServiceWrapper;
     @Inject protected CurrentUserId currentUserId;
+    @Inject MyProviderReferralCacheRx myProviderReferralCacheRx;
     ////TODO Change Analytics
     //@Inject Analytics analytics;
 
@@ -196,6 +198,7 @@ public class MainCompetitionFragment extends DashboardFragment
         //analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.Competition_Home, AnalyticsConstants.ProviderId, String.valueOf(providerId.key)));
 
         applicablePortfolioId = getApplicablePortfolioId(getArguments());
+        myProviderReferralCacheRx.get(providerId).subscribe();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
