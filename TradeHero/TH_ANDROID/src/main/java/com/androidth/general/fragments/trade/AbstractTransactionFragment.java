@@ -19,6 +19,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.internal.util.Predicate;
+import com.androidth.general.api.competition.ProviderDTO;
+import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
@@ -60,6 +62,7 @@ import com.androidth.general.models.portfolio.MenuOwnedPortfolioId;
 import com.androidth.general.network.service.QuoteServiceWrapper;
 import com.androidth.general.network.service.SecurityServiceWrapper;
 import com.androidth.general.network.share.SocialSharer;
+import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.portfolio.OwnedPortfolioIdListCacheRx;
 import com.androidth.general.persistence.portfolio.PortfolioCompactListCacheRx;
 import com.androidth.general.persistence.position.PositionListCacheRx;
@@ -122,6 +125,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
     @Inject PortfolioCompactListCacheRx portfolioCompactListCache;
     @Inject SecurityServiceWrapper securityServiceWrapper;
     @Inject PositionListCacheRx positionCompactListCache;
+    @Inject ProviderCacheRx providerCacheRx;
     //TODO Change Analytics
     //@Inject Analytics analytics;
     @Inject QuoteServiceWrapper quoteServiceWrapper;
@@ -271,6 +275,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
 
                                     quantity = getQuantityFromTradeValue(portfolioCompactDTO, quoteDTO, tradeValue);
 
+                                    // selling current open position (sell)
                                     if (positionDTO != null)
                                     {
                                         String quantityText = mQuantityEditText.getText().toString();
@@ -289,11 +294,23 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
                                             return quantityValue;
                                         }
                                     }
+                                    // open new position (buy)
                                     else
                                     {
-                                        if (tradeValue - 1 > portfolioCompactDTO.cashBalanceRefCcy)
+                                        double maxTradeValue = portfolioCompactDTO.cashBalanceRefCcy;
+
+                                        if (portfolioCompactDTO.providerId != null) {
+
+                                            ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
+
+                                            if (providerDTO.maxLimitPerTrade != null && providerDTO.maxLimitPerTrade < maxTradeValue) {
+                                                maxTradeValue = providerDTO.maxLimitPerTrade;
+                                            }
+                                        }
+
+                                        if (tradeValue - 1 > maxTradeValue)
                                         {
-                                            tradeValueText = THSignedNumber.builder(portfolioCompactDTO.cashBalanceRefCcy)
+                                            tradeValueText = THSignedNumber.builder(maxTradeValue)
                                                     .relevantDigitCount(1)
                                                     .withOutSign()
                                                     .build().toString();
@@ -794,10 +811,21 @@ abstract public class AbstractTransactionFragment extends DashboardFragment
             @NonNull QuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition)
     {
+        if (portfolioCompactDTO.providerId != null) {
+            ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
+
+            return PortfolioCompactDTOUtil.getMaxPurchasableShares(
+                    portfolioCompactDTO,
+                    quoteDTO,
+                    closeablePosition,
+                    providerDTO);
+        }
+
         return PortfolioCompactDTOUtil.getMaxPurchasableShares(
                 portfolioCompactDTO,
                 quoteDTO,
-                closeablePosition);
+                closeablePosition,
+                null);
     }
 
     @Nullable protected Integer getMaxSellableShares(

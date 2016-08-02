@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.util.Pair;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,9 +49,7 @@ import com.androidth.general.models.chart.ChartTimeSpan;
 import com.androidth.general.models.number.THSignedMoney;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.models.number.THSignedPercentage;
-import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
-import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.alert.AlertCompactListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompactCacheRx;
 import com.androidth.general.persistence.watchlist.UserWatchlistPositionCacheRx;
@@ -77,8 +74,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.Lazy;
-import microsoft.aspnet.signalr.client.hubs.HubProxy;
-import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.app.AppObservable;
@@ -161,8 +156,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     private Runnable chooseChartImageSizeTask;
     private Callback chartImageCallback;
     private Subscription quoteSubscription;
-    private SignalRManager signalRManager;
-    private HubProxy hubProxy;
+    //private SignalRManager signalRManager;
+    //private HubProxy hubProxy;
 
     @Nullable private Map<SecurityId, AlertCompactDTO> mappedAlerts;
     @Nullable protected WatchlistPositionDTOList watchedList;
@@ -472,9 +467,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Override
     public void onResume() {
         super.onResume();
-        signalRManager = new SignalRManager(requestHeaders, currentUserId);
-        hubProxy = signalRManager.getDefaultProxy();
-        signalRBuySellPrices();
+        //signalRManager = new SignalRManager(requestHeaders, currentUserId);
+        //hubProxy = signalRManager.getDefaultProxy();
+        //signalRBuySellPrices();
         if (getParentFragment() instanceof AbstractBuySellFragment) {
                 quoteSubscription = Observable.combineLatest(((AbstractBuySellFragment) getParentFragment()).quoteObservable,
                         ((AbstractBuySellFragment) getParentFragment()).securityObservable.observeOn(AndroidSchedulers.mainThread())
@@ -495,8 +490,8 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                                 new Action1<Pair<SecurityCompactDTO, QuoteDTO>>() {
                                     @Override
                                     public void call(Pair<SecurityCompactDTO, QuoteDTO> securityCompactDTOQuoteDTOPair) {
-                                        if(securityCompactDTOQuoteDTOPair.second!=null)
-                                            displayBuySellPrice(securityCompactDTOQuoteDTOPair.first, securityCompactDTOQuoteDTOPair.second.ask, securityCompactDTOQuoteDTOPair.second.bid);
+                                        //if(securityCompactDTOQuoteDTOPair.second!=null)
+                                            //displayBuySellPrice(securityCompactDTOQuoteDTOPair.first, securityCompactDTOQuoteDTOPair.second.ask, securityCompactDTOQuoteDTOPair.second.bid);
                                     }
                                 },
                                 new TimberOnErrorAction1("Failed to combine quote and security in ChartFragment"));
@@ -542,38 +537,6 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         }
 
         displayStockRoi(securityCompactDTO);
-    }
-    public void signalRBuySellPrices(){
-
-        onStopSubscriptions.add(((AbstractBuySellFragment) getParentFragment()).securityObservable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(securityDTO ->{
-            signalRManager.getConncetion().start().done(actionVoid -> {
-                hubProxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, securityCompactDTO.id, currentUserId.get());
-            });
-            hubProxy.on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
-
-                @Override
-                public void run(SignatureContainer2 signatureContainer2) {
-                    Log.v(getTag(), "Object signalR: " + signatureContainer2.toString());
-                    LiveQuoteDTO liveQuote = signatureContainer2.signedObject;
-                    if (signatureContainer2 == null || signatureContainer2.signedObject == null || signatureContainer2.signedObject.id == 121234) {
-                        return;
-                    } else {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(liveQuote!=null) {
-                                    displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
-                                    if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
-                                        quoteSubscription.unsubscribe();
-                                }
-                            }
-                        });
-
-                    }
-                }
-            }, SignatureContainer2.class);
-
-        }));
     }
 
     private void displayStockRoi(SecurityCompactDTO securityCompactDTO)

@@ -12,11 +12,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.common.SlidingTabLayout;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
@@ -25,9 +25,17 @@ import com.androidth.general.api.position.PositionDTO;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityId;
+import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
+import com.androidth.general.api.security.key.FxPairSecurityId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.fragments.security.BuySellBottomStockPagerAdapter;
+import com.androidth.general.models.number.THSignedNumber;
+import com.androidth.general.models.number.THSignedPercentage;
 import com.androidth.general.rx.TimberOnErrorAction1;
+import com.androidth.general.utils.StringUtils;
+import com.squareup.picasso.Picasso;
+import com.tradehero.route.Routable;
+import com.tradehero.route.RouteProperty;
 
 import java.util.concurrent.TimeUnit;
 
@@ -42,23 +50,33 @@ import rx.schedulers.Schedulers;
 @Routable({
         "stock-security/:exchange/:symbol"
 })
-public class BuySellStockFragment extends AbstractBuySellFragment
-{
+public class  BuySellStockFragment extends AbstractBuySellFragment {
     @Bind(R.id.tabs) protected SlidingTabLayout mSlidingTabLayout;
     @Bind(R.id.stock_details_header) ViewGroup stockDetailHeader;
 
     @Bind(R.id.chart_frame) protected RelativeLayout mInfoFrame;
     @Bind(R.id.trade_bottom_pager) protected ViewPager mBottomViewPager;
 
+    @Bind(R.id.stock_name) TextView stockName;
+    @Bind(R.id.exchange_name) TextView exchangeName;
+    @Bind(R.id.buy_price) TextView buyPrice;
+    @Bind(R.id.sell_price) TextView sellPrice;
+
+    @Bind(R.id.stock_image) ImageView stockImage;
+    @Bind(R.id.tv_stock_roi) TextView stockRoi;
     //TODO Change Analytics
     //@Inject Analytics analytics;
 
     @RouteProperty("exchange") String exchange;
     @RouteProperty("symbol") String symbol;
 
+    @Bind(R.id.btn_watched) @Nullable protected ImageView btnWatched;
+    @Bind(R.id.btn_alerted) @Nullable protected View btnAlerted;
+
     private BuySellBottomStockPagerAdapter bottomViewPagerAdapter;
 
-    protected StockDetailActionBarRelativeLayout actionBarLayout;
+
+    //protected StockDetailActionBarRelativeLayout actionBarLayout;
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState)
@@ -84,22 +102,18 @@ public class BuySellStockFragment extends AbstractBuySellFragment
         super.onCreateOptionsMenu(menu, inflater);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowTitleEnabled(true);
 
-        final StockDetailActionBarRelativeLayout actionBarLayout =
+        /*final StockDetailActionBarRelativeLayout actionBarLayout =
                 (StockDetailActionBarRelativeLayout) LayoutInflater.from(actionBar.getThemedContext())
                         .inflate(R.layout.stock_detail_custom_actionbar, null);
-        this.actionBarLayout = actionBarLayout;
+        this.actionBarLayout = actionBarLayout;*/
         onDestroyOptionsMenuSubscriptions.add(quoteObservable.observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<QuoteDTO, Observable<Boolean>>()
                 {
                     @Override public Observable<Boolean> call(@NonNull QuoteDTO quoteDTO)
                     {
-                        if (actionBarLayout.circleProgressBar != null)
-                        {
-                            return actionBarLayout.circleProgressBar.start(getMillisecondQuoteRefresh());
-                        }
+
                         return Observable.just(true).delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
                     }
                 })
@@ -121,13 +135,48 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                         {
                             @Override public void call(SecurityCompactDTO securityCompactDTO)
                             {
-                                actionBarLayout.display(new StockDetailActionBarRelativeLayout.Requisite(
+                                //actionBarLayout.display9);
+                                StockDetailActionBarRelativeLayout.Requisite dto =new StockDetailActionBarRelativeLayout.Requisite(
                                         requisite.securityId,
                                         securityCompactDTO,
-                                        null, null));
+                                        null, null);
+                                if (dto.securityCompactDTO != null)
+                                {
+                                    FxPairSecurityId fxPairSecurityId = null;
+                                    if (dto.securityCompactDTO instanceof FxSecurityCompactDTO)
+                                    {
+                                        fxPairSecurityId = ((FxSecurityCompactDTO) dto.securityCompactDTO).getFxPair();
+                                    }
+
+                                    if (fxPairSecurityId != null)
+                                    {
+                                        actionBar.setTitle(String.format("%s/%s", fxPairSecurityId.left, fxPairSecurityId.right));
+                                        //stockSubTitle.setText(null);
+                                    }
+                                    else
+                                    {
+                                        String actionTitle;
+                                        if (!StringUtils.isNullOrEmpty(dto.securityCompactDTO.name))
+                                        {
+                                            actionTitle = dto.securityCompactDTO.getExchangeSymbol();
+
+                                        }
+                                        else
+                                        {
+                                                actionTitle = (dto.securityCompactDTO.getExchangeSymbol());
+
+                                        }
+                                        actionBar.setTitle(actionTitle);
+                                    }
+
+                                    SecurityCompactDTO secDto = dto.securityCompactDTO;
+                                    Picasso.with(getContext()).load(secDto.imageBlobUrl).into(stockImage);
+                                    stockName.setText(secDto.name);
+                                    exchangeName.setText(secDto.getExchangeSymbol());
+                                }
                             }
                         }, new TimberOnErrorAction1("Failed to fetch list of watch list items")));
-        actionBar.setCustomView(actionBarLayout);
+        //actionBar.setCustomView(actionBarLayout);
     }
 
     @Override public boolean shouldShowLiveTradingToggle()
@@ -137,7 +186,7 @@ public class BuySellStockFragment extends AbstractBuySellFragment
 
     @Override public void onDestroyOptionsMenu()
     {
-        actionBarLayout = null;
+        //actionBarLayout = null;
         super.onDestroyOptionsMenu();
     }
 
@@ -232,9 +281,69 @@ public class BuySellStockFragment extends AbstractBuySellFragment
                 });
     }
 
-    @Override
-    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull Double askPrice, @NonNull Double bidPrice) {
-        //No need to do this anymore
+    public void displayBuySellPrice(@NonNull SecurityCompactDTO securityCompactDTO, Double ask, Double bid)
+    {
+        if (buyPrice != null && sellPrice != null)
+        {
+            String display = securityCompactDTO.currencyDisplay;
+            String bPrice;
+            String sPrice;
+            THSignedNumber bthSignedNumber;
+            THSignedNumber sthSignedNumber;
+            if (ask == null)
+            {
+                bPrice = getString(R.string.buy_sell_ask_price_not_available);
+            }
+            else
+            {
+                bthSignedNumber = THSignedNumber.builder(ask)
+                        .withOutSign()
+                        .build();
+                bPrice = bthSignedNumber.toString();
+            }
+
+            if (bid == null)
+            {
+                sPrice = getString(R.string.buy_sell_bid_price_not_available);
+            }
+            else
+            {
+                sthSignedNumber = THSignedNumber.builder(bid)
+                        .withOutSign()
+                        .build();
+                sPrice = sthSignedNumber.toString();
+            }
+            String buyPriceText = getString(R.string.buy_sell_button_buy, display, bPrice);
+            String sellPriceText = getString(R.string.buy_sell_button_sell, display, sPrice);
+            buyPrice.setText(buyPriceText);
+            sellPrice.setText(sellPriceText);
+        }
+
+        displayStockRoi(securityCompactDTO);
+    }
+    private void displayStockRoi(SecurityCompactDTO securityCompactDTO)
+    {
+        if (stockRoi != null)
+        {
+            if (securityCompactDTO != null && securityCompactDTO.risePercent != null)
+            {
+                double roi = securityCompactDTO.risePercent;
+                THSignedPercentage
+                        .builder(roi * 100)
+                        .withSign()
+                        .relevantDigitCount(3)
+                        .withDefaultColor()
+                        .defaultColorForBackground()
+                        .signTypePlusMinusAlways()
+                        .build()
+                        .into(stockRoi);
+            }
+            else
+            {
+                //tvStockRoi.setText(R.string.na);
+                stockRoi.setVisibility(View.GONE);
+            }
+        }
     }
 
 
@@ -255,5 +364,8 @@ public class BuySellStockFragment extends AbstractBuySellFragment
         //TODO Change Analytics
         //analytics.fireEvent(new BuySellEvent(isTransactionTypeBuy, requisite.securityId));
         super.handleBuySellButtonsClicked(view);
+    }
+    @Override public void onResume(){
+        super.onResume();
     }
 }

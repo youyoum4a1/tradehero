@@ -25,6 +25,7 @@
           android:paddingStart="@dimen/margin_small"
           android:paddingBottom="@dimen/margin_small"
           android:paddingTop="@dimen/margin_small"
+          android:visibility="gone"
         >
 
       <TextView
