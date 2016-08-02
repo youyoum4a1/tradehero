@@ -3,18 +3,45 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="match_parent" xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:focusableInTouchMode="true"
     android:focusable="true"
-    >
+>
 
-  <EditText
-      android:id="@+id/search_social_friends"
+  <android.support.v7.widget.CardView
+      android:id="@+id/redeem_referral_code_card_view"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:hint="@string/search_social_friend_hint"
-      />
+      android:layout_margin="@dimen/margin_small"
+      card_view:cardCornerRadius="2dp"
+      card_view:contentPadding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/redeem_referral_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:hint="Enter your friend's Referral Code"
+        />
+
+        <Button
+            android:id="@+id/redeem_referral_code_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/thV5Action"
+            android:text="APPLY"
+            android:textColor="@color/white"
+        />
+
+    </LinearLayout>
+
+  </android.support.v7.widget.CardView>
 
   <RelativeLayout
       android:layout_width="match_parent"
