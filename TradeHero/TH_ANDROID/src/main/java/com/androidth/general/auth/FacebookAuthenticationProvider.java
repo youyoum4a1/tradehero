@@ -238,7 +238,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 //        }
 //
 //        tokenCachingStrategy.clear();
-//        LoginManager.getInstance().logOut();//this will renew the FB access token
+        LoginManager.getInstance().logOut();//this will renew the FB access token
     }
 
     private class FacebookAuthenticationSubscribe implements Observable.OnSubscribe<AccessToken> {
