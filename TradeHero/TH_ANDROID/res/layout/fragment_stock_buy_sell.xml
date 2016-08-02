@@ -177,14 +177,16 @@
 
     <com.android.common.SlidingTabLayout
         android:id="@+id/tabs"
+        android:layout_centerHorizontal="true"
         style="@style/TradeHero.TabContainer"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/trade_bottom_pager"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_below="@id/tabs"
         tools:background="#ffeeee"
