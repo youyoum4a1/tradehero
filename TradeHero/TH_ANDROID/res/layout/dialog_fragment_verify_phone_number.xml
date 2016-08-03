@@ -75,7 +75,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/size_1"
         android:gravity="center_horizontal"
-        tools:text="TradeHero Live has sent an SMS to\n+61 491 470 156 for verification."
+        tools:text="Please enter code sent via SMS to\n+61 491 470 156."
         />
 
     <TextView

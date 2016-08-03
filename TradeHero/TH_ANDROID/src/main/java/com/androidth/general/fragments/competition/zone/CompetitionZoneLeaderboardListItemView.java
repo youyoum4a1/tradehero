@@ -14,7 +14,7 @@ import butterknife.Bind;
 
 public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListItemView
 {
-    
+
     @Bind(R.id.competition_roi) protected TextView roiView;
 
     //<editor-fold desc="Constructors">
