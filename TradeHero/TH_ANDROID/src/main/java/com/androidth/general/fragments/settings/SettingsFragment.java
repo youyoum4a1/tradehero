@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.OnBoardActivity;
@@ -84,6 +85,7 @@ import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -922,17 +924,15 @@ public final class SettingsFragment extends BasePreferenceFragment
             sequenceSubscription = sequence
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
-                            new Action1<UserProfileDTO>()
-                            {
-                                @Override public void call(UserProfileDTO profileDTO)
-                                {
+                            new Action1<UserProfileDTO>() {
+                                @Override
+                                public void call(UserProfileDTO profileDTO) {
                                     SettingsFragment.this.updateSocialConnectStatus(profileDTO);
                                 }
                             },
-                            new Action1<Throwable>()
-                            {
-                                @Override public void call(Throwable e)
-                                {
+                            new Action1<Throwable>() {
+                                @Override
+                                public void call(Throwable e) {
                                     SettingsFragment.this.onChangeStatusError(activityContext, e);
                                 }
                             });
@@ -1012,5 +1012,11 @@ public final class SettingsFragment extends BasePreferenceFragment
                             }
                         },
                         new ToastOnErrorAction1(getString(R.string.error_fetch_your_user_profile)));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 }
