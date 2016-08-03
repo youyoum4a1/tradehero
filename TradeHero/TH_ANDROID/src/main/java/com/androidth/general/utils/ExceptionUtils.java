@@ -44,7 +44,18 @@ public class ExceptionUtils
             String string =  new String(((TypedByteArray)err.getResponse().getBody()).getBytes());
             JsonObject obj = new JsonParser().parse(string).getAsJsonObject();
             JsonElement element = obj.get(identifier);
-            return element.toString().replace("\"", "");//omit all double quotes
+
+            if(element!=null){
+                String elementString = element.toString();
+
+                if(elementString!=null && elementString.contains("\"")){
+                    return elementString.replace("\"", "");//omit all double quotes
+                }else{
+                    return elementString;
+                }
+            }else{
+                return "";
+            }
 
         }else{
             return throwable.getLocalizedMessage();

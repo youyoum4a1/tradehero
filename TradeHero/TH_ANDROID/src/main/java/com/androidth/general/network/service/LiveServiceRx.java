@@ -96,4 +96,9 @@ public interface LiveServiceRx {
     );
     //</editor-fold>
 
+    @GET("/competition/rewardreferrar/{referralCode}/{providerId}")
+    Observable<String> redeemReferralCode(
+            @Path("referralCode") String referralCode,
+            @Path("providerId") int providerId
+    );
 }

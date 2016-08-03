@@ -22,7 +22,7 @@ public class SocialTypeItemFactory
                 SocialNetworkEnum.FB_MSNGR));
         //socialList.add(new SocialTypeItemTwitter());
         //socialList.add(new SocialTypeItemLinkedin());
-        socialList.add(new SocialTypeItemWeibo());
+//        socialList.add(new SocialTypeItemWeibo());
         socialList.add(new SocialTypeItemWechat());
 
         socialList.add(new SocialTypeItem(R.drawable.accounts_glyph_email_default,
