@@ -339,4 +339,9 @@ public class LiveServiceWrapper
     {
         return this.liveServiceRx.getMyProviderReferralStatus(providerId.key);
     }
+
+    @NonNull public Observable<String> redeemReferralCode(String referralCode, ProviderId providerId)
+    {
+        return this.liveServiceRx.redeemReferralCode(referralCode, providerId.key);
+    }
 }

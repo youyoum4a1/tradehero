@@ -198,7 +198,6 @@ public class MainCompetitionFragment extends DashboardFragment
         //analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.Competition_Home, AnalyticsConstants.ProviderId, String.valueOf(providerId.key)));
 
         applicablePortfolioId = getApplicablePortfolioId(getArguments());
-        myProviderReferralCacheRx.get(providerId).subscribe();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -446,6 +445,8 @@ public class MainCompetitionFragment extends DashboardFragment
                         },
                         new TimberAndToastOnErrorAction1("Failed to get requisite")
                 ));
+
+        onStopSubscriptions.add(myProviderReferralCacheRx.get(providerId).subscribe());
     }
 
     protected void displayListView()
