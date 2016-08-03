@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.activities.ActivityBuildTypeUtil;
 import com.androidth.general.common.utils.THLog;
 import com.androidth.general.inject.BaseInjector;
@@ -13,6 +14,7 @@ import com.androidth.general.models.push.PushNotificationManager;
 import com.androidth.general.utils.dagger.AppModule;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.flurry.android.FlurryAgent;
 
 import io.fabric.sdk.android.Fabric;
@@ -44,10 +46,14 @@ public class THApp extends BaseApplication
     @Override public void onCreate()
     {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+
+        CrashlyticsCore crashlytics = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
+
+        Fabric.with(this, new Crashlytics.Builder().core(crashlytics).build());
+        ActivityBuildTypeUtil.startCrashReports(this);
+
         context = getApplicationContext();
 
-        ActivityBuildTypeUtil.startCrashReports(this);
         Timber.plant(TimberUtil.createTree());
 
         buildObjectGraphAndInject();

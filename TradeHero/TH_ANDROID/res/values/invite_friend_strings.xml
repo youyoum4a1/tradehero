@@ -19,7 +19,8 @@
   <string name="invite_friend_request_error">Request error</string>
   <string name="follow_friend_request_error">Request error</string>
   <string name="invite_email_subject">Join Me in %s</string>
-  <string name="invite_email_text">I have been using %1$s to experiment and learn in a simulated trading environment. Check it out on Play Store! Please use my referral code: %2$s</string>
+  <string name="invite_email_text">I have been using %1$s to experiment and learn in a simulated trading environment.
+    Check it out on Play Store! Please use my referral code: %2$s\nDownload it at %3$s</string>
   <string name="invite_text_from_clipboard">Your friend invitation URL has been copied to your clipboard. Paste it in your text entry field and send it to your friends!</string>
 
 </resources>

@@ -440,7 +440,8 @@ public class FriendsInvitationFragment extends BaseFragment
                 intent = new Intent(Intent.ACTION_SEND);
                 intent.setPackage("com.tencent.mm");
                 intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name),
+                        userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
                 try{
                     getActivity().startActivity(intent);
                 }catch (Exception e){
@@ -497,7 +498,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.invite_email_subject, getString(R.string.app_name)));
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
                 try{
                     getActivity().startActivity(intent);
                 }catch (Exception e){
@@ -508,7 +509,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("smsto:"));
                 intent.setType("vnd.android-dir/mms-sms");
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
                 intent.setData(Uri.parse("sms:"));
                 try{
                     getActivity().startActivity(intent);
@@ -518,7 +519,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 break;
             case WHATSAPP:
                 intent = new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode));
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
                 intent.setType("text/plain");
                 intent.setPackage("com.whatsapp");
                 try{
@@ -808,7 +809,7 @@ public class FriendsInvitationFragment extends BaseFragment
     private void pushFacebookShareContent(UserProfileDTO userProfileDTO){
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Join me!", getString(R.string.invite_email_text,
-                getString(R.string.app_name), userProfileDTO.referralCode));
+                getString(R.string.app_name), userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
         clipboard.setPrimaryClip(clip);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
@@ -835,7 +836,7 @@ public class FriendsInvitationFragment extends BaseFragment
     private void pushFBMessenger(UserProfileDTO userProfileDTO){
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Join me!", getString(R.string.invite_email_text,
-                getString(R.string.app_name), userProfileDTO.referralCode));
+                getString(R.string.app_name), userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
         clipboard.setPrimaryClip(clip);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
