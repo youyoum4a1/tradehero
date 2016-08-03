@@ -1,27 +1,31 @@
 package com.androidth.general.fragments.social.friend;
 
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
-import android.text.Editable;
+import android.text.InputFilter;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,24 +33,20 @@ import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.OnClick;
 import butterknife.OnItemClick;
-import butterknife.OnTextChanged;
 
 import com.androidth.general.GooglePlayMarketUtilBase;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.referral.MyProviderReferralDTO;
 import com.androidth.general.common.utils.THToast;
+import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.network.service.ProviderServiceRx;
 import com.androidth.general.persistence.competition.MyProviderReferralCacheRx;
 import com.androidth.general.utils.route.THRouter;
 import com.facebook.CallbackManager;
-import com.facebook.messenger.MessengerUtils;
-import com.facebook.messenger.ShareToMessengerParams;
 import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.MessageDialog;
-import com.facebook.share.widget.SendButton;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
@@ -78,9 +78,13 @@ import java.util.List;
 import java.util.TreeSet;
 import javax.inject.Inject;
 import javax.inject.Provider;
+import retrofit.RetrofitError;
+import retrofit.mime.TypedByteArray;
 import rx.Observer;
 import rx.android.app.AppObservable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.android.widget.OnTextChangeEvent;
+import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
@@ -100,6 +104,11 @@ public class FriendsInvitationFragment extends BaseFragment
     @Bind(R.id.social_friends_list) ListView friendsListView;
     @Bind(R.id.social_search_friends_progressbar) ProgressBar searchProgressBar;
     @Bind(R.id.social_search_friends_none) TextView friendsListEmptyView;
+    @Bind(R.id.redeem_referral_code_loading_view) LinearLayout loadingLayoutView;
+    @Bind(R.id.redeem_referral_code_input_view) LinearLayout inputLayoutView;
+    @Bind(R.id.redeem_referral_code_message_view) LinearLayout messageLayoutView;
+    @Bind(R.id.message_view_icon) ImageView messageViewIconView;
+    @Bind(R.id.message_view_text) TextView messageViewTextView;
 
     @Inject UserServiceWrapper userServiceWrapper;
     @Inject CurrentUserId currentUserId;
@@ -114,6 +123,7 @@ public class FriendsInvitationFragment extends BaseFragment
     @Inject ProviderServiceRx serviceRx;
     @Inject protected THRouter thRouter;
     @Inject MyProviderReferralCacheRx myProviderReferralCacheRx;
+    @Inject LiveServiceWrapper liveServiceWrapper;
 
     @NonNull private UserFriendsDTOList userFriendsDTOs = new UserFriendsDTOList();
     private SocialFriendListItemDTOList socialFriendListItemDTOs;
@@ -173,28 +183,7 @@ public class FriendsInvitationFragment extends BaseFragment
         restoreSavedData(savedInstanceState);
 
         if (providerId != null) {
-            myProviderReferralCacheRx.get(new ProviderId(providerId))
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Action1<Pair<ProviderId, MyProviderReferralDTO>>()
-                    {
-                        @Override public void call(Pair<ProviderId, MyProviderReferralDTO> providerIdMyProviderReferralDTOPair)
-                        {
-                            MyProviderReferralDTO myProviderReferralDTO = providerIdMyProviderReferralDTOPair.second;
-
-                            if (myProviderReferralDTO.haveAlreadyRedeemed)
-                            {
-                                redeemReferralCodeContainer.setVisibility(View.GONE);
-                            }
-                        }
-                    }, new Action1<Throwable>()
-                    {
-                        @Override public void call(Throwable throwable)
-                        {
-                            Timber.e(throwable, throwable.getMessage());
-                        }
-                    });
-
+            fetchReferralStatus();
         } else {
             redeemReferralCodeContainer.setVisibility(View.GONE);
         }
@@ -305,6 +294,135 @@ public class FriendsInvitationFragment extends BaseFragment
             socialFriendsListAdapter.addAll(socialFriendListItemDTOs);
         }
         showSearchList();
+    }
+
+    private void fetchReferralStatus()
+    {
+        onDestroyViewSubscriptions.add(
+            myProviderReferralCacheRx.get(new ProviderId(providerId))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Pair<ProviderId, MyProviderReferralDTO>>()
+                {
+                    @Override public void call(Pair<ProviderId, MyProviderReferralDTO> providerIdMyProviderReferralDTOPair)
+                    {
+                        MyProviderReferralDTO myProviderReferralDTO = providerIdMyProviderReferralDTOPair.second;
+
+                        if (myProviderReferralDTO.haveAlreadyRedeemed)
+                        {
+                            redeemReferralCodeContainer.setVisibility(View.GONE);
+                        } else {
+                            observeRedeemView();
+                        }
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        Timber.e(throwable, throwable.getMessage());
+                    }
+                })
+        );
+    }
+
+    private void observeRedeemView()
+    {
+        redeemReferralCodeButton.setEnabled(false);
+
+        onDestroyViewSubscriptions.add(
+            WidgetObservable.text(redeemReferralCodeEditText)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<OnTextChangeEvent>()
+                {
+                    @Override public void call(OnTextChangeEvent onTextChangeEvent)
+                    {
+                        redeemReferralCodeButton.setEnabled(onTextChangeEvent.text().length() > 0);
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        Timber.e(throwable, throwable.getMessage());
+                    }
+                })
+        );
+    }
+
+    @OnClick(R.id.redeem_referral_code_button)
+    public void onClickRedeemReferralCodeButton()
+    {
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(redeemReferralCodeEditText.getWindowToken(), 0);
+
+        // configure UI to display loading
+        redeemReferralCodeButton.setEnabled(false);
+        redeemReferralCodeEditText.setEnabled(false);
+        loadingLayoutView.bringToFront();
+
+        onDestroyViewSubscriptions.add(
+                liveServiceWrapper.redeemReferralCode(redeemReferralCodeEditText.getText().toString(), new ProviderId(providerId))
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<String>()
+                        {
+                            @Override public void call(String s)
+                            {
+                                AsyncTask.execute(new Runnable()
+                                {
+                                    @Override public void run()
+                                    {
+                                        myProviderReferralCacheRx.fetch(new ProviderId(providerId)).subscribe();
+                                    }
+                                });
+
+                                messageViewIconView.setImageResource(R.drawable.green_tick);
+                                messageViewTextView.setText(s);
+                                messageLayoutView.bringToFront();
+
+                                new Handler().postDelayed(new Runnable()
+                                {
+                                    @Override public void run()
+                                    {
+                                        redeemReferralCodeContainer.setVisibility(View.GONE);
+                                    }
+                                }, 3000);
+                            }
+                        }, new Action1<Throwable>()
+                        {
+                            @Override public void call(Throwable throwable)
+                            {
+                                String errorMessage = throwable.getMessage();
+
+                                if (throwable instanceof RetrofitError) {
+                                    RetrofitError error = (RetrofitError) throwable;
+                                    errorMessage = new String(((TypedByteArray)error.getResponse().getBody()).getBytes()).replace("\"", "");
+                                }
+
+                                // configure UI display error
+                                messageViewIconView.setImageResource(R.drawable.red_alert);
+                                messageViewTextView.setText(errorMessage);
+                                messageLayoutView.bringToFront();
+
+                                new Handler().postDelayed(new Runnable()
+                                {
+                                    @Override public void run()
+                                    {
+                                        // configure UI display input view
+                                        if (redeemReferralCodeContainer != null) {
+                                            redeemReferralCodeEditText.setEnabled(true);
+                                            redeemReferralCodeButton.setEnabled(true);
+                                            inputLayoutView.bringToFront();
+
+                                            // auto focus edit text and bring keyboard up
+                                            redeemReferralCodeEditText.requestFocus();
+                                            imm.showSoftInput(redeemReferralCodeEditText, InputMethodManager.SHOW_IMPLICIT);
+                                        }
+                                    }
+                                }, 3000);
+                            }
+                        })
+        );
+
     }
 
     @OnItemClick(R.id.social_friend_type_list)

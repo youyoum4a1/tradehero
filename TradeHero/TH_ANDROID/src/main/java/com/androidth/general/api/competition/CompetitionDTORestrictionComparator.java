@@ -21,11 +21,32 @@ public class CompetitionDTORestrictionComparator implements Comparator<Competiti
             return 0;
         }
 
-        int compare = rhs.leaderboard.toUtcRestricted.compareTo(lhs.leaderboard.toUtcRestricted);
-        if (compare == 0)
-        {
-            compare = rhs.leaderboard.getTimeRestrictionRangeInMillis() > lhs.leaderboard.getTimeRestrictionRangeInMillis()? 1 : -1;
+        if(!lhs.competitionDurationType.equals(rhs.competitionDurationType)){
+            int lDtoIntMapping = intMapping(lhs);
+            int rDtoIntMapping = intMapping(rhs);
+            return rDtoIntMapping - lDtoIntMapping;
         }
-        return compare;
+        else {
+            return lhs.leaderboard.fromUtcRestricted.compareTo(rhs.leaderboard.fromUtcRestricted);
+        }
+
+    }
+    private int intMapping(CompetitionDTO dto){
+        final int WEEKLY = 7;
+        final int MONTHLY = 31;
+        final int FORTNIGHTLY = 14;
+        final int OVERALL = Integer.MAX_VALUE;
+
+        if(dto.competitionDurationType.equals("Overall")){
+            return OVERALL;
+        }
+        else if(dto.competitionDurationType.equals("Monthly")){
+            return MONTHLY;
+        }
+        else if(dto.competitionDurationType.equals("Fortnightly")){
+            return FORTNIGHTLY;
+        }
+        else return WEEKLY;
+
     }
 }

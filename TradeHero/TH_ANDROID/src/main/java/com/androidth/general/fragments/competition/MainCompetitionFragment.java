@@ -198,7 +198,6 @@ public class MainCompetitionFragment extends DashboardFragment
         //analytics.fireEvent(new SingleAttributeEvent(AnalyticsConstants.Competition_Home, AnalyticsConstants.ProviderId, String.valueOf(providerId.key)));
 
         applicablePortfolioId = getApplicablePortfolioId(getArguments());
-        myProviderReferralCacheRx.get(providerId).subscribe();
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -446,6 +445,8 @@ public class MainCompetitionFragment extends DashboardFragment
                         },
                         new TimberAndToastOnErrorAction1("Failed to get requisite")
                 ));
+
+        onStopSubscriptions.add(myProviderReferralCacheRx.get(providerId).subscribe());
     }
 
     protected void displayListView()
@@ -614,21 +615,22 @@ public class MainCompetitionFragment extends DashboardFragment
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
         {
-            CompetitionLeaderboardMarkUserRecyclerFragment.putTitle(args, competitionZoneListItemAdapter.getItem(i).title);
-            CompetitionLeaderboardMarkUserRecyclerFragment.putProviderId(args, providerId);
-            CompetitionLeaderboardMarkUserRecyclerFragment.putCompetition(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO);
-            CompetitionLeaderboardMarkUserRecyclerFragment.putLeaderboardType(args,
-                    ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).leaderboardType);
+            CompetitionZoneLeaderboardDTO dto = (CompetitionZoneLeaderboardDTO) competitionZoneDTO;
+            if(dto.isActive()) {
+                CompetitionLeaderboardMarkUserRecyclerFragment.putTitle(args, competitionZoneListItemAdapter.getItem(i).title);
+                CompetitionLeaderboardMarkUserRecyclerFragment.putProviderId(args, providerId);
+                CompetitionLeaderboardMarkUserRecyclerFragment.putCompetition(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO);
+                CompetitionLeaderboardMarkUserRecyclerFragment.putLeaderboardType(args,
+                        ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).leaderboardType);
 
-            OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-            if (ownedPortfolioId != null)
-            {
-                CompetitionLeaderboardMarkUserRecyclerFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-            }
+                OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+                if (ownedPortfolioId != null) {
+                    CompetitionLeaderboardMarkUserRecyclerFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                }
 
-            if (navigator != null)
-            {
-                navigator.get().pushFragment(CompetitionLeaderboardMarkUserRecyclerFragment.class, args);
+                if (navigator != null) {
+                    navigator.get().pushFragment(CompetitionLeaderboardMarkUserRecyclerFragment.class, args);
+                }
             }
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLegalDTO)

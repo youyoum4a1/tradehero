@@ -150,4 +150,7 @@
   <string name="live_username_invalid">\'%1$s\' is not valid. Must be 5 – 20 alphanumeric characters</string>
   <string name="live_username_not_available">\'%1$s\' is not available</string>
 
+  <string name="redeem_referral_placeholder">Enter your friend\'s Referral Code</string>
+
+
 </resources>

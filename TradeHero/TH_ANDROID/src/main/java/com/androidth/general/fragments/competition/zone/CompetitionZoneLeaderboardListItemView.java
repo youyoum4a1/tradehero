@@ -1,18 +1,19 @@
 package com.androidth.general.fragments.competition.zone;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.widget.TextView;
-import butterknife.Bind;
+
 import com.androidth.general.R;
 import com.androidth.general.fragments.competition.zone.dto.CompetitionZoneDTO;
 import com.androidth.general.fragments.competition.zone.dto.CompetitionZoneLeaderboardDTO;
 
+import butterknife.Bind;
+
 public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListItemView
 {
-    public static final int COLOR_ACTIVE = R.color.text_primary;
-    public static final int COLOR_INACTIVE = R.color.text_secondary;
 
     @Bind(R.id.competition_roi) protected TextView roiView;
 
@@ -36,17 +37,19 @@ public class CompetitionZoneLeaderboardListItemView extends CompetitionZoneListI
     }
     //</editor-fold>
 
-    @Override public void display(@NonNull CompetitionZoneDTO competitionZoneDTO)
-    {
+    @Override public void display(@NonNull CompetitionZoneDTO competitionZoneDTO) {
         super.display(competitionZoneDTO);
-        CompetitionZoneLeaderboardDTO dto = (CompetitionZoneLeaderboardDTO) competitionZoneDTO;
-        if (title != null)
-        {
-            title.setTextColor(dto.titleColor);
-        }
-        if (roiView != null)
-        {
-            roiView.setText(dto.roi);
+        if (competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO) {
+            CompetitionZoneLeaderboardDTO dto = (CompetitionZoneLeaderboardDTO) competitionZoneDTO;
+            if (title != null) {
+                if (dto.isActive())
+                    title.setTextColor(Color.BLACK);
+                else title.setTextColor(Color.GRAY);
+                //title.setTextColor(dto.titleColor);
+            }
+            if (roiView != null) {
+                roiView.setText(dto.roi);
+            }
         }
     }
 }
