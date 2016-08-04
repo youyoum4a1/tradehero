@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -76,7 +77,6 @@ import com.androidth.general.utils.metrics.appsflyer.AppsFlyerConstants;
 import com.androidth.general.utils.metrics.appsflyer.THAppsFlyer;
 import com.androidth.general.widget.validation.KYCVerifyButton;
 import com.androidth.general.widget.validation.VerifyButtonState;
-import com.google.gson.JsonElement;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.route.RouteProperty;
 
@@ -135,8 +135,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.info_first_name) EditText firstName;
     @Bind(R.id.info_last_name) EditText lastName;
-    //@Bind(R.id.sign_up_email) EditText email;
-    @Bind(R.id.country_code_spinner) Spinner spinnerPhoneCountryCode;
+
+    @Bind(R.id.country_code_spinner) CustomSpinnerSelection spinnerPhoneCountryCode;
     @Bind(R.id.info_phone_number) EditText phoneNumber;
     @Bind(R.id.info_dob) TextView dob;
     @Bind(R.id.step_1_tnc_checkbox) CheckBox tncCheckbox;
@@ -515,7 +515,11 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         {
                             @Override public CountryDTOForSpinner call(KYCAyondoFormOptionsDTO kycAyondoFormOptionsDTO)
                             {
-                                return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO);
+                                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                                String currentCountryCode = sharedPref.getString(getString(R.string.key_preference_country_code), "MY");
+                                Country c = Country.AD;
+                                //Doesnt matter which Country enum we use
+                                return new CountryDTOForSpinner(getActivity(), kycAyondoFormOptionsDTO, c.getCountryByCode(currentCountryCode));
                             }
                         })
                         .distinctUntilChanged()
@@ -531,9 +535,13 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                                 CountrySpinnerAdapter phoneCountryCodeAdapter =
                                         new CountrySpinnerAdapter(getActivity(), LAYOUT_PHONE_SELECTED_FLAG, LAYOUT_PHONE_COUNTRY);
+
                                 phoneCountryCodeAdapter.addAll(options.allowedMobilePhoneCountryDTOs);
+
                                 spinnerPhoneCountryCode.setAdapter(phoneCountryCodeAdapter);
                                 spinnerPhoneCountryCode.setEnabled(options.allowedMobilePhoneCountryDTOs.size() > 1);
+                                spinnerPhoneCountryCode.setSelection(0);
+                                spinnerPhoneCountryCode.setPrompt("Country Code");
 
                                 //CountrySpinnerAdapter residencyAdapter =
                                 //        new CountrySpinnerAdapter(getActivity(), LAYOUT_COUNTRY_SELECTED_FLAG, LAYOUT_COUNTRY);

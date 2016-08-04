@@ -1,19 +1,24 @@
 package com.androidth.general.activities;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
-import com.androidth.general.fragments.base.ActionBarOwnerMixin;
+import com.androidth.general.R;
 import com.androidth.general.fragments.live.LiveSignUpMainFragment;
-import com.androidth.general.utils.route.THRouter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
-import com.tradehero.route.Routable;
-import com.tradehero.route.RouteProperty;
 
-import javax.inject.Inject;
+import java.io.IOException;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -21,6 +26,7 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
 {
     public static final String KYC_CORRESPONDENT_PROVIDER_ID = "KYC.providerId";
     public static final String KYC_CORRESPONDENT_JOIN_COMPETITION = "KYC.joinCompetition";
+    protected String currentCountry;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -36,6 +42,7 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
         mGoogleApiClient = new GoogleApiClient
                 .Builder(this)
                 .addApi(Places.GEO_DATA_API)
+                .addApi(LocationServices.API)
                 .addApi(Places.PLACE_DETECTION_API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -69,6 +76,21 @@ public class SignUpLiveActivity extends OneFragmentActivity implements GoogleApi
     @Override public void onConnected(Bundle bundle)
     {
         Timber.d("connected to Play Services");
+        Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(lastLocation != null){
+            Geocoder geoLocation = new Geocoder(getApplicationContext());
+            try {
+                List<Address> add = geoLocation.getFromLocation(lastLocation.getLatitude(), lastLocation.getLongitude(), 1);
+                currentCountry = add.get(0).getCountryCode();
+                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.key_preference_country_code), currentCountry);
+                editor.commit();
+            } catch (IOException e) {
+                Log.i("Geoloader Exception", e.getMessage());
+            }
+        }
+
     }
 
     @Override public void onConnectionSuspended(int i)

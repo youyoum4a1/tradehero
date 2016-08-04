@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
+import com.androidth.general.api.market.Country;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.models.fastfill.Gender;
 
@@ -22,15 +23,25 @@ class CountryDTOForSpinner
 
     public CountryDTOForSpinner(@NonNull Context context, @NonNull KYCAyondoFormOptionsDTO options)
     {
-        genders = Collections.unmodifiableList(options.genders);
+        this(context, options, null);
+    }
+    public CountryDTOForSpinner(@NonNull Context context, @NonNull KYCAyondoFormOptionsDTO options, Country country){
 
-        Comparator<CountrySpinnerAdapter.DTO> dtoComparator = new CountrySpinnerAdapter.DTOCountryNameComparator(context);
+        genders = Collections.unmodifiableList(options.genders);
+        Comparator<CountrySpinnerAdapter.DTO> dtoComparator;
+
+        if(country != null) {
+            dtoComparator = new CountrySpinnerAdapter.DTOCountryNameComparator(context, country);
+        }
+        else{
+            dtoComparator = new CountrySpinnerAdapter.DTOCountryNameComparator(context);
+        }
 
         List<CountrySpinnerAdapter.DTO> allowedMobilePhoneCountryDTOs = CountrySpinnerAdapter.createDTOs(
                 options.allowedMobilePhoneCountries, null);
         Collections.sort(allowedMobilePhoneCountryDTOs, dtoComparator);
 
-        this.allowedMobilePhoneCountryDTOs = Collections.unmodifiableList(allowedMobilePhoneCountryDTOs);
+        this.allowedMobilePhoneCountryDTOs = allowedMobilePhoneCountryDTOs;
 
         List<CountrySpinnerAdapter.DTO> allowedResidencyCountryDTOs = CountrySpinnerAdapter.createDTOs(
                 options.allowedResidencyCountries, null);

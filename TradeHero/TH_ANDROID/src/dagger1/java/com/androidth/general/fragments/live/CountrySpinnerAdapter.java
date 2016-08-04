@@ -91,6 +91,7 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.DT
     @NonNull public static List<DTO> createDTOs(@NonNull List<? extends Country> countries, @Nullable Country typeQualifier)
     {
         List<DTO> created = new ArrayList<>();
+
         for (Country countryDTO : countries)
         {
             created.add(new DTO(countryDTO));
@@ -195,14 +196,31 @@ public class CountrySpinnerAdapter extends ArrayAdapter<CountrySpinnerAdapter.DT
     public static class DTOCountryNameComparator implements Comparator<DTO>
     {
         @NonNull private final Context context;
+        private Country currentCountry;
 
         public DTOCountryNameComparator(@NonNull Context context)
         {
             this.context = context;
         }
+        public DTOCountryNameComparator(@NonNull Context context, Country currentCountry)
+        {
+            this.context = context;
+            this.currentCountry = currentCountry;
+        }
 
         @Override public int compare(@NonNull DTO lhs, @NonNull DTO rhs)
         {
+            if(currentCountry!=null){
+                if(rhs.country.equals(currentCountry) && lhs.country.equals(rhs.country)){
+                    return 0;
+                }
+                else if(currentCountry.equals(lhs.country)){
+                    return -1;
+                }
+                else if(currentCountry.equals(rhs.country)){
+                    return 1;
+                }
+            }
             return context.getString(lhs.country.locationName).compareTo(context.getString(rhs.country.locationName));
         }
     }

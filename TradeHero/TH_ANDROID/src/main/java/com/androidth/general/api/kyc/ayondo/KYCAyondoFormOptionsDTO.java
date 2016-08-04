@@ -79,7 +79,8 @@ public class KYCAyondoFormOptionsDTO implements KYCFormOptionsDTO
         }
         else
         {
-            this.allowedMobilePhoneCountries = Collections.unmodifiableList(allowedMobilePhoneCountries);
+            //this.allowedMobilePhoneCountries = allowedMobilePhoneCountries;//Dont need this
+            this.allowedMobilePhoneCountries = Collections.unmodifiableList(Arrays.asList(Country.values()));
         }
         if (allowedNationalityCountries == null)
         {
