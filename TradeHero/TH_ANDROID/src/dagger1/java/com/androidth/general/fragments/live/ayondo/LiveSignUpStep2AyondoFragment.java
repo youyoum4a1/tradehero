@@ -20,7 +20,6 @@ import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.androidth.general.api.live.LiveBrokerDTO;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
-import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -81,26 +80,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                     {
                                         populate((KYCAyondoForm) situationDTO.kycForm);
                                     }
-                                }).onErrorResumeNext(new Func1<Throwable, Observable<? extends LiveBrokerSituationDTO>>() {
-                            @Override
-                            public Observable<? extends LiveBrokerSituationDTO> call(Throwable throwable) {
-
-                                liveBrokerSituationDTOObservable
-                                        .take(1)
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .doOnNext(new Action1<LiveBrokerSituationDTO>()
-                                        {
-                                            @Override public void call(LiveBrokerSituationDTO situationDTO)
-                                            {
-                                                KYCAyondoForm defaultForm = new KYCAyondoForm();
-                                                defaultForm.pickFromWithDefaultValues(new UserProfileDTO());
-                                                LiveBrokerSituationDTO latestDTO = new LiveBrokerSituationDTO(situationDTO.broker, defaultForm);
-                                                populate((KYCAyondoForm) latestDTO.kycForm);
-                                            }
-                                        });
-                                return liveBrokerSituationDTOObservable;
-                            }
-                        }),
+                                }),
                         kycAyondoFormOptionsDTOObservable
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnNext(new Action1<KYCAyondoFormOptionsDTO>()
