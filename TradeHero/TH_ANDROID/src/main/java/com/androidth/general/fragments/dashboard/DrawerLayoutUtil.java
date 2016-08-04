@@ -18,7 +18,7 @@ public class DrawerLayoutUtil
         image.setImageResource(tabType.drawableResId);
         TextView title = (TextView) created.findViewById(android.R.id.text1);
         title.setText(tabType.stringResId);
-        title.setTextColor(context.getResources().getColor(R.color.thV5Gray));
+        title.setTextColor(context.getResources().getColor(R.color.general_grey_text));
         created.setTag(tabType);
 
         //Add the background selector

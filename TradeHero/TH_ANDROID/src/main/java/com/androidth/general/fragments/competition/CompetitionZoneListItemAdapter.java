@@ -6,12 +6,15 @@ import android.support.annotation.NonNull;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.androidth.general.R;
 import com.androidth.general.adapters.DTOAdapterNew;
 import com.androidth.general.fragments.competition.zone.AbstractCompetitionZoneListItemView;
 import com.androidth.general.fragments.competition.zone.dto.CompetitionZoneDTO;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import rx.Observable;
 import rx.subjects.PublishSubject;
 
@@ -89,10 +92,18 @@ public class CompetitionZoneListItemAdapter extends DTOAdapterNew<CompetitionZon
         this.elements = elements;
         this.clear();
         List<CompetitionZoneDTO> list = new ArrayList<>();
+        List<CompetitionZoneDTO> compLeadList = new ArrayList<>();
         for (Pair<Integer, CompetitionZoneDTO> pair : elements)
         {
-            list.add(pair.second);
+            //if(pair.second instanceof CompetitionZoneLeaderboardDTO){
+                //CompetitionZoneLeaderboardDTO temp = (CompetitionZoneLeaderboardDTO)pair.second;
+               // compLeadList.add(pair.second);
+            //}
+            //else {
+                list.add(pair.second);
+            //}
         }
+        //list.addAll(5, compLeadList);
         this.addAll(list);
     }
 

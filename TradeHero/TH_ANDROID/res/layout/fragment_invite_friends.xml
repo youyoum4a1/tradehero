@@ -76,7 +76,7 @@
             android:id="@+id/redeem_referral_code_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/thV5Action"
+            android:background="@color/general_green_button"
             android:text="@string/redeem_referral_button"
             android:textColor="@color/white"
         />

@@ -2,8 +2,8 @@
 <resources>
 
   <string name="sms_verification_title">Verify your phone number</string>
-  <string name="sms_verification_sms_content">Welcome to TradeHero Live\nYour verification code is %s\n\nOpen the TradeHero application and use this code to verify your phone number.</string>
-  <string name="sms_verification_description">TradeHero Live has sent an SMS to\n%s for verification.</string>
+  <string name="sms_verification_sms_content">Please enter %s into Tradehero within the next 30 minutes.</string>
+  <string name="sms_verification_description">Please enter code sent via SMS to %s.</string>
   <string name="sms_verification_status">SMS Status: %s</string>
   <string name="sms_verification_action">Please enter the verification code sent via SMS.</string>
   <string name="sms_verification_resend">Resend Verification Code</string>

@@ -615,21 +615,22 @@ public class MainCompetitionFragment extends DashboardFragment
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLeaderboardDTO)
         {
-            CompetitionLeaderboardMarkUserRecyclerFragment.putTitle(args, competitionZoneListItemAdapter.getItem(i).title);
-            CompetitionLeaderboardMarkUserRecyclerFragment.putProviderId(args, providerId);
-            CompetitionLeaderboardMarkUserRecyclerFragment.putCompetition(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO);
-            CompetitionLeaderboardMarkUserRecyclerFragment.putLeaderboardType(args,
-                    ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).leaderboardType);
+            CompetitionZoneLeaderboardDTO dto = (CompetitionZoneLeaderboardDTO) competitionZoneDTO;
+            if(dto.isActive()) {
+                CompetitionLeaderboardMarkUserRecyclerFragment.putTitle(args, competitionZoneListItemAdapter.getItem(i).title);
+                CompetitionLeaderboardMarkUserRecyclerFragment.putProviderId(args, providerId);
+                CompetitionLeaderboardMarkUserRecyclerFragment.putCompetition(args, ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).competitionDTO);
+                CompetitionLeaderboardMarkUserRecyclerFragment.putLeaderboardType(args,
+                        ((CompetitionZoneLeaderboardDTO) competitionZoneDTO).leaderboardType);
 
-            OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
-            if (ownedPortfolioId != null)
-            {
-                CompetitionLeaderboardMarkUserRecyclerFragment.putApplicablePortfolioId(args, ownedPortfolioId);
-            }
+                OwnedPortfolioId ownedPortfolioId = getApplicablePortfolioId();
+                if (ownedPortfolioId != null) {
+                    CompetitionLeaderboardMarkUserRecyclerFragment.putApplicablePortfolioId(args, ownedPortfolioId);
+                }
 
-            if (navigator != null)
-            {
-                navigator.get().pushFragment(CompetitionLeaderboardMarkUserRecyclerFragment.class, args);
+                if (navigator != null) {
+                    navigator.get().pushFragment(CompetitionLeaderboardMarkUserRecyclerFragment.class, args);
+                }
             }
         }
         else if (competitionZoneDTO instanceof CompetitionZoneLegalDTO)

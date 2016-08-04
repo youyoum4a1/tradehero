@@ -175,7 +175,7 @@ android {
             versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.1"
 
             multiDexEnabled true
-            manifestPlaceholders = [FACEBOOK_APP_ID: "431745923529834"]
+            manifestPlaceholders = [FACEBOOK_APP_ID: "254854381560011"]
         }
 
 //    samsung {

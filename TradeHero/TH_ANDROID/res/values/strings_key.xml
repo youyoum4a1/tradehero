@@ -2,7 +2,7 @@
 <resources>
 
   <string name="key_preference_top_banner" translatable="false">preference_top_banner</string>
-
+  <string name="key_preference_country_code" translatable="false">COUNTRY_CODE</string>
   <string name="key_settings_sharing_group" translatable="false">key_settings_sharing_group</string>
   <string name="key_settings_sharing_facebook" translatable="false">key_settings_sharing_facebook</string>
   <integer name="key_settings_sharing_facebook_order">0</integer>

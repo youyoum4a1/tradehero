@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.androidth.general.common.facebook.FacebookRequestException;
+import com.androidth.general.network.share.SocialConstants;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -23,16 +25,21 @@ import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.auth.operator.FacebookPermissions;
 import com.androidth.general.network.service.SocialLinker;
-import com.androidth.general.network.share.SocialConstants;
 import com.androidth.general.rx.ReplaceWithFunc1;
-import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
@@ -40,14 +47,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
-import rx.android.AndroidSubscriptions;
-import rx.android.internal.Assertions;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Singleton
@@ -66,6 +66,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
     private List<String> permissions;
     private CallbackManager callbackManager;
     @NonNull private AccessToken accessToken;
+    private String PUBLISH_PERMISSION = "publish_actions";
 
     // TODO not use injection of Context as this instance is a singleton.
     // Use Provider<Activity> instead
@@ -144,28 +145,42 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         return createAuthDataObservable(activity, permissions);
     }
 
-    @NonNull public Observable<AuthData> createAuthDataObservable(Activity activity, @Nullable List<String> permissions)
+    @NonNull @RxLogObservable public Observable<AuthData> createAuthDataObservable(Activity activity, @Nullable List<String> permissions)
     {
         final Bundle parameters = new Bundle();
         parameters.putString("fields", "id");
-
-        FacebookSdk.sdkInitialize(activity);
-        callbackManager = CallbackManager.Factory.create();
-        FacebookRequestOperator operator = FacebookRequestOperator.builder(activity, AccessToken.getCurrentAccessToken(), "me", callbackManager)
-                .setParameters(parameters)
-                .build();
-        return Observable.create(operator)
-                .map(new Func1<AccessToken, AuthData>()
+        
+        return createAccessTokenObservable(activity, permissions)
+                .flatMap(new Func1<AccessToken, Observable<? extends AuthData>>()
                 {
-                    @Override public AuthData call(AccessToken accessToken)
+                    @Override public Observable<? extends AuthData> call(final AccessToken accessToken)
                     {
-                        Timber.d("Response %s", accessToken.getToken());
-                        return new AuthData(
-                                SocialNetworkEnum.FB,
-                                accessToken.getExpires(),
-                                accessToken.getToken());
+
+                        return Observable.create(new FacebookRequestOperator(accessToken))
+                                .map(new Func1<AccessToken, AuthData>()
+                                {
+                                    @Override public AuthData call(AccessToken accessToken1)
+                                    {
+                                        return new AuthData(
+                                                SocialNetworkEnum.FB,
+                                                accessToken1.getExpires(),
+                                                accessToken1.getToken());
+                                    }
+                                });
                     }
                 });
+//        return Observable.create(operator)
+//                .map(new Func1<AccessToken, AuthData>()
+//                {
+//                    @Override public AuthData call(AccessToken accessToken)
+//                    {
+//                        Timber.d("Response %s", accessToken.getToken());
+//                        return new AuthData(
+//                                SocialNetworkEnum.FB,
+//                                accessToken.getExpires(),
+//                                accessToken.getToken());
+//                    }
+//                });
 
 //        return createSessionObservable(activity, permissions)
 //                .flatMap(new Func1<AccessToken, Observable<? extends AuthData>>()
@@ -197,10 +212,9 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         return createAccessTokenObservable(activity, permissions);
     }
 
-    @NonNull public Observable<AccessToken> createAccessTokenObservable(@NonNull Activity activity, @Nullable List<String> permissions)
+    @NonNull @RxLogObservable public Observable<AccessToken> createAccessTokenObservable(@NonNull Activity activity, @Nullable List<String> permissions)
     {
         return Observable.create(new FacebookAuthenticationSubscribe(activity, permissions));
-//        return Observable.just(AccessToken.getCurrentAccessToken());
     }
 
     @NonNull @Override public Observable<UserProfileDTO> socialLink(@NonNull Activity activity)
@@ -242,7 +256,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 //        }
 //
 //        tokenCachingStrategy.clear();
-        LoginManager.getInstance().logOut();//this will renew the FB access token
+//        LoginManager.getInstance().logOut();//this will renew the FB access token
     }
 
     private class FacebookAuthenticationSubscribe implements Observable.OnSubscribe<AccessToken> {
@@ -257,25 +271,56 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 
         @Override public void call(final Subscriber<? super AccessToken> subscriber){
 
-//            callbackManager = CallbackManager.Factory.create();
-//
-//            LoginManager.getInstance().registerCallback(callbackManager,
-//                    new FacebookCallback<LoginResult>() {
-//                        @Override
-//                        public void onSuccess(LoginResult loginResult) {
-//                            // App code
-//                        }
-//
-//                        @Override
-//                        public void onCancel() {
-//                            // App code
-//                        }
-//
-//                        @Override
-//                        public void onError(FacebookException exception) {
-//                            // App code
-//                        }
-//                    });
+            callbackManager = CallbackManager.Factory.create();
+            LoginManager.getInstance().registerCallback(callbackManager,
+                    new FacebookCallback<LoginResult>() {
+                        @Override
+                        public void onSuccess(LoginResult loginResult) {
+                            GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                                @Override
+                                public void onCompleted(JSONObject object, GraphResponse response) {
+                                    try{
+                                        String  email= object.getString("email");
+                                        Timber.d("user email ", email);
+                                    } catch (JSONException e) {
+                                        // TODO Auto-generated catch block
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                            request.executeAsync();
+
+                            if(loginResult.getAccessToken().getPermissions().contains(PUBLISH_PERMISSION)){
+                                Timber.d("Current access with publish");
+                                subscriber.onNext(loginResult.getAccessToken());
+                                subscriber.onCompleted();
+                            }else{
+                                Timber.d("Current access without publish");
+                                LoginManager.getInstance().logInWithPublishPermissions(activity, Arrays.asList(PUBLISH_PERMISSION));
+                            }
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            Timber.d("Current access token cancelled");
+                            AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                            if(accessToken!=null){
+                                subscriber.onNext(accessToken);
+                                subscriber.onCompleted();
+                            }else{
+                                subscriber.onError(new Exception("Login cancelled"));
+                            }
+                        }
+
+                        @Override
+                        public void onError(FacebookException exception) {
+                            // App code
+                            Timber.d("Current access onerror: "+exception.getMessage());
+                            subscriber.onError(new FacebookRequestException(exception));
+                        }
+                    });
+
+            LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "email", "user_friends"));
         }
     }
 

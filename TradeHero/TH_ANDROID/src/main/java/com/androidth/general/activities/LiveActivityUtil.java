@@ -135,14 +135,14 @@ public class LiveActivityUtil
     private void changeBarColor(OffOnViewSwitcherEvent event)
     {
         activity.getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(activity.getResources().getColor(event.isOn ? R.color.tradehero_red : R.color.general_brand_color)));
+                new ColorDrawable(activity.getResources().getColor(event.isOn ? R.color.general_red_live : R.color.general_brand_color)));
 
         //Specific to this activity?
         if (activity instanceof DashboardActivity)
         {
             DashboardActivity dashboardActivity = (DashboardActivity) activity;
             dashboardActivity.drawerLayout.setStatusBarBackgroundColor(
-                    dashboardActivity.getResources().getColor(event.isOn ? R.color.tradehero_red_status_bar : R.color.tradehero_blue_status_bar));
+                    dashboardActivity.getResources().getColor(event.isOn ? R.color.general_red_live_status_bar : R.color.tradehero_blue_status_bar));
 
             for (int i = 0; i < dashboardActivity.dashboardTabHost.getTabWidget().getChildCount(); i++)
             {

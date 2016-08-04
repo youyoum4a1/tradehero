@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.Spanned;
+
 import com.androidth.general.R;
 import com.androidth.general.api.competition.CompetitionDTO;
-import com.androidth.general.fragments.competition.zone.CompetitionZoneLeaderboardListItemView;
 import com.androidth.general.fragments.leaderboard.LeaderboardType;
 import com.androidth.general.models.number.THSignedPercentage;
 
@@ -15,7 +15,7 @@ public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
 {
     @NonNull public final CompetitionDTO competitionDTO;
     @NonNull public final LeaderboardType leaderboardType;
-    public final int titleColor;
+    //public final int titleColor;
     @NonNull public final Spanned roi;
 
     //<editor-fold desc="Constructors">
@@ -34,7 +34,7 @@ public class CompetitionZoneLeaderboardDTO extends CompetitionZoneDTO
         this.leaderboardType = leaderboardType != null ? leaderboardType : LeaderboardType.STOCKS;
 
         Boolean isActive = isActive();
-        titleColor = isActive == null || isActive ? CompetitionZoneLeaderboardListItemView.COLOR_ACTIVE : CompetitionZoneLeaderboardListItemView.COLOR_INACTIVE;
+        //titleColor = isActive == null || isActive ? CompetitionZoneLeaderboardListItemView.COLOR_ACTIVE : CompetitionZoneLeaderboardListItemView.COLOR_INACTIVE;
 
         //<editor-fold desc="ROI">
         if (competitionDTO.leaderboardUser != null)
