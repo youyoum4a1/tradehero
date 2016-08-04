@@ -15,7 +15,6 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.models.time.AppTiming;
-import com.androidth.general.network.share.SocialConstants;
 import com.androidth.general.persistence.prefs.AuthHeader;
 import com.androidth.general.persistence.prefs.FirstLaunch;
 import com.androidth.general.persistence.prefs.ResetHelpScreens;

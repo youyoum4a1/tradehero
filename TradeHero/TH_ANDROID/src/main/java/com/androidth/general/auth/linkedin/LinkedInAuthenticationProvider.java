@@ -9,6 +9,7 @@ import com.androidth.general.auth.SocialAuthenticationProvider;
 import com.androidth.general.auth.operator.OperatorOAuthDialog;
 import com.androidth.general.network.service.SocialLinker;
 import com.androidth.general.network.share.SocialConstants;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import javax.inject.Inject;

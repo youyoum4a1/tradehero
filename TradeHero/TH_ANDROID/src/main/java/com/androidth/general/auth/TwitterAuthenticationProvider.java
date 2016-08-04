@@ -8,6 +8,7 @@ import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.auth.operator.OperatorOAuthDialog;
 import com.androidth.general.network.service.SocialLinker;
 import com.androidth.general.network.share.SocialConstants;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import oauth.signpost.OAuthProvider;

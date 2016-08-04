@@ -1,5 +1,6 @@
 package com.androidth.general.network.share;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.auth.weibo.WeiboAppAuthData;
 import com.androidth.general.utils.Constants;
 
@@ -11,7 +12,7 @@ public class SocialConstants
     public static final String TWITTER_CONSUMER_KEY = "sJY7n9k29TAhraq4VjDYeg";
     public static final String TWITTER_CONSUMER_SECRET = "gRLhwCd3YgdaKKEH7Gwq9FI75TJuqHfi2TiDRwUHo";
 
-    public static final String FACEBOOK_APP_ID = "431745923529834";
+    public static final String FACEBOOK_APP_ID = "254854381560011";
 
     public static final String WECHAT_APP_ID_RELEASE = "wxe795a0ba8fa23cf7";//release
     public static final String WECHAT_APP_ID_TEST = "wxbd1f7f377d636b55";//test
@@ -28,4 +29,5 @@ public class SocialConstants
         SocialConstants.WEIBO_APP_ID,
         SocialConstants.WEIBO_REDIRECT_URL,
         SocialConstants.WEIBO_SCOPE);
+    
 }

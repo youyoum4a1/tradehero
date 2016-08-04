@@ -25,6 +25,11 @@ public class SocialTypeItemFactory
 //        socialList.add(new SocialTypeItemWeibo());
         socialList.add(new SocialTypeItemWechat());
 
+        socialList.add(new SocialTypeItem(R.drawable.icn_whatsapp,
+                R.string.invite_from_whatsapp,
+                R.drawable.whatsapp_selector,
+                SocialNetworkEnum.WHATSAPP));
+
         socialList.add(new SocialTypeItem(R.drawable.accounts_glyph_email_default,
                 R.string.invite_from_email,
                 R.drawable.email_selector,

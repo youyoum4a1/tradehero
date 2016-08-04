@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.androidth.general.common.facebook.FacebookRequestException;
+import com.androidth.general.network.share.SocialConstants;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -24,9 +25,7 @@ import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.auth.operator.FacebookPermissions;
 import com.androidth.general.network.service.SocialLinker;
-import com.androidth.general.network.share.SocialConstants;
 import com.androidth.general.rx.ReplaceWithFunc1;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
@@ -48,14 +47,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
-import rx.android.AndroidSubscriptions;
-import rx.android.internal.Assertions;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
-import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Singleton
@@ -264,7 +256,7 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 //        }
 //
 //        tokenCachingStrategy.clear();
-        LoginManager.getInstance().logOut();//this will renew the FB access token
+//        LoginManager.getInstance().logOut();//this will renew the FB access token
     }
 
     private class FacebookAuthenticationSubscribe implements Observable.OnSubscribe<AccessToken> {

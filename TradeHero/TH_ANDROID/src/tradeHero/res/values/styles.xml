@@ -562,7 +562,7 @@
       parent="TH.LeftDrawerMenu">
     <item name="android:layout_width">@dimen/size_3</item>
     <item name="android:layout_height">@dimen/size_3</item>
-    <item name="android:tint">@color/thV5Gray</item>
+    <item name="android:tint">@color/general_grey_text</item>
     <item name="android:scaleType">fitCenter</item>
   </style>
 
@@ -653,12 +653,12 @@
 
   <style name="TradeHero.Live"
       parent="Base.TradeHero">
-    <item name="colorAccent">@color/tradehero_red_focused</item>
-    <item name="colorPrimary">@color/tradehero_red</item>
+    <item name="colorAccent">@color/general_red_live_focused</item>
+    <item name="colorPrimary">@color/general_red_live</item>
     <item name="colorPrimaryDark">#922820</item>
     <item name="android:textColorHighlight">@color/accented_primary_red_text</item>
     <item name="android:textColorHighlightInverse">@color/accented_secondary_red_text</item>
-    <item name="slidingTabBackground">@color/tradehero_dark_red</item>
+    <item name="slidingTabBackground">@color/general_dark_red</item>
   </style>
 
   <style name="TradeHero.Live.RewardWidget">
