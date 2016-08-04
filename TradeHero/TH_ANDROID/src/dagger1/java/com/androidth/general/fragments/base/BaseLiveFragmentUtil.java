@@ -48,7 +48,7 @@ public class BaseLiveFragmentUtil
     {
         for (View v : views)
         {
-            v.setBackgroundColor(v.getContext().getResources().getColor(isLive ? R.color.tradehero_dark_red : R.color.tradehero_dark_blue));
+            v.setBackgroundColor(v.getContext().getResources().getColor(isLive ? R.color.general_dark_red : R.color.tradehero_dark_blue));
         }
     }
 
@@ -56,7 +56,7 @@ public class BaseLiveFragmentUtil
     {
         for (View v : views)
         {
-            v.setBackgroundColor(v.getContext().getResources().getColor(isLive ? R.color.tradehero_red : R.color.general_brand_color));
+            v.setBackgroundColor(v.getContext().getResources().getColor(isLive ? R.color.general_red_live : R.color.general_brand_color));
         }
     }
 

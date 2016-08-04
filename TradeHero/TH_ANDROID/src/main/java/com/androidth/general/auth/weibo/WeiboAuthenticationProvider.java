@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.androidth.general.network.share.SocialConstants;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 import com.sina.weibo.sdk.auth.WeiboAuth;
 import com.androidth.general.common.activities.ActivityResultRequester;
@@ -12,7 +14,6 @@ import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.auth.AuthData;
 import com.androidth.general.auth.SocialAuthenticationProvider;
 import com.androidth.general.network.service.SocialLinker;
-import com.androidth.general.network.share.SocialConstants;
 import com.androidth.general.utils.Constants;
 import javax.inject.Inject;
 import javax.inject.Singleton;

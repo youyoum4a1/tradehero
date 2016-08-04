@@ -461,16 +461,28 @@ public class FriendsInvitationFragment extends BaseFragment
                 }
                 else
                 {
-                    onStopSubscriptions.add(socialShareHelper.offerToConnect(item.socialNetwork)
+                    onDestroySubscriptions.add(
+                            socialShareHelper.offerToConnect(item.socialNetwork)
+                            .observeOn(Schedulers.io())
                             .subscribe(
-                                    new Action1<UserProfileDTO>()
-                                    {
-                                        @Override public void call(UserProfileDTO userProfileDTO)
-                                        {
-                                            pushSocialInvitationFragment(item.socialNetwork);
+                                    new Action1<UserProfileDTO>() {
+                                        @Override
+                                        public void call(UserProfileDTO userProfileDTO) {
+//                                            pushSocialInvitationFragment(item.socialNetwork);
+                                            getActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    pushFacebookShareContent(userProfileDTO);
+                                                }
+                                            });
                                         }
-                                    },
-                                    new EmptyAction1<Throwable>()));
+                                    }, new Action1<Throwable>() {
+                                        @Override
+                                        public void call(Throwable throwable) {
+                                        Timber.d("Offer to connect error "+throwable.getMessage());
+                                        }
+                                    })
+                    );
                 }
                 break;
             case FB_MSNGR://must change after FB sdk update
@@ -488,7 +500,8 @@ public class FriendsInvitationFragment extends BaseFragment
                                     {
                                         @Override public void call(UserProfileDTO userProfileDTO)
                                         {
-                                            pushSocialInvitationFragment(item.socialNetwork);
+//                                            pushSocialInvitationFragment(item.socialNetwork);
+                                            pushFBMessenger(userProfileDTO);
                                         }
                                     },
                                     new EmptyAction1<Throwable>()));
@@ -868,6 +881,8 @@ public class FriendsInvitationFragment extends BaseFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if(callbackManager!=null){
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 }

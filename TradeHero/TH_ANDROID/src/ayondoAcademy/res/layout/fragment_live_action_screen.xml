@@ -72,7 +72,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:textColor="@color/tradehero_red"
+        android:textColor="@color/general_red_live"
         tools:text="@string/broker_name_ayondo"
         />
 
