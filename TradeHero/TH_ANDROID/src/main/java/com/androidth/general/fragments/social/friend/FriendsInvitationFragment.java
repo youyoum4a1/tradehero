@@ -328,6 +328,7 @@ public class FriendsInvitationFragment extends BaseFragment
     private void observeRedeemView()
     {
         redeemReferralCodeButton.setEnabled(false);
+        redeemReferralCodeButton.setAlpha((float)0.5);
 
         onDestroyViewSubscriptions.add(
             WidgetObservable.text(redeemReferralCodeEditText)
@@ -337,6 +338,7 @@ public class FriendsInvitationFragment extends BaseFragment
                     @Override public void call(OnTextChangeEvent onTextChangeEvent)
                     {
                         redeemReferralCodeButton.setEnabled(onTextChangeEvent.text().length() > 0);
+                        redeemReferralCodeButton.setAlpha(onTextChangeEvent.text().length() > 0 ? 1 :(float)0.5);
                     }
                 }, new Action1<Throwable>()
                 {
