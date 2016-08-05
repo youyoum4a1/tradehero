@@ -49,13 +49,14 @@ public class DummyKYCAyondoUtil
     @NonNull public static StepStatus getStep2(@NonNull KYCAyondoForm kycForm)
     {
         return (kycForm.getAnnualIncomeRange() != null
-                && !kycForm.getAnnualIncomeRange().equals(AnnualIncomeRange.EMPTY)
+//                && !kycForm.getAnnualIncomeRange().equals(AnnualIncomeRange.EMPTY)
                 && kycForm.getNetWorthRange() != null
-                && !kycForm.getNetWorthRange().equals(NetWorthRange.EMPTY)
+//                && !kycForm.getNetWorthRange().equals(NetWorthRange.EMPTY)
                 && kycForm.getPercentNetWorthForInvestmentRange() != null
-                && !kycForm.getPercentNetWorthForInvestmentRange().equals(PercentNetWorthForInvestmentRange.EMPTY)
+//                && !kycForm.getPercentNetWorthForInvestmentRange().equals(PercentNetWorthForInvestmentRange.EMPTY)
                 && kycForm.getEmploymentStatus() != null
-                && !kycForm.getEmploymentStatus().equals(EmploymentStatus.EMPTY))
+//                && !kycForm.getEmploymentStatus().equals(EmploymentStatus.EMPTY)
+        )
                 ? StepStatus.COMPLETE
                 : StepStatus.UNSTARTED;
     }
