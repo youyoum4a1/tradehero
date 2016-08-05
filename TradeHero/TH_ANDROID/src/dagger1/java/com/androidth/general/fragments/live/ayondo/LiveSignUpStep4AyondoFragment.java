@@ -144,7 +144,7 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             @Override
                             public Object call(List<CountrySpinnerAdapter.DTO> primaryCountries, List<CountrySpinnerAdapter.DTO> secondaryCountries)
                             {
-                                primaryWidget.setCountries(primaryCountries, null);
+                                primaryWidget.setCountries(secondaryCountries, CountryCode.getByCode(primaryCountries.get(0).country.name()));
                                 secondaryWidget.setCountries(secondaryCountries, CountryCode.getByCode(primaryCountries.get(0).country.name()));
                                 return null;
                             }
@@ -313,7 +313,6 @@ public class LiveSignUpStep4AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         try
         {
             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-            Context context = getActivity().getApplicationContext();
             getParentFragment().startActivityForResult(builder.build(getActivity()), requestCode);
         }
         catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e)
