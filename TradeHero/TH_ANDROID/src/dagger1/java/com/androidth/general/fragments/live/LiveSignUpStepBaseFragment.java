@@ -206,7 +206,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                 .distinctUntilChanged();
     }
 
-    private Observable<LiveBrokerDTO> createBrokerObservable(Observable<LiveBrokerSituationDTO> brokerSituationObservable)
+    private @RxLogObservable Observable<LiveBrokerDTO> createBrokerObservable(Observable<LiveBrokerSituationDTO> brokerSituationObservable)
     {
         return brokerSituationObservable.map(new Func1<LiveBrokerSituationDTO, LiveBrokerDTO>()
         {
