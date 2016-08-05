@@ -25,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.androidth.general.R;
 import com.androidth.general.api.competition.EmailVerifiedDTO;
@@ -39,6 +40,9 @@ import com.androidth.general.api.kyc.ayondo.KYCAyondoFormOptionsDTO;
 import com.androidth.general.api.live.LiveBrokerDTO;
 import com.androidth.general.api.live.LiveBrokerSituationDTO;
 import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.api.users.UserProfileDTO;
+import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.exception.THException;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
@@ -55,6 +59,7 @@ import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
+import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.ReplaceWithFunc1;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -138,6 +143,9 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject CurrentUserId currentUserId;
     @Inject protected RequestHeaders requestHeaders;
 
+    @Inject
+    UserProfileCacheRx userProfileCache;
+
     private ImageRequesterUtil imageRequesterUtil;
     private ProgressDialog progressDialog;
     private boolean hasUploadedJumio = false;
@@ -175,6 +183,16 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onViewCreated(view, savedInstanceState);
         updateDB(true, 5);
+        userProfileCache.get(currentUserId.toUserBaseKey())
+                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<UserProfileDTO>() {
+            @Override
+            public void call(UserProfileDTO userProfileDTO) {
+                if(userProfileDTO!=null && userProfileDTO.email!=null)
+                    email.setText(userProfileDTO.email, TextView.BufferType.EDITABLE);
+            }
+        });
+
         email.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_NEXT &&
                     (emailVerifybutton.getState() == VerifyButtonState.PENDING

@@ -620,7 +620,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                         }
 
-dismissLocalProgressDialog();
+                        dismissLocalProgressDialog();
                         return latestDTO;
                     }
                 })
@@ -1275,6 +1275,7 @@ dismissLocalProgressDialog();
         progress.show();
 
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
+
 
         liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(
                 brokerApplicationDTO -> {
