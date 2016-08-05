@@ -13,7 +13,7 @@ import java.util.Map;
 
 public enum PercentNetWorthForInvestmentRange
 {
-    EMPTY(R.string.percent_net_worth_invest_empty, -1),
+//    EMPTY(R.string.percent_net_worth_invest_empty, -1),
     LESSTHAN25P(R.string.percent_net_worth_invest_less_than_25_p, 0),
     FROM25PTO50P(R.string.percent_net_worth_invest_from_25_p_to_50_p, 25),
     FROM51PTO75P(R.string.percent_net_worth_invest_from_51_p_to_75_p, 50),

@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import com.androidth.general.R;
 import com.androidth.general.api.kyc.AnnualIncomeRange;
 import com.androidth.general.api.kyc.EmploymentStatus;
+import com.androidth.general.api.kyc.EmptyKYCForm;
 import com.androidth.general.api.kyc.NetWorthRange;
 import com.androidth.general.api.kyc.PercentNetWorthForInvestmentRange;
 import com.androidth.general.api.kyc.StepStatus;
@@ -25,6 +26,7 @@ import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,7 @@ import rx.android.widget.WidgetObservable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import timber.log.Timber;
 
 public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragment
 {
@@ -78,10 +81,21 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 {
                                     @Override public void call(LiveBrokerSituationDTO situationDTO)
                                     {
+                                        if(situationDTO.kycForm instanceof EmptyKYCForm){
+                                            KYCAyondoForm defaultForm = new KYCAyondoForm();
+                                            situationDTO = new LiveBrokerSituationDTO(situationDTO.broker, defaultForm);
+                                        }
                                         populate((KYCAyondoForm) situationDTO.kycForm);
                                     }
-                                }),
+                                })
+                        .doOnError(new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                Timber.d("Step 2 livebroker error: "+throwable.getMessage());
+                            }
+                        }),
                         kycAyondoFormOptionsDTOObservable
+                                .take(1)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .doOnNext(new Action1<KYCAyondoFormOptionsDTO>()
                                 {
@@ -113,7 +127,13 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         employmentStatusSpinner.setAdapter(employmentStatusAdapter);
                                         employmentStatusAdapter.notifyDataSetChanged();
                                     }
-                                }),
+                                })
+                        .doOnError(new Action1<Throwable>() {
+                            @Override
+                            public void call(Throwable throwable) {
+                                Timber.d("Step2 kyc error: "+throwable.getMessage());
+                            }
+                        }),
                         new Func2<LiveBrokerSituationDTO, KYCAyondoFormOptionsDTO, Object>()
                         {
                             @Override public Object call(LiveBrokerSituationDTO situationDTO, KYCAyondoFormOptionsDTO kycFormOptionsDTO)
@@ -215,6 +235,9 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         {
             update.setEmployerRegulatedFinancial(employerRegulatedCheckBox.isChecked());
         }
+        annualIncomeSpinner.setSelection(3);
+        netWorthSpinner.setSelection(3);
+        percentageInvestmentSpinner.setSelection(3);
         return update;
     }
 
@@ -224,8 +247,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull List<AnnualIncomeRange> incomeRanges)
     {
         KYCAyondoForm update = new KYCAyondoForm();
-        AnnualIncomeRange savedAnnualIncomeRange = kycForm.getAnnualIncomeRange()==AnnualIncomeRange.EMPTY?
-                AnnualIncomeRange.FROM15KUSDTO40KUSD : kycForm.getAnnualIncomeRange();
+        AnnualIncomeRange savedAnnualIncomeRange = kycForm.getAnnualIncomeRange();
 
         Integer indexIncome = populateSpinner(annualIncomeSpinner,
                 savedAnnualIncomeRange,
@@ -253,9 +275,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull List<NetWorthRange> netWorthRanges)
     {
         KYCAyondoForm update = new KYCAyondoForm();
-        NetWorthRange savedNetWorthRange = kycForm.getNetWorthRange()==NetWorthRange.EMPTY?
-                NetWorthRange.FROM15KUSDTO40KUSD: kycForm.getNetWorthRange();
-
+        NetWorthRange savedNetWorthRange = kycForm.getNetWorthRange();
         Integer indexWorth = populateSpinner(netWorthSpinner,
                 savedNetWorthRange,
                 netWorthRanges);
@@ -282,8 +302,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull List<PercentNetWorthForInvestmentRange> netWorthRanges)
     {
         KYCAyondoForm update = new KYCAyondoForm();
-        PercentNetWorthForInvestmentRange savedNetWorthRange = kycForm.getPercentNetWorthForInvestmentRange()==PercentNetWorthForInvestmentRange.EMPTY?
-                PercentNetWorthForInvestmentRange.LESSTHAN25P : kycForm.getPercentNetWorthForInvestmentRange();
+        PercentNetWorthForInvestmentRange savedNetWorthRange = kycForm.getPercentNetWorthForInvestmentRange();
 
         Integer indexWorth = populateSpinner(percentageInvestmentSpinner,
                 savedNetWorthRange,
@@ -311,8 +330,7 @@ public class LiveSignUpStep2AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             @NonNull List<EmploymentStatus> employmentStatuses)
     {
         KYCAyondoForm update = new KYCAyondoForm();
-        EmploymentStatus savedEmploymentStatus = kycForm.getEmploymentStatus()==EmploymentStatus.EMPTY?
-                EmploymentStatus.EMPLOYED:kycForm.getEmploymentStatus();
+        EmploymentStatus savedEmploymentStatus = kycForm.getEmploymentStatus();
 
         Integer indexStatus = populateSpinner(employmentStatusSpinner,
                 savedEmploymentStatus,

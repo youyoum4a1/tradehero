@@ -13,7 +13,7 @@ import java.util.Map;
 
 public enum EmploymentStatus
 {
-    EMPTY(R.string.employment_status_empty, "..."),
+//    EMPTY(R.string.employment_status_empty, "..."),
     EMPLOYED(R.string.employment_status_employed, "Employed"),
     SELFEMPLOYED(R.string.employment_status_self_employed, "Self-Employed"),
     UNEMPLOYED(R.string.employment_status_unemployed, "Unemployed"),
