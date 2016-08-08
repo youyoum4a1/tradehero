@@ -14,7 +14,8 @@ import java.util.Map;
 public enum ResidenceScannedDocumentType
 {
     UTILITY_BILL(R.string.residence_document_type_utility_bill, 1),
-    BANK_STATEMENT(R.string.residence_document_type_bank_statement, 2)
+    BANK_STATEMENT(R.string.residence_document_type_bank_statement, 2),
+    SUBMIT_LATER(R.string.document_submit_later, 3)
     ;
 
     public static final Map<Integer, ResidenceScannedDocumentType> filedResidenceScannedDocumentTypes;
