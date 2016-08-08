@@ -27,14 +27,14 @@
         android:animateLayoutChanges="true"
         >
 
-      <TextView
-          style="@style/TH.Subhead"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginBottom="@dimen/margin_xsmall"
-          android:gravity="center_horizontal"
-          android:text="@string/postal_address"
-          />
+      <!--<TextView-->
+          <!--style="@style/TH.Subhead"-->
+          <!--android:layout_width="wrap_content"-->
+          <!--android:layout_height="wrap_content"-->
+          <!--android:layout_marginBottom="@dimen/margin_xsmall"-->
+          <!--android:gravity="center_horizontal"-->
+          <!--android:text="@string/postal_address"-->
+          <!--/>-->
 
       <com.androidth.general.widget.KYCAddressWidget
           android:id="@+id/info_address_pri"

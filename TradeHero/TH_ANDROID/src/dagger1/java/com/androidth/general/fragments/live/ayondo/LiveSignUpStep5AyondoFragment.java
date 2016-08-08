@@ -48,13 +48,13 @@ import com.androidth.general.models.fastfill.FastFillExceptionUtil;
 import com.androidth.general.models.fastfill.FastFillUtil;
 import com.androidth.general.models.fastfill.IdentityScannedDocumentType;
 import com.androidth.general.models.fastfill.ResidenceScannedDocumentType;
-import com.androidth.general.models.fastfill.ScanReference;
 import com.androidth.general.models.fastfill.ScannedDocument;
 import com.androidth.general.models.fastfill.jumio.NetverifyFastFillUtil;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
+import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.ReplaceWithFunc1;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -137,6 +137,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject FastFillUtil fastFillUtil;
     @Inject CurrentUserId currentUserId;
     @Inject protected RequestHeaders requestHeaders;
+    @Inject UserProfileCacheRx userProfileCache;
 
     private ImageRequesterUtil imageRequesterUtil;
     private ProgressDialog progressDialog;
@@ -147,9 +148,12 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private VerifyEmailDialogFragment vedf;
     private Drawable noErrorIconDrawable;
     private boolean hasClickedSubmitButton = false;
+    private boolean isIdentityDocSubmitted = false, isResidenceDocSubmitted = false;
     SignalRManager signalRManager;
 
     private static PublishSubject<String> verifiedPublishEmail;
+    private String scanReference;
+    private LiveBrokerDTO currentBroker;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -256,6 +260,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                         kycAyondoFormOptionsDTO.residenceDocumentTypes));
 //                                update.pickFrom(populateCurrency((KYCAyondoForm) situationDTO.kycForm.,
 //                                        kycAyondoFormOptionsDTO.currencies));
+
+                                currentBroker = situationDTO.broker;
                                 onNext(new LiveBrokerSituationDTO(situationDTO.broker, update));
                                 return null;
                             }
@@ -369,26 +375,31 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         return (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
                     }
                 })
-                .distinctUntilChanged(new Func1<KYCAyondoForm, ScanReference>()
+                .distinctUntilChanged(new Func1<KYCAyondoForm, String>()
                 {
-                    @Override public ScanReference call(KYCAyondoForm kycAyondoForm)
+                    @Override public String call(KYCAyondoForm kycAyondoForm)
                     {
                         return kycAyondoForm.getScanReference();
                     }
                 })
-                .map(new Func1<KYCAyondoForm, ScanReference>()
+                .map(new Func1<KYCAyondoForm, String>()
                 {
-                    @Override public ScanReference call(KYCAyondoForm kycAyondoForm)
+                    @Override public String call(KYCAyondoForm kycAyondoForm)
                     {
                         return kycAyondoForm.getScanReference();
                     }
                 })
-                .subscribe(new Action1<ScanReference>()
+                .subscribe(new Action1<String>()
                 {
-                    @Override public void call(ScanReference scanReference)
+                    @Override public void call(String scanReference)
                     {
                         //Update the documents needed
-                        identityContainer.setVisibility(scanReference != null ? View.GONE : View.VISIBLE);
+
+                        if(scanReference!=null){
+                            setupUploadJumioCompleteStatus();
+                        }
+
+//                        identityContainer.setVisibility(scanReference != null ? View.GONE : View.VISIBLE);
                     }
                 }, new TimberOnErrorAction1("Failed to update identity document visibility")));
 
@@ -447,7 +458,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 populate((KYCAyondoForm) situationDTO.kycForm);
 //                                populate(documentActionIdentity, ((KYCAyondoForm) situationDTO.kycForm).getIdentityDocumentUrl());
                                 populate(documentActionResidence, ((KYCAyondoForm) situationDTO.kycForm).getResidenceDocumentUrl());
-                                checkFormToEnableButton();
+                                checkFormToEnableSubmitButton();
 
                             }
                         },
@@ -481,13 +492,15 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                 return Observable.just(liveBrokerSituationDTO);
                                             }
                                         })
-//                                .map(new Func1<ScannedDocument, LiveBrokerSituationDTO>()
-//                                {
+//                                .map(new Func1<LiveBrokerSituationDTO, Object>() {
 //                                    @Override
-//                                    public LiveBrokerSituationDTO call(ScannedDocument scannedDocument)
+//                                    public LiveBrokerSituationDTO call(LiveBrokerSituationDTO situation)
 //                                    {
+//
+//                                        KYCAyondoForm form = new KYCAyondoForm();
+//                                        form.
 //                                        //noinspection ConstantConditions
-//                                        liveBrokerSituationDTO.kycForm.pickFrom(scannedDocument);
+//                                        liveBrokerSituationDTO.kycForm.pickFrom(situation);
 //                                        liveBrokerSituationPreference.set(liveBrokerSituationDTO);
 //                                        return liveBrokerSituationDTO;
 //                                    }
@@ -518,106 +531,110 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         }));
 
+        subscriptions.add(Observable.just(scanReference)
+                .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<String, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
 
+                    @Override
+                    public LiveBrokerSituationDTO call(String scanRef, LiveBrokerSituationDTO situation) {
+                        KYCAyondoForm form = new KYCAyondoForm();
+                        form.setScanReference(scanRef);
+                        return new LiveBrokerSituationDTO(situation.broker, form);
+                    }
+                }).subscribe(new Action1<LiveBrokerSituationDTO>() {
+                    @Override
+                    public void call(LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                        onNext(liveBrokerSituationDTO);
+                    }
 
-        subscriptions.add(
-                DocumentActionWidgetObservable.actions(documentActionResidence)
-                        .withLatestFrom(brokerDTOObservable, new Func2<DocumentActionWidgetAction, LiveBrokerDTO, DocumentActionWidgetAction>()
-                        {
-                            @Override
-                            public DocumentActionWidgetAction call(DocumentActionWidgetAction documentActionWidgetAction, LiveBrokerDTO brokerDTO)
-                            {
-                                if (documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.CLEAR))
-                                {
-                                    KYCAyondoForm update = new KYCAyondoForm();
-                                    update.setClearResidenceDocumentUrl(true);
-                                    onNext(new LiveBrokerSituationDTO(brokerDTO, update));
-                                }
-                                return documentActionWidgetAction;
-                            }
-                        })
-                        .filter(new Func1<DocumentActionWidgetAction, Boolean>()
-                        {
-                            @Override public Boolean call(DocumentActionWidgetAction documentActionWidgetAction)
-                            {
-                                return documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.ACTION);
-                            }
-                        })
-                        .withLatestFrom(brokerDTOObservable, new Func2<DocumentActionWidgetAction, LiveBrokerDTO, LiveBrokerDTO>()
-                        {
-                            @Override public LiveBrokerDTO call(DocumentActionWidgetAction documentActionWidgetAction, LiveBrokerDTO brokerDTO)
-                            {
-                                LiveSignUpStep5AyondoFragment.this.imageRequesterUtil = new ImageRequesterUtil(256, 256, 256, 256);//Android limit is 256x256
-                                return brokerDTO;
-                            }
-                        })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .flatMap(new Func1<LiveBrokerDTO, Observable<LiveBrokerSituationDTO>>()
-                        {
-                            @Override public Observable<LiveBrokerSituationDTO> call(final LiveBrokerDTO liveBrokerDTO)
-                            {
-                                return pickDocument(R.string.residence_document_pick_title, imageRequesterUtil)
-                                        .take(1)
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .doOnNext(new Action1<Bitmap>()
-                                        {
-                                            @Override public void call(Bitmap bitmap)
-                                            {
-                                                documentActionResidence.setLoading(true);
-                                                documentActionResidence.setPreviewBitmap(bitmap);
-                                            }
-                                        })
-                                        .observeOn(Schedulers.io())
-                                        .map(new Func1<Bitmap, File>()
-                                        {
-                                            @Override public File call(Bitmap bitmap)
-                                            {
-                                                return imageRequesterUtil.getCroppedPhotoFile();
-                                            }
-                                        })
-                                        .flatMap(new Func1<File, Observable<BrokerDocumentUploadResponseDTO>>()
-                                        {
-                                            @Override public Observable<BrokerDocumentUploadResponseDTO> call(File file)
-                                            {
-                                                return liveServiceWrapper.uploadDocument(file);
-                                            }
-                                        })
-                                        .map(new Func1<BrokerDocumentUploadResponseDTO, LiveBrokerSituationDTO>()
-                                        {
+                },new TimberOnErrorAction1("Failed to save scan reference")));
+
+//subscribe residence
+                        subscriptions.add(
+                                DocumentActionWidgetObservable.actions(documentActionResidence)
+                                        .withLatestFrom(brokerDTOObservable, new Func2<DocumentActionWidgetAction, LiveBrokerDTO, DocumentActionWidgetAction>() {
                                             @Override
-                                            public LiveBrokerSituationDTO call(BrokerDocumentUploadResponseDTO brokerDocumentUploadResponseDTO)
-                                            {
-                                                KYCAyondoForm update = new KYCAyondoForm();
-                                                update.setResidenceDocumentUrl(brokerDocumentUploadResponseDTO.url);
-                                                return new LiveBrokerSituationDTO(liveBrokerDTO, update);
+                                            public DocumentActionWidgetAction call(DocumentActionWidgetAction documentActionWidgetAction, LiveBrokerDTO brokerDTO) {
+                                                if (documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.CLEAR)) {
+                                                    KYCAyondoForm update = new KYCAyondoForm();
+                                                    update.setClearResidenceDocumentUrl(true);
+                                                    onNext(new LiveBrokerSituationDTO(brokerDTO, update));
+                                                }
+                                                return documentActionWidgetAction;
+                                            }
+                                        })
+                                        .filter(new Func1<DocumentActionWidgetAction, Boolean>() {
+                                            @Override
+                                            public Boolean call(DocumentActionWidgetAction documentActionWidgetAction) {
+                                                return documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.ACTION);
+                                            }
+                                        })
+                                        .withLatestFrom(brokerDTOObservable, new Func2<DocumentActionWidgetAction, LiveBrokerDTO, LiveBrokerDTO>() {
+                                            @Override
+                                            public LiveBrokerDTO call(DocumentActionWidgetAction documentActionWidgetAction, LiveBrokerDTO brokerDTO) {
+                                                LiveSignUpStep5AyondoFragment.this.imageRequesterUtil = new ImageRequesterUtil(256, 256, 256, 256);//Android limit is 256x256
+                                                return brokerDTO;
                                             }
                                         })
                                         .observeOn(AndroidSchedulers.mainThread())
-                                        .doOnError(new Action1<Throwable>()
-                                        {
-                                            @Override public void call(Throwable throwable)
-                                            {
-                                                THToast.show(new THException(throwable));
+                                        .flatMap(new Func1<LiveBrokerDTO, Observable<LiveBrokerSituationDTO>>() {
+                                            @Override
+                                            public Observable<LiveBrokerSituationDTO> call(final LiveBrokerDTO liveBrokerDTO) {
+                                                return pickDocument(R.string.residence_document_pick_title, imageRequesterUtil)
+                                                        .take(1)
+                                                        .observeOn(AndroidSchedulers.mainThread())
+                                                        .doOnNext(new Action1<Bitmap>() {
+                                                            @Override
+                                                            public void call(Bitmap bitmap) {
+                                                                documentActionResidence.setLoading(true);
+                                                                documentActionResidence.setPreviewBitmap(bitmap);
+                                                            }
+                                                        })
+                                                        .observeOn(Schedulers.io())
+                                                        .map(new Func1<Bitmap, File>() {
+                                                            @Override
+                                                            public File call(Bitmap bitmap) {
+                                                                return imageRequesterUtil.getCroppedPhotoFile();
+                                                            }
+                                                        })
+                                                        .flatMap(new Func1<File, Observable<BrokerDocumentUploadResponseDTO>>() {
+                                                            @Override
+                                                            public Observable<BrokerDocumentUploadResponseDTO> call(File file) {
+                                                                return liveServiceWrapper.uploadDocument(file);
+                                                            }
+                                                        })
+                                                        .map(new Func1<BrokerDocumentUploadResponseDTO, LiveBrokerSituationDTO>() {
+                                                            @Override
+                                                            public LiveBrokerSituationDTO call(BrokerDocumentUploadResponseDTO brokerDocumentUploadResponseDTO) {
+                                                                KYCAyondoForm update = new KYCAyondoForm();
+                                                                update.setResidenceDocumentUrl(brokerDocumentUploadResponseDTO.url);
+                                                                isResidenceDocSubmitted = true;
+                                                                return new LiveBrokerSituationDTO(liveBrokerDTO, update);
+                                                            }
+                                                        })
+                                                        .observeOn(AndroidSchedulers.mainThread())
+                                                        .doOnError(new Action1<Throwable>() {
+                                                            @Override
+                                                            public void call(Throwable throwable) {
+                                                                THToast.show(new THException(throwable));
+                                                                isResidenceDocSubmitted = false;
+                                                            }
+                                                        })
+                                                        .finallyDo(new Action0() {
+                                                            @Override
+                                                            public void call() {
+                                                                documentActionResidence.setLoading(false);
+                                                            }
+                                                        });
                                             }
                                         })
-                                        .finallyDo(new Action0()
-                                        {
-                                            @Override public void call()
-                                            {
-                                                documentActionResidence.setLoading(false);
-                                            }
-                                        });
-                            }
-                        })
-                        .subscribe(
-                                new Action1<LiveBrokerSituationDTO>()
-                                {
-                                    @Override public void call(LiveBrokerSituationDTO situationDTO)
-                                    {
-                                        onNext(situationDTO);
-                                    }
-                                },
-                                new TimberOnErrorAction1("Failed to ask for and get residence document bitmap")));
+                                        .subscribe(
+                                                new Action1<LiveBrokerSituationDTO>() {
+                                                    @Override
+                                                    public void call(LiveBrokerSituationDTO situationDTO) {
+                                                        onNext(situationDTO);
+                                                    }
+                                                },
+                                                new TimberOnErrorAction1("Failed to ask for and get residence document bitmap")));
 
         subscriptions.add(kycAyondoFormOptionsDTOObservable
                 .observeOn(AndroidSchedulers.mainThread())
@@ -765,7 +782,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     @Override protected void onNextButtonEnabled(List<StepStatus> stepStatuses)
     {
-        checkFormToEnableButton();
+        checkFormToEnableSubmitButton();
 //        StepStatus fifthStatus = stepStatuses == null || stepStatuses.size() == 0 ? null : stepStatuses.get(4);
 //        if (btnCreate != null)
 //        {
@@ -787,14 +804,21 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     }
 
     @MainThread
-    private void checkFormToEnableButton(){
-        if(documentActionResidence.hasImageUploaded()
-//                && documentActionIdentity.hasImageUploaded()
-                && hasUploadedJumio
-                && termsConditionsCheckBox.isChecked()
-                && riskWarningCheckBox.isChecked()
-                && dataSharingCheckBox.isChecked()
-                && emailPattern.matcher(email.getText()).matches()){
+    private void checkFormToEnableSubmitButton(){
+        if(
+                //if has uploaded or submit later
+                (documentActionResidence.hasImageUploaded()
+                        ||residenceDocumentTypeSpinner.getSelectedItemPosition()
+                        ==ResidenceScannedDocumentType.SUBMIT_LATER.fromServer-1)//since it starts from 1
+
+                        //if has uploaded or submit later
+                        && (hasUploadedJumio || identityDocumentTypeSpinner.getSelectedItemPosition()
+                        ==IdentityScannedDocumentType.SUBMIT_LATER.fromServer-1)//since it starts from 1
+
+                        && termsConditionsCheckBox.isChecked()
+                        && riskWarningCheckBox.isChecked()
+                        && dataSharingCheckBox.isChecked()
+                        && emailPattern.matcher(email.getText()).matches()){
 
 //                createSwitcher.showNext();
             btnSubmit.setBackground(getResources().getDrawable(R.drawable.basic_green_selector));
@@ -1033,11 +1057,16 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @MainThread
     private void updateLayoutFromJumio(String dataType, String scanRef){
         JumioVerifyBodyDTO jumioDTO = new JumioVerifyBodyDTO(dataType, scanRef);
-        Log.v(getTag(), "Provider id: "+providerId);
+        this.scanReference = scanRef;
+
         liveServiceWrapper.uploadScanReference(jumioDTO, providerId).subscribe(new Subscriber<Response>() {
             @Override
             public void onCompleted() {
                 Log.v(getTag(), "Scan ref: "+dataType+":"+scanRef);
+
+                KYCAyondoForm form = new KYCAyondoForm();
+                form.setScanReference(scanRef);
+                liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(currentBroker, form));
             }
 
             @Override
@@ -1056,11 +1085,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            hasUploadedJumio = true;
-                            scanButton.setImageResource(R.drawable.green_tick);
-                            scanButton.setClickable(false);
-                            identityDocumentTypeSpinner.setEnabled(false);
-                            checkFormToEnableButton();
+
+                            setupUploadJumioCompleteStatus();
                         }
                     });
                 }
@@ -1138,5 +1164,18 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(textView, InputMethodManager.SHOW_IMPLICIT);
         }
+    }
+
+    private void setupUploadJumioCompleteStatus(){
+        hasUploadedJumio = true;
+
+        isIdentityDocSubmitted = true;
+        identityDocumentTypeSpinner.setEnabled(false);
+
+        scanButton.setImageResource(R.drawable.green_tick);
+        scanButton.setClickable(false);
+        scanButton.setEnabled(false);
+        identityDocumentTypeSpinner.setEnabled(false);
+        checkFormToEnableSubmitButton();
     }
 }

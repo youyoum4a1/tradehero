@@ -15,7 +15,9 @@ import java.util.Map;
 public enum AyondoIdentityDocumentType
 {
     PASSPORT(R.string.identity_document_type_passport, "Passport", IdentityScannedDocumentType.PASSPORT),
-    NATIONAL_ID(R.string.identity_document_type_id_card, "NationalId", IdentityScannedDocumentType.IDENTITY_CARD);
+    NATIONAL_ID(R.string.identity_document_type_id_card, "NationalId", IdentityScannedDocumentType.IDENTITY_CARD),
+    DRIVER_LICENSE(R.string.identity_document_type_driver_license, "DriverLicense", IdentityScannedDocumentType.DRIVER_LICENSE),
+    SUBMIT_LATER(R.string.document_submit_later, "SubmitLater", IdentityScannedDocumentType.SUBMIT_LATER);
 
     public static final Map<String, AyondoIdentityDocumentType> filedAyondoIdentityDocumentTypesPerServerCode;
     public static final Map<IdentityScannedDocumentType, AyondoIdentityDocumentType> filedAyondoIdentityDocumentTypesPerScannedType;

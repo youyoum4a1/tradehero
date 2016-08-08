@@ -40,7 +40,7 @@ public class  KYCAyondoForm implements KYCForm
 
     @Nullable
     private Country country;
-    @Nullable private ScanReference scanReference;
+    @Nullable private String scanReference;
     @Nullable private AyondoGender ayondoGender;
     @JsonIgnore
     @Deprecated @Nullable private String fullName;
@@ -128,7 +128,7 @@ public class  KYCAyondoForm implements KYCForm
 
     @Override public void pickFrom(@NonNull ScannedDocument scannedDocument)
     {
-        this.scanReference = scannedDocument.getScanReference();
+        this.scanReference = scannedDocument.getScanReference().getValue();
 
         Gender gender = scannedDocument.getGender();
         if (gender != null)
@@ -270,12 +270,12 @@ public class  KYCAyondoForm implements KYCForm
         return stepStatuses;
     }
 
-    @Override @Nullable public ScanReference getScanReference()
+    @Override @Nullable public String getScanReference()
     {
         return scanReference;
     }
 
-    public void setScanReference(@Nullable ScanReference scanReference)
+    public void setScanReference(@Nullable String scanReference)
     {
         this.scanReference = scanReference;
     }
