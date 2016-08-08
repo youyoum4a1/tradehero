@@ -81,8 +81,14 @@ public class  KYCAyondoForm implements KYCForm
     @Nullable private String identityDocumentUrl;
     @Nullable @JsonIgnore private Boolean clearIdentityDocumentUrl;
     @Nullable private ResidenceScannedDocumentType residenceDocumentType;
-    @Nullable private String residenceDocumentUrl;
-    @Nullable @JsonIgnore private Boolean clearResidenceDocumentUrl;
+//    @Nullable private String residenceDocumentUrl;
+//    @Nullable @JsonIgnore private Boolean clearResidenceDocumentUrl;
+    @Nullable private String proofOfIdType;//unused for now coz of Jumio-Jeff
+    @Nullable private String proofOfIdImageUrl;//unused for now coz of Jumio-Jeff
+    @Nullable private String proofOfAddressType;//replaced residenceDocumentType
+    @Nullable private String proofOfAddressImageUrl;//replace residenceDocumentUrl
+    @Nullable @JsonIgnore private Boolean clearProofOfAddressUrl;
+
     @Nullable private Boolean agreeTermsConditions;
     @Nullable private Boolean agreeRisksWarnings;
     @Nullable private Boolean agreeDataSharing;
@@ -236,11 +242,11 @@ public class  KYCAyondoForm implements KYCForm
             }
             this.residenceDocumentType =
                     ayondoForm.getResidenceDocumentType() != null ? ayondoForm.getResidenceDocumentType() : this.residenceDocumentType;
-            this.residenceDocumentUrl = ayondoForm.residenceDocumentUrl != null ? ayondoForm.residenceDocumentUrl : this.residenceDocumentUrl;
-            if (ayondoForm.clearResidenceDocumentUrl != null && ayondoForm.clearResidenceDocumentUrl)
-            {
-                this.residenceDocumentUrl = null;
-            }
+//            this.residenceDocumentUrl = ayondoForm.residenceDocumentUrl != null ? ayondoForm.residenceDocumentUrl : this.residenceDocumentUrl;
+//            if (ayondoForm.clearResidenceDocumentUrl != null && ayondoForm.clearResidenceDocumentUrl)
+//            {
+//                this.residenceDocumentUrl = null;
+//            }
             this.agreeTermsConditions = ayondoForm.agreeTermsConditions != null ? ayondoForm.agreeTermsConditions : this.agreeTermsConditions;
             this.agreeRisksWarnings = ayondoForm.agreeRisksWarnings != null ? ayondoForm.agreeRisksWarnings : this.agreeRisksWarnings;
             this.agreeDataSharing = ayondoForm.agreeDataSharing != null ? ayondoForm.agreeDataSharing : this.agreeDataSharing;
@@ -257,6 +263,14 @@ public class  KYCAyondoForm implements KYCForm
             this.identificationNumber = ayondoForm.getIdentificationNumber() != null ? ayondoForm.getIdentificationNumber() : this.getIdentificationNumber();
             this.verifiedEmailAddress = ayondoForm.verifiedEmailAddress!=null? ayondoForm.verifiedEmailAddress:this.verifiedEmailAddress;
             this.additionalData = ayondoForm.additionalData!=null ? ayondoForm.additionalData: this.additionalData;
+
+            this.proofOfAddressType =
+                    ayondoForm.getProofOfAddressType() != null ? ayondoForm.getProofOfAddressType() : this.proofOfAddressType;
+            this.proofOfAddressImageUrl = ayondoForm.getProofOfAddressImageUrl() !=null ? ayondoForm.getProofOfAddressImageUrl(): this.proofOfAddressImageUrl;
+            if (ayondoForm.clearProofOfAddressUrl != null && ayondoForm.clearProofOfAddressUrl)
+            {
+                this.proofOfAddressImageUrl = null;
+            }
         }
     }
 
@@ -739,20 +753,26 @@ public class  KYCAyondoForm implements KYCForm
         this.residenceDocumentType = residenceDocumentType;
     }
 
-    @Nullable public String getResidenceDocumentUrl()
+//    @Nullable public String getResidenceDocumentUrl()
+//    {
+//        return residenceDocumentUrl;
+//    }
+//
+//    public void setResidenceDocumentUrl(@Nullable String residenceDocumentUrl)
+//    {
+//        this.residenceDocumentUrl = residenceDocumentUrl;
+//    }
+//
+//    public void setClearResidenceDocumentUrl(@Nullable Boolean clearResidenceDocumentUrl)
+//    {
+//        this.clearResidenceDocumentUrl = clearResidenceDocumentUrl;
+//    }
+
+    public void setClearProofOfAddressUrl(@Nullable Boolean clearProofOfAddressUrl)
     {
-        return residenceDocumentUrl;
+        this.clearProofOfAddressUrl = clearProofOfAddressUrl;
     }
 
-    public void setResidenceDocumentUrl(@Nullable String residenceDocumentUrl)
-    {
-        this.residenceDocumentUrl = residenceDocumentUrl;
-    }
-
-    public void setClearResidenceDocumentUrl(@Nullable Boolean clearResidenceDocumentUrl)
-    {
-        this.clearResidenceDocumentUrl = clearResidenceDocumentUrl;
-    }
     //</editor-fold>
 
     //<editor-fold desc="Agreements">
@@ -906,6 +926,42 @@ public class  KYCAyondoForm implements KYCForm
         return leadGuid;
     }
 
+    @Nullable
+    public String getProofOfIdType() {
+        return proofOfIdType;
+    }
+
+    public void setProofOfIdType(@Nullable String proofOfIdType) {
+        this.proofOfIdType = proofOfIdType;
+    }
+
+    @Nullable
+    public String getProofOfIdImageUrl() {
+        return proofOfIdImageUrl;
+    }
+
+    public void setProofOfIdImageUrl(@Nullable String proofOfIdImageUrl) {
+        this.proofOfIdImageUrl = proofOfIdImageUrl;
+    }
+
+    @Nullable
+    public String getProofOfAddressType() {
+        return proofOfAddressType;
+    }
+
+    public void setProofOfAddressType(@Nullable String proofOfAddressType) {
+        this.proofOfAddressType = proofOfAddressType;
+    }
+
+    @Nullable
+    public String getProofOfAddressImageUrl() {
+        return proofOfAddressImageUrl;
+    }
+
+    public void setProofOfAddressImageUrl(@Nullable String proofOfAddressImageUrl) {
+        this.proofOfAddressImageUrl = proofOfAddressImageUrl;
+    }
+
     @Override public boolean equals(@Nullable Object o)
     {
         if (o == null) return false;
@@ -980,8 +1036,12 @@ public class  KYCAyondoForm implements KYCForm
             // Do not compare clearIdentityDocumentUrl
             same &= residenceDocumentType == null ? ayondoForm.residenceDocumentType == null
                     : residenceDocumentType.equals(ayondoForm.residenceDocumentType);
-            same &= residenceDocumentUrl == null ? ayondoForm.residenceDocumentUrl == null
-                    : residenceDocumentUrl.equals(ayondoForm.residenceDocumentUrl);
+//            same &= residenceDocumentUrl == null ? ayondoForm.residenceDocumentUrl == null
+//                    : residenceDocumentUrl.equals(ayondoForm.residenceDocumentUrl);
+            same &= proofOfAddressType == null ? ayondoForm.proofOfAddressType == null
+                    : proofOfAddressType.equals(ayondoForm.proofOfAddressType);
+            same &= proofOfAddressImageUrl == null ? ayondoForm.proofOfAddressImageUrl == null
+                    : proofOfAddressImageUrl.equals(ayondoForm.proofOfAddressImageUrl);
             // Do not compare clearResidenceDocumentFile
             same &= agreeTermsConditions == null ? ayondoForm.agreeTermsConditions == null
                     : agreeTermsConditions.equals(ayondoForm.agreeTermsConditions);
@@ -1068,8 +1128,10 @@ public class  KYCAyondoForm implements KYCForm
         code ^= identityDocumentUrl == null ? 0 : identityDocumentUrl.hashCode();
         // Do not hash clearIdentityDocumentUrl
         code ^= residenceDocumentType == null ? 0 : residenceDocumentType.hashCode();
-        code ^= residenceDocumentUrl == null ? 0 : residenceDocumentUrl.hashCode();
+//        code ^= residenceDocumentUrl == null ? 0 : residenceDocumentUrl.hashCode();
         // Do not hash clearResidenceDocumentUrl
+        code ^= proofOfAddressImageUrl == null ? 0 : proofOfAddressImageUrl.hashCode();
+        code ^= proofOfAddressType == null ? 0 : proofOfAddressType.hashCode();
         code ^= agreeTermsConditions == null ? 0 : agreeTermsConditions.hashCode();
         code ^= agreeRisksWarnings == null ? 0 : agreeRisksWarnings.hashCode();
         code ^= agreeDataSharing == null ? 0 : agreeDataSharing.hashCode();
@@ -1126,8 +1188,10 @@ public class  KYCAyondoForm implements KYCForm
                 ", identityDocumentUrl=" + identityDocumentUrl +
                 ", clearIdentityDocumentUrl=" + clearIdentityDocumentUrl +
                 ", residenceDocumentType=" + residenceDocumentType +
-                ", residenceDocumentUrl=" + residenceDocumentUrl +
-                ", clearResidenceDocumentUrl=" + clearResidenceDocumentUrl +
+//                ", residenceDocumentUrl=" + residenceDocumentUrl +
+                ", proofOfAddressType=" + proofOfAddressType +
+                ", proofOfAddressImageUrl=" + proofOfAddressImageUrl +
+                ", clearProofOfAddressUrl=" + clearProofOfAddressUrl +
                 ", agreeTermsConditions=" + agreeTermsConditions +
                 ", agreeRisksWarnings=" + agreeRisksWarnings +
                 ", agreeDataSharing=" + agreeDataSharing +

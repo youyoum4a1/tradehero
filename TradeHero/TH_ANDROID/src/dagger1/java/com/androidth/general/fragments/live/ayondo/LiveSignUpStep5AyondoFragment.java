@@ -143,9 +143,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject protected RequestHeaders requestHeaders;
     @Inject UserProfileCacheRx userProfileCache;
 
-    @Inject
-    UserProfileCacheRx userProfileCache;
-
     private ImageRequesterUtil imageRequesterUtil;
     private ProgressDialog progressDialog;
     private boolean hasUploadedJumio = false;
@@ -474,7 +471,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                 //noinspection ConstantConditions
                                 populate((KYCAyondoForm) situationDTO.kycForm);
 //                                populate(documentActionIdentity, ((KYCAyondoForm) situationDTO.kycForm).getIdentityDocumentUrl());
-                                populate(documentActionResidence, ((KYCAyondoForm) situationDTO.kycForm).getResidenceDocumentUrl());
+//                                populate(documentActionResidence, ((KYCAyondoForm) situationDTO.kycForm).getResidenceDocumentUrl());
+                                populate(documentActionResidence, ((KYCAyondoForm) situationDTO.kycForm).getProofOfAddressImageUrl());
                                 checkFormToEnableSubmitButton();
 
                             }
@@ -573,7 +571,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                             public DocumentActionWidgetAction call(DocumentActionWidgetAction documentActionWidgetAction, LiveBrokerDTO brokerDTO) {
                                                 if (documentActionWidgetAction.actionType.equals(DocumentActionWidgetActionType.CLEAR)) {
                                                     KYCAyondoForm update = new KYCAyondoForm();
-                                                    update.setClearResidenceDocumentUrl(true);
+                                                    update.setClearProofOfAddressUrl(true);
                                                     onNext(new LiveBrokerSituationDTO(brokerDTO, update));
                                                 }
                                                 return documentActionWidgetAction;
@@ -623,7 +621,9 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                             @Override
                                                             public LiveBrokerSituationDTO call(BrokerDocumentUploadResponseDTO brokerDocumentUploadResponseDTO) {
                                                                 KYCAyondoForm update = new KYCAyondoForm();
-                                                                update.setResidenceDocumentUrl(brokerDocumentUploadResponseDTO.url);
+                                                                update.setProofOfAddressImageUrl(brokerDocumentUploadResponseDTO.url);
+//                                                                update.setResidenceDocumentUrl(brokerDocumentUploadResponseDTO.url);
+
                                                                 isResidenceDocSubmitted = true;
                                                                 return new LiveBrokerSituationDTO(liveBrokerDTO, update);
                                                             }
@@ -1055,7 +1055,8 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
             if (chosen != null)
             {
-                update.setResidenceDocumentType(chosen);
+//                update.setResidenceDocumentType(chosen);
+                update.setProofOfAddressType(chosen.name());
             }
         }
         return update;

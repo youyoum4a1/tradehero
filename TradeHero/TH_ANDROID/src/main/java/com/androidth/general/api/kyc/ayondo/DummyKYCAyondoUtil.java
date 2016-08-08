@@ -105,7 +105,7 @@ public class DummyKYCAyondoUtil
         return ((kycForm.getScanReference() != null) || (kycForm.getIdentityDocumentType() != null
                 && kycForm.getIdentityDocumentUrl() != null))
                 && ((kycForm.getNeedResidencyDocument() != null && !kycForm.getNeedResidencyDocument()) || (kycForm.getResidenceDocumentType()
-                != null && kycForm.getResidenceDocumentUrl() != null))
+                != null && kycForm.getProofOfAddressImageUrl() != null))
                 && (kycForm.isAgreeTermsConditions() != null && kycForm.isAgreeTermsConditions().equals(true))
                 && (kycForm.isAgreeRisksWarnings() != null && kycForm.isAgreeRisksWarnings().equals(true))
                 && (kycForm.isAgreeDataSharing() != null && kycForm.isAgreeDataSharing().equals(true))
