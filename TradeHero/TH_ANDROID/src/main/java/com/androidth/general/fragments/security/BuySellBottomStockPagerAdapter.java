@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.SecurityId;
@@ -17,6 +18,7 @@ import com.androidth.general.fragments.discussion.stock.SecurityDiscussionFragme
 import com.androidth.general.fragments.news.SecurityNewsfeedFragment;
 import com.androidth.general.fragments.position.SecurityPositionListFragment;
 import com.androidth.general.models.chart.ChartTimeSpan;
+
 import timber.log.Timber;
 
 public class BuySellBottomStockPagerAdapter extends FragmentPagerAdapter

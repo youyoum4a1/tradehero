@@ -9,9 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import com.androidth.general.common.rx.PairGetSecond;
+
 import com.androidth.general.R;
 import com.androidth.general.adapters.TypedRecyclerAdapter;
 import com.androidth.general.api.news.NewsItemCompactDTO;
@@ -20,6 +18,8 @@ import com.androidth.general.api.news.key.NewsItemListSecurityKey;
 import com.androidth.general.api.pagination.PaginatedDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityId;
+import com.androidth.general.api.security.SecurityIntegerId;
+import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.discovery.newsfeed.NewsfeedDisplayDTO;
 import com.androidth.general.fragments.discovery.newsfeed.NewsfeedNewsDisplayDTO;
@@ -29,11 +29,17 @@ import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.persistence.news.NewsItemCompactListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompactCacheRx;
 import com.androidth.general.rx.TimberOnErrorAction1;
-import dagger.Lazy;
+
+import org.ocpsoft.prettytime.PrettyTime;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
-import org.ocpsoft.prettytime.PrettyTime;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import dagger.Lazy;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -45,6 +51,7 @@ public class SecurityNewsfeedFragment extends AbstractSecurityInfoFragment
     private static final int DEFAULT_PAGE = 0;
     private static final int DEFAULT_PER_PAGE = 30;
     @Inject SecurityCompactCacheRx securityCompactCache;
+
     @Inject NewsItemCompactListCacheRx newsTitleCache;
     @Inject Lazy<DashboardNavigator> dashboardNavigatorLazy;
 
@@ -94,8 +101,13 @@ public class SecurityNewsfeedFragment extends AbstractSecurityInfoFragment
                             @Override public Observable<PaginatedDTO<NewsItemCompactDTO>> call(Pair<SecurityId, SecurityCompactDTO> pair)
                             {
                                 securityCompactDTO = pair.second;
+
+                                SecurityIntegerId id = pair.second.getSecurityIntegerId();
+                                if(pair.second.UnderlyingSecurityId!=null){
+                                    id = new SecurityIntegerId(pair.second.UnderlyingSecurityId);
+                                }
                                 return newsTitleCache.get(new NewsItemListSecurityKey(
-                                        pair.second.getSecurityIntegerId(),
+                                        id,
                                         DEFAULT_PAGE, DEFAULT_PER_PAGE))
                                         .map(new PairGetSecond<NewsItemListKey, PaginatedDTO<NewsItemCompactDTO>>());
                             }

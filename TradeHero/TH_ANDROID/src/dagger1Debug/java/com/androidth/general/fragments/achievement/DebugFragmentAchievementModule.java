@@ -12,6 +12,6 @@ import dagger.Module;
         complete = false,
         library = true
 )
-public class DebugFragmentAchievementModule
+public class  DebugFragmentAchievementModule
 {
 }

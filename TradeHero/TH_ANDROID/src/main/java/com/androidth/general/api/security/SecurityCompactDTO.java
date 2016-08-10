@@ -101,6 +101,19 @@ public class SecurityCompactDTO implements DTO
 
     protected String timeTillNextExchangeOpen;
 
+
+
+    public String marker;
+    public Boolean isCFD;
+    public Double minShort;
+    public Double maxShort;
+    public Double minLong;
+    public Double maxLong;
+    public Integer sortorderInExchange;
+    public Integer sortorderOverall;
+    public Integer UnderlyingSecurityId;
+
+
     //<editor-fold desc="Constructors">
     public SecurityCompactDTO()
     {
@@ -110,6 +123,18 @@ public class SecurityCompactDTO implements DTO
     public SecurityCompactDTO(@NonNull SecurityCompactDTO other)
     {
         super();
+        this.marker = other.marker;
+        this.isCFD = other.isCFD;
+        this.minShort = other.minShort;
+        this.maxShort = other.maxShort;
+        this.minShort = other.minShort;
+        this.minLong = other.minLong;
+        this.maxLong = other.maxLong;
+        this.sortorderInExchange = other.sortorderInExchange;
+        this.sortorderOverall = other.sortorderOverall;
+        this.UnderlyingSecurityId = other.UnderlyingSecurityId;
+
+
         this.id = other.id;
         this.symbol = other.symbol;
         this.name = other.name;

@@ -1,0 +1,394 @@
+TASK com.tradehero.th id=754
+  ACTIVITY com.tradehero.th/com.androidth.general.activities.DashboardActivity 55f9a8e pid=3256
+    Local FragmentActivity 78cb69d State:
+      mCreated=truemResumed=true mStopped=false mReallyStopped=false
+      mLoadersStarted=true
+    Active Fragments in dea06ba:
+      #0: TrendingMainFragment{88db96b #0 id=0x7f1100c3}
+        mFragmentId=#7f1100c3 mContainerId=#7f1100c3 mTag=null
+        mState=1 mIndex=0 mWho=android:fragment:0 mBackStackNesting=2
+        mAdded=false mRemoving=true mFromLayout=false mInLayout=false
+        mHidden=false mDetached=false mMenuVisible=true mHasMenu=true
+        mRetainInstance=false mRetaining=false mUserVisibleHint=true
+        mFragmentManager=FragmentManager{dea06ba in HostCallbacks{698bcc8}}
+        mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+        mArguments=Bundle[{com.androidth.general.fragments.base.ActionBarOwnerMixin.showHomeAsUp=false}]
+        mSavedViewState={16908294=android.view.AbsSavedState$1@33d8161, 16908310=android.view.AbsSavedState$1@33d8161, 2131820915=HorizontalScrollView.SavedState{a1d486 scrollPosition=471}, 2131820916=FragmentPager.SavedState{94c8147 position=2}, 2131821069=android.view.AbsSavedState$1@33d8161, 2131821563=android.view.AbsSavedState$1@33d8161}
+        mNextAnim=2131034164
+        Child FragmentManager{8e0dd74 in TrendingMainFragment{88db96b}}:
+          Active Fragments in 8e0dd74:
+            #0: MainWatchlistPositionFragment{55d3f2 #0 id=0x7f110174 android:switcher:2131820916:1}
+              mFragmentId=#7f110174 mContainerId=#7f110174 mTag=android:switcher:2131820916:1
+              mState=1 mIndex=0 mWho=android:fragment:0:0 mBackStackNesting=0
+              mAdded=true mRemoving=false mFromLayout=false mInLayout=false
+              mHidden=false mDetached=false mMenuVisible=false mHasMenu=true
+              mRetainInstance=false mRetaining=false mUserVisibleHint=false
+              mFragmentManager=FragmentManager{8e0dd74 in TrendingMainFragment{88db96b}}
+              mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+              mParentFragment=TrendingMainFragment{88db96b #0 id=0x7f1100c3}
+              mArguments=Bundle[{com.androidth.general.fragments.base.ActionBarOwnerMixin.showHomeAsUp=false, com.androidth.general.fragments.trending.TrendingMainFragment.tabTypeId=1}]
+              mSavedViewState={2131821626=android.view.AbsSavedState$1@33d8161}
+              Child FragmentManager{6efd29d in MainWatchlistPositionFragment{55d3f2}}:
+                FragmentManager misc state:
+                  mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+                  mContainer=android.support.v4.app.Fragment$1@8b6b312
+                  mParent=MainWatchlistPositionFragment{55d3f2 #0 id=0x7f110174 android:switcher:2131820916:1}
+                  mCurState=1 mStateSaved=true mDestroyed=false
+            #1: StocksMainPositionListFragment{245eae3 #1 id=0x7f110174 android:switcher:2131820916:0}
+              mFragmentId=#7f110174 mContainerId=#7f110174 mTag=android:switcher:2131820916:0
+              mState=1 mIndex=1 mWho=android:fragment:0:1 mBackStackNesting=0
+              mAdded=false mRemoving=false mFromLayout=false mInLayout=false
+              mHidden=false mDetached=true mMenuVisible=false mHasMenu=true
+              mRetainInstance=false mRetaining=false mUserVisibleHint=false
+              mFragmentManager=FragmentManager{8e0dd74 in TrendingMainFragment{88db96b}}
+              mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+              mParentFragment=TrendingMainFragment{88db96b #0 id=0x7f1100c3}
+              mArguments=Bundle[{com.androidth.general.fragments.base.ActionBarOwnerMixin.showHomeAsUp=false, com.androidth.general.fragments.trending.TrendingMainFragment.tabTypeId=0}]
+              mSavedViewState={16908294=android.view.AbsSavedState$1@33d8161, 16908310=android.view.AbsSavedState$1@33d8161, 2131820915=HorizontalScrollView.SavedState{3e85ce0 scrollPosition=0}, 2131820916=FragmentPager.SavedState{b7bfb99 position=0}}
+              Child FragmentManager{bc8ee5e in StocksMainPositionListFragment{245eae3}}:
+                Active Fragments in bc8ee5e:
+                  #0: PositionListFragment{7e2523f #0 id=0x7f110174 android:switcher:2131820916:0}
+                    mFragmentId=#7f110174 mContainerId=#7f110174 mTag=android:switcher:2131820916:0
+                    mState=1 mIndex=0 mWho=android:fragment:0:1:0 mBackStackNesting=0
+                    mAdded=true mRemoving=false mFromLayout=false mInLayout=false
+                    mHidden=false mDetached=false mMenuVisible=true mHasMenu=true
+                    mRetainInstance=false mRetaining=false mUserVisibleHint=true
+                    mFragmentManager=FragmentManager{bc8ee5e in StocksMainPositionListFragment{245eae3}}
+                    mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+                    mParentFragment=StocksMainPositionListFragment{245eae3 #1 id=0x7f110174 android:switcher:2131820916:0}
+                    mArguments=Bundle[{com.androidth.general.fragments.base.ActionBarOwnerMixin.showHomeAsUp=false, com.androidth.general.fragments.position.PositionListFragment.userBaseKey=Bundle[{com.androidth.general.api.users.UserBaseKey.key=6638763}], com.androidth.general.fragments.position.PositionListFragment.showPositionDtoKey=Bundle[{com.androidth.general.api.portfolio.OwnedPortfolioId.userId=6638763, com.androidth.general.api.portfolio.OwnedPortfolioId.portfolioId=13497476}], com.androidth.general.fragments.position.PositionListFragment.postion.type=LONG, com.androidth.general.fragments.position.PositionListFragment.showTitle=false}]
+                    mSavedViewState={16908301=android.widget.ProgressBar$SavedState@c26670c, 2131820865=android.view.AbsSavedState$1@33d8161, 2131821029=android.view.AbsSavedState$1@33d8161, 2131821079=android.view.AbsSavedState$1@33d8161, 2131821080=android.support.v7.widget.RecyclerView$SavedState@f07b855, 2131821081=android.view.AbsSavedState$1@33d8161, 2131821082=android.view.AbsSavedState$1@33d8161}
+                    Child FragmentManager{731926a in PositionListFragment{7e2523f}}:
+                      FragmentManager misc state:
+                        mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+                        mContainer=android.support.v4.app.Fragment$1@2b3d35b
+                        mParent=PositionListFragment{7e2523f #0 id=0x7f110174 android:switcher:2131820916:0}
+                        mCurState=1 mStateSaved=true mDestroyed=false
+                Added Fragments:
+                  #0: PositionListFragment{7e2523f #0 id=0x7f110174 android:switcher:2131820916:0}
+                Fragments Created Menus:
+                  #0: PositionListFragment{7e2523f #0 id=0x7f110174 android:switcher:2131820916:0}
+                FragmentManager misc state:
+                  mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+                  mContainer=android.support.v4.app.Fragment$1@458e7f8
+                  mParent=StocksMainPositionListFragment{245eae3 #1 id=0x7f110174 android:switcher:2131820916:0}
+                  mCurState=1 mStateSaved=true mDestroyed=false
+            #2: TrendingStockFragment{7fc1f3 #2 id=0x7f110174 android:switcher:2131820916:3}
+              mFragmentId=#7f110174 mContainerId=#7f110174 mTag=android:switcher:2131820916:3
+              mState=1 mIndex=2 mWho=android:fragment:0:2 mBackStackNesting=0
+              mAdded=true mRemoving=false mFromLayout=false mInLayout=false
+              mHidden=false mDetached=false mMenuVisible=false mHasMenu=true
+              mRetainInstance=false mRetaining=false mUserVisibleHint=false
+              mFragmentManager=FragmentManager{8e0dd74 in TrendingMainFragment{88db96b}}
+              mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+              mParentFragment=TrendingMainFragment{88db96b #0 id=0x7f1100c3}
+              mArguments=Bundle[{com.androidth.general.fragments.base.ActionBarOwnerMixin.showHomeAsUp=false, com.androidth.general.fragments.trending.TrendingMainFragment.tabTypeId=3}]
+              mSavedViewState={2131820966=android.view.AbsSavedState$1@33d8161, 2131820968=android.widget.ProgressBar$SavedState@25884d1, 2131821044=AbsListView.SavedState{2ce6b36 selectedId=-9223372036854775808 firstId=-1 viewTop=0 position=0 height=1458 filter=null checkState=null}}
+              Child FragmentManager{8524a37 in TrendingStockFragment{7fc1f3}}:
+                FragmentManager misc state:
+                  mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+                  mContainer=android.support.v4.app.Fragment$1@b308ba4
+                  mParent=TrendingStockFragment{7fc1f3 #2 id=0x7f110174 android:switcher:2131820916:3}
+                  mCurState=1 mStateSaved=true mDestroyed=false
+            #3: TrendingStockFragment{30f9d0d #3 id=0x7f110174 android:switcher:2131820916:2}
+              mFragmentId=#7f110174 mContainerId=#7f110174 mTag=android:switcher:2131820916:2
+              mState=1 mIndex=3 mWho=android:fragment:0:3 mBackStackNesting=0
+              mAdded=true mRemoving=false mFromLayout=false mInLayout=false
+              mHidden=false mDetached=false mMenuVisible=true mHasMenu=true
+              mRetainInstance=false mRetaining=false mUserVisibleHint=true
+              mFragmentManager=FragmentManager{8e0dd74 in TrendingMainFragment{88db96b}}
+              mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+              mParentFragment=TrendingMainFragment{88db96b #0 id=0x7f1100c3}
+              mArguments=Bundle[{com.androidth.general.fragments.base.ActionBarOwnerMixin.showHomeAsUp=false, com.androidth.general.fragments.trending.TrendingMainFragment.tabTypeId=2}]
+              mSavedViewState={2131820966=android.view.AbsSavedState$1@33d8161, 2131820968=android.widget.ProgressBar$SavedState@48e04c2, 2131821044=AbsListView.SavedState{5f752d3 selectedId=-9223372036854775808 firstId=-1 viewTop=0 position=0 height=1458 filter=null checkState=null}}
+              Child FragmentManager{7bcbe10 in TrendingStockFragment{30f9d0d}}:
+                FragmentManager misc state:
+                  mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+                  mContainer=android.support.v4.app.Fragment$1@da5fd09
+                  mParent=TrendingStockFragment{30f9d0d #3 id=0x7f110174 android:switcher:2131820916:2}
+                  mCurState=1 mStateSaved=true mDestroyed=false
+          Added Fragments:
+            #0: MainWatchlistPositionFragment{55d3f2 #0 id=0x7f110174 android:switcher:2131820916:1}
+            #1: TrendingStockFragment{30f9d0d #3 id=0x7f110174 android:switcher:2131820916:2}
+            #2: TrendingStockFragment{7fc1f3 #2 id=0x7f110174 android:switcher:2131820916:3}
+          Fragments Created Menus:
+            #0: StocksMainPositionListFragment{245eae3 #1 id=0x7f110174 android:switcher:2131820916:0}
+            #1: TrendingStockFragment{30f9d0d #3 id=0x7f110174 android:switcher:2131820916:2}
+          FragmentManager misc state:
+            mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+            mContainer=android.support.v4.app.Fragment$1@bbab0e
+            mParent=TrendingMainFragment{88db96b #0 id=0x7f1100c3}
+            mCurState=1 mStateSaved=true mDestroyed=false
+      #1: BuySellStockFragment{8da492f #1 id=0x7f1100c3}
+        mFragmentId=#7f1100c3 mContainerId=#7f1100c3 mTag=null
+        mState=5 mIndex=1 mWho=android:fragment:1 mBackStackNesting=1
+        mAdded=true mRemoving=false mFromLayout=false mInLayout=false
+        mHidden=false mDetached=false mMenuVisible=true mHasMenu=true
+        mRetainInstance=true mRetaining=false mUserVisibleHint=true
+        mFragmentManager=FragmentManager{dea06ba in HostCallbacks{698bcc8}}
+        mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+        mArguments=Bundle[{com.androidth.general.fragments.base.ActionBarOwnerMixin.showHomeAsUp=true, com.androidth.general.fragments.trade.AbstractBuySellFragment.requisite=Bundle[{com.androidth.general.fragments.trade.AbstractBuySellFragment$Requisite.applicablePortfolioId=Bundle[{com.androidth.general.api.portfolio.OwnedPortfolioId.userId=6638763, com.androidth.general.api.portfolio.OwnedPortfolioId.portfolioId=13497476}], com.androidth.general.fragments.trade.AbstractBuySellFragment$Requisite.units=0, com.androidth.general.fragments.trade.AbstractBuySellFragment$Requisite.securityId=Bundle[{com.androidth.general.api.security.SecurityId.symbol=4634, com.androidth.general.api.security.SecurityId.exchange=MYX}]}]}]
+        mNextAnim=2131034166
+        mContainer=android.widget.FrameLayout{2cad9b4 V.E...... .......D 0,147-1080,1731 #7f1100c3 app:id/realtabcontent}
+        mView=android.widget.LinearLayout{76bc687 V.E...... ......ID 0,0-1080,1584}
+        mInnerView=android.widget.LinearLayout{76bc687 V.E...... ......ID 0,0-1080,1584}
+        Child FragmentManager{97ab3c in BuySellStockFragment{8da492f}}:
+          Active Fragments in 97ab3c:
+            #0: SecurityDiscussionFragment{bb0a021 #0 id=0x7f110278 android:switcher:2131821176:1}
+              mFragmentId=#7f110278 mContainerId=#7f110278 mTag=android:switcher:2131821176:1
+              mState=5 mIndex=0 mWho=android:fragment:1:0 mBackStackNesting=0
+              mAdded=true mRemoving=false mFromLayout=false mInLayout=false
+              mHidden=false mDetached=false mMenuVisible=false mHasMenu=false
+              mRetainInstance=false mRetaining=false mUserVisibleHint=false
+              mFragmentManager=FragmentManager{97ab3c in BuySellStockFragment{8da492f}}
+              mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+              mParentFragment=BuySellStockFragment{8da492f #1 id=0x7f1100c3}
+              mArguments=Bundle[{com.androidth.general.fragments.base.BaseFragment.hasOptionMenu=false, securityId=Bundle[{com.androidth.general.api.security.SecurityId.symbol=4634, com.androidth.general.api.security.SecurityId.exchange=MYX}]}]
+              mContainer=android.support.v4.view.ViewPager{60d74a1 VFED..... ........ 0,126-1080,1204 #7f110278 app:id/trade_bottom_pager}
+              mView=android.widget.FrameLayout{32860c5 V.E...... ........ 1080,0-2160,1078}
+              mInnerView=android.widget.FrameLayout{32860c5 V.E...... ........ 1080,0-2160,1078}
+              Child FragmentManager{30b6a1a in SecurityDiscussionFragment{bb0a021}}:
+                FragmentManager misc state:
+                  mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+                  mContainer=android.support.v4.app.Fragment$1@4c494b
+                  mParent=SecurityDiscussionFragment{bb0a021 #0 id=0x7f110278 android:switcher:2131821176:1}
+                  mCurState=5 mStateSaved=false mDestroyed=false
+            #1: ChartFragment{9d23f28 #1 id=0x7f110278 android:switcher:2131821176:0}
+              mFragmentId=#7f110278 mContainerId=#7f110278 mTag=android:switcher:2131821176:0
+              mState=1 mIndex=1 mWho=android:fragment:1:1 mBackStackNesting=0
+              mAdded=false mRemoving=false mFromLayout=false mInLayout=false
+              mHidden=false mDetached=true mMenuVisible=false mHasMenu=false
+              mRetainInstance=false mRetaining=false mUserVisibleHint=false
+              mFragmentManager=FragmentManager{97ab3c in BuySellStockFragment{8da492f}}
+              mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+              mParentFragment=BuySellStockFragment{8da492f #1 id=0x7f1100c3}
+              mArguments=Bundle[{com.androidth.general.fragments.security.AbstractSecurityInfoFragmentsecurityId=Bundle[{com.androidth.general.api.security.SecurityId.symbol=4634, com.androidth.general.api.security.SecurityId.exchange=MYX}], com.androidth.general.fragments.security.ChartFragment.timeSpanButtonSetVisibility=0, com.androidth.general.fragments.security.ChartFragment.timeSpanSecondsLong=2629800}]
+              mSavedViewState={2131820987=HorizontalScrollView.SavedState{eb34441 scrollPosition=0}, 2131820988=android.view.AbsSavedState$1@33d8161, 2131820989=android.view.AbsSavedState$1@33d8161, 2131820990=android.view.AbsSavedState$1@33d8161, 2131820991=android.view.AbsSavedState$1@33d8161, 2131820992=android.view.AbsSavedState$1@33d8161, 2131820993=android.view.AbsSavedState$1@33d8161, 2131820994=android.view.AbsSavedState$1@33d8161, 2131820995=android.view.AbsSavedState$1@33d8161, 2131820996=android.view.AbsSavedState$1@33d8161, 2131820997=android.view.AbsSavedState$1@33d8161, 2131820998=android.view.AbsSavedState$1@33d8161, 2131820999=android.view.AbsSavedState$1@33d8161, 2131821000=android.view.AbsSavedState$1@33d8161, 2131821001=android.view.AbsSavedState$1@33d8161, 2131821002=android.view.AbsSavedState$1@33d8161, 2131821003=android.view.AbsSavedState$1@33d8161, 2131821004=android.view.AbsSavedState$1@33d8161, 2131821005=android.view.AbsSavedState$1@33d8161, 2131821006=android.view.AbsSavedState$1@33d8161, 2131821007=android.view.AbsSavedState$1@33d8161, 2131821008=android.view.AbsSavedState$1@33d8161, 2131821009=android.view.AbsSavedState$1@33d8161, 2131821010=android.view.AbsSavedState$1@33d8161, 2131821011=android.view.AbsSavedState$1@33d8161, 2131821012=android.view.AbsSavedState$1@33d8161, 2131821013=android.view.AbsSavedState$1@33d8161, 2131821014=android.view.AbsSavedState$1@33d8161, 2131821015=android.view.AbsSavedState$1@33d8161, 2131821016=android.view.AbsSavedState$1@33d8161}
+              Child FragmentManager{c660de6 in ChartFragment{9d23f28}}:
+                FragmentManager misc state:
+                  mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+                  mContainer=android.support.v4.app.Fragment$1@5942f27
+                  mParent=ChartFragment{9d23f28 #1 id=0x7f110278 android:switcher:2131821176:0}
+                  mCurState=1 mStateSaved=true mDestroyed=false
+            #2: SecurityPositionListFragment{4a55cb4 #2 id=0x7f110278 android:switcher:2131821176:3}
+              mFragmentId=#7f110278 mContainerId=#7f110278 mTag=android:switcher:2131821176:3
+              mState=5 mIndex=2 mWho=android:fragment:1:2 mBackStackNesting=0
+              mAdded=true mRemoving=false mFromLayout=false mInLayout=false
+              mHidden=false mDetached=false mMenuVisible=false mHasMenu=false
+              mRetainInstance=false mRetaining=false mUserVisibleHint=false
+              mFragmentManager=FragmentManager{97ab3c in BuySellStockFragment{8da492f}}
+              mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+              mParentFragment=BuySellStockFragment{8da492f #1 id=0x7f1100c3}
+              mArguments=Bundle[{com.androidth.general.fragments.billing.BasePurchaseManagerFragment.purchaseApplicablePortfolioId=Bundle[{com.androidth.general.api.portfolio.OwnedPortfolioId.userId=6638763, com.androidth.general.api.portfolio.OwnedPortfolioId.portfolioId=13497476}], com.androidth.general.fragments.position.SecurityPositionListFragment.securityId=Bundle[{com.androidth.general.api.security.SecurityId.symbol=4634, com.androidth.general.api.security.SecurityId.exchange=MYX}], com.androidth.general.fragments.position.SecurityPositionListFragment.userBaseKey=Bundle[{com.androidth.general.api.users.UserBaseKey.key=6638763}], com.androidth.general.fragments.base.BaseFragment.hasOptionMenu=false}]
+              mContainer=android.support.v4.view.ViewPager{60d74a1 VFED..... ........ 0,126-1080,1204 #7f110278 app:id/trade_bottom_pager}
+              mView=android.widget.RelativeLayout{5a025d4 V.E...... ........ 3240,0-4320,1078}
+              mInnerView=android.widget.RelativeLayout{5a025d4 V.E...... ........ 3240,0-4320,1078}
+              Child FragmentManager{6aee37d in SecurityPositionListFragment{4a55cb4}}:
+                FragmentManager misc state:
+                  mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+                  mContainer=android.support.v4.app.Fragment$1@1752272
+                  mParent=SecurityPositionListFragment{4a55cb4 #2 id=0x7f110278 android:switcher:2131821176:3}
+                  mCurState=5 mStateSaved=false mDestroyed=false
+            #3: SecurityNewsfeedFragment{58a96c3 #3 id=0x7f110278 android:switcher:2131821176:2}
+              mFragmentId=#7f110278 mContainerId=#7f110278 mTag=android:switcher:2131821176:2
+              mState=5 mIndex=3 mWho=android:fragment:1:3 mBackStackNesting=0
+              mAdded=true mRemoving=false mFromLayout=false mInLayout=false
+              mHidden=false mDetached=false mMenuVisible=true mHasMenu=false
+              mRetainInstance=false mRetaining=false mUserVisibleHint=true
+              mFragmentManager=FragmentManager{97ab3c in BuySellStockFragment{8da492f}}
+              mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+              mParentFragment=BuySellStockFragment{8da492f #1 id=0x7f1100c3}
+              mArguments=Bundle[{com.androidth.general.fragments.security.AbstractSecurityInfoFragmentsecurityId=Bundle[{com.androidth.general.api.security.SecurityId.symbol=4634, com.androidth.general.api.security.SecurityId.exchange=MYX}]}]
+              mContainer=android.support.v4.view.ViewPager{60d74a1 VFED..... ........ 0,126-1080,1204 #7f110278 app:id/trade_bottom_pager}
+              mView=android.widget.RelativeLayout{3c3cb40 V.E...... ........ 2160,0-3240,1078}
+              mInnerView=android.widget.RelativeLayout{3c3cb40 V.E...... ........ 2160,0-3240,1078}
+              Child FragmentManager{5cb3a79 in SecurityNewsfeedFragment{58a96c3}}:
+                FragmentManager misc state:
+                  mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+                  mContainer=android.support.v4.app.Fragment$1@5eef3be
+                  mParent=SecurityNewsfeedFragment{58a96c3 #3 id=0x7f110278 android:switcher:2131821176:2}
+                  mCurState=5 mStateSaved=false mDestroyed=false
+          Added Fragments:
+            #0: SecurityDiscussionFragment{bb0a021 #0 id=0x7f110278 android:switcher:2131821176:1}
+            #1: SecurityNewsfeedFragment{58a96c3 #3 id=0x7f110278 android:switcher:2131821176:2}
+            #2: SecurityPositionListFragment{4a55cb4 #2 id=0x7f110278 android:switcher:2131821176:3}
+          FragmentManager misc state:
+            mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+            mContainer=android.support.v4.app.Fragment$1@7f5dc1f
+            mParent=BuySellStockFragment{8da492f #1 id=0x7f1100c3}
+            mCurState=5 mStateSaved=false mDestroyed=false
+    Added Fragments:
+      #0: BuySellStockFragment{8da492f #1 id=0x7f1100c3}
+    Fragments Created Menus:
+      #0: BuySellStockFragment{8da492f #1 id=0x7f1100c3}
+    Back Stack:
+      #0: BackStackEntry{bba5b6c #0 com.androidth.general.fragments.trending.TrendingMainFragment}
+        mName=com.androidth.general.fragments.trending.TrendingMainFragment mIndex=0 mCommitted=true
+        Operations:
+          Op #0: REPLACE TrendingMainFragment{88db96b #0 id=0x7f1100c3}
+      #1: BackStackEntry{7bc0535 #1 com.androidth.general.fragments.trade.BuySellStockFragment}
+        mName=com.androidth.general.fragments.trade.BuySellStockFragment mIndex=1 mCommitted=true
+        mEnterAnim=#7f050036 mExitAnim=#7f050034
+        mPopEnterAnim=#7f050033 mPopExitAnim=#7f050037
+        Operations:
+          Op #0: REPLACE BuySellStockFragment{8da492f #1 id=0x7f1100c3}
+        enterAnim=#7f050036 exitAnim=#7f050034
+        popEnterAnim=#7f050033 popExitAnim=#7f050037
+            Removed: TrendingMainFragment{88db96b #0 id=0x7f1100c3}
+    Back Stack Indices:
+      #0: BackStackEntry{bba5b6c #0 com.androidth.general.fragments.trending.TrendingMainFragment}
+      #1: BackStackEntry{7bc0535 #1 com.androidth.general.fragments.trade.BuySellStockFragment}
+    FragmentManager misc state:
+      mHost=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+      mContainer=android.support.v4.app.FragmentActivity$HostCallbacks@698bcc8
+      mCurState=5 mStateSaved=false mDestroyed=false
+    View Hierarchy:
+      com.android.internal.policy.PhoneWindow$DecorView{a28dca V.E..... ... 0,0-1080,1920}
+        android.widget.LinearLayout{f6c149b V.E..... ... 0,0-1080,1794}
+          android.view.ViewStub{a61b3b G.E..... ... 0,0-0,0 #10203a9 android:id/action_mode_bar_stub}
+          android.widget.RelativeLayout{da7c258 G.E..... ... 0,0-0,0 #1020041 android:id/title_container}
+            android.widget.ProgressBar{5b4bfb1 G.ED.... ... 0,0-0,0 #10203ac android:id/progress_circular}
+            android.widget.ProgressBar{443bc96 G.ED.... ... 0,0-0,0 #10203ad android:id/progress_horizontal}
+            android.support.v7.widget.AppCompatTextView{6513017 V.ED.... ... 0,0-0,0 #1020016 android:id/title}
+          android.widget.FrameLayout{70910aa V.E..... ... 0,0-1080,1794}
+            android.support.v7.widget.FitWindowsLinearLayout{94bab4c V.E..... ... 0,0-1080,1794 #7f110084 app:id/action_bar_root}
+              android.support.v7.widget.ViewStubCompat{602ac04 G.E..... ... 0,0-0,0 #7f110085 app:id/action_mode_bar_stub}
+              android.support.v7.widget.ContentFrameLayout{c19089e V.E..... ... 0,0-1080,1794 #1020002 android:id/content}
+                android.support.v4.widget.DrawerLayout{a15dd20 VFED.... F.. 0,0-1080,1794 #7f110151 app:id/dashboard_drawer_layout}
+                  android.widget.RelativeLayout{beda952 V.E..... ... 0,63-1080,1794 #7f110152 app:id/content_frame}
+                    android.support.v7.widget.Toolbar{ea4a5ed V.E..... ... 0,0-1080,147 #7f1100c5 app:id/my_toolbar}
+                      android.widget.ViewAnimator{8f70c22 G.E..... ... 0,0-0,0 #7f110153 app:id/toolbar_animator}
+                      android.support.v7.widget.AppCompatSpinner{b2eb6b3 G.ED..C. ... 0,0-0,0 #7f110001 app:id/action_bar_spinner}
+                      android.widget.ImageButton{8470 VFED..C. ... 0,0-147,147}
+                      android.support.v7.widget.ActionMenuView{732b3e9 V.E..... ... 1080,0-1080,147}
+                      android.widget.TextView{29dc86e V.ED.... ... 157,38-402,109}
+                    android.widget.FrameLayout{2cad9b4 V.E..... ... 0,147-1080,1731 #7f1100c3 app:id/realtabcontent}
+                      android.widget.LinearLayout{76bc687 V.E..... ... 0,0-1080,1584}
+                        android.widget.ProgressBar{3540b0f G.ED.... ... 0,0-0,0 #7f1101ef app:id/quote_refresh_countdown}
+                        android.widget.LinearLayout{2c1779c V.E..... ... 0,0-1080,0 #7f110275 app:id/stock_details_header}
+                          com.androidth.general.fragments.trade.view.PortfolioSelectorView{d79a5a5 G.E...C. ... 0,0-0,0 #7f1101f0 app:id/portfolio_selector_container}
+                            android.support.v7.widget.AppCompatTextView{fe1fd7a V.ED.... ... 0,0-0,0 #7f1101f1 app:id/selected_title_anchor}
+                            android.support.v7.widget.AppCompatTextView{4d0492b V.ED.... ... 0,0-0,0 #7f1101f2 app:id/portfolio_selected}
+                            android.support.v7.widget.AppCompatImageView{53c7188 V.ED.... ... 0,0-0,0 #7f110143 app:id/img_action_icon}
+                        android.widget.LinearLayout{c83f721 V.E..... ... 42,42-1038,338}
+                          android.widget.LinearLayout{e027746 V.E..... ... 0,0-320,296}
+                            android.support.v7.widget.AppCompatImageView{77dc33f V.ED.... ... 0,0-320,197 #7f110276 app:id/stock_image}
+                            android.support.v7.widget.AppCompatTextView{d884d07 V.ED.... ... 91,239-229,296 #7f1101bd app:id/tv_stock_roi}
+                          android.widget.LinearLayout{4eb1e34 V.E..... ... 362,46-828,250}
+                            android.support.v7.widget.AppCompatTextView{b87e45d V.ED.... ... 0,0-466,51 #7f110277 app:id/stock_name}
+                            android.support.v7.widget.AppCompatTextView{d5ec1d2 V.ED.... ... 0,51-466,102 #7f110198 app:id/exchange_name}
+                            android.support.v7.widget.AppCompatTextView{ad2b2a3 V.ED.... ... 0,102-466,153 #7f1101bc app:id/buy_price}
+                            android.support.v7.widget.AppCompatTextView{b35e9a0 V.ED.... ... 0,153-466,204 #7f1101be app:id/sell_price}
+                          android.widget.LinearLayout{4e36959 V.E..... ... 870,0-996,296}
+                            android.support.v7.widget.AppCompatImageButton{2c3291e VFED..C. ... 0,0-126,126 #7f1101c0 app:id/btn_watched}
+                            android.support.v7.widget.AppCompatImageButton{ed3d5ff VFED..C. ... 0,126-126,252 #7f1101c1 app:id/btn_alerted}
+                        android.widget.RelativeLayout{2c9e6c6 V.E..... ... 0,380-1080,1584 #7f1101ed app:id/chart_frame}
+                          com.android.common.SlidingTabLayout{2f7508 VFED.... ... 122,0-958,126 #7f110173 app:id/tabs}
+                            com.android.common.SlidingTabStrip{d9fffcc V.ED.... ... 0,0-836,126}
+                              com.androidth.general.widget.THTabView{d84215 V.E...C. ... 0,0-156,126}
+                                android.support.v7.widget.AppCompatImageView{174b92a G.ED.... ... 0,0-0,0 #1020006 android:id/icon}
+                                android.support.v7.widget.AppCompatTextView{f99d31b V.ED.... ... 42,41-114,84 #1020016 android:id/title}
+                              com.androidth.general.widget.THTabView{4b34cb8 V.E...C. ... 156,0-446,126}
+                                android.support.v7.widget.AppCompatImageView{7ea91 G.ED.... ... 0,0-0,0 #1020006 android:id/icon}
+                                android.support.v7.widget.AppCompatTextView{9fd3df6 V.ED.... ... 42,41-248,84 #1020016 android:id/title}
+                              com.androidth.general.widget.THTabView{bf885f7 V.E...C. .S. 446,0-619,126}
+                                android.support.v7.widget.AppCompatImageView{5ac7c64 G.ED.... .S. 0,0-0,0 #1020006 android:id/icon}
+                                android.support.v7.widget.AppCompatTextView{1af9ecd V.ED.... .S. 42,41-131,84 #1020016 android:id/title}
+                              com.androidth.general.widget.THTabView{9b74382 V.E...C. ... 619,0-836,126}
+                                android.support.v7.widget.AppCompatImageView{2258a93 G.ED.... ... 0,0-0,0 #1020006 android:id/icon}
+                                android.support.v7.widget.AppCompatTextView{ae6fad0 V.ED.... ... 42,41-175,84 #1020016 android:id/title}
+                          android.support.v4.view.ViewPager{60d74a1 VFED.... ... 0,126-1080,1204 #7f110278 app:id/trade_bottom_pager}
+                            android.widget.FrameLayout{32860c5 V.E..... ... 1080,0-2160,1078}
+                              android.widget.ListView{1a45ac9 V.ED.VC. ... 0,0-1080,1078 #102000a android:id/list}
+                              android.support.v7.widget.AppCompatButton{71a15ce VFED..C. ... 0,0-1080,126 #7f1103c2 app:id/security_discussion_add}
+                            android.widget.RelativeLayout{5a025d4 V.E..... ... 3240,0-4320,1078}
+                              android.widget.ViewAnimator{4143cef V.E..... ... 0,0-1080,1078 #7f110217 app:id/list_flipper}
+                                android.widget.ProgressBar{708f3fc G.ED.... ... 477,476-603,602 #102000d android:id/progress}
+                                android.support.v4.widget.SwipeRefreshLayout{a0eda85 V.ED.... ... 0,0-1080,1078 #7f1101e5 app:id/swipe_to_refresh_layout}
+                                  android.support.v4.widget.CircleImageView{6c5c0da G.ED.... ... 488,-105-592,0}
+                                  android.support.v7.widget.RecyclerView{591b90b VFED.... ... 0,0-1080,1078 #7f110218 app:id/position_recycler_view}
+                                    com.androidth.general.fragments.position.view.PositionNothingView{177ea68 V.E...C. ... 0,0-1080,210}
+                                      android.support.v7.widget.AppCompatTextView{eef53e8 V.ED.... ... 42,76-1038,133 #7f11038b app:id/position_nothing_description}
+                                android.support.v7.widget.AppCompatImageView{4e79a01 G.ED..C. ... 0,0-0,0 #7f110219 app:id/btn_help}
+                                android.support.v7.widget.AppCompatTextView{54f10a6 G.ED..C. ... 0,0-0,0 #7f110141 app:id/error}
+                              android.view.ViewStub{20dae7 G.E..... ... 0,0-0,0 #7f11021a app:id/position_list_header_stub}
+                            android.widget.RelativeLayout{3c3cb40 V.E..... ... 2160,0-3240,1078}
+                              android.support.v7.widget.RecyclerView{659c694 VFED.... ... 0,0-1080,1078 #7f110215 app:id/recycler_news_headline}
+                                android.support.v7.widget.CardView{49bbdae V.E...C. ... 42,21-1038,803}
+                                  android.widget.LinearLayout{932d53d V.E..... ... 0,0-996,782}
+                                    android.widget.RelativeLayout{1cb9132 V.E..... ... 0,21-996,120}
+                                      android.support.v7.widget.AppCompatImageView{8c9c70a V.ED.... ... 21,7-105,91 #7f11031f app:id/newsfeed_item_avatar}
+                                      android.support.v7.widget.AppCompatTextView{8963e83 V.ED.... ... 828,0-975,43 #7f110320 app:id/newsfeed_item_time}
+                                      android.support.v7.widget.AppCompatTextView{b56b800 V.ED.... ... 105,0-828,99 #7f110321 app:id/newsfeed_item_name}
+                                    android.support.v7.widget.AppCompatImageView{bc549d6 V.ED.... ... 0,141-996,519 #7f110325 app:id/newsfeed_item_hero_image}
+                                    android.support.v7.widget.AppCompatTextView{ffc8839 V.ED.... ... 0,540-996,646 #7f110326 app:id/newsfeed_item_title}
+                                    android.support.v7.widget.AppCompatTextView{51d8e7e V.ED.... ... 0,667-996,761 #7f110324 app:id/newsfeed_item_body}
+                                android.support.v7.widget.CardView{bc63629 V.E...C. ... 42,845-1038,1228}
+                                  android.widget.LinearLayout{2743fdf V.E..... ... 0,0-996,383}
+                                    android.widget.RelativeLayout{c6f542c V.E..... ... 0,21-996,120}
+                                      android.support.v7.widget.AppCompatImageView{d242d62 V.ED.... ... 21,7-105,91 #7f11031f app:id/newsfeed_item_avatar}
+                                      android.support.v7.widget.AppCompatTextView{d146ef5 V.ED.... ... 811,0-975,43 #7f110320 app:id/newsfeed_item_time}
+                                      android.support.v7.widget.AppCompatTextView{200148a V.ED.... ... 105,0-811,99 #7f110321 app:id/newsfeed_item_name}
+                                    android.support.v7.widget.AppCompatImageView{d06fafb G.ED.... ... 0,0-0,0 #7f110325 app:id/newsfeed_item_hero_image}
+                                    android.support.v7.widget.AppCompatTextView{5938718 V.ED.... ... 0,141-996,247 #7f110326 app:id/newsfeed_item_title}
+                                    android.support.v7.widget.AppCompatTextView{78a0571 V.ED.... ... 0,268-996,362 #7f110324 app:id/newsfeed_item_body}
+                              android.widget.ProgressBar{9d2ef56 G.ED.... ... 477,476-603,602 #7f110216 app:id/recycler_news_headline_progressbar}
+                          android.widget.LinearLayout{babc811 V.E..... ... 0,1002-1080,1204 #7f110105 app:id/bottom_button}
+                            android.support.v7.widget.AppCompatButton{6404bd7 VFED..C. ... 42,21-1038,147 #7f110106 app:id/btn_buy}
+                            android.support.v7.widget.AppCompatButton{fc5fcc4 GFED..C. ... 0,0-0,0 #7f110107 app:id/btn_sell}
+                    com.androidth.general.fragments.DashboardTabHost{5aafefb GFE..... ... 0,1605-1080,1731 #1020012 android:id/tabhost}
+                      android.widget.TabWidget{de887ad VFED.... ... 0,0-1080,126 #1020013 android:id/tabs}
+                        com.androidth.general.widget.THTabView{226aae2 VFE...C. .S. 0,0-216,126}
+                          android.support.v7.widget.AppCompatImageView{f53ce73 V.ED.... .S. 68,23-147,102 #1020006 android:id/icon}
+                          android.support.v7.widget.AppCompatTextView{f882130 V.ED.... .S. 147,41-147,84 #1020016 android:id/title}
+                        com.androidth.general.widget.THTabView{232f1a9 VFE...C. ... 216,0-432,126}
+                          android.support.v7.widget.AppCompatImageView{708932e V.ED.... ... 68,27-147,98 #1020006 android:id/icon}
+                          android.support.v7.widget.AppCompatTextView{f12decf V.ED.... ... 147,41-147,84 #1020016 android:id/title}
+                        com.androidth.general.widget.THTabView{e06205c VFE...C. ... 432,0-648,126}
+                          android.support.v7.widget.AppCompatImageView{99fff65 V.ED.... ... 68,23-147,102 #1020006 android:id/icon}
+                          android.support.v7.widget.AppCompatTextView{60eb43a V.ED.... ... 147,41-147,84 #1020016 android:id/title}
+                        com.androidth.general.widget.THTabView{e0898eb VFE...C. ... 648,0-864,126}
+                          android.support.v7.widget.AppCompatImageView{902e648 V.ED.... ... 67,23-148,102 #1020006 android:id/icon}
+                          android.support.v7.widget.AppCompatTextView{c162ce1 V.ED.... ... 148,41-148,84 #1020016 android:id/title}
+                        com.androidth.general.widget.THTabView{e23da06 VFE...C. ... 864,0-1080,126}
+                          android.support.v7.widget.AppCompatImageView{855d8c7 V.ED.... ... 68,25-147,101 #1020006 android:id/icon}
+                          android.support.v7.widget.AppCompatTextView{5841ef4 V.ED.... ... 147,41-147,84 #1020016 android:id/title}
+                      android.widget.FrameLayout{f67b61d V.E..... ... 0,0-0,0 #1020011 android:id/tabcontent}
+                        android.view.View{139092 V.ED.... ... 0,0-0,0}
+                    com.androidth.general.widget.XpToast{14d3a63 GFE...C. ... 0,0-0,0 #7f1100c4 app:id/xp_toast_box}
+                      android.support.v7.widget.AppCompatTextView{13e3660 V.ED.... ... 0,0-0,0 #7f1102c0 app:id/xp_toast_value}
+                      android.support.v7.widget.AppCompatTextView{a4e9719 V.ED.... ... 0,0-0,0 #7f1102c1 app:id/xp_toast_text}
+                      com.androidth.general.widget.UserLevelProgressBar{bd623de V.E..... ... 0,0-0,0 #7f1100a5 app:id/user_level_progress_bar}
+                        android.support.v7.widget.AppCompatImageView{4cf19bf V.ED.... ... 0,0-0,0 #7f11040e app:id/user_level_progress_next}
+                        android.widget.ProgressBar{ec0588c V.ED.... ... 0,0-0,0 #7f11040f app:id/user_level_main_progress_bar}
+                        android.support.v7.widget.AppCompatImageView{b288bd5 V.ED.... ... 0,0-0,0 #7f110410 app:id/user_level_progress_current}
+                  android.widget.RelativeLayout{69c9fea I.E...C. ... -777,0-0,1794 #7f11014e app:id/left_drawer}
+                    android.support.v7.widget.AppCompatImageView{26592db V.ED.... ... 0,-20-777,1794 #7f11014f app:id/drawer_bg_image}
+                    android.support.v7.widget.AppCompatImageView{8607178 V.ED.... ... 0,63-777,1794 #7f11014f app:id/drawer_bg_image}
+                    android.widget.LinearLayout{e731051 V.E..... ... 0,582-777,1212 #7f110150 app:id/drawer_content_container}
+                      com.androidth.general.fragments.settings.UpdateCenterDrawerMenuItem{59cd0b6 VFE...C. ... 0,0-777,126}
+                        android.support.v7.widget.AppCompatImageView{e2081b7 V.ED.... ... 42,31-105,94 #1020006 android:id/icon}
+                        android.support.v7.widget.AppCompatTextView{5e72d24 V.ED.... ... 189,34-292,91 #1020014 android:id/text1}
+                        android.support.v7.widget.AppCompatTextView{107608d I.ED.... ... 313,40-350,86 #7f1102f8 app:id/unread_count}
+                      android.widget.LinearLayout{99d4242 VFE...C. ... 0,126-777,252}
+                        android.support.v7.widget.AppCompatImageView{3318253 V.ED.... ... 42,31-105,94 #1020006 android:id/icon}
+                        android.support.v7.widget.AppCompatTextView{fbf790 V.ED.... ... 189,34-299,91 #1020014 android:id/text1}
+                      android.widget.LinearLayout{a167889 VFE...C. ... 0,252-777,378}
+                        android.support.v7.widget.AppCompatImageView{741408e V.ED.... ... 42,31-105,94 #1020006 android:id/icon}
+                        android.support.v7.widget.AppCompatTextView{447f0af V.ED.... ... 189,34-435,91 #1020014 android:id/text1}
+                      com.androidth.general.fragments.settings.SettingsDrawerMenuItem{450fcbc VFE...C. ... 0,378-777,504}
+                        android.support.v7.widget.AppCompatImageView{8e51445 V.ED.... ... 42,31-105,94 #1020006 android:id/icon}
+                        android.support.v7.widget.AppCompatTextView{814d79a V.ED.... ... 189,34-343,91 #1020014 android:id/text1}
+                        android.view.View{5ace8cb V.ED.... ... 364,56-377,69 #7f1102f7 app:id/unread_icon}
+                      android.widget.LinearLayout{18f28a8 VFE...C. ... 0,504-777,630}
+                        android.support.v7.widget.AppCompatImageView{247afc1 V.ED.... ... 42,31-105,94 #1020006 android:id/icon}
+                        android.support.v7.widget.AppCompatTextView{58d366 V.ED.... ... 189,34-374,91 #1020014 android:id/text1}
+                    android.widget.LinearLayout{d1f46a7 V.E..... ... 0,1674-777,1794}
+                      android.support.v7.widget.AppCompatTextView{a022754 V.ED.... ... 42,0-245,36}
+                      android.widget.LinearLayout{9de86fd V.E..... ... 21,36-756,120}
+                        android.support.v7.widget.AppCompatImageView{58ebff2 V.ED.... ... 0,0-147,84}
+                        android.support.v7.widget.AppCompatImageView{36fa643 V.ED.... ... 147,0-294,84}
+                        android.support.v7.widget.AppCompatImageView{60464c0 V.ED.... ... 294,0-441,84}
+                        android.support.v7.widget.AppCompatImageView{31195f9 V.ED.... ... 441,0-588,84}
+                        android.support.v7.widget.AppCompatImageView{1c4e93e V.ED.... ... 588,0-735,84}
+        android.view.View{3dc639f V.ED.... ... 0,1794-1080,1920 #1020030 android:id/navigationBarBackground}
