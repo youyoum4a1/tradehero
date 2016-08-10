@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.androidth.general.R;
 import com.androidth.general.adapters.TypedRecyclerAdapter;
@@ -57,6 +58,8 @@ public class SecurityNewsfeedFragment extends AbstractSecurityInfoFragment
 
     @Bind(R.id.recycler_news_headline_progressbar) ProgressBar progressBar;
     @Bind(R.id.recycler_news_headline) RecyclerView recyclerView;
+    @Bind(R.id.default_unavailable_text)
+    TextView defaultText;
     private PrettyTime prettyTime;
     private NewsfeedPaginatedAdapter newsfeedPaginatedAdapter;
 
@@ -138,6 +141,13 @@ public class SecurityNewsfeedFragment extends AbstractSecurityInfoFragment
                             {
                                 progressBar.setVisibility(View.GONE);
                                 newsfeedPaginatedAdapter.addAll(newsfeedDisplayDTOs);
+                                if(newsfeedDisplayDTOs.isEmpty()){
+                                    defaultText.setVisibility(View.VISIBLE);
+                                    defaultText.setText("News not available");
+                                }
+                                else {
+                                    defaultText.setVisibility(View.INVISIBLE);
+                                }
                             }
                         }, new TimberOnErrorAction1("Failed to fetch security news :" + securityId.toString()))
         );

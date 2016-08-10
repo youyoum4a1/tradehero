@@ -5,7 +5,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
-
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:visibility="invisible"
+    android:gravity="center_horizontal"
+    android:id="@+id/default_unavailable_text"/>
   <android.support.v7.widget.RecyclerView
       android:id="@+id/recycler_news_headline"
       android:layout_width="match_parent"
