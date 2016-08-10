@@ -275,6 +275,7 @@
   <string name="discussion_translate_button_with_powered"><b>( %1$s )</b> 提供自</string>
   <string name="discussion_translating_button">翻譯中</string>
   <string name="discussion_translation_failed_button">翻譯失敗</string>
+  <string name="document_submit_later">現不提交</string>
   <string name="done">完成</string>
   <string name="downloading_relations">正在加載聯繫人...</string>
   <string name="email">郵件</string>

@@ -124,10 +124,12 @@
 
   <string name="live_trades_per_quarter">Live Trades per Quarter (Past Year)</string>
 
+  <string name="document_submit_later">Submit later</string>
   <string name="proof_identity_caption">Proof of Identity</string>
   <string name="identity_document_type_passport">Passport</string>
   <string name="identity_document_type_driver_license">Driver\'s License</string>
   <string name="identity_document_type_id_card">Identity Card</string>
+
   <string name="identity_document_pick_title">For your Proof of Identity Document, Pick:</string>
   <string name="proof_residence_caption">Proof of Residence</string>
   <string name="residence_document_type_utility_bill">A bill: water, electricity, phone or gas</string>

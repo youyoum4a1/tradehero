@@ -6,7 +6,6 @@ import android.support.annotation.StringRes;
 
 import com.androidth.general.api.kyc.ayondo.KYCAyondoForm;
 import com.androidth.general.api.market.Country;
-import com.androidth.general.models.fastfill.ScanReference;
 import com.androidth.general.models.fastfill.ScannedDocument;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -27,7 +26,7 @@ import java.util.List;
     @Nullable Country getCountry();
 
     @Nullable
-    ScanReference getScanReference();
+    String getScanReference();
 
     void pickFrom(@NonNull ScannedDocument scannedDocument);
 

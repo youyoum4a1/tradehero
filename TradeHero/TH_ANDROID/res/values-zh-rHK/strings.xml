@@ -257,6 +257,7 @@
   <string name="date">日期：%1$s</string>
   <string name="date_of_birth">出生日期</string>
   <string name="device_no_camera">不能刪除任何相機</string>
+  <string name="document_submit_later">現不提交</string>
   <string name="discovery">發現</string>
   <string name="discovery_discussions">社區</string>
   <string name="discovery_learning">學院</string>

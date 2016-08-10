@@ -25,14 +25,14 @@
             android:layout_height="wrap_content"
             >
 
-            <TextView
-                style="@style/TH.Subhead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_xsmall"
-                android:gravity="center_horizontal"
-                android:text="@string/trading_experience"
-                />
+            <!--<TextView-->
+                <!--style="@style/TH.Subhead"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="@dimen/margin_xsmall"-->
+                <!--android:gravity="center_horizontal"-->
+                <!--android:text="@string/trading_experience"-->
+                <!--/>-->
 
             <CheckBox
                 android:id="@+id/worked_finance"
