@@ -130,13 +130,13 @@
               android:layout_height="wrap_content"
               android:id="@+id/buy_price"
               android:textAppearance="@android:style/TextAppearance.Small"
-              android:text="Buy @ US$ 104.300" />
+              android:text="Buy @ --" />
           <TextView
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:id="@+id/sell_price"
               android:textAppearance="@android:style/TextAppearance.Small"
-              android:text="Sell @ US$ 104.250" />
+              android:text="Sell @ --" />
       </LinearLayout>
 
       <LinearLayout
