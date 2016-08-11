@@ -163,7 +163,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private String expectedCode;
     private String smsId;
     private ProviderId providerId;
-    private PublishSubject<Pair<Integer, String>> verifiedPublishSubject;
+    private PublishSubject<Pair<Integer, String>> verifiedPublishMobileNumber;
+    private PublishSubject<String> verifiedPublishIdNumber;
     private Drawable noErrorIconDrawable;
     private int providerIdInt = 0;
     private boolean hasClickedJoinButton = false;
@@ -177,7 +178,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         super.onCreate(savedInstanceState);
 
 //        thRouter.inject(this);
-        verifiedPublishSubject = PublishSubject.create();
+        verifiedPublishMobileNumber = PublishSubject.create();
+        verifiedPublishIdNumber = PublishSubject.create();
+
         if (savedInstanceState != null)
         {
             expectedCode = savedInstanceState.getString(KEY_EXPECTED_SMS_CODE, null);
@@ -284,7 +287,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         List<Subscription> subscriptions = new ArrayList<>();
         providerIdInt = getProviderId(getArguments());
         proQuesList = liveServiceWrapper.getAdditionalQuestionnaires(providerIdInt);
-        proQuesList.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(new Action1<ArrayList<ProviderQuestionnaireDTO>>() {
+        proQuesList.observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io()).subscribe(new Action1<ArrayList<ProviderQuestionnaireDTO>>() {
             @Override
             public void call(ArrayList<ProviderQuestionnaireDTO> providerQuestionnaireDTOs) {
                 providerQuestionnaireDTOz = providerQuestionnaireDTOs;
@@ -325,181 +329,208 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         title.setAdapter(adapter);
 
-        WidgetObservable.text(firstName).withLatestFrom(liveBrokerSituationDTOObservable,
-                (onTextChangeEvent, liveBrokerSituationDTO) -> {
-                    KYCAyondoForm updated = KYCAyondoFormFactory.fromFirstNameEvent(onTextChangeEvent);
+        subscriptions.add(
+                WidgetObservable.text(firstName)
+                        .withLatestFrom(liveBrokerSituationDTOObservable,
+                                (onTextChangeEvent, liveBrokerSituationDTO) -> {
+                                    KYCAyondoForm updated = KYCAyondoFormFactory.fromFirstNameEvent(onTextChangeEvent);
 
-                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-                }).subscribe(this::onNext);
+                                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+                                })
+                        .subscribe(this::onNext));
 
-        WidgetObservable.text(lastName).withLatestFrom(liveBrokerSituationDTOObservable,
-                (onTextChangeEvent, liveBrokerSituationDTO) -> {
-                    KYCAyondoForm updated = KYCAyondoFormFactory.fromLastNameEvent(onTextChangeEvent);
+        subscriptions.add(
+                WidgetObservable.text(lastName).withLatestFrom(liveBrokerSituationDTOObservable,
+                        (onTextChangeEvent, liveBrokerSituationDTO) -> {
+                            KYCAyondoForm updated = KYCAyondoFormFactory.fromLastNameEvent(onTextChangeEvent);
 
-                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-                }).subscribe(this::onNext);
+                            return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+                        }).subscribe(this::onNext));
 
-        WidgetObservable.text(nricNumber)
-                .doOnNext(onTextChangeEvent -> {
-                    if (onTextChangeEvent.text().length() != 12) {
-                        nricVerifyButton.setState(VerifyButtonState.BEGIN);
-                    } else if (onTextChangeEvent.text().length() == 12) {
-                        nricVerifyButton.setState(VerifyButtonState.PENDING);
+        subscriptions.add(
+                WidgetObservable.text(nricNumber)
+                        .doOnNext(onTextChangeEvent -> {
+                            if (onTextChangeEvent.text().length() != 12) {
+                                nricVerifyButton.setState(VerifyButtonState.BEGIN);
+                            } else if (onTextChangeEvent.text().length() == 12) {
+                                nricVerifyButton.setState(VerifyButtonState.PENDING);
+                            }
+                        })
+                        .withLatestFrom(liveBrokerSituationDTOObservable,
+                                (onTextChangeEvent, liveBrokerSituationDTO) -> {
+
+                                    String currentVerifiedId = ((KYCAyondoForm)liveBrokerSituationDTO.kycForm).getVerifiedIdentificationNumber();
+                                    if(onTextChangeEvent.text().toString().equals(currentVerifiedId)){
+                                        nricVerifyButton.setState(VerifyButtonState.FINISH);
+                                    }
+
+                                    KYCAyondoForm updated = KYCAyondoFormFactory.fromIdentificationNumber(onTextChangeEvent);
+
+                                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+                                }).subscribe(this::onNext));
+
+        subscriptions.add(
+                WidgetObservable.text(dob).withLatestFrom(liveBrokerSituationDTOObservable,
+                        (onTextChangeEvent, liveBrokerSituationDTO) -> {
+                            KYCAyondoForm updated = KYCAyondoFormFactory.fromDobEvent(onTextChangeEvent);
+
+                            return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+                        }).subscribe(this::onNext));
+
+        subscriptions.add(
+                AdapterViewObservable.selects(title).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
+                    public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                        KYCAyondoForm updated = KYCAyondoFormFactory.fromTitleEvent(onSelectedEvent);
+
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                     }
-                })
-                .withLatestFrom(liveBrokerSituationDTOObservable,
-                (onTextChangeEvent, liveBrokerSituationDTO) -> {
-                    KYCAyondoForm updated = KYCAyondoFormFactory.fromIdentificationNumber(onTextChangeEvent);
-
-                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-                }).subscribe(this::onNext);
-
-        WidgetObservable.text(dob).withLatestFrom(liveBrokerSituationDTOObservable,
-                (onTextChangeEvent, liveBrokerSituationDTO) -> {
-                    KYCAyondoForm updated = KYCAyondoFormFactory.fromDobEvent(onTextChangeEvent);
-
-                    return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-                }).subscribe(this::onNext);
-        AdapterViewObservable.selects(title).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
-            public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
-                KYCAyondoForm updated = KYCAyondoFormFactory.fromTitleEvent(onSelectedEvent);
-
-                return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-            }
-        }).subscribe(this::onNext);
+                }).subscribe(this::onNext));
         /*AdapterViewObservable.selects(spinnerHowYouKnowTH).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
             public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
                 KYCAyondoForm updated = KYCAyondoFormFactory.fromHowYouKnowTHEvent(onSelectedEvent);
                 return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
             }
         }).subscribe(this::onNext);*/
-        AdapterViewObservable.selects(spinnerPhoneCountryCode).withLatestFrom(liveBrokerSituationDTOObservable,
-                new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
-                {
-                    public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
-                        KYCAyondoForm updated = KYCAyondoFormFactory.fromPhoneCountryCode(onSelectedEvent);
 
-                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-                    }
-                }).subscribe(this::onNext);
+        subscriptions.add(
+                AdapterViewObservable.selects(spinnerPhoneCountryCode).withLatestFrom(liveBrokerSituationDTOObservable,
+                        new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                        {
+                            public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                                KYCAyondoForm updated = KYCAyondoFormFactory.fromPhoneCountryCode(onSelectedEvent);
 
-        AdapterViewObservable.selects(spinnerHowYouKnowTH).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
-            public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
-                ProviderQuestionnaireDTO proQuesDto = providerQuestionnaireDTOz.get(1);
-                Object selectedResidency = onSelectedEvent.parent.getItemAtPosition(((OnItemSelectedEvent) onSelectedEvent).position);
-                proQueAns[1] = new ProviderQuestionnaireAnswerDto(selectedResidency.toString(),proQuesDto.id, proQuesDto.question );
-                KYCAyondoForm updated = KYCAyondoFormFactory.additionalDataEvent(proQueAns);
-                return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-
-            }
-        }).subscribe(this::onNext);
-
-        AdapterViewObservable.selects(spinnerResidenceState).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
-            public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
-                ProviderQuestionnaireDTO proQuesDto = providerQuestionnaireDTOz.get(0);
-                Object selectedResidency = onSelectedEvent.parent.getItemAtPosition(((OnItemSelectedEvent) onSelectedEvent).position);
-                proQueAns[0] = new ProviderQuestionnaireAnswerDto(selectedResidency.toString(),proQuesDto.id, proQuesDto.question );
-                KYCAyondoForm updated = KYCAyondoFormFactory.additionalDataEvent(proQueAns);
-                return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
-
-            }
-        }).subscribe(this::onNext);
-
-
-        // clicks observable
-        ViewObservable.clicks(nricVerifyButton)
-                .withLatestFrom(liveBrokerSituationDTOObservable, (onClickEvent, liveBrokerSituationDTO) -> liveBrokerSituationDTO)
-                .doOnError(throwable1 -> {
-                    Log.v(getTag(), "NRIC ERROR");
-                })
-                .subscribe((LiveBrokerSituationDTO liveBrokerSituationDTO) -> {
-                    switch (nricVerifyButton.getState()) {
-                        case BEGIN:
-                            nricNumber.setError("NRIC must be 12 digits.", noErrorIconDrawable);
-                            nricVerifyButton.setState(VerifyButtonState.ERROR);
-                            break;
-                        case PENDING:
-                        case VALIDATE:
-                            if (liveBrokerSituationDTO.kycForm instanceof KYCAyondoForm) {
-                                KYCAyondoForm form = (KYCAyondoForm)liveBrokerSituationDTO.kycForm;
-
-                                ProgressDialog progress = new ProgressDialog(getContext());
-                                progress.setMessage("Verifying NRIC...");
-                                progress.show();
-                                String str = "";
-                                if(form.getNationality()==null){
-                                    str = "MY";
-                                }
-                                else {
-                                   try {
-                                       str = form.getNationality().getAlpha2();
-                                   }
-                                   catch (Exception e){
-
-                                   }
-
-                                }
-
-                                liveServiceWrapper.documentsForCountry(str).subscribe(
-                                        countryDocumentTypes -> {
-                                            // possible have multiple items, currently UI is hardcoded for NRIC, I(James) still not sure how to handle this things because the form is not totally dynamic...
-                                            // need to thing some ways to handle all the cases and make it dynamic.
-
-                                            for (CountryDocumentTypes countryDocumentType : countryDocumentTypes)
-                                            {
-                                                if (countryDocumentType.validation != null)
-                                                {
-                                                    Map queryParameters = new HashMap<String, String>();
-                                                    queryParameters.put(LiveServiceWrapper.PROVIDER_ID, Integer.toString(getProviderId(getArguments())));
-                                                    queryParameters.put(LiveServiceWrapper.INPUT, nricNumber.getText().toString());
-                                                    liveServiceWrapper.validateData(countryDocumentType.validation, queryParameters)
-                                                            .subscribeOn(Schedulers.newThread())
-                                                            .observeOn(AndroidSchedulers.mainThread())
-                                                            .subscribe(aBoolean -> {
-                                                                if(aBoolean.equals(true)) {
-                                                                    nricVerifyButton.setState(VerifyButtonState.FINISH);
-                                                                    nricNumber.setError(null);
-                                                                    if(hasClickedJoinButton){
-                                                                        onClickedJoinButton();
-                                                                    }
-                                                                }else{
-                                                                    Toast.makeText(getActivity(), "NRIC verification failed", Toast.LENGTH_SHORT).show();
-                                                                }
-
-                                                                progress.dismiss();
-                                                            }, new Action1<Throwable>() {
-                                                                @Override
-                                                                public void call(Throwable throwable) {
-                                                                    progress.dismiss();
-                                                                    String errorMessage = ExceptionUtils.getStringElementFromThrowable(throwable, "Message");
-                                                                    nricVerifyButton.setState(VerifyButtonState.ERROR);
-                                                                    nricNumber.setError(errorMessage, noErrorIconDrawable);
-                                                                    LiveSignUpStep1AyondoFragment.this.requestFocusAndShowKeyboard(nricNumber);
-                                                                }
-                                                            });
-                                                }
-                                            }
-                                        }, throwable -> {
-                                            THToast.show(throwable.getMessage());
-                                            progress.dismiss();
-                                        });
+                                return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
                             }
-                            break;
-                    }
-                });
+                        }).subscribe(this::onNext));
 
-        ViewObservable.clicks(phoneVerifyButton).subscribe(onClickEvent -> {
-            switch (phoneVerifyButton.getState()) {
-                case BEGIN:
-                case ERROR:
-                    phoneNumber.setError("Mobile number cannot less than 8 digits.", noErrorIconDrawable);
-                    phoneVerifyButton.setState(VerifyButtonState.ERROR);
-                    break;
-                case PENDING:
-                case VALIDATE:
-                    offerToEnterCode();
-            }
-        });
+        subscriptions.add(
+                AdapterViewObservable.selects(spinnerHowYouKnowTH).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
+                    public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                        ProviderQuestionnaireDTO proQuesDto = providerQuestionnaireDTOz.get(1);
+                        Object selectedResidency = onSelectedEvent.parent.getItemAtPosition(((OnItemSelectedEvent) onSelectedEvent).position);
+                        proQueAns[1] = new ProviderQuestionnaireAnswerDto(selectedResidency.toString(),proQuesDto.id, proQuesDto.question );
+                        KYCAyondoForm updated = KYCAyondoFormFactory.additionalDataEvent(proQueAns);
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+
+                    }
+                }).subscribe(this::onNext));
+
+        subscriptions.add(
+                AdapterViewObservable.selects(spinnerResidenceState).withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnSelectedEvent, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
+                    public LiveBrokerSituationDTO call(OnSelectedEvent onSelectedEvent, LiveBrokerSituationDTO liveBrokerSituationDTO) {
+                        ProviderQuestionnaireDTO proQuesDto = providerQuestionnaireDTOz.get(0);
+                        Object selectedResidency = onSelectedEvent.parent.getItemAtPosition(((OnItemSelectedEvent) onSelectedEvent).position);
+                        proQueAns[0] = new ProviderQuestionnaireAnswerDto(selectedResidency.toString(),proQuesDto.id, proQuesDto.question );
+                        KYCAyondoForm updated = KYCAyondoFormFactory.additionalDataEvent(proQueAns);
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+
+                    }
+                }).subscribe(this::onNext));
+
+
+        subscriptions.add(
+                // clicks observable
+                ViewObservable.clicks(nricVerifyButton)
+                        .withLatestFrom(liveBrokerSituationDTOObservable, (onClickEvent, liveBrokerSituationDTO) -> liveBrokerSituationDTO)
+                        .doOnError(throwable1 -> {
+                            Log.v(getTag(), "NRIC ERROR");
+                        })
+                        .subscribe((LiveBrokerSituationDTO liveBrokerSituationDTO) -> {
+                            switch (nricVerifyButton.getState()) {
+                                case BEGIN:
+                                    nricNumber.setError("NRIC must be 12 digits.", noErrorIconDrawable);
+                                    nricVerifyButton.setState(VerifyButtonState.ERROR);
+                                    break;
+                                case PENDING:
+                                case VALIDATE:
+                                    if (liveBrokerSituationDTO.kycForm instanceof KYCAyondoForm) {
+                                        KYCAyondoForm form = (KYCAyondoForm)liveBrokerSituationDTO.kycForm;
+
+                                        ProgressDialog progress = new ProgressDialog(getContext());
+                                        progress.setMessage("Verifying NRIC...");
+                                        progress.show();
+                                        String str = "";
+                                        if(form.getNationality()==null){
+                                            str = "MY";
+                                        }
+                                        else {
+                                            try {
+                                                str = form.getNationality().getAlpha2();
+                                            }
+                                            catch (Exception e){
+
+                                            }
+
+                                        }
+
+                                        liveServiceWrapper.documentsForCountry(str).subscribe(
+                                                countryDocumentTypes -> {
+                                                    // possible have multiple items, currently UI is hardcoded for NRIC, I(James) still not sure how to handle this things because the form is not totally dynamic...
+                                                    // need to thing some ways to handle all the cases and make it dynamic.
+
+                                                    for (CountryDocumentTypes countryDocumentType : countryDocumentTypes)
+                                                    {
+                                                        if (countryDocumentType.validation != null)
+                                                        {
+                                                            Map queryParameters = new HashMap<String, String>();
+                                                            queryParameters.put(LiveServiceWrapper.PROVIDER_ID, Integer.toString(getProviderId(getArguments())));
+                                                            queryParameters.put(LiveServiceWrapper.INPUT, nricNumber.getText().toString());
+                                                            liveServiceWrapper.validateData(countryDocumentType.validation, queryParameters)
+                                                                    .subscribeOn(Schedulers.newThread())
+                                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                                    .subscribe(aBoolean -> {
+                                                                        if(aBoolean.equals(true)) {
+                                                                            nricVerifyButton.setState(VerifyButtonState.FINISH);
+                                                                            nricNumber.setError(null);
+
+                                                                            if(verifiedPublishIdNumber!=null){
+                                                                                //update KYC form
+                                                                                verifiedPublishIdNumber.onNext(queryParameters.get(LiveServiceWrapper.INPUT).toString());
+                                                                            }
+
+                                                                            if(hasClickedJoinButton){
+                                                                                onClickedJoinButton();
+                                                                            }
+                                                                        }else{
+                                                                            Toast.makeText(getActivity(), "NRIC verification failed", Toast.LENGTH_SHORT).show();
+                                                                        }
+
+                                                                        progress.dismiss();
+                                                                    }, new Action1<Throwable>() {
+                                                                        @Override
+                                                                        public void call(Throwable throwable) {
+                                                                            progress.dismiss();
+                                                                            String errorMessage = ExceptionUtils.getStringElementFromThrowable(throwable, "Message");
+                                                                            nricVerifyButton.setState(VerifyButtonState.ERROR);
+                                                                            nricNumber.setError(errorMessage, noErrorIconDrawable);
+                                                                            LiveSignUpStep1AyondoFragment.this.requestFocusAndShowKeyboard(nricNumber);
+                                                                        }
+                                                                    });
+                                                        }
+                                                    }
+                                                }, throwable -> {
+                                                    THToast.show(throwable.getMessage());
+                                                    progress.dismiss();
+                                                });
+                                    }
+                                    break;
+                            }
+                        }));
+
+        subscriptions.add(
+                ViewObservable.clicks(phoneVerifyButton)
+                        .subscribe(onClickEvent -> {
+                            switch (phoneVerifyButton.getState()) {
+                                case BEGIN:
+                                case ERROR:
+                                    phoneNumber.setError("Mobile number cannot less than 8 digits.", noErrorIconDrawable);
+                                    phoneVerifyButton.setState(VerifyButtonState.ERROR);
+                                    break;
+                                case PENDING:
+                                case VALIDATE:
+                                    offerToEnterCode();
+                            }
+                        }));
 
 
         //AdapterViewObservable.selects(spinnerNationality).subscribe(KYCAyondoFormFactory::fromNationalityEvent);
@@ -814,7 +845,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         //            }
         //        }, new TimberOnErrorAction1("Failed to present verify phone dialog")));
 
-        subscriptions.add(verifiedPublishSubject.withLatestFrom(liveBrokerSituationDTOObservable,
+        subscriptions.add(verifiedPublishMobileNumber.withLatestFrom(liveBrokerSituationDTOObservable,
                 new Func2<Pair<Integer, String>, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
                 {
                     @Override
@@ -830,6 +861,28 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         //buttonVerifyPhone.setEnabled(false);
                         //buttonVerifyPhone.setText(R.string.verified);
                         phoneVerifyButton.setState(VerifyButtonState.FINISH);
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
+                    }
+                }).subscribe(
+                new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        onNext(liveBrokerSituationDTO);
+                    }
+                }, new TimberOnErrorAction1("Failed to update verified mobile number")));
+
+        subscriptions.add(verifiedPublishIdNumber.withLatestFrom(liveBrokerSituationDTOObservable,
+                new Func2<String, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                {
+                    @Override
+                    public LiveBrokerSituationDTO call(String idNumber, LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        KYCAyondoForm update = new KYCAyondoForm();
+                        update.setVerifiedIdentificationNumber(idNumber);
+                        //noinspection ConstantConditions
+
+                        nricVerifyButton.setState(VerifyButtonState.FINISH);
                         return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
                     }
                 }).subscribe(
@@ -870,7 +923,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Override public void onDestroy()
     {
         super.onDestroy();
-        verifiedPublishSubject = null;
+        verifiedPublishMobileNumber = null;
+        verifiedPublishIdNumber = null;
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -906,9 +960,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
 
         String nricNumberText = kycForm.getIdentificationNumber();
-        if (this.nricNumber != null && nricNumberText != null && !nricNumberText.equals(nricNumber.getText().toString()))
+        if (this.nricNumber != null && nricNumberText != null)
         {
             nricNumber.setText(nricNumberText);
+            if(nricNumber.getText().toString().equals(kycForm.getVerifiedIdentificationNumber())){
+                nricVerifyButton.setState(VerifyButtonState.FINISH);
+            }
         }
 
         String mobileNumberText = kycForm.getMobileNumber();
@@ -1173,7 +1230,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             Pair<Integer, String> verifiedPhoneNumberPair = VerifyPhoneDialogFragment.getVerifiedFromIntent(data);
             if (verifiedPhoneNumberPair != null)
             {
-                verifiedPublishSubject.onNext(verifiedPhoneNumberPair);
+                verifiedPublishMobileNumber.onNext(verifiedPhoneNumberPair);
             }
             if(hasClickedJoinButton){
                 onClickedJoinButton();

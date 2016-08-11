@@ -11,7 +11,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/tile_live_trading_bg"
-      android:gravity="center"
       android:orientation="horizontal"
       android:minHeight="?attr/actionBarSize"
       android:paddingTop="@dimen/margin_xsmall"
@@ -22,12 +21,13 @@
 
     <ImageView
         android:id="@+id/email_sent_banner"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/medium_image_w_h"
         android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/margin_xsmall"
-        android:layout_marginStart="@dimen/margin_xsmall"
-        />
+        android:layout_marginRight="@dimen/margin_large"
+        android:layout_marginEnd="@dimen/margin_large"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginStart="@dimen/margin_large" />
 
     <ImageView
         android:id="@android:id/closeButton"

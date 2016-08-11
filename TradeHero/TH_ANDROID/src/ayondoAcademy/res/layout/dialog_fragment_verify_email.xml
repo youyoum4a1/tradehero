@@ -11,7 +11,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/tile_live_trading_bg"
-      android:gravity="center"
       android:orientation="horizontal"
       android:minHeight="?attr/actionBarSize"
       android:paddingTop="@dimen/margin_xsmall"
@@ -22,12 +21,13 @@
 
     <ImageView
         android:id="@+id/email_sent_banner"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/medium_image_w_h"
         android:layout_centerInParent="true"
-        android:layout_marginLeft="@dimen/margin_xsmall"
-        android:layout_marginStart="@dimen/margin_xsmall"
-        />
+        android:layout_marginRight="@dimen/margin_large"
+        android:layout_marginEnd="@dimen/margin_large"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginStart="@dimen/margin_large" />
 
     <ImageView
         android:id="@android:id/closeButton"
@@ -88,84 +88,84 @@
         />
 
     <!--<TextView-->
-        <!--android:id="@+id/sms_sent_status"-->
-        <!--style="@style/TH.Body"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center_horizontal"-->
-        <!--android:gravity="center_horizontal"-->
-        <!--tools:text="Status: Queued"-->
-        <!--/>-->
+    <!--android:id="@+id/sms_sent_status"-->
+    <!--style="@style/TH.Body"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--tools:text="Status: Queued"-->
+    <!--/>-->
 
     <!--<TextView-->
-        <!--style="@style/TH.Caption"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center_horizontal"-->
-        <!--android:gravity="center_horizontal"-->
-        <!--android:text="@string/sms_verification_action"-->
-        <!--/>-->
+    <!--style="@style/TH.Caption"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:gravity="center_horizontal"-->
+    <!--android:text="@string/sms_verification_action"-->
+    <!--/>-->
 
     <!--<LinearLayout-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center_horizontal"-->
-        <!--android:layout_marginBottom="@dimen/size_1"-->
-        <!--android:orientation="horizontal"-->
-        <!--&gt;-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center_horizontal"-->
+    <!--android:layout_marginBottom="@dimen/size_1"-->
+    <!--android:orientation="horizontal"-->
+    <!--&gt;-->
 
-      <!--<EditText-->
-          <!--android:id="@+id/verify_code_1"-->
-          <!--style="@style/TH.Headline.Verify"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--tools:text="1"-->
-          <!--/>-->
+    <!--<EditText-->
+    <!--android:id="@+id/verify_code_1"-->
+    <!--style="@style/TH.Headline.Verify"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--tools:text="1"-->
+    <!--/>-->
 
-      <!--<TextView-->
-          <!--style="@style/TH.Headline"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:text="-"-->
-          <!--/>-->
+    <!--<TextView-->
+    <!--style="@style/TH.Headline"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="-"-->
+    <!--/>-->
 
-      <!--<EditText-->
-          <!--android:id="@+id/verify_code_2"-->
-          <!--style="@style/TH.Headline.Verify"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--tools:text="2"-->
-          <!--/>-->
+    <!--<EditText-->
+    <!--android:id="@+id/verify_code_2"-->
+    <!--style="@style/TH.Headline.Verify"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--tools:text="2"-->
+    <!--/>-->
 
-      <!--<TextView-->
-          <!--style="@style/TH.Headline"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:text="-"-->
-          <!--/>-->
+    <!--<TextView-->
+    <!--style="@style/TH.Headline"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="-"-->
+    <!--/>-->
 
-      <!--<EditText-->
-          <!--android:id="@+id/verify_code_3"-->
-          <!--style="@style/TH.Headline.Verify"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--tools:text="3"-->
-          <!--/>-->
+    <!--<EditText-->
+    <!--android:id="@+id/verify_code_3"-->
+    <!--style="@style/TH.Headline.Verify"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--tools:text="3"-->
+    <!--/>-->
 
-      <!--<TextView-->
-          <!--style="@style/TH.Headline"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--android:text="-"-->
-          <!--/>-->
+    <!--<TextView-->
+    <!--style="@style/TH.Headline"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="-"-->
+    <!--/>-->
 
-      <!--<EditText-->
-          <!--android:id="@+id/verify_code_4"-->
-          <!--style="@style/TH.Headline.Verify"-->
-          <!--android:layout_width="wrap_content"-->
-          <!--android:layout_height="wrap_content"-->
-          <!--tools:text="4"-->
-          <!--/>-->
+    <!--<EditText-->
+    <!--android:id="@+id/verify_code_4"-->
+    <!--style="@style/TH.Headline.Verify"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--tools:text="4"-->
+    <!--/>-->
 
     <!--</LinearLayout>-->
 
@@ -202,7 +202,7 @@
         android:text="Resend Email"
         android:textColor="@color/general_brand_color"
         />
-        <!--android:background="@drawable/basic_light_grey_selector"-->
+    <!--android:background="@drawable/basic_light_grey_selector"-->
 
   </LinearLayout>
 
