@@ -95,6 +95,11 @@ public class  KYCAyondoForm implements KYCForm
     @Nullable private Boolean needIdentityDocument;
     @Nullable private Boolean needResidencyDocument;
 
+    @Nullable private Boolean hasSubmittedScanReference;
+    @Nullable private Boolean hasSubmittedProofOfAddress;
+
+    private Boolean isPartiallySubmitted = false, isFullySubmitted = false;
+
     @Nullable private String guid;
     @Nullable private String addressCheckUid;
     @Nullable private String identityCheckUid;
@@ -104,7 +109,7 @@ public class  KYCAyondoForm implements KYCForm
     @Nullable private Boolean subscribeTradeNotifications;
 
     @Nullable private Currency currency;
-    @Nullable private String verifiedEmailAddress;
+    @Nullable private String verifiedEmailAddress, verifiedIdentificationNumber;
     @Nullable private ProviderQuestionnaireAnswerDto[] additionalData;
 
     //TODO Hardcoded for now
@@ -262,6 +267,7 @@ public class  KYCAyondoForm implements KYCForm
             this.currency = ayondoForm.getCurrency() != null ? ayondoForm.getCurrency() : this.currency;
             this.identificationNumber = ayondoForm.getIdentificationNumber() != null ? ayondoForm.getIdentificationNumber() : this.getIdentificationNumber();
             this.verifiedEmailAddress = ayondoForm.verifiedEmailAddress!=null? ayondoForm.verifiedEmailAddress:this.verifiedEmailAddress;
+            this.verifiedIdentificationNumber = ayondoForm.verifiedIdentificationNumber!=null? ayondoForm.verifiedIdentificationNumber:this.verifiedIdentificationNumber;
             this.additionalData = ayondoForm.additionalData!=null ? ayondoForm.additionalData: this.additionalData;
 
             this.proofOfAddressType =
@@ -270,7 +276,31 @@ public class  KYCAyondoForm implements KYCForm
             if (ayondoForm.clearProofOfAddressUrl != null && ayondoForm.clearProofOfAddressUrl)
             {
                 this.proofOfAddressImageUrl = null;
+                this.setHasSubmittedProofOfAddress(false);
             }
+
+            if (ayondoForm.getProofOfAddressImageUrl()!=null){
+                this.hasSubmittedProofOfAddress = true;
+            }else{
+                if(this.getProofOfAddressImageUrl()!=null){
+                    this.hasSubmittedProofOfAddress = true;
+                }else{
+                    this.hasSubmittedProofOfAddress = false;
+                }
+            }
+
+            if (ayondoForm.getScanReference()!=null){
+                this.hasSubmittedScanReference = true;
+            }else{
+                if(this.getScanReference()!=null){
+                    this.hasSubmittedScanReference = true;
+                }else{
+                    this.hasSubmittedScanReference = false;
+                }
+            }
+
+            this.isPartiallySubmitted = ayondoForm.isPartiallySubmitted? ayondoForm.isPartiallySubmitted:this.isPartiallySubmitted;
+            this.isFullySubmitted = ayondoForm.isFullySubmitted? ayondoForm.isFullySubmitted:this.isFullySubmitted;
         }
     }
 
@@ -511,6 +541,15 @@ public class  KYCAyondoForm implements KYCForm
 
     public void setVerifiedEmailAddress(@Nullable String verifiedEmailAddress) {
         this.verifiedEmailAddress = verifiedEmailAddress;
+    }
+
+    @Nullable
+    public String getVerifiedIdentificationNumber() {
+        return verifiedIdentificationNumber;
+    }
+
+    public void setVerifiedIdentificationNumber(@Nullable String verifiedIdentificationNumber) {
+        this.verifiedIdentificationNumber = verifiedIdentificationNumber;
     }
 
     //</editor-fold>
@@ -955,11 +994,45 @@ public class  KYCAyondoForm implements KYCForm
 
     @Nullable
     public String getProofOfAddressImageUrl() {
-        return proofOfAddressImageUrl;
+        return this.proofOfAddressImageUrl;
     }
 
     public void setProofOfAddressImageUrl(@Nullable String proofOfAddressImageUrl) {
         this.proofOfAddressImageUrl = proofOfAddressImageUrl;
+    }
+
+    @Nullable
+    public Boolean hasSubmittedScanReference() {
+        return hasSubmittedScanReference;
+    }
+
+    public void setHasSubmittedScanReference(@Nullable Boolean hasSubmittedScanReference) {
+        this.hasSubmittedScanReference = hasSubmittedScanReference;
+    }
+
+    @Nullable
+    public Boolean hasSubmittedProofOfAddress() {
+        return hasSubmittedProofOfAddress;
+    }
+
+    public void setHasSubmittedProofOfAddress(@Nullable Boolean hasSubmittedProofOfAddress) {
+        this.hasSubmittedProofOfAddress = hasSubmittedProofOfAddress;
+    }
+
+    public Boolean getFullySubmitted() {
+        return isFullySubmitted;
+    }
+
+    public void setFullySubmitted(Boolean fullySubmitted) {
+        isFullySubmitted = fullySubmitted;
+    }
+
+    public Boolean getPartiallySubmitted() {
+        return isPartiallySubmitted;
+    }
+
+    public void setPartiallySubmitted(Boolean partiallySubmitted) {
+        isPartiallySubmitted = partiallySubmitted;
     }
 
     @Override public boolean equals(@Nullable Object o)
@@ -1040,8 +1113,8 @@ public class  KYCAyondoForm implements KYCForm
 //                    : residenceDocumentUrl.equals(ayondoForm.residenceDocumentUrl);
             same &= proofOfAddressType == null ? ayondoForm.proofOfAddressType == null
                     : proofOfAddressType.equals(ayondoForm.proofOfAddressType);
-            same &= proofOfAddressImageUrl == null ? ayondoForm.proofOfAddressImageUrl == null
-                    : proofOfAddressImageUrl.equals(ayondoForm.proofOfAddressImageUrl);
+            same &= this.proofOfAddressImageUrl == null ? ayondoForm.proofOfAddressImageUrl == null
+                    : this.proofOfAddressImageUrl.equals(ayondoForm.proofOfAddressImageUrl);
             // Do not compare clearResidenceDocumentFile
             same &= agreeTermsConditions == null ? ayondoForm.agreeTermsConditions == null
                     : agreeTermsConditions.equals(ayondoForm.agreeTermsConditions);
@@ -1051,6 +1124,12 @@ public class  KYCAyondoForm implements KYCForm
                     : needIdentityDocument.equals(ayondoForm.needIdentityDocument);
             same &= needResidencyDocument == null ? ayondoForm.needResidencyDocument == null
                     : needResidencyDocument.equals(ayondoForm.needResidencyDocument);
+
+            same &= this.hasSubmittedProofOfAddress == null ? ayondoForm.hasSubmittedProofOfAddress() == null
+                    : this.hasSubmittedProofOfAddress.equals(ayondoForm.hasSubmittedProofOfAddress());
+            same &= this.hasSubmittedScanReference == null ? ayondoForm.hasSubmittedScanReference() == null
+                    : this.hasSubmittedScanReference.equals(ayondoForm.hasSubmittedScanReference());
+
             same &= guid == null ? ayondoForm.guid == null : guid.equals(ayondoForm.guid);
             same &= addressCheckUid == null ? ayondoForm.addressCheckUid == null : addressCheckUid.equals(ayondoForm.addressCheckUid);
             same &= identityCheckUid == null ? ayondoForm.identityCheckUid == null : identityCheckUid.equals(ayondoForm.identityCheckUid);
@@ -1137,6 +1216,8 @@ public class  KYCAyondoForm implements KYCForm
         code ^= agreeDataSharing == null ? 0 : agreeDataSharing.hashCode();
         code ^= needIdentityDocument == null ? 0 : needIdentityDocument.hashCode();
         code ^= needResidencyDocument == null ? 0 : needResidencyDocument.hashCode();
+        code ^= hasSubmittedScanReference == null? 0 : hasSubmittedScanReference.hashCode();
+        code ^= hasSubmittedProofOfAddress == null? 0 : hasSubmittedProofOfAddress.hashCode();
         code ^= guid == null ? 0 : guid.hashCode();
         code ^= addressCheckUid == null ? 0 : addressCheckUid.hashCode();
         code ^= identityCheckUid == null ? 0 : identityCheckUid.hashCode();
@@ -1197,6 +1278,8 @@ public class  KYCAyondoForm implements KYCForm
                 ", agreeDataSharing=" + agreeDataSharing +
                 ", needIdentityDocument=" + needIdentityDocument +
                 ", needResidencyDocument=" + needResidencyDocument +
+                ", hasSubmittedScanReference=" + hasSubmittedScanReference +
+                ", hasSubmittedProofOfAddress=" + hasSubmittedProofOfAddress +
                 ", guid=" + guid +
                 ", addressCheckUid=" + addressCheckUid +
                 ", identityCheckUid=" + identityCheckUid +

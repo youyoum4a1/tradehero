@@ -46,6 +46,7 @@ import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.exception.THException;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
+import com.androidth.general.fragments.live.LiveFormConfirmationFragment;
 import com.androidth.general.fragments.live.VerifyEmailDialogFragment;
 import com.androidth.general.fragments.settings.ImageRequesterUtil;
 import com.androidth.general.models.fastfill.FastFillExceptionUtil;
@@ -98,6 +99,7 @@ import rx.android.view.ViewObservable;
 import rx.android.widget.WidgetObservable;
 import rx.functions.Action0;
 import rx.functions.Action1;
+import rx.functions.Action2;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
@@ -111,6 +113,7 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final int INDEX_VIEW_CREATE_BUTTON = 0;
     private static final int INDEX_VIEW_SUBMIT_BUTTON = 1;
     private static final int REQUEST_VERIFY_EMAIL_CODE = 2809;
+    private static final int REQUEST_LIVE_CONFIRMATION_CODE = 2810;
 
     @Bind(R.id.identity_document_type) Spinner identityDocumentTypeSpinner;
     @Bind(R.id.residence_document_type) Spinner residenceDocumentTypeSpinner;
@@ -152,12 +155,13 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private VerifyEmailDialogFragment vedf;
     private Drawable noErrorIconDrawable;
     private boolean hasClickedSubmitButton = false;
-    private boolean isIdentityDocSubmitted = false, isResidenceDocSubmitted = false;
+    private boolean isIdSubmitted = false, isPRSubmitted = false;
     SignalRManager signalRManager;
 
     private static PublishSubject<String> verifiedPublishEmail;
     private String scanReference;
     private LiveBrokerDTO currentBroker;
+    private boolean isPartiallySubmitted;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
@@ -454,8 +458,10 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         //Update the documents needed
                         if (needResidencyDocument != null)
                         {
-                            residencyContainer.setVisibility(
-                                    needResidencyDocument ? View.VISIBLE : View.GONE);
+                            //TODO Jeff
+                            setupResidencyCompleteStatus();
+//                            residencyContainer.setVisibility(
+//                                    needResidencyDocument ? View.VISIBLE : View.GONE);
                         }
                     }
                 }, new TimberOnErrorAction1("Failed to update residency document visibility")));
@@ -546,23 +552,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                             }
                         }));
 
-        subscriptions.add(Observable.just(scanReference)
-                .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<String, LiveBrokerSituationDTO, LiveBrokerSituationDTO>() {
-
-                    @Override
-                    public LiveBrokerSituationDTO call(String scanRef, LiveBrokerSituationDTO situation) {
-                        KYCAyondoForm form = new KYCAyondoForm();
-                        form.setScanReference(scanRef);
-                        return new LiveBrokerSituationDTO(situation.broker, form);
-                    }
-                }).subscribe(new Action1<LiveBrokerSituationDTO>() {
-                    @Override
-                    public void call(LiveBrokerSituationDTO liveBrokerSituationDTO) {
-                        onNext(liveBrokerSituationDTO);
-                    }
-
-                },new TimberOnErrorAction1("Failed to save scan reference")));
-
 //subscribe residence
                         subscriptions.add(
                                 DocumentActionWidgetObservable.actions(documentActionResidence)
@@ -624,7 +613,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                                 update.setProofOfAddressImageUrl(brokerDocumentUploadResponseDTO.url);
 //                                                                update.setResidenceDocumentUrl(brokerDocumentUploadResponseDTO.url);
 
-                                                                isResidenceDocSubmitted = true;
                                                                 return new LiveBrokerSituationDTO(liveBrokerDTO, update);
                                                             }
                                                         })
@@ -633,7 +621,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                                                             @Override
                                                             public void call(Throwable throwable) {
                                                                 THToast.show(new THException(throwable));
-                                                                isResidenceDocSubmitted = false;
                                                             }
                                                         })
                                                         .finallyDo(new Action0() {
@@ -679,12 +666,18 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         },
                         new TimberOnErrorAction1("Failed to listen to url clicks")));
 
+        //get the latest preference values for submission
         subscriptions.add(ViewObservable.clicks(btnSubmit)
-                .withLatestFrom(liveBrokerSituationDTOObservable, new Func2<OnClickEvent, LiveBrokerSituationDTO, KYCAyondoForm>()
+                .withLatestFrom(liveBrokerSituationDTOObservable,
+                        new Func2<OnClickEvent, LiveBrokerSituationDTO, KYCAyondoForm>()
                 {
                     @Override public KYCAyondoForm call(OnClickEvent onClickEvent, LiveBrokerSituationDTO liveBrokerSituationDTO)
                     {
-                        return (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
+                        KYCAyondoForm latestForm = (KYCAyondoForm) liveBrokerSituationDTO.kycForm;
+
+                        liveBrokerSituationPreference.set(new LiveBrokerSituationDTO(currentBroker, latestForm));
+
+                        return latestForm;
                     }
                 })
                 .doOnNext(new Action1<KYCAyondoForm>()
@@ -711,6 +704,10 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                         //Progress dialog
                         hasClickedSubmitButton = false;
                         progressDialog = ProgressDialogUtil.create(getActivity(), R.string.processing);
+
+                        isIdSubmitted = kycAyondoForm.hasSubmittedScanReference();
+                        isPRSubmitted = kycAyondoForm.hasSubmittedProofOfAddress();
+
                     }
                 })
                 .flatMap(new Func1<KYCAyondoForm, Observable<BrokerApplicationDTO>>()
@@ -732,9 +729,25 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 {
                     @Override public void call(BrokerApplicationDTO brokerApplicationDTO)
                     {
-                        THToast.show("success");
+//                        THToast.show("success");
                         progressDialog.dismiss();
-                        getActivity().finish();
+
+                        LiveFormConfirmationFragment
+                                .show(REQUEST_LIVE_CONFIRMATION_CODE, LiveSignUpStep5AyondoFragment.this,
+                                        isIdSubmitted, isPRSubmitted, providerId, providerDTO.logoUrl);
+
+                        KYCAyondoForm form = new KYCAyondoForm();
+                        if(isPRSubmitted && isIdSubmitted){
+                            form.setFullySubmitted(true);
+                            form.setPartiallySubmitted(false);
+                        }else{
+                            form.setFullySubmitted(false);
+                            form.setPartiallySubmitted(true);
+                        }
+
+                        onNext(new LiveBrokerSituationDTO(currentBroker, form));
+
+//                        getActivity().finish();
                     }
                 }, new Action1<Throwable>()
                 {
@@ -773,6 +786,12 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 })
                 .withLatestFrom(liveBrokerSituationDTOObservable,
                         (onTextChangeEvent, liveBrokerSituationDTO) -> {
+
+                            String currentVerifiedEmail = ((KYCAyondoForm)liveBrokerSituationDTO.kycForm).getVerifiedEmailAddress();
+                            if(currentVerifiedEmail!=null && currentVerifiedEmail.equals(onTextChangeEvent.text().toString())){
+                                emailVerifybutton.setState(VerifyButtonState.FINISH);
+                            }
+
                             KYCAyondoForm updated = KYCAyondoFormFactory.fromEmailEvent(onTextChangeEvent);
 
                             return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
@@ -932,22 +951,27 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
                 updateLayoutFromJumio(dataType, scanRef);
 
-            default:break;
-        }
+            case REQUEST_VERIFY_EMAIL_CODE:
+                if(resultCode==Activity.RESULT_OK){
+                    String verifiedEmail = VerifyEmailDialogFragment.getVerifiedFromIntent(data);
 
-        if (requestCode == REQUEST_VERIFY_EMAIL_CODE && resultCode == Activity.RESULT_OK) {
-            Log.v(getTag(), "Jeff email ok");
-            String verifiedEmail = VerifyEmailDialogFragment.getVerifiedFromIntent(data);
-
-            if(data.hasExtra("VerificationEmailError")){
-                updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), data.getStringExtra("VerificationEmailError"), false);
-            } else {
-                if (verifiedEmail != null)
-                {
-                    verifiedPublishEmail.onNext(verifiedEmail);
+                    if(data.hasExtra("VerificationEmailError")){
+                        updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), data.getStringExtra("VerificationEmailError"), false);
+                    } else {
+                        if (verifiedEmail != null)
+                        {
+                            verifiedPublishEmail.onNext(verifiedEmail);
+                        }
+                        updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), null, true);
+                    }
                 }
-                updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), null, true);
-            }
+                break;
+
+            case REQUEST_LIVE_CONFIRMATION_CODE:
+                getActivity().finish();
+                break;
+
+            default:break;
         }
     }
 
@@ -955,11 +979,11 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private void populate(@NonNull KYCAyondoForm kycForm)
     {
         String emailText = kycForm.getEmail();
-        if (email != null && emailText != null && !emailText.equals(email.getText().toString()))
+        if (email != null && emailText != null /* && !emailText.equals(email.getText().toString())*/)
         {
             email.setText(emailText);
             String currentVerifiedEmail = kycForm.getVerifiedEmailAddress();
-            if(currentVerifiedEmail!=null && currentVerifiedEmail.equals(emailText)){
+            if(currentVerifiedEmail!=null && currentVerifiedEmail.equals(email.getText().toString())){
                 emailVerifybutton.setState(VerifyButtonState.FINISH);
             }
         }
@@ -1187,7 +1211,6 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private void setupUploadJumioCompleteStatus(){
         hasUploadedJumio = true;
 
-        isIdentityDocSubmitted = true;
         identityDocumentTypeSpinner.setEnabled(false);
 
         scanButton.setImageResource(R.drawable.green_tick);
@@ -1195,5 +1218,9 @@ public class LiveSignUpStep5AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         scanButton.setEnabled(false);
         identityDocumentTypeSpinner.setEnabled(false);
         checkFormToEnableSubmitButton();
+    }
+
+    private void setupResidencyCompleteStatus(){
+//        residenceDocumentTypeSpinner
     }
 }
