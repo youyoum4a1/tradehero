@@ -11,16 +11,21 @@ import com.androidth.general.inject.BaseInjector;
 import com.androidth.general.inject.ExInjector;
 import com.androidth.general.models.level.UserXPAchievementHandler;
 import com.androidth.general.models.push.PushNotificationManager;
+import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.dagger.AppModule;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
 import com.flurry.android.FlurryAgent;
 
 import io.fabric.sdk.android.Fabric;
 import javax.inject.Inject;
 
 import dagger.ObjectGraph;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import microsoft.aspnet.signalr.client.Platform;
 import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import timber.log.Timber;
@@ -51,6 +56,11 @@ public class THApp extends BaseApplication
 
         Fabric.with(this, new Crashlytics.Builder().core(crashlytics).build());
         ActivityBuildTypeUtil.startCrashReports(this);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);//new
+
+        setupRealm();
 
         context = getApplicationContext();
 
@@ -128,5 +138,10 @@ public class THApp extends BaseApplication
     public static THApp context()
     {
         return (THApp) context;
+    }
+
+    private void setupRealm(){
+        Realm.setDefaultConfiguration(new RealmConfiguration.Builder(this)
+                .name(Constants.REALM_DB_NAME).deleteRealmIfMigrationNeeded().build());
     }
 }

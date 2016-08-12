@@ -92,11 +92,9 @@ public class SplashActivity extends BaseActivity
 
         //TODO Add code for Google Analytics
         //analytics.tagScreen(AnalyticsConstants.Loading);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(getApplication());//new
+
 //        AppEventsLogger.activateApp(this, SocialConstants.FACEBOOK_APP_ID);//old
 
-        setupRealm();
         tapStream.get().fireEvent(new Event(getString(Constants.TAP_STREAM_TYPE.openResId), false));
 
         mobileAppTracker.setReferralSources(this);
@@ -165,8 +163,4 @@ public class SplashActivity extends BaseActivity
         return false;
     }
 
-    private void setupRealm(){
-        Realm.setDefaultConfiguration(new RealmConfiguration.Builder(this)
-                .name(Constants.REALM_DB_NAME).deleteRealmIfMigrationNeeded().build());
-    }
 }
