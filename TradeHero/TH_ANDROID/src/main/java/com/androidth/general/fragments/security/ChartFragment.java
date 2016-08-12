@@ -23,6 +23,7 @@ import com.androidth.general.activities.StockChartActivity;
 import com.androidth.general.api.alert.AlertCompactDTO;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.TillExchangeOpenDuration;
 import com.androidth.general.api.security.compact.WarrantDTO;
@@ -217,7 +218,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     {
         super.onCreate(savedInstanceState);
         HierarchyInjector.inject(this);
-        chartDTO = chartDTOFactory.createChartDTO();
+
+        SecurityCompactDTO securityCompactDTO = securityCompactCacheRx.getCachedValue(securityId);
+        chartDTO = chartDTOFactory.createChartDTO(securityCompactDTO);
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

@@ -8,6 +8,7 @@ public enum YahooMovingAverageInterval
 {
     m5("m5", 5),
     m10("m10", 10),
+    m15("m15", 15),
     m20("m20", 20),
     m50("m50", 50),
     m100("m100", 100),
