@@ -53,6 +53,7 @@ public class YahooChartDTO implements ChartDTO {
                 securityCompactDTO,
                 chartSize,
                 chartTimeSpan,
+                (securityCompactDTO != null && securityCompactDTO.secTypeDesc != null && securityCompactDTO.secTypeDesc.toLowerCase().equals("warrant"))
                         ? defaultMovingAverageIntervalsForWarrants() : defaultMovingAverageIntervals());
     }
 
