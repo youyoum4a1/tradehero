@@ -30,6 +30,7 @@ public class LeaderboardDefDTO implements DTO
     public Integer defaultSortTypeId;
     public Integer capAt;
     public CountryCodeList countryCodes;
+    public Integer sortOrder;
 
     //<editor-fold desc="Constructors">
     public LeaderboardDefDTO()
