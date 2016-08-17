@@ -21,14 +21,16 @@ public class CompetitionDTORestrictionComparator implements Comparator<Competiti
             return 0;
         }
 
-        if(!lhs.competitionDurationType.equals(rhs.competitionDurationType)){
-            int lDtoIntMapping = intMapping(lhs);
-            int rDtoIntMapping = intMapping(rhs);
-            return rDtoIntMapping - lDtoIntMapping;
-        }
-        else {
-            return lhs.leaderboard.fromUtcRestricted.compareTo(rhs.leaderboard.fromUtcRestricted);
-        }
+        //if(!lhs.competitionDurationType.equals(rhs.competitionDurationType)){
+        //    int lDtoIntMapping = intMapping(lhs);
+        //    int rDtoIntMapping = intMapping(rhs);
+        //    return rDtoIntMapping - lDtoIntMapping;
+        //}
+        //else {
+        //    return lhs.leaderboard.fromUtcRestricted.compareTo(rhs.leaderboard.fromUtcRestricted);
+        //}
+
+        return lhs.leaderboard.sortOrder.compareTo(rhs.leaderboard.sortOrder);
 
     }
     private int intMapping(CompetitionDTO dto){
