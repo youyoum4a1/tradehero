@@ -90,7 +90,7 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
         ExchangeCompactDTO exchangeCompactDTO = ((ExchangeCompactDTO) parent.getItemAtPosition(position));
         Log.i("onItemClick", exchangeCompactDTO.name);
 
-        List<SecurityCompactDTO> secs = new ArrayList<SecurityCompactDTO>();
+        ArrayList<SecurityCompactDTO> secs = new ArrayList<SecurityCompactDTO>();
         for(SecurityCompactDTO sec : securityCompositeDTO.Securities)
         {
             if(sec.exchange.equals(exchangeCompactDTO.name))
@@ -99,7 +99,8 @@ public class ProviderSecurityV2RxByExchangeFragment extends BaseFragment
             }
         }
 
-        ProviderSecurityV2RxSubFragment.setItems(secs);
+//        ProviderSecurityV2RxSubFragment.setItems(secs);
+        getArguments().putParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY, secs);
         navigator.get().pushFragment(ProviderSecurityV2RxSubFragment.class, getArguments());
     }
 

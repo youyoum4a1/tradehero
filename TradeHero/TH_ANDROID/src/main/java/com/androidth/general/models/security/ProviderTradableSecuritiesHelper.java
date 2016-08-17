@@ -1,6 +1,7 @@
 package com.androidth.general.models.security;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.androidth.general.api.competition.ProviderId;
@@ -68,10 +69,24 @@ public class ProviderTradableSecuritiesHelper
         }
 
         if(securityCompositeDTO.SecurityTypes.size() == 1 && securityCompositeDTO.Exchanges.size() == 1) {
-            ProviderSecurityV2RxSubFragment.setItems(securityCompositeDTO.Securities);
-            navigator.pushFragment(ProviderSecurityV2RxSubFragment.class, args);
+            if(securityCompositeDTO.SortCategories!=null && securityCompositeDTO.SortCategories.size()>0){
+                ProviderSecurityV2RxFragment.setSortAvailableFlag(args, true);
+                args.putBoolean(ProviderSecurityV2RxFragment.BUNDLE_SORT_AVAILABILE_KEY, true);
+
+                ProviderSecurityV2RxFragment.putProviderId(args, providerId);
+                navigator.pushFragment(ProviderSecurityV2RxFragment.class, args);
+            }else{
+                args.putParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY, securityCompositeDTO.Securities);
+                navigator.pushFragment(ProviderSecurityV2RxSubFragment.class, args);
+            }
         }
         else {
+            if(securityCompositeDTO.SortCategories!=null && securityCompositeDTO.SortCategories.size()>0){
+                ProviderSecurityV2RxFragment.setSortAvailableFlag(args, true);
+            }else{
+                ProviderSecurityV2RxFragment.setSortAvailableFlag(args, false);
+            }
+
             ProviderSecurityV2RxFragment.putProviderId(args, providerId);
             navigator.pushFragment(ProviderSecurityV2RxFragment.class, args);
         }

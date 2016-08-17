@@ -25,6 +25,7 @@ public class SecurityCompositeDTO implements DTO
     public ArrayList<ExchangeCompactDTO> Exchanges;
     public ArrayList<SecurityTypeDTO> SecurityTypes;
     public ArrayList<SecurityCompactDTO> Securities;
+    public ArrayList<ProviderSortCategoryDTO> SortCategories;
 
     //<editor-fold desc="Constructors">
     public SecurityCompositeDTO()
@@ -38,6 +39,7 @@ public class SecurityCompositeDTO implements DTO
         this.Exchanges = other.Exchanges;
         this.SecurityTypes = other.SecurityTypes;
         this.Securities = other.Securities;
+        this.SortCategories = other.SortCategories;
     }
     //</editor-fold>
 
@@ -47,6 +49,7 @@ public class SecurityCompositeDTO implements DTO
                 "Exchanges=" + Exchanges.size() +
                 ", SecurityTypes='" + SecurityTypes.size() + '\'' +
                 ", Securities='" + Securities.size() + '\'' +
+                ", SortCategories='" + SortCategories.size() + '\'' +
                 '}';
     }
 

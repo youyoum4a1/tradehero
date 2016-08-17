@@ -1,5 +1,7 @@
 package com.androidth.general.api.security;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -49,7 +51,7 @@ import timber.log.Timber;
         @JsonSubTypes.Type(value = UnitTrustSecurityCompactDTO.class, name = UnitTrustSecurityCompactDTO.DTO_DESERIALISING_TYPE),
         @JsonSubTypes.Type(value = FxSecurityCompactDTO.class, name = FxSecurityCompactDTO.DTO_DESERIALISING_TYPE),
 })
-public class SecurityCompactDTO implements DTO
+public class SecurityCompactDTO implements DTO, Parcelable
 {
     public static final String EXCHANGE_SYMBOL_FORMAT = "%s:%s";
 
@@ -281,5 +283,131 @@ public class SecurityCompactDTO implements DTO
                 ", exchangeClosingTimeLocal='" + exchangeClosingTimeLocal + '\'' +
                 ", secTypeDesc='" + secTypeDesc + '\'' +
                 '}';
+    }
+
+    public Double getVolume() {
+        return volume;
+    }
+
+    public Double getRisePercent() {
+        return risePercent;
+    }
+
+
+    /**
+     * Parcelable implementations
+     * @param other
+     */
+    private SecurityCompactDTO(Parcel other){
+        this.marker = other.readString();
+        this.isCFD = other.readByte()==1? true: false;
+        this.minShort = other.readDouble();
+        this.maxShort = other.readDouble();
+        this.minShort = other.readDouble();
+        this.minLong = other.readDouble();
+        this.maxLong = other.readDouble();
+        this.sortorderInExchange = other.readInt();
+        this.sortorderOverall = other.readInt();
+        this.UnderlyingSecurityId = other.readInt();
+
+
+        this.id = other.readInt();
+        this.symbol = other.readString();
+        this.name = other.readString();
+        this.exchange = other.readString();
+        this.yahooSymbol = other.readString();
+        this.currencyDisplay = other.readString();
+        this.currencyISO = other.readString();
+        this.marketCap = other.readDouble();
+        this.lastPrice = other.readDouble();
+        this.imageBlobUrl = other.readString();
+        this.lastPriceDateEST = new Date(other.readLong());
+        this.lastPriceDateAndTimeUtc = new Date(other.readLong());
+        this.toUSDRate = other.readDouble();
+        this.toUSDRateDate = new Date(other.readLong());
+        this.active = other.readByte()==1? true: false;
+        this.askPrice = other.readDouble();
+        this.bidPrice = other.readDouble();
+        this.volume = other.readDouble();
+        this.averageDailyVolume = other.readDouble();
+        this.previousClose = other.readDouble();
+        this.open = other.readDouble();
+        this.high = other.readDouble();
+        this.low = other.readDouble();
+        this.pe = other.readDouble();
+        this.eps = other.readDouble();
+        this.marketOpen = other.readByte()==1? true: false;
+        this.pc50DMA = other.readInt();
+        this.pc200DMA = other.readInt();
+        this.exchangeTimezoneMsftName = other.readString();
+        this.exchangeOpeningTimeLocal = other.readString();
+        this.exchangeClosingTimeLocal = other.readString();
+        this.secTypeDesc = other.readString();
+        this.risePercent = other.readDouble();
+        this.timeTillNextExchangeOpen = other.readString();
+    }
+
+    public static final Parcelable.Creator<SecurityCompactDTO> CREATOR = new Parcelable.Creator<SecurityCompactDTO>(){
+        @Override
+        public SecurityCompactDTO createFromParcel(Parcel source) {
+            return new SecurityCompactDTO(source);
+        }
+
+        @Override
+        public SecurityCompactDTO[] newArray(int size) {
+            return new SecurityCompactDTO[size];
+        }
+    };
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.marker);
+        dest.writeByte((byte) (this.isCFD ? 1 : 0));
+        dest.writeDouble(this.minShort);
+        dest.writeDouble(this.maxShort);
+        dest.writeDouble(this.minLong);
+        dest.writeDouble(this.maxLong);
+        dest.writeInt(this.sortorderInExchange);
+        dest.writeInt(this.sortorderOverall);
+        dest.writeInt(this.UnderlyingSecurityId);
+
+        dest.writeInt(this.id);
+        dest.writeString(this.symbol);
+        dest.writeString(this.name);
+        dest.writeString(this.exchange);
+        dest.writeString(this.yahooSymbol);
+        dest.writeString(this.currencyDisplay);
+        dest.writeString(this.currencyISO);
+        dest.writeDouble(this.marketCap);
+        dest.writeDouble(this.lastPrice);
+        dest.writeString(this.imageBlobUrl);
+        dest.writeLong(this.lastPriceDateEST.getTime());
+        dest.writeLong(this.lastPriceDateAndTimeUtc.getTime());
+        dest.writeDouble(this.toUSDRate);
+        dest.writeLong(this.toUSDRateDate.getTime());
+        dest.writeByte((byte) (this.active ? 1 : 0));
+        dest.writeDouble(this.askPrice);
+        dest.writeDouble(this.bidPrice);
+        dest.writeDouble(this.volume);
+        dest.writeDouble(this.averageDailyVolume);
+        dest.writeDouble(this.previousClose);
+        dest.writeDouble(this.open);
+        dest.writeDouble(this.high);
+        dest.writeDouble(this.low);
+        dest.writeDouble(this.pe);
+        dest.writeDouble(this.eps);
+        dest.writeByte((byte) (this.marketOpen ? 1 : 0));
+        dest.writeInt(this.pc50DMA);
+        dest.writeInt(this.pc200DMA);
+        dest.writeString(this.exchangeTimezoneMsftName);
+        dest.writeString(this.exchangeOpeningTimeLocal);
+        dest.writeString(this.exchangeClosingTimeLocal);
+        dest.writeString(this.secTypeDesc);
+        dest.writeDouble(this.risePercent);
+        dest.writeString(this.timeTillNextExchangeOpen);
     }
 }

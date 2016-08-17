@@ -26,7 +26,9 @@ import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.competition.ProviderUtil;
 import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
+import com.androidth.general.api.security.ProviderSortCategoryDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.key.SecurityListType;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.base.BaseFragment;
@@ -38,6 +40,10 @@ import com.androidth.general.utils.DeviceUtil;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -65,11 +71,22 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     ViewPager viewPager;
 
 
-    private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityV2RxFragment.class.getName() + ".providerId";
+    public static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityV2RxFragment.class.getName() + ".providerId";
+    public static final String BUNDLE_SORT_AVAILABILE_KEY = ProviderSecurityV2RxFragment.class.getName() + ".sortAvailableFlag";
+    public static final String BUNDLE_SECURITIES_KEY = ProviderSecurityV2RxFragment.class.getName() + ".securitiesKey";
+    public static final String BUNDLE_CATEGORIES_KEY = ProviderSecurityV2RxFragment.class.getName() + ".categoriesKey";
+
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
 
     protected TextView tradeTitleView;
+
+    private boolean isSortAvailable = false;
+
+    protected SecurityCompositeDTO securityCompositeDTO;
+
+    private ArrayList<SecurityCompactDTO> securityCompactDTOList;
+    private List<ProviderSortCategoryDTO> providerSortCategoryDTOList;
 
     public static void putProviderId(@NonNull Bundle bundle, @NonNull ProviderId providerId)
     {
@@ -86,10 +103,26 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
         return new ProviderId(providerBundle);
     }
 
+    public static void setSortAvailableFlag(@NonNull Bundle bundle, @NonNull boolean isSortAvailable)
+    {
+        bundle.putBoolean(BUNDLE_SORT_AVAILABILE_KEY, isSortAvailable);
+    }
+
+    @NonNull private static boolean getSortAvailableFlag(@NonNull Bundle bundle)
+    {
+        return bundle.getBoolean(BUNDLE_SORT_AVAILABILE_KEY, false);
+    }
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         this.providerId = getProviderId(getArguments());
+        this.isSortAvailable = getSortAvailableFlag(getArguments());
+
+        securityCompositeDTO = securityCompositeListCacheRx.getCachedValue(new BasicProviderSecurityV2ListType(providerId));
+
+        this.securityCompactDTOList = securityCompositeDTO.Securities;
+        this.providerSortCategoryDTOList = securityCompositeDTO.SortCategories;
     }
 
     @Override
@@ -135,7 +168,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
 
     private void initViews()
     {
-        ProviderSecurityV2PagerAdapter adapter = new ProviderSecurityV2PagerAdapter(getChildFragmentManager());
+        ProviderSecurityV2PagerAdapter adapter = new ProviderSecurityV2PagerAdapter(getChildFragmentManager(), isSortAvailable);
         viewPager.setAdapter(adapter);
         pagerSlidingTabLayout.setCustomTabView(R.layout.th_page_indicator, android.R.id.title);
         pagerSlidingTabLayout.setDistributeEvenly(true);
@@ -224,30 +257,106 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     }
     private class ProviderSecurityV2PagerAdapter extends FragmentPagerAdapter
     {
-        public ProviderSecurityV2PagerAdapter(FragmentManager fm)
+        private boolean isSortAvailable = false;
+        public ProviderSecurityV2PagerAdapter(FragmentManager fm, boolean isSortAvailable)
         {
             super(fm);
+            this.isSortAvailable = isSortAvailable;
         }
 
         @Override public Fragment getItem(int position)
         {
-            SecurityV2TabType tabType = SecurityV2TabType.values()[position];
             Bundle args = getArguments();
             if (args == null)
             {
                 args = new Bundle();
             }
-            return Fragment.instantiate(getActivity(), tabType.tabClass.getName(), args);
+
+            String className = "";
+            if(isSortAvailable){
+                Bundle args1 = new Bundle();//need to have new arguments, otherwise, it keeps adding up
+                args1.putAll(getArguments());
+
+                if(securityCompactDTOList!=null){
+                    String sortKey = providerSortCategoryDTOList.get(position).getSortOrder();
+
+                    SecurityComparator securityComparator = new SecurityComparator();
+                    securityComparator.setSortKey(sortKey);
+
+                    ArrayList<SecurityCompactDTO> list = new ArrayList<>();//must have new list, otherwise, sort
+
+                    list.addAll(securityCompactDTOList);
+                    Collections.sort(list, securityComparator);
+
+                    //the reason for having a new instance of args
+                    args1.putParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY, list);
+                }
+
+                return Fragment.instantiate(getActivity(), ProviderSecurityV2RxSubFragment.class.getName(), args1);
+
+            }else{
+                SecurityV2TabType tabType = SecurityV2TabType.values()[position];
+                className = tabType.tabClass.getName();
+                return Fragment.instantiate(getActivity(), className, args);
+            }
         }
 
         @Override public int getCount()
         {
-            return SecurityV2TabType.values().length;
+            if(isSortAvailable){
+                return providerSortCategoryDTOList.size();
+            }else{
+                return SecurityV2TabType.values().length;
+            }
         }
 
         @Override public CharSequence getPageTitle(int position)
         {
-            return getString(SecurityV2TabType.values()[position].titleRes);
+            if(isSortAvailable){
+                return providerSortCategoryDTOList.get(position).getName();
+            }else{
+                return getString(SecurityV2TabType.values()[position].titleRes);
+            }
         }
     }
+
+    public class SecurityComparator implements Comparator<SecurityCompactDTO> {
+
+        String sortKey = "";
+        public void setSortKey(String sortKey){
+            this.sortKey = sortKey;
+        }
+        @Override
+        public int compare(SecurityCompactDTO lhs, SecurityCompactDTO rhs) {
+
+            switch (sortKey) {
+                case "volume":
+                    Double left, right;
+                    if (lhs.getVolume() != null) {
+                        left = lhs.getVolume();
+                    } else {
+                        left = 0.00;
+                    }
+                    if (rhs.getVolume() != null) {
+                        right = rhs.getVolume();
+                    } else {
+                        right = 0.00;
+                    }
+                    return right.compareTo(left);
+
+                case "risePercent":
+                    return rhs.getRisePercent().compareTo(lhs.getRisePercent());
+                default:
+                    break;
+            }
+            return lhs.name.compareTo(rhs.name);//default
+        }
+    }
+
+//    public static void setItems(List<SecurityCompactDTO> items)
+//    {
+//
+//        ProviderSecurityV2RxFragment.items = items;
+//
+//    }
 }

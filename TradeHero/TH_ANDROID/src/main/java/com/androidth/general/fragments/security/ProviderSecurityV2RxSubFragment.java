@@ -62,8 +62,9 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     @Inject protected RequestHeaders requestHeaders;
 
     private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityListRxFragment.class.getName() + ".providerId";
+
     protected ProviderId providerId;
-    private static List<SecurityCompactDTO>  items;
+    private List<SecurityCompactDTO>  items;
     SimpleSecurityItemViewAdapter adapter;
     HubProxy proxy;
     List<SecurityCompactDTO> currentVisibleItemsList;
@@ -166,8 +167,6 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
     }
 
-
-
     @UiThread
     public void update(LiveQuoteDTO dto){
         Log.i("This is Live", dto.toString());
@@ -175,11 +174,12 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
     }
 
-
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         adapter = new SimpleSecurityItemViewAdapter(getContext(), R.layout.trending_security_item);
+        items = getArguments().getParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY);
+
         adapter.setItems(items);
 
     }
@@ -190,12 +190,10 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         return view;
     }
 
-    public static void setItems(List<SecurityCompactDTO> items)
-    {
-
-        ProviderSecurityV2RxSubFragment.items = items;
-
-    }
+//    public static void setItems(List<SecurityCompactDTO> items)
+//    {
+//        ProviderSecurityV2RxSubFragment.items = items;
+//    }
 
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {

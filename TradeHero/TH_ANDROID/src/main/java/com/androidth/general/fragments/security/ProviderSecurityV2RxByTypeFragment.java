@@ -87,7 +87,7 @@ public class ProviderSecurityV2RxByTypeFragment extends BaseFragment
         SecurityTypeDTO securityTypeDTO = ((SecurityTypeDTO) parent.getItemAtPosition(position));
         Log.i("onItemClick", securityTypeDTO.name);
 
-        List<SecurityCompactDTO> secs = new ArrayList<SecurityCompactDTO>();
+        ArrayList<SecurityCompactDTO> secs = new ArrayList<SecurityCompactDTO>();
         for(SecurityCompactDTO sec : securityCompositeDTO.Securities)
         {
             if(sec.secTypeDesc.equals(securityTypeDTO.name))
@@ -96,7 +96,8 @@ public class ProviderSecurityV2RxByTypeFragment extends BaseFragment
             }
         }
 
-        ProviderSecurityV2RxSubFragment.setItems(secs);
+//        ProviderSecurityV2RxSubFragment.setItems(secs);
+        getArguments().putParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY, secs);
         navigator.get().pushFragment(ProviderSecurityV2RxSubFragment.class, getArguments());
     }
     public class SecurityTypeAdapter extends ArrayAdapter<SecurityTypeDTO>
