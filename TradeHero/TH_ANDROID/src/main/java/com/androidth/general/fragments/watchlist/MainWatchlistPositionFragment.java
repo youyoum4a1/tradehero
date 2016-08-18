@@ -10,7 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.THToast;
@@ -54,6 +56,8 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     //private BroadcastReceiver broadcastReceiver;
 
     private WatchlistPositionDTOList watchlistPositionDTOs;
+    @Bind(android.R.id.list) ListView listView;
+    @Bind(R.id.watchlist_position_list_empty_textview) TextView emptyTextView;
 
     public static void putShowActionBarTitle(@NonNull Bundle args, boolean showActionBarTitle)
     {
@@ -82,6 +86,8 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
 
+        listView.setAdapter(watchListAdapter);
+
         //watchlistPositionListView.post(new Runnable()
         //{
         //    @Override public void run()
@@ -106,6 +112,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.position_watchlist_menu, menu);
         setActionBarTitle(R.string.watchlist_title);
     }
 
@@ -297,7 +304,7 @@ public class MainWatchlistPositionFragment extends DashboardFragment
                         {
                             @Override public void call(WatchlistPositionDTOList list)
                             {
-                                MainWatchlistPositionFragment.this.displayWatchlist(list);
+                                    MainWatchlistPositionFragment.this.displayWatchlist(list);
                             }
                         },
                         new Action1<Throwable>()
@@ -325,6 +332,11 @@ public class MainWatchlistPositionFragment extends DashboardFragment
         watchListAdapter.clear();
         watchListAdapter.addAll(watchlistPositionDTOs);
         watchListAdapter.notifyDataSetChanged();
+        if(watchlistPositionDTOs!=null && watchlistPositionDTOs.size()>0){
+            emptyTextView.setVisibility(View.GONE);
+        }else{
+            emptyTextView.setVisibility(View.VISIBLE);
+        }
         //watchListRefreshableContainer.setRefreshing(false);
     }
 

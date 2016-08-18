@@ -33,8 +33,14 @@
 
   <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 
+  <ListView
+      android:id="@android:id/list"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:listSelector="@drawable/basic_transparent_selector"/>
+
   <TextView
-      android:id="@+id/watchlist_position_list_empty_view"
+      android:id="@+id/watchlist_position_list_empty_textview"
       android:layout_marginTop="@dimen/watch_list_header_height"
       android:paddingTop="10dp"
       android:paddingLeft="3dp"

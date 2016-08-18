@@ -19,6 +19,8 @@ import com.androidth.general.models.watchlist.DTOProcessorWatchlistUpdate;
 import com.androidth.general.persistence.portfolio.PortfolioCacheRx;
 import com.androidth.general.persistence.watchlist.UserWatchlistPositionCacheRx;
 import com.androidth.general.persistence.watchlist.WatchlistPositionCacheRx;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
+
 import dagger.Lazy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -50,7 +52,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Add a watch item">
-    @Nullable public Observable<WatchlistPositionDTO> createWatchlistEntryRx(@NonNull WatchlistPositionFormDTO watchlistPositionFormDTO)
+    @Nullable public @RxLogObservable Observable<WatchlistPositionDTO> createWatchlistEntryRx(@NonNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return watchlistServiceRx.createWatchlistEntry(watchlistPositionFormDTO)
                 .map(new DTOProcessorWatchlistCreate(
