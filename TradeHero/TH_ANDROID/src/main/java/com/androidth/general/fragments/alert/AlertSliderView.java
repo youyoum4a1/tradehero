@@ -140,20 +140,21 @@ public class AlertSliderView extends RelativeLayout
     protected void handleSlider(int progress, boolean fromUser)
     {
         double value = requisite.min + (progress * (requisite.max - requisite.min)) / alertSlider.getMax();
-        this.status = new Status(status.enabled, value);
+        double roundUpValue = Math.floor(value/0.005) * 0.005;
+        this.status = new Status(status.enabled, roundUpValue);
 
         THSignedNumber.Builder valueDisplay;
         switch (type)
         {
             case PRICE:
-                valueDisplay = THSignedMoney.builder(value)
+                valueDisplay = THSignedMoney.builder(roundUpValue)
                         .withOutSign()
                         .currency(requisite.currencyDisplay)
                         .format(getResources().getString(R.string.stock_alert_target_price_change_format));
                 break;
 
             case PERCENTAGE:
-                valueDisplay = THSignedPercentage.builder(100 * value)
+                valueDisplay = THSignedPercentage.builder(100 * roundUpValue)
                         .withSign()
                         .format(getResources().getString(R.string.stock_alert_percentage_change_format));
                 break;
