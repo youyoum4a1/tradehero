@@ -138,13 +138,14 @@
         <com.androidth.general.fragments.trade.view.TradeQuantityEditText
             style="@style/TH.Title.Accented"
             android:id="@+id/vquantity"
-            android:layout_width="wrap_content"
+            android:layout_width="100sp"
             android:layout_height="wrap_content"
             android:textColor="@color/general_brand_color"
             android:inputType="number"
             android:layout_centerVertical="true"
             android:numeric="integer"
             android:layout_alignParentRight="true"
+            android:gravity="right"
             tools:text="150"
             />
 
@@ -189,10 +190,11 @@
             style="@style/TH.Title.Accented"
             android:id="@+id/vtrade_value"
             android:inputType="number"
-            android:layout_width="wrap_content"
+            android:layout_width="100sp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:gravity="right"
             tools:text="338,306"
             />
 
