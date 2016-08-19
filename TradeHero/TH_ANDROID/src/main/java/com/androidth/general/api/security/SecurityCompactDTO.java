@@ -103,8 +103,6 @@ public class SecurityCompactDTO implements DTO, Parcelable
 
     protected String timeTillNextExchangeOpen;
 
-
-
     public String marker;
     public Boolean isCFD;
     public Double minShort;
@@ -135,7 +133,6 @@ public class SecurityCompactDTO implements DTO, Parcelable
         this.sortorderInExchange = other.sortorderInExchange;
         this.sortorderOverall = other.sortorderOverall;
         this.UnderlyingSecurityId = other.UnderlyingSecurityId;
-
 
         this.id = other.id;
         this.symbol = other.symbol;
@@ -365,49 +362,54 @@ public class SecurityCompactDTO implements DTO, Parcelable
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.marker);
-        dest.writeByte((byte) (this.isCFD ? 1 : 0));
-        dest.writeDouble(this.minShort);
-        dest.writeDouble(this.maxShort);
-        dest.writeDouble(this.minLong);
-        dest.writeDouble(this.maxLong);
-        dest.writeInt(this.sortorderInExchange);
-        dest.writeInt(this.sortorderOverall);
-        dest.writeInt(this.UnderlyingSecurityId);
+        try{
+            dest.writeString(this.marker);
+            dest.writeByte((byte) (this.isCFD ? 1 : 0));
+            dest.writeDouble(this.minShort);
+            dest.writeDouble(this.maxShort);
+            dest.writeDouble(this.minLong);
+            dest.writeDouble(this.maxLong);
+            dest.writeInt(this.sortorderInExchange);
+            dest.writeInt(this.sortorderOverall);
+            dest.writeInt(this.UnderlyingSecurityId);
 
-        dest.writeInt(this.id);
-        dest.writeString(this.symbol);
-        dest.writeString(this.name);
-        dest.writeString(this.exchange);
-        dest.writeString(this.yahooSymbol);
-        dest.writeString(this.currencyDisplay);
-        dest.writeString(this.currencyISO);
-        dest.writeDouble(this.marketCap);
-        dest.writeDouble(this.lastPrice);
-        dest.writeString(this.imageBlobUrl);
-        dest.writeLong(this.lastPriceDateEST.getTime());
-        dest.writeLong(this.lastPriceDateAndTimeUtc.getTime());
-        dest.writeDouble(this.toUSDRate);
-        dest.writeLong(this.toUSDRateDate.getTime());
-        dest.writeByte((byte) (this.active ? 1 : 0));
-        dest.writeDouble(this.askPrice);
-        dest.writeDouble(this.bidPrice);
-        dest.writeDouble(this.volume);
-        dest.writeDouble(this.averageDailyVolume);
-        dest.writeDouble(this.previousClose);
-        dest.writeDouble(this.open);
-        dest.writeDouble(this.high);
-        dest.writeDouble(this.low);
-        dest.writeDouble(this.pe);
-        dest.writeDouble(this.eps);
-        dest.writeByte((byte) (this.marketOpen ? 1 : 0));
-        dest.writeInt(this.pc50DMA);
-        dest.writeInt(this.pc200DMA);
-        dest.writeString(this.exchangeTimezoneMsftName);
-        dest.writeString(this.exchangeOpeningTimeLocal);
-        dest.writeString(this.exchangeClosingTimeLocal);
-        dest.writeString(this.secTypeDesc);
-        dest.writeDouble(this.risePercent);
-        dest.writeString(this.timeTillNextExchangeOpen);
+            dest.writeInt(this.id);
+            dest.writeString(this.symbol);
+            dest.writeString(this.name);
+            dest.writeString(this.exchange);
+            dest.writeString(this.yahooSymbol);
+            dest.writeString(this.currencyDisplay);
+            dest.writeString(this.currencyISO);
+            dest.writeDouble(this.marketCap);
+            dest.writeDouble(this.lastPrice);
+            dest.writeString(this.imageBlobUrl);
+            dest.writeLong(this.lastPriceDateEST.getTime());
+            dest.writeLong(this.lastPriceDateAndTimeUtc.getTime());
+            dest.writeDouble(this.toUSDRate);
+            dest.writeLong(this.toUSDRateDate.getTime());
+            dest.writeByte((byte) (this.active ? 1 : 0));
+            dest.writeDouble(this.askPrice);
+            dest.writeDouble(this.bidPrice);
+            dest.writeDouble(this.volume);
+            dest.writeDouble(this.averageDailyVolume);
+            dest.writeDouble(this.previousClose);
+            dest.writeDouble(this.open);
+            dest.writeDouble(this.high);
+            dest.writeDouble(this.low);
+            dest.writeDouble(this.pe);
+            dest.writeDouble(this.eps);
+            dest.writeByte((byte) (this.marketOpen ? 1 : 0));
+            dest.writeInt(this.pc50DMA);
+            dest.writeInt(this.pc200DMA);
+            dest.writeString(this.exchangeTimezoneMsftName);
+            dest.writeString(this.exchangeOpeningTimeLocal);
+            dest.writeString(this.exchangeClosingTimeLocal);
+            dest.writeString(this.secTypeDesc);
+            dest.writeDouble(this.risePercent);
+            dest.writeString(this.timeTillNextExchangeOpen);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }
