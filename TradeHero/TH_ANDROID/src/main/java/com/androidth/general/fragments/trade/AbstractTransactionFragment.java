@@ -512,6 +512,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                                     @Nullable PositionDTO closeablePosition,
                                     @Nullable Integer maxValue,
                                     @Nullable Integer clamped) {
+
                                 initPortfolioRelatedInfo(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
 
                                 return true;
@@ -710,7 +711,11 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                                 updateText = true;
                             }
                             if (updateText) {
-                                mQuantityEditText.setText(String.valueOf(clampedQuantity));
+                                if(clampedQuantity==0){
+                                    mQuantityEditText.setText(String.valueOf(""));
+                                }else{
+                                    mQuantityEditText.setText(String.valueOf(clampedQuantity));
+                                }
                                 mQuantityEditText.setSelection(mQuantityEditText.getText().length());
                             }
                         }
@@ -729,8 +734,18 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                 {
                     @Override
                     public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO) {
-                        Double priceCcy = getPriceCcy(portfolioCompactDTO, quoteDTO);
-                        return (priceCcy == null || priceCcy == 0) ? null : (int) Math.floor(INITIAL_VALUE / priceCcy);
+                        if(portfolioCompactDTO.providerId!=null){
+                            ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
+                            if(providerDTO.noDefaultShareQty){
+                                return 0;
+                            }else{
+                                Double priceCcy = getPriceCcy(portfolioCompactDTO, quoteDTO);
+                                return (priceCcy == null || priceCcy == 0) ? null : (int) Math.floor(INITIAL_VALUE / priceCcy);
+                            }
+                        }else{
+                            Double priceCcy = getPriceCcy(portfolioCompactDTO, quoteDTO);
+                            return (priceCcy == null || priceCcy == 0) ? null : (int) Math.floor(INITIAL_VALUE / priceCcy);
+                        }
                     }
                 })
                 .share();

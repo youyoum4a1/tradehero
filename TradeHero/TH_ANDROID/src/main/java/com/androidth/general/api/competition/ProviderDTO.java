@@ -72,6 +72,7 @@ public class ProviderDTO implements DTO
     public String dataSharingUrl;
     @Nullable public Boolean vip;
     @Nullable public Double maxLimitPerTrade;
+    public boolean noDefaultShareQty;
 
     /**
      * Creates the id that identifies this DTO.ActionBarSherlockRobolectric.java
@@ -239,6 +240,7 @@ public class ProviderDTO implements DTO
                 ", riskDisclosure=" + riskDisclosureUrl +
                 ", dataSharing=" + dataSharingUrl +
                 ", maxLimitPerTrade=" + maxLimitPerTrade +
+                ", noDefaultShareQty=" + noDefaultShareQty +
                 '}';
     }
 }
