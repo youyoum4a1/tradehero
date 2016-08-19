@@ -143,6 +143,9 @@ public class LiveSignUpMainFragment extends BaseFragment
                 }
                 imageView.setImageBitmap(bitmap);
                 ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
+                if(!actionBar.isShowing()){
+                    return;
+                }
                 actionBar.setCustomView(imageView, layoutParams);
                 actionBar.setElevation(5);
                 actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);

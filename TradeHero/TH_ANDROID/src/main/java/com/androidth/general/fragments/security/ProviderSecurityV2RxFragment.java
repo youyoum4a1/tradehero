@@ -209,7 +209,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
         this.providerDTO = providerDTO;
         getActivity().invalidateOptionsMenu();
         getActivity().supportInvalidateOptionsMenu();
-        //displayTitle();
+        displayTitle();
     }
 
     protected void displayTitle()
@@ -221,6 +221,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
             setActionBarImage(providerDTO.navigationLogoUrl);
         }
     }
+
     private boolean setActionBarImage(String url){
         try {
             ActionBar actionBar = getSupportActionBar();
