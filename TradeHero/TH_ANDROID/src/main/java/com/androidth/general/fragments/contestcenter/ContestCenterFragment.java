@@ -33,6 +33,7 @@ import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.network.NetworkConstants;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.utils.Constants;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -198,15 +199,23 @@ public class ContestCenterFragment extends DashboardFragment
         @Override
         public void onBindViewHolder(MultipleCompetitionViewHolder holder, int position) {
             MultipleCompetitionData multipleCompetitionData = multipleCompetitionDataList.get(position);
-            Picasso.with(context).load(multipleCompetitionData.imageUrl).into(holder.imageView);
-            if(multipleCompetitionData.isEnrolled){
-                holder.enrolledImage.setVisibility(View.VISIBLE);
-            }
-            else {
-                holder.enrolledImage.setVisibility(View.INVISIBLE);
-            }
-        }
+            Picasso.with(context).load(multipleCompetitionData.imageUrl).into(holder.imageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                    if(multipleCompetitionData.isEnrolled){
+                        holder.enrolledImage.setVisibility(View.VISIBLE);
+                    }
+                    else {
+                        holder.enrolledImage.setVisibility(View.GONE);
+                    }
+                }
 
+                @Override
+                public void onError() {
+
+                }
+            });
+        }
 
         @Override
         public int getItemCount() {
