@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.android.internal.util.Predicate;
@@ -59,6 +61,7 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.DateUtils;
+import com.androidth.general.utils.ExceptionUtils;
 import com.androidth.general.widget.news.TimeSpanButtonSet;
 import com.etiennelawlor.quickreturn.library.views.NotifyingScrollView;
 import com.squareup.picasso.Callback;
@@ -66,6 +69,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.widgets.AspectRatioImageViewCallback;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
 
@@ -133,6 +137,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Bind(R.id.row_warrant_issuer) @Nullable protected View rowIssuer;
     @Bind(R.id.vwarrant_issuer) @Nullable protected TextView mIssuer;
 
+    @Bind(R.id.fragment_chart_info_left_table) @Nullable protected TableLayout leftTableLayout;
+    @Bind(R.id.fragment_chart_info_right_table) @Nullable protected TableLayout rightTableLayout;
+    @Bind(R.id.fragment_chart_info_warrant_table) @Nullable protected TableLayout warrantTableLayout;
+
     @Bind(R.id.vprevious_close) @Nullable protected TextView mPreviousClose;
     @Bind(R.id.vopen) @Nullable protected TextView mOpen;
     @Bind(R.id.vdays_high) @Nullable protected TextView mDaysHigh;
@@ -141,6 +149,20 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Bind(R.id.veps) @Nullable protected TextView mEps;
     @Bind(R.id.vvolume) @Nullable protected TextView mVolume;
     @Bind(R.id.vavg_volume) @Nullable protected TextView mAvgVolume;
+
+//for warrants, these are at the alternate side
+    @Bind(R.id.vprevious_close_alternate) @Nullable protected TextView mPreviousCloseAlt;
+    @Bind(R.id.vopen_alternate) @Nullable protected TextView mOpenAlt;
+    @Bind(R.id.vdays_high_alternate) @Nullable protected TextView mDaysHighAlt;
+    @Bind(R.id.vdays_low_alternate) @Nullable protected TextView mDaysLowAlt;
+
+    @Bind(R.id.row_vopen_alternate) @Nullable protected View rowOpenAlt;
+    @Bind(R.id.row_vdays_high_alternate) @Nullable protected View rowCloseAlt;
+    @Bind(R.id.row_vdays_low_alternate) @Nullable protected View rowLowAlt;
+    @Bind(R.id.row_vprevious_close_alternate) @Nullable protected View rowPrevCloseAlt;
+
+    @Bind(R.id.row_security_avg_volume) @Nullable protected View rowAvgVolume;
+//for warrants
 
     @Inject SecurityCompactCacheRx securityCompactCacheRx;
     @Inject Picasso picasso;
@@ -717,6 +739,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             {
                 chartDTOCopy.setSecurityCompactDTO(value);
             }
+
             linkWith((value instanceof WarrantDTO) ? (WarrantDTO) value : null);
         }
         displayMarketClosedHint(value);
@@ -851,6 +874,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment
 
     public void displayWarrantRows()
     {
+        if(warrantDTO!=null){
+            setupWarrantLayoutStyle();
+        }
+
         if (rowWarrantType != null)
         {
             rowWarrantType.setVisibility(getWarrantVisibility());
@@ -985,6 +1012,28 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                 mIssuer.setText(warrantDTO.issuerName.toUpperCase()); // HACK upperCase
             }
         }
+    }
+
+    private void setupWarrantLayoutStyle(){
+
+        leftTableLayout.setVisibility(View.GONE);
+        warrantTableLayout.setVisibility(View.VISIBLE);
+
+        mOpenAlt.setVisibility(View.VISIBLE);
+        mOpenAlt.setText(mOpen.getText());
+        mDaysHighAlt.setVisibility(View.VISIBLE);
+        mDaysHighAlt.setText(mDaysHigh.getText());
+        mDaysLowAlt.setVisibility(View.VISIBLE);
+        mDaysLowAlt.setText(mDaysLow.getText());
+        mPreviousCloseAlt.setVisibility(View.VISIBLE);
+        mPreviousCloseAlt.setText(mPreviousClose.getText());
+
+        rowAvgVolume.setVisibility(View.GONE);//Kenanga request
+
+        rowOpenAlt.setVisibility(View.VISIBLE);
+        rowCloseAlt.setVisibility(View.VISIBLE);
+        rowLowAlt.setVisibility(View.VISIBLE);
+        rowPrevCloseAlt.setVisibility(View.VISIBLE);
     }
 
     public void displayPreviousClose()
