@@ -14,6 +14,7 @@ import com.androidth.general.api.position.PositionDTOList;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.TransactionFormDTO;
+import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.rx.view.DismissDialogAction0;
 import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
@@ -33,25 +34,25 @@ public class BuyFXFragment extends AbstractFXTransactionFragment
         builder.setBuyEvent(IS_BUY);
     }
 
-    @Override protected String getLabel(@NonNull QuoteDTO quoteDTO)
+    @Override protected String getLabel(@NonNull LiveQuoteDTO quoteDTO)
     {
-        if (quoteDTO.ask == null)
+        if (quoteDTO.getAskPrice() == null)
         {
             return getString(R.string.na);
         }
-        THSignedNumber bThSignedNumber = getFormattedPrice(quoteDTO.ask);
+        THSignedNumber bThSignedNumber = getFormattedPrice(quoteDTO.getAskPrice());
         return bThSignedNumber.toString();
     }
 
     @Override @Nullable protected Double getProfitOrLossUsd(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO,
+            @Nullable LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition,
             @Nullable Integer quantity)
     {
         if (portfolioCompactDTO == null
                 || quoteDTO == null
-                || quoteDTO.ask == null)
+                || quoteDTO.getAskPrice() == null)
         {
             return null;
         }
@@ -60,12 +61,12 @@ public class BuyFXFragment extends AbstractFXTransactionFragment
             return null;
         }
 
-        return -quantity * quoteDTO.toUSDRate * (quoteDTO.ask - closeablePosition.averagePriceSecCcy);
+        return -quantity * quoteDTO.getUsdRate() * (quoteDTO.getAskPrice() - closeablePosition.averagePriceSecCcy);
     }
 
     @Override @NonNull public String getCashShareLeft(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
+            @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition, int quantity)
     {
         return getRemainingWhenBuy(portfolioCompactDTO, quoteDTO, closeablePosition, quantity);
@@ -73,7 +74,7 @@ public class BuyFXFragment extends AbstractFXTransactionFragment
 
     @Override @Nullable protected Integer getMaxValue(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
+            @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition)
     {
         return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
@@ -112,7 +113,7 @@ public class BuyFXFragment extends AbstractFXTransactionFragment
     }
 
     @Nullable @Override public Double getPriceCcy(@Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO)
+            @Nullable LiveQuoteDTO quoteDTO)
     {
         if (quoteDTO == null)
         {
@@ -147,6 +148,6 @@ public class BuyFXFragment extends AbstractFXTransactionFragment
     {
         return usedDTO.securityCompactDTO != null
                 && usedDTO.quoteDTO != null
-                && usedDTO.quoteDTO.ask != null;
+                && usedDTO.quoteDTO.getAskPrice() != null;
     }
 }

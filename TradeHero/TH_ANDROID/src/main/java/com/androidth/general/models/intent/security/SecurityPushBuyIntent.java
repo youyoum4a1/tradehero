@@ -97,7 +97,8 @@ public class SecurityPushBuyIntent extends THIntent
         String[] splitElements = getSplitElements(pathSegments.get(resources.getInteger(R.integer.intent_security_push_buy_index_elements)));
         return new SecurityId(
                 splitElements[resources.getInteger(R.integer.intent_security_push_buy_split_index_security_exchange_key)],
-                splitElements[resources.getInteger(R.integer.intent_security_push_buy_split_index_security_symbol_key)]);
+                splitElements[resources.getInteger(R.integer.intent_security_push_buy_split_index_security_symbol_key)],
+                Integer.parseInt(splitElements[3]));
     }
 
     public static String[] getSplitElements(String elements)

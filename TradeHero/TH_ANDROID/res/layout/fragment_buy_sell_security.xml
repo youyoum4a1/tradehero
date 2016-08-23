@@ -138,7 +138,7 @@
         <com.androidth.general.fragments.trade.view.TradeQuantityEditText
             style="@style/TH.Title.Accented"
             android:id="@+id/vquantity"
-            android:layout_width="100sp"
+            android:layout_width="120sp"
             android:layout_height="wrap_content"
             android:textColor="@color/general_brand_color"
             android:inputType="number"

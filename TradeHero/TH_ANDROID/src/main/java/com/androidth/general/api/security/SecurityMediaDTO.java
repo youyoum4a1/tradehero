@@ -22,6 +22,6 @@ public class SecurityMediaDTO extends MediaDTO
 
     @NonNull public SecurityId createSecurityId()
     {
-        return new SecurityId(exchange, symbol);
+        return new SecurityId(exchange, symbol, securityId);
     }
 }

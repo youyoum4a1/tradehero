@@ -5,9 +5,15 @@ import android.support.annotation.Nullable;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.quote.RawQuoteParser;
 import com.androidth.general.api.security.SecurityId;
+import com.androidth.general.fragments.security.LiveQuoteDTO;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import retrofit.client.Response;
 import rx.Observable;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 @Singleton public class QuoteServiceWrapper
 {
@@ -42,13 +48,26 @@ import rx.Observable;
     }
 
     //<editor-fold desc="Get Quote">
-    @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
+    @NonNull public Observable<LiveQuoteDTO> getQuoteRx(@NonNull Integer securityId)
     {
-        basicCheck(securityId);
-        return quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getSecuritySymbol())
+//        basicCheck(securityId);
+//        return quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getSecuritySymbol())
+//                .onErrorResumeNext(
+//                        quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getPathSafeSymbol()))
+//                .flatMap(rawQuoteParser);
+        return quoteServiceRx.getRawQuote(securityId)
                 .onErrorResumeNext(
-                        quoteServiceRx.getRawQuote(securityId.getExchange(), securityId.getPathSafeSymbol()))
+                        quoteServiceRx.getRawQuote(0))
                 .flatMap(rawQuoteParser);
     }
+
+//    @NonNull public Observable<QuoteDTO> getQuoteRx(@NonNull SecurityId securityId)
+//    {
+//        basicCheck(securityId);
+//        return quoteServiceRx.getRawQuote(Integer.parseInt(securityId.getSecuritySymbol()))
+//                .onErrorResumeNext(
+//                        quoteServiceRx.getRawQuote(0))
+//                .flatMap(rawQuoteParser);
+//    }
     //</editor-fold>
 }

@@ -213,7 +213,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
 
     @NonNull public SecurityId getSecurityId()
     {
-        return new SecurityId(exchange, symbol);
+        return new SecurityId(exchange, symbol, id);
     }
 
     @Nullable public TillExchangeOpenDuration getTillExchangeOpen()

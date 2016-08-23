@@ -14,6 +14,7 @@ import com.androidth.general.api.alert.AlertDTO;
 import com.androidth.general.api.alert.AlertFormDTO;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.users.CurrentUserId;
+import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.alert.AlertSlotDTO;
 import com.androidth.general.models.alert.SecurityAlertCountingHelper;
 import com.androidth.general.network.service.QuoteServiceWrapper;
@@ -111,7 +112,7 @@ abstract public class BaseAlertEditFragmentHolder
         alertSecurityProfile.display(new AlertSecurityProfile.DTO(
                 resources,
                 alertDTO,
-                new QuoteDTO()));
+                new LiveQuoteDTO()));
         alertSliderViewHolder.setRequisite(alertDTO);
         registerSliders();
         startRefreshAnimation(alertDTO);
@@ -151,13 +152,13 @@ abstract public class BaseAlertEditFragmentHolder
     protected void fetchQuote(@NonNull final AlertDTO alertDTO)
     {
         onStopSubscriptions.add(
-                quoteServiceWrapper.getQuoteRx(alertDTO.security.getSecurityId())
+                quoteServiceWrapper.getQuoteRx(alertDTO.security.getSecurityId().getSecurityIdNumber())
                         .retry(2)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                new Action1<QuoteDTO>()
+                                new Action1<LiveQuoteDTO>()
                                 {
-                                    @Override public void call(QuoteDTO quoteDTO)
+                                    @Override public void call(LiveQuoteDTO quoteDTO)
                                     {
                                         alertSecurityProfile.display(new AlertSecurityProfile.DTO(resources, alertDTO, quoteDTO));
                                         startRefreshAnimation(alertDTO);

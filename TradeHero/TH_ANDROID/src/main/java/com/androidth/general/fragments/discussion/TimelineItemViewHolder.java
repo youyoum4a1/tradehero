@@ -158,7 +158,7 @@ public class TimelineItemViewHolder
             SecurityMediaDTO firstMediaWithLogo = ((TimelineItemDTO) requisite.discussionDTO).getFlavorSecurityForDisplay();
             if (firstMediaWithLogo != null)
             {
-                vendorSecurityId = new SecurityId(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol);
+                vendorSecurityId = new SecurityId(firstMediaWithLogo.exchange, firstMediaWithLogo.symbol, firstMediaWithLogo.securityId);
             }
             else
             {

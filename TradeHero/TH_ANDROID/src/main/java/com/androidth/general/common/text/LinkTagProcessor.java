@@ -65,7 +65,7 @@ public class LinkTagProcessor extends ClickableTagProcessor
                     String str[] = link.substring(1).split(":");
                     if (str.length == 2)
                     {
-                        userActionSubject.onNext(new SecurityTagProcessor.SecurityUserAction(matchStrings, new SecurityId(str[0], str[1])));
+                        userActionSubject.onNext(new SecurityTagProcessor.SecurityUserAction(matchStrings, new SecurityId(str[0], str[1], 0)));//TODO Jeff
                     }
                 }
                 //"tradehero://user/99106"

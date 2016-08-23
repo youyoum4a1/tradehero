@@ -54,7 +54,7 @@ public class SecurityTagProcessor extends ClickableTagProcessor
             {
                 String exchange = matchStrings[1];
                 String symbol = matchStrings[2];
-                userActionSubject.onNext(new SecurityTagProcessor.SecurityUserAction(matchStrings, new SecurityId(exchange, symbol)));
+                userActionSubject.onNext(new SecurityTagProcessor.SecurityUserAction(matchStrings, new SecurityId(exchange, symbol, 0)));//TODO Jeff
             }
         }
     }

@@ -489,18 +489,18 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                                     public void call(SecurityCompactDTO securityCompactDTO) {
                                         linkWith(securityCompactDTO);
                                     }
-                                }), new Func2<QuoteDTO, SecurityCompactDTO, Pair<SecurityCompactDTO, QuoteDTO>>() {
+                                }), new Func2<LiveQuoteDTO, SecurityCompactDTO, Pair<SecurityCompactDTO, LiveQuoteDTO>>() {
                             @Override
-                            public Pair<SecurityCompactDTO, QuoteDTO> call(QuoteDTO quoteDTO, SecurityCompactDTO securityCompactDTO) {
+                            public Pair<SecurityCompactDTO, LiveQuoteDTO> call(LiveQuoteDTO quoteDTO, SecurityCompactDTO securityCompactDTO) {
                                 return Pair.create(securityCompactDTO, quoteDTO);
                             }
                         })
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                new Action1<Pair<SecurityCompactDTO, QuoteDTO>>() {
+                                new Action1<Pair<SecurityCompactDTO, LiveQuoteDTO>>() {
                                     @Override
-                                    public void call(Pair<SecurityCompactDTO, QuoteDTO> securityCompactDTOQuoteDTOPair) {
+                                    public void call(Pair<SecurityCompactDTO, LiveQuoteDTO> securityCompactDTOQuoteDTOPair) {
                                         //if(securityCompactDTOQuoteDTOPair.second!=null)
                                             //displayBuySellPrice(securityCompactDTOQuoteDTOPair.first, securityCompactDTOQuoteDTOPair.second.ask, securityCompactDTOQuoteDTOPair.second.bid);
                                     }

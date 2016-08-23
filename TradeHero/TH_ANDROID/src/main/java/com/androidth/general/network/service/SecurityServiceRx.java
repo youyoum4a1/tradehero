@@ -99,13 +99,14 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Buy Security">
-    @POST("/securities/{exchange}/{securitySymbol}/newbuy")
+//    @POST("/securities/{exchange}/{securitySymbol}/newbuy")
+    @POST("/securities/{exchange}/{securitySymbol}/v2/buy")
     Observable<SecurityPositionTransactionDTO> buy(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);
 
-    @POST("/securities/{exchange}/{securitySymbol}/fxbuy")
+    @POST("/securities/{exchange}/{securitySymbol}/v2/fxbuynew")
     Observable<SecurityPositionTransactionDTO> buyFx(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
@@ -113,13 +114,14 @@ public interface SecurityServiceRx
     //</editor-fold>
 
     //<editor-fold desc="Sell Security">
-    @POST("/securities/{exchange}/{securitySymbol}/newsell")
+//    @POST("/securities/{exchange}/{securitySymbol}/newsell")
+    @POST("/securities/{exchange}/{securitySymbol}/v2/sell")
     Observable<SecurityPositionTransactionDTO> sell(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,
             @Body() TransactionFormDTO transactionFormDTO);
 
-    @POST("/securities/{exchange}/{securitySymbol}/fxsell")
+    @POST("/securities/{exchange}/{securitySymbol}/v2/fxsellnew")
     Observable<SecurityPositionTransactionDTO> sellFx(
             @Path("exchange") String exchange,
             @Path("securitySymbol") String securitySymbol,

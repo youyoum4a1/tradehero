@@ -54,6 +54,7 @@ import com.androidth.general.fragments.discussion.SecurityDiscussionEditPostFrag
 import com.androidth.general.fragments.discussion.TransactionEditCommentFragment;
 import com.androidth.general.fragments.position.CompetitionLeaderboardPositionListFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
+import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.fragments.social.ShareDelegateFragment;
 import com.androidth.general.exception.THException;
 import com.androidth.general.models.number.THSignedMoney;
@@ -175,7 +176,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
 
     @Nullable
     protected abstract Integer getMaxValue(@NonNull PortfolioCompactDTO portfolioCompactDTO,
-                                           @NonNull QuoteDTO quoteDTO,
+                                           @NonNull LiveQuoteDTO quoteDTO,
                                            @Nullable PositionDTOCompact closeablePosition);
 
     protected abstract boolean hasValidInfo();
@@ -183,11 +184,11 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     abstract protected Subscription getTransactionSubscription(TransactionFormDTO transactionFormDTO);
 
     @Nullable
-    public abstract Double getPriceCcy(@Nullable PortfolioCompactDTO portfolioCompactDTO, @Nullable QuoteDTO quoteDTO);
+    public abstract Double getPriceCcy(@Nullable PortfolioCompactDTO portfolioCompactDTO, @Nullable LiveQuoteDTO quoteDTO);
 
-    public static boolean canShowTransactionScreen(@NonNull QuoteDTO quoteDTO, boolean isBuy) {
-        return (isBuy && quoteDTO.ask != null) ||
-                (!isBuy && quoteDTO.bid != null);
+    public static boolean canShowTransactionScreen(@NonNull LiveQuoteDTO quoteDTO, boolean isBuy) {
+        return (isBuy && quoteDTO.getAskPrice() != null) ||
+                (!isBuy && quoteDTO.getBidPrice() != null);
     }
 
     protected AbstractTransactionFragment() {
@@ -262,9 +263,9 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                         getQuoteObservable(),
                         getCloseablePositionObservable(),
                         WidgetObservable.text(mTradeValueTextView),
-                        new Func4<PortfolioCompactDTO, QuoteDTO, PositionDTO, OnTextChangeEvent, Integer>() {
+                        new Func4<PortfolioCompactDTO, LiveQuoteDTO, PositionDTO, OnTextChangeEvent, Integer>() {
                             @Override
-                            public Integer call(PortfolioCompactDTO portfolioCompactDTO, QuoteDTO quoteDTO, PositionDTO positionDTO,
+                            public Integer call(PortfolioCompactDTO portfolioCompactDTO, LiveQuoteDTO quoteDTO, PositionDTO positionDTO,
                                                 OnTextChangeEvent onTextChangeEvent) {
                                 Integer quantity = 0;
                                 Double tradeValue = 0.0;
@@ -499,7 +500,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                         getClampedQuantityObservable(),
                         new Func6<SecurityCompactDTO,
                                 PortfolioCompactDTO,
-                                QuoteDTO,
+                                LiveQuoteDTO,
                                 PositionDTO,
                                 Integer,
                                 Integer,
@@ -508,7 +509,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                             public Boolean call(
                                     @NonNull SecurityCompactDTO securityCompactDTO,
                                     @NonNull final PortfolioCompactDTO portfolioCompactDTO,
-                                    @NonNull QuoteDTO quoteDTO,
+                                    @NonNull LiveQuoteDTO quoteDTO,
                                     @Nullable PositionDTO closeablePosition,
                                     @Nullable Integer maxValue,
                                     @Nullable Integer clamped) {
@@ -581,8 +582,8 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     }
 
     @NonNull
-    protected Observable<QuoteDTO> getQuoteObservable() {
-        return quoteServiceWrapper.getQuoteRx(requisite.securityId)
+    protected Observable<LiveQuoteDTO> getQuoteObservable() {
+        return quoteServiceWrapper.getQuoteRx(requisite.securityId.getSecurityIdNumber())
                 .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
                     @Override
                     public Observable<?> call(Observable<? extends Void> observable) {
@@ -590,12 +591,12 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<QuoteDTO>() {
+                .doOnNext(new Action1<LiveQuoteDTO>() {
                     @Override
-                    public void call(@NonNull QuoteDTO quoteDTO) {
+                    public void call(@NonNull LiveQuoteDTO quoteDTO) {
                         usedDTO.quoteDTO = quoteDTO;
                         mStockPriceTextView.setText(String.valueOf(getLabel(quoteDTO)));
-                        mMarketPriceSymbol.setText(quoteDTO.currencyDisplay);
+                        mMarketPriceSymbol.setText(quoteDTO.getCurrencyDisplay());
                     }
                 })
                 .share();
@@ -661,9 +662,9 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                         return Observable.combineLatest(
                                 getPortfolioCompactObservable(),
                                 getQuoteObservable(),
-                                new Func2<PortfolioCompactDTO, QuoteDTO, Integer>() {
+                                new Func2<PortfolioCompactDTO, LiveQuoteDTO, Integer>() {
                                     @Override
-                                    public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO) {
+                                    public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull LiveQuoteDTO quoteDTO) {
                                         return getMaxValue(portfolioCompactDTO, quoteDTO, closeablePosition);
                                     }
                                 });
@@ -730,10 +731,10 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         return Observable.combineLatest(
                 getPortfolioCompactObservable(),
                 getQuoteObservable(),
-                new Func2<PortfolioCompactDTO, QuoteDTO, Integer>() // It can pass null values
+                new Func2<PortfolioCompactDTO, LiveQuoteDTO, Integer>() // It can pass null values
                 {
                     @Override
-                    public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull QuoteDTO quoteDTO) {
+                    public Integer call(@NonNull PortfolioCompactDTO portfolioCompactDTO, @NonNull LiveQuoteDTO quoteDTO) {
                         if(portfolioCompactDTO.providerId!=null){
                             ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
                             if(providerDTO.noDefaultShareQty){
@@ -760,7 +761,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
 
     protected void initPortfolioRelatedInfo(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
+            @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition,
             @Nullable Integer clamped) {
         updateDisplay();
@@ -778,7 +779,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         updateDisplay();
     }
 
-    protected abstract String getLabel(@NonNull QuoteDTO quoteDTO);
+    protected abstract String getLabel(@NonNull LiveQuoteDTO quoteDTO);
 
     @NonNull
     protected abstract THSignedNumber getFormattedPrice(double price);
@@ -786,7 +787,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     @Nullable
     protected Integer getMaxPurchasableShares(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
+            @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition) {
         if (portfolioCompactDTO.providerId != null) {
             ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(portfolioCompactDTO.providerId));
@@ -808,7 +809,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     @Nullable
     protected Integer getMaxSellableShares(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
+            @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition) {
         return PortfolioCompactDTOUtil.getMaxSellableShares(
                 portfolioCompactDTO,
@@ -819,14 +820,14 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     @Nullable
     protected Double getRemainingForPurchaseInPortfolioRefCcy(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO,
+            @Nullable LiveQuoteDTO quoteDTO,
             int quantity) {
-        QuoteDTO quoteInPortfolioCcy = PortfolioCompactDTOUtil.createQuoteInPortfolioRefCcy(quoteDTO, portfolioCompactDTO);
+        LiveQuoteDTO quoteInPortfolioCcy = PortfolioCompactDTOUtil.createQuoteInPortfolioRefCcy(quoteDTO, portfolioCompactDTO);
         if (quoteInPortfolioCcy != null
-                && quoteInPortfolioCcy.ask != null
+                && quoteInPortfolioCcy.getAskPrice() != null
                 && portfolioCompactDTO != null) {
             double available = portfolioCompactDTO.getUsableForTransactionRefCcy();
-            double value = quantity * quoteInPortfolioCcy.ask;
+            double value = quantity * quoteInPortfolioCcy.getAskPrice();
             return available - value;
         }
         return null;
@@ -835,14 +836,14 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     @Nullable
     protected Double getRemainingForShortingInPortfolioRefCcy(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO,
+            @Nullable LiveQuoteDTO quoteDTO,
             int quantity) {
-        QuoteDTO quoteInPortfolioCcy = PortfolioCompactDTOUtil.createQuoteInPortfolioRefCcy(quoteDTO, portfolioCompactDTO);
+        LiveQuoteDTO quoteInPortfolioCcy = PortfolioCompactDTOUtil.createQuoteInPortfolioRefCcy(quoteDTO, portfolioCompactDTO);
         if (quoteInPortfolioCcy != null
-                && quoteInPortfolioCcy.bid != null
+                && quoteInPortfolioCcy.getBidPrice() != null
                 && portfolioCompactDTO != null) {
             double available = portfolioCompactDTO.getUsableForTransactionRefCcy();
-            double value = quantity * quoteInPortfolioCcy.bid;
+            double value = quantity * quoteInPortfolioCcy.getBidPrice();
             return available - value;
         }
         return null;
@@ -851,7 +852,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     @NonNull
     public String getRemainingWhenBuy(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
+            @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition,
             int quantity) {
         String cashLeftText = null;
@@ -888,7 +889,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     @NonNull
     public String getRemainingWhenSell(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
+            @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition,
             int quantity) {
         String shareLeftText = null;
@@ -923,7 +924,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
 
     public String getTradeValueText(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO,
+            @Nullable LiveQuoteDTO quoteDTO,
             @Nullable Integer quantity) {
         String valueText = "-";
         if (portfolioCompactDTO != null && quoteDTO != null && quantity != null) {
@@ -941,7 +942,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
 
     public Integer getQuantityFromTradeValue(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO,
+            @Nullable LiveQuoteDTO quoteDTO,
             @Nullable Double tradeValue
     ) {
         Double quantity = 0.0;
@@ -1003,13 +1004,13 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     @Nullable
     protected abstract Double getProfitOrLossUsd(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO,
+            @Nullable LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition,
             @Nullable Integer quantity);  // TODO do a getProfitOrLossPortfolioCcy
 
     @NonNull
     public abstract String getCashShareLeft(@NonNull PortfolioCompactDTO portfolioCompactDTO,
-                                            @NonNull QuoteDTO quoteDTO,
+                                            @NonNull LiveQuoteDTO quoteDTO,
                                             @Nullable PositionDTOCompact closeablePosition,
                                             int quantity);
 
@@ -1047,7 +1048,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     }
 
     public TransactionFormDTO getBuySellOrder(
-            @NonNull QuoteDTO quoteDTO,
+            @NonNull LiveQuoteDTO quoteDTO,
             @NonNull PortfolioId portfolioId,
             int quantity) {
         return new TransactionFormDTO(
@@ -1254,11 +1255,11 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         if (isTransactionTypeBuy) {
             weChatDTO.title = getString(R.string.buy_sell_switch_buy) + " "
                     + usedDTO.securityCompactDTO.name + " " + getString(
-                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.ask;
+                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.getAskPrice();
         } else {
             weChatDTO.title = getString(R.string.buy_sell_switch_sell) + " "
                     + usedDTO.securityCompactDTO.name + " " + mQuantityEditText.getText() + getString(
-                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.bid;
+                    R.string.buy_sell_share_count) + " @" + usedDTO.quoteDTO.getBidPrice();
         }
         if (commentString != null && !commentString.isEmpty()) {
             weChatDTO.title = commentString + '\n' + weChatDTO.title;
@@ -1319,7 +1320,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         @NonNull
         public final SecurityId securityId;
         @NonNull
-        public final QuoteDTO quoteDTO;
+        public final LiveQuoteDTO quoteDTO;
         @Nullable
         public final Integer quantity;
         @NonNull
@@ -1327,7 +1328,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
 
         public Requisite(@NonNull SecurityId securityId,
                          @NonNull PortfolioId portfolioId,
-                         @NonNull QuoteDTO quoteDTO,
+                         @NonNull LiveQuoteDTO quoteDTO,
                          @Nullable Integer quantity) {
             this.securityId = securityId;
             this.quoteDTO = quoteDTO;
@@ -1350,7 +1351,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
             }
             Bundle quoteArgs = args.getBundle(KEY_QUOTE_DTO);
             if (quoteArgs != null) {
-                this.quoteDTO = new QuoteDTO(quoteArgs);
+                this.quoteDTO = new LiveQuoteDTO(quoteArgs);
             } else {
                 throw new NullPointerException("Quote cannot be null");
             }
@@ -1391,7 +1392,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         @Nullable
         public PortfolioCompactDTO portfolioCompactDTO;
         @Nullable
-        public QuoteDTO quoteDTO;
+        public LiveQuoteDTO quoteDTO;
         @Nullable
         public PositionDTOCompact closeablePosition;
         @Nullable

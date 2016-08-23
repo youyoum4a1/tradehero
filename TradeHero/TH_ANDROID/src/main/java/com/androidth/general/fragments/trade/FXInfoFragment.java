@@ -29,6 +29,7 @@ import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.fragments.portfolio.header.MarginCloseOutStatusTextView;
 import com.androidth.general.fragments.security.AbstractSecurityInfoFragment;
+import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.chart.ChartTimeSpan;
 import com.androidth.general.models.number.THSignedMoney;
@@ -74,7 +75,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
     @Nullable protected PositionDTOCompact positionDTOCompact;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
     @NonNull protected BehaviorSubject<PortfolioCompactDTO> portfolioCompactDTOBehavior;
-    @Nullable protected QuoteDTO quoteDTO;
+    @Nullable protected LiveQuoteDTO quoteDTO;
     protected OwnedPortfolioId purchaseApplicableOwnedPortfolioId;
 
     public static void putApplicablePortfolioId(@NonNull Bundle args, @NonNull OwnedPortfolioId applicablePortfolioId)
@@ -176,7 +177,7 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
     {
         onDestroyViewSubscriptions.add(AppObservable.bindSupportFragment(
                 this,
-                quoteServiceWrapper.getQuoteRx(securityId)
+                quoteServiceWrapper.getQuoteRx(securityId.getSecurityIdNumber())
                         .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
                         {
                             @Override public Observable<?> call(Observable<? extends Void> observable)
@@ -186,9 +187,9 @@ public class FXInfoFragment extends AbstractSecurityInfoFragment
                         }))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<QuoteDTO>()
+                        new Action1<LiveQuoteDTO>()
                         {
-                            @Override public void call(QuoteDTO quote)
+                            @Override public void call(LiveQuoteDTO quote)
                             {
                                 quoteDTO = quote;
                                 displayPositionStatus();

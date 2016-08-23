@@ -13,6 +13,7 @@ import com.androidth.general.api.DTOView;
 import com.androidth.general.api.alert.AlertDTO;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
+import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.fragments.security.SecurityCircleProgressBar;
 import com.androidth.general.models.number.THSignedMoney;
 import com.androidth.general.models.number.THSignedPercentage;
@@ -102,7 +103,7 @@ public class AlertSecurityProfile extends RelativeLayout
     public static class DTO
     {
         @NonNull public final AlertDTO alertDTO;
-        @NonNull public final QuoteDTO quoteDTO;
+        @NonNull public final LiveQuoteDTO quoteDTO;
 
         @NonNull public final String targetPrice;
         @NonNull public final String targetPriceLabel;
@@ -115,7 +116,7 @@ public class AlertSecurityProfile extends RelativeLayout
         public DTO(
                 @NonNull Resources resources,
                 @NonNull AlertDTO alertDTO,
-                @NonNull QuoteDTO quoteDTO)
+                @NonNull LiveQuoteDTO quoteDTO)
         {
             this.alertDTO = alertDTO;
             this.quoteDTO = quoteDTO;
@@ -160,17 +161,17 @@ public class AlertSecurityProfile extends RelativeLayout
 
             //<editor-fold desc="Current Price">
             final double price;
-            if (quoteDTO.ask != null && quoteDTO.bid != null)
+            if (quoteDTO.getAskPrice() != null && quoteDTO.getBidPrice() != null)
             {
-                price = (quoteDTO.ask + quoteDTO.bid) / 2;
+                price = (quoteDTO.getAskPrice() + quoteDTO.getBidPrice()) / 2;
             }
-            else if (quoteDTO.ask != null)
+            else if (quoteDTO.getAskPrice() != null)
             {
-                price = quoteDTO.ask;
+                price = quoteDTO.getAskPrice();
             }
-            else if (quoteDTO.bid != null)
+            else if (quoteDTO.getBidPrice() != null)
             {
-                price = quoteDTO.bid;
+                price = quoteDTO.getBidPrice();
             }
             else if (securityCompactDTO.lastPrice != null)
             {
@@ -181,9 +182,9 @@ public class AlertSecurityProfile extends RelativeLayout
                 price = 0;
             }
             String currency;
-            if (quoteDTO.currencyDisplay != null)
+            if (quoteDTO.getCurrencyDisplay() != null)
             {
-                currency = quoteDTO.currencyDisplay;
+                currency = quoteDTO.getCurrencyDisplay();
             }
             else  if (securityCompactDTO.currencyDisplay != null)
             {
@@ -201,9 +202,9 @@ public class AlertSecurityProfile extends RelativeLayout
 
             //<editor-fold desc="As Of Date">
             SimpleDateFormat sdf = new SimpleDateFormat(resources.getString(R.string.stock_alert_price_info_as_of_date_format));
-            if (quoteDTO.asOfUtc != null)
+            if (quoteDTO.getDate() != null)
             {
-                asOfDate = resources.getString(R.string.stock_alert_price_info_as_of_date, sdf.format(quoteDTO.asOfUtc));
+                asOfDate = resources.getString(R.string.stock_alert_price_info_as_of_date, sdf.format(quoteDTO.getDate()));
             }
             else if (securityCompactDTO.lastPriceDateAndTimeUtc != null)
             {

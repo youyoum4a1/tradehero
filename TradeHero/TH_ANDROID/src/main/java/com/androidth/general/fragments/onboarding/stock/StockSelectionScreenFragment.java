@@ -68,6 +68,7 @@ public class StockSelectionScreenFragment extends BaseFragment
         {
             ids[2 * index] = securityIds.get(index).getExchange();
             ids[2 * index + 1] = securityIds.get(index).getSecuritySymbol();
+            ids[2 * index + 2] = Integer.toString(securityIds.get(index).getSecurityIdNumber());
         }
         args.putStringArray(BUNDLE_KEY_INITIAL_STOCKS, ids);
     }
@@ -77,6 +78,8 @@ public class StockSelectionScreenFragment extends BaseFragment
         List<SecurityId> initialStocks = new ArrayList<>();
         String exchange;
         String symbol;
+        int securityIdNumber;
+
         if (args.containsKey(BUNDLE_KEY_INITIAL_STOCKS))
         {
             String[] values = args.getStringArray(BUNDLE_KEY_INITIAL_STOCKS);
@@ -84,7 +87,8 @@ public class StockSelectionScreenFragment extends BaseFragment
             {
                 exchange = values[2 * index];
                 symbol = values[2 * index + 1];
-                initialStocks.add(new SecurityId(exchange, symbol));
+                securityIdNumber = Integer.parseInt(values[2 * index + 2]);
+                initialStocks.add(new SecurityId(exchange, symbol, securityIdNumber));
             }
         }
         return initialStocks;

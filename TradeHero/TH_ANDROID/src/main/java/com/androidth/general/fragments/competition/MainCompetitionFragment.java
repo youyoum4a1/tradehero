@@ -326,8 +326,18 @@ public class MainCompetitionFragment extends DashboardFragment
                                     }
                                     return providerDTO;
                                 }),
-                        competitionListCache.get(providerId)
-                                .map(new PairGetSecond<ProviderId, CompetitionDTOList>())
+//                        competitionListCache.get(providerId)
+//                                .map(new PairGetSecond<ProviderId, CompetitionDTOList>())
+//                                .startWith(Observable.just(competitionDTOs))
+//                                .onErrorReturn(throwable -> {
+//                                    if (competitionDTOs == null)
+//                                    {
+//                                        THToast.show(getString(R.string.error_fetch_provider_competition_list));
+//                                    }
+//                                    Timber.e("Error fetching the list of competition info", throwable);
+//                                    return competitionDTOs;
+//                                }),
+                        competitionListCache.fetch(providerId)
                                 .startWith(Observable.just(competitionDTOs))
                                 .onErrorReturn(throwable -> {
                                     if (competitionDTOs == null)

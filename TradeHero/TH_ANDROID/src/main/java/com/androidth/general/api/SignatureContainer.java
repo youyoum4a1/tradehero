@@ -1,8 +1,10 @@
 package com.androidth.general.api;
 
-public class SignatureContainer<SignedType>
+import com.androidth.general.fragments.security.LiveQuoteDTO;
+
+public class SignatureContainer<LiveQuoteDTO>
 {
-    public SignedType signedObject;
+    public LiveQuoteDTO signedObject;
     public String Signature;
 }
 

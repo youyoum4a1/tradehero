@@ -13,6 +13,7 @@ import com.androidth.general.api.position.PositionDTOCompact;
 import com.androidth.general.api.position.PositionStatus;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityId;
+import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.resource.ResourceUtil;
 import com.androidth.general.utils.SecurityUtils;
 import timber.log.Timber;
@@ -23,7 +24,7 @@ public class PortfolioCompactDTOUtil
     // TODO handle refCurrency different from USD
     @Nullable public static Integer getMaxPurchasableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO,
+            @Nullable LiveQuoteDTO quoteDTO,
             @Nullable ProviderDTO providerDTO)
     {
         if (quoteDTO == null || portfolioCompactDTO == null)
@@ -50,7 +51,7 @@ public class PortfolioCompactDTOUtil
 
     @Nullable public static Integer getMaxPurchasableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO,
+            @Nullable LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition,
             @Nullable ProviderDTO providerDTO)
     {
@@ -77,7 +78,7 @@ public class PortfolioCompactDTOUtil
 
     @Nullable public static Integer getMaxSellableShares(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
-            @Nullable QuoteDTO quoteDTO,
+            @Nullable LiveQuoteDTO quoteDTO,
             @Nullable PositionDTOCompact closeablePosition)
     {
         if (portfolioCompactDTO == null)
@@ -177,10 +178,10 @@ public class PortfolioCompactDTOUtil
         return MarginCloseOutState.DANGER;
     }
 
-    @Nullable public static QuoteDTO createQuoteInPortfolioRefCcy(@Nullable QuoteDTO quoteDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
+    @Nullable public static LiveQuoteDTO createQuoteInPortfolioRefCcy(@Nullable LiveQuoteDTO quoteDTO, @Nullable PortfolioCompactDTO portfolioCompactDTO)
     {
         if (quoteDTO == null
-                || quoteDTO.toUSDRate == null
+                || quoteDTO.getUsdRate() == null
                 || portfolioCompactDTO == null
                 || portfolioCompactDTO.refCcyToUsdRate == null
                 || portfolioCompactDTO.refCcyToUsdRate == 0)
@@ -188,27 +189,27 @@ public class PortfolioCompactDTOUtil
             return null;
         }
 
-        QuoteDTO converted;
+        LiveQuoteDTO converted;
         try
         {
             converted = quoteDTO.clone();
         } catch (CloneNotSupportedException e)
         {
             Timber.e(e, "Could not clone");
-            converted = new QuoteDTO();
+            converted = new LiveQuoteDTO();
         }
-        if (quoteDTO.bid != null)
+        if (quoteDTO.getBidPrice() != null)
         {
-            converted.bid = quoteDTO.bid * quoteDTO.toUSDRate / portfolioCompactDTO.refCcyToUsdRate;
+            converted.setBidPrice(quoteDTO.getBidPrice() * quoteDTO.getUsdRate() / portfolioCompactDTO.refCcyToUsdRate);
         }
-        if (quoteDTO.ask != null)
+        if (quoteDTO.getAskPrice() != null)
         {
-            converted.ask = quoteDTO.ask * quoteDTO.toUSDRate / portfolioCompactDTO.refCcyToUsdRate;
+            converted.setAskPrice(quoteDTO.getAskPrice() * quoteDTO.getUsdRate() / portfolioCompactDTO.refCcyToUsdRate);
         }
-        converted.toUSDRate = portfolioCompactDTO.refCcyToUsdRate;
-        converted.toUSDRateDate = null;
-        converted.currencyISO = portfolioCompactDTO.currencyISO;
-        converted.currencyDisplay = portfolioCompactDTO.currencyDisplay;
+        converted.setUsdRate(portfolioCompactDTO.refCcyToUsdRate);
+//        converted.toUSDRateDate = null;
+        converted.setCurrencyISO(portfolioCompactDTO.currencyISO);
+        converted.setCurrencyDisplay(portfolioCompactDTO.currencyDisplay);
         return converted;
     }
 

@@ -8,192 +8,192 @@
     tools:context="com.androidth.general.activities.DashboardActivity"
     >
 
-  <ProgressBar
-      android:id="@+id/quote_refresh_countdown"
-      style="@android:style/Widget.ProgressBar.Horizontal"
-      android:layout_width="match_parent"
-      android:layout_height="4dp"
-      android:progressDrawable="@drawable/progress_thin_square"
-      android:visibility="gone"
-      />
-
-  <LinearLayout
-      android:id="@+id/stock_details_header"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:animateLayoutChanges="true"
-      android:background="?attr/colorPrimary"
-      >
-
-
-    <com.androidth.general.fragments.trade.view.PortfolioSelectorView
-        android:id="@+id/portfolio_selector_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/size_14"
-        android:layout_marginStart="@dimen/size_14"
-        android:background="@drawable/basic_transparent_selector"
+    <ProgressBar
+        android:id="@+id/quote_refresh_countdown"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:progressDrawable="@drawable/progress_thin_square"
         android:visibility="gone"
+        />
+
+    <LinearLayout
+        android:id="@+id/stock_details_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="?attr/colorPrimary"
         >
-      <!--TODO use dropdown/spinner view-->
-      <TextView
-          android:id="@+id/selected_title_anchor"
-          style="@style/TH.Body1.Inverse"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_alignParentLeft="true"
-          android:layout_alignParentStart="true"
-          android:layout_below="@id/portfolio_selector_container"
-          android:layout_centerVertical="true"
-          android:text="@string/buy_sell_portfolio_selected_title"
-          />
 
-      <TextView
-          android:id="@+id/portfolio_selected"
-          style="@style/TH.Body1.Inverse"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_centerVertical="true"
-          android:layout_marginLeft="@dimen/margin_small"
-          android:layout_marginStart="@dimen/margin_small"
-          android:layout_toEndOf="@id/selected_title_anchor"
-          android:layout_toRightOf="@id/selected_title_anchor"
-          tools:text="Main Portfolio"
-          />
 
-      <ImageView
-          android:id="@+id/img_action_icon"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_centerVertical="true"
-          android:layout_marginLeft="@dimen/margin_xsmall"
-          android:layout_marginStart="@dimen/margin_xsmall"
-          android:layout_toEndOf="@id/portfolio_selected"
-          android:layout_toRightOf="@id/portfolio_selected"
-          android:src="@drawable/spinner_arrow_bg"
-          />
-
-    </com.androidth.general.fragments.trade.view.PortfolioSelectorView>
-
-  </LinearLayout>
-
-  <LinearLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_margin="@dimen/margin_small"
-      android:orientation="horizontal">
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:orientation="vertical">
-            <ImageView
+        <com.androidth.general.fragments.trade.view.PortfolioSelectorView
+            android:id="@+id/portfolio_selector_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/size_14"
+            android:layout_marginStart="@dimen/size_14"
+            android:background="@drawable/basic_transparent_selector"
+            android:visibility="gone"
+            >
+            <!--TODO use dropdown/spinner view-->
+            <TextView
+                android:id="@+id/selected_title_anchor"
+                style="@style/TH.Body1.Inverse"
                 android:layout_width="wrap_content"
-                android:layout_height="75dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/portfolio_selector_container"
+                android:layout_centerVertical="true"
+                android:text="@string/buy_sell_portfolio_selected_title"
+                />
+
+            <TextView
+                android:id="@+id/portfolio_selected"
+                style="@style/TH.Body1.Inverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginStart="@dimen/margin_small"
+                android:layout_toEndOf="@id/selected_title_anchor"
+                android:layout_toRightOf="@id/selected_title_anchor"
+                tools:text="Main Portfolio"
+                />
+
+            <ImageView
+                android:id="@+id/img_action_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/margin_xsmall"
+                android:layout_marginStart="@dimen/margin_xsmall"
+                android:layout_toEndOf="@id/portfolio_selected"
+                android:layout_toRightOf="@id/portfolio_selected"
+                android:src="@drawable/spinner_arrow_bg"
+                />
+
+        </com.androidth.general.fragments.trade.view.PortfolioSelectorView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_small"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <ImageView
+                android:layout_width="75sp"
+                android:layout_height="75sp"
                 android:scaleType="centerInside"
                 android:id="@+id/stock_image"/>
-          <TextView
-              android:id="@+id/tv_stock_roi"
-              style="@style/TH.Subhead.Inverse"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/margin_small"
-              android:layout_gravity="bottom|center_horizontal"
-              tools:background="@color/number_up"
-              tools:text="+408%"
-              />
-      </LinearLayout>
+            <TextView
+                android:id="@+id/tv_stock_roi"
+                style="@style/TH.Subhead.Inverse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_gravity="bottom|center_horizontal"
+                tools:background="@color/number_up"
+                tools:text="+408%"
+                />
+        </LinearLayout>
 
-      <LinearLayout
-          android:layout_width="0dp"
-          android:layout_weight="1"
-          android:layout_height="wrap_content"
-          android:layout_marginLeft="@dimen/margin_small"
-          android:layout_marginRight="@dimen/margin_small"
-          android:layout_gravity="center"
-          android:gravity="left"
-          android:orientation="vertical">
-          <TextView
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/stock_name"
-              android:text="Apple Inc."
-              android:textStyle="bold"/>
-          <TextView
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/exchange_name"
-              android:text="NASDAQ:AAPL"
-              android:textAppearance="@android:style/TextAppearance.Small"
-              android:textAllCaps="true"/>
-          <TextView
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/buy_price"
-              android:textAppearance="@android:style/TextAppearance.Small"
-              android:text="Buy @ --" />
-          <TextView
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:id="@+id/sell_price"
-              android:textAppearance="@android:style/TextAppearance.Small"
-              android:text="Sell @ --" />
-      </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_gravity="center"
+            android:gravity="left"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/stock_name"
+                android:text="Apple Inc."
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/exchange_name"
+                android:text="NASDAQ:AAPL"
+                android:textAppearance="@android:style/TextAppearance.Small"
+                android:textAllCaps="true"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buy_price"
+                android:textAppearance="@android:style/TextAppearance.Small"
+                android:text="Buy @ --" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/sell_price"
+                android:textAppearance="@android:style/TextAppearance.Small"
+                android:text="Sell @ --" />
+        </LinearLayout>
 
-      <LinearLayout
-          android:layout_width="wrap_content"
-          android:layout_height="match_parent"
-          android:layout_gravity="right"
-          android:orientation="vertical">
-          <ImageButton
-              android:id="@+id/btn_watched"
-              android:layout_width="@dimen/clickable_element_min_dimen"
-              android:layout_height="@dimen/clickable_element_min_dimen"
-              android:background="?attr/selectableItemBackgroundBorderless"
-              android:padding="12dp"
-              android:src="@drawable/icn_star"
-              android:alpha="0.5"
-              />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/btn_watched"
+                android:layout_width="@dimen/clickable_element_min_dimen"
+                android:layout_height="@dimen/clickable_element_min_dimen"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="12dp"
+                android:src="@drawable/icn_star"
+                android:alpha="0.5"
+                />
 
-          <ImageButton
-              android:id="@+id/btn_alerted"
-              android:layout_width="@dimen/clickable_element_min_dimen"
-              android:layout_height="@dimen/clickable_element_min_dimen"
-              android:background="?attr/selectableItemBackgroundBorderless"
-              android:tint="@color/darker_grey"
-              android:padding="12dp"
-              android:src="@drawable/icn_alert"
-              android:alpha="0.5"
-              />
+            <ImageButton
+                android:id="@+id/btn_alerted"
+                android:layout_width="@dimen/clickable_element_min_dimen"
+                android:layout_height="@dimen/clickable_element_min_dimen"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="@color/darker_grey"
+                android:padding="12dp"
+                android:src="@drawable/icn_alert"
+                android:alpha="0.5"
+                />
 
-      </LinearLayout>
+        </LinearLayout>
 
-  </LinearLayout>
-  <RelativeLayout
-      android:id="@+id/chart_frame"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:animateLayoutChanges="true"
-      >
-
-    <com.android.common.SlidingTabLayout
-        android:id="@+id/tabs"
-        android:layout_centerHorizontal="true"
-        style="@style/TradeHero.TabContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/trade_bottom_pager"
-        android:layout_width="wrap_content"
+    </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/chart_frame"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tabs"
-        tools:background="#ffeeee"
-        />
+        android:animateLayoutChanges="true"
+        >
 
-    <include layout="@layout/buy_sell_buttons"/>
+        <com.android.common.SlidingTabLayout
+            android:id="@+id/tabs"
+            android:layout_centerHorizontal="true"
+            style="@style/TradeHero.TabContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
 
-  </RelativeLayout>
+            />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/trade_bottom_pager"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tabs"
+            tools:background="#ffeeee"
+            />
+
+        <include layout="@layout/buy_sell_buttons"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

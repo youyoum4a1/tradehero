@@ -60,6 +60,7 @@ import com.androidth.general.utils.AlertDialogRxUtil;
 import com.androidth.general.utils.SecurityUtils;
 import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.androidth.general.utils.route.THRouter;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.tradehero.route.RouteProperty;
 
 import java.util.concurrent.TimeUnit;
@@ -115,7 +116,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @RouteProperty("applicablePortfolioId")
     @Nullable protected Integer routedApplicablePortfolioId;
     protected Requisite requisite;
-    @Nullable protected QuoteDTO quoteDTO;
+    @Nullable protected LiveQuoteDTO quoteDTO;
     @Nullable protected SecurityCompactDTO securityCompactDTO;
     @Nullable protected PositionDTO closeablePositionDTO;
     @Nullable protected PortfolioCompactDTO portfolioCompactDTO;
@@ -127,7 +128,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     protected boolean poppedPortfolioChanged = false;
     private PublishSubject<Void> quoteRepeatSubject;
     private Observable<Void> quoteRepeatDelayedObservable;
-    public Observable<QuoteDTO> quoteObservable;
+    public Observable<LiveQuoteDTO> quoteObservable;
     public Observable<SecurityCompactDTO> securityObservable;
 
     public static void putRequisite(@NonNull Bundle args, @NonNull Requisite requisite)
@@ -192,12 +193,13 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         super.onStart();
         quoteObservable = createQuoteObservable();
         securityObservable = createSecurityObservable();
+
         onStopSubscriptions.add(quoteObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        new Action1<QuoteDTO>()
+                        new Action1<LiveQuoteDTO>()
                         {
-                            @Override public void call(@NonNull QuoteDTO quote)
+                            @Override public void call(@NonNull LiveQuoteDTO quote)
                             {
                                 linkWith(quote);
                             }
@@ -230,12 +232,12 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteSubscription =  Observable.combineLatest(
                 securityObservable.observeOn(AndroidSchedulers.mainThread()),
                 quoteObservable.observeOn(AndroidSchedulers.mainThread()),
-                new Func2<SecurityCompactDTO, QuoteDTO, Boolean>()
+                new Func2<SecurityCompactDTO, LiveQuoteDTO, Boolean>()
                 {
-                    @Override public Boolean call(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull QuoteDTO quoteDTO)
+                    @Override public Boolean call(@NonNull SecurityCompactDTO securityCompactDTO, @NonNull LiveQuoteDTO quoteDTO)
                     {
                         if(quoteDTO!=null)
-                            displayBuySellPrice(securityCompactDTO, quoteDTO.ask, quoteDTO.bid);
+                            displayBuySellPrice(securityCompactDTO, quoteDTO.getAskPrice(), quoteDTO.getBidPrice());
                         return true;
                     }
                 }).subscribeOn(Schedulers.io())
@@ -358,10 +360,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                     quoteObservable.take(1).observeOn(AndroidSchedulers.mainThread()),
                     securityObservable.take(1).observeOn(AndroidSchedulers.mainThread()),
                     getBuySellReady().take(1).observeOn(AndroidSchedulers.mainThread()),
-                    new Func3<QuoteDTO, SecurityCompactDTO, Boolean, Boolean>()
+                    new Func3<LiveQuoteDTO, SecurityCompactDTO, Boolean, Boolean>()
                     {
                         @Override public Boolean call(
-                                @NonNull QuoteDTO quoteDTO,
+                                @NonNull LiveQuoteDTO quoteDTO,
                                 @NonNull SecurityCompactDTO securityCompactDTO,
                                 @NonNull Boolean buySellReady)
                         {
@@ -490,9 +492,9 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 .cache(1);
     }
 
-    @NonNull protected Observable<QuoteDTO> createQuoteObservable()
+    @NonNull @RxLogObservable protected Observable<LiveQuoteDTO> createQuoteObservable()
     {
-        return quoteServiceWrapper.getQuoteRx(requisite.securityId)
+        return quoteServiceWrapper.getQuoteRx(requisite.securityIdNumber)
                 .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()
                 {
                     @Override public Observable<?> call(Observable<? extends Void> observable)
@@ -663,9 +665,9 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 quoteObservable.observeOn(AndroidSchedulers.mainThread()),
                 getCloseablePositionObservable().observeOn(AndroidSchedulers.mainThread()),
                 getApplicablePortfolioIdsObservable().observeOn(AndroidSchedulers.mainThread()),
-                new Func3<QuoteDTO, PositionDTO, OwnedPortfolioIdList, Boolean>()
+                new Func3<LiveQuoteDTO, PositionDTO, OwnedPortfolioIdList, Boolean>()
                 {
-                    @Override public Boolean call(@NonNull QuoteDTO quoteDTO, @Nullable PositionDTO positionDTO,
+                    @Override public Boolean call(@NonNull LiveQuoteDTO quoteDTO, @Nullable PositionDTO positionDTO,
                             @NonNull OwnedPortfolioIdList ownedPortfolioIds)
                     {
                         handleBuySellReady();
@@ -686,7 +688,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
     }
 
-    protected void linkWith(QuoteDTO quoteDTO)
+    protected void linkWith(LiveQuoteDTO quoteDTO)
     {
         this.quoteDTO = quoteDTO;
         quoteRefreshProgressBar.startAnimation(progressAnimation);
@@ -717,7 +719,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     @Nullable public Integer getMaxSellableShares(
             @NonNull PortfolioCompactDTO portfolioCompactDTO,
-            @NonNull QuoteDTO quoteDTO,
+            @NonNull LiveQuoteDTO quoteDTO,
             @Nullable PositionDTO closeablePositionDTO)
     {
         return PortfolioCompactDTOUtil.getMaxSellableShares(
@@ -880,20 +882,33 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         private static final String KEY_SECURITY_ID = Requisite.class.getName() + ".securityId";
         private static final String KEY_APPLICABLE_PORTFOLIO_ID = Requisite.class.getName() + ".applicablePortfolioId";
         private final static String KEY_CLOSE_UNITS_BUNDLE = Requisite.class.getName() + ".units";
+        private final static String KEY_SECURITY_RESOURCE_ID = Requisite.class.getName() + ".securityResourceId";
 
         @NonNull public final SecurityId securityId;
         @NonNull private final BehaviorSubject<OwnedPortfolioId> applicablePortfolioIdSubject;
         private int closeUnits;
+        private int securityIdNumber;
 
         public Requisite(
                 @NonNull SecurityId securityId,
                 @NonNull OwnedPortfolioId applicablePortfolioId,
                 int closeUnits)
         {
+            this.securityIdNumber = securityId.getSecurityIdNumber();
             this.securityId = securityId;
             this.applicablePortfolioIdSubject = BehaviorSubject.create(applicablePortfolioId);
             this.closeUnits = closeUnits;
         }
+
+//        public Requisite(
+//                @NonNull SecurityId securityId,
+//                @NonNull OwnedPortfolioId applicablePortfolioId,
+//                int closeUnits)
+//        {
+//            this.securityId = securityId;
+//            this.applicablePortfolioIdSubject = BehaviorSubject.create(applicablePortfolioId);
+//            this.closeUnits = closeUnits;
+//        }
 
         public Requisite(@NonNull SecurityId securityId,
                 @NonNull Bundle args,
@@ -913,6 +928,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 @NonNull CurrentUserId currentUserId)
         {
             this.securityId = getSecurityId(args.getBundle(KEY_SECURITY_ID));
+            this.securityIdNumber = getSecurityIdNumber(args);
             this.applicablePortfolioIdSubject = createApplicablePortfolioIdSubject(args.getBundle(KEY_APPLICABLE_PORTFOLIO_ID),
                     securityId,
                     portfolioCompactListCache,
@@ -927,6 +943,15 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 return new SecurityId(securityArgs);
             }
             throw new NullPointerException("SecurityId cannot be null");
+        }
+
+        @NonNull private static int getSecurityIdNumber(@Nullable Bundle securityArgs)
+        {
+            if (securityArgs != null)
+            {
+                return securityArgs.getInt(KEY_SECURITY_RESOURCE_ID);
+            }
+            return 0;
         }
 
         @NonNull private static BehaviorSubject<OwnedPortfolioId> createApplicablePortfolioIdSubject(
@@ -1005,6 +1030,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
         protected void populate(@NonNull Bundle args)
         {
+            args.putInt(KEY_SECURITY_RESOURCE_ID, securityIdNumber);
             args.putBundle(KEY_SECURITY_ID, securityId.getArgs());
             args.putBundle(KEY_APPLICABLE_PORTFOLIO_ID, applicablePortfolioIdSubject.toBlocking().first().getArgs());
             args.putInt(KEY_CLOSE_UNITS_BUNDLE, closeUnits);

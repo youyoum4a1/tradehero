@@ -33,6 +33,7 @@ import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
 import com.androidth.general.fragments.discussion.stock.SecurityDiscussionFragment;
 import com.androidth.general.fragments.position.SecurityPositionListFragment;
+import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.models.number.THSignedFXRate;
 import com.androidth.general.models.portfolio.MenuOwnedPortfolioId;
 import com.androidth.general.utils.Constants;
@@ -62,7 +63,7 @@ public class FXMainFragment extends AbstractBuySellFragment
 
     @Inject CurrentUserId currentUserId;
 
-    private QuoteDTO oldQuoteDTO;
+    private LiveQuoteDTO oldQuoteDTO;
     private BuySellBottomFXPagerAdapter buySellBottomFXPagerAdapter;
     @Nullable private Observer<PortfolioCompactDTO> portfolioCompactDTOObserver;
 
@@ -110,7 +111,7 @@ public class FXMainFragment extends AbstractBuySellFragment
     {
         if (exchange != null && symbol != null)
         {
-            return new Requisite(new SecurityId(exchange, symbol), getArguments(), portfolioCompactListCache, currentUserId);
+            return new Requisite(new SecurityId(exchange, symbol, portfolioCompactDTO.id), getArguments(), portfolioCompactListCache, currentUserId);
         }
         return super.createRequisite();
     }
@@ -197,7 +198,7 @@ public class FXMainFragment extends AbstractBuySellFragment
             }
             else
             {
-                double diff = (oldQuoteDTO != null && oldQuoteDTO.ask != null) ? ask - oldQuoteDTO.ask : 0.0;
+                double diff = (oldQuoteDTO != null && oldQuoteDTO.getAskPrice() != null) ? ask - oldQuoteDTO.getAskPrice() : 0.0;
                 formatButtonText(ask, diff, precision, buyBtn, getString(R.string.fx_buy));
             }
 
@@ -207,7 +208,7 @@ public class FXMainFragment extends AbstractBuySellFragment
             }
             else
             {
-                double diff = (oldQuoteDTO != null && oldQuoteDTO.bid != null) ? bid - oldQuoteDTO.bid : 0.0;
+                double diff = (oldQuoteDTO != null && oldQuoteDTO.getBidPrice() != null) ? bid - oldQuoteDTO.getBidPrice() : 0.0;
                 formatButtonText(bid, diff, precision, sellBtn, getString(R.string.fx_sell));
             }
         }
@@ -259,7 +260,7 @@ public class FXMainFragment extends AbstractBuySellFragment
         }
     }
 
-    @Override protected void linkWith(QuoteDTO quoteDTO)
+    @Override protected void linkWith(LiveQuoteDTO quoteDTO)
     {
         this.oldQuoteDTO = this.quoteDTO;
         super.linkWith(quoteDTO);

@@ -40,6 +40,7 @@ import com.androidth.general.fragments.alert.AlertEditDialogFragment;
 import com.androidth.general.fragments.alert.BaseAlertEditDialogFragment;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
 import com.androidth.general.fragments.security.BuySellBottomStockPagerAdapter;
+import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.fragments.security.WatchlistEditFragment;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.models.number.THSignedPercentage;
@@ -412,7 +413,7 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
     {
         if (exchange != null && symbol != null)
         {
-            return new Requisite(new SecurityId(exchange, symbol), getArguments(), portfolioCompactListCache, currentUserId);
+            return new Requisite(new SecurityId(exchange, symbol, portfolioCompactDTO.userId), getArguments(), portfolioCompactListCache, currentUserId);
         }
         return super.createRequisite();
     }
@@ -449,10 +450,10 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
                                                 return positionDTO == null || positionDTO.portfolioId == portfolioCompactDTO.id;
                                             }
                                         }),
-                                new Func2<QuoteDTO, PositionDTO, Boolean>()
+                                new Func2<LiveQuoteDTO, PositionDTO, Boolean>()
                                 {
                                     @Override public Boolean call(
-                                            @NonNull QuoteDTO quoteDTO,
+                                            @NonNull LiveQuoteDTO quoteDTO,
                                             @Nullable PositionDTO closeablePositionDTO)
                                     {
                                         Integer max = getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePositionDTO);

@@ -23,6 +23,7 @@ import com.androidth.general.persistence.kyc.KYCFormOptionsCache;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -63,6 +64,7 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
         this.prevNextSubject = PublishSubject.create();
         this.brokerSituationSubject = BehaviorSubject.create();
     }
+
     protected void updateDB(Boolean complete, Integer step){
             realm.executeTransaction(new Realm.Transaction() {
                 @Override
@@ -81,6 +83,17 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
                     }
                 }
             });
+    }
+
+    protected ArrayList<CompetitionSteps> queryStatusesFromDB(int providerId){
+
+        RealmQuery query = realm.where(CompetitionSteps.class);
+        RealmResults<CompetitionSteps> results = query.equalTo("providerId", providerId).findAll();
+        ArrayList<CompetitionSteps> statusResults = new ArrayList<CompetitionSteps>();
+        for(CompetitionSteps step: results){
+            statusResults.add(step);
+        }
+        return statusResults;
     }
 
     protected static int getProviderId(@NonNull Bundle args)

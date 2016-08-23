@@ -161,7 +161,8 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
         Bundle args = new Bundle();
         AbstractBuySellFragment.putRequisite(
                 args,
-                new AbstractBuySellFragment.Requisite(securityCompactDTO.getSecurityId(),
+                new AbstractBuySellFragment.Requisite(
+                        securityCompactDTO.getSecurityId(),
                         getApplicablePortfolioId(),
                         0));
         navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);

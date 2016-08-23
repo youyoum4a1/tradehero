@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import com.androidth.general.api.RawResponseParser;
 import com.androidth.general.api.SignatureContainer;
+import com.androidth.general.fragments.security.LiveQuoteDTO;
+
 import java.io.IOException;
 import javax.inject.Inject;
 import retrofit.client.Response;
@@ -14,7 +16,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class RawQuoteParser extends RawResponseParser
-        implements Func1<Response, Observable<? extends QuoteDTO>>
+        implements Func1<Response, Observable<? extends LiveQuoteDTO>>
 {
     @NonNull private Converter converter;
 
@@ -25,9 +27,9 @@ public class RawQuoteParser extends RawResponseParser
     }
     //</editor-fold>
 
-    @Nullable public QuoteDTO parse(@NonNull Response response) throws IOException, ConversionException
+    @Nullable public LiveQuoteDTO parse(@NonNull Response response) throws IOException, ConversionException
     {
-        QuoteDTO quoteDTO = null;
+        LiveQuoteDTO quoteDTO = null;
         TypedByteArray body = getBodyAsTypedArray(response);
         if (body != null)
         {
@@ -35,20 +37,20 @@ public class RawQuoteParser extends RawResponseParser
             if (signatureContainer != null)
             {
                 quoteDTO = signatureContainer.signedObject;
-                if (quoteDTO != null)
-                {
-                    quoteDTO.setRawResponse(new String(body.getBytes()));
-                }
+//                if (quoteDTO != null)
+//                {
+//                    quoteDTO.setRawResponse(new String(body.getBytes()));
+//                }
             }
         }
         return quoteDTO;
     }
 
-    @Override public Observable<? extends QuoteDTO> call(@NonNull Response response)
+    @Override public Observable<? extends LiveQuoteDTO> call(@NonNull Response response)
     {
         try
         {
-            QuoteDTO parsed = parse(response);
+            LiveQuoteDTO parsed = parse(response);
             return Observable.just(parsed);
         } catch (Throwable e)
         {
@@ -56,7 +58,7 @@ public class RawQuoteParser extends RawResponseParser
         }
     }
 
-    private static class QuoteSignatureContainer extends SignatureContainer<QuoteDTO>
+    private static class QuoteSignatureContainer extends SignatureContainer<LiveQuoteDTO>
     {
     }
 }

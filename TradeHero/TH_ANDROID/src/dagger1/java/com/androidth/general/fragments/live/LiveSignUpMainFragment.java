@@ -213,7 +213,8 @@ public class LiveSignUpMainFragment extends BaseFragment
                         .subscribe());
 //                        .flatMap(situationDTO -> {
 //                            //noinspection ConstantConditions
-//                            return liveServiceWrapper.applyToLiveBroker(situationDTO.broker.id, situationDTO.kycForm)
+//                            situationDTO.broker
+//                            return liveServiceWrapper.applyToLiveBroker(situationDTO.kycFormbroker.id, situationDTO.kycForm)
 //                                    .doOnNext(stepStatusesDTO -> {
 //                                        KYCForm form = KYCFormUtil.from(situationDTO.kycForm);
 //                                        form.setStepStatuses(stepStatusesDTO.stepStatuses);

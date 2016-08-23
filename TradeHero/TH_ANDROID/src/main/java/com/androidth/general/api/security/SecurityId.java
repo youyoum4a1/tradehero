@@ -12,24 +12,27 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
 {
     private final static String BUNDLE_KEY_EXCHANGE = SecurityId.class.getName() + ".exchange";
     private final static String BUNDLE_KEY_SYMBOL = SecurityId.class.getName() + ".symbol";
+    private final static String BUNDLE_KEY_SECURITY_ID = SecurityId.class.getName() + ".securityId";
 
     String exchange;
-
     String securitySymbol;
+    int securityIdNumber;
 
     //<editor-fold desc="Constructors">
     public SecurityId() {}
 
-    public SecurityId(final String exchange, final String securitySymbol)
+    public SecurityId(final String exchange, final String securitySymbol, final int securityIdNumber)
     {
         this.exchange = exchange;
         this.securitySymbol = securitySymbol;
+        this.securityIdNumber = securityIdNumber;
     }
 
     public SecurityId(@NonNull Bundle args)
     {
         this.exchange = args.getString(BUNDLE_KEY_EXCHANGE);
         this.securitySymbol = args.getString(BUNDLE_KEY_SYMBOL);
+        this.securityIdNumber = args.getInt(BUNDLE_KEY_SECURITY_ID);
     }
     //</editor-fold>
 
@@ -41,6 +44,10 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
     public String getExchange()
     {
         return exchange;
+    }
+
+    public int getSecurityIdNumber() {
+        return securityIdNumber;
     }
 
     /**
@@ -95,7 +102,8 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
     protected boolean equalFields(@NonNull SecurityId other)
     {
         return (exchange == null ? other.exchange == null : exchange.equals(other.exchange)) &&
-                (securitySymbol == null ? other.securitySymbol == null : securitySymbol.equals(other.securitySymbol));
+                (securitySymbol == null ? other.securitySymbol == null : securitySymbol.equals(other.securitySymbol)) &&
+                (securityIdNumber == 0 ? other.securityIdNumber == 0 : securityIdNumber==other.securityIdNumber);
     }
 
     @Override public int compareTo(@NonNull Object other)
@@ -125,7 +133,7 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
 
     public boolean isValid()
     {
-        return exchange != null && !exchange.isEmpty() && securitySymbol != null && !securitySymbol.isEmpty();
+        return exchange != null && !exchange.isEmpty() && securitySymbol != null && !securitySymbol.isEmpty() && securityIdNumber != 0;
     }
 
     public static boolean isValid(Bundle args)
@@ -135,13 +143,15 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
                 args.getString(BUNDLE_KEY_EXCHANGE) != null &&
                 !args.getString(BUNDLE_KEY_EXCHANGE).isEmpty() &&
                 args.getString(BUNDLE_KEY_SYMBOL) != null &&
-                !args.getString(BUNDLE_KEY_SYMBOL).isEmpty();
+                !args.getString(BUNDLE_KEY_SYMBOL).isEmpty() &&
+                args.getInt(BUNDLE_KEY_SECURITY_ID, 0) !=0;
     }
 
     protected void putParameters(Bundle args)
     {
         args.putString(BUNDLE_KEY_EXCHANGE, exchange);
         args.putString(BUNDLE_KEY_SYMBOL, securitySymbol);
+        args.putInt(BUNDLE_KEY_SECURITY_ID, securityIdNumber);
     }
 
     public Bundle getArgs()
@@ -153,6 +163,6 @@ public class SecurityId implements Comparable, PortfolioCompactListKey, DTO
 
     @Override public String toString()
     {
-        return String.format("[SecurityId exchange=%s; securitySymbol=%s]", exchange, securitySymbol);
+        return String.format("[SecurityId exchange=%s; securitySymbol=%s; securityIdNumber=%d]", exchange, securitySymbol, securityIdNumber);
     }
 }
