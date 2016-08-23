@@ -37,10 +37,10 @@ public class RawQuoteParser extends RawResponseParser
             if (signatureContainer != null)
             {
                 quoteDTO = signatureContainer.signedObject;
-//                if (quoteDTO != null)
-//                {
-//                    quoteDTO.setRawResponse(new String(body.getBytes()));
-//                }
+                if (quoteDTO != null)
+                {
+                    quoteDTO.setRawResponse(new String(body.getBytes()));
+                }
             }
         }
         return quoteDTO;
