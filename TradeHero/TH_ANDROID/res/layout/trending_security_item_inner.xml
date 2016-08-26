@@ -44,7 +44,7 @@
       tools:text="GOOG"/>
 
   <LinearLayout
-      android:layout_width="wrap_content"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_below="@id/exchange_symbol"
       android:layout_centerHorizontal="true"
@@ -54,11 +54,14 @@
 
     <TextView
         android:id="@+id/last_price"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:lines="1"
-        tools:text="1,014"
-        style="@style/TH.Body"
+        android:layout_weight="0.55"
+        tools:text="MYR 1,01123"
+        style="@style/TH.TextPrimary"
+        android:textSize="12sp"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
         android:textStyle="bold"
         />
 
@@ -67,12 +70,16 @@
         style="@style/TH.Subhead.Inverse"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.45"
         android:layout_height="wrap_content"
         android:lines="1"
         android:ellipsize="end"
+        android:gravity="center_horizontal"
         tools:text="+408%"
-        tools:background="@color/number_up"/>
+        android:textSize="12sp"
+        android:background="@drawable/round_label_zero"
+        />
 
   </LinearLayout>
 

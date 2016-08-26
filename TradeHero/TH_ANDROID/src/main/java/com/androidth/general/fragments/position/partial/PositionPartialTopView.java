@@ -294,7 +294,7 @@ public class PositionPartialTopView extends LinearLayout
             final double gain = (realisedPLRefCcy != null ? realisedPLRefCcy : 0)
                     + (unrealisedPLRefCcy != null ? unrealisedPLRefCcy : 0);
             gainLossColor = resources.getColor(gain == 0
-                    ? R.color.black
+                    ? R.color.darker_grey
                     : gain > 0
                             ? R.color.number_up
                             : R.color.number_down);

@@ -67,7 +67,7 @@ public class THSignedNumber
         private boolean use000Suffix = DEFAULT_USE_000_SUFFIX;
         private boolean use000LongSuffix = DEFAULT_USE_000_LONG_SUFFIX;
         public boolean useDefaultColor = DO_NOT_USE_DEFAULT_COLOR;
-        @ColorRes private Integer fallbackColorResId = R.color.text_primary;
+        @ColorRes private Integer fallbackColorResId = R.color.darker_grey;
         @Nullable @ColorRes private Integer signColorResId;
         @Nullable @ColorRes private Integer valueColorResId;
         private boolean boldSign;
