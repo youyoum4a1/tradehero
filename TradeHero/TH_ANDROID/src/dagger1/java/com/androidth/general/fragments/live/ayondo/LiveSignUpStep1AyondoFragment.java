@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.androidth.general.R;
 import com.androidth.general.activities.ActivityHelper;
+import com.androidth.general.api.competition.EmailVerifiedDTO;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderDTOList;
 import com.androidth.general.api.competition.ProviderId;
@@ -58,11 +59,15 @@ import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.live.CountrySpinnerAdapter;
 import com.androidth.general.fragments.live.DatePickerDialogFragment;
+import com.androidth.general.fragments.live.VerifyEmailDialogFragment;
 import com.androidth.general.fragments.live.VerifyPhoneDialogFragment;
 import com.androidth.general.fragments.web.BaseWebViewFragment;
 import com.androidth.general.models.fastfill.Gender;
+import com.androidth.general.network.LiveNetworkConstants;
+import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.KycServicesRx;
 import com.androidth.general.network.service.LiveServiceWrapper;
+import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
@@ -80,6 +85,9 @@ import com.androidth.general.widget.validation.VerifyButtonState;
 import com.neovisionaries.i18n.CountryCode;
 import com.tradehero.route.RouteProperty;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -90,12 +98,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
+import retrofit.client.Response;
+import retrofit.mime.TypedInput;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -120,7 +131,9 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 //    @Inject THRouter thRouter;
     @Inject KycServicesRx kycServices;
     @Inject ProviderUtil providerUtil;
+
     private static final int PHONE_NUM_MIN_LENGTH = 7;
+    private static final int REQUEST_VERIFY_EMAIL_CODE = 2809;
 
     @LayoutRes private static final int LAYOUT_COUNTRY = R.layout.spinner_live_country_dropdown_item;
     @LayoutRes private static final int LAYOUT_COUNTRY_SELECTED_FLAG = R.layout.spinner_live_country_dropdown_item_selected;
@@ -132,6 +145,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private static final String KEY_SMS_ID = LiveSignUpStep1AyondoFragment.class.getName() + ".smsId";
 
     @Bind(R.id.nric_number) EditText nricNumber;
+    @Bind(R.id.sign_up_email) EditText email;
     @Bind(R.id.info_title) Spinner title;
     @Bind(R.id.info_first_name) EditText firstName;
     @Bind(R.id.info_last_name) EditText lastName;
@@ -142,7 +156,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.step_1_tnc_checkbox) CheckBox tncCheckbox;
     @Bind(R.id.step_1_tnc) TextView termsCond;
 
-    //@Bind(R.id.email_verify_button) KYCVerifyButton emailVerifybutton;
+    @Bind(R.id.email_verify_button) KYCVerifyButton emailVerifybutton;
     @Bind(R.id.nric_verify_button) KYCVerifyButton nricVerifyButton;
     @Bind(R.id.phone_verify_button) KYCVerifyButton phoneVerifyButton;
 
@@ -158,6 +172,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Inject CurrentUserId currentUserId;
     @Inject UserProfileCacheRx userProfileCache;
     @Inject LiveServiceWrapper liveServiceWrapper;
+    @Inject protected RequestHeaders requestHeaders;
+
     protected ProgressDialog loadingFieldProgressDialog;
 
     private String expectedCode;
@@ -169,15 +185,23 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     private int providerIdInt = 0;
     private boolean hasClickedJoinButton = false;
 
+    private static PublishSubject<String> verifiedPublishEmail;
+    private VerifyEmailDialogFragment vedf;
+    private Pattern emailPattern;
+
     Observable<ArrayList<ProviderQuestionnaireDTO>> proQuesList;
 
     HubProxy proxy;
+    SignalRManager signalRManager;
 
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
 //        thRouter.inject(this);
+        verifiedPublishEmail = PublishSubject.create();
+        emailPattern = Pattern.compile(getString(R.string.regex_email_validator));
+
         verifiedPublishMobileNumber = PublishSubject.create();
         verifiedPublishIdNumber = PublishSubject.create();
 
@@ -204,6 +228,28 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(getActivity());
+
+        userProfileCache.get(currentUserId.toUserBaseKey())
+                .map(new PairGetSecond<UserBaseKey, UserProfileDTO>())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<UserProfileDTO>() {
+            @Override
+            public void call(UserProfileDTO userProfileDTO) {
+                if(userProfileDTO!=null && userProfileDTO.email!=null && email != null)
+                    email.setText(userProfileDTO.email, TextView.BufferType.EDITABLE);
+            }
+        });
+
+        email.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_NEXT &&
+                    (emailVerifybutton.getState() == VerifyButtonState.PENDING
+                            || emailVerifybutton.getState() == VerifyButtonState.FINISH))
+            {
+                showEmailVerificationPopup();
+            }
+
+            return false;
+        });
+
         termsCond.setOnClickListener(click->{
             Bundle args = new Bundle();
             BaseWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
@@ -273,6 +319,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             }
         });
     }
+
     private List<String> cityLists = new ArrayList<>();
     private List<String> howYouKnowThLists = new ArrayList<>();
     LollipopArrayAdapter<String> howYouKnowTHAdapter;
@@ -904,8 +951,189 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     }
                 }, new TimberOnErrorAction1("Failed to update verified mobile number")));
 
+        subscriptions.add(verifiedPublishEmail.withLatestFrom(liveBrokerSituationDTOObservable,
+                new Func2<String, LiveBrokerSituationDTO, LiveBrokerSituationDTO>()
+                {
+                    @Override
+                    public LiveBrokerSituationDTO call(String verifiedEmail, LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        KYCAyondoForm update = new KYCAyondoForm();
+                        update.setVerifiedEmailAddress(verifiedEmail);
+                        return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, update);
+                    }
+                }).subscribe(
+                new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        onNext(liveBrokerSituationDTO);
+                    }
+                }, new TimberOnErrorAction1("Failed to update email address")));
+
+        subscriptions.add(WidgetObservable.text(email)
+                .doOnNext(onTextChangeEvent -> {
+                    if (isValidEmail(onTextChangeEvent.text().toString())) {
+                        emailVerifybutton.setState(VerifyButtonState.PENDING);
+                    } else {
+                        emailVerifybutton.setState(VerifyButtonState.BEGIN);
+                    }
+                })
+                .withLatestFrom(liveBrokerSituationDTOObservable,
+                        (onTextChangeEvent, liveBrokerSituationDTO) -> {
+
+                            KYCAyondoForm updated = new KYCAyondoForm();
+
+                            if (liveBrokerSituationDTO.kycForm instanceof KYCAyondoForm) {
+                                String currentVerifiedEmail = ((KYCAyondoForm)liveBrokerSituationDTO.kycForm).getVerifiedEmailAddress();
+
+                                if(currentVerifiedEmail!=null && currentVerifiedEmail.equals(onTextChangeEvent.text().toString())){
+                                    emailVerifybutton.setState(VerifyButtonState.FINISH);
+                                }
+
+                                updated = KYCAyondoFormFactory.fromEmailEvent(onTextChangeEvent);
+                            }
+
+                            return new LiveBrokerSituationDTO(liveBrokerSituationDTO.broker, updated);
+
+                        }).subscribe(new Action1<LiveBrokerSituationDTO>()
+                {
+                    @Override public void call(LiveBrokerSituationDTO liveBrokerSituationDTO)
+                    {
+                        onNext(liveBrokerSituationDTO);
+                    }
+                }, new Action1<Throwable>()
+                {
+                    @Override public void call(Throwable throwable)
+                    {
+                        Timber.d(throwable.getMessage());
+                    }
+                }));
+
+        subscriptions.add(ViewObservable.clicks(emailVerifybutton)
+                .subscribe(new Action1<OnClickEvent>() {
+                    @Override
+                    public void call(OnClickEvent onClickEvent) {switch (emailVerifybutton.getState()) {
+                        case BEGIN:
+                            email.setError(LiveSignUpStep1AyondoFragment.this.getString(R.string.validation_incorrect_pattern_email), noErrorIconDrawable);
+                            emailVerifybutton.setState(VerifyButtonState.ERROR);
+                            break;
+                        case PENDING:
+                        case VALIDATE:
+                            validateEmail();
+                            break;
+                    }
+                    }
+                }));
+
         Log.v("ayondoStep1", "Subscriptions final "+subscriptions.size());
         return subscriptions;
+    }
+
+    private String getStringFromResponse(Response response) {
+        TypedInput body = response.getBody();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(body.in()));
+            StringBuilder out = new StringBuilder();
+            String newLine = System.getProperty("line.separator");
+            String line;
+            while ((line = reader.readLine()) != null) {
+                out.append(line);
+                out.append(newLine);
+            }
+
+            // Prints the correct String representation of body.
+            return out.toString().replace("\"", "").trim();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @MainThread
+    protected void validateEmail()
+    {
+        final String email = this.email.getText().toString();
+
+        ProgressDialog progress = new ProgressDialog(getContext());
+        progress.setMessage("Loading...");
+        progress.setCancelable(false);
+        progress.show();
+
+        liveServiceWrapper.verifyEmail(currentUserId.get(), email, providerIdInt)
+                .subscribe(new Action1<Response>()
+                {
+                    @Override public void call(Response response)
+                    {
+                        progress.dismiss();
+
+                        String responseString = getStringFromResponse(response);
+                        if (responseString != null)
+                        {
+                            if (responseString.toLowerCase().equals(("Verified").toLowerCase())) {
+                                verifiedPublishEmail.onNext(email);
+                                updateEmailVerification(email, null, true);
+                            } else if (responseString.toLowerCase().equals(("True").toLowerCase())) {
+                                showEmailVerificationPopup();
+                            }
+                        }
+                    }
+                }, throwable -> {
+                    THToast.show(throwable.getMessage());
+                    progress.dismiss();
+                });
+
+        setupSignalR(email);
+    }
+
+    private boolean isValidEmail(String email)
+    {
+        return emailPattern.matcher(email).matches();
+    }
+
+    private void showEmailVerificationPopup() {
+        vedf = VerifyEmailDialogFragment.show(REQUEST_VERIFY_EMAIL_CODE, this, currentUserId.get(), email.getText().toString(), this.providerIdInt);
+    }
+
+    public void setupSignalR(String emailAddress) {
+
+        signalRManager = new SignalRManager(requestHeaders, currentUserId);
+        signalRManager.initWithEvent(LiveNetworkConstants.HUB_NAME,
+                "SetValidationStatus",
+                new String[]{emailAddress},
+                emailVerifybutton, emailVerifiedDTO ->{
+                    if(((EmailVerifiedDTO)emailVerifiedDTO).isValidated()){
+                        updateEmailVerification(emailAddress, null, true);
+                    }
+                }, EmailVerifiedDTO.class);
+    }
+
+    @MainThread
+    public void updateEmailVerification(String emailAddress, String errorMessage, boolean isSuccess){
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(vedf != null && vedf.isVisible()){
+                    try{
+                        vedf.dismiss();
+                    }catch (Exception e){
+                        //might be closed or not in view
+                    }
+                }
+                if(isSuccess){
+                    emailVerifybutton.setState(VerifyButtonState.FINISH);
+                    verifiedPublishEmail.onNext(emailAddress);
+
+                    if(hasClickedJoinButton){
+                        onClickedJoinButton();
+                    }
+                }else{
+                    if(errorMessage!=null){
+                        email.setError(errorMessage, noErrorIconDrawable);
+                        requestFocusAndShowKeyboard(email);
+                    }
+                }
+            }
+        });
     }
 
     @MainThread
@@ -935,6 +1163,7 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         super.onDestroy();
         verifiedPublishMobileNumber = null;
         verifiedPublishIdNumber = null;
+        verifiedPublishEmail = null;
     }
 
     @Override public void onSaveInstanceState(Bundle outState)
@@ -975,6 +1204,16 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             nricNumber.setText(nricNumberText);
             if(nricNumber.getText().toString().equals(kycForm.getVerifiedIdentificationNumber())){
                 nricVerifyButton.setState(VerifyButtonState.FINISH);
+            }
+        }
+
+        String emailText = kycForm.getEmail();
+        if (email != null && emailText != null /* && !emailText.equals(email.getText().toString())*/)
+        {
+            email.setText(emailText);
+            String currentVerifiedEmail = kycForm.getVerifiedEmailAddress();
+            if(currentVerifiedEmail!=null && currentVerifiedEmail.equals(email.getText().toString())){
+                emailVerifybutton.setState(VerifyButtonState.FINISH);
             }
         }
 
@@ -1246,6 +1485,18 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                 onClickedJoinButton();
             }
 
+        } else if (requestCode == REQUEST_VERIFY_EMAIL_CODE && resultCode == Activity.RESULT_OK) {
+            String verifiedEmail = VerifyEmailDialogFragment.getVerifiedFromIntent(data);
+
+            if(data.hasExtra("VerificationEmailError")){
+                updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), data.getStringExtra("VerificationEmailError"), false);
+            } else {
+                if (verifiedEmail != null)
+                {
+                    verifiedPublishEmail.onNext(verifiedEmail);
+                }
+                updateEmailVerification(data.getStringExtra("VerifiedEmailAddress"), null, true);
+            }
         }
     }
 
@@ -1282,6 +1533,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }else{
             nricNumber.setError(null);
         }
+        if(!isValidEmail(email.getText().toString())) {
+            email.setError(LiveSignUpStep1AyondoFragment.this.getString(R.string.validation_incorrect_pattern_email), noErrorIconDrawable);
+            requestFocusAndShowKeyboard(email);
+            return false;
+        }else{
+            email.setError(null);
+        }
+
         if(dob.length() == 0){
             Snackbar.make(dob, "Date of birth must not be empty", Snackbar.LENGTH_LONG).show();
             return false;
@@ -1306,6 +1565,14 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
             return false;
         }else{
             phoneNumber.setError(null);
+        }
+
+        if (emailVerifybutton.getState() != VerifyButtonState.FINISH) {
+            hasClickedJoinButton = true;
+            emailVerifybutton.performClick();
+            return false;
+        }else{
+            email.setError(null);
         }
 
         return true;
@@ -1333,16 +1600,12 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
         }
         updateDB(true, 1);
 
-
-
-
         ProgressDialog progress = new ProgressDialog(getContext());
         progress.setMessage("Loading...");
         progress.setCancelable(false);
         progress.show();
 
         KYCForm kycForm = liveBrokerSituationPreference.get().kycForm;
-
 
         liveServiceWrapper.createOrUpdateLead(getProviderId(getArguments()), kycForm).subscribe(
                 brokerApplicationDTO -> {
