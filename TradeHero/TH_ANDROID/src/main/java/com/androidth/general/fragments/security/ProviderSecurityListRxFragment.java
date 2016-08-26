@@ -29,6 +29,7 @@ import com.androidth.general.api.security.key.SecurityListType;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.competition.CompetitionWebFragmentTHIntentPassedListener;
 import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.trade.AbstractBuySellFragment;
 import com.androidth.general.fragments.web.BaseWebViewIntentFragment;
 import com.androidth.general.models.intent.THIntentPassedListener;
@@ -60,6 +61,8 @@ public class ProviderSecurityListRxFragment
     private BaseWebViewIntentFragment webViewFragment;
 
     protected TextView tradeTitleView;
+
+    String actionbarColor;
 
     public static void putProviderId(@NonNull Bundle bundle, @NonNull ProviderId providerId)
     {
@@ -206,7 +209,8 @@ public class ProviderSecurityListRxFragment
         {
             //setActionBarTitle(providerDTO.name);
             setActionBarTitle("");
-            setActionBarColor(providerDTO.hexColor);
+            actionbarColor = providerDTO.hexColor;
+            setActionBarColor(actionbarColor);
             setActionBarImage(providerDTO.navigationLogoUrl);
         }
         else
@@ -254,6 +258,10 @@ public class ProviderSecurityListRxFragment
         super.handleDtoClicked(clicked);
         Bundle args = new Bundle();
         OwnedPortfolioId applicablePortfolioId = getApplicablePortfolioId();
+        if(actionbarColor!=null){
+            args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, actionbarColor);
+        }
+
         AbstractBuySellFragment.putRequisite(
                 args,
                 new AbstractBuySellFragment.Requisite(
