@@ -196,7 +196,7 @@ public class TradeListItemView extends LinearLayout
                     .build()
                     .createSpanned();
             plValueColor = resources.getColor(numberToDisplayRefCcy == 0
-                    ? R.color.black
+                    ? R.color.darker_grey
                     : numberToDisplayRefCcy > 0
                             ? R.color.number_up
                             : R.color.number_down);

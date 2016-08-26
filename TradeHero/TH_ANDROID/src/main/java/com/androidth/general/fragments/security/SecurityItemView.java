@@ -295,6 +295,14 @@ public class SecurityItemView extends RelativeLayout
                         .signTypeArrow()
                         .build()
                         .into(stockRoi);
+
+                if(roi<0.00){
+                    stockRoi.setBackgroundResource(R.drawable.round_label_down);
+                }else if(roi>0.00){
+                    stockRoi.setBackgroundResource(R.drawable.round_label_up);
+                }else{
+                    stockRoi.setBackgroundResource(R.drawable.round_label_zero);
+                }
             }
             else
             {

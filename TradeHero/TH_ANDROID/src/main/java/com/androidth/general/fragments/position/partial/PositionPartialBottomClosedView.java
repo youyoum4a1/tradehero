@@ -18,6 +18,7 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
     @Bind(R.id.realised_pl_value) protected TextView realisedPLValue;
     @Bind(R.id.roi_value) protected TextView roiValue;
     @Bind(R.id.total_invested_value) protected TextView totalInvestedValue;
+    @Bind(R.id.average_price_value) protected TextView averagePriceValue;
 
     protected PositionPartialBottomInPeriodViewHolder inPeriodViewHolder;
 
@@ -69,6 +70,10 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
         {
             inPeriodViewHolder.display(((DTO) dto).positionPartialBottomInPeriodDTO);
         }
+        if (averagePriceValue != null)
+        {
+            averagePriceValue.setText(((DTO) dto).averagePriceValue);
+        }
     }
 
     public static class DTO extends AbstractPartialBottomView.DTO
@@ -77,6 +82,7 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
         @NonNull public final CharSequence realisedPLValue;
         @NonNull public final CharSequence roiValue;
         @NonNull public final CharSequence totalInvestedValue;
+        @NonNull public final CharSequence averagePriceValue;
 
         @NonNull public final PositionPartialBottomInPeriodViewHolder.DTO positionPartialBottomInPeriodDTO;
 
@@ -128,6 +134,15 @@ public class PositionPartialBottomClosedView extends AbstractPartialBottomView
             //</editor-fold>
 
             positionPartialBottomInPeriodDTO = new PositionPartialBottomInPeriodViewHolder.DTO(resources, positionDTO);
+
+            Double averagePriceRefCcy = positionDTO.averagePriceRefCcy;
+            averagePriceValue = averagePriceRefCcy == null
+                    ? na
+                    : THSignedMoney.builder(averagePriceRefCcy)
+                    .withOutSign()
+                    .currency(positionDTO.getNiceCurrency())
+                    .build()
+                    .toString();
         }
     }
 }
