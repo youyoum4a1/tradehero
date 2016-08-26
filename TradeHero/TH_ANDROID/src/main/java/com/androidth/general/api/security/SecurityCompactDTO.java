@@ -112,6 +112,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
     public Integer sortorderInExchange;
     public Integer sortorderOverall;
     public Integer UnderlyingSecurityId;
+    @Nullable public Integer lotSize;
 
 
     //<editor-fold desc="Constructors">
@@ -133,6 +134,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
         this.sortorderInExchange = other.sortorderInExchange;
         this.sortorderOverall = other.sortorderOverall;
         this.UnderlyingSecurityId = other.UnderlyingSecurityId;
+        this.lotSize = other.lotSize;
 
         this.id = other.id;
         this.symbol = other.symbol;
@@ -306,6 +308,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
         this.sortorderInExchange = other.readInt();
         this.sortorderOverall = other.readInt();
         this.UnderlyingSecurityId = other.readInt();
+        this.lotSize = other.readInt();
 
 
         this.id = other.readInt();
@@ -372,6 +375,7 @@ public class SecurityCompactDTO implements DTO, Parcelable
             dest.writeInt(this.sortorderInExchange);
             dest.writeInt(this.sortorderOverall);
             dest.writeInt(this.UnderlyingSecurityId);
+            dest.writeInt(this.lotSize);
 
             dest.writeInt(this.id);
             dest.writeString(this.symbol);

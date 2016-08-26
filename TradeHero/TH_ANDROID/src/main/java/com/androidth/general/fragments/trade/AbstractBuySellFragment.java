@@ -19,24 +19,35 @@ import com.androidth.general.api.portfolio.OwnedPortfolioIdList;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
 import com.androidth.general.api.portfolio.PortfolioCompactDTOList;
 import com.androidth.general.api.portfolio.PortfolioCompactDTOUtil;
+import com.androidth.general.api.portfolio.PortfolioDTO;
+import com.androidth.general.api.portfolio.PortfolioId;
 import com.androidth.general.api.portfolio.key.PortfolioCompactListKey;
 import com.androidth.general.api.position.PositionDTO;
+import com.androidth.general.api.position.PositionDTOCompact;
 import com.androidth.general.api.position.PositionDTOList;
+import com.androidth.general.api.position.SecurityPositionTransactionDTO;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityId;
+import com.androidth.general.api.security.TransactionFormDTO;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.exception.THException;
+import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.OnMovableBottomTranslateListener;
 import com.androidth.general.fragments.base.DashboardFragment;
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
+import com.androidth.general.fragments.position.CompetitionLeaderboardPositionListFragment;
+import com.androidth.general.fragments.position.TabbedPositionListFragment;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.fragments.security.SignatureContainer2;
 import com.androidth.general.fragments.settings.AskForInviteDialogFragment;
 import com.androidth.general.fragments.settings.SendLoveBroadcastSignal;
 import com.androidth.general.fragments.trade.view.PortfolioSelectorView;
 import com.androidth.general.fragments.tutorial.WithTutorial;
+import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.models.portfolio.MenuOwnedPortfolioId;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
@@ -57,8 +68,10 @@ import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
+import com.androidth.general.utils.DeviceUtil;
 import com.androidth.general.utils.SecurityUtils;
 import com.androidth.general.utils.broadcast.BroadcastUtils;
+import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
 import com.androidth.general.utils.route.THRouter;
 import com.fernandocejas.frodo.annotation.RxLogObservable;
 import com.tradehero.route.RouteProperty;
@@ -90,6 +103,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         implements WithTutorial
 {
     private final static String BUNDLE_KEY_REQUISITE = AbstractBuySellFragment.class.getName() + ".requisite";
+
     private final static long MILLISECOND_QUOTE_REFRESH = 30000;
 
     @Inject protected CurrentUserId currentUserId;
@@ -125,11 +139,16 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     protected Animation progressAnimation;
     protected AbstractTransactionFragment abstractTransactionFragment;
+
+    protected AbstractBuySellPopupDialogFragment abstractBuySellPopupDialogFragment;
+
     protected boolean poppedPortfolioChanged = false;
     private PublishSubject<Void> quoteRepeatSubject;
     private Observable<Void> quoteRepeatDelayedObservable;
     public Observable<LiveQuoteDTO> quoteObservable;
     public Observable<SecurityCompactDTO> securityObservable;
+
+    String topBarColor;
 
     public static void putRequisite(@NonNull Bundle args, @NonNull Requisite requisite)
     {
@@ -171,6 +190,12 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         ButterKnife.bind(this, view);
         setRetainInstance(true);
 
+        if(getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)){
+            topBarColor = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
+        }else{
+            topBarColor = null;
+        }
+
         buySellBtnContainer.setVisibility(View.GONE);
 
         progressAnimation = new Animation()
@@ -186,6 +211,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         quoteRefreshProgressBar.setProgress((int) getMillisecondQuoteRefresh());
         quoteRefreshProgressBar.setAnimation(progressAnimation);
     }
+
     Subscription quoteSubscription;
 
     @Override public void onStart()
@@ -395,6 +421,12 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                 buySellBtnContainer.setTranslationY(y);
             }
         });
+
+        if (abstractBuySellPopupDialogFragment != null && abstractBuySellPopupDialogFragment.getDialog() != null)
+        {
+            abstractBuySellPopupDialogFragment.populateComment();
+            abstractBuySellPopupDialogFragment.getDialog().show();
+        }
     }
 
     //<editor-fold desc="ActionBar">
@@ -414,7 +446,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onStop()
     {
         quoteDTO = null;
-        AbstractTransactionFragment copy = abstractTransactionFragment;
+        AbstractBuySellPopupDialogFragment copy = abstractBuySellPopupDialogFragment;
         if (copy != null)
         {
             copy.setBuySellTransactionListener(null);
@@ -435,7 +467,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     @Override public void onDestroy()
     {
         quoteRepeatSubject.onCompleted();
-        abstractTransactionFragment = null;
+        abstractBuySellPopupDialogFragment = null;
         super.onDestroy();
     }
     private SignalRManager signalRManager;
@@ -794,8 +826,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     public void pushBuySellScreen(@Nullable Integer closeUnits, boolean isTransactionTypeBuy)
     {
-        if (abstractTransactionFragment != null
-                && abstractTransactionFragment.isVisible())
+        if (abstractBuySellPopupDialogFragment != null
+                && abstractBuySellPopupDialogFragment.isVisible())
         {
             return;//buy/sell dialog already shows
         }
@@ -807,34 +839,70 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             {
                 if (securityCompactDTO instanceof FxSecurityCompactDTO)
                 {
-                    Bundle args = new Bundle();
-                    Class klass = isTransactionTypeBuy ? BuyFXFragment.class : SellFXFragment.class;
+//                    Bundle args = new Bundle();
+//                    Class klass = isTransactionTypeBuy ? BuyFXFragment.class : SellFXFragment.class;
+//
+//                    AbstractTransactionFragment.Requisite transactionRequisite = new AbstractTransactionFragment.Requisite(
+//                            requisite.securityId,
+//                            currentMenu.getPortfolioIdKey(),
+//                            quoteDTO,
+//                            closeUnits == null ? null : Math.abs(closeUnits));
+//
+//                    AbstractStockTransactionFragment.putRequisite(args, transactionRequisite);
+//
+//                    abstractTransactionFragment = (AbstractTransactionFragment) navigator.get().pushFragment(klass, args);
 
-                    AbstractTransactionFragment.Requisite transactionRequisite = new AbstractTransactionFragment.Requisite(
-                            requisite.securityId,
-                            currentMenu.getPortfolioIdKey(),
-                            quoteDTO,
-                            closeUnits == null ? null : Math.abs(closeUnits));
 
-                    AbstractStockTransactionFragment.putRequisite(args, transactionRequisite);
 
-                    abstractTransactionFragment = (AbstractTransactionFragment) navigator.get().pushFragment(klass, args);
+
+
+                    abstractBuySellPopupDialogFragment = AbstractStockTransactionFragment.newInstance(
+                            isTransactionTypeBuy,
+                            new AbstractBuySellPopupDialogFragment.Requisite(
+                                    requisite.securityId,
+                                    currentMenu.getPortfolioIdKey(),
+                                    quoteDTO,
+                                    closeUnits == null ? null : Math.abs(closeUnits)),
+                            topBarColor);
                 }
                 else
                 {
-                    Bundle args = new Bundle();
-                    Class klass = isTransactionTypeBuy ? BuyStockFragment.class : SellStockFragment.class;
 
-                    AbstractTransactionFragment.Requisite transactionRequisite = new AbstractTransactionFragment.Requisite(
-                            this.requisite.securityId,
-                            currentMenu.getPortfolioIdKey(),
-                            quoteDTO,
-                            closeUnits == null ? null : Math.abs(closeUnits));
+                    abstractBuySellPopupDialogFragment = AbstractStockTransactionFragment.newInstance(
+                            isTransactionTypeBuy,
+                            new AbstractBuySellPopupDialogFragment.Requisite(
+                                    requisite.securityId,
+                                    currentMenu.getPortfolioIdKey(),
+                                    quoteDTO,
+                                    closeUnits == null ? null : Math.abs(closeUnits)),
+                            topBarColor);
 
-                    AbstractStockTransactionFragment.putRequisite(args, transactionRequisite);
+//                    Bundle args = new Bundle();
+//                    Class klass = isTransactionTypeBuy ? BuyStockFragment.class : SellStockFragment.class;
+//
+//                    AbstractBuySellPopupDialogFragment.Requisite transactionReq = new AbstractBuySellPopupDialogFragment.Requisite(
+//                            this.requisite.securityId,
+//                            currentMenu.getPortfolioIdKey(),
+//                            quoteDTO,
+//                            closeUnits == null ? null : Math.abs(closeUnits));
+//
+//                    AbstractBuySellPopupDialogFragment.putRequisite(args, transactionReq);
+//
+//                    abstractBuySellPopupDialogFragment = (AbstractBuySellPopupDialogFragment) navigator.get().pushFragment(AbstractBuySellPopupDialogFragment.class, args);
 
-                    abstractTransactionFragment = (AbstractTransactionFragment) navigator.get().pushFragment(klass, args);
+//                    AbstractTransactionFragment.Requisite transactionRequisite = new AbstractTransactionFragment.Requisite(
+//                            this.requisite.securityId,
+//                            currentMenu.getPortfolioIdKey(),
+//                            quoteDTO,
+//                            closeUnits == null ? null : Math.abs(closeUnits));
+//
+//                    AbstractStockTransactionFragment.putRequisite(args, transactionRequisite);
+//
+//                    abstractTransactionFragment = (AbstractTransactionFragment) navigator.get().pushFragment(klass, args);
                 }
+
+                abstractBuySellPopupDialogFragment.show(getActivity().getSupportFragmentManager(), AbstractBuySellPopupDialogFragment.class.getName());
+                listenToBuySellDialog();
             }
             else
             {
@@ -861,9 +929,50 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
     }
 
+    protected void listenToBuySellDialog()
+    {
+        if (abstractBuySellPopupDialogFragment != null)
+        {
+            abstractBuySellPopupDialogFragment.setBuySellTransactionListener(new AbstractStockTransactionFragment.BuySellTransactionListener()
+            {
+                @Override public void onTransactionSuccessful(boolean isBuy,
+                                                              @NonNull SecurityPositionTransactionDTO securityPositionTransactionDTO, String commentString)
+                {
+                    showPrettyReviewAndInvite(isBuy);
+//                    shareToWeChat(commentString, isBuy);
+                    String positionType = null;
+                    if (securityPositionTransactionDTO.positions == null)
+                    {
+                        positionType = TabbedPositionListFragment.TabType.CLOSED.name();
+                    }
+                    else
+                    {
+                        if (securityPositionTransactionDTO.positions.size() == 0)
+                        {
+                            positionType = TabbedPositionListFragment.TabType.CLOSED.name();
+                        }
+                        else
+                        {
+                            positionType = securityPositionTransactionDTO.positions.get(0).positionStatus.name();
+                        }
+                    }
+                    pushPortfolioFragment(
+                            new OwnedPortfolioId(currentUserId.get(), securityPositionTransactionDTO.portfolio.id),
+                            securityPositionTransactionDTO.portfolio,
+                            positionType);
+                }
+
+                @Override public void onTransactionFailed(boolean isBuy, THException error)
+                {
+                    // TODO Toast error buy?
+                }
+            });
+        }
+    }
+
     private void showPrettyReviewAndInvite(boolean isBuy)
     {
-        Double profit = abstractTransactionFragment.getProfitOrLossUsd();
+        Double profit = abstractBuySellPopupDialogFragment.getProfitOrLossUsd();
         if (!isBuy && profit != null && profit > 0)
         {
             if (mShowAskForReviewDialogPreference.isItTime())
@@ -876,6 +985,45 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
             }
         }
     }
+
+    private void pushPortfolioFragment(OwnedPortfolioId ownedPortfolioId, PortfolioDTO portfolioDTO, String positionType)
+    {
+        if (isResumed())
+        {
+            DeviceUtil.dismissKeyboard(getActivity());
+
+            if (navigator.get().hasBackStackName(TabbedPositionListFragment.class.getName()))
+            {
+                navigator.get().popFragment(TabbedPositionListFragment.class.getName());
+            }
+            else {
+                if (navigator.get().hasBackStackName(CompetitionLeaderboardPositionListFragment.class.getName())) {
+                    navigator.get().popFragment(CompetitionLeaderboardPositionListFragment.class.getName());
+                    // Test for other classes in the future
+                } else {
+                    // TODO find a better way to remove this fragment from the stack
+                    navigator.get().popFragment();
+
+                    Bundle args = new Bundle();
+                    OwnedPortfolioId applicablePortfolioId = requisite.getApplicablePortfolioIdObservable().toBlocking().first(); // TODO better
+                    if (applicablePortfolioId != null) {
+                        TabbedPositionListFragment.putApplicablePortfolioId(args, applicablePortfolioId);
+                        TabbedPositionListFragment.putIsFX(args, portfolioDTO.assetClass);
+                    }
+                    TabbedPositionListFragment.putGetPositionsDTOKey(args, ownedPortfolioId);
+                    TabbedPositionListFragment.putShownUser(args, ownedPortfolioId.getUserBaseKey());
+                    TabbedPositionListFragment.putPositionType(args, positionType);
+
+                    if (navigator.get().hasBackStackName(MainCompetitionFragment.class.getName())) {
+                        DashboardNavigator.putReturnFragment(args, MainCompetitionFragment.class.getName());
+                    }
+                    navigator.get().pushFragment(TabbedPositionListFragment.class, args);
+                }
+            }
+        }
+    }
+
+
 
     public static class Requisite
     {

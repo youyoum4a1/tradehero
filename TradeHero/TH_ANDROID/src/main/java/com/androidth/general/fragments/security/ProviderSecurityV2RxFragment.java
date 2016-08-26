@@ -32,6 +32,7 @@ import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.key.SecurityListType;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.base.BaseFragment;
+import com.androidth.general.fragments.trade.AbstractBuySellFragment;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.security.SecurityCompactListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;

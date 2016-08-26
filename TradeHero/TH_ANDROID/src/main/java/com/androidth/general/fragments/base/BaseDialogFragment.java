@@ -32,6 +32,7 @@ public abstract class BaseDialogFragment extends DialogFragment
     {
         Dialog d = super.onCreateDialog(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.TH_Dialog);
+        setStyle(DialogFragment.STYLE_NO_FRAME, 0);
         d.setCanceledOnTouchOutside(shouldCancelOnOutsideClicked());
         return d;
     }

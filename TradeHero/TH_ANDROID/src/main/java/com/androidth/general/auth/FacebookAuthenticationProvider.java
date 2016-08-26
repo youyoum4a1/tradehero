@@ -243,8 +243,14 @@ public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
 //                        return accessToken.getPermissions().contains(FacebookPermissionsConstants.PUBLISH_ACTIONS);
 //                    }
 //                });
-        return Observable.just(AccessToken.getCurrentAccessToken()
-                .getPermissions().contains(FacebookPermissionsConstants.PUBLISH_ACTIONS));
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken!=null){
+            return Observable.just(AccessToken.getCurrentAccessToken()
+                    .getPermissions().contains(FacebookPermissionsConstants.PUBLISH_ACTIONS));
+        }else{
+            return Observable.just(false);
+        }
+
     }
 
     @Override public void logout()

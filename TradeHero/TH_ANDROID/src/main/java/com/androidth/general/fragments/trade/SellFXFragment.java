@@ -80,15 +80,15 @@ public class SellFXFragment extends AbstractFXTransactionFragment
         return getMaxSellableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
     }
 
-    @Override protected int getCashShareLabel()
-    {
-        return R.string.buy_sell_fx_quantity_left;
-    }
-
-    @Override protected Boolean isBuyTransaction()
-    {
-        return false;
-    }
+//    @Override protected int getCashShareLabel()
+//    {
+//        return R.string.buy_sell_fx_quantity_left;
+//    }
+//
+//    @Override protected Boolean isBuyTransaction()
+//    {
+//        return false;
+//    }
 
     @Override protected boolean hasValidInfo()
     {
@@ -139,11 +139,11 @@ public class SellFXFragment extends AbstractFXTransactionFragment
         };
     }
 
-    @Override protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO)
-    {
-        setActionBarTitle(getString(R.string.transaction_title_sell,
-                securityCompactDTO != null ? securityCompactDTO.getExchangeSymbol() : getString(R.string.fx)));
-    }
+//    @Override protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO)
+//    {
+//        setActionBarTitle(getString(R.string.transaction_title_sell,
+//                securityCompactDTO != null ? securityCompactDTO.getExchangeSymbol() : getString(R.string.fx)));
+//    }
 
     protected boolean hasValidInfoForSell()
     {

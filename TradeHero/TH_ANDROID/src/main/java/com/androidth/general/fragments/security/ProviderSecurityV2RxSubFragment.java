@@ -68,6 +68,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     SimpleSecurityItemViewAdapter adapter;
     HubProxy proxy;
     List<SecurityCompactDTO> currentVisibleItemsList;
+    String topBarColor;
 
     public HubConnection setConnection(String url) {
         return new HubConnection(url);
@@ -340,6 +341,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                         clicked.getSecurityId(),
                         applicablePortfolioId,
                         0)); // TODO proper
+
         navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(clicked), args);
     }
 

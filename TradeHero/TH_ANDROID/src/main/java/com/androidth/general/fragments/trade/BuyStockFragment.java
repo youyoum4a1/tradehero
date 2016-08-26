@@ -31,6 +31,10 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
 
     @SuppressWarnings("UnusedDeclaration") @Inject Context doNotRemoveOrItFails;
 
+    public BuyStockFragment(){
+        super();
+    }
+
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
@@ -76,15 +80,15 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
         return getMaxPurchasableShares(portfolioCompactDTO, quoteDTO, closeablePosition);
     }
 
-    @Override protected int getCashShareLabel()
-    {
-        return R.string.buy_sell_cash_available;
-    }
-
-    @Override protected Boolean isBuyTransaction()
-    {
-        return true;
-    }
+//    @Override protected int getCashShareLabel()
+//    {
+//        return R.string.buy_sell_cash_available;
+//    }
+//
+//    @Override protected Boolean isBuyTransaction()
+//    {
+//        return true;
+//    }
 
     @Override protected boolean hasValidInfo()
     {
@@ -135,11 +139,11 @@ public class BuyStockFragment extends AbstractStockTransactionFragment
         };
     }
 
-    @Override protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO)
-    {
-        setActionBarTitle(getString(R.string.transaction_title_buy,
-                securityCompactDTO != null ? securityCompactDTO.getExchangeSymbol() : getString(R.string.stock)));
-    }
+//    @Override protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO)
+//    {
+//        setActionBarTitle(getString(R.string.transaction_title_buy,
+//                securityCompactDTO != null ? securityCompactDTO.getExchangeSymbol() : getString(R.string.stock)));
+//    }
 
     protected boolean hasValidInfoForBuy()
     {

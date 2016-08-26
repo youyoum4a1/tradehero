@@ -1,10 +1,14 @@
 package com.androidth.general.fragments.trade;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
+import android.util.Log;
 import android.util.Pair;
 import android.view.ActionMode;
 import android.view.KeyEvent;
@@ -15,15 +19,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.internal.util.Predicate;
+import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.api.competition.ProviderId;
-import com.androidth.general.common.rx.PairGetSecond;
-import com.androidth.general.common.utils.THToast;
-import com.androidth.general.R;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.portfolio.OwnedPortfolioIdList;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
@@ -36,9 +41,7 @@ import com.androidth.general.api.position.PositionDTO;
 import com.androidth.general.api.position.PositionDTOCompact;
 import com.androidth.general.api.position.PositionDTOList;
 import com.androidth.general.api.position.SecurityPositionTransactionDTO;
-import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
-import com.androidth.general.api.security.SecurityCompactDTOUtil;
 import com.androidth.general.api.security.SecurityId;
 import com.androidth.general.api.security.TransactionFormDTO;
 import com.androidth.general.api.share.wechat.WeChatDTO;
@@ -46,7 +49,12 @@ import com.androidth.general.api.share.wechat.WeChatMessageType;
 import com.androidth.general.api.social.SocialNetworkEnum;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.api.users.UserBaseKey;
+import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.common.utils.THToast;
+import com.androidth.general.exception.THException;
 import com.androidth.general.fragments.DashboardNavigator;
+import com.androidth.general.fragments.base.BaseDialogFragment;
+import com.androidth.general.fragments.base.BaseShareableDialogFragment;
 import com.androidth.general.fragments.base.DashboardFragment;
 import com.androidth.general.fragments.base.LollipopArrayAdapter;
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
@@ -56,7 +64,6 @@ import com.androidth.general.fragments.position.CompetitionLeaderboardPositionLi
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
 import com.androidth.general.fragments.security.LiveQuoteDTO;
 import com.androidth.general.fragments.social.ShareDelegateFragment;
-import com.androidth.general.exception.THException;
 import com.androidth.general.models.number.THSignedMoney;
 import com.androidth.general.models.number.THSignedNumber;
 import com.androidth.general.models.portfolio.MenuOwnedPortfolioId;
@@ -75,9 +82,12 @@ import com.androidth.general.rx.view.adapter.AdapterViewObservable;
 import com.androidth.general.rx.view.adapter.OnSelectedEvent;
 import com.androidth.general.utils.DateUtils;
 import com.androidth.general.utils.DeviceUtil;
+import com.androidth.general.utils.GraphicUtil;
+import com.androidth.general.utils.StringUtils;
 import com.androidth.general.utils.metrics.AnalyticsConstants;
 import com.androidth.general.utils.metrics.events.SharingOptionsEvent;
 import com.androidth.general.wxapi.WXEntryActivity;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,32 +115,67 @@ import rx.functions.Func6;
 import rx.subjects.BehaviorSubject;
 import timber.log.Timber;
 
-abstract public class AbstractTransactionFragment extends DashboardFragment {
-    private static final String KEY_REQUISITE = AbstractTransactionFragment.class.getName() + ".requisite";
+abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDialogFragment {
+    private static final String KEY_REQUISITE = AbstractBuySellPopupDialogFragment.class.getName() + ".requisite";
     private static final double INITIAL_VALUE = 5000;
+
+    @Bind(R.id.dialog_buy_sell_top_bar)
+    ViewGroup topBarView;
+
+    @Bind(R.id.dialog_buy_sell_top_image)
+    protected ImageView topBarImageView;
+
+    @Bind(R.id.dialog_buy_sell_security_logo)
+    protected ImageView securityLogo;
+
+    @Bind(R.id.dialog_buy_sell_security_name)
+    protected TextView securityName;
+
+    @Bind(R.id.dialog_buy_sell_security_symbol)
+    protected TextView securitySymbol;
+
+    @Bind(R.id.vtrade_value)
+    protected TextView mTradeValueTextView;
+
+    @Bind(R.id.vquantity)
+    protected EditText mQuantityEditText;
 
     @Bind(R.id.vcash_left)
     protected TextView mCashShareLeftTextView;
-    @Bind(R.id.vtrade_value)
-    protected EditText mTradeValueTextView;
+
+    @Bind(R.id.seek_bar) protected SeekBar mSeekBar;
+
+    @Bind(R.id.dialog_buy_sell_top_text_1) protected TextView topText1;
+    @Bind(R.id.dialog_buy_sell_top_text_2) protected TextView topText2;
+
     @Bind(R.id.vmarket_symbol)
     protected TextView mMarketPriceSymbol;
-    @Bind(R.id.price_updated_time)
-    protected TextView mPriceUpdatedTime;
-    @Bind(R.id.vtrade_symbol)
-    protected TextView mTradeSymbol;
+
+    @Bind(R.id.dialog_buy_sell_top_competition_view) ViewGroup topCompetitionView;
+    @Bind(R.id.dialog_buy_sell_top_normal_view) ViewGroup topNormalView;
+
+//    @Bind(R.id.price_updated_time)
+//    protected TextView mPriceUpdatedTime;
+//    @Bind(R.id.vtrade_symbol)
+//    protected TextView mTradeSymbol;
+
+    @Bind(R.id.dialog_currency_label_cash_value)
+    protected TextView mSymbolCashValue;
+
+    @Bind(R.id.dialog_currency_label_cash_left)
+    protected TextView mSymbolCashLeft;
+
     @Bind(R.id.market_price)
     protected TextView mStockPriceTextView;
-    @Bind(R.id.vquantity)
-    protected EditText mQuantityEditText;
+
     @Bind(R.id.comments)
     protected TextView mCommentsEditText;
-    @Bind(R.id.btn_confirm)
+    @Bind(R.id.dialog_btn_confirm)
     protected Button mConfirm;
-    @Bind(R.id.portfolio_spinner)
-    protected Spinner mPortfolioSpinner;
-    @Bind(R.id.cash_or_stock_left)
-    protected TextView mCashOrStockLeft;
+//    @Bind(R.id.portfolio_spinner)
+//    protected Spinner mPortfolioSpinner;
+//    @Bind(R.id.cash_or_stock_left)
+//    protected TextView mCashOrStockLeft;
 
     @Inject
     SecurityCompactCacheRx securityCompactCache;
@@ -155,6 +200,12 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     @Inject
     protected Lazy<SocialSharer> socialSharerLazy;
 
+//    @Bind(R.id.close_button)
+//    protected ImageView closeButton;
+
+    @Inject
+    Picasso picasso;
+
     @NonNull
     protected final UsedDTO usedDTO;
     @NonNull
@@ -174,6 +225,8 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     private Boolean hasTradeValueTextFieldFocus;
     Editable unSpannedComment;
 
+    String topBarColor;
+
     @Nullable
     protected abstract Integer getMaxValue(@NonNull PortfolioCompactDTO portfolioCompactDTO,
                                            @NonNull LiveQuoteDTO quoteDTO,
@@ -191,7 +244,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                 (!isBuy && quoteDTO.getBidPrice() != null);
     }
 
-    protected AbstractTransactionFragment() {
+    protected AbstractBuySellPopupDialogFragment() {
         super();
         this.usedDTO = new UsedDTO();
         this.quantitySubject = BehaviorSubject.create();
@@ -223,21 +276,55 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         usedDTO.quoteDTO = requisite.quoteDTO;
         quantitySubject.onNext(requisite.quantity);
         shareDelegateFragment.onCreate(savedInstanceState);
+        if(getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)){
+            topBarColor = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
+            Log.v(getTag(), "HEX_COLOR="+topBarColor);
+        }else{
+            Log.v(getTag(), "HEX_COLOR nothing");
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_buy_sell_security, container, false);
+//        return inflater.inflate(R.layout.fragment_buy_sell_security, container, false);
+        return inflater.inflate(R.layout.security_buy_sell_dialog, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
+
+        //is in competition
+        if(topBarColor!=null){
+            topBarView.setBackgroundColor(GraphicUtil.parseColor(topBarColor));
+            topCompetitionView.setVisibility(View.VISIBLE);
+            topNormalView.setVisibility(View.GONE);
+        }else{
+            topCompetitionView.setVisibility(View.GONE);
+            topNormalView.setVisibility(View.VISIBLE);
+        }
+
         mQuantityEditText.setCustomSelectionActionModeCallback(createActionModeCallBackForQuantityEditText());
         mQuantityEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+
+                if(usedDTO.securityCompactDTO!=null
+                        && usedDTO.securityCompactDTO.lotSize!=null){
+                    if(Integer.parseInt(textView.getText().toString()) % usedDTO.securityCompactDTO.lotSize != 0){
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                        dialog.setMessage("Quantity must be a multiple of "+usedDTO.securityCompactDTO.lotSize);
+                        dialog.setNeutralButton("Got it", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        dialog.show();
+
+                        return true;
+                    }
+                }
                 return false;
             }
         });
@@ -253,11 +340,45 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
 //            mConfirm.setText(R.string.buy_sell_confirm_sell_now);
 //        }
 
-        mCashOrStockLeft.setText(getCashShareLabel());
+//        mCashOrStockLeft.setText(getCashShareLabel());
 
         shareDelegateFragment.onViewCreated(view, savedInstanceState);
 
-        onDestroyViewSubscriptions.add(
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
+        {
+            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+            {
+                if(usedDTO.securityCompactDTO!=null
+                        && usedDTO.securityCompactDTO.lotSize!=null){
+
+                    int newValue = (progress/usedDTO.securityCompactDTO.lotSize) * 100;
+                    progress = newValue;
+                }
+                if (fromUser)
+                {
+                    quantitySubject.onNext(progress);
+                    mPriceSelectionMethod = AnalyticsConstants.Slider;
+
+                }
+            }
+
+            @Override public void onStartTrackingTouch(SeekBar seekBar)
+            {
+            }
+
+            @Override public void onStopTrackingTouch(SeekBar seekBar)
+            {
+            }
+        });
+
+        if (requisite.quantity != null && requisite.quantity > 0)
+        {
+            mSeekBar.setMax(requisite.quantity);
+            mSeekBar.setEnabled(requisite.quantity > 0);
+            mSeekBar.setProgress(requisite.quantity);
+        }
+
+        onStopSubscriptions.add(
                 Observable.combineLatest(
                         getPortfolioCompactObservable(),
                         getQuoteObservable(),
@@ -325,6 +446,8 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                                     }
                                 }
 
+                                setupCompetitionDisplay(portfolioCompactDTO.providerId);
+
                                 return quantity;
                             }
                         })
@@ -344,89 +467,105 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         );
     }
 
-    protected abstract int getCashShareLabel();
+    private void setupCompetitionDisplay(Integer providerId) {
 
-    protected abstract Boolean isBuyTransaction();
+        if(providerId!=null){
+            topText1.setVisibility(View.GONE);
+            topText2.setVisibility(View.GONE);
+
+            ProviderDTO providerDTO = providerCacheRx.getCachedValue(new ProviderId(providerId));
+            picasso.load(providerDTO.navigationLogoUrl).into(topBarImageView);
+
+        }else{
+            topBarImageView.setVisibility(View.GONE);
+        }
+    }
+//
+//    protected abstract int getCashShareLabel();
+//
+//    protected abstract Boolean isBuyTransaction();
 
     @Override
     public void onStart() {
         super.onStart();
+
+        disableUI();
         initFetches();
 
-        onStopSubscriptions.add(
-                Observable.zip(
-                        requisite.getPortfolioIdObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
-                        getPortfolioCompactListObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
-                        getApplicablePortfolioIdsObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
-                        getAllCloseablePositionObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
-                        new Func4<PortfolioId, PortfolioCompactDTOList, OwnedPortfolioIdList, List<OwnedPortfolioId>, Boolean>() {
-                            @Override
-                            public Boolean call(
-                                    @NonNull PortfolioId selectedPortfolioId,
-                                    @NonNull PortfolioCompactDTOList portfolioCompactDTOs,
-                                    @NonNull OwnedPortfolioIdList ownedPortfolioIds,
-                                    @Nullable List<OwnedPortfolioId> closeableOwnedPortfolioIds) {
-                                int selectedPortfolioPosition = 0;
-
-                                menuOwnedPortfolioIdList = new ArrayList<>();
-                                for (PortfolioCompactDTO candidate : portfolioCompactDTOs) {
-                                    if (ownedPortfolioIds.contains(candidate.getOwnedPortfolioId())) {
-                                        if (isBuyTransaction() || closeableOwnedPortfolioIds.contains(candidate.getOwnedPortfolioId())) {
-                                            MenuOwnedPortfolioId menuOwnedPortfolioId = new MenuOwnedPortfolioId(candidate.getUserBaseKey(), candidate);
-
-                                            if (menuOwnedPortfolioId.title != null) {
-                                                if (menuOwnedPortfolioId.title.equals(getString(R.string.my_stocks_con))) {
-                                                    menuOwnedPortfolioId.title = getString(R.string.trending_tab_stocks_main);
-                                                } else if (menuOwnedPortfolioId.title.equals(getString(R.string.my_fx_con))) {
-                                                    menuOwnedPortfolioId.title = getString(R.string.my_fx);
-                                                }
-                                            }
-
-                                            menuOwnedPortfolioIdList.add(menuOwnedPortfolioId);
-                                        }
-
-                                        if (candidate.getPortfolioId().key.equals(selectedPortfolioId.key)) {
-                                            selectedPortfolioPosition = menuOwnedPortfolioIdList.size() - 1;
-                                        }
-                                    }
-                                }
-
-                                LollipopArrayAdapter<MenuOwnedPortfolioId> menuOwnedPortfolioIdLollipopArrayAdapter =
-                                        new LollipopArrayAdapter<>(
-                                                getActivity(),
-                                                menuOwnedPortfolioIdList);
-                                mPortfolioSpinner.setAdapter(menuOwnedPortfolioIdLollipopArrayAdapter);
-                                mPortfolioSpinner.setSelection(selectedPortfolioPosition);
-                                mPortfolioSpinner.setEnabled(menuOwnedPortfolioIdList.size() > 1);
-
-                                return null;
-                            }
-                        })
-                        .subscribe(
-                                new Action1<Boolean>() {
-                                    @Override
-                                    public void call(Boolean aBoolean) {
-                                        // Nothing to do
-                                    }
-                                },
-                                new TimberOnErrorAction1("Failed to update portfolio selector")));
-
-        onDestroyViewSubscriptions.add(AdapterViewObservable.selects(mPortfolioSpinner)
-                .map(new Func1<OnSelectedEvent, PortfolioId>() {
-                    @Override
-                    public PortfolioId call(OnSelectedEvent onSelectedEvent) {
-                        Integer i = (int) onSelectedEvent.parent.getSelectedItemId();
-
-                        return new PortfolioId(menuOwnedPortfolioIdList.get(i).portfolioId);
-                    }
-                })
-                .subscribe(new Action1<PortfolioId>() {
-                    @Override
-                    public void call(PortfolioId portfolioId) {
-                        requisite.portfolioIdSubject.onNext(portfolioId);
-                    }
-                }, new TimberOnErrorAction1("Failed on listening Spinner select event."))
-        );
+//        onStopSubscriptions.add(
+//                Observable.zip(
+//                        requisite.getPortfolioIdObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
+//                        getPortfolioCompactListObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
+//                        getApplicablePortfolioIdsObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
+//                        getAllCloseablePositionObservable().take(1).observeOn(AndroidSchedulers.mainThread()),
+//                        new Func4<PortfolioId, PortfolioCompactDTOList, OwnedPortfolioIdList, List<OwnedPortfolioId>, Boolean>() {
+//                            @Override
+//                            public Boolean call(
+//                                    @NonNull PortfolioId selectedPortfolioId,
+//                                    @NonNull PortfolioCompactDTOList portfolioCompactDTOs,
+//                                    @NonNull OwnedPortfolioIdList ownedPortfolioIds,
+//                                    @Nullable List<OwnedPortfolioId> closeableOwnedPortfolioIds) {
+//                                int selectedPortfolioPosition = 0;
+//
+//                                menuOwnedPortfolioIdList = new ArrayList<>();
+//                                for (PortfolioCompactDTO candidate : portfolioCompactDTOs) {
+//                                    if (ownedPortfolioIds.contains(candidate.getOwnedPortfolioId())) {
+//                                        if (isBuyTransaction() || closeableOwnedPortfolioIds.contains(candidate.getOwnedPortfolioId())) {
+//                                            MenuOwnedPortfolioId menuOwnedPortfolioId = new MenuOwnedPortfolioId(candidate.getUserBaseKey(), candidate);
+//
+//                                            if (menuOwnedPortfolioId.title != null) {
+//                                                if (menuOwnedPortfolioId.title.equals(getString(R.string.my_stocks_con))) {
+//                                                    menuOwnedPortfolioId.title = getString(R.string.trending_tab_stocks_main);
+//                                                } else if (menuOwnedPortfolioId.title.equals(getString(R.string.my_fx_con))) {
+//                                                    menuOwnedPortfolioId.title = getString(R.string.my_fx);
+//                                                }
+//                                            }
+//
+//                                            menuOwnedPortfolioIdList.add(menuOwnedPortfolioId);
+//                                        }
+//
+//                                        if (candidate.getPortfolioId().key.equals(selectedPortfolioId.key)) {
+//                                            selectedPortfolioPosition = menuOwnedPortfolioIdList.size() - 1;
+//                                        }
+//                                    }
+//                                }
+//
+//                                LollipopArrayAdapter<MenuOwnedPortfolioId> menuOwnedPortfolioIdLollipopArrayAdapter =
+//                                        new LollipopArrayAdapter<>(
+//                                                getActivity(),
+//                                                menuOwnedPortfolioIdList);
+//                                mPortfolioSpinner.setAdapter(menuOwnedPortfolioIdLollipopArrayAdapter);
+//                                mPortfolioSpinner.setSelection(selectedPortfolioPosition);
+//                                mPortfolioSpinner.setEnabled(menuOwnedPortfolioIdList.size() > 1);
+//
+//                                return null;
+//                            }
+//                        })
+//                        .subscribe(
+//                                new Action1<Boolean>() {
+//                                    @Override
+//                                    public void call(Boolean aBoolean) {
+//                                        // Nothing to do
+//                                    }
+//                                },
+//                                new TimberOnErrorAction1("Failed to update portfolio selector")));
+//
+//        onStopSubscriptions.add(AdapterViewObservable.selects(mPortfolioSpinner)
+//                .map(new Func1<OnSelectedEvent, PortfolioId>() {
+//                    @Override
+//                    public PortfolioId call(OnSelectedEvent onSelectedEvent) {
+//                        Integer i = (int) onSelectedEvent.parent.getSelectedItemId();
+//
+//                        return new PortfolioId(menuOwnedPortfolioIdList.get(i).portfolioId);
+//                    }
+//                })
+//                .subscribe(new Action1<PortfolioId>() {
+//                    @Override
+//                    public void call(PortfolioId portfolioId) {
+//                        requisite.portfolioIdSubject.onNext(portfolioId);
+//                    }
+//                }, new TimberOnErrorAction1("Failed on listening Spinner select event."))
+//        );
     }
 
     @Override
@@ -455,6 +594,18 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         super.onResume();
 
         populateComment();
+
+        /** To make sure that the dialog will not show when active dashboard fragment is not BuySellFragment */
+        if (!(navigator.get().getCurrentFragment() instanceof AbstractBuySellFragment))
+        {
+            getDialog().hide();
+        }
+
+        //make the dialog smaller
+//        int currentWidth = getResources().getDisplayMetrics().widthPixels;
+//        int currentHeight = getResources().getDisplayMetrics().heightPixels;
+//
+//        getDialog().getWindow().setLayout(Math.round(currentWidth*9/10), Math.round(currentHeight*9/10));
     }
 
     @NonNull
@@ -516,6 +667,41 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
 
                                 initPortfolioRelatedInfo(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
 
+                                updateDisplay();
+
+                                mTradeValueTextView.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
+                                if (clamped != null)
+                                {
+                                    mCashShareLeftTextView.setText(getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped));
+                                }
+//
+//                                mCashShareLeftTextView.setText(getCashLeftLabelResId(closeablePosition));
+//                                mProfitLossView.setVisibility(
+//                                        getProfitOrLossUsd(portfolioCompactDTO, quoteDTO, closeablePosition, clamped) == null ? View.GONE
+//                                                : View.VISIBLE);
+//
+//                                Double profitLoss = showProfitLossUsd
+//                                        ? getProfitOrLossUsd(portfolioCompactDTO, quoteDTO, closeablePosition, clamped)
+//                                        : getProfitOrLossUsd(portfolioCompactDTO, quoteDTO, closeablePosition, clamped);
+//                                if (profitLoss != null && clamped != null && clamped > 0)
+//                                {
+//                                    int stringResId = profitLoss < 0 ? R.string.buy_sell_sell_loss : R.string.buy_sell_sell_profit;
+//                                    mProfitLossView.setText(
+//                                            getString(
+//                                                    stringResId,
+//                                                    THSignedMoney.builder(profitLoss)
+//                                                            .withOutSign()
+//                                                            .currency(showProfitLossUsd ? null : null)
+//                                                            .build().toString()));
+//                                }
+//                                else
+//                                {
+//                                    mProfitLossView.setText(getString(R.string.buy_sell_sell_loss, "--"));
+//                                }
+
+
+
+
                                 return true;
                             }
                         })
@@ -545,9 +731,9 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                     @Override
                     public void call(@NonNull SecurityCompactDTO securityCompactDTO) {
                         initSecurityRelatedInfo(securityCompactDTO);
-                        String dateTime = DateUtils.getDisplayableDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc,
-                                R.string.data_format_dd_mmm_yyyy_kk_mm_z);
-                        mPriceUpdatedTime.setText(getString(R.string.buy_sell_market_price_time, dateTime));
+//                        String dateTime = DateUtils.getDisplayableDate(getResources(), securityCompactDTO.lastPriceDateAndTimeUtc,
+//                                R.string.data_format_dd_mmm_yyyy_kk_mm_z);
+//                        mPriceUpdatedTime.setText(getString(R.string.buy_sell_market_price_time, dateTime));
                     }
                 })
                 .share();
@@ -623,31 +809,31 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     }
     //</editor-fold>
 
-    @NonNull
-    protected Observable<List<OwnedPortfolioId>> getAllCloseablePositionObservable() {
-        return Observable.combineLatest(
-                positionCompactListCache.get(requisite.securityId),
-                getApplicablePortfolioIdsObservable(),
-                new Func2<Pair<SecurityId, PositionDTOList>, OwnedPortfolioIdList, List<OwnedPortfolioId>>() {
-                    @Override
-                    public List<OwnedPortfolioId> call(Pair<SecurityId, PositionDTOList> securityIdPositionDTOListPair,
-                                                       OwnedPortfolioIdList ownedPortfolioIds) {
-                        List<OwnedPortfolioId> closeableOwnedPortfolioIdList = new ArrayList<>();
-
-                        for (PositionDTO positionDTO : securityIdPositionDTOListPair.second) {
-                            if (ownedPortfolioIds.contains(positionDTO.getOwnedPortfolioId())
-                                    && positionDTO.shares != null
-                                    && positionDTO.shares != 0) {
-                                closeableOwnedPortfolioIdList.add(positionDTO.getOwnedPortfolioId());
-                            }
-                        }
-
-                        return closeableOwnedPortfolioIdList;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .share();
-    }
+//    @NonNull
+//    protected Observable<List<OwnedPortfolioId>> getAllCloseablePositionObservable() {
+//        return Observable.combineLatest(
+//                positionCompactListCache.get(requisite.securityId),
+//                getApplicablePortfolioIdsObservable(),
+//                new Func2<Pair<SecurityId, PositionDTOList>, OwnedPortfolioIdList, List<OwnedPortfolioId>>() {
+//                    @Override
+//                    public List<OwnedPortfolioId> call(Pair<SecurityId, PositionDTOList> securityIdPositionDTOListPair,
+//                                                       OwnedPortfolioIdList ownedPortfolioIds) {
+//                        List<OwnedPortfolioId> closeableOwnedPortfolioIdList = new ArrayList<>();
+//
+//                        for (PositionDTO positionDTO : securityIdPositionDTOListPair.second) {
+//                            if (ownedPortfolioIds.contains(positionDTO.getOwnedPortfolioId())
+//                                    && positionDTO.shares != null
+//                                    && positionDTO.shares != 0) {
+//                                closeableOwnedPortfolioIdList.add(positionDTO.getOwnedPortfolioId());
+//                            }
+//                        }
+//
+//                        return closeableOwnedPortfolioIdList;
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .share();
+//    }
 
     @NonNull
     protected Observable<Integer> getMaxValueObservable() // It can pass null values
@@ -672,6 +858,17 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
+                .doOnNext(new Action1<Integer>()
+                {
+                    @Override public void call(@Nullable Integer maxValue)
+                    {
+                        if (maxValue != null)
+                        {
+                            mSeekBar.setMax(maxValue);
+                            mSeekBar.setEnabled(maxValue > 0);
+                        }
+                    }
+                })
                 .share();
     }
 
@@ -705,6 +902,11 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                     public void call(@Nullable Integer clampedQuantity) {
                         usedDTO.clampedQuantity = clampedQuantity;
                         if (clampedQuantity != null) {
+                            if (mSeekBar.getProgress() != clampedQuantity)
+                            {
+                                mSeekBar.setProgress(clampedQuantity);
+                            }
+
                             boolean updateText;
                             try {
                                 updateText = clampedQuantity != Integer.parseInt(mQuantityEditText.getEditableText().toString());
@@ -757,7 +959,29 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
             @NonNull PositionDTOList positionDTOs,
             @NonNull PortfolioId portfolioId);
 
-    abstract protected void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO);
+    private void initSecurityRelatedInfo(@Nullable SecurityCompactDTO securityCompactDTO){
+        if (securityCompactDTO != null)
+        {
+            if (!StringUtils.isNullOrEmpty(securityCompactDTO.name))
+            {
+                securityName.setText(securityCompactDTO.name);
+                securitySymbol.setText(securityCompactDTO.getExchangeSymbol());
+
+                topText1.setText(securityCompactDTO.getExchangeSymbol());
+            }
+            else
+            {
+                securityName.setText(securityCompactDTO.getExchangeSymbol());
+            }
+
+            picasso.load(securityCompactDTO.imageBlobUrl).into(securityLogo);
+
+        }
+        else
+        {
+            securityName.setText("-");
+        }
+    }
 
     protected void initPortfolioRelatedInfo(
             @Nullable PortfolioCompactDTO portfolioCompactDTO,
@@ -770,11 +994,16 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
             mTradeValueTextView.setText(getTradeValueText(portfolioCompactDTO, quoteDTO, clamped));
         }
 
-        mTradeSymbol.setText(portfolioCompactDTO.currencyDisplay);
+//        mTradeSymbol.setText(portfolioCompactDTO.currencyDisplay);
 
-        if (clamped != null) {
-            mCashShareLeftTextView.setText(getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped));
-        }
+        mSymbolCashValue.setText(portfolioCompactDTO.currencyDisplay);
+        mSymbolCashLeft.setText(portfolioCompactDTO.currencyDisplay);
+
+        enableUI();
+
+//        if (clamped != null) {
+//            mCashShareLeftTextView.setText(getCashShareLeft(portfolioCompactDTO, quoteDTO, closeablePosition, clamped));
+//        }
 
         updateDisplay();
     }
@@ -870,11 +1099,12 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                 if (portfolioCompactDTO.leverage != null && portfolioCompactDTO.leverage != 0) {
                     remaining /= portfolioCompactDTO.leverage;
                 }
-                THSignedNumber thSignedNumber = THSignedMoney
+                THSignedNumber thSignedNumber = THSignedNumber
                         .builder(remaining)
                         .withOutSign()
-                        .currency(portfolioCompactDTO.currencyDisplay)
+//                        .currency(portfolioCompactDTO.currencyDisplay)//disable currency
                         .build();
+
                 cashLeftText = thSignedNumber.toString();
             }
         }
@@ -967,11 +1197,12 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    @OnClick(R.id.btn_confirm)
+    @OnClick(R.id.dialog_btn_confirm)
     public void onConfirmClicked(View v) {
         updateConfirmButton(true);
         fireBuySellReport();
         launchBuySell();
+        getDialog().hide();
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -983,8 +1214,9 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         if (unSpannedComment != null) {
             SecurityDiscussionEditPostFragment.putComment(bundle, unSpannedComment.toString());
         }
-
         transactionCommentFragment = navigator.get().pushFragment(TransactionEditCommentFragment.class, bundle);
+
+        getDialog().hide();
     }
 
     @Deprecated
@@ -1015,10 +1247,21 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                                             int quantity);
 
     protected void updateConfirmButton(boolean forceDisable) {
+
+
         if (forceDisable) {
             mConfirm.setEnabled(false);
         } else {
-            mConfirm.setEnabled(usedDTO.clampedQuantity != null && usedDTO.clampedQuantity != 0 && hasValidInfo());
+
+            if(usedDTO.securityCompactDTO!=null
+                    && usedDTO.securityCompactDTO.lotSize!=null){
+
+                mConfirm.setEnabled(usedDTO.clampedQuantity != null && usedDTO.clampedQuantity != 0 && hasValidInfo()
+                && Integer.parseInt(mQuantityEditText.getText().toString()) % usedDTO.securityCompactDTO.lotSize ==0) ;
+
+            }else{
+                mConfirm.setEnabled(usedDTO.clampedQuantity != null && usedDTO.clampedQuantity != 0 && hasValidInfo());
+            }
         }
     }
 
@@ -1316,6 +1559,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         private static final String KEY_PORTFOLIO_ID = Requisite.class.getName() + ".portfolio_id";
         private static final String KEY_QUOTE_DTO = Requisite.class.getName() + ".quote_dto";
         private static final String KEY_QUANTITY = Requisite.class.getName() + ".quantity";
+        private static final String KEY_BAR_COLOR = Requisite.class.getName() + ".barColor";
 
         @NonNull
         public final SecurityId securityId;
@@ -1330,6 +1574,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                          @NonNull PortfolioId portfolioId,
                          @NonNull LiveQuoteDTO quoteDTO,
                          @Nullable Integer quantity) {
+
             this.securityId = securityId;
             this.quoteDTO = quoteDTO;
             this.quantity = quantity;
@@ -1386,6 +1631,30 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         }
     }
 
+    @SuppressWarnings("unused")
+    @OnClick(android.R.id.closeButton)
+    protected void onCloseClicked(View button)
+    {
+        dismiss();
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(R.id.close_button_competition)
+    protected void onCloseClickedCompetition(View button)
+    {
+        dismiss();
+    }
+
+    private void disableUI(){
+        mQuantityEditText.setEnabled(false);
+        mSeekBar.setEnabled(false);
+    }
+
+    private void enableUI(){
+        mQuantityEditText.setEnabled(true);
+        mSeekBar.setEnabled(true);
+    }
+
     public static class UsedDTO {
         @Nullable
         public SecurityCompactDTO securityCompactDTO;
@@ -1399,5 +1668,3 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
         public Integer clampedQuantity;
     }
 }
-
-

@@ -538,6 +538,7 @@ public class MainCompetitionFragment extends DashboardFragment
 //                providerId); //old securities screen
 
         SecurityCompositeDTO securityCompositeDTO = securityCompositeListCacheRx.getCachedValue(new BasicProviderSecurityV2ListType(providerId));
+        args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, this.providerDTO.hexColor);
         ProviderTradableSecuritiesHelper.pushTradableSecuritiesList(navigator.get(), args, ownedPortfolioId, providerId, securityCompositeDTO);
     }
 
