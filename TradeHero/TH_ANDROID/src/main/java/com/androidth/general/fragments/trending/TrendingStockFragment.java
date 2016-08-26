@@ -529,6 +529,7 @@ public class TrendingStockFragment extends TrendingBaseFragment
                     portfolioCompactListCache,
                     currentUserId);
         }
+
         BuySellStockFragment.putRequisite(args, requisite);
 
         navigator.get().pushFragment(BuySellStockFragment.class, args);

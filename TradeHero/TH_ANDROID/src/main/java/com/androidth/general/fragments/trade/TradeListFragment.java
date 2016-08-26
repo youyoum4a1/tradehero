@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.androidth.general.common.rx.PairGetSecond;
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
@@ -117,6 +118,8 @@ public class TradeListFragment extends DashboardFragment
 
     protected TradeListItemAdapter adapter;
 
+    String actionBarColor;
+
     public static void putPositionDTOKey(@NonNull Bundle args, @NonNull PositionDTOKey positionDTOKey)
     {
         args.putBundle(BUNDLE_KEY_POSITION_DTO_KEY_BUNDLE, positionDTOKey.getArgs());
@@ -180,6 +183,10 @@ public class TradeListFragment extends DashboardFragment
         ButterKnife.bind(this, view);
         tradeListView.setAdapter(adapter);
         tradeListView.setOnScrollListener(fragmentElements.get().getListViewScrollListener());
+
+        if(getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR)){
+            actionBarColor = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR);
+        }
     }
 
     @Override public void onStart()
@@ -292,8 +299,8 @@ public class TradeListFragment extends DashboardFragment
                         new Func3<WatchlistPositionDTOList, Map<SecurityId, AlertCompactDTO>, PositionDTO, PositionDTO>()
                         {
                             @Override public PositionDTO call(WatchlistPositionDTOList watchlistPositionDTOs,
-                                    Map<SecurityId, AlertCompactDTO> alerts,
-                                    PositionDTO positionDTO)
+                                                              Map<SecurityId, AlertCompactDTO> alerts,
+                                                              PositionDTO positionDTO)
                             {
                                 watchedList = watchlistPositionDTOs;
                                 mappedAlerts = alerts;
@@ -454,14 +461,19 @@ public class TradeListFragment extends DashboardFragment
         else
         {
             Bundle args = new Bundle();
+            if(actionBarColor!=null){
+                args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, actionBarColor);
+            }
+
             AbstractBuySellFragment.putRequisite(
                     args,
-                    purchaseApplicableOwnedPortfolioId != null
-                            ? new AbstractBuySellFragment.Requisite(
-                            securityId,
-                            purchaseApplicableOwnedPortfolioId,
-                            0)
-                            : new AbstractBuySellFragment.Requisite(
+                    purchaseApplicableOwnedPortfolioId != null ?
+                            new AbstractBuySellFragment.Requisite(
+                                    securityId,
+                                    purchaseApplicableOwnedPortfolioId,
+                                    0)
+                            :
+                            new AbstractBuySellFragment.Requisite(
                                     securityId,
                                     new Bundle(),
                                     portfolioCompactListCache,

@@ -7,8 +7,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-  <Space android:layout_width="0dp"
-      android:layout_weight="1"
+  <!--<Space android:layout_width="0dp"-->
+      <!--android:layout_weight="1"-->
+      <!--android:layout_height="wrap_content"/>-->
+
+  <Space android:layout_width="20sp"
       android:layout_height="wrap_content"/>
 
   <com.androidth.general.common.widget.SocialLinkToggleButton
@@ -64,9 +67,12 @@
       app:networkType="linkedin"
       />-->
 
-  <Space android:layout_width="0dp"
-      android:layout_weight="1"
-      android:visibility="invisible"
+  <!--<Space android:layout_width="0dp"-->
+      <!--android:layout_weight="1"-->
+      <!--android:visibility="invisible"-->
+      <!--android:layout_height="wrap_content"/>-->
+
+  <Space android:layout_width="30sp"
       android:layout_height="wrap_content"/>
 
   <ToggleButton
@@ -81,8 +87,11 @@
       android:textOn=""
       />
 
-  <Space android:layout_width="0dp"
-      android:layout_weight="1"
+  <!--<Space android:layout_width="0dp"-->
+      <!--android:layout_weight="1"-->
+      <!--android:layout_height="wrap_content"/>-->
+
+  <Space android:layout_width="30sp"
       android:layout_height="wrap_content"/>
 
   <com.androidth.general.common.widget.SocialLinkToggleButton
@@ -99,8 +108,7 @@
       app:networkType="weibo"
       />
 
-  <Space android:layout_width="0dp"
-      android:layout_weight="1"
+  <Space android:layout_width="30sp"
       android:layout_height="wrap_content"/>
 
 </merge>

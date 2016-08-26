@@ -164,8 +164,8 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
     @Bind(R.id.how_you_know_th) Spinner spinnerHowYouKnowTH;
     @Bind(R.id.btn_join_competition) Button joinCompetitionButton;
 
-    @Bind(R.id.howDoYouText) TextView howDoYouKnow;
-    @Bind(R.id.residenceText) TextView residenceText;
+    @Bind(R.id.tv_signup_survey_1) TextView tvSurvey1;
+    @Bind(R.id.tv_signup_survey_2) TextView tvSurvey2;
 
     @Inject ProviderCacheRx providerCache;
     @Inject ProviderListCacheRx providerListCache;
@@ -346,28 +346,38 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
                     cityLists = Arrays.asList(cList.split(delimeter));
                     howYouKnowThLists = Arrays.asList(howUKnoTh.split(delimeter));
 
-                    howYouKnowTHAdapter = new LollipopArrayAdapter<>(getActivity(), howYouKnowThLists);
-                    cityListAdapter = new LollipopArrayAdapter<>(getActivity(), cityLists);
+                    if(howYouKnowThLists!=null){
+                        howYouKnowTHAdapter = new LollipopArrayAdapter<>(getActivity(), howYouKnowThLists);
+                        spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
+                        spinnerHowYouKnowTH.setEnabled(!howYouKnowTHAdapter.isEmpty());
 
+                        if(howYouKnowTHAdapter.isEmpty()){
+                            spinnerHowYouKnowTH.setVisibility(View.GONE);
 
-                    spinnerHowYouKnowTH.setAdapter(howYouKnowTHAdapter);
-                    spinnerResidenceState.setAdapter(cityListAdapter);
-
-                    spinnerHowYouKnowTH.setEnabled(!howYouKnowTHAdapter.isEmpty());
-                    spinnerResidenceState.setEnabled(!cityListAdapter.isEmpty());
-
-                    if(howYouKnowTHAdapter.isEmpty()){
+                        }
+                    }else{
+                        tvSurvey2.setVisibility(View.GONE);
                         spinnerHowYouKnowTH.setVisibility(View.GONE);
                     }
-                    if(cityListAdapter.isEmpty()){
+
+                    if(cityLists!=null){
+                        cityListAdapter = new LollipopArrayAdapter<>(getActivity(), cityLists);
+                        spinnerResidenceState.setAdapter(cityListAdapter);
+                        spinnerResidenceState.setEnabled(!cityListAdapter.isEmpty());
+
+                        if(cityListAdapter.isEmpty()){
+                            spinnerResidenceState.setVisibility(View.GONE);
+                        }
+                    }else{
+                        tvSurvey1.setVisibility(View.GONE);
                         spinnerResidenceState.setVisibility(View.GONE);
                     }
                 }
                 else {
                     spinnerHowYouKnowTH.setVisibility(View.GONE);
                     spinnerResidenceState.setVisibility(View.GONE);
-                    howDoYouKnow.setVisibility(View.GONE);
-                    residenceText.setVisibility(View.GONE);
+                    tvSurvey2.setVisibility(View.GONE);
+                    tvSurvey1.setVisibility(View.GONE);
 
                 }
             }

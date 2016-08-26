@@ -330,6 +330,10 @@ public class PositionListFragment
     {
         Bundle args = new Bundle();
 
+        if(actionBarColor!=null){
+            args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, actionBarColor);
+        }
+
         if (purchaseApplicableOwnedPortfolioId != null)
         {
             SecurityListRxFragment.putApplicablePortfolioId(args, purchaseApplicableOwnedPortfolioId);
@@ -581,6 +585,9 @@ public class PositionListFragment
             }
             if (navigator != null)
             {
+                if(actionBarColor!=null){
+                    args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, actionBarColor);
+                }
                 navigator.get().pushFragment(TradeListFragment.class, args);
             }
         }
