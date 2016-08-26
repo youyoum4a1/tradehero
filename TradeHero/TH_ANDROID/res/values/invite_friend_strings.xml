@@ -21,6 +21,8 @@
   <string name="invite_email_subject">Join Me in %s</string>
   <string name="invite_email_text">I have been using %1$s to experiment and learn in a simulated trading environment.
     Check it out on Play Store! Please use my referral code: %2$s\nDownload it at %3$s</string>
+  <string name="kenanga_invite_email_text">Million ringgit virtual cash in my trading account! I\'m playing in the NagaWarrants Warrior Challenge now. I challenge all my FB friends ...if you think you have what it takes to beat me!
+    \n\nDownload the TradeHero App from the App Store! Please use my referral code: %1$s\n\nDownload it at %2$s</string>
   <string name="invite_text_from_clipboard">Your friend invitation URL has been copied to your clipboard. Paste it in your text entry field and send it to your friends!</string>
 
 </resources>
