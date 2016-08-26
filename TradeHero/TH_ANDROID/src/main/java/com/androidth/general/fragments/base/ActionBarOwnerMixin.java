@@ -194,8 +194,10 @@ public class ActionBarOwnerMixin
 
     public void setCustomView(View view)
     {
-        actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setCustomView(view);
+        if (actionBar != null) {
+            actionBar.setDisplayShowCustomEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setCustomView(view);
+        }
     }
 }

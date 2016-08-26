@@ -76,38 +76,38 @@
             <!--android:text="@string/required_document"-->
             <!--/>-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_xsmall"
-                android:orientation="horizontal">
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginBottom="@dimen/margin_xsmall"-->
+                <!--android:orientation="horizontal">-->
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.1"
-                    app:hintTextAppearance="@style/TH.Caption">
+                <!--<android.support.design.widget.TextInputLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_weight="0.1"-->
+                    <!--app:hintTextAppearance="@style/TH.Caption">-->
 
-                    <EditText
-                        android:id="@+id/sign_up_email"
-                        style="@style/TH.Body"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/email"
-                        android:inputType="textEmailAddress"
-                        />
-                </android.support.design.widget.TextInputLayout>
+                    <!--<EditText-->
+                        <!--android:id="@+id/sign_up_email"-->
+                        <!--style="@style/TH.Body"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:hint="@string/email"-->
+                        <!--android:inputType="textEmailAddress"-->
+                        <!--/>-->
+                <!--</android.support.design.widget.TextInputLayout>-->
 
-                <com.androidth.general.widget.validation.KYCVerifyButton
-                    android:id="@+id/email_verify_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.9"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:backgroundTint="@color/transparent"
-                    android:src="@drawable/ic_grey_alert"/>
+                <!--<com.androidth.general.widget.validation.KYCVerifyButton-->
+                    <!--android:id="@+id/email_verify_button"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="0.9"-->
+                    <!--android:background="?android:attr/selectableItemBackground"-->
+                    <!--android:backgroundTint="@color/transparent"-->
+                    <!--android:src="@drawable/ic_grey_alert"/>-->
 
-            </LinearLayout>
+            <!--</LinearLayout>-->
 
             <RelativeLayout
                 android:id="@+id/info_identity_container"
