@@ -145,6 +145,7 @@ public class FriendsInvitationFragment extends BaseFragment
     private Bundle savedState;
     private CallbackManager callbackManager;
     private ShareDialog shareDialog;
+    private String referralCode;
 
     private static final String EXTRA_PROTOCOL_VERSION = "com.facebook.orca.extra.PROTOCOL_VERSION";
     private static final String EXTRA_APP_ID = "com.facebook.orca.extra.APPLICATION_ID";
@@ -181,6 +182,12 @@ public class FriendsInvitationFragment extends BaseFragment
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         restoreSavedData(savedInstanceState);
+
+        UserProfileDTO userProfileDTO = userProfileCache.get().getCachedValue(currentUserId.toUserBaseKey());
+        if (userProfileDTO != null)
+        {
+            referralCode = userProfileDTO.referralCode;
+        }
 
         if (providerId != null) {
             fetchReferralStatus();
@@ -307,6 +314,7 @@ public class FriendsInvitationFragment extends BaseFragment
                     @Override public void call(Pair<ProviderId, MyProviderReferralDTO> providerIdMyProviderReferralDTOPair)
                     {
                         MyProviderReferralDTO myProviderReferralDTO = providerIdMyProviderReferralDTOPair.second;
+                        referralCode = myProviderReferralDTO.myReferralCode;
 
                         if (myProviderReferralDTO.haveAlreadyRedeemed)
                         {
@@ -443,7 +451,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 intent.setPackage("com.tencent.mm");
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name),
-                        userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
+                        referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
                 try{
                     getActivity().startActivity(intent);
                 }catch (Exception e){
@@ -513,7 +521,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.invite_email_subject, getString(R.string.app_name)));
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
                 try{
                     getActivity().startActivity(intent);
                 }catch (Exception e){
@@ -524,7 +532,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("smsto:"));
                 intent.setType("vnd.android-dir/mms-sms");
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
                 intent.setData(Uri.parse("sms:"));
                 try{
                     getActivity().startActivity(intent);
@@ -534,7 +542,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 break;
             case WHATSAPP:
                 intent = new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
+                intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.invite_email_text, getString(R.string.app_name), referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
                 intent.setType("text/plain");
                 intent.setPackage("com.whatsapp");
                 try{
@@ -559,7 +567,7 @@ public class FriendsInvitationFragment extends BaseFragment
             WeChatDTO weChatDTO = new WeChatDTO();
             weChatDTO.id = 0;
             weChatDTO.type = WeChatMessageType.Invite;
-            weChatDTO.title = getString(WeChatMessageType.Invite.getTitleResId(), userProfileDTO.referralCode);
+            weChatDTO.title = getString(WeChatMessageType.Invite.getTitleResId(), referralCode);
             socialSharerLazy.get().share(weChatDTO)
                     .subscribe(
                             new EmptyAction1<SocialShareResult>(),
@@ -824,7 +832,7 @@ public class FriendsInvitationFragment extends BaseFragment
     private void pushFacebookShareContent(UserProfileDTO userProfileDTO){
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Join me!", getString(R.string.invite_email_text,
-                getString(R.string.app_name), userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
+                getString(R.string.app_name), referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
         clipboard.setPrimaryClip(clip);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
@@ -851,7 +859,7 @@ public class FriendsInvitationFragment extends BaseFragment
     private void pushFBMessenger(UserProfileDTO userProfileDTO){
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Join me!", getString(R.string.invite_email_text,
-                getString(R.string.app_name), userProfileDTO.referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
+                getString(R.string.app_name), referralCode, GooglePlayMarketUtilBase.getAppMarketUrl()));
         clipboard.setPrimaryClip(clip);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
