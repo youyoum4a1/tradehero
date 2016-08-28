@@ -133,7 +133,13 @@ abstract public class LiveSignUpStepBaseFragment extends BaseFragment
     {
         super.onViewCreated(view, savedInstanceState);
         realm = Realm.getDefaultInstance();
-        ButterKnife.bind(this, view);
+        try{
+            ButterKnife.bind(this, view);
+        }catch (Exception e){
+            e.printStackTrace();
+            getActivity().finish();
+        }
+
         brokerSituationObservable = createBrokerSituationObservable().publish();
         Observable<LiveBrokerDTO> brokerObservable = createBrokerObservable(brokerSituationObservable);
         kycOptionsObservable = createKYCFormOptionsObservable(brokerSituationObservable).publish();
