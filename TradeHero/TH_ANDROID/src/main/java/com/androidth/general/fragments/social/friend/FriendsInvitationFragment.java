@@ -361,16 +361,29 @@ public class FriendsInvitationFragment extends BaseFragment
         );
     }
 
+    private String getShareTextWithURL() {
+        if (providerId != null) {
+            Map<String, String> parameters = new HashMap<String, String>();
+            parameters.put("providerId", providerId.toString());
+
+            return getString(R.string.kenanga_invite_email_text_with_url,
+                    referralCode, GooglePlayMarketUtilBase.getAppMarketUrlWithParameter(parameters));
+        } else {
+            return getString(R.string.invite_email_text_with_url, getString(R.string.app_name),
+                    referralCode, GooglePlayMarketUtilBase.getAppMarketUrl());
+        }
+    }
+
     private String getShareText() {
         if (providerId != null) {
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put("providerId", providerId.toString());
 
             return getString(R.string.kenanga_invite_email_text,
-                    referralCode, GooglePlayMarketUtilBase.getAppMarketUrlWithParameter(parameters));
+                    referralCode);
         } else {
             return getString(R.string.invite_email_text, getString(R.string.app_name),
-                    referralCode, GooglePlayMarketUtilBase.getAppMarketUrl());
+                    referralCode);
         }
     }
 
@@ -466,7 +479,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 intent = new Intent(Intent.ACTION_SEND);
                 intent.setPackage("com.tencent.mm");
                 intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT, getShareText());
+                intent.putExtra(Intent.EXTRA_TEXT, getShareTextWithURL());
                 try{
                     getActivity().startActivity(intent);
                 }catch (Exception e){
@@ -536,7 +549,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.invite_email_subject, getString(R.string.app_name)));
-                intent.putExtra(Intent.EXTRA_TEXT, getShareText());
+                intent.putExtra(Intent.EXTRA_TEXT, getShareTextWithURL());
                 try{
                     getActivity().startActivity(intent);
                 }catch (Exception e){
@@ -547,7 +560,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("smsto:"));
                 intent.setType("vnd.android-dir/mms-sms");
-                intent.putExtra(Intent.EXTRA_TEXT, getShareText());
+                intent.putExtra(Intent.EXTRA_TEXT, getShareTextWithURL());
                 intent.setData(Uri.parse("sms:"));
                 try{
                     getActivity().startActivity(intent);
@@ -557,7 +570,7 @@ public class FriendsInvitationFragment extends BaseFragment
                 break;
             case WHATSAPP:
                 intent = new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_TEXT, getShareText());
+                intent.putExtra(Intent.EXTRA_TEXT, getShareTextWithURL());
                 intent.setType("text/plain");
                 intent.setPackage("com.whatsapp");
                 try{
@@ -882,7 +895,7 @@ public class FriendsInvitationFragment extends BaseFragment
 
     private void pushFBMessenger(UserProfileDTO userProfileDTO){
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("Join me!", getShareText());
+        ClipData clip = ClipData.newPlainText("Join me!", getShareTextWithURL());
         clipboard.setPrimaryClip(clip);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());

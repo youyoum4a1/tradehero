@@ -247,7 +247,7 @@
           android:layout_gravity="start"
           android:layout_marginLeft="4dp"
           android:text="@string/residence_state"
-          android:id="@+id/residenceText"
+          android:id="@+id/tv_signup_survey_1"
           />
 
       <Spinner
@@ -265,7 +265,7 @@
           android:layout_gravity="start"
           android:layout_marginLeft="4dp"
           android:text="@string/how_you_know_th"
-          android:id="@+id/howDoYouText"
+          android:id="@+id/tv_signup_survey_2"
           />
 
       <Spinner

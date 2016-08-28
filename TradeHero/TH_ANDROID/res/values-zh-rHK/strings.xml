@@ -536,7 +536,7 @@
   <string name="invite_code_message">如果您是由朋友邀請而來，在此輸入邀請碼將獲得10,000 虛擬貨幣。</string>
   <string name="invite_code_title">認領您的虛擬獎金!</string>
   <string name="invite_email_subject">加入%s</string>
-  <string name="invite_email_text">下載%1$s，跟著頂尖英雄賺大錢! 使用我的邀請碼%2$s 更有額外獎勵哦\n%3$s</string>
+  <string name="invite_email_text">下載%1$s，跟著頂尖英雄賺大錢! 使用我的邀請碼%2$s 更有額外獎勵哦\n</string>
   <string name="invite_text_from_clipboard">Your friend invitation URL has been copied to your clipboard. Paste it in your text entry field and send it to your friends!</string>
   <string name="invite_friends">邀請朋友</string>
   <string name="invite_friend_add_all">全部添加</string>

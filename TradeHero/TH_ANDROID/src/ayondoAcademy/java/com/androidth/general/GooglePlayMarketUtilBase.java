@@ -9,6 +9,9 @@ import com.androidth.general.R;
 import com.androidth.general.rx.EmptyAction1;
 import com.androidth.general.rx.dialog.OnDialogClickEvent;
 import com.androidth.general.utils.AlertDialogRxUtil;
+
+import java.util.Map;
+
 import timber.log.Timber;
 
 public abstract class GooglePlayMarketUtilBase
@@ -54,5 +57,19 @@ public abstract class GooglePlayMarketUtilBase
     public static String getAppMarketUrl()
     {
         return PLAYSTORE_URL;
+    }
+
+    public static String getAppMarketUrlWithParameter(Map<String, String> parameter) {
+        String url = PLAYSTORE_URL;
+
+        for (Map.Entry<String, String> data: parameter.entrySet())
+        {
+            String key = data.getKey();
+            String value = data.getValue();
+
+            url += ("&" + key + "=" + value);
+        }
+
+        return url;
     }
 }
