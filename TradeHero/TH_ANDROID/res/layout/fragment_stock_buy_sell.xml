@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
                 android:layout_gravity="bottom|center_horizontal"
-                tools:background="@color/number_up"
+                android:background="@drawable/round_label_zero"
                 tools:text="+408%"
                 />
         </LinearLayout>
