@@ -2,9 +2,24 @@
 
 <com.androidth.general.fragments.trending.ProviderTileView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/grid_item_height"
-    android:minHeight="@dimen/grid_item_height"
-    android:padding="@dimen/grid_item_bg_border_width"
-    android:background="@drawable/grid_item_bg"
-    />
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/TH.TrendingTileContainer">
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/tile_provider_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/tile_provider_image"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/grid_item_height"
+            android:minHeight="@dimen/grid_item_height"
+            android:padding="@dimen/grid_item_bg_border_width"
+            android:background="@drawable/grid_item_bg"
+            tools:src="@drawable/th_app_logo"/>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
+
+</com.androidth.general.fragments.trending.ProviderTileView>

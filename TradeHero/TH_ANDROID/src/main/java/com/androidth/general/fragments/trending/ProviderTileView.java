@@ -1,8 +1,14 @@
 package com.androidth.general.fragments.trending;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 import com.androidth.general.R;
@@ -13,15 +19,21 @@ import com.androidth.general.api.competition.key.ProviderListKey;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.models.graphics.ForExtraTileBackground;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
+
+import butterknife.Bind;
 import dagger.Lazy;
 import javax.inject.Inject;
 
-public class ProviderTileView extends ImageView
+public class ProviderTileView extends LinearLayout
     implements DTOView<ProviderDTO>
 {
     @Inject Lazy<ProviderListCacheRx> providerListCache;
     @Inject Lazy<Picasso> picasso;
     @Inject @ForExtraTileBackground Transformation backgroundTransformation;
+
+    @Bind(R.id.tile_provider_image) ImageView tileImageView;
+    @Bind(R.id.tile_provider_shimmer) ShimmerFrameLayout shimmerFrameLayout;
+
     private ProviderDTO providerDTO;
 
     //<editor-fold desc="Constructors">
@@ -47,6 +59,11 @@ public class ProviderTileView extends ImageView
     @Override protected void onFinishInflate()
     {
         super.onFinishInflate();
+        shimmerFrameLayout = (ShimmerFrameLayout) findViewById(R.id.tile_provider_shimmer);
+        tileImageView = (ImageView) findViewById(R.id.tile_provider_image);
+
+        makeItFancy(shimmerFrameLayout);
+
         HierarchyInjector.inject(this);
     }
 
@@ -71,21 +88,25 @@ public class ProviderTileView extends ImageView
             String tileImage = providerDTO.isUserEnrolled ? providerDTO.tileJoinedImageUrl : providerDTO.tileImageUrl;
             //if (getHeight() > 0 && getWidth() > 0)
             {
-                picasso.get().load(tileImage)
-                        .placeholder(R.drawable.white_rounded_background_xml)
-                        //.transform(backgroundTransformation)
-                        .fit()
-                        .into(this);
+                if(tileImageView!=null){
+                    picasso.get().load(tileImage)
+                            .placeholder(R.drawable.white_rounded_background_xml)
+                            //.transform(backgroundTransformation)
+                            .fit()
+                            .into(tileImageView);
+                }else{
+
+                }
+
             }
         }
         else
         {
-            //if (getHeight() > 0 && getWidth() > 0)
-            {
+            if(tileImageView!=null){
                 picasso.get().load(R.drawable.white_rounded_background_xml)
                         //.transform(backgroundTransformation)
                         .fit()
-                        .into(this);
+                        .into(tileImageView);
             }
         }
     }
@@ -93,5 +114,14 @@ public class ProviderTileView extends ImageView
     public int getProviderId()
     {
         return providerDTO != null ? providerDTO.id : 0;
+    }
+
+    private void makeItFancy(ShimmerFrameLayout layout){
+        layout.setDropoff(0.6f);
+        layout.setBaseAlpha(0.7f);
+        layout.setBackgroundColor(Color.TRANSPARENT);
+        layout.setDuration(3000);
+        layout.setTilt(30.0f);
+        shimmerFrameLayout.startShimmerAnimation();
     }
 }
