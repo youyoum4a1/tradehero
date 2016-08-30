@@ -39,14 +39,25 @@ public class PortfolioCompactDTOUtil
 
         double availableUsd = portfolioCompactDTO.getUsableForTransactionUsd();
 
+        double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
+
+        int currentMaxAllowable = (int) Math.floor((availableUsd - txnCostUsd) / quotePriceUsd);
+
         if (providerDTO != null && providerDTO.maxLimitPerTrade != null) {
             if (portfolioCompactDTO.getUsableForTransactionRefCcy() > providerDTO.maxLimitPerTrade) {
                 availableUsd = providerDTO.maxLimitPerTrade * portfolioCompactDTO.getProperRefCcyToUsdRate();
             }
-        }
 
-        double txnCostUsd = portfolioCompactDTO.getProperTxnCostUsd();
-        return (int) Math.floor((availableUsd - txnCostUsd) / quotePriceUsd);
+            currentMaxAllowable = (int) Math.floor((availableUsd - txnCostUsd) / quotePriceUsd);
+            if(currentMaxAllowable>providerDTO.maxLimitPerTrade){
+                return (int)Math.floor(providerDTO.maxLimitPerTrade);
+            }else{
+                return currentMaxAllowable;
+            }
+
+        }else{
+            return currentMaxAllowable;
+        }
     }
 
     @Nullable public static Integer getMaxPurchasableShares(

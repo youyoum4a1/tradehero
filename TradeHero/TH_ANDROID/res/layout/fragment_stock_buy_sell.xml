@@ -116,13 +116,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/stock_name"
-                android:text="Apple Inc."
+                android:text="--"
                 android:textStyle="bold"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/exchange_name"
-                android:text="NASDAQ:AAPL"
+                android:text="--"
                 android:textAppearance="@android:style/TextAppearance.Small"
                 android:textAllCaps="true"/>
             <TextView
