@@ -8,7 +8,8 @@ public class LiveNetworkConstants
     //https://live.tradehero.mobi/
     public static final String TRADEHERO_LIVE_API_ENDPOINT = TRADEHERO_LIVE_ENDPOINT + "api/";
 
-    public static final String HUB_NAME = "clientnotificationhub";
+    public static final String CLIENT_NOTIFICATION_HUB_NAME = "clientnotificationhub";
+    public static final String PORTFOLIO_HUB_NAME = "portfoliohub";
     public static final String PROXY_METHOD_ADD_TO_GROUPS = "AddToGroups";
     public static final String PROXY_METHOD_ADD_TO_GROUP = "AddToGroup";
 }

@@ -105,6 +105,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
+import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 import retrofit.client.Response;
 import retrofit.mime.TypedInput;
 import rx.Observable;
@@ -1096,15 +1097,17 @@ public class LiveSignUpStep1AyondoFragment extends LiveSignUpStepBaseAyondoFragm
 
     public void setupSignalR(String emailAddress) {
 
-        signalRManager = new SignalRManager(requestHeaders, currentUserId);
-        signalRManager.initWithEvent(LiveNetworkConstants.HUB_NAME,
-                "SetValidationStatus",
-                new String[]{emailAddress},
-                emailVerifybutton, emailVerifiedDTO ->{
-                    if(((EmailVerifiedDTO)emailVerifiedDTO).isValidated()){
-                        updateEmailVerification(emailAddress, null, true);
-                    }
-                }, EmailVerifiedDTO.class);
+        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
+        signalRManager.getCurrentProxy().on("SetValidationStatus", new SubscriptionHandler1<EmailVerifiedDTO>() {
+            @Override
+            public void run(EmailVerifiedDTO emailVerifiedDTO) {
+                if(emailVerifiedDTO.isValidated()){
+                    updateEmailVerification(emailAddress, null, true);
+                }
+            }
+        }, EmailVerifiedDTO.class);
+
+        signalRManager.startConnection(null, null);
     }
 
     @MainThread
