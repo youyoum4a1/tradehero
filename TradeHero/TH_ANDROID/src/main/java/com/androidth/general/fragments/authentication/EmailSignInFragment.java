@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -214,7 +215,13 @@ public class EmailSignInFragment extends Fragment
                                 deepLink);
                     }
                 })
-                .doOnError(new SnackbarOnErrorAction1(coordinatorLayout,"Unable to login with provided credentials.",Snackbar.LENGTH_SHORT))
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Log.v(getTag(), "Login failed: "+throwable.getMessage());
+                        new SnackbarOnErrorAction1(coordinatorLayout,"Unable to login with provided credentials.",Snackbar.LENGTH_SHORT);
+                    }
+                })
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));
     }
 

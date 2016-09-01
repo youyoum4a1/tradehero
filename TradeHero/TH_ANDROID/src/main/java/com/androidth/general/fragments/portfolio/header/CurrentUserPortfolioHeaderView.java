@@ -3,6 +3,7 @@ package com.androidth.general.fragments.portfolio.header;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.ButterKnife;
@@ -10,8 +11,12 @@ import butterknife.Bind;
 import android.support.annotation.Nullable;
 import com.androidth.general.R;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
+import com.androidth.general.api.portfolio.PortfolioDTO;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.models.number.THSignedPercentage;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import rx.Observable;
@@ -56,9 +61,9 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
         return Observable.empty();
     }
 
-    @Override public void linkWith(PortfolioCompactDTO portfolioCompactDTO)
+    @Override public void linkWith(PortfolioCompactDTO portfolioDTO)
     {
-        this.portfolioCompactDTO = portfolioCompactDTO;
+        this.portfolioCompactDTO = portfolioDTO;
 
         displayTotalValueTextView();
         displayCashValueTextView();
@@ -107,6 +112,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
             {
                 String valueString = String.format("%s %,.0f", this.portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.totalValue);
                 totalValueTextView.setText(valueString);
+                YoYo.with(Techniques.FadeIn).duration(500).playOn(totalValueTextView);
             }
         }
     }
@@ -117,8 +123,9 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
         {
             if (portfolioCompactDTO != null)
             {
-                String cashString = String.format("%s %,.0f", portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.cashBalanceRefCcy);
+                String cashString = String.format("%s %,.0f", portfolioCompactDTO.getNiceCurrency(), this.portfolioCompactDTO.cashBalance);
                 cashValueTextView.setText(cashString);
+                YoYo.with(Techniques.FadeIn).duration(500).playOn(cashValueTextView);
             }
         }
     }

@@ -424,7 +424,7 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
                                     }
                                     // open new position (buy)
                                     else {
-                                        double maxTradeValue = portfolioCompactDTO.cashBalanceRefCcy;
+                                        double maxTradeValue = portfolioCompactDTO.cashBalance;
 
                                         if (portfolioCompactDTO.providerId != null) {
 

@@ -303,7 +303,7 @@ abstract public class AbstractTransactionFragment extends DashboardFragment {
                                     }
                                     // open new position (buy)
                                     else {
-                                        double maxTradeValue = portfolioCompactDTO.cashBalanceRefCcy;
+                                        double maxTradeValue = portfolioCompactDTO.cashBalance;
 
                                         if (portfolioCompactDTO.providerId != null) {
 

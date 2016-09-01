@@ -7,7 +7,7 @@ import java.util.Date;
 public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 {
     public double initialCash;
-    public Date creationDate;
+
     public String description;
 
     public Double roiSinceInceptionAnnualized;
@@ -20,8 +20,8 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 
     public Double roiQ2D;
     public Double roiQ2DAnnualized;
-    public double plQ2D;
 
+    public double plQ2D;
     public Double roiY2D;
     public Double roiY2DAnnualized;
     public double plY2D;
@@ -34,7 +34,6 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
         return "[PortfolioDTO " +
                 super.toString() +
                 ", initialCash=" + initialCash +
-                ", creationDate=" + creationDate +
                 ", description='" + description + '\'' +
                 ", roiSinceInception=" + roiSinceInception +
                 ", roiSinceInceptionAnnualized=" + roiSinceInceptionAnnualized +

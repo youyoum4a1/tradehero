@@ -2,15 +2,21 @@ package com.androidth.general.api.portfolio;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.androidth.general.api.BaseResponseDTO;
+import com.androidth.general.utils.Constants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.utils.SecurityUtils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class PortfolioCompactDTO implements DTO
+public class PortfolioCompactDTO extends BaseResponseDTO implements DTO
 {
     public static final String DEFAULT_TITLE = "Default";
 
@@ -19,14 +25,13 @@ public class PortfolioCompactDTO implements DTO
     @NonNull public Integer userId;
     //</editor-fold>
 
+    public String creationDate;
+
     @Nullable public Integer providerId;
     public String title;
 
-    @JsonProperty("portfolioType")
-    @Nullable public AssetClass assetClass;
+    public double cashBalance;
 
-    @JsonProperty("cashBalance")
-    public double cashBalanceRefCcy;
     public double totalValue;
     public double totalExtraCashPurchased;
     public double totalExtraCashGiven;
@@ -42,12 +47,20 @@ public class PortfolioCompactDTO implements DTO
     @Nullable public Double refCcyToUsdRate;
     @Nullable public Double txnCostUsd;
 
+    @JsonProperty("portfolioType")
+    @Nullable public AssetClass assetClass;
+
     public Double leverage;
     public Double nav; // Net asset value
     public Double marginAvailableRefCcy;
     public Double marginUsedRefCcy;
     public Double unrealizedPLRefCcy;
     @Nullable public Double marginCloseOutPercent;
+
+    //5.* fields
+    public double currentTotalShortValue;
+
+    public double eligibleTotalShortValue;
 
     //<editor-fold desc="Constructors">
     public PortfolioCompactDTO()
@@ -101,7 +114,7 @@ public class PortfolioCompactDTO implements DTO
         {
             return marginAvailableRefCcy * leverage;
         }
-        return cashBalanceRefCcy;
+        return cashBalance;
     }
 
     @JsonIgnore public boolean isAllowedAddCash()
@@ -155,10 +168,29 @@ public class PortfolioCompactDTO implements DTO
         return txnCostUsd != null ? txnCostUsd : SecurityUtils.DEFAULT_TRANSACTION_COST_USD;
     }
 
+    public double getEligibleTotalShortValue() {
+        return eligibleTotalShortValue;
+    }
+
+    public double getCurrentTotalShortValue() {
+        return currentTotalShortValue;
+    }
+
+    public Date getCreationDate() {
+        //2016-08-28T04:40:31.003
+        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT_PRECISE);
+        try{
+            Date date = format.parse(creationDate);
+            return date;
+        }catch (ParseException e){
+            return null;
+        }
+    }
+
     @Override @NonNull public String toString()
     {
         return "[PortfolioCompactDTO " +
-                "cashBalanceRefCcy=" + cashBalanceRefCcy +
+                "cashBalance=" + cashBalance +
                 ", id=" + id +
                 ", providerId=" + providerId +
                 ", assetClass=" + assetClass +

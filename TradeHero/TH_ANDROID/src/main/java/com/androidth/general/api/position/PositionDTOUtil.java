@@ -14,11 +14,11 @@ public class PositionDTOUtil extends PositionDTOCompactUtil
 
         for (PositionDTO positionDTO : positionDTOs)
         {
-            if (positionDTO != null && positionDTO.earliestTradeUtc != null)
+            if (positionDTO != null && positionDTO.getEarliestTradeUtc() != null)
             {
-                if (earliest == null || positionDTO.earliestTradeUtc.before(earliest))
+                if (earliest == null || positionDTO.getEarliestTradeUtc().before(earliest))
                 {
-                    earliest = positionDTO.earliestTradeUtc;
+                    earliest = positionDTO.getEarliestTradeUtc();
                 }
             }
         }
@@ -34,9 +34,9 @@ public class PositionDTOUtil extends PositionDTOCompactUtil
         {
             if (positionDTO != null && positionDTO.latestTradeUtc != null)
             {
-                if (latest == null || positionDTO.latestTradeUtc.after(latest))
+                if (latest == null || positionDTO.getLatestTradeUtc().after(latest))
                 {
-                    latest = positionDTO.latestTradeUtc;
+                    latest = positionDTO.getLatestTradeUtc();
                 }
             }
         }

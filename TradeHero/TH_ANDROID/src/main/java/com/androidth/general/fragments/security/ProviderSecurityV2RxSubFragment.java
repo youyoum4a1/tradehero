@@ -31,6 +31,7 @@ import com.androidth.general.fragments.trade.AbstractBuySellFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.SignalRInterface;
+import com.androidth.general.network.service.SignalRManager;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.DeviceUtil;
 import com.tencent.mm.sdk.platformtools.Log;
@@ -61,12 +62,14 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     @Inject protected CurrentUserId currentUserId;
     @Inject protected RequestHeaders requestHeaders;
 
+    SignalRManager signalRManager;
+
     private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityListRxFragment.class.getName() + ".providerId";
 
     protected ProviderId providerId;
     private List<SecurityCompactDTO>  items;
     SimpleSecurityItemViewAdapter adapter;
-    HubProxy proxy;
+//    HubProxy hubProxy;
     List<SecurityCompactDTO> currentVisibleItemsList;
     String topBarColor;
 
@@ -77,6 +80,9 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     public HubProxy setProxy(String hubName, HubConnection connection) { return connection.createHubProxy(hubName); }
 
     public String[] getSecurityIds(List<SecurityCompactDTO> items){
+        if(items==null){
+            return null;
+        }
         Iterator<SecurityCompactDTO> iterator = items.iterator();
         ArrayList<String > stringArray = new ArrayList<>();
 
@@ -90,82 +96,43 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
         return strings;
     }
+
     public void setHubConnection() {
-        HubConnection connection = setConnection(LiveNetworkConstants.TRADEHERO_LIVE_ENDPOINT);
-        connection.setCredentials(new Credentials() {
-            @Override
-            public void prepareRequest(Request request) {
-                request.addHeader(Constants.AUTHORIZATION, requestHeaders.headerTokenLive());
-                request.addHeader(Constants.USER_ID, currentUserId.get().toString());
-            }
-        });
-        try {
-            proxy = setProxy(LiveNetworkConstants.HUB_NAME, connection);
-            connection.start().done(aVoid -> {
-                currentVisibleItemsList = getCurrentVisibleItems(listView);
-                String str[] = getSecurityIds(currentVisibleItemsList);
-                SignalRFuture<Void> signalProxy = proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str, currentUserId.get());
-            });
-            connection.connected(new Runnable() {
+        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
+
+        try{
+
+            //wait til listview has drawn children
+            listView.post(new Runnable() {
                 @Override
                 public void run() {
+                    currentVisibleItemsList = getCurrentVisibleItems(listView);
+                    String str[] = getSecurityIds(currentVisibleItemsList);
+                    signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str);
 
-                }
-            });
-            connection.connectionSlow(new Runnable() {
-                @Override
-                public void run() {
+                    signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
 
-                }
-            });
-            connection.reconnected(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
-            connection.closed(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
-
-            /*proxy.on("UpdateQuote", new SubscriptionHandler1<Object>() {
-
-                @Override
-                public void run(Object object) {
-                    //SignatureContainer2 signatureContainer = (object);
-                    Log.v(getTag(), "Object signalR: "+object.toString());
-                    //update(signatureContainer2.signedObject);
-                }
-            }, Object.class);*/
-
-            proxy.on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
-
-                @Override
-                public void run(SignatureContainer2 signatureContainer2) {
-                    Log.v(getTag(), "Object signalR: "+signatureContainer2.toString());
-                    if(signatureContainer2==null || signatureContainer2.signedObject==null || signatureContainer2.signedObject.id==121234) {
-                        return;
-                    }
-                    else{
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                update(signatureContainer2.signedObject);
+                        @Override
+                        public void run(SignatureContainer2 signatureContainer2) {
+                            if(signatureContainer2==null || signatureContainer2.signedObject==null || signatureContainer2.signedObject.id==121234) {
+                                return;
                             }
-                        });
-
-                    }
-                    //update(signatureContainer2.signedObject);
+                            else{
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        update(signatureContainer2.signedObject);
+                                    }
+                                });
+                            }
+                        }
+                    }, SignatureContainer2.class);
                 }
-            }, SignatureContainer2.class);
+            });
 
-        } catch (Exception e) {
-            Log.e("Error", "Could not connect to Hub Name");
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
     }
 
     @UiThread
@@ -196,6 +163,13 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 //        ProviderSecurityV2RxSubFragment.items = items;
 //    }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setHubConnection();
+    }
+
     @Override public void onViewCreated(View view, Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
@@ -208,7 +182,9 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                 if(scrollState != SCROLL_STATE_FLING){
                     currentVisibleItemsList = getCurrentVisibleItems(listView);
                     String str[] = getSecurityIds(currentVisibleItemsList);
-                    proxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str, currentUserId.get());
+                    if(signalRManager!=null){
+                        signalRManager.getCurrentProxy().invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str, currentUserId.get());
+                    }
                     Log.d("Fired","Scroll changed");
                     //proxy
                 }
@@ -220,12 +196,15 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                 Log.i("Total Item Count ", totalItemCount+"");
             }
         });
-        Platform.loadPlatformComponent(new AndroidPlatformComponent());
-        setHubConnection();
+
     }
 
     @Override public void onDestroyView()
     {
+        if(signalRManager!=null){
+            signalRManager.getCurrentConnection().disconnect();
+        }
+
         ButterKnife.unbind(this);
         DeviceUtil.dismissKeyboard(getActivity());
 
@@ -349,6 +328,9 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
         int first = 0;
         int last = listView.getChildCount() - 1;
+        if(last<0){
+            return null;
+        }
         List<SecurityCompactDTO> visibleList = new ArrayList<>();
         //If visible child is not fully visible, getTop returns negative value
         if(listView.getChildAt(first).getTop() < 0){

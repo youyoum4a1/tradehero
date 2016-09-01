@@ -177,8 +177,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         {
             Requisite.putApplicablePorfolioId(getArguments(), new OwnedPortfolioId(currentUserId.get(), routedApplicablePortfolioId));
         }
-        signalRManager = new SignalRManager(requestHeaders, currentUserId);
-        hubProxy = signalRManager.getDefaultProxy();
+        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
         requisite = createRequisite();
         quoteRepeatSubject = PublishSubject.create();
         quoteRepeatDelayedObservable = quoteRepeatSubject.delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
@@ -248,8 +247,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
             @Override
             public void call(Subscriber<? super Void> subscriber) {
-                signalRManager = new SignalRManager(requestHeaders, currentUserId);
-                hubProxy = signalRManager.getDefaultProxy();
                 signalRBuySellPrices();
             }
 
@@ -471,39 +468,46 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         super.onDestroy();
     }
     private SignalRManager signalRManager;
-    private HubProxy hubProxy;
+//    private HubProxy hubProxy;
 
     public void signalRBuySellPrices(){
 
-        onStopSubscriptions.add(securityObservable.observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe(securityDTO ->{
-            signalRManager.getConncetion().start().done(actionVoid -> {
-                hubProxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, securityCompactDTO.id, currentUserId.get());
-            });
-            hubProxy.on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
+        onStopSubscriptions.add(securityObservable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(securityDTO ->{
 
-                @Override
-                public void run(SignatureContainer2 signatureContainer2) {
-                    Log.v(getTag(), "Object signalR: " + signatureContainer2.toString());
-                    LiveQuoteDTO liveQuote = signatureContainer2.signedObject;
-                    if (signatureContainer2 == null || signatureContainer2.signedObject == null || signatureContainer2.signedObject.id == 121234) {
-                        return;
-                    } else {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(liveQuote!=null) {
-                                    displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
-                                    if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
-                                        quoteSubscription.unsubscribe();
-                                }
-                            }
-                        });
-
+                    if(signalRManager==null){
+                        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
                     }
-                }
-            }, SignatureContainer2.class);
+                    signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, Integer.toString(securityCompactDTO.id));
+//            signalRManager.getConnection().start().done(actionVoid -> {
+//                hubProxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, securityCompactDTO.id, currentUserId.get());
+//            });
+                    signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
 
-        }));
+                        @Override
+                        public void run(SignatureContainer2 signatureContainer2) {
+                            LiveQuoteDTO liveQuote = signatureContainer2.signedObject;
+                            if (signatureContainer2 == null || signatureContainer2.signedObject == null || signatureContainer2.signedObject.id == 121234) {
+                                return;
+                            } else {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(liveQuote!=null) {
+                                            displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
+                                            if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
+                                                quoteSubscription.unsubscribe();
+                                        }
+                                    }
+                                });
+
+                            }
+                        }
+                    }, SignatureContainer2.class);
+
+                }));
     }
 
     @NonNull protected Requisite createRequisite()

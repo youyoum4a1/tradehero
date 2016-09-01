@@ -74,4 +74,9 @@ public class Constants
     public static final String EXCEPTION_MESSAGE = "ExceptionMessage";
     public static final String EXCEPTION_TYPE = "ExceptionType";
     public static final String EXCEPTION_TYPE_FB = "Facebook.FacebookOAuthException";
+
+    public static final String DATE_FORMAT_STANDARD = "yyyy-MM-dd'T'HH:mm:ss";
+    public static final String DATE_FORMAT_STANDARD_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final String DATE_FORMAT_PRECISE = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    public static final String DATE_FORMAT_PRECISE_Z = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 }

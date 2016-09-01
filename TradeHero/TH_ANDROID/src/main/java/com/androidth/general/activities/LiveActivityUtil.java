@@ -2,6 +2,7 @@ package com.androidth.general.activities;
 
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -54,6 +55,7 @@ public class LiveActivityUtil
 
     public void onCreateOptionsMenu(Menu menu)
     {
+        Log.v("SignalR", "Liveactivityutil oncreateoptions");
         if (onDestroyOptionsMenuSubscriptions != null)
         {
             onDestroyOptionsMenuSubscriptions.unsubscribe();
@@ -188,10 +190,10 @@ public class LiveActivityUtil
     public void onTrendingTileClicked(TileType tileType)
     {
         //Disable live toggling for now
-        //if (tileType.equals(TileType.LiveToggle))
-        //{
-        //    switchLive(true, true);
-        //}
+//        if (tileType.equals(TileType.LiveToggle))
+//        {
+            switchLive(true, true);
+//        }
     }
 
 }

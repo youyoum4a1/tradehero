@@ -100,7 +100,7 @@ public class PositionInPeriodDTO extends PositionDTO
                 ", realizedPLRefCcy=" + realizedPLRefCcy +
                 ", unrealizedPLRefCcy=" + unrealizedPLRefCcy +
                 ", marketValueRefCcy=" + marketValueRefCcy +
-                ", earliestTradeUtc=" + earliestTradeUtc +
+                ", getEarliestTradeUtc=" + earliestTradeUtc +
                 ", latestTradeUtc=" + latestTradeUtc +
                 ", sumInvestedAmountRefCcy=" + sumInvestedAmountRefCcy +
                 ", totalTransactionCostRefCcy=" + totalTransactionCostRefCcy +
