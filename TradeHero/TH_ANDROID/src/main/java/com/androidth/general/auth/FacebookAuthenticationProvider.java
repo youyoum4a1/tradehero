@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 
 import com.androidth.general.common.facebook.FacebookRequestException;
 import com.androidth.general.network.share.SocialConstants;
+import com.androidth.general.utils.Constants;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -54,7 +55,7 @@ import timber.log.Timber;
 public class FacebookAuthenticationProvider extends SocialAuthenticationProvider
         implements ActivityResultRequester
 {
-    public static final DateFormat PRECISE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+    public static final DateFormat PRECISE_DATE_FORMAT = new SimpleDateFormat(Constants.DATE_FORMAT_PRECISE_Z, Locale.getDefault());
     public static final String ACCESS_TOKEN_KEY = "access_token";
     public static final String EXPIRATION_DATE_KEY = "expiration_date";
 

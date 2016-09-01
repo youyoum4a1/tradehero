@@ -2,6 +2,7 @@ package com.androidth.general.fragments.portfolio.header;
 
 import android.support.annotation.NonNull;
 import com.androidth.general.api.portfolio.PortfolioCompactDTO;
+import com.androidth.general.api.portfolio.PortfolioDTO;
 import com.androidth.general.api.users.UserProfileDTO;
 import rx.Observable;
 
@@ -11,7 +12,7 @@ import rx.Observable;
 public interface PortfolioHeaderView
 {
     void linkWith(UserProfileDTO userProfileDTO);
-    void linkWith(PortfolioCompactDTO portfolioCompactDTO);
+    void linkWith(PortfolioCompactDTO portfolioDTO);
 
     @NonNull Observable<UserAction> getUserActionObservable();
 

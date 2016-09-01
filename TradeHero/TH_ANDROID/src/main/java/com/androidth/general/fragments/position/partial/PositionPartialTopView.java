@@ -69,7 +69,7 @@ public class PositionPartialTopView extends LinearLayout
 
     public static class DTO
     {
-        @NonNull public final PositionDTO positionDTO;
+        @NonNull public PositionDTO positionDTO;
         @NonNull public final SecurityCompactDTO securityCompactDTO;
 
         @ViewVisibilityValue public final int stockLogoVisibility;
@@ -391,6 +391,10 @@ public class PositionPartialTopView extends LinearLayout
             }
             //</editor-fold>
         }
+
+        public void setPositionDTO(@NonNull PositionDTO positionDTO) {
+            this.positionDTO = positionDTO;
+        }
     }
 
     public static class AscendingLatestTradeDateComparator implements Comparator<DTO>
@@ -401,8 +405,8 @@ public class PositionPartialTopView extends LinearLayout
             {
                 return 0;
             }
-            Date lTrade = lhs.positionDTO.latestTradeUtc;
-            Date rTrade = rhs.positionDTO.latestTradeUtc;
+            Date lTrade = lhs.positionDTO.getLatestTradeUtc();
+            Date rTrade = rhs.positionDTO.getLatestTradeUtc();
             return rTrade.compareTo(lTrade);
         }
     }

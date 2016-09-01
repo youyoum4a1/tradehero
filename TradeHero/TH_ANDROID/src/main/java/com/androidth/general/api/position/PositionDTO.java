@@ -2,10 +2,15 @@ package com.androidth.general.api.position;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.androidth.general.utils.Constants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.SecurityIntegerId;
 import com.androidth.general.api.users.UserBaseKey;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class PositionDTO extends PositionDTOCompact
@@ -18,8 +23,8 @@ public class PositionDTO extends PositionDTOCompact
     public Double unrealizedPLRefCcy;
     // This value is always in the portfolio currency
     public double marketValueRefCcy;
-    public Date earliestTradeUtc;
-    public Date latestTradeUtc;
+    public String earliestTradeUtc;
+    public String latestTradeUtc;//precise date
 
     // This value is always in the portfolio currency
     public Double sumInvestedAmountRefCcy;
@@ -37,6 +42,7 @@ public class PositionDTO extends PositionDTOCompact
     }
     //</editor-fold>
 
+    @JsonIgnore
     public UserBaseKey getUserBaseKey()
     {
         return new UserBaseKey(userId);
@@ -116,5 +122,29 @@ public class PositionDTO extends PositionDTOCompact
                 ", totalTransactionCostRefCcy=" + totalTransactionCostRefCcy +
                 ", aggregateCount=" + aggregateCount +
                 '}';
+    }
+
+    public Date getLatestTradeUtc() {
+        //2016-08-31T03:24:38
+        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT_STANDARD);
+        try{
+            Date date = format.parse(latestTradeUtc);
+            return date;
+        }catch (ParseException e){
+            e.printStackTrace();
+            return null;
+        }
+//        return latestTradeUtc;
+    }
+
+    public Date getEarliestTradeUtc() {
+        //2016-08-28T04:40:31.003
+        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT_PRECISE);
+        try{
+            Date date = format.parse(earliestTradeUtc);
+            return date;
+        }catch (ParseException e){
+            return null;
+        }
     }
 }

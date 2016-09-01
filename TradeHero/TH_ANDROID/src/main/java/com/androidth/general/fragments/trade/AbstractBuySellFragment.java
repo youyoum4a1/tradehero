@@ -480,7 +480,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                     if(signalRManager==null){
                         signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
                     }
-                    signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, new String[]{Integer.toString(securityCompactDTO.id)});
+                    signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, Integer.toString(securityCompactDTO.id));
 //            signalRManager.getConnection().start().done(actionVoid -> {
 //                hubProxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, securityCompactDTO.id, currentUserId.get());
 //            });

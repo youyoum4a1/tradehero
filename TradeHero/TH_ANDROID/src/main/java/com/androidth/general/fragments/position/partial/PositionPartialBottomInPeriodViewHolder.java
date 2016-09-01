@@ -156,7 +156,7 @@ public class PositionPartialBottomInPeriodViewHolder implements DTOView<Position
 
             inPeriodValueStartDate = resources.getString(
                     R.string.position_in_period_as_of,
-                    DateUtils.getDisplayableDate(resources, positionDTO.latestTradeUtc));
+                    DateUtils.getDisplayableDate(resources, positionDTO.getLatestTradeUtc()));
         }
     }
 }

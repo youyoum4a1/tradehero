@@ -63,91 +63,21 @@ public class SignalRManager {
         }
     }
 
-//    public void subscribeOn(String eventName, SubscriptionHandler subscriptionHandler) {
-//        proxy.on(eventName, subscriptionHandler);
-//    }
-//    public void subscribeOn(String eventName, SubscriptionHandler1<Object> subscriptionHandler) {
-//        proxy.on(eventName, subscriptionHandler, Object.class);
-//    }
-//    public void subscribeOn(String eventName, SubscriptionHandler2<Object, Object> subscriptionHandler) {
-//        proxy.on(eventName, subscriptionHandler, Object.class, Object.class);
-//    }
-
-//    public void initWithEvent(String hubName,
-//                              String eventName,
-//                              SubscriptionHandler1<Object> handler,
-//                              Class<?> classParameter,
-//                              Class<?> classSubscribed) {
-//
-//        try {
-//            hubProxy = this.connection.createHubProxy(hubName);//step 1, configure hub connection
-//
-//        } catch (InvalidStateException e) {
-//            //already connected, no need to create hub proxy
-//            Log.v("SignalR", "No need to create "+hubName);
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            //step 3, configure handlers
-//            switch (eventName) {
-//                case "SetValidationStatus":
-//                    hubProxy.on(eventName, emailVerifiedDTO -> {
-//                        Log.v("SignalR", "SignalRManager proxy on");
-//                        if (((EmailVerifiedDTO) emailVerifiedDTO).isValidated()) {
-//                            handler.run(emailVerifiedDTO);
-//                        }
-//
-//                    }, classParameter);
-////                    hubProxy.subscribe(classSubscribed);
-//                    break;
-//
-//                case "UpdatePortfolio":
-//                    hubProxy.on(eventName, updatedProfile -> {
-//
-//                        Log.v("SignalR", "signalr Update portfolio ");
-//                        handler.run(updatedProfile);
-//
-//                    }, classParameter);
-////                    hubProxy.subscribe(classSubscribed);
-//                    break;
-//
-//                case "UpdatePositions":
-//                    hubProxy.on(eventName, positionsList -> {
-//
-//                        Log.v("SignalR", "signalr Update positions ");
-//                        handler.run(positionsList);
-//
-//                    }, classParameter);
-////                    hubProxy.subscribe(classSubscribed);
-//                    break;
-//
-//                case "UpdateQuote":
-//                    hubProxy.on(eventName, positionsList -> {
-//
-//                        Log.v("SignalR", "signalr Update quote ");
-//                        handler.run(positionsList);
-//
-//                    }, classParameter);
-//                    break;
-//                default:
-//                    break;
-//            }
-//
-//        } catch (Exception e) {
-//            Log.v("", e.getLocalizedMessage());
-//        }
-//    }
-
     //step 2, start connection
-    public void startConnection(String invokeWith, String[] arg){
+    public void startConnection(String invokeWith, String args){
         if (invokeWith != null) {
             //step 2, setup connection
             this.connection.start().done(new Action<Void>() {
                 @Override
                 public void run(Void aVoid) throws Exception {
-                    Log.v("SignalR", "signalr Proxy invoked started "+invokeWith);
-                    hubProxy.invoke(invokeWith, arg, currentUserId.get());
+
+                    if(args!=null){
+                        Log.v("SignalR", "signalr Proxy invoked started "+invokeWith + " args="+args);
+                        hubProxy.invoke(invokeWith, args, currentUserId.get());
+                    }else{
+                        hubProxy.invoke(invokeWith, null, currentUserId.get());
+                    }
+
                 }
             });
             this.connection.reconnecting(new Runnable() {
@@ -160,7 +90,11 @@ public class SignalRManager {
                 @Override
                 public void run() {
                     Log.v("SignalR", "signalr Proxy invoked reconnected");
-                    hubProxy.invoke(invokeWith, arg, currentUserId.get());
+                    if(args!=null){
+                        hubProxy.invoke(invokeWith, args, currentUserId.get());
+                    }else{
+                        hubProxy.invoke(invokeWith, null, currentUserId.get());
+                    }
                 }
             });
             this.connection.received(new MessageReceivedHandler() {
@@ -173,6 +107,7 @@ public class SignalRManager {
                 @Override
                 public void onError(Throwable throwable) {
                     Log.v("SignalR", "ERROR! "+throwable.getMessage());
+                    //Usual error: There was an error invoking Hub method 'portfoliohub.SubscribeToPortfolioUpdate'.
                 }
             });
             this.connection.closed(new Runnable() {
@@ -194,29 +129,115 @@ public class SignalRManager {
         }
 
     }
+
+    //step 2, start connection
+    public void startConnection(String invokeWith, String[] args){
+        if (invokeWith != null) {
+            //step 2, setup connection
+            this.connection.start().done(new Action<Void>() {
+                @Override
+                public void run(Void aVoid) throws Exception {
+                    Log.v("SignalR", "signalr Proxy invoked started "+invokeWith);
+                    if(args!=null){
+                        hubProxy.invoke(invokeWith, args, currentUserId.get());
+                    }else{
+                        hubProxy.invoke(invokeWith, null, currentUserId.get());
+                    }
+
+                }
+            });
+            this.connection.reconnecting(new Runnable() {
+                @Override
+                public void run() {
+                    Log.v("SignalR", "signalr Proxy reconnecting");
+                }
+            });
+            this.connection.reconnected(new Runnable() {
+                @Override
+                public void run() {
+                    Log.v("SignalR", "signalr Proxy invoked reconnected");
+                    if(args!=null){
+                        hubProxy.invoke(invokeWith, args, currentUserId.get());
+                    }else{
+                        hubProxy.invoke(invokeWith, null, currentUserId.get());
+                    }
+                }
+            });
+            this.connection.received(new MessageReceivedHandler() {
+                @Override
+                public void onMessageReceived(JsonElement jsonElement) {
+                    Log.v("SignalR", "Received! "+jsonElement);
+                }
+            });
+            this.connection.error(new ErrorCallback() {
+                @Override
+                public void onError(Throwable throwable) {
+                    Log.v("SignalR", "ERROR! "+throwable.getLocalizedMessage());
+                }
+            });
+            this.connection.closed(new Runnable() {
+                @Override
+                public void run() {
+                    Log.v("SignalR", "Closed!");
+                }
+            });
+            this.connection.stateChanged(new StateChangedCallback() {
+                @Override
+                public void stateChanged(ConnectionState connectionState, ConnectionState connectionState1) {
+                    Log.v("SignalR", "State changed "+connectionState +":"+connectionState1);
+                }
+            });
+
+        } else {
+            Log.v("SignalR", "signalr Proxy started");
+            this.connection.start();
+        }
+
+    }
+
+    public void startConnection(){
+        //step 2, setup connection
+        this.connection.start().done(new Action<Void>() {
+            @Override
+            public void run(Void aVoid) throws Exception {
+                Log.v("SignalR", "signalr Proxy invoked started ");
+            }
+        });
+        this.connection.reconnecting(new Runnable() {
+            @Override
+            public void run() {
+                Log.v("SignalR", "signalr Proxy reconnecting");
+            }
+        });
+        this.connection.reconnected(new Runnable() {
+            @Override
+            public void run() {
+                Log.v("SignalR", "signalr Proxy invoked reconnected");
+            }
+        });
+        this.connection.received(new MessageReceivedHandler() {
+            @Override
+            public void onMessageReceived(JsonElement jsonElement) {
+                Log.v("SignalR", "Received! "+jsonElement);
+            }
+        });
+        this.connection.error(new ErrorCallback() {
+            @Override
+            public void onError(Throwable throwable) {
+                Log.v("SignalR", "ERROR! "+throwable.getMessage());
+            }
+        });
+        this.connection.closed(new Runnable() {
+            @Override
+            public void run() {
+                Log.v("SignalR", "Closed!");
+            }
+        });
+        this.connection.stateChanged(new StateChangedCallback() {
+            @Override
+            public void stateChanged(ConnectionState connectionState, ConnectionState connectionState1) {
+                Log.v("SignalR", "State changed "+connectionState +":"+connectionState1);
+            }
+        });
+    }
 }
-
-//
-//class THhubConnection extends HubConnection{
-//    @Inject CurrentUserId currentUserId;
-//    @Inject RequestHeaders requestHeaders;
-//
-//    static {
-//        Platform.loadPlatformComponent(new AndroidPlatformComponent());
-//    }
-//    public THhubConnection(String url) {
-//        super(url);
-//        setCredentials();
-//    }
-//
-//    public static void setCredentials(){
-//
-//    }
-//    @Override
-//    protected void onClosed() {
-//        super.onClosed();
-////        super.start();
-//    }
-//
-//}
-

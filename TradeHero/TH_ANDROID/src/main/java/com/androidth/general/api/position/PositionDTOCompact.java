@@ -2,29 +2,34 @@ package com.androidth.general.api.position;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.androidth.general.api.BaseResponseDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.utils.SecurityUtils;
 
-public class PositionDTOCompact implements DTO
+public class PositionDTOCompact extends BaseResponseDTO implements DTO
 {
     public int id;
-    @NonNull public String exchange;
-    @NonNull public String symbol;
+    @Nullable public String exchange;
+    @Nullable public String symbol;
     @Nullable public Integer shares;
-    public int portfolioId;
+    @Nullable public Integer portfolioId;
 
     // This price is always in the portfolio currency
-    public Double averagePriceRefCcy;
-    // This is the portfolio currency
-    @Nullable public String currencyDisplay;
-    @Nullable public String currencyISO;
+    @Nullable public Double averagePriceRefCcy;
 
     // This price is always in the security currency
     @Nullable public Double averagePriceSecCcy;
 
+    // This is the portfolio currency
+    @Nullable public String currencyDisplay;
+    @Nullable public String currencyISO;
+
     @Nullable public Double fxRate;
     @Nullable public PositionStatus positionStatus;
+
+    public boolean isShort;
 
     //<editor-fold desc="Constructors">
     public PositionDTOCompact()
@@ -90,6 +95,7 @@ public class PositionDTOCompact implements DTO
                 ", averagePriceRefCcy=" + averagePriceRefCcy +
                 ", currencyDisplay=" + currencyDisplay +
                 ", currencyISO=" + currencyISO +
+                ", isShort=" + isShort +
                 '}';
     }
 }

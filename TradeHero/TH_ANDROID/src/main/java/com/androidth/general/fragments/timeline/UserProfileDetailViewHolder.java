@@ -87,7 +87,7 @@ public class UserProfileDetailViewHolder extends UserProfileCompactViewHolder
         {
             if (userProfileDTO.portfolio != null)
             {
-                THSignedMoney.builder(userProfileDTO.portfolio.cashBalanceRefCcy)
+                THSignedMoney.builder(userProfileDTO.portfolio.cashBalance)
                         .currency(userProfileDTO.portfolio.getNiceCurrency())
                         .build()
                         .into(cashOnHand);
