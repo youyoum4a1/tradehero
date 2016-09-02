@@ -96,7 +96,6 @@ public class ProviderSecurityV2RxByTypeFragment extends BaseFragment
             }
         }
 
-//        ProviderSecurityV2RxSubFragment.setItems(secs);
         getArguments().putParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY, secs);
         navigator.get().pushFragment(ProviderSecurityV2RxSubFragment.class, getArguments());
     }

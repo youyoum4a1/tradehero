@@ -32,7 +32,6 @@ import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.key.SecurityListType;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.fragments.base.BaseFragment;
-import com.androidth.general.fragments.trade.AbstractBuySellFragment;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.security.SecurityCompactListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
@@ -292,6 +291,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
 
                     //the reason for having a new instance of args
                     args1.putParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY, list);
+
                 }
 
                 return Fragment.instantiate(getActivity(), ProviderSecurityV2RxSubFragment.class.getName(), args1);

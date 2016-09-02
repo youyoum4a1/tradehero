@@ -165,6 +165,8 @@ public class SecuritySearchFragment extends BaseSearchRxFragment<
                         securityCompactDTO.getSecurityId(),
                         getApplicablePortfolioId(),
                         0));
+
+        args.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, securityCompactDTO);
         navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
     }
 

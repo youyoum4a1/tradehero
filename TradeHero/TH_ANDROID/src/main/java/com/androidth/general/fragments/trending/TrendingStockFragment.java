@@ -530,6 +530,8 @@ public class TrendingStockFragment extends TrendingBaseFragment
                     currentUserId);
         }
 
+        args.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, securityCompactDTO);
+
         BuySellStockFragment.putRequisite(args, requisite);
 
         navigator.get().pushFragment(BuySellStockFragment.class, args);

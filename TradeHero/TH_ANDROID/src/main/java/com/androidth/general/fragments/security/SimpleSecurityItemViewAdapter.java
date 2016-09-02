@@ -2,17 +2,22 @@ package com.androidth.general.fragments.security;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Filter;
 import android.widget.TextView;
 
 import com.androidth.general.R;
+import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.quote.QuoteDTO;
 import com.androidth.general.api.security.SecurityCompactDTO;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.security.SecurityIntegerId;
 import com.androidth.general.api.security.compact.FxSecurityCompactDTO;
 import com.androidth.general.common.widget.filter.ListCharSequencePredicateFilter;
+import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
@@ -22,10 +27,14 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+
 public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
 {
     protected final Filter filterToUse;
     @Inject ListCharSequencePredicateFilter<SecurityCompactDTO> securityCompactPredicateFilter;
+
+    @Inject protected SecurityCompositeListCacheRx securityCompositeListCacheRx;
 
     //<editor-fold desc="Constructors">
     int layourResourceId;
@@ -73,6 +82,13 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                     Double askPrice = quoteUpdate.getAskPrice();
                     Double bidPrice = quoteUpdate.getBidPrice();
                     Double lastPrice = securityCompactDTO.lastPrice;
+                    Double risePercent = securityCompactDTO.risePercent;
+
+                    boolean hasRisePercent = false;
+                    if(quoteUpdate.getRisePercent()!=null){
+                        hasRisePercent = true;
+                    }
+
                     if (securityCompactDTO instanceof FxSecurityCompactDTO)
                     {
 
@@ -91,11 +107,11 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                         else if(bidPrice != null){
                             ((FxSecurityCompactDTO) securityCompactDTO).lastPrice = bidPrice;
                         }
-                    }
-                    else
-                    {
+                        if(risePercent!=null && hasRisePercent){
+                            ((FxSecurityCompactDTO) securityCompactDTO).risePercent = risePercent;
+                        }
 
-
+                    } else {
                         securityCompactDTO.currencyDisplay = quoteUpdate.getCurrencyDisplay();
                         securityCompactDTO.currencyISO = quoteUpdate.getCurrencyISO();
                         securityCompactDTO.volume = quoteUpdate.getVolume();
@@ -111,16 +127,35 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                         else if(bidPrice != null){
                             securityCompactDTO.lastPrice = bidPrice;
                         }
+                        if(risePercent!=null && hasRisePercent){
+                            securityCompactDTO.risePercent = quoteUpdate.getRisePercent();
+                        }
                     }
+
                     Double newLastPrice = securityCompactDTO.lastPrice;
 
                     notifyDataSetChanged();
-                    if(listView != null && (!lastPrice.equals(newLastPrice)) && listView.getChildAt(index)!=null){
+                    if(listView != null && listView.getChildAt(index)!=null){
                             View v = listView.getChildAt(index);
+                        if(lastPrice!=null &&
+                                newLastPrice!=null &&
+                                !lastPrice.equals(newLastPrice)){
                             TextView txtView = (TextView)v.findViewById(R.id.last_price);
                             YoYo.with(Techniques.Flash).playOn(txtView);
+                        }
+                        if(hasRisePercent){
+                            Double newRisePercent = securityCompactDTO.risePercent;
+                            if(newRisePercent!=null &&
+                                    risePercent!=null &&
+                                    !risePercent.equals(newRisePercent)){
+                                TextView txtView = (TextView)v.findViewById(R.id.tv_stock_roi);
+                                YoYo.with(Techniques.Flash).playOn(txtView);
+                            }
+                        }
+//                        Log.v("SignalR", "Updating cache "+securityCompactDTO.getExchangeSymbol());//affects performance!
+//                        securityCompositeDTO.Securities.set(index, securityCompactDTO);
+//                        securityCompositeListCacheRx.onNext(new BasicProviderSecurityV2ListType(providerId), securityCompositeDTO);
                     }
-
                 }
             }
         }

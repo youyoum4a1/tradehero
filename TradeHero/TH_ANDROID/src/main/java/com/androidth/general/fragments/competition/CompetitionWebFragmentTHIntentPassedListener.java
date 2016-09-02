@@ -74,6 +74,7 @@ abstract public class CompetitionWebFragmentTHIntentPassedListener implements TH
                             getApplicablePortfolioId(),
                             0));
         }
+//        argsBundle.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, thIntent);
         getNavigator().pushFragment(thIntent.getActionFragment(), argsBundle, null);
         Timber.d("onIntentPassed %s", thIntent);
     }

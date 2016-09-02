@@ -147,6 +147,8 @@ public class WatchlistItemView extends FrameLayout implements DTOView<WatchlistP
                                 // TODO use Rx
                                 Bundle args = new Bundle();
                                 BuySellStockFragment.putRequisite(args, requisite);
+
+                                args.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, watchlistPositionDTO.securityDTO);
                                 navigator.get().pushFragment(BuySellStockFragment.class, args);
                                 //TODO Change Analytics
                                 //analytics.addEvent(new SimpleEvent(AnalyticsConstants.Watchlist_More_Tap));

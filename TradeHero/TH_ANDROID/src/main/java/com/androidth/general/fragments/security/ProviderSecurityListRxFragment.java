@@ -268,6 +268,8 @@ public class ProviderSecurityListRxFragment
                         clicked.getSecurityId(),
                         applicablePortfolioId,
                         0)); // TODO proper
+
+        args.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, clicked);
         navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(clicked), args);
     }
 

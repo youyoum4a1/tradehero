@@ -200,6 +200,7 @@ public class TrendingFXFragment extends TrendingBaseFragment
                         getApplicablePortfolioId(),
                         0)); // TODO better
 
+        args.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, securityCompactDTO);
         navigator.get().pushFragment(FXMainFragment.class, args);
     }
 

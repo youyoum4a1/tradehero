@@ -478,6 +478,8 @@ public class TradeListFragment extends DashboardFragment
                                     new Bundle(),
                                     portfolioCompactListCache,
                                     currentUserId));
+
+            args.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, securityCompactDTO);
             navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(securityCompactDTO), args);
         }
     }

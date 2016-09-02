@@ -104,6 +104,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 {
     private final static String BUNDLE_KEY_REQUISITE = AbstractBuySellFragment.class.getName() + ".requisite";
 
+    public final static String BUNDLE_KEY_SECURITY_DTO = AbstractBuySellFragment.class.getName() + ".securityDTO";
+
     private final static long MILLISECOND_QUOTE_REFRESH = 30000;
 
     @Inject protected CurrentUserId currentUserId;
@@ -148,6 +150,8 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     public Observable<LiveQuoteDTO> quoteObservable;
     public Observable<SecurityCompactDTO> securityObservable;
 
+    private SignalRManager signalRManager;
+
     String topBarColor;
 
     public static void putRequisite(@NonNull Bundle args, @NonNull Requisite requisite)
@@ -177,7 +181,10 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         {
             Requisite.putApplicablePorfolioId(getArguments(), new OwnedPortfolioId(currentUserId.get(), routedApplicablePortfolioId));
         }
-        signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
+        if(getArguments().containsKey(BUNDLE_KEY_SECURITY_DTO)){
+            securityCompactDTO = getArguments().getParcelable(BUNDLE_KEY_SECURITY_DTO);
+        }
+
         requisite = createRequisite();
         quoteRepeatSubject = PublishSubject.create();
         quoteRepeatDelayedObservable = quoteRepeatSubject.delay(getMillisecondQuoteRefresh(), TimeUnit.MILLISECONDS);
@@ -239,6 +246,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
                             @Override public void call(SecurityCompactDTO securityCompactDTO)
                             {
                                 linkWith(securityCompactDTO);
+                                signalRBuySellPrices();
                             }
                         },
                         new EmptyAction1<Throwable>()));
@@ -247,7 +255,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
             @Override
             public void call(Subscriber<? super Void> subscriber) {
-                signalRBuySellPrices();
+
             }
 
         }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io()).subscribe());
@@ -467,7 +475,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         abstractBuySellPopupDialogFragment = null;
         super.onDestroy();
     }
-    private SignalRManager signalRManager;
+
 //    private HubProxy hubProxy;
 
     public void signalRBuySellPrices(){
@@ -479,33 +487,37 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
                     if(signalRManager==null){
                         signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
+                        signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, Integer.toString(securityCompactDTO.getResourceId()));
+
+                        signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
+
+                            @Override
+                            public void run(SignatureContainer2 signatureContainer2) {
+                                LiveQuoteDTO liveQuote = signatureContainer2.signedObject;
+                                if (signatureContainer2 == null || signatureContainer2.signedObject == null || signatureContainer2.signedObject.id == 121234) {
+                                    return;
+                                } else {
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if(liveQuote!=null) {
+                                                displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
+                                                if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
+                                                    quoteSubscription.unsubscribe();
+                                            }
+                                        }
+                                    });
+
+                                }
+                            }
+                        }, SignatureContainer2.class);
+
+
                     }
-                    signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, Integer.toString(securityCompactDTO.id));
+
 //            signalRManager.getConnection().start().done(actionVoid -> {
 //                hubProxy.invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUP, securityCompactDTO.id, currentUserId.get());
 //            });
-                    signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
-
-                        @Override
-                        public void run(SignatureContainer2 signatureContainer2) {
-                            LiveQuoteDTO liveQuote = signatureContainer2.signedObject;
-                            if (signatureContainer2 == null || signatureContainer2.signedObject == null || signatureContainer2.signedObject.id == 121234) {
-                                return;
-                            } else {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if(liveQuote!=null) {
-                                            displayBuySellPrice(securityDTO, liveQuote.getAskPrice(), liveQuote.getBidPrice());
-                                            if (quoteSubscription != null && !quoteSubscription.isUnsubscribed())
-                                                quoteSubscription.unsubscribe();
-                                        }
-                                    }
-                                });
-
-                            }
-                        }
-                    }, SignatureContainer2.class);
 
                 }));
     }
@@ -522,10 +534,14 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
 
     @NonNull protected Observable<SecurityCompactDTO> createSecurityObservable()
     {
-        return securityCompactCache.get(requisite.securityId)
-                .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
-                .share()
-                .cache(1);
+        if(securityCompactDTO!=null){
+            return Observable.just(securityCompactDTO);
+        }else {
+            return securityCompactCache.get(requisite.securityId)
+                    .map(new PairGetSecond<SecurityId, SecurityCompactDTO>())
+                    .share()
+                    .cache(1);
+        }
     }
 
     @NonNull @RxLogObservable protected Observable<LiveQuoteDTO> createQuoteObservable()
@@ -1027,8 +1043,6 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
     }
 
-
-
     public static class Requisite
     {
         private static final String KEY_SECURITY_ID = Requisite.class.getName() + ".securityId";
@@ -1036,7 +1050,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         private final static String KEY_CLOSE_UNITS_BUNDLE = Requisite.class.getName() + ".units";
         private final static String KEY_SECURITY_RESOURCE_ID = Requisite.class.getName() + ".securityResourceId";
 
-        @NonNull public final SecurityId securityId;
+        public final SecurityId securityId;
         @NonNull private final BehaviorSubject<OwnedPortfolioId> applicablePortfolioIdSubject;
         private int closeUnits;
         private int securityIdNumber;

@@ -2,6 +2,7 @@ package com.androidth.general.fragments.security;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
@@ -22,9 +23,11 @@ import android.widget.SearchView;
 import com.androidth.general.R;
 import com.androidth.general.activities.DashboardActivity;
 import com.androidth.general.api.competition.ProviderId;
+import com.androidth.general.api.competition.key.BasicProviderSecurityV2ListType;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.SecurityCompactDTO;
 import com.androidth.general.api.security.SecurityCompactDTOUtil;
+import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.fragments.billing.BasePurchaseManagerFragment;
 import com.androidth.general.fragments.trade.AbstractBuySellFragment;
@@ -32,6 +35,7 @@ import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.SignalRInterface;
 import com.androidth.general.network.service.SignalRManager;
+import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.DeviceUtil;
 import com.tencent.mm.sdk.platformtools.Log;
@@ -54,7 +58,7 @@ import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
 
-public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment implements SignalRInterface
+public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
 {
     @Bind(R.id.listview) protected AbsListView listView;
@@ -64,20 +68,13 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
     SignalRManager signalRManager;
 
-    private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityListRxFragment.class.getName() + ".providerId";
+//    private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityListRxFragment.class.getName() + ".providerId";
 
-    protected ProviderId providerId;
     private List<SecurityCompactDTO>  items;
     SimpleSecurityItemViewAdapter adapter;
 //    HubProxy hubProxy;
     List<SecurityCompactDTO> currentVisibleItemsList;
     String topBarColor;
-
-    public HubConnection setConnection(String url) {
-        return new HubConnection(url);
-    }
-
-    public HubProxy setProxy(String hubName, HubConnection connection) { return connection.createHubProxy(hubName); }
 
     public String[] getSecurityIds(List<SecurityCompactDTO> items){
         if(items==null){
@@ -101,7 +98,6 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.CLIENT_NOTIFICATION_HUB_NAME);
 
         try{
-
             //wait til listview has drawn children
             listView.post(new Runnable() {
                 @Override
@@ -137,7 +133,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
     @UiThread
     public void update(LiveQuoteDTO dto){
-        Log.i("This is Live", dto.toString());
+        Log.i("SignalR", dto.toString());
         adapter.updatePrices(dto, listView);
 
     }
@@ -149,7 +145,6 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         items = getArguments().getParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY);
 
         adapter.setItems(items);
-
     }
 
     @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -201,9 +196,9 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-        if(signalRManager!=null){
-            signalRManager.getCurrentConnection().disconnect();
-        }
+//        if(signalRManager!=null){
+//            signalRManager.getCurrentConnection().disconnect();
+//        }
 
         ButterKnife.unbind(this);
         DeviceUtil.dismissKeyboard(getActivity());
@@ -321,6 +316,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                         applicablePortfolioId,
                         0)); // TODO proper
 
+        args.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, clicked);
         navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(clicked), args);
     }
 

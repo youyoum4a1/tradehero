@@ -173,6 +173,8 @@ public class NewsWebFragment extends WebViewFragment
                                                     dto.getSecurityId(),
                                                     portfolioCompactDTOs.getDefaultFxPortfolio().getOwnedPortfolioId(),
                                                     0));
+
+                                    args.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, dto);
                                     return navigator.get().pushFragment(FXMainFragment.class, args);
                                 }
                                 else
@@ -183,6 +185,8 @@ public class NewsWebFragment extends WebViewFragment
                                                     dto.getSecurityId(),
                                                     portfolioCompactDTOs.getDefaultPortfolio().getOwnedPortfolioId(),
                                                     0));
+
+                                    args.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, dto);
                                     return navigator.get().pushFragment(BuySellStockFragment.class, args);
                                 }
                             }
