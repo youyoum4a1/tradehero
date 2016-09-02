@@ -45,7 +45,6 @@ import com.androidth.general.network.service.ayondo.LiveServiceAyondoRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.persistence.prefs.PhoneNumberVerifiedPreference;
 import com.androidth.general.utils.GraphicUtil;
-import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -95,7 +94,7 @@ public class LiveServiceWrapper
         // .merge() with other specific ones when time comes
     }
 
-    @NonNull @RxLogObservable public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
+    @NonNull public Observable<LiveTradingSituationDTO> getLiveTradingSituation()
     {
         //Generic calls for multi brokers
         return liveServiceRx.getLiveTradingSituation();
@@ -112,7 +111,7 @@ public class LiveServiceWrapper
         return liveServiceRx.applyLiveBroker(brokerId.key, kycForm);
     }
 
-    @NonNull @RxLogObservable public Observable<LiveBrokerSituationDTO> getBrokerSituation()
+    @NonNull public Observable<LiveBrokerSituationDTO> getBrokerSituation()
     {
         return getLiveTradingSituation()
                 .map(new Func1<LiveTradingSituationDTO, LiveBrokerSituationDTO>()

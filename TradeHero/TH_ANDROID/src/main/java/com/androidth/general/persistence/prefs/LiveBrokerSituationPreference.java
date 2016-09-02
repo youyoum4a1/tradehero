@@ -85,7 +85,7 @@ public class LiveBrokerSituationPreference extends AbstractPreference<LiveBroker
         }
     }
 
-    @NonNull @RxLogObservable
+    @NonNull
     public Observable<LiveBrokerSituationDTO> getLiveBrokerSituationDTOObservable() {
         if (liveBrokerSituationDTOObservable == null) {
             liveBrokerSituationDTOObservable = liveBrokerSituationDTOPublishSubject

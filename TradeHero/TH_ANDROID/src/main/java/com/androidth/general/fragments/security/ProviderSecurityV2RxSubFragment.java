@@ -43,6 +43,7 @@ import com.tencent.mm.sdk.platformtools.Log;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
@@ -102,27 +103,33 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
             listView.post(new Runnable() {
                 @Override
                 public void run() {
-                    currentVisibleItemsList = getCurrentVisibleItems(listView);
-                    String str[] = getSecurityIds(currentVisibleItemsList);
-                    signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str);
+                    try{
+                        currentVisibleItemsList = getCurrentVisibleItems(listView);
+                        String str[] = getSecurityIds(currentVisibleItemsList);
+                        signalRManager.startConnection(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str);
 
-                    signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
+                        signalRManager.getCurrentProxy().on("UpdateQuote", new SubscriptionHandler1<SignatureContainer2>() {
 
-                        @Override
-                        public void run(SignatureContainer2 signatureContainer2) {
-                            if(signatureContainer2==null || signatureContainer2.signedObject==null || signatureContainer2.signedObject.id==121234) {
-                                return;
+                            @Override
+                            public void run(SignatureContainer2 signatureContainer2) {
+                                if(signatureContainer2==null || signatureContainer2.signedObject==null || signatureContainer2.signedObject.id==121234) {
+                                    return;
+                                }
+                                else{
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            update(signatureContainer2.signedObject);
+                                        }
+                                    });
+                                }
                             }
-                            else{
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        update(signatureContainer2.signedObject);
-                                    }
-                                });
-                            }
-                        }
-                    }, SignatureContainer2.class);
+                        }, SignatureContainer2.class);
+                    }catch (Exception e){
+                        //listview might not be ready yet
+                        e.printStackTrace();
+                    }
+
                 }
             });
 

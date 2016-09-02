@@ -53,7 +53,7 @@ import rx.functions.Action1;
     //</editor-fold>
 
     //<editor-fold desc="Get Providers">
-    @NonNull @RxLogObservable public Observable<ProviderDTOList> getProvidersRx()
+    @NonNull public Observable<ProviderDTOList> getProvidersRx()
     {
         return this.providerServiceRx.getProviders()
                 .map(new BaseDTOListProcessor<ProviderDTO, ProviderDTOList>(
@@ -132,11 +132,21 @@ import rx.functions.Action1;
         Observable<SecurityCompositeDTO> received = this.providerServiceRx.getSecuritiesV2(
                     key.providerId.key);
 
-        received.subscribe(new Action1<SecurityCompositeDTO>()
+        received.doOnNext(new Action1<SecurityCompositeDTO>() {
+            @Override
+            public void call(SecurityCompositeDTO securityCompositeDTO) {
+                Log.d("getSecuritiesV2", "Onnext "+securityCompositeDTO.toString());
+            }
+        }).doOnError(new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.d("getSecuritiesV2", "onError "+throwable.getLocalizedMessage());
+            }
+        }).subscribe(new Action1<SecurityCompositeDTO>()
         {
             @Override public void call(SecurityCompositeDTO result)
             {
-                Log.d("getSecuritiesV2", result.toString());
+                Log.d("getSecuritiesV2", "onsubscribe"+result.toString());
             }
         });
 

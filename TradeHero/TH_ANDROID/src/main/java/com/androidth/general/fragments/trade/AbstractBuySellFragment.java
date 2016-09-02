@@ -544,7 +544,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
         }
     }
 
-    @NonNull @RxLogObservable protected Observable<LiveQuoteDTO> createQuoteObservable()
+    @NonNull protected Observable<LiveQuoteDTO> createQuoteObservable()
     {
         return quoteServiceWrapper.getQuoteRx(requisite.securityIdNumber)
                 .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>()

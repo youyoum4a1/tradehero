@@ -52,7 +52,7 @@ import rx.Observable;
     //</editor-fold>
 
     //<editor-fold desc="Add a watch item">
-    @Nullable public @RxLogObservable Observable<WatchlistPositionDTO> createWatchlistEntryRx(@NonNull WatchlistPositionFormDTO watchlistPositionFormDTO)
+    @Nullable public Observable<WatchlistPositionDTO> createWatchlistEntryRx(@NonNull WatchlistPositionFormDTO watchlistPositionFormDTO)
     {
         return watchlistServiceRx.createWatchlistEntry(watchlistPositionFormDTO)
                 .map(new DTOProcessorWatchlistCreate(
