@@ -25,7 +25,7 @@
     <android.support.design.widget.TextInputEditText
         android:layout_marginTop="16dp"
         android:singleLine="true"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Redemption code here"
         android:id="@+id/redemption_code" />
@@ -38,6 +38,7 @@
         android:id="@+id/redeem_button"
         android:text="Redeem"
         style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_gravity="right"
         android:textColor="@android:color/white"
         android:textAppearance="@android:style/TextAppearance.Medium"/>
     <TextView
