@@ -9,8 +9,9 @@
 
   <ImageView
       android:id="@+id/extra_tile_image"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/grid_item_height"
       android:src="@drawable/icon_trending_live"
-      style="@style/TH.TrendingTileImage"
       />
 
   <TextView

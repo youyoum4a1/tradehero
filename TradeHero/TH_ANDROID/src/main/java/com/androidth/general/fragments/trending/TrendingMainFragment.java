@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.android.common.SlidingTabLayout;
+import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.activities.BaseActivity;
 import com.androidth.general.adapters.DTOAdapterNew;
@@ -291,14 +292,14 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public boolean shouldShowLiveTradingToggle()
     {
-        return false;
+        return BuildConfig.HAS_LIVE_ACCOUNT_FEATURE;
     }
 
     @Override public void onLiveTradingChanged(boolean isLive)
     {
         super.onLiveTradingChanged(isLive);
-        //BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
-        //trendingLiveFragmentUtil.setCallToAction(isLive);
+//        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
+//        trendingLiveFragmentUtil.setCallToAction(isLive);
     }
 
     @Override public void onDestroyOptionsMenu()

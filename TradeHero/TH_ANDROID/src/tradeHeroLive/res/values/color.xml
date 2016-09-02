@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="general_red_live">#F44336</color>
+  <color name="general_red_live_pressed">#a9362f</color>
+  <color name="general_red_live_focused">#fa5145</color>
+  <color name="general_red_live_status_bar">@color/general_red_live</color>
+  <color name="general_dark_red">#A8342A</color>
+  <color name="sign_up_indicator_bg">#888888</color>
+  <color name="toolbar_color">#377BFF</color>
+
+  <color name="general_grey_text">#333333</color>
+  <color name="general_green_button">#04B030</color>
+  <color name="menu_bg">#EDEDED</color>
+</resources>

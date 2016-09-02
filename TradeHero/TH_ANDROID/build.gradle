@@ -412,28 +412,28 @@ android {
         */
         tradeHeroLive {
             java {
-                srcDir 'src/tradeHero/java'
+                srcDir 'src/tradeHeroLive/java'
             }
             res {
-                srcDir 'src/tradeHero/res'
+                srcDir 'src/tradeHeroLive/res'
             }
         }
 
         tradeHeroLiveDebug {
             java {
-                srcDir 'src/tradeHero/java'
+                srcDir 'src/tradeHeroLive/java'
             }
             res {
-                srcDir 'src/tradeHero/res'
+                srcDir 'src/tradeHeroLive/res'
             }
         }
 
         tradeHeroLiveRelease {
             java {
-                srcDir 'src/tradeHero/java'
+                srcDir 'src/tradeHeroLive/java'
             }
             res {
-                srcDir 'src/tradeHero/res'
+                srcDir 'src/tradeHeroLive/res'
             }
         }
     }

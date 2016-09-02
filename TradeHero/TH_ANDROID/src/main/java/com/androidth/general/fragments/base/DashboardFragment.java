@@ -10,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.squareup.picasso.Picasso;
 
@@ -30,7 +31,7 @@ abstract public class DashboardFragment extends BaseFragment
     //public static Bundle bundle;
     public boolean shouldShowLiveTradingToggle()
     {
-        return false;
+        return BuildConfig.HAS_LIVE_ACCOUNT_FEATURE;
     }
 
     public void onLiveTradingChanged(boolean isLive)

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="sms_verification_title">Verify your phone number</string>
+  <string name="sms_verification_sms_content">Please enter %s into Tradehero within the next 30 minutes.</string>
+  <string name="sms_verification_description">Please enter code sent via SMS to %s.</string>
+  <string name="sms_verification_status">SMS Status: %s</string>
+  <string name="sms_verification_action">Please enter the verification code sent via SMS.</string>
+  <string name="sms_verification_resend">Resend Verification Code</string>
+  <string name="sms_verification_send_fail_title">Close the dialog and try again</string>
+  <string name="sms_verification_send_fail">Failed to send a verification SMS</string>
+  <string name="sms_verification_not_match">The verification code you typed does not match the one we sent.\nPlease try again.</string>
+
+  <string name="sms_verification_button_empty_submitting">Submitting</string>
+  <string name="sms_verification_button_twilio_queued">Queued</string>
+  <string name="sms_verification_button_twilio_sending">Sending</string>
+  <string name="sms_verification_button_twilio_sent">Sent</string>
+  <string name="sms_verification_button_twilio_receiving">Receiving</string>
+  <string name="sms_verification_button_twilio_received">Received</string>
+  <string name="sms_verification_button_twilio_delivered">Delivered</string>
+  <string name="sms_verification_button_twilio_undelivered">Undelivered</string>
+  <string name="sms_verification_button_twilio_failed">Failed</string>
+
+</resources>

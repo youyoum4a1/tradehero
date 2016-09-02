@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <RelativeLayout
+      android:id="@+id/header"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/tile_live_trading_bg"
+      android:gravity="center"
+      android:orientation="horizontal"
+      android:minHeight="?attr/actionBarSize"
+      android:paddingTop="@dimen/margin_xsmall"
+      android:paddingLeft="@dimen/margin_xsmall"
+      android:paddingBottom="@dimen/margin_xsmall"
+      >
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:id="@+id/banner_logo"
+        android:layout_height="@dimen/medium_image_w_h"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/margin_xsmall"
+        android:layout_marginStart="@dimen/margin_xsmall"
+        />
+
+    <ImageView
+        android:id="@android:id/closeButton"
+        style="@style/TH.Btn_Popup_Close.Inverse"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        />
+
+  </RelativeLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/header"
+      android:background="@color/white"
+      android:orientation="vertical"
+      android:padding="@dimen/margin_small"
+      >
+
+    <ImageView
+        android:layout_width="@dimen/medium_image_w_h"
+        android:layout_height="@dimen/medium_image_w_h"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_phone_verify"
+        />
+
+    <TextView
+        style="@style/TH.Headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/size_1"
+        android:gravity="center_horizontal"
+        android:text="@string/sms_verification_title"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/sms_sent_description"
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/size_1"
+        android:gravity="center_horizontal"
+        tools:text="Please enter code sent via SMS to\n+61 491 470 156."
+        />
+
+    <TextView
+        android:id="@+id/sms_sent_status"
+        style="@style/TH.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        tools:text="Status: Queued"
+        />
+
+    <TextView
+        style="@style/TH.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:text="@string/sms_verification_action"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/size_1"
+        android:orientation="horizontal"
+        >
+
+      <EditText
+          android:id="@+id/verify_code_1"
+          style="@style/TH.Headline.Verify"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="1"
+          />
+
+      <TextView
+          style="@style/TH.Headline"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="-"
+          />
+
+      <EditText
+          android:id="@+id/verify_code_2"
+          style="@style/TH.Headline.Verify"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="2"
+          />
+
+      <TextView
+          style="@style/TH.Headline"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="-"
+          />
+
+      <EditText
+          android:id="@+id/verify_code_3"
+          style="@style/TH.Headline.Verify"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="3"
+          />
+
+      <TextView
+          style="@style/TH.Headline"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="-"
+          />
+
+      <EditText
+          android:id="@+id/verify_code_4"
+          style="@style/TH.Headline.Verify"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          tools:text="4"
+          />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_verify_phone"
+        style="@style/TH.Headline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/basic_green_selector"
+        android:enabled="false"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:text="@string/verify"
+        />
+
+    <Button
+        android:id="@+id/btn_send_code"
+        style="@style/TH.Subhead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/basic_light_grey_selector"
+        android:minHeight="@dimen/clickable_element_min_dimen"
+        android:text="@string/sms_verification_resend"
+        />
+
+  </LinearLayout>
+
+</LinearLayout>

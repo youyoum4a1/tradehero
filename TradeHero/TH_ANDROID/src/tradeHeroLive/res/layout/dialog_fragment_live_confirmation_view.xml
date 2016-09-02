@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+  <RelativeLayout
+      android:id="@+id/live_form_header"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/tile_live_trading_bg"
+      android:orientation="horizontal"
+      android:minHeight="?attr/actionBarSize"
+      android:paddingTop="@dimen/margin_xsmall"
+      android:paddingLeft="@dimen/margin_xsmall"
+      android:paddingBottom="@dimen/margin_xsmall"
+      >
+
+    <ImageView
+        android:id="@+id/live_form_competition_logo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/medium_image_w_h"
+        android:layout_centerInParent="true"
+        android:layout_marginRight="@dimen/margin_large"
+        android:layout_marginEnd="@dimen/margin_large"
+        android:layout_marginLeft="@dimen/margin_large"
+        android:layout_marginStart="@dimen/margin_large" />
+
+    <ImageView
+        android:id="@android:id/closeButton"
+        style="@style/TH.Btn_Popup_Close.Inverse"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+  </RelativeLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/header"
+      android:background="@color/white"
+      android:orientation="vertical"
+      android:padding="@dimen/margin_small"
+      >
+
+    <TextView
+        style="@style/TH.Headline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/size_1"
+        android:gravity="center_horizontal"
+        android:text="Thank you!"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/live_form_confirmation_description"
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/size_1"
+        android:gravity="center_horizontal"
+        tools:text="Your registration details have \nbeen submitted to"
+        />
+
+    <ImageView
+        android:id="@+id/live_form_brand_logo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/extra_big_image_w_h"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="20sp"
+        android:src="@drawable/settings_email_noti"
+        />
+
+    <TextView
+        style="@style/TH.Subhead"
+        android:id="@+id/live_form_reminder_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginBottom="@dimen/size_1"
+        android:textStyle="bold"
+        android:text="Reminder: Pending documents"
+        tools:text="Reminder: Pending documents"
+        />
+
+    <TextView
+        android:id="@+id/live_form_below_description"
+        style="@style/TH.Subhead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginBottom="@dimen/size_1"
+        tools:text="Don\'t forget that you will still need to upload:\n"
+        />
+
+    <!--<Button-->
+        <!--android:id="@+id/live_form_ok_button"-->
+        <!--android:background="?android:attr/selectableItemBackground"-->
+        <!--style="@style/TH.Subhead"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:minHeight="@dimen/clickable_element_min_dimen"-->
+        <!--android:text="Got it!"-->
+        <!--android:textColor="@color/general_brand_color"-->
+        <!--/>-->
+    <!--android:background="@drawable/basic_light_grey_selector"-->
+
+  </LinearLayout>
+
+</LinearLayout>

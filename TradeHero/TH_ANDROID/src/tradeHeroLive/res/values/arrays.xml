@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string-array name="live_title_array">
+    <item>@string/live_title_mr</item>
+    <item>@string/live_title_ms</item>
+  </string-array>
+
+</resources>

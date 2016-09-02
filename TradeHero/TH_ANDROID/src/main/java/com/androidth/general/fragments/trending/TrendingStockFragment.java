@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.android.internal.util.Predicate;
+import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.activities.LiveActivityUtil;
 import com.androidth.general.api.alert.AlertCompactDTO;
@@ -121,6 +122,10 @@ public class TrendingStockFragment extends TrendingBaseFragment
         fetchProviderList();
         fetchWatchlist();
         fetchAlertCompactList();
+
+        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
+            showLiveAccountTile();
+        }
     }
 
     @Override public void onResume()
@@ -541,5 +546,9 @@ public class TrendingStockFragment extends TrendingBaseFragment
     {
         super.populateArgumentForSearch(args);
         SecuritySearchFragment.putAssetClass(args, AssetClass.STOCKS);
+    }
+
+    private void showLiveAccountTile(){
+        wrapperAdapter.setLiveAccountTile();
     }
 }

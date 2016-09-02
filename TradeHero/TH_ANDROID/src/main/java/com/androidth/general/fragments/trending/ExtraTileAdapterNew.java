@@ -19,7 +19,7 @@ public class ExtraTileAdapterNew extends BaseAdapter
         implements WrapperListAdapter
 {
     private static final int EXTRA_TILE_RANGE = 6;
-    private static final int EXTRA_TILE_MIN_DISTANCE = 10;
+    private static final int EXTRA_TILE_MIN_DISTANCE = 6;
     private static final int MAX_RANDOM_RETRIES = 50;
     private static final int tileTypeCount = TileType.values().length;
 
@@ -65,6 +65,10 @@ public class ExtraTileAdapterNew extends BaseAdapter
             putCompetitionExtraTilePosition();
             notifyDataSetChanged();
         }
+    }
+
+    public void setLiveAccountTile(){
+        this.extraTiles.put(1, TileType.LiveToggle);
     }
 
     @Override public void registerDataSetObserver(DataSetObserver observer)
@@ -275,6 +279,7 @@ public class ExtraTileAdapterNew extends BaseAdapter
             while (wrappedCount > maxExtraPosition + EXTRA_TILE_MIN_DISTANCE) {
                 maxExtraPosition += getNextExtraTileOffset();
                 extraTiles.put(maxExtraPosition, getCompetitionTile());
+                extraTiles.put(1, TileType.LiveToggle);
             }
         }
     }

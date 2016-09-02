@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.android.common.SlidingTabLayout;
 import com.android.internal.util.Predicate;
+import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.api.alert.AlertCompactDTO;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
@@ -358,7 +359,7 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
 
     @Override public boolean shouldShowLiveTradingToggle()
     {
-        return false;
+        return BuildConfig.HAS_LIVE_ACCOUNT_FEATURE;
     }
 
     @Override public void onDestroyOptionsMenu()

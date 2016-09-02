@@ -10,8 +10,8 @@ public enum TileType
     ExtraCash(R.layout.tile_extra_cash),
     ResetPortfolio(R.layout.tile_reset_portfolio),
     Survey(R.layout.tile_survey),
-    FromProvider(R.layout.tile_from_provider);
-    //LiveToggle(R.layout.tile_live_trading);
+    FromProvider(R.layout.tile_from_provider),
+    LiveToggle(R.layout.tile_live_trading);
 
     private final boolean extra;
     private final int layoutResourceId;

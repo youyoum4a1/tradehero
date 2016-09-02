@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView
+    style="@style/TH.Subhead"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:textColor="@color/sign_up_tab_text_selector"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/size_5"
+    android:textStyle="bold"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:layout_centerInParent="true"
+    android:background="@drawable/sign_up_tab_selector"
+    android:orientation="vertical"
+    android:textAlignment="center"
+    tools:text="1"
+    tools:textAlignment="center"
+    />
