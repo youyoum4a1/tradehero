@@ -163,6 +163,7 @@ android {
         tradeHero {
             applicationId = "com.tradehero.th"
             buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
+            buildConfigField "boolean", "HAS_LIVE_ACCOUNT_FEATURE", "false"
             versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.0"
 
             multiDexEnabled true
@@ -172,10 +173,21 @@ android {
         ayondoAcademy {
             applicationId = "com.ayondo.academyapp"
             buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.ayondo.academyapp\""
+            buildConfigField "boolean", "HAS_LIVE_ACCOUNT_FEATURE", "false"
             versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.1"
 
             multiDexEnabled true
             manifestPlaceholders = [FACEBOOK_APP_ID: "254854381560011"]
+        }
+
+        tradeHeroLive {
+            applicationId = "com.tradehero.th"
+            buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
+            buildConfigField "boolean", "HAS_LIVE_ACCOUNT_FEATURE", "true"
+            versionName "${project.ext.versionMajor}.${project.ext.versionMinor}.0"
+
+            multiDexEnabled true
+            manifestPlaceholders = [FACEBOOK_APP_ID: "431745923529834"]
         }
 
 //    samsung {
@@ -366,8 +378,8 @@ android {
         }
 
         /*
-    *TradeHero app
-    */
+        * *TradeHero app
+        * */
         tradeHero {
             java {
                 srcDir 'src/tradeHero/java'
@@ -395,169 +407,35 @@ android {
             }
         }
 
-        //    samsung {
-//      java {
-//        srcDir 'src/row/java'
-//      }
-//    }
-//
-//    samsungGameNoPushDebug {
-//      java {
-//        srcDir 'src/samsungDebug/java'
-//      }
-//    }
-//
-//    samsungLiveNoPushDebug {
-//      java {
-//        srcDir 'src/samsungDebug/java'
-//        srcDir 'src/liveDebug/java'
-//        srcDir 'src/dagger1LiveDebug/java'
-//      }
-//    }
-//
-//    samsungGameAirship {
-//      manifest {
-//        srcFile 'src/googleplayAirship/AndroidManifest.xml' // Reuse until there is something special for Samsung
-//      }
-//      java {
-//        srcDir 'src/samsungAirship/java'
-//      }
-//    }
-//
-//    samsungLiveAirship {
-//      manifest {
-//        srcFile 'src/googleplayAirship/AndroidManifest.xml' // Reuse until there is something special for Samsung
-//      }
-//      java {
-//        srcDir 'src/samsungAirship/java'
-//      }
-//    }
-//
-//    samsungGameAirshipDebug {
-//      java {
-//        srcDir 'src/samsungDebug/java'
-//      }
-//    }
-//
-//    samsungLiveAirshipDebug {
-//      java {
-//        srcDir 'src/samsungDebug/java'
-//        srcDir 'src/dagger1LiveDebug/java'
-//      }
-//    }
-//
-//    samsungGameNoPushRelease {
-//      java {
-//        srcDir 'src/samsungRelease/java'
-//      }
-//    }
-//
-//    samsungLiveNoPushRelease {
-//      java {
-//        srcDir 'src/samsungRelease/java'
-//        srcDir 'src/dagger1LiveRelease/java'
-//      }
-//    }
-//
-//    samsungGameAirshipRelease {
-//      manifest {
-//        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml' // Reuse until there is something special for Samsung
-//      }
-//      java {
-//        srcDir 'src/samsungRelease/java'
-//      }
-//    }
-//
-//    samsungLiveAirshipRelease {
-//      manifest {
-//        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml' // Reuse until there is something special for Samsung
-//      }
-//      java {
-//        srcDir 'src/samsungRelease/java'
-//        srcDir 'src/liveDebug/java'
-//        srcDir 'src/dagger1LiveDebug/java'
-//        //        srcDir 'src/dagger1LiveRelease/java'
-//      }
-//    }
-//
-//    amazon {
-//      java {
-//        srcDir 'src/row/java'
-//      }
-//    }
-//
-//    amazonGameNoPushDebug {
-//      java {
-//        srcDir 'src/amazonDebug/java'
-//      }
-//    }
-//
-//    amazonLiveNoPushDebug {
-//      java {
-//        srcDir 'src/amazonDebug/java'
-//        srcDir 'src/liveDebug/java'
-//        srcDir 'src/dagger1LiveDebug/java'
-//      }
-//    }
-//
-//    amazonGameAirship {
-//      manifest {
-//        srcFile 'src/amazonAirship/AndroidManifest.xml'
-//      }
-//      java {
-//        srcDir 'src/amazonAirship/java'
-//      }
-//    }
-//
-//    amazonLiveAirship {
-//      manifest {
-//        srcFile 'src/amazonAirship/AndroidManifest.xml'
-//      }
-//      java {
-//        srcDir 'src/amazonAirship/java'
-//      }
-//    }
-//
-//    amazonGameAirshipDebug {
-//      java {
-//        srcDir 'src/amazonDebug/java'
-//      }
-//    }
-//
-//    amazonLiveAirshipDebug {
-//      java {
-//        srcDir 'src/amazonDebug/java'
-//        srcDir 'src/dagger1LiveDebug/java'
-//      }
-//    }
-//
-//    amazonGameNoPushRelease {
-//      java {
-//        srcDir 'src/amazonRelease/java'
-//      }
-//    }
-//
-//    amazonLiveNoPushRelease {
-//      java {
-//        srcDir 'src/amazonRelease/java'
-//        srcDir 'src/dagger1LiveRelease/java'
-//      }
-//    }
-//
-//    amazonGameAirshipRelease {
-//      java {
-//        srcDir 'src/amazonRelease/java'
-//      }
-//    }
-//
-//    amazonLiveAirshipRelease {
-//      java {
-//        srcDir 'src/amazonRelease/java'
-//        srcDir 'src/dagger1LiveRelease/java'
-//      }
-//    }
+        /*
+        * *TradeHero Live app
+        */
+        tradeHeroLive {
+            java {
+                srcDir 'src/tradeHero/java'
+            }
+            res {
+                srcDir 'src/tradeHero/res'
+            }
+        }
 
-        //endregion
+        tradeHeroLiveDebug {
+            java {
+                srcDir 'src/tradeHero/java'
+            }
+            res {
+                srcDir 'src/tradeHero/res'
+            }
+        }
+
+        tradeHeroLiveRelease {
+            java {
+                srcDir 'src/tradeHero/java'
+            }
+            res {
+                srcDir 'src/tradeHero/res'
+            }
+        }
     }
 
     lintOptions {
