@@ -12,12 +12,22 @@
         android:gravity="left"
         android:text="@string/redemption"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large" />
+    <TextView
+        android:layout_marginTop="14dp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:text="@string/redemption_sub_text"
+        android:textColor="@color/black"
+        android:autoLink="web"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
     <android.support.design.widget.TextInputEditText
         android:layout_marginTop="16dp"
         android:singleLine="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Enter your code to add funds to your account"
+        android:hint="Redemption code here"
         android:id="@+id/redemption_code" />
     <android.support.v7.widget.AppCompatButton
         android:layout_marginTop="16dp"

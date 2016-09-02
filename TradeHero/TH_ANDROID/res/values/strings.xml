@@ -87,7 +87,8 @@
   <string name="discussion_edit_post_subtitle">on %s</string>
   <string name="team_credit">Made with love in Singapore and Shanghai</string>
   <string name="about_screen_secure_by">Secured by:</string>
-  <string name="redemption">Redemption Center</string>
+  <string name="redemption">Redeem FREE virtual cash here!</string>
+  <string name="redemption_sub_text">Get code at www.NagaWarrants.com!</string>
   <string name="about_screen_text_processing_by">Text processing by:</string>
   <string name="about_screen_sentiment_analysis_by">Sentiment analysis by:</string>
   <string name="send_fake_push" translatable="false">Send a fake PushNotification</string>
