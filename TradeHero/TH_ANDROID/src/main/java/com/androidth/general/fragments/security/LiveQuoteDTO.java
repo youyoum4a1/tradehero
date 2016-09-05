@@ -50,6 +50,8 @@ public class LiveQuoteDTO implements RawResponseKeeper, Cloneable{
 
     public Double rp;//rise percent
 
+    public Double lp;//rise percent
+
     // This part is used for the signature container that came back
     @JsonIgnore private String rawResponse;
 
@@ -104,6 +106,11 @@ public class LiveQuoteDTO implements RawResponseKeeper, Cloneable{
     @Nullable
     public Double getBidPrice() {
         return b;
+    }
+
+    @Nullable
+    public Double getLastPrice() {
+        return lp;
     }
 
     @Nullable
