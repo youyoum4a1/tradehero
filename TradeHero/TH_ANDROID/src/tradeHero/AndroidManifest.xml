@@ -22,8 +22,6 @@
 
     <activity
         android:name="com.androidth.general.activities.IdentityPromptActivity"
-        android:theme="@style/TradeHero.Live"
-        android:label="@string/tradehero_live"
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"
         android:noHistory="false"
@@ -31,8 +29,6 @@
 
     <activity
         android:name="com.androidth.general.activities.SignUpLiveActivity"
-        android:theme="@style/TradeHero.Live"
-        android:label="@string/tradehero_live"
         android:windowSoftInputMode="adjustResize"
         android:screenOrientation="portrait"/>
 

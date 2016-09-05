@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -77,6 +78,7 @@ import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.GraphicUtil;
+import com.androidth.general.utils.ImageUtils;
 import com.androidth.general.utils.route.THRouter;
 import com.squareup.picasso.Picasso;
 import com.tradehero.route.Routable;
@@ -481,9 +483,11 @@ public class MainCompetitionFragment extends DashboardFragment
         {
             setActionBarTitle("");
             setActionBarColor(providerDTO.hexColor);
-            setActionBarImage(this.providerDTO.navigationLogoUrl);
-
-
+            if(providerDTO.navigationLogoUrl!=null){
+                setActionBarImage(this.providerDTO.navigationLogoUrl);
+            }else{
+                setActionBarTitle(providerDTO.name);
+            }
         }
         /*if(providerDTO!=null){
             Bundle args = new Bundle();
@@ -492,41 +496,11 @@ public class MainCompetitionFragment extends DashboardFragment
             DashboardFragment.bundle = args;
         }*/
     }
+
     private boolean setActionBarImage(String url){
-        try {
-            ActionBar actionBar = getSupportActionBar();
-            ImageView imageView = new ImageView(getContext());
-            Observable<Bitmap> observable = Observable.defer(()->{
-                try {
-                    return Observable.just(Picasso.with(getContext()).load(url).get());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return Observable.error(e);
-                }
-            });
+        return ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), url);
 
-            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
-                int height = (int)(actionBar.getHeight()*0.6);
-                int bitmapHt = bitmap.getHeight();
-                int bitmapWd = bitmap.getWidth();
-                int width = height * (bitmapWd / bitmapHt);
-                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
-                imageView.setImageBitmap(bitmap);
-                ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
-                actionBar.setCustomView(imageView, layoutParams);
-                actionBar.setElevation(5);
-                actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
-            }, throwable -> {
-                Log.e("Error",""+throwable.getMessage());
-            });
-
-            return true;
-        }
-        catch (Exception e){
-            return false;
-        }
     }
-
 
     @SuppressWarnings("UnusedDeclaration")
     @OnClick(R.id.btn_trade_now)

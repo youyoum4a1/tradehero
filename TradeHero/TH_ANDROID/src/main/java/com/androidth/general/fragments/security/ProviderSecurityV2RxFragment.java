@@ -37,6 +37,7 @@ import com.androidth.general.persistence.security.SecurityCompactListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.DeviceUtil;
+import com.androidth.general.utils.ImageUtils;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -223,39 +224,9 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     }
 
     private boolean setActionBarImage(String url){
-        try {
-            ActionBar actionBar = getSupportActionBar();
-            ImageView imageView = new ImageView(getContext());
-            Observable<Bitmap> observable = Observable.defer(()->{
-                try {
-                    return Observable.just(Picasso.with(getContext()).load(url).get());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return Observable.error(e);
-                }
-            });
-
-            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
-                int height = (int)(actionBar.getHeight()*0.6);
-                int bitmapHt = bitmap.getHeight();
-                int bitmapWd = bitmap.getWidth();
-                int width = height * (bitmapWd / bitmapHt);
-                bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
-                imageView.setImageBitmap(bitmap);
-                ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
-                actionBar.setCustomView(imageView, layoutParams);
-                actionBar.setElevation(5);
-                actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
-            }, throwable -> {
-                Log.e("Error",""+throwable.getMessage());
-            });
-
-            return true;
-        }
-        catch (Exception e){
-            return false;
-        }
+        return ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), url);
     }
+
     private class ProviderSecurityV2PagerAdapter extends FragmentPagerAdapter
     {
         private boolean isSortAvailable = false;
