@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -34,6 +35,7 @@ import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.rx.TimberOnErrorAction1;
+import com.androidth.general.utils.ImageUtils;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.LiveRewardWidget;
 import com.squareup.picasso.Picasso;
@@ -120,44 +122,7 @@ public class LiveSignUpMainFragment extends BaseFragment
 
     }
     private boolean setActionBarImage(String url){
-        try {
-            ActionBar actionBar = getSupportActionBar();
-            ImageView imageView = new ImageView(getContext());
-            Observable<Bitmap> observable = Observable.defer(()->{
-                try {
-                    return Observable.just(Picasso.with(getContext()).load(url).get());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return Observable.error(e);
-                }
-            });
-
-            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
-
-                if(!isEnrolled){
-                    int height = (int)(actionBar.getHeight()*0.6);
-                    int bitmapHt = bitmap.getHeight();
-                    int bitmapWd = bitmap.getWidth();
-                    int width = height * (bitmapWd / bitmapHt);
-                    bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
-                }
-                imageView.setImageBitmap(bitmap);
-                ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.MATCH_PARENT, Gravity.CENTER);
-                if(!actionBar.isShowing()){
-                    return;
-                }
-                actionBar.setCustomView(imageView, layoutParams);
-                actionBar.setElevation(5);
-                actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
-            }, throwable -> {
-                Log.e("Error",""+throwable.getMessage());
-            });
-
-            return true;
-        }
-        catch (Exception e){
-            return false;
-        }
+        return ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), url);
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

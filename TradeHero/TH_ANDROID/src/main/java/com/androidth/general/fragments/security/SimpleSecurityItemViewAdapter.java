@@ -81,7 +81,8 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                 {
                     Double askPrice = quoteUpdate.getAskPrice();
                     Double bidPrice = quoteUpdate.getBidPrice();
-                    Double lastPrice = securityCompactDTO.lastPrice;
+                    Double lastPrice = quoteUpdate.getLastPrice();
+//                    Double lastPrice = securityCompactDTO.lastPrice;
                     Double risePercent = securityCompactDTO.risePercent;
 
                     boolean hasRisePercent = false;
@@ -118,7 +119,14 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                         securityCompactDTO.toUSDRate = quoteUpdate.getUsdRate();
                         securityCompactDTO.askPrice = askPrice;
                         securityCompactDTO.bidPrice = bidPrice;
-                        if(askPrice!=null && bidPrice!=null) {
+
+                        if(lastPrice!=null){//for Kenanga only, for now
+                            if(lastPrice<0){//negative must show N/A
+                                securityCompactDTO.lastPrice = null;
+                            }else{
+                                securityCompactDTO.lastPrice = lastPrice;
+                            }
+                        }else if(askPrice!=null && bidPrice!=null) {
                             securityCompactDTO.lastPrice = (askPrice + bidPrice) / 2;
                         }
                         else if(askPrice != null){
@@ -127,6 +135,7 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                         else if(bidPrice != null){
                             securityCompactDTO.lastPrice = bidPrice;
                         }
+
                         if(risePercent!=null && hasRisePercent){
                             securityCompactDTO.risePercent = quoteUpdate.getRisePercent();
                         }

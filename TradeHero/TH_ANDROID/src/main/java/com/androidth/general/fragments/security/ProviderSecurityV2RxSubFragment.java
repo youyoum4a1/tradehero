@@ -77,6 +77,8 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     List<SecurityCompactDTO> currentVisibleItemsList;
     String topBarColor;
 
+    boolean itemClicked = false;
+
     public String[] getSecurityIds(List<SecurityCompactDTO> items){
         if(items==null){
             return null;
@@ -203,9 +205,9 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
     @Override public void onDestroyView()
     {
-//        if(signalRManager!=null){
-//            signalRManager.getCurrentConnection().disconnect();
-//        }
+        if(signalRManager!=null && !itemClicked){
+            signalRManager.getCurrentConnection().disconnect();
+        }
 
         ButterKnife.unbind(this);
         DeviceUtil.dismissKeyboard(getActivity());
@@ -325,6 +327,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
 
         args.putParcelable(AbstractBuySellFragment.BUNDLE_KEY_SECURITY_DTO, clicked);
         navigator.get().pushFragment(SecurityCompactDTOUtil.fragmentFor(clicked), args);
+        itemClicked = true;
     }
 
     public List<SecurityCompactDTO> getCurrentVisibleItems(AbsListView listView){
