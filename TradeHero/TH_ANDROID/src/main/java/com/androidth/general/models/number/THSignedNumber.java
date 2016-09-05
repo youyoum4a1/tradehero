@@ -40,7 +40,7 @@ public class THSignedNumber
     private final int signType;
     private final Double value;
     private final int relevantDigitCount;
-    private final boolean use000Suffix;
+    protected final boolean use000Suffix;
     private final boolean use000LongSuffix;
     @ColorRes private final int fallbackColorResId;
     private final boolean defaultColorForBackground;
@@ -64,7 +64,7 @@ public class THSignedNumber
         private boolean withSign = WITH_SIGN;
         private int signType = TYPE_SIGN_MINUS_ONLY;
         private int relevantDigitCount = DESIRED_RELEVANT_DIGIT_COUNT;
-        private boolean use000Suffix = DEFAULT_USE_000_SUFFIX;
+        protected boolean use000Suffix = DEFAULT_USE_000_SUFFIX;
         private boolean use000LongSuffix = DEFAULT_USE_000_LONG_SUFFIX;
         public boolean useDefaultColor = DO_NOT_USE_DEFAULT_COLOR;
         @ColorRes private Integer fallbackColorResId = R.color.darker_grey;

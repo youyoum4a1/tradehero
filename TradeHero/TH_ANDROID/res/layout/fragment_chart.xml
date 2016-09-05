@@ -665,6 +665,7 @@
                     </TableRow>
 
                     <TableRow
+                        android:id="@+id/row_pe_ratio"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -693,6 +694,7 @@
                     </TableRow>
 
                     <TableRow
+                        android:id="@+id/row_eps"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -717,6 +719,36 @@
                             android:text=""
                             tools:text="40.23"
                             />
+
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/row_mkt_cap"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:visibility="gone"
+                    >
+
+                        <TextView
+                            style="@style/TH.InfoKey"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="left"
+                            android:text="@string/security_mkt_cap"
+                        />
+
+                        <TextView
+                            android:id="@+id/vmkt_cap"
+                            style="@style/TH.InfoValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text=""
+                            tools:text="40.23"
+                        />
 
                     </TableRow>
 

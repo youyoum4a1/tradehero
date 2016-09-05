@@ -49,6 +49,12 @@ public class THSignedMoney extends THSignedNumber
             return self();
         }
 
+        public BuilderType with000Suffix()
+        {
+            this.use000Suffix = true;
+            return self();
+        }
+
         @Override public THSignedMoney build()
         {
             return new THSignedMoney(this);

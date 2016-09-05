@@ -149,6 +149,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Bind(R.id.veps) @Nullable protected TextView mEps;
     @Bind(R.id.vvolume) @Nullable protected TextView mVolume;
     @Bind(R.id.vavg_volume) @Nullable protected TextView mAvgVolume;
+    @Bind(R.id.vmkt_cap) @Nullable protected TextView mMktCap;
 
 //for warrants, these are at the alternate side
     @Bind(R.id.vprevious_close_alternate) @Nullable protected TextView mPreviousCloseAlt;
@@ -160,6 +161,9 @@ public class ChartFragment extends AbstractSecurityInfoFragment
     @Bind(R.id.row_vdays_high_alternate) @Nullable protected View rowCloseAlt;
     @Bind(R.id.row_vdays_low_alternate) @Nullable protected View rowLowAlt;
     @Bind(R.id.row_vprevious_close_alternate) @Nullable protected View rowPrevCloseAlt;
+    @Bind(R.id.row_eps)@Nullable protected View rowEPS;
+    @Bind(R.id.row_pe_ratio) @Nullable protected View rowPERatio;
+    @Bind(R.id.row_mkt_cap) @Nullable protected View rowMktCap;
 
     @Bind(R.id.row_security_avg_volume) @Nullable protected View rowAvgVolume;
 //for warrants
@@ -772,6 +776,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         displayStrikePrice();
         displayUnderlying();
         displayIssuer();
+        displayMarketCap();
     }
 
     public void displayTimeSpanButtonSet()
@@ -874,7 +879,7 @@ public class ChartFragment extends AbstractSecurityInfoFragment
 
     public void displayWarrantRows()
     {
-        if(warrantDTO!=null){
+        if (warrantDTO!=null) {
             setupWarrantLayoutStyle();
         }
 
@@ -901,6 +906,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         if (rowIssuer != null)
         {
             rowIssuer.setVisibility(getWarrantVisibility());
+        }
+        if (rowMktCap != null)
+        {
+            rowMktCap.setVisibility(getWarrantVisibility());
         }
     }
 
@@ -1028,7 +1037,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         mPreviousCloseAlt.setVisibility(View.VISIBLE);
         mPreviousCloseAlt.setText(mPreviousClose.getText());
 
-        rowAvgVolume.setVisibility(View.GONE);//Kenanga request
+        //Kenanga request
+        rowAvgVolume.setVisibility(View.GONE);
+        rowEPS.setVisibility(View.GONE);
+        rowPERatio.setVisibility(View.GONE);
 
         rowOpenAlt.setVisibility(View.VISIBLE);
         rowCloseAlt.setVisibility(View.VISIBLE);
@@ -1048,6 +1060,27 @@ public class ChartFragment extends AbstractSecurityInfoFragment
             {
                 mPreviousClose.setText(THSignedMoney.builder(securityCompactDTO.previousClose)
                         .currency(securityCompactDTO.currencyDisplay)
+                        .build().toString());
+            }
+        }
+    }
+
+    public void displayMarketCap()
+    {
+        if (!isDetached() && mMktCap != null)
+        {
+            if (securityCompactDTO == null || securityCompactDTO.marketCap == null)
+            {
+                mMktCap.setText(R.string.na);
+            }
+            else
+            {
+                //THSignedNumber.builder(securityCompactDTO.marketCap)
+                //        .with000Suffix()
+                //        .build().toString()
+                mMktCap.setText(THSignedMoney.builder(securityCompactDTO.marketCap)
+                        .currency(securityCompactDTO.currencyDisplay)
+                        .with000Suffix()
                         .build().toString());
             }
         }
