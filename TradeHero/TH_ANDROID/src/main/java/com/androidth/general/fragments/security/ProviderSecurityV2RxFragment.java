@@ -280,9 +280,11 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
 
                 if(securityCompactDTOList!=null){
                     String sortKey = providerSortCategoryDTOList.get(position).getSortOrder();
+                    String sortDirection = providerSortCategoryDTOList.get(position).getSortDirection();
 
                     SecurityComparator securityComparator = new SecurityComparator();
                     securityComparator.setSortKey(sortKey);
+                    securityComparator.setSortDirection(sortDirection);
 
                     ArrayList<SecurityCompactDTO> list = new ArrayList<>();//must have new list, otherwise, sort
 
@@ -325,9 +327,16 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     public class SecurityComparator implements Comparator<SecurityCompactDTO> {
 
         String sortKey = "";
+        String sortDirection = "";
+
         public void setSortKey(String sortKey){
             this.sortKey = sortKey;
         }
+
+        public void setSortDirection(String sortDirection){
+            this.sortDirection = sortDirection;
+        }
+
         @Override
         public int compare(SecurityCompactDTO lhs, SecurityCompactDTO rhs) {
 
@@ -347,7 +356,11 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
                     return right.compareTo(left);
 
                 case "risePercent":
-                    return rhs.getRisePercent().compareTo(lhs.getRisePercent());
+                    if(sortDirection.equals("DESC")){
+                        return rhs.getRisePercent().compareTo(lhs.getRisePercent());
+                    }else{
+                        return lhs.getRisePercent().compareTo(rhs.getRisePercent());
+                    }
                 default:
                     break;
             }
