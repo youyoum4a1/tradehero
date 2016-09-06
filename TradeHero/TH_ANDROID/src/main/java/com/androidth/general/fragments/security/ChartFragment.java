@@ -1028,15 +1028,6 @@ public class ChartFragment extends AbstractSecurityInfoFragment
         leftTableLayout.setVisibility(View.GONE);
         warrantTableLayout.setVisibility(View.VISIBLE);
 
-        mOpenAlt.setVisibility(View.VISIBLE);
-        mOpenAlt.setText(mOpen.getText());
-        mDaysHighAlt.setVisibility(View.VISIBLE);
-        mDaysHighAlt.setText(mDaysHigh.getText());
-        mDaysLowAlt.setVisibility(View.VISIBLE);
-        mDaysLowAlt.setText(mDaysLow.getText());
-        mPreviousCloseAlt.setVisibility(View.VISIBLE);
-        mPreviousCloseAlt.setText(mPreviousClose.getText());
-
         //Kenanga request
         rowAvgVolume.setVisibility(View.GONE);
         rowEPS.setVisibility(View.GONE);
@@ -1061,6 +1052,12 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                 mPreviousClose.setText(THSignedMoney.builder(securityCompactDTO.previousClose)
                         .currency(securityCompactDTO.currencyDisplay)
                         .build().toString());
+
+                if (mPreviousCloseAlt != null) {
+                    mPreviousCloseAlt.setText(THSignedMoney.builder(securityCompactDTO.previousClose)
+                            .currency(securityCompactDTO.currencyDisplay)
+                            .build().toString());
+                }
             }
         }
     }
@@ -1100,6 +1097,11 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                         .currency(securityCompactDTO.currencyDisplay)
                         .build().toString());
             }
+
+            if (mOpenAlt != null)
+            {
+                mOpenAlt.setText(mOpen.getText());
+            }
         }
     }
 
@@ -1117,6 +1119,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                         .currency(securityCompactDTO.currencyDisplay)
                         .build().toString());
             }
+
+            if (mDaysHighAlt != null) {
+                mDaysHighAlt.setText(mDaysHigh.getText());
+            }
         }
     }
 
@@ -1133,6 +1139,10 @@ public class ChartFragment extends AbstractSecurityInfoFragment
                 mDaysLow.setText(THSignedMoney.builder(securityCompactDTO.low)
                         .currency(securityCompactDTO.currencyDisplay)
                         .build().toString());
+            }
+
+            if (mDaysLowAlt != null) {
+                mDaysLowAlt.setText(mDaysLow.getText());
             }
         }
     }
