@@ -40,8 +40,8 @@ public class ImageUtils
     }
 
     public static boolean setActionBarImage(ActionBar actionBar, Activity activity, String url){
-        try {
 
+        try {
             ImageView imageView = new ImageView(activity);
             Observable<Bitmap> observable = Observable.defer(()->{
                 try {
@@ -64,11 +64,6 @@ public class ImageUtils
 //                bitmap = Bitmap.createScaledBitmap(bitmap,  screenWidth*7/10, actionBar.getHeight()*4/10, true);
 //                imageView.getLayoutParams().height = actionBar.getHeight()*4/10;
 //                imageView.getLayoutParams().width = screenWidth*7/10;
-
-//                android.view.ViewGroup.LayoutParams lp = imageView.getLayoutParams();
-//                lp.width = size.x*7/10;
-//                lp.height = actionBar.getHeight()*4/10;
-//                imageView.setLayoutParams(lp);
 
                 imageView.setImageBitmap(bitmap);
                 imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);

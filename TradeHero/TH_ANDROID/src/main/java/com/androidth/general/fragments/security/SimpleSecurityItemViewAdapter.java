@@ -81,8 +81,8 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                 {
                     Double askPrice = quoteUpdate.getAskPrice();
                     Double bidPrice = quoteUpdate.getBidPrice();
-                    Double lastPrice = quoteUpdate.getLastPrice();
-//                    Double lastPrice = securityCompactDTO.lastPrice;
+//                    Double lastPrice = quoteUpdate.getLastPrice();
+                    Double oldLastPrice = securityCompactDTO.lastPrice;
                     Double risePercent = securityCompactDTO.risePercent;
 
                     boolean hasRisePercent = false;
@@ -120,11 +120,11 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                         securityCompactDTO.askPrice = askPrice;
                         securityCompactDTO.bidPrice = bidPrice;
 
-                        if(lastPrice!=null){//for Kenanga only, for now
-                            if(lastPrice<0){//negative must show N/A
+                        if(quoteUpdate.getLastPrice()!=null){//for Kenanga only, for now
+                            if(quoteUpdate.getLastPrice()<0){//negative must show N/A
                                 securityCompactDTO.lastPrice = null;
                             }else{
-                                securityCompactDTO.lastPrice = lastPrice;
+                                securityCompactDTO.lastPrice = quoteUpdate.getLastPrice();
                             }
                         }else if(askPrice!=null && bidPrice!=null) {
                             securityCompactDTO.lastPrice = (askPrice + bidPrice) / 2;
@@ -146,9 +146,9 @@ public class SimpleSecurityItemViewAdapter extends SecurityItemViewAdapter
                     notifyDataSetChanged();
                     if(listView != null && listView.getChildAt(index)!=null){
                             View v = listView.getChildAt(index);
-                        if(lastPrice!=null &&
+                        if(oldLastPrice!=null &&
                                 newLastPrice!=null &&
-                                !lastPrice.equals(newLastPrice)){
+                                !oldLastPrice.equals(newLastPrice)){
                             TextView txtView = (TextView)v.findViewById(R.id.last_price);
                             YoYo.with(Techniques.Flash).playOn(txtView);
                         }
