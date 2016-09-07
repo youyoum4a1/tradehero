@@ -2,7 +2,6 @@ package com.androidth.general.api.portfolio;
 
 import android.support.annotation.NonNull;
 import com.androidth.general.common.persistence.DTO;
-import java.util.Date;
 
 public class PortfolioDTO extends PortfolioCompactDTO implements DTO
 {
@@ -49,4 +48,5 @@ public class PortfolioDTO extends PortfolioCompactDTO implements DTO
                 ", countTrades=" + countTrades +
                 ']';
     }
+
 }

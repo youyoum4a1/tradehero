@@ -11,7 +11,9 @@ import com.androidth.general.common.persistence.DTO;
 import com.androidth.general.api.competition.ProviderId;
 import com.androidth.general.api.users.UserBaseKey;
 import com.androidth.general.utils.SecurityUtils;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,7 +43,7 @@ public class PortfolioCompactDTO extends BaseResponseDTO implements DTO
     public int openPositionsCount;
     public int closedPositionsCount;
     public int watchlistPositionsCount;
-    public Date markingAsOfUtc;
+    @JsonDeserialize(using = CustomJsonDateDeserializer.class) public Date markingAsOfUtc;
     public String currencyDisplay;
     public String currencyISO;
     @Nullable public Double refCcyToUsdRate;
@@ -213,4 +215,5 @@ public class PortfolioCompactDTO extends BaseResponseDTO implements DTO
                 ", leverage=" + leverage +
                 ']';
     }
+
 }

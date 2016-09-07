@@ -3,11 +3,13 @@ package com.androidth.general.api.position;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.androidth.general.api.portfolio.PortfolioDTO;
 import com.androidth.general.utils.Constants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.androidth.general.api.portfolio.OwnedPortfolioId;
 import com.androidth.general.api.security.SecurityIntegerId;
 import com.androidth.general.api.users.UserBaseKey;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,8 +25,8 @@ public class PositionDTO extends PositionDTOCompact
     public Double unrealizedPLRefCcy;
     // This value is always in the portfolio currency
     public double marketValueRefCcy;
-    public String earliestTradeUtc;
-    public String latestTradeUtc;//precise date
+    @JsonDeserialize(using = CustomJsonDateDeserializer.class) public Date earliestTradeUtc;
+    @JsonDeserialize(using = CustomJsonDateDeserializer.class) public Date latestTradeUtc;//precise date
 
     // This value is always in the portfolio currency
     public Double sumInvestedAmountRefCcy;
@@ -116,8 +118,8 @@ public class PositionDTO extends PositionDTOCompact
                 ", realizedPLRefCcy=" + realizedPLRefCcy +
                 ", unrealizedPLRefCcy=" + unrealizedPLRefCcy +
                 ", marketValueRefCcy=" + marketValueRefCcy +
-                ", earliestTradeUtc=" + earliestTradeUtc +
-                ", latestTradeUtc=" + latestTradeUtc +
+//                ", earliestTradeUtc=" + earliestTradeUtc +
+//                ", latestTradeUtc=" + latestTradeUtc +
                 ", sumInvestedAmountRefCcy=" + sumInvestedAmountRefCcy +
                 ", totalTransactionCostRefCcy=" + totalTransactionCostRefCcy +
                 ", aggregateCount=" + aggregateCount +
@@ -126,25 +128,33 @@ public class PositionDTO extends PositionDTOCompact
 
     public Date getLatestTradeUtc() {
         //2016-08-31T03:24:38
-        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT_STANDARD);
-        try{
-            Date date = format.parse(latestTradeUtc);
-            return date;
-        }catch (ParseException e){
-            e.printStackTrace();
-            return null;
-        }
-//        return latestTradeUtc;
+//        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT_STANDARD);
+//        try{
+//            Date date = format.parse(latestTradeUtc);
+//            return date;
+//        }catch (ParseException e){
+//            e.printStackTrace();
+//            return null;
+//        }
+        return latestTradeUtc;
+    }
+
+    public void setLatestTradeUtc(Date newDate) {
+        //2016-08-31T03:24:38
+//        return null;
     }
 
     public Date getEarliestTradeUtc() {
         //2016-08-28T04:40:31.003
-        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT_PRECISE);
-        try{
-            Date date = format.parse(earliestTradeUtc);
-            return date;
-        }catch (ParseException e){
-            return null;
-        }
+//        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT_PRECISE);
+//        try{
+//            Date date = format.parse(earliestTradeUtc);
+//            return date;
+//        }catch (ParseException e){
+//            return null;
+//        }
+        return earliestTradeUtc;
     }
+
+
 }

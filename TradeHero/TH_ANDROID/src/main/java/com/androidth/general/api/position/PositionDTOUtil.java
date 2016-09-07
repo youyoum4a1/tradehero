@@ -32,7 +32,7 @@ public class PositionDTOUtil extends PositionDTOCompactUtil
 
         for (PositionDTO positionDTO : positionDTOs)
         {
-            if (positionDTO != null && positionDTO.latestTradeUtc != null)
+            if (positionDTO != null && positionDTO.getLatestTradeUtc() != null)
             {
                 if (latest == null || positionDTO.getLatestTradeUtc().after(latest))
                 {
