@@ -17,6 +17,7 @@
   <string name="security_news">News</string>
   <string name="security_newsfeed">@string/discovery_newsfeed</string>
   <string name="security_history">History</string>
+  <string name="security_mkt_cap">Mkt Cap</string>
 
   <!-- Warrant info -->
   <string name="warrant_type_call">Call</string>
