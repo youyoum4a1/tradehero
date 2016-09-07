@@ -68,6 +68,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     @Inject protected RequestHeaders requestHeaders;
 
     SignalRManager signalRManager;
+    String navigationUrl;
 
 //    private static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityListRxFragment.class.getName() + ".providerId";
 
@@ -153,6 +154,8 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         adapter = new SimpleSecurityItemViewAdapter(getContext(), R.layout.trending_security_item);
         items = getArguments().getParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY);
 
+        navigationUrl = getArguments().getString(ProviderSecurityV2RxFragment.BUNDLE_NAVIGATION_URL, null);
+
         adapter.setItems(items);
     }
 
@@ -184,13 +187,16 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 if(scrollState != SCROLL_STATE_FLING){
-                    currentVisibleItemsList = getCurrentVisibleItems(listView);
-                    String str[] = getSecurityIds(currentVisibleItemsList);
-                    if(signalRManager!=null){
-                        signalRManager.getCurrentProxy().invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str, currentUserId.get());
+                    try{
+                        currentVisibleItemsList = getCurrentVisibleItems(listView);
+                        String str[] = getSecurityIds(currentVisibleItemsList);
+                        if(signalRManager!=null){
+                            signalRManager.getCurrentProxy().invoke(LiveNetworkConstants.PROXY_METHOD_ADD_TO_GROUPS, str, currentUserId.get());
+                        }
+                        Log.d("Fired","Scroll changed");
+                    }catch (Exception e){
+                        //getCurrentVisibleItems might be null
                     }
-                    Log.d("Fired","Scroll changed");
-                    //proxy
                 }
             }
 
@@ -230,8 +236,8 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
             view = getSupportActionBar().getCustomView();
         }
         //small hack to set back comp. action bar. Works like charm tho....
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(Gravity.CENTER);
-        getSupportActionBar().setCustomView(view, layoutParams);
+//        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(Gravity.CENTER);
+//        getSupportActionBar().setCustomView(view, layoutParams);
 
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem item = menu.findItem(R.id.btn_search);
@@ -300,6 +306,8 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
                 return false;
             }
         });
+
+        setActionBarCustomImage(getActivity(), navigationUrl, true);
     }
 
     @Override public void onDestroyOptionsMenu()

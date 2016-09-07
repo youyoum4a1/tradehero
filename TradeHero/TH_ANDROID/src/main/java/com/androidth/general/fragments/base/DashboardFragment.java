@@ -12,10 +12,6 @@ import android.widget.ImageView;
 
 import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
-import com.androidth.general.utils.ImageUtils;
-import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -69,18 +65,17 @@ abstract public class DashboardFragment extends BaseFragment
     }
 
     public void setActionBarColorSelf(String url, String hexColor){
+        if(hexColor!=null){
+            setActionBarColor(hexColor);
+        }
 
         if(url != null && url.length() != 0){
-            setActionBarColor(hexColor);
-            setActionBarImage(url);
-            setActionBarTitle("");
-        } else {
-            setActionBarColor(getString(R.string.nav_bar_color_default));
-        }
-    }
 
-    private boolean setActionBarImage(String url){
-        return ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), url);
+            setActionBarCustomImage(getActivity(), url, false);
+//            setActionBarImage(url);
+//        } else {
+//            setActionBarColor(getString(R.string.nav_bar_color_default));
+        }
     }
 
     /*public static void putUrl(Bundle args, String url){

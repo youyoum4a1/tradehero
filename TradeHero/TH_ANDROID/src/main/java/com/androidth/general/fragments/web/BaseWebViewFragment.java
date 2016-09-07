@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.google.common.annotations.VisibleForTesting;
 import com.androidth.general.common.utils.SDKUtils;
 import com.androidth.general.R;
@@ -31,6 +33,7 @@ public class BaseWebViewFragment extends BaseFragment
     protected WebView webView;
     protected WebViewClient webViewClient;
     protected THWebChromeClient webChromeClient;
+    private String navigationUrl;
 
     public static void putUrl(@NonNull Bundle args, @NonNull String url)
     {
@@ -57,6 +60,10 @@ public class BaseWebViewFragment extends BaseFragment
         setHasOptionsMenu(true);
         webView = (WebView) view.findViewById(R.id.webview);
         initViews(view);
+
+        if(getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL)){
+            navigationUrl = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL);
+        }
     }
 
     @LayoutRes protected int getLayoutResId()
@@ -177,6 +184,14 @@ public class BaseWebViewFragment extends BaseFragment
 
     public boolean shouldDisplayTitleInActionBar()
     {
-        return true;
+        return false;
+    }
+
+    public void showActionBarImage(String backupText){
+        if(navigationUrl!=null){
+            setActionBarCustomImage(getActivity(), navigationUrl, false);
+        }else{
+            setActionBarTitle(backupText);
+        }
     }
 }

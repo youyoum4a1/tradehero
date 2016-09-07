@@ -35,14 +35,11 @@ import com.androidth.general.network.service.LiveServiceWrapper;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.prefs.LiveBrokerSituationPreference;
 import com.androidth.general.rx.TimberOnErrorAction1;
-import com.androidth.general.utils.ImageUtils;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.LiveRewardWidget;
-import com.squareup.picasso.Picasso;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -118,11 +115,10 @@ public class LiveSignUpMainFragment extends BaseFragment
                 setActionBarImage(notificationLogoUrl);
             }
         });
-
-
     }
-    private boolean setActionBarImage(String url){
-        return ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), url);
+
+    private void setActionBarImage(String url){
+        setActionBarCustomImage(getActivity(), url, false);
     }
 
     @Nullable @Override public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

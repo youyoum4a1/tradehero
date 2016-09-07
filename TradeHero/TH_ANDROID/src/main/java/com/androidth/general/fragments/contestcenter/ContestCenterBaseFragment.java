@@ -33,10 +33,7 @@ import com.androidth.general.models.intent.competition.ProviderIntent;
 import com.androidth.general.models.intent.competition.ProviderPageIntent;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
 import com.androidth.general.persistence.portfolio.PortfolioCompactListCacheRx;
-import com.androidth.general.utils.ImageUtils;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -260,8 +257,9 @@ public abstract class ContestCenterBaseFragment extends DashboardFragment
             }
         }
     }
-    private boolean setActionBarImage(String url){
-        return ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), url);
+
+    private void setActionBarImage(String url){
+        setActionBarCustomImage(getActivity(), url, false);
     }
 
     protected class LeaderboardCommunityTHIntentPassedListener implements THIntentPassedListener

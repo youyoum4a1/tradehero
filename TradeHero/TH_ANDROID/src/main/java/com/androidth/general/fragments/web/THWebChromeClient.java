@@ -41,6 +41,8 @@ public class THWebChromeClient extends WebChromeClient
         if (!(fragmentCopy instanceof CompetitionWebViewFragment) && fragmentCopy != null && fragmentCopy.shouldDisplayTitleInActionBar())
         {
             fragmentCopy.setActionBarTitle(view.getTitle());
+        }else{
+            fragmentCopy.showActionBarImage(view.getTitle());
         }
 
     }

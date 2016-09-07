@@ -132,7 +132,7 @@ public class PositionItemAdapter extends TypedRecyclerAdapter<Object>
                 areSame = mComparator.areItemsTheSame(o, item);
                 if (areSame && o instanceof PositionPartialTopView.DTO)
                 {
-                    ((PositionPartialTopView.DTO) item).positionDTO.latestTradeUtc = ((PositionPartialTopView.DTO) o).positionDTO.latestTradeUtc;
+                    ((PositionPartialTopView.DTO) item).positionDTO.setLatestTradeUtc(((PositionPartialTopView.DTO) o).positionDTO.getLatestTradeUtc());
                     mSortedList.recalculatePositionOfItemAt(index);
                 }
                 else

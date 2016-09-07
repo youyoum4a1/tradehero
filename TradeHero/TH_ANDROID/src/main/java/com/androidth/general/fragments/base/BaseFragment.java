@@ -279,6 +279,10 @@ public class BaseFragment extends Fragment
         actionBarOwnerMixin.setActionBarSubtitle(subtitle);
     }
 
+    protected void setActionBarCustomImage(Activity activity, String url, boolean hasOtherItems){
+        actionBarOwnerMixin.setActionBarCustomImage(activity, url, hasOtherItems);
+    }
+
     protected void unsubscribe(@Nullable Subscription subscription)
     {
         if (subscription != null && !subscription.isUnsubscribed())

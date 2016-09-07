@@ -169,7 +169,6 @@ public class FriendsInvitationFragment extends BaseFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarTitle(getString(R.string.action_invite));
     }
 
     @Override
@@ -196,6 +195,8 @@ public class FriendsInvitationFragment extends BaseFragment
         } else {
             redeemReferralCodeContainer.setVisibility(View.GONE);
         }
+
+        setActionBarTitle(getString(R.string.action_invite));
     }
 
     @Override public void onResume()

@@ -65,7 +65,7 @@ public class TabbedPositionListFragment extends DashboardFragment
 
     private int selectedTabIndex;
 
-    private String actionBarNavUrl, actionBarColor;
+    protected String actionBarNavUrl, actionBarColor;
 
     public enum TabType
     {

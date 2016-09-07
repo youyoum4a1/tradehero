@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.tradehero.route.RouteProperty;
 import com.androidth.general.R;
 import com.androidth.general.rx.EmptyAction1;
@@ -25,6 +27,8 @@ public class WebViewIntentFragment extends BaseWebViewIntentFragment
 
     @RouteProperty("requiredUrlEncoded") String requiredUrlEncoded;
 
+    private String navigationUrl;
+
     @Override public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
@@ -40,6 +44,10 @@ public class WebViewIntentFragment extends BaseWebViewIntentFragment
                 Timber.e(e, "Failed to decode Url %s", requiredUrlEncoded);
             }
         }
+
+//        if(getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL)){
+//            navigationUrl = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL);
+//        }
     }
 
     //<editor-fold desc="ActionBar">

@@ -37,10 +37,7 @@ import com.androidth.general.persistence.security.SecurityCompactListCacheRx;
 import com.androidth.general.persistence.security.SecurityCompositeListCacheRx;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.DeviceUtil;
-import com.androidth.general.utils.ImageUtils;
-import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -75,7 +72,7 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     public static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityV2RxFragment.class.getName() + ".providerId";
     public static final String BUNDLE_SORT_AVAILABILE_KEY = ProviderSecurityV2RxFragment.class.getName() + ".sortAvailableFlag";
     public static final String BUNDLE_SECURITIES_KEY = ProviderSecurityV2RxFragment.class.getName() + ".securitiesKey";
-    public static final String BUNDLE_CATEGORIES_KEY = ProviderSecurityV2RxFragment.class.getName() + ".categoriesKey";
+    public static final String BUNDLE_NAVIGATION_URL = ProviderSecurityV2RxFragment.class.getName() + ".navigationUrl";
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
@@ -223,8 +220,8 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
         }
     }
 
-    private boolean setActionBarImage(String url){
-        return ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), url);
+    private void setActionBarImage(String url){
+        setActionBarCustomImage(getActivity(), url, false);
     }
 
     private class ProviderSecurityV2PagerAdapter extends FragmentPagerAdapter
@@ -264,6 +261,8 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
 
                     //the reason for having a new instance of args
                     args1.putParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY, list);
+
+//                    args1.putString(ProviderSecurityV2RxFragment.BUNDLE_NAVIGATION_URL, providerDTO.navigationLogoUrl);
 
                 }
 

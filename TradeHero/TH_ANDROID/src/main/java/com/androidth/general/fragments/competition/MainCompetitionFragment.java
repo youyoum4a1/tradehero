@@ -78,13 +78,10 @@ import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.rx.TimberAndToastOnErrorAction1;
 import com.androidth.general.rx.TimberOnErrorAction1;
 import com.androidth.general.utils.GraphicUtil;
-import com.androidth.general.utils.ImageUtils;
 import com.androidth.general.utils.route.THRouter;
-import com.squareup.picasso.Picasso;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -481,9 +478,9 @@ public class MainCompetitionFragment extends DashboardFragment
         }
         else
         {
-            setActionBarTitle("");
             setActionBarColor(providerDTO.hexColor);
             if(providerDTO.navigationLogoUrl!=null){
+                setActionBarTitle("");
                 setActionBarImage(this.providerDTO.navigationLogoUrl);
             }else{
                 setActionBarTitle(providerDTO.name);
@@ -497,9 +494,8 @@ public class MainCompetitionFragment extends DashboardFragment
         }*/
     }
 
-    private boolean setActionBarImage(String url){
-        return ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), url);
-
+    private void setActionBarImage(String url){
+        setActionBarCustomImage(getActivity(), url, false);
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -661,6 +657,11 @@ public class MainCompetitionFragment extends DashboardFragment
                         Timber.d("Opening this page: %s", url);
                         Bundle bundle = new Bundle();
                         WebViewIntentFragment.putUrl(bundle, url);
+
+                        if(providerDTO!=null && providerDTO.navigationLogoUrl!=null){
+                            bundle.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL, providerDTO.navigationLogoUrl);
+                        }
+
                         this.webViewFragment = navigator.get().pushFragment(WebViewIntentFragment.class, bundle);
                         this.webViewFragment.setThIntentPassedListener(this.webViewTHIntentPassedListener);
                     }
@@ -684,6 +685,9 @@ public class MainCompetitionFragment extends DashboardFragment
             {
                 Bundle bundle = new Bundle();
                 WebViewIntentFragment.putUrl(bundle, redirectUrl);
+                if(providerDTO!=null && providerDTO.navigationLogoUrl!=null){
+                    bundle.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL, providerDTO.navigationLogoUrl);
+                }
                 this.webViewFragment = navigator.get().pushFragment(WebViewIntentFragment.class, bundle);
             }
         }
@@ -730,6 +734,11 @@ public class MainCompetitionFragment extends DashboardFragment
             {
                 BaseWebViewFragment.putUrl(args, providerUtil.getTermsPage(providerId));
             }
+
+            if(providerDTO!=null && providerDTO.navigationLogoUrl!=null){
+                args.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL, providerDTO.navigationLogoUrl);
+            }
+
             if (navigator != null)
             {
                 navigator.get().pushFragment(BaseWebViewFragment.class, args);

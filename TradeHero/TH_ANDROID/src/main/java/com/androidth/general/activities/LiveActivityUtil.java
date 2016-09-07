@@ -55,7 +55,6 @@ public class LiveActivityUtil
 
     public void onCreateOptionsMenu(Menu menu)
     {
-        Log.v("SignalR", "Liveactivityutil oncreateoptions");
         if (onDestroyOptionsMenuSubscriptions != null)
         {
             onDestroyOptionsMenuSubscriptions.unsubscribe();

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.androidth.general.api.competition.ProviderDTO;
 import com.androidth.general.common.utils.THToast;
 import com.androidth.general.R;
 import com.androidth.general.api.competition.ProviderUtil;
@@ -19,6 +20,7 @@ import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.api.users.UserProfileDTOUtil;
 import com.androidth.general.fragments.DashboardNavigator;
 import com.androidth.general.fragments.competition.CompetitionWebViewFragment;
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.position.TabbedPositionListFragment;
 import com.androidth.general.fragments.timeline.MeTimelineFragment;
 import com.androidth.general.fragments.timeline.PushableTimelineFragment;
@@ -105,7 +107,13 @@ public class LeaderboardMarkUserListFragmentUtil
             switch (userAction.actionType)
             {
                 case PROFILE:
-                    openTimeline((LeaderboardMarkedUserItemDisplayDto) userAction.dto);
+                    if(((CompetitionLeaderboardItemDisplayDTO)userAction.dto).providerDTO!=null){
+                        ProviderDTO providerDTO = ((CompetitionLeaderboardItemDisplayDTO)userAction.dto).providerDTO;
+                        openTimeline((LeaderboardMarkedUserItemDisplayDto) userAction.dto, providerDTO);
+                    }else{
+                        openTimeline((LeaderboardMarkedUserItemDisplayDto) userAction.dto, null);
+                    }
+
                     break;
 
                 case FOLLOW:
@@ -189,9 +197,14 @@ public class LeaderboardMarkUserListFragmentUtil
         }
     }
 
-    protected void openTimeline(@NonNull LeaderboardMarkedUserItemDisplayDto dto)
+    protected void openTimeline(@NonNull LeaderboardMarkedUserItemDisplayDto dto, ProviderDTO providerDTO)
     {
         Bundle bundle = new Bundle();
+        if(providerDTO!=null){
+            bundle.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, providerDTO.hexColor);
+            bundle.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL, providerDTO.navigationLogoUrl);
+        }
+
         if (dto.leaderboardUserDTO == null)
         {
             navigator.pushFragment(MeTimelineFragment.class, bundle);
@@ -296,6 +309,10 @@ public class LeaderboardMarkUserListFragmentUtil
         {
             TabbedPositionListFragment.putProviderId(bundle,
                     ((CompetitionLeaderboardItemDisplayDTO) dto).providerDTO.getProviderId());
+            bundle.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL,
+                    ((CompetitionLeaderboardItemDisplayDTO) dto).providerDTO.navigationLogoUrl);
+            bundle.putString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR,
+                    ((CompetitionLeaderboardItemDisplayDTO) dto).providerDTO.hexColor);
         }
 
         navigator.pushFragment(TabbedPositionListFragment.class, bundle);

@@ -36,10 +36,6 @@ import com.androidth.general.models.intent.THIntentPassedListener;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.rx.ToastOnErrorAction1;
 import com.androidth.general.utils.DeviceUtil;
-import com.androidth.general.utils.ImageUtils;
-import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
 
 import javax.inject.Inject;
 
@@ -220,8 +216,8 @@ public class ProviderSecurityListRxFragment
         }
     }
 
-    private boolean setActionBarImage(String url){
-        return ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), url);
+    private void setActionBarImage(String url){
+        setActionBarCustomImage(getActivity(), url, true);
     }
 
     @Override protected void handleDtoClicked(SecurityCompactDTO clicked)

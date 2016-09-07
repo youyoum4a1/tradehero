@@ -32,20 +32,13 @@ import com.androidth.general.models.intent.THIntentPassedListener;
 import com.androidth.general.models.intent.competition.ProviderPageIntent;
 import com.androidth.general.persistence.competition.ProviderCacheRx;
 import com.androidth.general.persistence.competition.ProviderListCacheRx;
-import com.androidth.general.utils.ImageUtils;
 import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.androidth.general.utils.route.THRouter;
-import com.squareup.picasso.Picasso;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 @Routable({
@@ -169,9 +162,8 @@ public class CompetitionWebViewFragment extends BaseWebViewIntentFragment
         }
     }
 
-    public boolean setActionBarImage(String url){
-
-        return ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), url);
+    private void setActionBarImage(String url){
+        setActionBarCustomImage(getActivity(), url, false);
     }
 
     @Override public boolean onOptionsItemSelected(MenuItem item)

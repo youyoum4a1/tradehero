@@ -25,14 +25,15 @@ import com.androidth.general.fragments.discovery.newsfeed.NewsfeedDisplayDTO;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.SignalRManager;
-import com.androidth.general.utils.Constants;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.androidth.general.common.rx.PairGetSecond;
 import com.androidth.general.common.utils.SDKUtils;
 import com.androidth.general.common.utils.THToast;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.stream.JsonReader;
 import com.tradehero.route.InjectRoute;
 import com.androidth.general.R;
 import com.androidth.general.activities.HelpActivity;
@@ -109,6 +110,7 @@ import com.androidth.general.widget.MultiRecyclerScrollListener;
 import org.json.JSONObject;
 
 import java.io.FileReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -312,8 +314,6 @@ public class PositionListFragment
         if (savedInstanceState != null)
         {
             firstPositionVisible = savedInstanceState.getInt(BUNDLE_KEY_FIRST_POSITION_VISIBLE, firstPositionVisible);
-
-
         }
         return inflater.inflate(R.layout.fragment_positions_list, container, false);
     }
@@ -350,6 +350,9 @@ public class PositionListFragment
             }
         });
 
+        if(actionBarNavUrl!=null){
+            setActionBarCustomImage(getActivity(), actionBarNavUrl, false);
+        }
     }
 
     protected void pushSecuritiesFragment()
@@ -953,11 +956,11 @@ public class PositionListFragment
     protected void linkWith(@NonNull PortfolioDTO portfolioDTO)
     {
         this.portfolioDTO = portfolioDTO;
-        if(portfolioDTO.providerId!=null && portfolioDTO.providerId>0){
-            setActionBarColorSelf(actionBarNavUrl, actionBarColor);
-        }else{
-            displayActionBarTitle(portfolioDTO);
-        }
+//        if(portfolioDTO.providerId!=null && portfolioDTO.providerId>0){
+//            setActionBarColorSelf(actionBarNavUrl, actionBarColor);
+//        }else{
+//            displayActionBarTitle(portfolioDTO);
+//        }
 
         showPrettyReviewAndInvite(portfolioDTO);
         if (portfolioDTO.assetClass == AssetClass.FX)
@@ -1313,22 +1316,24 @@ public class PositionListFragment
             }
         }, PortfolioDTO.class);
 
-        signalRManager.getCurrentProxy().on("UpdatePositions", new SubscriptionHandler1<List>() {
+        signalRManager.getCurrentProxy().on("UpdatePositions", new SubscriptionHandler1<PositionsList>() {
 
             @Override
-            public void run(List list) {
+            public void run(PositionsList list) {
                 ArrayList<PositionDTO> updatedPositions = new ArrayList<>();
                 Log.v("SignalR", "!!!Updated positions "+list.size());
                 try {
                     for (int i = 0; i < list.size(); i++) {
-                        Log.v("SignalR", "List = "+list.get(i));
-
-                        Gson gson = new Gson();
-
+//                        JSONObject jsonObject = new JSONObject(list.get(i).toString());
+//
+//                        Gson gson = new Gson();
 // 1. JSON to Java object, read it from a file.
-                        PositionDTO positionDTO = gson.fromJson(list.get(i).toString(), PositionDTO.class);
+//                        PositionDTO positionDTO = gson.fromJson(jsonObject.toString(), PositionDTO.class);
 
-                        Log.v("SignalR", "!!!Updated position " + positionDTO);
+                        Log.v("SignalR", "List = "+list.get(i));
+                        PositionDTO positionDTO = list.get(i);
+
+//                        Log.v("SignalR", "!!!Updated position " + positionDTO);
                         updatedPositions.add(positionDTO);
                     }
                 }catch (Exception e){
@@ -1352,7 +1357,7 @@ public class PositionListFragment
                 }
 
             }
-        }, List.class);
+        }, PositionsList.class);
 
         signalRManager.startConnection("SubscribeToPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
 
@@ -1415,7 +1420,6 @@ public class PositionListFragment
 //        return new HubConnection(url);
 //    }
 
-    public class PositionsList {
-        public List<PositionDTO> positionDTOs;
+    public class PositionsList extends ArrayList<PositionDTO>{
     }
 }

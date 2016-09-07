@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.androidth.general.common.persistence.DTOCacheUtilRx;
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.utils.Constants;
 import com.tradehero.route.Routable;
 import com.androidth.general.R;
@@ -58,8 +59,13 @@ public class MeTimelineFragment extends TimelineFragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarSubtitle(null);
-        setActionBarColorSelf(null, null);
+//        setActionBarSubtitle(null);
+//        setActionBarColorSelf(null, null);
+        if(getArguments().containsKey(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL)){
+            String navigationUrl = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL);
+            setActionBarCustomImage(getActivity(), navigationUrl, false);
+        }
+
         inflater.inflate(R.menu.me_timeline_menu, menu);
 
         View unreadActionView = menu.findItem(R.id.btn_notification).getActionView();

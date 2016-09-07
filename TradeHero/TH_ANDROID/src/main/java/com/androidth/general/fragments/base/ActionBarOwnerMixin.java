@@ -1,6 +1,8 @@
 package com.androidth.general.fragments.base;
 
+import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,10 +11,16 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
 import com.androidth.general.R;
+import com.squareup.picasso.Picasso;
 
 public class ActionBarOwnerMixin
 {
@@ -198,6 +206,84 @@ public class ActionBarOwnerMixin
             actionBar.setDisplayShowCustomEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setCustomView(view);
+        }
+    }
+
+
+    public void setActionBarCustomImage(Activity activity, String url, boolean hasOtherItems){
+
+        if(url==null || activity==null){
+            return;
+        }
+        try {
+            ImageView imageView = new ImageView(activity);
+            Display display = activity.getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+//                bitmap = Bitmap.createScaledBitmap(bitmap,  screenWidth*7/10, actionBar.getHeight()*4/10, true);
+//                imageView.getLayoutParams().height = actionBar.getHeight()*4/10;
+//                imageView.getLayoutParams().width = screenWidth*7/10;
+
+//            imageView.setImageBitmap(bitmap);
+
+
+
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+            ActionBar.LayoutParams layoutParams;
+
+            if(hasOtherItems){
+                layoutParams  = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, actionBar.getHeight()*5/10, Gravity.CENTER);
+            }else{
+                layoutParams  = new ActionBar.LayoutParams(size.x*7/10, actionBar.getHeight()*5/10, Gravity.CENTER);
+            }
+
+            actionBar.setCustomView(imageView, layoutParams);
+            actionBar.setElevation(5);
+            actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+
+            actionBar.setTitle("");
+            Picasso.with(activity).load(url).into(imageView);
+
+
+//            Observable<Bitmap> observable = Observable.defer(()->{
+//                try {
+//                    return Observable.just(Picasso.with(activity).load(url).get());
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    return Observable.error(e);
+//                }
+//            });
+
+//            observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> {
+////                int height = (int)(actionBar.getHeight()*0.6);
+////                int bitmapHt = bitmap.getHeight();
+////                int bitmapWd = bitmap.getWidth();
+////                int width = height * (bitmapWd / bitmapHt);
+//                Display display = activity.getWindowManager().getDefaultDisplay();
+//                Point size = new Point();
+//                display.getSize(size);
+//
+////                bitmap = Bitmap.createScaledBitmap(bitmap,  screenWidth*7/10, actionBar.getHeight()*4/10, true);
+////                imageView.getLayoutParams().height = actionBar.getHeight()*4/10;
+////                imageView.getLayoutParams().width = screenWidth*7/10;
+//
+//                imageView.setImageBitmap(bitmap);
+//                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+//                Picasso.with(activity).load(url).into(imageView);
+//
+//                ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(size.x*7/10, actionBar.getHeight()*5/10, Gravity.CENTER);
+//                actionBar.setCustomView(imageView, layoutParams);
+//                actionBar.setElevation(5);
+//                actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+//            }, throwable -> {
+//                Log.e("Error",""+throwable.getMessage());
+//            });
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

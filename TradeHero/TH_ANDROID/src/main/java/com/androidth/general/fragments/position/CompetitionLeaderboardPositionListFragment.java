@@ -44,7 +44,10 @@ public class CompetitionLeaderboardPositionListFragment extends TabbedPositionLi
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
-        setActionBarColorSelf(navigationLogoUrl, hexcolor);
+//        if (navigationLogoUrl != null) {
+//            ImageUtils.setActionBarImage(getSupportActionBar(), getActivity(), navigationLogoUrl, false);
+//        }
+//        setActionBarColorSelf(navigationLogoUrl, hexcolor);
     }
 
     @Override public void onCreate(Bundle savedInstanceState)
