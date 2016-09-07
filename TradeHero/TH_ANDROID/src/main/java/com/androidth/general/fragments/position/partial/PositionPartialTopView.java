@@ -407,7 +407,11 @@ public class PositionPartialTopView extends LinearLayout
             }
             Date lTrade = lhs.positionDTO.getLatestTradeUtc();
             Date rTrade = rhs.positionDTO.getLatestTradeUtc();
-            return rTrade.compareTo(lTrade);
+            if(lTrade!=null && rTrade!=null){
+                return rTrade.compareTo(lTrade);
+            }else{
+                return 0;
+            }
         }
     }
 
