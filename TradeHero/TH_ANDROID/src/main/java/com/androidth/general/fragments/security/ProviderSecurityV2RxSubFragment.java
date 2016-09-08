@@ -30,6 +30,7 @@ import com.androidth.general.api.security.SecurityCompactDTOUtil;
 import com.androidth.general.api.security.SecurityCompositeDTO;
 import com.androidth.general.api.users.CurrentUserId;
 import com.androidth.general.fragments.billing.BasePurchaseManagerFragment;
+import com.androidth.general.fragments.competition.MainCompetitionFragment;
 import com.androidth.general.fragments.trade.AbstractBuySellFragment;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
@@ -76,7 +77,7 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     SimpleSecurityItemViewAdapter adapter;
 //    HubProxy hubProxy;
     List<SecurityCompactDTO> currentVisibleItemsList;
-    String topBarColor;
+    String navigationColor;
 
     boolean itemClicked = false;
 
@@ -154,7 +155,8 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
         adapter = new SimpleSecurityItemViewAdapter(getContext(), R.layout.trending_security_item);
         items = getArguments().getParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY);
 
-        navigationUrl = getArguments().getString(ProviderSecurityV2RxFragment.BUNDLE_NAVIGATION_URL, null);
+        navigationUrl = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_NAV_URL, null);
+        navigationColor = getArguments().getString(MainCompetitionFragment.BUNDLE_KEY_ACTION_BAR_COLOR, null);
 
         adapter.setItems(items);
     }
@@ -230,14 +232,14 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
     View view;
     @Override public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        //super.onCreateOptionsMenu(menu, inflater);
+//        super.onCreateOptionsMenu(menu, inflater);
         //menu.clear();
         if(view == null){
             view = getSupportActionBar().getCustomView();
         }
         //small hack to set back comp. action bar. Works like charm tho....
 //        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(Gravity.CENTER);
-//        getSupportActionBar().setCustomView(view, layoutParams);
+//        getSupportActionBar().setCustomView(view);
 
         inflater.inflate(R.menu.search_menu, menu);
         MenuItem item = menu.findItem(R.id.btn_search);
@@ -281,7 +283,6 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
             }
         });
 
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -307,7 +308,9 @@ public class ProviderSecurityV2RxSubFragment extends BasePurchaseManagerFragment
             }
         });
 
+        //        setActionBarColor(navigationColor);
         setActionBarCustomImage(getActivity(), navigationUrl, true);
+
     }
 
     @Override public void onDestroyOptionsMenu()

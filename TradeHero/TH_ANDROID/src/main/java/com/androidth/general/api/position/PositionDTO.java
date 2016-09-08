@@ -25,8 +25,8 @@ public class PositionDTO extends PositionDTOCompact
     public Double unrealizedPLRefCcy;
     // This value is always in the portfolio currency
     public double marketValueRefCcy;
-    @JsonDeserialize(using = CustomJsonDateDeserializer.class) public Date earliestTradeUtc;
-    @JsonDeserialize(using = CustomJsonDateDeserializer.class) public Date latestTradeUtc;//precise date
+    public Date earliestTradeUtc;
+    public Date latestTradeUtc;//precise date
 
     // This value is always in the portfolio currency
     public Double sumInvestedAmountRefCcy;
@@ -146,7 +146,7 @@ public class PositionDTO extends PositionDTOCompact
 
     public Date getEarliestTradeUtc() {
         //2016-08-28T04:40:31.003
-//        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT_PRECISE);
+//        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT_STANDARD);
 //        try{
 //            Date date = format.parse(earliestTradeUtc);
 //            return date;

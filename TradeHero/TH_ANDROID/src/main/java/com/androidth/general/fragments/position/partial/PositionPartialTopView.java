@@ -173,9 +173,15 @@ public class PositionPartialTopView extends LinearLayout
                 lastPrice = resources.getString(R.string.na);
             }
             final String formatter = lastPrice + " (%s)";
-            if (securityCompactDTO.risePercent != null)
+            Double roiSinceInception = positionDTO.getROISinceInception();//use this instead of risePercent
+            if(roiSinceInception==null){
+                //if null, then go back to risePercent
+                roiSinceInception = securityCompactDTO.risePercent;
+            }
+
+            if (roiSinceInception != null)
             {
-                lastPriceAndRise = THSignedPercentage.builder(securityCompactDTO.risePercent * 100)
+                lastPriceAndRise = THSignedPercentage.builder(roiSinceInception * 100)
                         .relevantDigitCount(3)
                         .signTypeArrow()
                         .withSign()

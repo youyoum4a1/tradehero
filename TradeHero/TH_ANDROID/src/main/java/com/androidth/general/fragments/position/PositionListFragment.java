@@ -21,10 +21,10 @@ import android.widget.ImageView;
 import android.widget.ViewAnimator;
 
 import com.androidth.general.fragments.competition.MainCompetitionFragment;
-import com.androidth.general.fragments.discovery.newsfeed.NewsfeedDisplayDTO;
 import com.androidth.general.network.LiveNetworkConstants;
 import com.androidth.general.network.retrofit.RequestHeaders;
 import com.androidth.general.network.service.SignalRManager;
+import com.androidth.general.utils.Constants;
 import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
 import com.androidth.general.common.rx.PairGetSecond;
@@ -32,7 +32,7 @@ import com.androidth.general.common.utils.SDKUtils;
 import com.androidth.general.common.utils.THToast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.stream.JsonReader;
 import com.tradehero.route.InjectRoute;
 import com.androidth.general.R;
@@ -107,10 +107,6 @@ import com.androidth.general.utils.broadcast.BroadcastUtils;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.MultiRecyclerScrollListener;
 
-import org.json.JSONObject;
-
-import java.io.FileReader;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,11 +116,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import microsoft.aspnet.signalr.client.Credentials;
-import microsoft.aspnet.signalr.client.MessageReceivedHandler;
-import microsoft.aspnet.signalr.client.Platform;
-import microsoft.aspnet.signalr.client.http.Request;
-import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import microsoft.aspnet.signalr.client.hubs.HubConnection;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
@@ -1170,6 +1161,7 @@ public class PositionListFragment
                                         pair.second));
                             }
                         }
+
                         return Observable.just(adapterObjects)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .map(new Func1<List<Object>, List<Pair<PositionDTO, SecurityCompactDTO>>>()
@@ -1197,7 +1189,13 @@ public class PositionListFragment
         {
             positionItemAdapter.removeAll();
         }
-        positionItemAdapter.addAll(filterViewDTOs);
+
+        try{
+            positionItemAdapter.addAll(filterViewDTOs);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         swipeToRefreshLayout.setRefreshing(false);
         listViewFlipper.setDisplayedChild(FLIPPER_INDEX_LIST);
     }
@@ -1205,6 +1203,7 @@ public class PositionListFragment
     @NonNull protected List<Object> filterViewDTOs(@NonNull List<Object> dtoList, Object nothingDTO)
     {
         List<Object> filtered = new ArrayList<>();
+
         for (Object dto : dtoList)
         {
             if (dto instanceof PositionLockedView.DTO)
@@ -1302,124 +1301,87 @@ public class PositionListFragment
         }
         signalRManager = new SignalRManager(requestHeaders, currentUserId, LiveNetworkConstants.PORTFOLIO_HUB_NAME);
 
-        signalRManager.getCurrentProxy().on("UpdatePortfolio", new SubscriptionHandler1<PortfolioDTO>() {
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_UPDATE_PROFILE, new SubscriptionHandler1<Object>() {
             @Override
-            public void run(PortfolioDTO updatedPortfolio) {
-                if(updatedPortfolio instanceof PortfolioDTO && updatedPortfolio!=null){
+            public void run(Object updatedPortfolio) {
+                //2016-09-08T02:07:19
+                Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
+                try{
+                    JsonObject jsonObject = gson.toJsonTree(updatedPortfolio).getAsJsonObject();
+                    PortfolioDTO portfolioDTO = gson.fromJson(jsonObject, PortfolioDTO.class);
+
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            portfolioHeaderView.linkWith(updatedPortfolio);
+                            try{
+                                portfolioHeaderView.linkWith(portfolioDTO);
+                            }catch (Exception e){
+                                //might not be in the view already
+                                e.printStackTrace();
+                            }
                         }
                     });
-                }
-            }
-        }, PortfolioDTO.class);
 
-        signalRManager.getCurrentProxy().on("UpdatePositions", new SubscriptionHandler1<PositionsList>() {
-
-            @Override
-            public void run(PositionsList list) {
-                ArrayList<PositionDTO> updatedPositions = new ArrayList<>();
-                Log.v("SignalR", "!!!Updated positions "+list.size());
-                try {
-                    for (int i = 0; i < list.size(); i++) {
-//                        JSONObject jsonObject = new JSONObject(list.get(i).toString());
-//
-//                        Gson gson = new Gson();
-// 1. JSON to Java object, read it from a file.
-//                        PositionDTO positionDTO = gson.fromJson(jsonObject.toString(), PositionDTO.class);
-
-                        Log.v("SignalR", "List = "+list.get(i));
-                        PositionDTO positionDTO = list.get(i);
-
-//                        Log.v("SignalR", "!!!Updated position " + positionDTO);
-                        updatedPositions.add(positionDTO);
-                    }
                 }catch (Exception e){
+                    //parsing might be wrong, esp the date
                     e.printStackTrace();
                 }
-                Log.v("SignalR", "!!!Updated positions "+updatedPositions.get(0).id);
+            }
+        }, Object.class);
 
-                for(PositionDTO positionDTO: updatedPositions){
+        signalRManager.getCurrentProxy().on(LiveNetworkConstants.PROXY_METHOD_UPDATE_POSITIONS, new SubscriptionHandler1<List>() {
 
-                    Log.v("SignalR", "1Position: "+positionDTO.getSecurityIntegerId());
-                    for(int i=0; i< viewDTOs.size(); i++) {
-                        PositionPartialTopView.DTO dto = ((PositionPartialTopView.DTO)viewDTOs.get(i));
-                        Log.v("SignalR", "2Position: "+dto.securityCompactDTO.id);
-                        Log.v("SignalR", "3Position: "+positionDTO.securityId);
+            @Override
+            public void run(List list) {
 
-                        if (positionDTO.securityId == dto.securityCompactDTO.id){
-                            Log.v(getTag(), "Security id found: "+positionDTO.securityId);
-                            ((PositionPartialTopView.DTO)viewDTOs.get(i)).setPositionDTO(positionDTO);
+                for(int i=0; i<list.size(); i++){
+                    try{
+                        String s = list.get(i).toString();
+
+                        Gson gson = new GsonBuilder().setDateFormat(Constants.DATE_FORMAT_STANDARD).create();
+
+                        JsonObject jsonObject = gson.toJsonTree(list.get(i)).getAsJsonObject();
+                        PositionDTO positionDTOFromJSON = gson.fromJson(jsonObject, PositionDTO.class);
+
+                        for(int j=0; j< viewDTOs.size(); j++) {
+                            PositionPartialTopView.DTO dto = ((PositionPartialTopView.DTO)viewDTOs.get(j));
+
+                            final int index = j;
+
+                            if (positionDTOFromJSON.id == dto.positionDTO.id){
+                                ((PositionPartialTopView.DTO)viewDTOs.get(i)).setPositionDTO(positionDTOFromJSON);
+
+                                try{
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            positionItemAdapter.notifyItemChanged(index);
+                                        }
+                                    });
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
                         }
+
+                    }catch (Exception e){
+                        Log.v("SignalR", "ERROR --"+i);
+                        e.printStackTrace();
                     }
                 }
-
             }
-        }, PositionsList.class);
+        }, List.class);
 
         signalRManager.startConnection("SubscribeToPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
 
-//        signalRManager.initWithEvent(
-//                LiveNetworkConstants.PORTFOLIO_HUB_NAME,
-//                "UpdatePositions",
-////                "SubscribeToPortfolioUpdate",
-////                Integer.toString(portfolioCompactDTO.getPortfolioId().key),
-//                updatedPositions ->{
-//
-//                    Log.v("SignalR", "!!!!update positions");
-//                    Log.v("SignalR", "!!!Updated positions "+((List<PositionDTO>)updatedPositions).size());
-//                    Log.v("SignalR", "!!!Updated positions "+((List<PositionDTO>)updatedPositions).get(0).id);
-//
-//                    for(PositionDTO positionDTO: (List<PositionDTO>)updatedPositions){
-//
-//                        Log.v("SignalR", "1Position: "+positionDTO.getSecurityIntegerId());
-//                        for(int i=0; i< this.viewDTOs.size(); i++) {
-//                            PositionPartialTopView.DTO dto = ((PositionPartialTopView.DTO)this.viewDTOs.get(i));
-//                            Log.v("SignalR", "2Position: "+dto.securityCompactDTO.id);
-//                            Log.v("SignalR", "3Position: "+positionDTO.securityId);
-//
-//                            if (positionDTO.securityId == dto.securityCompactDTO.id){
-//                                Log.v(getTag(), "Security id found: "+positionDTO.securityId);
-//                                ((PositionPartialTopView.DTO)this.viewDTOs.get(i)).setPositionDTO(positionDTO);
-//                            }
-//                        }
-//                    }
-//
-//                    linkWith(this.viewDTOs);
-//
-//                },
-//                List.class,
-//                PositionListFragment.class);
-
-//        signalRManager.startConnection("SubscribeToPortfolioUpdate", new String[] {Integer.toString(portfolioCompactDTO.getPortfolioId().key)});
 
     }
 
     private void disconnectPortfolioSignalR(PortfolioCompactDTO portfolioCompactDTO){
-//        signalRManager = new SignalRManager(requestHeaders, currentUserId);
-
         if(portfolioCompactDTO!=null && signalRManager!=null){
-//            signalRManager.initWithEvent(
-//                    LiveNetworkConstants.PORTFOLIO_HUB_NAME,
-//                    null,
-////                    "UnsubscribeFromPortfolioUpdate",
-////                    Integer.toString(portfolioCompactDTO.getPortfolioId().key),
-//                    null, null, null);
-//
             signalRManager.startConnection("UnsubscribeFromPortfolioUpdate", Integer.toString(portfolioCompactDTO.getPortfolioId().key));
 
             signalRManager.getCurrentConnection().disconnect();
         }
-    }
-
-//    public HubProxy setProxy(String hubName, HubConnection connection) { return connection.createHubProxy(hubName); }
-//
-//    public HubConnection setConnection(String url) {
-//        return new HubConnection(url);
-//    }
-
-    public class PositionsList extends ArrayList<PositionDTO>{
     }
 }

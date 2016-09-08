@@ -91,6 +91,7 @@ public class CurrentUserPortfolioHeaderView extends LinearLayout implements Port
                         R.string.watchlist_marking_date,
                         sdf.format(portfolioCompactDTO.markingAsOfUtc)));
                 lastUpdatedDate.setVisibility(VISIBLE);
+                YoYo.with(Techniques.FadeIn).duration(500).playOn(lastUpdatedDate);
             }
             else
             {
