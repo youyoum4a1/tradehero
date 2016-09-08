@@ -15,10 +15,12 @@ public class THLruCache<U, V> extends LruCache<U, V>
         super.entryRemoved(evicted, key, oldValue, newValue);
         if (evicted)
         {
-            Timber.d("entryRemoved evicted key %s, oldValue %s, newValue %s",
-                    key.toString(),
-                    oldValue.toString(),
-                    newValue != null ? newValue.toString() : null);
+//            Timber.d("entryRemoved evicted key %s, oldValue %s, newValue %s",
+//                    key.toString(),
+//                    oldValue.toString(),
+//                    newValue != null ? newValue.toString() : null);
+//            Timber.d("entryRemoved evicted key %s",
+//                    key.toString());
         }
     }
 }

@@ -280,7 +280,7 @@ public class BaseFragment extends Fragment
     }
 
     protected void setActionBarCustomImage(Activity activity, String url, boolean hasOtherItems){
-        actionBarOwnerMixin.setActionBarCustomImage(activity, url, hasOtherItems);
+        actionBarOwnerMixin.setActionBarCustomImage(getSupportActionBar(), activity, url, hasOtherItems);
     }
 
     protected void unsubscribe(@Nullable Subscription subscription)

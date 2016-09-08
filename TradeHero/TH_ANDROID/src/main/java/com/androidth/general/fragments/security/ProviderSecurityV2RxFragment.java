@@ -72,7 +72,6 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
     public static final String BUNDLE_PROVIDER_ID_KEY = ProviderSecurityV2RxFragment.class.getName() + ".providerId";
     public static final String BUNDLE_SORT_AVAILABILE_KEY = ProviderSecurityV2RxFragment.class.getName() + ".sortAvailableFlag";
     public static final String BUNDLE_SECURITIES_KEY = ProviderSecurityV2RxFragment.class.getName() + ".securitiesKey";
-    public static final String BUNDLE_NAVIGATION_URL = ProviderSecurityV2RxFragment.class.getName() + ".navigationUrl";
 
     protected ProviderId providerId;
     protected ProviderDTO providerDTO;
@@ -261,8 +260,6 @@ public class ProviderSecurityV2RxFragment extends BaseFragment
 
                     //the reason for having a new instance of args
                     args1.putParcelableArrayList(ProviderSecurityV2RxFragment.BUNDLE_SECURITIES_KEY, list);
-
-//                    args1.putString(ProviderSecurityV2RxFragment.BUNDLE_NAVIGATION_URL, providerDTO.navigationLogoUrl);
 
                 }
 

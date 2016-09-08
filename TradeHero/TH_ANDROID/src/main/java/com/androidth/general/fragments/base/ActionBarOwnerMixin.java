@@ -210,7 +210,7 @@ public class ActionBarOwnerMixin
     }
 
 
-    public void setActionBarCustomImage(Activity activity, String url, boolean hasOtherItems){
+    public void setActionBarCustomImage(ActionBar tempActionBar, Activity activity, String url, boolean hasOtherItems){
 
         if(url==null || activity==null){
             return;
@@ -234,16 +234,16 @@ public class ActionBarOwnerMixin
             ActionBar.LayoutParams layoutParams;
 
             if(hasOtherItems){
-                layoutParams  = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, actionBar.getHeight()*5/10, Gravity.CENTER);
+                layoutParams  = new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, tempActionBar.getHeight()*5/10, Gravity.CENTER);
             }else{
-                layoutParams  = new ActionBar.LayoutParams(size.x*7/10, actionBar.getHeight()*5/10, Gravity.CENTER);
+                layoutParams  = new ActionBar.LayoutParams(size.x*7/10, tempActionBar.getHeight()*5/10, Gravity.CENTER);
             }
 
-            actionBar.setCustomView(imageView, layoutParams);
-            actionBar.setElevation(5);
-            actionBar.setDisplayOptions(actionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
+            tempActionBar.setCustomView(imageView, layoutParams);
+            tempActionBar.setElevation(5);
+            tempActionBar.setDisplayOptions(tempActionBar.getDisplayOptions() | ActionBar.DISPLAY_SHOW_CUSTOM);
 
-            actionBar.setTitle("");
+            tempActionBar.setTitle("");
             Picasso.with(activity).load(url).into(imageView);
 
 
