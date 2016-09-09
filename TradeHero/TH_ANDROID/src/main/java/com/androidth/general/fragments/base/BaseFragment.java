@@ -255,7 +255,7 @@ public class BaseFragment extends Fragment
     public final void setActionBarTitle(String string)
     {
         actionBarOwnerMixin.setActionBarTitle(string);
-        actionBarOwnerMixin.setCustomView(null);
+//        actionBarOwnerMixin.setCustomView(null);
     }
 
     public final void setActionBarColor(String hexColor)
