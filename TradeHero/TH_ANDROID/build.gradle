@@ -546,7 +546,7 @@ dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:${JACKSON_VERSION}"
     compile "com.android.support:support-annotations:${SUPPORT_V7_VERSION}"
     //releaseCompile 'com.crashlytics.android:crashlytics:1.+'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.1@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
         transitive = true;
     }
     compile("oauth.signpost:signpost-core:${SIGNPOST_VERSION}") {
