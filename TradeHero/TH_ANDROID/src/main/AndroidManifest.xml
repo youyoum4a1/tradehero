@@ -174,7 +174,7 @@
     </activity>
 
     <receiver
-        android:name="com.mobileapptracker.Tracker"
+        android:name="com.tune.TuneTracker"
         android:exported="true">
       <intent-filter>
         <action android:name="com.android.vending.INSTALL_REFERRER"/>

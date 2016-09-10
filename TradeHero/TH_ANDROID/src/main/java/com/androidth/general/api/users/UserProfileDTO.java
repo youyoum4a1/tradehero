@@ -78,6 +78,8 @@ public class UserProfileDTO extends UserProfileCompactDTO
 
     public PriceDTO accumulatedReferralAwards;
 
+    public UserLiveAccount userLiveAccount;
+
     public UserOnLeaderboardKey getMostSkilledUserOnLbmuKey()
     {
         return new UserOnLeaderboardKey(LeaderboardDefKeyKnowledge.MOST_SKILLED_ID, id);

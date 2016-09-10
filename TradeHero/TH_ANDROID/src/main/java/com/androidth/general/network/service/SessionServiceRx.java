@@ -6,6 +6,8 @@ import com.androidth.general.api.users.LoginSignUpFormDTO;
 import com.androidth.general.api.users.UserLoginDTO;
 import com.androidth.general.api.users.UserProfileDTO;
 import com.androidth.general.utils.Constants;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
+
 import retrofit.http.Body;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
@@ -25,12 +27,12 @@ interface SessionServiceRx
 
     //<editor-fold desc="Login and social register">
     @POST("/login")
-    Observable<UserLoginDTO> login(
+    @RxLogObservable Observable<UserLoginDTO> login(
             @Header(AUTHORIZATION) String authorization,
             @Body LoginSignUpFormDTO loginFormDTO);
 
     @POST("/signupAndLogin")
-    Observable<UserLoginDTO> signupAndLogin(
+    @RxLogObservable Observable<UserLoginDTO> signupAndLogin(
             @Header(AUTHORIZATION) String authorization, @Body LoginSignUpFormDTO loginSignUpFormDTO);
     //</editor-fold>
 

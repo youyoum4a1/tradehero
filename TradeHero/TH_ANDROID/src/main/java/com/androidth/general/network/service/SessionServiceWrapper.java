@@ -23,6 +23,7 @@ import com.androidth.general.persistence.system.SystemStatusCache;
 import com.androidth.general.persistence.user.UserProfileCacheRx;
 import com.androidth.general.utils.ExceptionUtils;
 import com.facebook.AccessToken;
+import com.fernandocejas.frodo.annotation.RxLogObservable;
 
 import dagger.Lazy;
 import javax.inject.Inject;
@@ -100,7 +101,7 @@ import timber.log.Timber;
     //</editor-fold>
 
     //<editor-fold desc="Login and social register">
-    @NonNull public Observable<UserLoginDTO> signupAndLoginRx(@NonNull String authorizationHeader, @NonNull LoginSignUpFormDTO loginSignUpFormDTO)
+    @NonNull @RxLogObservable public Observable<UserLoginDTO> signupAndLoginRx(@NonNull String authorizationHeader, @NonNull LoginSignUpFormDTO loginSignUpFormDTO)
     {
         Observable<UserLoginDTO> userLoginDTOObservable;
         switch (loginSignUpFormDTO.authData.socialNetworkEnum)
