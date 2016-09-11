@@ -662,8 +662,8 @@ dependencies {
     compile 'com.parse.bolts:bolts-android:1.1.4'
     compile 'com.github.glomadrian:roadrunner:1.0@aar'
     compile 'com.tradehero.route:route:0.2-SNAPSHOT'
-    compile 'com.flurry:FlurryAnalytics:6.1.0'
-    compile 'com.flurry:FlurryAds:6.1.0'
+    compile "com.flurry.android:analytics:${FLURRY_SDK_VERSION}"
+    compile "com.flurry.android:ads:${FLURRY_SDK_VERSION}"
     compile "com.google.android.gms:play-services-base:${PLAY_SERVICES_VERSION}"
     compile "com.google.android.gms:play-services-ads:${PLAY_SERVICES_VERSION}"
     compile "com.google.android.gms:play-services-gcm:${PLAY_SERVICES_VERSION}"
