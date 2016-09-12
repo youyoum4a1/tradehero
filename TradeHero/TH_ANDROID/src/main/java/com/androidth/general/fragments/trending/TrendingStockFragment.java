@@ -418,8 +418,11 @@ public class TrendingStockFragment extends TrendingBaseFragment
             case FromProvider:
                 handleProviderTileOnClick((ProviderTileView) view);
                 break;
+            case LiveToggle:
+                liveActivityUtil.onTrendingTileClicked(item);
+                break;
         }
-        liveActivityUtil.onTrendingTileClicked(item);
+
     }
 
     private void handleProviderTileOnClick(ProviderTileView view)

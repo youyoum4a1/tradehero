@@ -264,6 +264,11 @@ public class BaseFragment extends Fragment
         actionBarOwnerMixin.setActionBarColor(color);
     }
 
+    public final void setActionBarColor(int resourceId)
+    {
+        actionBarOwnerMixin.setActionBarColor(resourceId);
+    }
+
     public final void setActionBarTitle(@StringRes int stringResId)
     {
         actionBarOwnerMixin.setActionBarTitle(stringResId);

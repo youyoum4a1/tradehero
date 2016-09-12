@@ -5,7 +5,8 @@ public class OffOnViewSwitcherEvent
     public final boolean isFromUser;
     public final boolean isOn;
 
-    public OffOnViewSwitcherEvent(boolean isFromUser, boolean isOn)
+    public OffOnViewSwitcherEvent(boolean isFromUser,
+                                  boolean isOn)
     {
         this.isFromUser = isFromUser;
         this.isOn = isOn;

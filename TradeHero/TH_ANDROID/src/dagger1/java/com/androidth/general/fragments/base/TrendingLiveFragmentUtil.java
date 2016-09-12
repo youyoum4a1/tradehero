@@ -39,7 +39,7 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
 
 
 
-    private void setCallToActionFragmentVisible()
+    public void setCallToActionFragmentVisible()
     {
         liveFragmentContainer.setVisibility(View.VISIBLE);
         if (callToActionFragment == null)
@@ -64,7 +64,7 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
         }
     }
 
-    private void setCallToActionFragmentGone()
+    public void setCallToActionFragmentGone()
     {
         if (callToActionFragment != null && callToActionFragment.isAdded())
         {
@@ -84,5 +84,17 @@ public class TrendingLiveFragmentUtil extends BaseLiveFragmentUtil
     {
         super.onResume();
 
+    }
+
+    public static void setBackgroundColor(boolean isLive, View... views)
+    {
+        for (View v : views)
+        {
+            v.setBackgroundColor(v.getContext().getResources().getColor(isLive ? R.color.general_red_live : R.color.general_brand_color));
+        }
+    }
+
+    public LiveActivityUtil getLiveActivityUtil() {
+        return liveActivityUtil;
     }
 }

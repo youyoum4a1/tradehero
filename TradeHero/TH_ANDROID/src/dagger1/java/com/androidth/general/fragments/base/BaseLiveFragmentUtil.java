@@ -68,9 +68,6 @@ public class BaseLiveFragmentUtil
         }
     }
 
-
-
-
     public void onDestroyView()
     {
         ButterKnife.unbind(this);

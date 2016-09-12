@@ -41,6 +41,7 @@ import com.androidth.general.common.utils.THToast;
 import com.androidth.general.fragments.base.ActionBarOwnerMixin;
 import com.androidth.general.fragments.base.BaseLiveFragmentUtil;
 import com.androidth.general.fragments.base.DashboardFragment;
+import com.androidth.general.fragments.base.TrendingLiveFragmentUtil;
 import com.androidth.general.fragments.fxonboard.FxOnBoardDialogFragment;
 import com.androidth.general.fragments.market.ExchangeSpinner;
 import com.androidth.general.fragments.position.FXMainPositionListFragment;
@@ -58,6 +59,8 @@ import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.route.THRouter;
 import com.androidth.general.widget.OffOnViewSwitcher;
 import com.androidth.general.widget.OffOnViewSwitcherEvent;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.tradehero.route.Routable;
 import com.tradehero.route.RouteProperty;
 
@@ -115,7 +118,7 @@ public class TrendingMainFragment extends DashboardFragment
     private Observable<UserProfileDTO> userProfileObservable;
     @Nullable private OwnedPortfolioId fxPortfolioId;
     public static boolean fxDialogShowed = false;
-    private BaseLiveFragmentUtil trendingLiveFragmentUtil;
+    private TrendingLiveFragmentUtil trendingLiveFragmentUtil;
     private OffOnViewSwitcher stockFxSwitcher;
     private ExchangeSpinner exchangeSpinner;
     private DTOAdapterNew<ExchangeCompactSpinnerDTO> exchangeAdapter;
@@ -226,7 +229,7 @@ public class TrendingMainFragment extends DashboardFragment
     {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
-        trendingLiveFragmentUtil = BaseLiveFragmentUtil.createFor(this, view);
+        trendingLiveFragmentUtil = new TrendingLiveFragmentUtil(this, view);
         pagerSlidingTabStrip.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
         {
             @Override public void onPageScrolled(int i, float v, int i2)
@@ -297,9 +300,22 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public void onLiveTradingChanged(boolean isLive)
     {
+        if(isLive){
+            trendingLiveFragmentUtil.setCallToActionFragmentVisible();
+        }else{
+            trendingLiveFragmentUtil.setCallToActionFragmentGone();
+        }
+
         super.onLiveTradingChanged(isLive);
+        if(isLive){
+            YoYo.with(Techniques.FadeInLeft).playOn(tabViewPager);
+        }else{
+            YoYo.with(Techniques.FadeInRight).playOn(tabViewPager);
+        }
+
 //        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
-//        trendingLiveFragmentUtil.setCallToAction(isLive);
+
+
     }
 
     @Override public void onDestroyOptionsMenu()
@@ -345,8 +361,21 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
+            try{
+                boolean isLive = trendingLiveFragmentUtil.getLiveActivityUtil().getLiveSwitcher().getIsOn();
+                int colorId = isLive? getActivity().getResources().getColor(R.color.general_red_live) : getActivity().getResources().getColor(R.color.general_brand_color);
+                setActionBarColor(colorId);
+            }catch (Exception e){
+                //not yet set up
+                setActionBarColor(getActivity(), R.color.general_brand_color);
+            }
+        }else{
+            setActionBarColor(getActivity(), R.color.general_brand_color);
+        }
+
         super.onPrepareOptionsMenu(menu);
-        setActionBarColor(getString(R.string.nav_bar_color_default));
+
     }
 
     private void inflateCustomToolbarView()
