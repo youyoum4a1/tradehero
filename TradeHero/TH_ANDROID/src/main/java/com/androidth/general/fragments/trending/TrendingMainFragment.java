@@ -302,10 +302,12 @@ public class TrendingMainFragment extends DashboardFragment
 //        }
 
         super.onLiveTradingChanged(isLive);
-        if(isLive){
-            YoYo.with(Techniques.FadeInLeft).duration(500).playOn(tabViewPager);
-        }else{
-            YoYo.with(Techniques.FadeInRight).duration(500).playOn(tabViewPager);
+        if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
+            if(isLive){
+                YoYo.with(Techniques.FadeInLeft).duration(500).playOn(tabViewPager);
+            }else{
+                YoYo.with(Techniques.FadeInRight).duration(500).playOn(tabViewPager);
+            }
         }
 
 //        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);
