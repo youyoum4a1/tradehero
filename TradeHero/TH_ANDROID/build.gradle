@@ -153,13 +153,6 @@ android {
 //  flavorDimensions "marketSegment", "liveOrNot", "pushProvider"/*, "separateBuild"*/
 
     productFlavors {
-//    googleplay {
-//      buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
-//
-//      // Enabling multidex support.
-//      multiDexEnabled true
-//    }
-
         tradeHero {
             applicationId = "com.tradehero.th"
             buildConfigField "String", "GOOGLE_PLAY_PACKAGE_NAME", "\"com.tradehero.th\""
@@ -189,38 +182,6 @@ android {
             multiDexEnabled true
             manifestPlaceholders = [FACEBOOK_APP_ID: "431745923529834"]
         }
-
-//    samsung {
-//      dimension "marketSegment"
-//
-//      // Enabling multidex support.
-//      multiDexEnabled true
-//
-//      minSdkVersion 15 // Dictated by IAP v3.0
-//    }
-//
-//    amazon {
-//      dimension "marketSegment"
-//      proguardFile 'proguard/proguard-android-amazon.txt'
-//      // https://github.com/TradeHero/TH_ANDROID/wiki/Amazon
-//      //compileSdkVersion = [ 20 , "Amazon.com:Amazon Fire Phone SDK Addon:17" ]
-//    }
-//
-//    game {
-//      dimension "liveOrNot"
-//    }
-//
-//    live {
-//      dimension "liveOrNot"
-//    }
-//
-//    airship {
-//      dimension "pushProvider"
-//    }
-//
-//    noPush {
-//      dimension "pushProvider"
-//    }
     }
 
     sourceSets {
@@ -247,108 +208,6 @@ android {
                 srcDir 'src/dagger1Release/java'
             }
         }
-
-//    game {
-//      java {
-//        srcDir 'src/dagger1Game/java'
-//      }
-//    }
-//
-//    live {
-//      java {
-//        srcDir 'src/dagger1Live/java'
-//      }
-//    }
-//
-//    //region Flavours
-//    googleplay {
-//      java {
-//        srcDir 'src/row/java'
-//      }
-//    }
-//
-//    googleplayGameNoPushDebug {
-//      java {
-//        srcDir 'src/googleplayDebug/java'
-//      }
-//    }
-//
-//    googleplayLiveNoPushDebug {
-//      java {
-//        srcDir 'src/googleplayDebug/java'
-//        srcDir 'src/liveDebug/java'
-//        srcDir 'src/dagger1LiveDebug/java'
-//      }
-//    }
-//
-//    googleplayGameAirship {
-//      manifest {
-//        srcFile 'src/googleplayAirship/AndroidManifest.xml'
-//      }
-//      java {
-//        srcDir 'src/googleplayAirship/java'
-//      }
-//    }
-//
-//    googleplayLiveAirship {
-//      manifest {
-//        srcFile 'src/googleplayAirship/AndroidManifest.xml'
-//      }
-//      java {
-//        srcDir 'src/googleplayAirship/java'
-//      }
-//    }
-//
-//    googleplayGameAirshipDebug {
-//      java {
-//        srcDir 'src/googleplayDebug/java'
-//      }
-//    }
-//
-//    googleplayLiveAirshipDebug {
-//      java {
-//        srcDir 'src/googleplayDebug/java'
-//        srcDir 'src/liveDebug/java'
-//        srcDir 'src/dagger1LiveDebug/java'
-//      }
-//    }
-//
-//    googleplayGameNoPushRelease {
-//      java {
-//        srcDir 'src/googleplayRelease/java'
-//      }
-//    }
-//
-//    googleplayLiveNoPushRelease {
-//      java {
-//        srcDir 'src/googleplayRelease/java'
-//        srcDir 'src/liveRelease/java'
-//        srcDir 'src/dagger1LiveRelease/java'
-//      }
-//    }
-//
-//    googleplayGameAirshipRelease {
-//      manifest {
-//        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml'
-//      }
-//      java {
-//        srcDir 'src/googleplayRelease/java'
-//      }
-//    }
-//
-//    googleplayLiveAirshipRelease {
-//      manifest {
-//        srcFile 'src/googleplayAirshipRelease/AndroidManifest.xml'
-//      }
-//      java {
-//        srcDir 'src/googleplayRelease/java'
-//        //HACK just to make a test build
-//        //        srcDir 'src/liveRelease/java'
-//        //        srcDir 'src/dagger1LiveRelease/java'
-//        srcDir 'src/liveDebug/java'
-//        srcDir 'src/dagger1LiveDebug/java'
-//      }
-//    }
 
         ayondoAcademy {
             java {
