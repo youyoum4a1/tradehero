@@ -300,11 +300,11 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override public void onLiveTradingChanged(boolean isLive)
     {
-        if(isLive){
-            trendingLiveFragmentUtil.setCallToActionFragmentVisible();
-        }else{
-            trendingLiveFragmentUtil.setCallToActionFragmentGone();
-        }
+//        if(isLive){
+//            trendingLiveFragmentUtil.setCallToActionFragmentVisible();
+//        }else{
+//            trendingLiveFragmentUtil.setCallToActionFragmentGone();
+//        }
 
         super.onLiveTradingChanged(isLive);
         if(isLive){
@@ -361,17 +361,19 @@ public class TrendingMainFragment extends DashboardFragment
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        int colorId = getActivity().getResources().getColor(R.color.general_brand_color);
         if(BuildConfig.HAS_LIVE_ACCOUNT_FEATURE){
+
             try{
                 boolean isLive = trendingLiveFragmentUtil.getLiveActivityUtil().getLiveSwitcher().getIsOn();
-                int colorId = isLive? getActivity().getResources().getColor(R.color.general_red_live) : getActivity().getResources().getColor(R.color.general_brand_color);
+                colorId = isLive? getActivity().getResources().getColor(R.color.general_red_live) : getActivity().getResources().getColor(R.color.general_brand_color);
                 setActionBarColor(colorId);
             }catch (Exception e){
                 //not yet set up
-                setActionBarColor(getActivity(), R.color.general_brand_color);
+                setActionBarColor(colorId);
             }
         }else{
-            setActionBarColor(getActivity(), R.color.general_brand_color);
+            setActionBarColor(colorId);
         }
 
         super.onPrepareOptionsMenu(menu);
