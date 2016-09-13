@@ -386,9 +386,4 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
             return super.getItemId(position) + leaderboardType.hashCode();
         }
     }
-
-    @Override
-    public boolean shouldShowLiveTradingToggle() {
-        return false;
-    }
 }

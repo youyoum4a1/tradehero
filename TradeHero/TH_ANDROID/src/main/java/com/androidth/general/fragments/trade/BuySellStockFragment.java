@@ -357,11 +357,6 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
         //actionBar.setCustomView(actionBarLayout);*/
     }
 
-    @Override public boolean shouldShowLiveTradingToggle()
-    {
-        return BuildConfig.HAS_LIVE_ACCOUNT_FEATURE;
-    }
-
     @Override public void onDestroyOptionsMenu()
     {
         //actionBarLayout = null;

@@ -302,9 +302,4 @@ public class ContestCenterFragment extends DashboardFragment
         });
         return webView;
     }
-
-    @Override
-    public boolean shouldShowLiveTradingToggle() {
-        return false;
-    }
 }

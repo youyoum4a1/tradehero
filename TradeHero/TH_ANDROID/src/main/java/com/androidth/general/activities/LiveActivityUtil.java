@@ -11,7 +11,10 @@ import com.androidth.general.BuildConfig;
 import com.androidth.general.R;
 import com.androidth.general.common.persistence.prefs.BooleanPreference;
 import com.androidth.general.fragments.base.DashboardFragment;
+import com.androidth.general.fragments.timeline.MeTimelineFragment;
+import com.androidth.general.fragments.trade.BuySellStockFragment;
 import com.androidth.general.fragments.trending.TileType;
+import com.androidth.general.fragments.trending.TrendingMainFragment;
 import com.androidth.general.inject.HierarchyInjector;
 import com.androidth.general.persistence.prefs.IsLiveTrading;
 import com.androidth.general.rx.TimberOnErrorAction1;
@@ -110,7 +113,9 @@ public class LiveActivityUtil
 
         for (Fragment f : activity.getSupportFragmentManager().getFragments())
         {
-            if (f instanceof DashboardFragment && f.isVisible() && ((DashboardFragment) f).shouldShowLiveTradingToggle())
+            if (f instanceof DashboardFragment && f.isVisible()
+                    && ((DashboardFragment) f).shouldShowLiveTradingToggle()
+                    && canShowLiveTradingToggle(f))
             {
                 item.setVisible(true);
                 break;
@@ -207,5 +212,9 @@ public class LiveActivityUtil
 
     public OffOnViewSwitcher getLiveSwitcher() {
         return liveSwitcher;
+    }
+
+    public boolean canShowLiveTradingToggle(Fragment f){
+        return f instanceof TrendingMainFragment || f instanceof MeTimelineFragment || f instanceof BuySellStockFragment;
     }
 }

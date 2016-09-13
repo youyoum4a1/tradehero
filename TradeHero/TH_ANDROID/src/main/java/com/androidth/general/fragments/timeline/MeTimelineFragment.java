@@ -140,9 +140,4 @@ public class MeTimelineFragment extends TimelineFragment
                     );
         }
     }
-
-    @Override
-    public boolean shouldShowLiveTradingToggle() {
-        return BuildConfig.HAS_LIVE_ACCOUNT_FEATURE;
-    }
 }

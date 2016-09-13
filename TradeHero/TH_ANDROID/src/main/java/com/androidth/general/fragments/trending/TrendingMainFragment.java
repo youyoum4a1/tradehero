@@ -293,11 +293,6 @@ public class TrendingMainFragment extends DashboardFragment
         trendingLiveFragmentUtil.onResume();
     }
 
-    @Override public boolean shouldShowLiveTradingToggle()
-    {
-        return BuildConfig.HAS_LIVE_ACCOUNT_FEATURE;
-    }
-
     @Override public void onLiveTradingChanged(boolean isLive)
     {
 //        if(isLive){
@@ -308,9 +303,9 @@ public class TrendingMainFragment extends DashboardFragment
 
         super.onLiveTradingChanged(isLive);
         if(isLive){
-            YoYo.with(Techniques.FadeInLeft).playOn(tabViewPager);
+            YoYo.with(Techniques.FadeInLeft).duration(500).playOn(tabViewPager);
         }else{
-            YoYo.with(Techniques.FadeInRight).playOn(tabViewPager);
+            YoYo.with(Techniques.FadeInRight).duration(500).playOn(tabViewPager);
         }
 
 //        BaseLiveFragmentUtil.setDarkBackgroundColor(isLive, pagerSlidingTabStrip);

@@ -186,9 +186,4 @@ public class DiscoveryMainFragment extends DashboardFragment
             return DiscoveryTabType.values().length;
         }
     }
-
-    @Override
-    public boolean shouldShowLiveTradingToggle() {
-        return false;
-    }
 }
