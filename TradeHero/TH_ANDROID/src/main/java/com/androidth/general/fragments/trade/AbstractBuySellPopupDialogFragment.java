@@ -602,10 +602,10 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         }
 
         //make the dialog smaller
-        int currentWidth = getResources().getDisplayMetrics().widthPixels;
-        int currentHeight = getResources().getDisplayMetrics().heightPixels;
-//
-        getDialog().getWindow().setLayout(currentWidth, Math.round(currentHeight*8/10));
+//        int currentWidth = getResources().getDisplayMetrics().widthPixels;
+//        int currentHeight = getResources().getDisplayMetrics().heightPixels;
+
+//        getDialog().getWindow().setLayout(currentWidth, Math.round(currentHeight*8/10));
     }
 
     @NonNull
