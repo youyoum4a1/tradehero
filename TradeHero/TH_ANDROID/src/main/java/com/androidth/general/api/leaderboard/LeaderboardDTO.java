@@ -71,4 +71,8 @@ public class LeaderboardDTO extends BaseHasExpiration
     {
         return users == null ? new LeaderboardUserDTOList() : users;
     }
+
+    public Integer getCapAt() {
+        return capAt;
+    }
 }
