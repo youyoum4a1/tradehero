@@ -464,6 +464,7 @@ abstract public class AbstractBuySellFragment extends DashboardFragment
     {
         quoteRefreshProgressBar.clearAnimation();
         progressAnimation = null;
+        quoteObservable = null;
 
         ButterKnife.unbind(this);
         super.onDestroyView();
