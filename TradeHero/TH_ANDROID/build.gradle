@@ -342,6 +342,7 @@ dependencies {
     compile "com.facebook.android:facebook-android-sdk:${FACEBOOK_SDK_VERSION}"
 
     compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
+    compile "com.android.support:support-compat:${SUPPORT_V4_VERSION}"
     compile "com.android.support:support-v13:${SUPPORT_V13_VERSION}"
     compile "com.android.support:appcompat-v7:${SUPPORT_V7_VERSION}"
     compile "com.android.support:recyclerview-v7:${SUPPORT_V7_VERSION}"
