@@ -1,5 +1,6 @@
 package com.androidth.general.fragments.leaderboard.main;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -221,9 +222,16 @@ public class LeaderboardCommunityFragment extends BasePurchaseManagerFragment
 
     private void setUpCustomToolbarView()
     {
-        View view = LayoutInflater.from(actionBarOwnerMixin.getActionBar().getThemedContext())
-                .inflate(R.layout.leaderboard_custom_actionbar, toolbar, false);
         setActionBarTitle("");
+        Context context = getContext();
+        try{
+            context = getSupportActionBar().getThemedContext();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.leaderboard_custom_actionbar, null, false);
+
         stockFxSwitcher = (OffOnViewSwitcher) view.findViewById(R.id.switch_stock_fx);
         onDestroyOptionsMenuSubscriptions.add(stockFxSwitcher.getSwitchObservable()
                 .subscribe(
