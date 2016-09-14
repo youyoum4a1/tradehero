@@ -802,7 +802,7 @@ public class FriendsInvitationFragment extends BaseFragment
 
         @Override public void onError(Throwable e)
         {
-            Timber.e(e, "SearchFriendsCallback error");
+            Timber.e("SearchFriendsCallback error");
             // TODO need to tell user.
             showSocialTypeList();
         }

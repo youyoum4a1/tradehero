@@ -106,7 +106,12 @@ public class SignalRManager {
             this.connection.error(new ErrorCallback() {
                 @Override
                 public void onError(Throwable throwable) {
-                    Log.v("SignalR", "ERROR! "+throwable.getMessage());
+                    if(throwable!=null){
+                        Log.v("SignalR", "ERROR! "+throwable.getMessage());
+                    }else{
+                        Log.v("SignalR", "ERROR starting connection");
+                    }
+
                     //Usual error: There was an error invoking Hub method 'portfoliohub.SubscribeToPortfolioUpdate'.
                 }
             });
@@ -172,7 +177,11 @@ public class SignalRManager {
             this.connection.error(new ErrorCallback() {
                 @Override
                 public void onError(Throwable throwable) {
-                    Log.v("SignalR", "ERROR! "+throwable.getLocalizedMessage());
+                    if(throwable!=null){
+                        Log.v("SignalR", "ERROR! "+throwable.getMessage());
+                    }else{
+                        Log.v("SignalR", "ERROR starting connection");
+                    }
                 }
             });
             this.connection.closed(new Runnable() {
@@ -224,7 +233,11 @@ public class SignalRManager {
         this.connection.error(new ErrorCallback() {
             @Override
             public void onError(Throwable throwable) {
-                Log.v("SignalR", "ERROR! "+throwable.getMessage());
+                if(throwable!=null){
+                    Log.v("SignalR", "ERROR! "+throwable.getMessage());
+                }else{
+                    Log.v("SignalR", "ERROR starting connection");
+                }
             }
         });
         this.connection.closed(new Runnable() {

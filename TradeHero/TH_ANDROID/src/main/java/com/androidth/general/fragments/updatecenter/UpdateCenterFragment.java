@@ -252,7 +252,11 @@ public class UpdateCenterFragment extends BaseFragment
 
         @Override public void onError(Throwable e)
         {
-            THToast.show(new THException(e));
+            try{
+                THToast.show(new THException(e));
+            }catch (Exception exception){
+                THToast.show("Fetching error");
+            }
         }
     }
 

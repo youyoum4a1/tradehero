@@ -510,11 +510,14 @@ public abstract class SocialFriendsFragment extends BaseFragment
     @SuppressWarnings("UnusedParameters")
     protected void handleInviteError(@NonNull Throwable e)
     {
-        if (e instanceof FacebookOperationCanceledException)
-        {
-            THToast.show(R.string.invite_friend_request_cancelled);
-            return;
+        try{
+            if (e instanceof FacebookOperationCanceledException)
+            {
+                THToast.show(R.string.invite_friend_request_cancelled);
+            }
+        }catch (Exception exception){
+            THToast.show(R.string.invite_friend_request_error);
         }
-        THToast.show(R.string.invite_friend_request_error);
+
     }
 }

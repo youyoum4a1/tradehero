@@ -167,8 +167,8 @@ public class QuestListTestingFragment extends BaseFragment
 
         @Override public void onError(Throwable e)
         {
+//            Timber.e(e, "Error fetching the list of competition info cell");
             THToast.show(getString(R.string.error_fetch_achievements));
-            Timber.e(e, "Error fetching the list of competition info cell");
         }
     }
 }

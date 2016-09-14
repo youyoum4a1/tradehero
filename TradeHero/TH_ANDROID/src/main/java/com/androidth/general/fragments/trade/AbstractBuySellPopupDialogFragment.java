@@ -1446,12 +1446,16 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
         @Override
         public void onError(Throwable e) {
             onCompleted();
-            Timber.e(e, "Failed to %s %s with %s", isBuy ? "buy" : "sell", securityId, transactionFormDTO);
-            THException thException = new THException(e);
-            THToast.show(thException);
 
-            if (buySellTransactionListener != null) {
-                buySellTransactionListener.onTransactionFailed(isBuy, thException);
+//            Timber.e(e, "Failed to %s %s with %s", isBuy ? "buy" : "sell", securityId, transactionFormDTO);
+            try{
+                THException thException = new THException(e);
+                THToast.show(thException);
+                if (buySellTransactionListener != null) {
+                    buySellTransactionListener.onTransactionFailed(isBuy, thException);
+                }
+            }catch (Exception exception){
+                THToast.show("Failed to buy/sell");
             }
         }
     }

@@ -285,8 +285,12 @@ public class WatchlistEditFragment extends DashboardFragment
             {
                 display(securityCompactDTO);
             }
-            Timber.e(e, "Failed to update watchlist position");
-            THToast.show(new THException(e));
+//            Timber.e(e, "Failed to update watchlist position");
+            try{
+                THToast.show(new THException(e));
+            }catch (Exception exception){
+                THToast.show("Failed to update watchlist position");
+            }
         }
     }
 

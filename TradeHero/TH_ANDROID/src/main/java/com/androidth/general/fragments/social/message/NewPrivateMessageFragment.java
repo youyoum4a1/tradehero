@@ -112,13 +112,16 @@ public class NewPrivateMessageFragment extends AbstractPrivateMessageFragment
 
         @Override public void onError(Throwable e)
         {
-            if (!(e instanceof RetrofitError) ||
-                    ((RetrofitError) e).getResponse() == null ||
-                    ((RetrofitError) e).getResponse().getStatus() != 404)
-            {
-                THToast.show(R.string.error_fetch_message_thread_header);
-                Timber.e(e, "Error while getting message thread");
-            }
+            THToast.show(R.string.error_fetch_message_thread_header);
+            Timber.e(e, "Error while getting message thread");
+
+//            if (!(e instanceof RetrofitError) ||
+//                    ((RetrofitError) e).getResponse() == null ||
+//                    ((RetrofitError) e).getResponse().getStatus() != 404)
+//            {
+//                THToast.show(R.string.error_fetch_message_thread_header);
+//
+//            }
             // Otherwise there is just no existing thread
         }
     }

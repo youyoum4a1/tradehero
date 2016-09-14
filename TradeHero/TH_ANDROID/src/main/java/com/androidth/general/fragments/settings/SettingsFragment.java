@@ -658,7 +658,7 @@ public final class SettingsFragment extends BasePreferenceFragment
 
                     @Override public void onError(Throwable e)
                     {
-                        THToast.show("restore error " + e);
+                        THToast.show("Restore error ");
                     }
                 }));
     }

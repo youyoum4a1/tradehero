@@ -299,7 +299,7 @@ public class PostCommentView extends RelativeLayout
     protected void notifyCommentPostFailed(Exception exception)
     {
         CommentPostedListener commentPostedListenerCopy = commentPostedListener;
-        if (commentPostedListenerCopy != null)
+        if (commentPostedListenerCopy != null && exception!=null)
         {
             commentPostedListenerCopy.failure(exception);
         }
