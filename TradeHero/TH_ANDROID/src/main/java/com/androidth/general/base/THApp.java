@@ -13,6 +13,7 @@ import com.androidth.general.models.level.UserXPAchievementHandler;
 import com.androidth.general.models.push.PushNotificationManager;
 import com.androidth.general.utils.Constants;
 import com.androidth.general.utils.dagger.AppModule;
+import com.androidth.general.utils.metrics.MetricsModule;
 import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -92,7 +93,7 @@ public class THApp extends BaseApplication
 
 
         // TODO: For Kenanga Challenge, can remove after that.
-        AppsFlyerLib.getInstance().startTracking(this,"pEuxjZE2GpyRXXwFjHHRRU");
+        AppsFlyerLib.getInstance().startTracking(this, MetricsModule.APP_FLYER_KEY);
 
     }
 
