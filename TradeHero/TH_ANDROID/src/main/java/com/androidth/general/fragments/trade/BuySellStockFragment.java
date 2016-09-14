@@ -443,7 +443,7 @@ public class  BuySellStockFragment extends AbstractBuySellFragment {
                                         {
                                             @Override public Boolean call(PositionDTO positionDTO)
                                             {
-                                                return positionDTO == null || positionDTO.portfolioId == portfolioCompactDTO.id;
+                                                return positionDTO == null || positionDTO.portfolioId.equals(portfolioCompactDTO.id);
                                             }
                                         }),
                                 new Func2<LiveQuoteDTO, PositionDTO, Boolean>()
