@@ -336,9 +336,11 @@ abstract public class AbstractBuySellPopupDialogFragment extends BaseShareableDi
             }
         });
 
-//        if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXFragment.class) {
-//            mConfirm.setText(R.string.buy_sell_confirm_sell_now);
-//        }
+        if (this.getClass() == SellStockFragment.class || this.getClass() == SellFXFragment.class) {
+            mConfirm.setText(R.string.buy_sell_confirm_sell_now);
+        }else if (this.getClass() == BuyStockFragment.class || this.getClass() == BuyFXFragment.class) {
+            mConfirm.setText(R.string.buy_sell_confirm_buy_now);
+        }//else, it's "Confirm"
 
 //        mCashOrStockLeft.setText(getCashShareLabel());
 

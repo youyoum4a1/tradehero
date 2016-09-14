@@ -81,8 +81,8 @@
   <string name="buy_sell_market_price_title">Market Price:</string>
   <string name="buy_sell_market_price_time">As of %1$s</string>
   <string name="buy_sell_shares_title">Shares:</string>
-  <string name="buy_sell_confirm_buy_now">Buy now</string>
-  <string name="buy_sell_confirm_sell_now">Sell now</string>
+  <string name="buy_sell_confirm_buy_now">Buy</string>
+  <string name="buy_sell_confirm_sell_now">Sell</string>
   <string name="stock">Stock</string>
 
 </resources>
