@@ -220,7 +220,9 @@ public class EmailSignInFragment extends Fragment
                     @Override
                     public void call(Throwable throwable) {
                         Log.v(getTag(), "Login failed: "+throwable.getMessage());
-                        new SnackbarOnErrorAction1(coordinatorLayout,"Unable to login with provided credentials.",Snackbar.LENGTH_SHORT);
+                        new SnackbarOnErrorAction1(coordinatorLayout,
+                                "Unable to login with provided credentials.",
+                                Snackbar.LENGTH_SHORT).call(throwable);
                     }
                 })
                 .doOnUnsubscribe(new DismissDialogAction0(progressDialog));

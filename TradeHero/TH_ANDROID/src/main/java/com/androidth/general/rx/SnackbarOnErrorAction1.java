@@ -4,11 +4,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
+import retrofit.RetrofitError;
 import rx.functions.Action1;
 
-/**
- * Created by ayushnvijay on 6/14/16.
- */
 public class SnackbarOnErrorAction1 implements Action1<Throwable> {
 
     @Nullable
@@ -16,22 +14,32 @@ public class SnackbarOnErrorAction1 implements Action1<Throwable> {
     private View view;
     private int duration;
 
-    public SnackbarOnErrorAction1( View view,String message, int duration){
-        this.message = message;
+    public SnackbarOnErrorAction1(View view, String message, int duration){
         this.view = view;
+        this.message = message;
         this.duration = duration;
     }
 
     @Override
     public void call(Throwable throwable) {
-        if(message!=null){
-            Snackbar snack = Snackbar.make(view,message,duration);
-            snack.show();
-
+        Snackbar snackbar;
+        if(throwable!=null){
+            String errorMessage = throwable.getLocalizedMessage();
+            if(throwable instanceof RetrofitError){
+                RetrofitError retrofitError = (RetrofitError) throwable;
+                int status = retrofitError.getResponse().getStatus();
+                switch(status){
+                    case 401:
+                        errorMessage = "Invalid username/password";
+                        break;
+                    default:
+                        break;
+                }
+            }
+            snackbar = Snackbar.make(view, errorMessage, duration);
+        }else{
+            snackbar = Snackbar.make(view, message, duration);
         }
-        else {
-            Snackbar snack = Snackbar.make(view,"Error",duration);
-            snack.show();
-        }
+        snackbar.show();
     }
 }
